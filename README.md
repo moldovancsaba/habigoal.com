@@ -8,10 +8,10 @@ KIDEX is a conductor-facing assessment and reporting app for recording child exa
 - Bio-psycho-social weighted scoring with SKI calculation
 - Centralized child profiles with longitudinal history
 - Child management actions (search, edit, delete with history cleanup)
-- Pre-filled new survey flow from child profile
+- New survey from child profile pre-fills only child administration fields (identity context preserved via child UUID)
 - Evidence image upload and camera capture support
-- Report view with print/PDF optimization
-- Dashboard analytics (users/records with chart views)
+- Report view with direct PDF download export
+- Dashboard analytics (KPI cards + line, pie, and radar charts)
 - Localized legal pages (GTC and Privacy Policy)
 - Multilingual UI: Hungarian, English, Arabic (RTL)
 
