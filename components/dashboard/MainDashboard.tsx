@@ -18,7 +18,7 @@ type DashboardData = {
 };
 
 const DASHBOARD_CHART_CONFIG = {
-  monthWindow: 6,
+  dayWindow: 30,
   chartHeight: 220,
   lineMargin: { top: 10, right: 8, left: -20, bottom: 8 },
   tickFontSize: 12,
@@ -34,8 +34,8 @@ const DASHBOARD_CHART_CONFIG = {
 } as const;
 const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
 
-function monthLabel(date: Date) {
-  return new Intl.DateTimeFormat(undefined, { month: "short" }).format(date);
+function dayLabel(date: Date) {
+  return new Intl.DateTimeFormat(undefined, { month: "2-digit", day: "2-digit" }).format(date);
 }
 
 export function MainDashboard() {
@@ -62,20 +62,22 @@ export function MainDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const recordsByMonth = useMemo(() => {
+  const recordsByDay = useMemo(() => {
     const now = new Date();
-    const months = Array.from({ length: DASHBOARD_CHART_CONFIG.monthWindow }, (_, idx) => {
-      const d = new Date(now.getFullYear(), now.getMonth() - (DASHBOARD_CHART_CONFIG.monthWindow - 1 - idx), 1);
-      return { key: `${d.getFullYear()}-${d.getMonth() + 1}`, label: monthLabel(d), count: 0 };
+    now.setHours(0, 0, 0, 0);
+    const days = Array.from({ length: DASHBOARD_CHART_CONFIG.dayWindow }, (_, idx) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() - (DASHBOARD_CHART_CONFIG.dayWindow - 1 - idx));
+      return { key: d.toISOString().slice(0, 10), label: dayLabel(d), count: 0 };
     });
-    const indexByKey = new Map(months.map((m) => [m.key, m]));
+    const indexByKey = new Map(days.map((d) => [d.key, d]));
     for (const record of data?.assessments ?? []) {
       const createdAt = new Date(record.createdAt);
-      const key = `${createdAt.getFullYear()}-${createdAt.getMonth() + 1}`;
+      const key = new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate()).toISOString().slice(0, 10);
       const hit = indexByKey.get(key);
       if (hit) hit.count += 1;
     }
-    return months;
+    return days;
   }, [data]);
 
   const userRoleStats = useMemo(() => {
@@ -136,7 +138,7 @@ export function MainDashboard() {
       <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <Box style={{ flex: 1, minWidth: 0, display: "flex" }}>
           <SectionCard title={t("recordsChartTitle")} subheader={t("recordsChartSubtitle")} sx={{ width: "100%", height: "100%", mb: 0 }}>
-            <RecordsLineChart points={recordsByMonth} />
+            <RecordsLineChart points={recordsByDay} />
           </SectionCard>
         </Box>
 
