@@ -115,7 +115,7 @@ export default function SettingsPage() {
       <PageHeader title={t("settings")} />
 
       {message ? (
-        <Alert color={message === tc("error") ? "red" : "green"} withCloseButton onClose={() => setMessage("")}>
+        <Alert color={message === tc("error") ? "red" : "kidex"} withCloseButton onClose={() => setMessage("")}>
           {message}
         </Alert>
       ) : null}
@@ -129,7 +129,7 @@ export default function SettingsPage() {
               onChange={(event) => setUserDraft(event.target.value)}
               style={{ minWidth: 280 }}
             />
-            <Button variant="light" color="kidex" onClick={addNewUser} disabled={!userDraft.trim()}>
+            <Button variant="default" onClick={addNewUser} disabled={!userDraft.trim()}>
               {t("addUser")}
             </Button>
           </Group>
@@ -189,7 +189,7 @@ export default function SettingsPage() {
                 allowAdd
               />
             </Box>
-            <Button variant="light" color="kidex" onClick={addLocation} disabled={!locationDraft.trim()}>
+            <Button variant="default" onClick={addLocation} disabled={!locationDraft.trim()}>
               {t("addLocation")}
             </Button>
             <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
@@ -208,7 +208,7 @@ export default function SettingsPage() {
                   style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}
                 >
                   <Text>{loc}</Text>
-                  <Button color="red" variant="light" size="xs" onClick={() => removeLocation(i)}>
+                  <Button color="red" variant="light" size="sm" onClick={() => removeLocation(i)}>
                     {tc("remove")}
                   </Button>
                 </Paper>

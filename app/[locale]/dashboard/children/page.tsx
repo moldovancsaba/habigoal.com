@@ -132,7 +132,7 @@ export default function ChildrenListPage() {
       <SectionCard>
         <Stack gap="md">
           {message ? (
-            <Alert color={error ? "red" : "green"} withCloseButton onClose={() => setMessage("")}>
+            <Alert color={error ? "red" : "kidex"} withCloseButton onClose={() => setMessage("")}>
               {message}
             </Alert>
           ) : null}
@@ -171,7 +171,7 @@ export default function ChildrenListPage() {
                           <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex">
                             {t("newSurveyForChild")}
                           </Button>
-                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="light" color="kidex">
+                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default">
                             {t("viewHistory")}
                           </Button>
                           <Button variant="light" color="gray" onClick={() => startEdit(child)}>

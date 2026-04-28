@@ -209,7 +209,7 @@ function RecordsLineChart({
           </LineChart>
         </ResponsiveContainer>
       </Box>
-      <Text size="xs" c="dimmed">
+      <Text size="sm" c="dimmed">
         {t("recordsChartYRange", { min: yMin, max: yMax })}
       </Text>
     </Stack>
@@ -277,8 +277,8 @@ function RapidRadarChart({
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
             <PolarGrid stroke={theme.colors.gray[4]} />
-            <PolarAngleAxis dataKey="label" tick={{ fontSize: 11, fill: theme.colors.gray[5] }} />
-            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fill: theme.colors.gray[5], fontSize: 10 }} />
+            <PolarAngleAxis dataKey="label" tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: theme.colors.gray[5] }} />
+            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fill: theme.colors.gray[5], fontSize: DASHBOARD_CHART_CONFIG.tickFontSize }} />
             <Tooltip
               contentStyle={{
                 background: theme.colors.dark[7],

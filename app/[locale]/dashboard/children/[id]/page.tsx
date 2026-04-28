@@ -16,6 +16,9 @@ import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
 
+const RADAR_CHART_HEIGHT = 220;
+const RADAR_TICK_FONT_SIZE = 12;
+
 export default function ChildHistoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations("Assessment");
@@ -67,7 +70,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                 <TrendMetric label={ts("social")} value={point.social || 0} target={standard?.social.target} domain="social" />
                 <TrendMetric label={ts("mental")} value={point.mental || 0} target={standard?.mental.target} domain="mental" />
               </Stack>
-              <Text size="xs" c="dimmed" mt="xs">
+              <Text size="sm" c="dimmed" mt="xs">
                 {point.date}
               </Text>
             </Paper>
@@ -141,10 +144,10 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                         alt={attachment.name || "Evidence image"}
                         width={160}
                         height={110}
-                        style={{ width: "100%", height: "auto", borderRadius: 8 }}
+                        style={{ width: "100%", height: "auto", borderRadius: "var(--mantine-radius-md)" }}
                         unoptimized
                       />
-                      <Text component="a" href={attachment.url} target="_blank" rel="noreferrer" size="xs" mt={6} style={{ display: "inline-block" }}>
+                      <Text component="a" href={attachment.url} target="_blank" rel="noreferrer" size="sm" mt={6} style={{ display: "inline-block" }}>
                         {tc("view")}
                       </Text>
                     </Paper>
@@ -185,12 +188,12 @@ function TrendMetric({
       <Progress
         value={pct}
         color={barColor}
-        radius="sm"
+        radius="md"
         size="md"
         aria-label={label}
       />
       {typeof target === "number" ? (
-        <Text size="xs" c="dimmed" mt={6}>
+        <Text size="sm" c="dimmed" mt={6}>
           Target: {formatScore(target)}
         </Text>
       ) : null}
@@ -213,12 +216,12 @@ function RapidRadarChart({
       <Text size="sm" fw={600} mb="xs">
         {title}
       </Text>
-      <Box style={{ width: "100%", height: 220 }}>
+      <Box style={{ width: "100%", height: RADAR_CHART_HEIGHT }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
             <PolarGrid />
-            <PolarAngleAxis dataKey="label" tick={{ fontSize: 11 }} />
-            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fontSize: 10 }} />
+            <PolarAngleAxis dataKey="label" tick={{ fontSize: RADAR_TICK_FONT_SIZE }} />
+            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fontSize: RADAR_TICK_FONT_SIZE }} />
             <Tooltip />
             <Radar dataKey="value" stroke={domainColor} fill={domainColor} fillOpacity={0.25} />
           </RadarChart>

@@ -27,7 +27,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const navContent = (
     <Stack h="100%" gap={0} bg={KIDEX_COLORS.brandNavy}>
       <Box p="md" style={{ display: "flex", justifyContent: "center" }}>
-        <Box style={{ backgroundColor: KIDEX_COLORS.white, borderRadius: 8, padding: 12 }}>
+        <Box style={{ backgroundColor: KIDEX_COLORS.white, borderRadius: "var(--mantine-radius-md)", padding: 12 }}>
           <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
         </Box>
       </Box>
@@ -47,7 +47,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               onClick={() => setMobileOpen(false)}
               styles={{
                 root: {
-                  borderRadius: 8
+                  borderRadius: "var(--mantine-radius-md)"
                 },
                 label: {
                   color: KIDEX_COLORS.navTextMuted,

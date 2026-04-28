@@ -1,9 +1,25 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { Select } from "@mantine/core";
-import { Alert, Box, Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, Link, Paper, Stack, TextField, ToggleButton, Typography } from "@/components/ui/legacy-form-primitives";
+import type { CSSProperties, ImgHTMLAttributes, MouseEvent, ReactNode, VideoHTMLAttributes } from "react";
+import { ChangeEvent, Children, cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Alert as MantineAlert,
+  Anchor as MantineAnchor,
+  Badge as MantineBadge,
+  Box as MantineBox,
+  Button as MantineButton,
+  Checkbox as MantineCheckbox,
+  Divider as MantineDivider,
+  Flex as MantineFlex,
+  Group as MantineGroup,
+  Modal as MantineModal,
+  Paper as MantinePaper,
+  Select,
+  Stack as MantineStack,
+  Text,
+  TextInput,
+  Textarea
+} from "@mantine/core";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -87,6 +103,124 @@ function loadDraftAssessment(): AssessmentPayload {
 async function parseApiError(response: Response): Promise<string | null> {
   const body = (await response.json().catch(() => null)) as { error?: string } | null;
   return body?.error || null;
+}
+
+type AnyProps = Record<string, unknown>;
+
+function resolveResponsiveValue(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+  const map = value as Record<string, unknown>;
+  return map.lg ?? map.md ?? map.sm ?? map.xs ?? Object.values(map)[0];
+}
+
+function sxToStyle(sx?: unknown): CSSProperties | undefined {
+  if (!sx || typeof sx === "function") return undefined;
+  const raw = sx as Record<string, unknown>;
+  const normalized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    normalized[key] = resolveResponsiveValue(value);
+  }
+  return normalized as CSSProperties;
+}
+
+function Alert({ severity, children, onClose }: AnyProps) {
+  const color = severity === "error" ? "red" : severity === "success" ? "kidex" : "blue";
+  return <MantineAlert color={color as string} withCloseButton={Boolean(onClose)} onClose={onClose as (() => void) | undefined}>{children as ReactNode}</MantineAlert>;
+}
+
+function Box({ sx, component, ...rest }: AnyProps) {
+  const style = sxToStyle(sx);
+  if (component === "img") {
+    return <img style={style} {...(rest as ImgHTMLAttributes<HTMLImageElement>)} />;
+  }
+  if (component === "video") {
+    return <video style={style} {...(rest as VideoHTMLAttributes<HTMLVideoElement>)} />;
+  }
+  return <MantineBox style={style} {...(rest as Record<string, unknown>)} />;
+}
+
+function Button({ variant, sx, children, ...rest }: AnyProps) {
+  const mappedVariant = variant === "contained" ? "filled" : variant === "outlined" ? "default" : (variant as string | undefined);
+  return <MantineButton variant={mappedVariant} style={sxToStyle(sx)} {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantineButton>;
+}
+
+function Checkbox(props: AnyProps) {
+  return <MantineCheckbox {...(props as Record<string, unknown>)} />;
+}
+
+function Chip({ label, sx }: AnyProps) {
+  return <MantineBadge variant="light" style={sxToStyle(sx)}>{label as ReactNode}</MantineBadge>;
+}
+
+function Dialog({ open, onClose, children, maxWidth }: AnyProps) {
+  const size = maxWidth === "sm" ? "md" : "lg";
+  return <MantineModal opened={Boolean(open)} onClose={(onClose as (() => void) | undefined) ?? (() => {})} size={size}>{children as ReactNode}</MantineModal>;
+}
+
+function DialogTitle({ children }: AnyProps) {
+  return <Text size="lg" fw={600} mb="xs">{children as ReactNode}</Text>;
+}
+
+function DialogContent({ children }: AnyProps) {
+  return <Box>{children}</Box>;
+}
+
+function DialogActions({ children }: AnyProps) {
+  return <MantineGroup justify="flex-end" mt="md">{children as ReactNode}</MantineGroup>;
+}
+
+function Divider({ sx }: AnyProps) {
+  return <MantineDivider style={sxToStyle(sx)} />;
+}
+
+function FormControlLabel({ control, label }: AnyProps) {
+  return <MantineGroup gap="xs">{control as ReactNode}<Text size="sm">{label as ReactNode}</Text></MantineGroup>;
+}
+
+function Link({ children, ...rest }: AnyProps) {
+  return <MantineAnchor {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantineAnchor>;
+}
+
+function Paper({ variant, sx, children, ...rest }: AnyProps) {
+  return <MantinePaper withBorder={variant === "outlined" ? true : (rest.withBorder as boolean | undefined)} style={sxToStyle(sx)} {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantinePaper>;
+}
+
+function Stack({ spacing, direction, sx, children, divider, ...rest }: AnyProps) {
+  const dir = typeof direction === "string" ? direction : "column";
+  const style = { ...sxToStyle(sx), display: "flex", flexDirection: dir } as CSSProperties;
+  const nodes = Children.toArray(children as ReactNode);
+  const withDividers = (divider
+    ? nodes.flatMap((node, index) => (index === 0 ? [node] : [isValidElement(divider) ? cloneElement(divider) : divider, node]))
+    : nodes) as ReactNode[];
+  return (
+    <MantineStack gap={typeof spacing === "number" ? `${spacing * 0.25}rem` : (spacing as string | number | undefined)} style={style} {...(rest as Record<string, unknown>)}>
+      {withDividers}
+    </MantineStack>
+  );
+}
+
+function TextField({ multiline, minRows, type, slotProps, ...rest }: AnyProps) {
+  const extraProps = slotProps as { inputLabel?: { shrink?: boolean } } | undefined;
+  const textProps = { ...(rest as Record<string, unknown>) };
+  if (extraProps?.inputLabel?.shrink) {
+    textProps.labelProps = { style: { transform: "translate(0, -0.35rem) scale(0.85)" } };
+  }
+  if (multiline) return <Textarea minRows={(minRows as number) ?? 2} {...textProps} />;
+  return <TextInput type={type as string | undefined} {...textProps} />;
+}
+
+function ToggleButton({ selected, onChange, sx, children, ...rest }: AnyProps) {
+  return (
+    <MantineButton
+      variant={selected ? "filled" : "default"}
+      color={selected ? "kidex" : "gray"}
+      onClick={onChange as ((event: MouseEvent<HTMLButtonElement>) => void) | undefined}
+      style={sxToStyle(sx)}
+      {...(rest as Record<string, unknown>)}
+    >
+      {children as ReactNode}
+    </MantineButton>
+  );
 }
 
 export function KidexAssessmentApp() {
@@ -525,9 +659,9 @@ export function KidexAssessmentApp() {
 
         <SectionCard title={t("evidenceImages")}>
           <Stack spacing={2}>
-            <Typography variant="body2" color="text.secondary">
+            <Text size="sm" c="dimmed">
               {t("uploadSecurityNote")}
-            </Typography>
+            </Text>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
               <Button variant="outlined" component="label" disabled={!assessment.session.consentPhoto || uploading}>
                 <input
@@ -544,9 +678,9 @@ export function KidexAssessmentApp() {
               </Button>
             </Stack>
             {assessment.attachments.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
+              <Text size="sm" c="dimmed">
                 {t("noImages")}
-              </Typography>
+              </Text>
             ) : (
               <Stack spacing={2} divider={<Divider flexItem />}>
                 {assessment.attachments.map((attachment) => (
@@ -556,7 +690,7 @@ export function KidexAssessmentApp() {
                       alt={attachment.name || "Image"}
                       width={160}
                       height={120}
-                      style={{ width: 160, height: "auto", maxHeight: 160, borderRadius: 8 }}
+                      style={{ width: 160, height: "auto", maxHeight: 160, borderRadius: "var(--mantine-radius-md)" }}
                       unoptimized
                     />
                     <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -583,7 +717,7 @@ export function KidexAssessmentApp() {
               component="img"
               src={capturedPreview}
               alt={t("takePhoto")}
-              sx={{ width: "100%", borderRadius: 1, border: 1, borderColor: "divider" }}
+              sx={{ width: "100%", border: 1, borderColor: "divider" }}
             />
           ) : (
             <Box
@@ -592,7 +726,7 @@ export function KidexAssessmentApp() {
               autoPlay
               playsInline
               muted
-              sx={{ width: "100%", borderRadius: 1, border: 1, borderColor: "divider", bgcolor: "common.black" }}
+              sx={{ width: "100%", border: 1, borderColor: "divider", bgcolor: "common.black" }}
             />
           )}
         </DialogContent>
@@ -628,7 +762,6 @@ export function KidexAssessmentApp() {
                   sx={{
                     px: { xs: 1.5, sm: 2 },
                     py: { xs: 1.25, sm: 1.5 },
-                    borderRadius: 2,
                     bgcolor: "background.paper"
                   }}
                 >
@@ -638,15 +771,15 @@ export function KidexAssessmentApp() {
                     sx={{ justifyContent: "space-between", alignItems: { sm: "flex-start" } }}
                   >
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="caption" color="text.secondary">
+                      <Text size="sm" c="dimmed">
                         {sectionIndex * 25 + itemIndex + 1}
-                      </Typography>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+                      </Text>
+                      <Text size="lg" fw={700} lh={1.2}>
                         {ts(`${item.key}.title`)}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      </Text>
+                      <Text size="sm" c="dimmed">
                         {ts(`${item.key}.prompt`)}
-                      </Typography>
+                      </Text>
                     </Box>
                     <Box
                       role="group"
@@ -672,7 +805,6 @@ export function KidexAssessmentApp() {
                               minWidth: { xs: 44, sm: 42 },
                               minHeight: { xs: 44, sm: 40 },
                               px: 1,
-                              borderRadius: 1.25,
                               fontWeight: 700
                             }}
                           >
@@ -739,12 +871,12 @@ export function KidexAssessmentApp() {
             <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
             <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
             <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" color="text.secondary">
+              <Text size="sm" c="dimmed">
                 {t("nextStep")}:
-              </Typography>
-              <Typography variant="body1" sx={{ mt: 0.5, fontWeight: 600 }}>
+              </Text>
+              <Text size="md" mt={4} fw={600}>
                 {computed.ski === null ? t("completeAll") : computed.ski < 3.5 ? t("stabilizing") : t("sportOrientation")}
-              </Typography>
+              </Text>
             </Box>
           </SectionCard>
         </Box>
@@ -768,16 +900,16 @@ function FieldWide({ children }: { children: ReactNode }) {
 function MetricCard({ label, value, target }: { label: string; value: string; target?: number }) {
   return (
     <Paper variant="outlined" sx={{ p: 2, flex: "1 1 160px", minWidth: 140 }}>
-      <Typography variant="body2" color="text.secondary">
+      <Text size="sm" c="dimmed">
         {label}
-      </Typography>
-      <Typography variant="h5" component="p" sx={{ mt: 0.5, fontWeight: 700 }}>
+      </Text>
+      <Text size="xl" component="p" mt={4} fw={700}>
         {value}
-      </Typography>
+      </Text>
       {target ? (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
+        <Text size="sm" c="dimmed" mt={4} style={{ display: "block" }}>
           target: {target.toFixed(1)}
-        </Typography>
+        </Text>
       ) : null}
     </Paper>
   );
@@ -786,21 +918,21 @@ function MetricCard({ label, value, target }: { label: string; value: string; ta
 function ReportList({ title, items, emptyText }: { title: string; items: string[]; emptyText: string }) {
   return (
     <Box sx={{ mb: 2 }}>
-      <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 700 }}>
+      <Text size="lg" fw={700} mb={4}>
         {title}
-      </Typography>
+      </Text>
       {items.length ? (
         <Box component="ul" sx={{ pl: 2, m: 0 }}>
           {items.map((item, idx) => (
-            <Typography key={`${idx}-${item}`} component="li" variant="body2">
+            <Text key={`${idx}-${item}`} component="li" size="sm">
               {item}
-            </Typography>
+            </Text>
           ))}
         </Box>
       ) : (
-        <Typography variant="body2" color="text.secondary">
+        <Text size="sm" c="dimmed">
           {emptyText}
-        </Typography>
+        </Text>
       )}
     </Box>
   );

@@ -12,6 +12,13 @@ import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
 import type { AssessmentRecord } from "@/types/assessment";
 
+const PDF_FONT_SIZES = {
+  title: 16,
+  header: 11,
+  body: 10,
+  compact: 9
+} as const;
+
 export default function RecordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations("Assessment");
@@ -95,11 +102,11 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
         doc.addImage(logoDataUrl, "JPEG", 14, 10, 20, 20);
       }
 
-      doc.setFontSize(16);
+      doc.setFontSize(PDF_FONT_SIZES.title);
       doc.text(t("reportPrintTitle"), 38, 16);
-      doc.setFontSize(11);
+      doc.setFontSize(PDF_FONT_SIZES.header);
       doc.text(currentRecord.child.name, 38, 22);
-      doc.setFontSize(10);
+      doc.setFontSize(PDF_FONT_SIZES.body);
       doc.text(`${tc("date")}: ${reportDate}`, 140, 14);
       doc.text(`${t("tableTime")}: ${reportTime}`, 140, 19);
       doc.text(`${t("conductor")}: ${currentRecord.session.conductor || "—"}`, 140, 24);
@@ -115,7 +122,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           formatScore(currentRecord.computed.ski)
         ]],
         theme: "grid",
-        styles: { fontSize: 10 }
+        styles: { fontSize: PDF_FONT_SIZES.body }
       });
 
       autoTable(doc, {
@@ -138,7 +145,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           [t("lastUpdated"), updatedTime]
         ],
         theme: "grid",
-        styles: { fontSize: 9 },
+        styles: { fontSize: PDF_FONT_SIZES.compact },
         columnStyles: { 0: { cellWidth: 55 }, 1: { cellWidth: 125 } }
       });
 
@@ -150,7 +157,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           head: [[ts(section.key), "", ""]],
           body: [],
           theme: "plain",
-          styles: { fontSize: 11, fontStyle: "bold" }
+          styles: { fontSize: PDF_FONT_SIZES.header, fontStyle: "bold" }
         });
 
         autoTable(doc, {
@@ -163,7 +170,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             return [ts(`${item.key}.title`), `${entry?.score ?? "—"}`, entry?.note || "—"];
           }),
           theme: "grid",
-          styles: { fontSize: 9 },
+          styles: { fontSize: PDF_FONT_SIZES.compact },
           columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 24 }, 2: { cellWidth: 86 } }
         });
       }
@@ -178,7 +185,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           [t("adaptationNeeds"), currentRecord.notes.adaptations || "—"]
         ],
         theme: "grid",
-        styles: { fontSize: 9 },
+        styles: { fontSize: PDF_FONT_SIZES.compact },
         columnStyles: { 0: { cellWidth: 55 }, 1: { cellWidth: 125 } }
       });
 
@@ -196,7 +203,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           title={t("recordTitle")}
           subtitle={`${record.session.date} · ${record.child.name}`}
           actions={
-            <Button variant="light" color="kidex" onClick={() => void downloadPdf()} disabled={downloadingPdf}>
+            <Button variant="default" onClick={() => void downloadPdf()} disabled={downloadingPdf}>
               {downloadingPdf ? tc("loading") : t("downloadPdf")}
             </Button>
           }
@@ -337,10 +344,10 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                   alt={attachment.name || "Evidence image"}
                   width={196}
                   height={132}
-                  style={{ width: "100%", height: "auto", borderRadius: 8 }}
+                  style={{ width: "100%", height: "auto", borderRadius: "var(--mantine-radius-md)" }}
                   unoptimized
                 />
-                <Text size="xs" c="dimmed" mt={8}>
+                <Text size="sm" c="dimmed" mt={8}>
                   {new Date(attachment.uploadedAt).toLocaleString()}
                 </Text>
                 <Text component="a" href={attachment.url} target="_blank" rel="noreferrer" size="sm" mt={6} style={{ display: "inline-block" }}>

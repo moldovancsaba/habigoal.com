@@ -55,7 +55,7 @@ export default function RecordsPage() {
                         {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
                       </Text>
                     </Box>
-                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="light" color="kidex">
+                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default">
                       {tc("view")}
                     </Button>
                 </Stack>

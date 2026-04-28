@@ -40,7 +40,7 @@ export default function GtcPage() {
         </Text>
       </SectionCard>
 
-      <Button component={Link} href="/dashboard" variant="light" color="kidex" style={{ alignSelf: "flex-start" }}>
+      <Button component={Link} href="/dashboard" variant="default" style={{ alignSelf: "flex-start" }}>
         {t("backToDashboard")}
       </Button>
     </Stack>
