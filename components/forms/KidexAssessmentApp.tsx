@@ -21,6 +21,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { computeAssessment } from "@/lib/scoring";
@@ -111,6 +112,8 @@ export function KidexAssessmentApp() {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
+  const searchParams = useSearchParams();
+  const childIdParam = searchParams.get("childId");
 
   const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
   const [recordId, setRecordId] = useState<string>("");
@@ -143,6 +146,47 @@ export function KidexAssessmentApp() {
   useEffect(() => {
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(assessment));
   }, [assessment]);
+
+  useEffect(() => {
+    if (!childIdParam) return;
+    if (recordId) return;
+
+    void (async () => {
+      const response = await fetch(`/api/children/${childIdParam}`).catch(() => null);
+      if (!response?.ok) return;
+      const child = (await response.json()) as {
+        name: string;
+        birthDate: string;
+        knownTraits?: string;
+        parentSignals?: string;
+        dominantHand?: string;
+        dominantEye?: string;
+        dominantFoot?: string;
+      };
+
+      setAssessment((current) => {
+        if (current.child.name || current.child.birthDate) {
+          return current;
+        }
+
+        const ageGroup = calculateAgeGroup(child.birthDate) || "";
+        return {
+          ...current,
+          child: {
+            ...current.child,
+            name: child.name || "",
+            birthDate: child.birthDate || "",
+            ageGroup,
+            knownTraits: child.knownTraits || "",
+            parentSignals: child.parentSignals || "",
+            dominantHand: child.dominantHand || "",
+            dominantEye: child.dominantEye || "",
+            dominantFoot: child.dominantFoot || ""
+          }
+        };
+      });
+    })();
+  }, [childIdParam, recordId]);
 
   function update<T extends keyof AssessmentPayload>(group: T, key: keyof AssessmentPayload[T], value: unknown) {
     setAssessment((current) => {

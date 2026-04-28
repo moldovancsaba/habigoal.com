@@ -12,7 +12,8 @@
     "success": "تم بنجاح",
     "date": "التاريخ",
     "mode": "الوضع",
-    "view": "عرض"
+    "view": "عرض",
+    "cancel": "إلغاء"
   },
   "Dashboard": {
     "title": "لوحة التحكم",
@@ -47,7 +48,15 @@
     "gtc": "الشروط والأحكام العامة",
     "privacyPolicy": "سياسة الخصوصية",
     "appVersion": "إصدار التطبيق",
-    "company": "الشركة"
+    "company": "الشركة",
+    "searchChildren": "البحث عن طفل",
+    "searchChildrenPlaceholder": "الاسم، تاريخ الميلاد، الفئة العمرية...",
+    "noChildrenMatch": "لا توجد نتائج مطابقة للبحث.",
+    "newSurveyForChild": "بدء تقييم جديد",
+    "editChild": "تعديل الطفل",
+    "deleteChild": "حذف الطفل",
+    "deleteChildConfirm": "هل تريد حذف {name} مع كل السجل المرتبط؟ لا يمكن التراجع عن ذلك.",
+    "childDeleted": "تم حذف الطفل وكامل السجل."
   },
   "Assessment": {
     "saved": "تم حفظ التقييم.",

@@ -53,3 +53,47 @@ export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt
   const result = await db.collection(collectionName).insertOne(newChild);
   return { ...newChild, _id: result.insertedId.toString() };
 }
+
+export async function updateChildById(
+  id: ObjectId,
+  profile: Omit<ChildProfile, "_id" | "createdAt" | "updatedAt">
+) {
+  const db = await getDatabase();
+  const now = new Date().toISOString();
+  const nextProfile = {
+    ...profile,
+    name: profile.name.trim(),
+    updatedAt: now
+  };
+
+  const result = await db.collection(collectionName).findOneAndUpdate(
+    { _id: id },
+    { $set: nextProfile },
+    { returnDocument: "after" }
+  );
+
+  return result ? toJsonId(result) : null;
+}
+
+export async function deleteChildById(id: ObjectId) {
+  const db = await getDatabase();
+  const child = await db.collection(collectionName).findOne({ _id: id });
+  if (!child) {
+    return null;
+  }
+
+  await db.collection(collectionName).deleteOne({ _id: id });
+  const jsonChild = toJsonId(child) as Record<string, unknown>;
+  return {
+    _id: typeof jsonChild._id === "string" ? jsonChild._id : undefined,
+    name: typeof jsonChild.name === "string" ? jsonChild.name : "",
+    birthDate: typeof jsonChild.birthDate === "string" ? jsonChild.birthDate : "",
+    dominantHand: typeof jsonChild.dominantHand === "string" ? jsonChild.dominantHand : "",
+    dominantEye: typeof jsonChild.dominantEye === "string" ? jsonChild.dominantEye : "",
+    dominantFoot: typeof jsonChild.dominantFoot === "string" ? jsonChild.dominantFoot : "",
+    knownTraits: typeof jsonChild.knownTraits === "string" ? jsonChild.knownTraits : "",
+    parentSignals: typeof jsonChild.parentSignals === "string" ? jsonChild.parentSignals : "",
+    createdAt: typeof jsonChild.createdAt === "string" ? jsonChild.createdAt : "",
+    updatedAt: typeof jsonChild.updatedAt === "string" ? jsonChild.updatedAt : ""
+  } satisfies ChildProfile;
+}

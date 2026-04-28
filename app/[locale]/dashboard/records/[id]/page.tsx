@@ -100,7 +100,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
         </Button>
       </Stack>
 
-      <SectionCard title={t("reportPreview")}>
+      <SectionCard title={t("reportPreview")} className="no-print">
         <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ alignItems: { md: "center" }, justifyContent: "space-between" }}>
           <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
             <Image src="/logo.jpeg" alt="KIDEX" width={64} height={64} className="report-logo" />

@@ -12,7 +12,8 @@
     "success": "Sikeres",
     "date": "Dátum",
     "mode": "Mód",
-    "view": "Megtekintés"
+    "view": "Megtekintés",
+    "cancel": "Mégse"
   },
   "Dashboard": {
     "title": "Vezérlőpult",
@@ -47,7 +48,15 @@
     "gtc": "Általános szerződési feltételek",
     "privacyPolicy": "Adatvédelmi tájékoztató",
     "appVersion": "Alkalmazás verzió",
-    "company": "Cég"
+    "company": "Cég",
+    "searchChildren": "Gyermek keresése",
+    "searchChildrenPlaceholder": "Név, születési dátum, korcsoport...",
+    "noChildrenMatch": "Nincs találat a keresésre.",
+    "newSurveyForChild": "Új felmérés indítása",
+    "editChild": "Gyermek szerkesztése",
+    "deleteChild": "Gyermek törlése",
+    "deleteChildConfirm": "Törlöd ezt: {name}, és az összes kapcsolódó előzményt? Ez nem visszavonható.",
+    "childDeleted": "A gyermek és az előzmények törölve."
   },
   "Assessment": {
     "saved": "Felmérés elmentve.",

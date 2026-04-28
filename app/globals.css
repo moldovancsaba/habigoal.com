@@ -63,6 +63,12 @@ body {
     margin: 0 !important;
   }
 
+  .dashboard-main > div {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
   body {
     background: white !important;
     color: black !important;
@@ -70,10 +76,11 @@ body {
 
   @page {
     size: A4;
-    margin: 12mm;
+    margin: 8mm;
   }
 
   .print-container {
+    width: 100% !important;
     max-width: none !important;
   }
 
@@ -82,11 +89,19 @@ body {
     border-color: #d7dce5 !important;
   }
 
+  .print-container .MuiCard-root {
+    break-inside: avoid;
+  }
+
   .print-container .MuiTableCell-root {
     border-color: #d7dce5 !important;
   }
 
   .print-report-header {
     display: block !important;
+  }
+
+  a[href]::after {
+    content: none !important;
   }
 }

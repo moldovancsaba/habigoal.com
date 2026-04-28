@@ -81,3 +81,42 @@ export async function listAssessmentsByChildId(childId: string) {
 
   return assessments.map(toJsonId);
 }
+
+export async function updateAssessmentsForChildProfile(
+  childId: string,
+  nextChild: { name: string; birthDate: string }
+) {
+  const db = await getDatabase();
+  const objectId = ObjectId.isValid(childId) ? new ObjectId(childId) : null;
+  const childFilter = objectId ? { childId: { $in: [childId, objectId] } } : { childId };
+
+  await db.collection(collectionName).updateMany(
+    childFilter,
+    {
+      $set: {
+        "child.name": nextChild.name,
+        "child.birthDate": nextChild.birthDate,
+        updatedAt: new Date().toISOString()
+      }
+    }
+  );
+}
+
+export async function deleteAssessmentsForChild(
+  childId: string,
+  fallbackIdentity?: { name: string; birthDate: string }
+) {
+  const db = await getDatabase();
+  const objectId = ObjectId.isValid(childId) ? new ObjectId(childId) : null;
+  const childFilter = objectId ? { childId: { $in: [childId, objectId] } } : { childId };
+
+  await db.collection(collectionName).deleteMany(childFilter);
+
+  if (fallbackIdentity?.name && fallbackIdentity?.birthDate) {
+    await db.collection(collectionName).deleteMany({
+      childId: { $exists: false },
+      "child.name": fallbackIdentity.name,
+      "child.birthDate": fallbackIdentity.birthDate
+    });
+  }
+}

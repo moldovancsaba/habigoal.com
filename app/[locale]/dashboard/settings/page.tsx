@@ -23,6 +23,7 @@ import { useTranslations } from "next-intl";
 import { getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -37,6 +38,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [locationDraft, setLocationDraft] = useState("");
 
   useEffect(() => {
     void (async () => {
@@ -98,13 +100,13 @@ export default function SettingsPage() {
   }
 
   function addLocation() {
-    const loc = window.prompt(t("addLocation"))?.trim();
-    if (loc) {
-      setSettings((prev) => ({
-        ...prev,
-        locations: [...prev.locations, loc]
-      }));
-    }
+    const loc = locationDraft.trim();
+    if (!loc) return;
+    setSettings((prev) => ({
+      ...prev,
+      locations: prev.locations.includes(loc) ? prev.locations : [...prev.locations, loc]
+    }));
+    setLocationDraft("");
   }
 
   if (loading) {
@@ -182,6 +184,15 @@ export default function SettingsPage() {
         title={t("locations")}
         action={
           <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+            <Box sx={{ minWidth: 260, flex: "1 1 320px" }}>
+              <SearchableSelect
+                label={t("addLocation")}
+                value={locationDraft}
+                options={settings.locations.map((name) => ({ id: name, name }))}
+                onChange={setLocationDraft}
+                allowAdd
+              />
+            </Box>
             <Button variant="outlined" size="small" onClick={addLocation}>
               + {t("addLocation")}
             </Button>

@@ -12,7 +12,8 @@
     "success": "Success",
     "date": "Date",
     "mode": "Mode",
-    "view": "View"
+    "view": "View",
+    "cancel": "Cancel"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -47,7 +48,15 @@
     "gtc": "General Terms and Conditions",
     "privacyPolicy": "Privacy Policy",
     "appVersion": "App version",
-    "company": "Company"
+    "company": "Company",
+    "searchChildren": "Search children",
+    "searchChildrenPlaceholder": "Name, birth date, age group...",
+    "noChildrenMatch": "No children match your search.",
+    "newSurveyForChild": "Start new survey",
+    "editChild": "Edit child",
+    "deleteChild": "Delete child",
+    "deleteChildConfirm": "Delete {name} and all related history? This cannot be undone.",
+    "childDeleted": "Child and history deleted."
   },
   "Assessment": {
     "saved": "Assessment saved.",

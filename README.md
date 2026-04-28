@@ -1,28 +1,36 @@
 # KIDEX
 
-KIDEX is a conductor-facing survey and reporting app for recording data required during child examinations.
+KIDEX is a conductor-facing assessment and reporting app for recording child examination data and generating structured reports.
 
-The app supports:
+## Features
 
-- **Rapid KRAS** 12-factor assessments
-- **Full KIDEX** 50-factor assessments
-- **Bio-psycho-social** weighted scoring and SKI calculation
-- **Multilingual** support (Hungarian & English)
-- **Secure Evidence Storage** for examination photos/videos
+- Rapid KRAS and Full KIDEX assessment modes
+- Bio-psycho-social weighted scoring with SKI calculation
+- Centralized child profiles with longitudinal history
+- Child management actions (search, edit, delete with history cleanup)
+- Pre-filled new survey flow from child profile
+- Evidence image upload and camera capture support
+- Report view with print/PDF optimization
+- Dashboard analytics (users/records with chart views)
+- Localized legal pages (GTC and Privacy Policy)
+- Multilingual UI: Hungarian, English, Arabic (RTL)
+
+## Documentation
+
+- [API Reference](docs/api.md)
+- [Design System](docs/design-system.md)
+- [Deployment](docs/deployment.md)
+- [Definition of Done](docs/dod.md)
+- [Legal and Company Info](docs/legal.md)
+- [Product Roadmap](ROADMAP.md)
 
 ## Software Versions
 
-- **Next.js**: 15.1.4
-- **React**: 19.0.0
-- **TypeScript**: 5.7.3
-- **MongoDB**: 6.12.0
-- **Node.js**: >= 22
-
-For the future vision of the project, see the [Product Roadmap](ROADMAP.md).
-
-## UI & design system
-
-The app shell and dashboard use **Material UI** with a shared theme and layout components. See [docs/design-system.md](docs/design-system.md) for providers, primitives, and conventions (including MUI v9 `Stack` / `Typography` patterns).
+- Next.js: 15.1.4
+- React: 19.0.0
+- TypeScript: 5.7.3
+- MongoDB: 6.12.0
+- Node.js: >= 22
 
 ## Local Development
 
@@ -41,6 +49,8 @@ MONGODB_DB=kidex
 IMGBB_API_KEY=
 ```
 
-## Data Privacy
+## Data and privacy notes
 
-Assessments are stored securely. Images are handled through a dedicated image processing service, and only the secure URL metadata is stored on the assessment record.
+Assessment images are uploaded through a server-side endpoint (`/api/uploads/imgbb`) and only URL metadata is stored in assessment records.
+
+Role-based API enforcement can be enabled via `KIDEX_ENFORCE_AUTH`; when enabled, protected endpoints validate `x-kidex-role`.

@@ -17,4 +17,4 @@
 ## 4. UI & i18n
 - [ ] All user-facing strings must be in `/messages`.
 - [ ] No technical jargon in the UI.
-- [ ] UI must follow the design system in `globals.css`.
+- [ ] UI must follow the design system documented in `docs/design-system.md`.

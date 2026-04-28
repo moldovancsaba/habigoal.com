@@ -10,11 +10,12 @@ type SectionCardProps = {
   subheader?: string;
   action?: ReactNode;
   children: ReactNode;
+  className?: string;
 };
 
-export function SectionCard({ title, subheader, action, children }: SectionCardProps) {
+export function SectionCard({ title, subheader, action, children, className }: SectionCardProps) {
   return (
-    <Card sx={{ mb: 2 }}>
+    <Card className={className} sx={{ mb: 2 }}>
       {(title || action) && (
         <CardHeader title={title} subheader={subheader} action={action} sx={{ pb: 0 }} />
       )}
