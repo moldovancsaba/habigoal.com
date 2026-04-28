@@ -7,9 +7,11 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { useSyncExternalStore } from "react";
 
 const CONSENT_COOKIE_NAME = "kidex_cookie_consent";
 const THEME_COOKIE_NAME = "kidex_theme";
+const LEGACY_THEME_STORAGE_KEY = "theme";
 
 function hasConsentCookie() {
   if (typeof document === "undefined") return false;
@@ -18,18 +20,27 @@ function hasConsentCookie() {
 
 export function CookieConsentBanner() {
   const t = useTranslations("Common");
-  const [visible, setVisible] = useState(() => !hasConsentCookie());
+  const consentAccepted = useSyncExternalStore(
+    () => () => undefined,
+    () => hasConsentCookie(),
+    () => false
+  );
+  const [dismissed, setDismissed] = useState(false);
 
   function acceptCookies() {
     document.cookie = `${CONSENT_COOKIE_NAME}=accepted; path=/; max-age=31536000; samesite=lax`;
-    const themeValue = localStorage.getItem(THEME_COOKIE_NAME);
+    const themeValue =
+      localStorage.getItem(THEME_COOKIE_NAME) ??
+      localStorage.getItem(LEGACY_THEME_STORAGE_KEY) ??
+      document.documentElement.getAttribute("data-theme") ??
+      "light";
     if (themeValue === "light" || themeValue === "dark") {
       document.cookie = `${THEME_COOKIE_NAME}=${themeValue}; path=/; max-age=31536000; samesite=lax`;
     }
-    setVisible(false);
+    setDismissed(true);
   }
 
-  if (!visible) return null;
+  if (dismissed || consentAccepted) return null;
 
   return (
     <Paper

@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 type ThemeMode = "light" | "dark";
 const THEME_COOKIE_NAME = "kidex_theme";
+const LEGACY_THEME_STORAGE_KEY = "theme";
 const CONSENT_COOKIE_NAME = "kidex_cookie_consent";
 
 function hasCookieConsent() {
@@ -20,7 +21,7 @@ function writeThemeCookie(mode: ThemeMode) {
 function readInitialMode(initialMode?: ThemeMode): ThemeMode {
   if (initialMode) return initialMode;
   if (typeof window === "undefined") return "light";
-  const saved = localStorage.getItem(THEME_COOKIE_NAME);
+  const saved = localStorage.getItem(THEME_COOKIE_NAME) ?? localStorage.getItem(LEGACY_THEME_STORAGE_KEY);
   if (saved === "light" || saved === "dark") return saved;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -52,6 +53,7 @@ export function ThemeModeProvider({
   const setMode = useCallback((next: ThemeMode) => {
     setModeState(next);
     localStorage.setItem(THEME_COOKIE_NAME, next);
+    localStorage.setItem(LEGACY_THEME_STORAGE_KEY, next);
     writeThemeCookie(next);
   }, []);
 
