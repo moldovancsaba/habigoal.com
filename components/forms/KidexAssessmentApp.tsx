@@ -84,13 +84,11 @@ export function KidexAssessmentApp() {
       setAssessment({ ...cloneAssessment(emptyAssessment), ...JSON.parse(raw) });
     }
     
-    // Load settings and users
     void Promise.all([
       getSettings(),
       getConductors(),
       getObservers()
     ]).then(([settingsData, conductorUsers, observerUsers]) => {
-      // Merge settings with role-based users
       const allConductors = Array.from(new Set([...settingsData.conductors, ...conductorUsers.map(u => u.name)]));
       const allObservers = Array.from(new Set([...settingsData.observers, ...observerUsers.map(u => u.name)]));
       
@@ -114,7 +112,6 @@ export function KidexAssessmentApp() {
         }
       };
 
-      // Auto-calculate age group if birthDate changed
       if (group === "child" && key === "birthDate") {
         const ageGroup = calculateAgeGroup(value as string);
         if (ageGroup) {
@@ -162,7 +159,6 @@ export function KidexAssessmentApp() {
     setSaveState("saved");
     localStorage.removeItem("kidex-draft");
     
-    // Persist newly added locations to settings
     const settings = await getSettings();
     await saveSettings({ ...settings, locations });
 
@@ -220,8 +216,8 @@ export function KidexAssessmentApp() {
     .slice(0, 3);
 
   return (
-    <div className="assessment-container">
-      <header className="topbar">
+    <div className="assessment-page">
+      <header className="panelHeader">
         <div>
           <span className="eyebrow">Bio-psycho-social sport assessment</span>
           <h1>KIDEX conductor survey</h1>
@@ -243,7 +239,7 @@ export function KidexAssessmentApp() {
         <Metric label="SKI" value={fmt(computed.ski)} target={standard?.ski.target} />
       </section>
 
-      <section className="grid two" id="setup">
+      <section className="formGrid" id="setup">
         <Panel title={t("setupTitle")}>
           <div className="formGrid">
             <Field label={t("childName")} value={assessment.child.name} onChange={(value) => update("child", "name", value)} />
@@ -288,8 +284,8 @@ export function KidexAssessmentApp() {
 
         <Panel title={t("evidenceImages")}>
           <p className="muted">Images are uploaded securely. Upload is blocked until photo/video consent is checked.</p>
-          <label className={`upload ${assessment.session.consentPhoto ? "" : "disabled"}`}>
-            <input type="file" accept="image/*" onChange={uploadImage} disabled={!assessment.session.consentPhoto || uploading} />
+          <label className={`btn ghost ${assessment.session.consentPhoto ? "" : "disabled"}`}>
+            <input type="file" accept="image/*" onChange={uploadImage} disabled={!assessment.session.consentPhoto || uploading} style={{ display: 'none' }} />
             {uploading ? t("uploading") : t("uploadImage")}
           </label>
           <div className="attachments">
@@ -297,10 +293,10 @@ export function KidexAssessmentApp() {
             {assessment.attachments.map((attachment) => (
               <div className="attachment" key={attachment.id}>
                 <img src={attachment.thumbUrl || attachment.url} alt={attachment.name} />
-                <div>
-                  <a href={attachment.url} target="_blank" rel="noreferrer">{attachment.name || "Image"}</a>
-                  <button onClick={() => removeAttachment(attachment.id)}>{tc("remove")}</button>
+                <div className="attachment-info">
+                  <a href={attachment.url} target="_blank" rel="noreferrer" className="muted">{attachment.name || "Image"}</a>
                 </div>
+                <button className="btn ghost" onClick={() => removeAttachment(attachment.id)}>{tc("remove")}</button>
               </div>
             ))}
           </div>
@@ -326,16 +322,18 @@ export function KidexAssessmentApp() {
                     <textarea
                       value={entry?.note || ""}
                       onChange={(event) => updateScore(item.key, { note: event.target.value })}
-                      aria-label={`${ts(`${item.key}.title`)} ${t("observationNote")}`}
+                      placeholder={t("observationNote")}
                     />
                   </div>
-                  <select
-                    value={scoreValue(entry)}
-                    onChange={(event) => updateScore(item.key, { score: event.target.value ? Number(event.target.value) : "" })}
-                  >
-                    <option value="">-</option>
-                    {[1, 2, 3, 4, 5, 6].map((value) => <option value={value} key={value}>{value}</option>)}
-                  </select>
+                  <div className="scoreAction">
+                    <select
+                      value={scoreValue(entry)}
+                      onChange={(event) => updateScore(item.key, { score: event.target.value ? Number(event.target.value) : "" })}
+                    >
+                      <option value="">-</option>
+                      {[1, 2, 3, 4, 5, 6].map((value) => <option value={value} key={value}>{value}</option>)}
+                    </select>
+                  </div>
                 </div>
               );
             })}
@@ -343,7 +341,7 @@ export function KidexAssessmentApp() {
         </Panel>
       ))}
 
-      <section className="grid two" id="report">
+      <section className="formGrid" id="report">
         <Panel title={t("professionalNotes")}>
           <TextArea label={t("generalObservation")} value={assessment.notes.general} onChange={(value) => update("notes", "general", value)} />
           <TextArea label={t("adaptationNeeds")} value={assessment.notes.adaptations} onChange={(value) => update("notes", "adaptations", value)} />
@@ -352,21 +350,16 @@ export function KidexAssessmentApp() {
         <Panel title={t("reportPreview")}>
           <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} />
           <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} />
-          <p className="muted">{t("nextStep")}: {computed.ski === null ? t("completeAll") : computed.ski < 3.5 ? t("stabilizing") : t("sportOrientation")}</p>
+          <div className="ski-summary">
+            <p className="muted">{t("nextStep")}:</p>
+            <p className="ski-result">
+              {computed.ski === null ? t("completeAll") : computed.ski < 3.5 ? t("stabilizing") : t("sportOrientation")}
+            </p>
+          </div>
         </Panel>
       </section>
     </div>
   );
-}
-
-function labelFor(key: string) {
-  for (const mode of ["rapid", "full"] as const) {
-    for (const section of sectionsForMode(mode)) {
-      const item = section.items.find((candidate) => candidate.key === key);
-      if (item) return item.title;
-    }
-  }
-  return key;
 }
 
 function Metric({ label, value, target }: { label: string; value: string; target?: number }) {
@@ -412,9 +405,15 @@ function TextArea({ label, value, onChange }: { label: string; value: string; on
 
 function ReportList({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="reportBlock">
+    <div className="report-block">
       <strong>{title}</strong>
-      {items.length ? <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul> : <span className="empty">No data yet.</span>}
+      {items.length ? (
+        <ul>
+          {items.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+      ) : (
+        <span className="empty">No data yet.</span>
+      )}
     </div>
   );
 }

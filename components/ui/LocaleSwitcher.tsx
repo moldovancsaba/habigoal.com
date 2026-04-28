@@ -9,6 +9,8 @@ export function LocaleSwitcher() {
   const pathname = usePathname();
 
   function switchLocale(nextLocale: "en" | "hu") {
+    // next-intl's useRouter.replace with the locale option 
+    // expects a locale-free pathname.
     router.replace(pathname, { locale: nextLocale });
   }
 

@@ -11,16 +11,12 @@ export default function DashboardLayout({
   const t = useTranslations("Dashboard");
 
   return (
-    <div className="shell">
+    <div className="dashboard-container">
       <aside className="sidebar">
-        <div className="brand">
-          <div className="brandMark">K</div>
-          <div>
-            <strong>KIDEX</strong>
-            <span>Assessment OS</span>
-          </div>
+        <div className="sidebar-logo">
+          <img src="/logo.png" alt="KIDEX Logo" />
         </div>
-        <nav className="nav">
+        <nav>
           <Link href="/dashboard/assessment">{t("setup")}</Link>
           <Link href="/dashboard/assessment#scoring">{t("scoring")}</Link>
           <Link href="/dashboard/assessment#report">{t("report")}</Link>
@@ -30,7 +26,7 @@ export default function DashboardLayout({
         </nav>
         <LocaleSwitcher />
       </aside>
-      <main className="main">
+      <main className="main-content">
         {children}
       </main>
     </div>
