@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
@@ -18,11 +18,7 @@ function hasConsentCookie() {
 
 export function CookieConsentBanner() {
   const t = useTranslations("Common");
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    setVisible(!hasConsentCookie());
-  }, []);
+  const [visible, setVisible] = useState(() => !hasConsentCookie());
 
   function acceptCookies() {
     document.cookie = `${CONSENT_COOKIE_NAME}=accepted; path=/; max-age=31536000; samesite=lax`;

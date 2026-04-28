@@ -11,11 +11,13 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { alpha } from "@mui/material/styles";
 import Image from "next/image";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { PageContainer } from "@/components/ui/PageContainer";
+import { AppFooter } from "@/components/layout/AppFooter";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
@@ -35,7 +37,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   ];
 
   const drawer = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", bgcolor: "#1e293b", color: "common.white" }}>
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", bgcolor: "primary.dark", color: "common.white" }}>
       <Box sx={{ p: 2, display: "flex", justifyContent: "center", bgcolor: "common.white", borderRadius: 1, mx: 1.5, mt: 1.5 }}>
         <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
       </Box>
@@ -55,10 +57,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               sx={{
                 borderRadius: 1,
                 mb: 0.5,
-                color: "rgba(255,255,255,0.85)",
+                color: (theme) => alpha(theme.palette.common.white, 0.9),
                 "&.Mui-selected": { bgcolor: "secondary.main", color: "common.white" },
-                "&.Mui-selected:hover": { bgcolor: "#0f8f89" },
-                "&:hover": { bgcolor: "rgba(255,255,255,0.08)" }
+                "&.Mui-selected:hover": { bgcolor: "secondary.dark" },
+                "&:hover": { bgcolor: (theme) => alpha(theme.palette.common.white, 0.12) }
               }}
             >
               <ListItemText primary={item.label} slotProps={{ primary: { sx: { fontWeight: 500 } } }} />
@@ -66,7 +68,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           );
         })}
       </List>
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.12)" }} />
+      <Divider sx={{ borderColor: (theme) => alpha(theme.palette.common.white, 0.2) }} />
       <Box sx={{ p: 1.5, display: "flex", flexDirection: "column", gap: 1 }}>
         <LocaleSwitcher />
         <ThemeSwitcher />
@@ -126,6 +128,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         component="main"
         className="dashboard-main"
         sx={{
+          display: "flex",
+          flexDirection: "column",
           flexGrow: 1,
           width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
           minHeight: "100vh",
@@ -135,7 +139,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           pb: { xs: 2, md: 3 }
         }}
       >
-        <PageContainer>{children}</PageContainer>
+        <Box sx={{ flex: 1 }}>
+          <PageContainer>{children}</PageContainer>
+        </Box>
+        <AppFooter />
       </Box>
     </Box>
   );

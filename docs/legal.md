@@ -18,14 +18,12 @@ Supported locales currently include `hu`, `en`, and `ar`.
 - **VAT No.:** SK2122770606
 - **Website:** https://kidex.eu
 
-## App version display
+## App version and company profile source
 
-The app version and company profile are exposed in:
+The app version and company profile are managed from Dashboard Settings and persisted in global settings.
 
-- Dashboard overview legal block
+They are displayed in:
+
+- Dashboard footer
 - GTC page
 - Privacy Policy page
-
-Metadata source:
-
-- `lib/company.ts`

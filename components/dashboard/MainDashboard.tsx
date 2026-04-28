@@ -2,16 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { COMPANY_INFO } from "@/lib/company";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { User } from "@/services/user-service";
 
@@ -24,7 +21,7 @@ function monthLabel(date: Date) {
   return new Intl.DateTimeFormat(undefined, { month: "short" }).format(date);
 }
 
-export function MainDashboard({ appVersion }: { appVersion: string }) {
+export function MainDashboard() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const [data, setData] = useState<DashboardData | null>(null);
@@ -141,27 +138,6 @@ export function MainDashboard({ appVersion }: { appVersion: string }) {
         </Box>
       </Stack>
 
-      <SectionCard title={t("legalAndCompany")}>
-        <Stack spacing={1.5}>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.25}>
-            <Button component={Link} href="/dashboard/legal/gtc" variant="outlined">
-              {t("gtc")}
-            </Button>
-            <Button component={Link} href="/dashboard/legal/privacy" variant="outlined">
-              {t("privacyPolicy")}
-            </Button>
-          </Stack>
-          <Typography variant="body2">
-            <strong>{t("appVersion")}:</strong> {appVersion}
-          </Typography>
-          <Typography variant="body2">
-            <strong>{t("company")}:</strong> {COMPANY_INFO.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {COMPANY_INFO.address}
-          </Typography>
-        </Stack>
-      </SectionCard>
     </Stack>
   );
 }

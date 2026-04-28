@@ -31,6 +31,10 @@ export function SearchableSelect({ label, value, options, onChange, placeholder,
       freeSolo={Boolean(allowAdd)}
       options={options}
       value={resolvedValue}
+      inputValue={value}
+      onInputChange={(_, newInputValue) => {
+        onChange(newInputValue);
+      }}
       onChange={(_, newValue) => {
         if (newValue === null) {
           onChange("");

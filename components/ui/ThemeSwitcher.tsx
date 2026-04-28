@@ -4,6 +4,7 @@ import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { alpha } from "@mui/material/styles";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
 
 export function ThemeSwitcher() {
@@ -18,8 +19,8 @@ export function ThemeSwitcher() {
       fullWidth
       sx={{
         "& .MuiToggleButton-root": {
-          color: "rgba(255,255,255,0.75)",
-          borderColor: "rgba(255,255,255,0.25)",
+          color: (theme) => alpha(theme.palette.common.white, 0.8),
+          borderColor: (theme) => alpha(theme.palette.common.white, 0.35),
           py: 0.75
         },
         "& .MuiToggleButton-root.Mui-selected": {

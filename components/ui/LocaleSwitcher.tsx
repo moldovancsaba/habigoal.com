@@ -3,6 +3,7 @@
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
+import { alpha } from "@mui/material/styles";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 
@@ -25,8 +26,8 @@ export function LocaleSwitcher() {
       fullWidth
       sx={{
         "& .MuiToggleButton-root": {
-          color: "rgba(255,255,255,0.75)",
-          borderColor: "rgba(255,255,255,0.25)",
+          color: (theme) => alpha(theme.palette.common.white, 0.8),
+          borderColor: (theme) => alpha(theme.palette.common.white, 0.35),
           py: 0.6,
           minWidth: 0
         },

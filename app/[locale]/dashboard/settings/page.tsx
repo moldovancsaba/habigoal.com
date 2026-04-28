@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import CircularProgress from "@mui/material/CircularProgress";
-import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -21,7 +20,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import { useTranslations } from "next-intl";
-import { getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
+import { DEFAULT_KIDEX_SETTINGS, getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -30,12 +29,9 @@ import { SearchableSelect } from "@/components/ui/SearchableSelect";
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
+  const tl = useTranslations("Legal");
 
-  const [settings, setSettings] = useState<KidexSettings>({
-    conductors: [],
-    observers: [],
-    locations: []
-  });
+  const [settings, setSettings] = useState<KidexSettings>(DEFAULT_KIDEX_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -111,6 +107,16 @@ export default function SettingsPage() {
       locations: prev.locations.includes(loc) ? prev.locations : [...prev.locations, loc]
     }));
     setLocationDraft("");
+  }
+
+  function updateCompanyField(field: keyof KidexSettings["company"], value: string) {
+    setSettings((prev) => ({
+      ...prev,
+      company: {
+        ...prev.company,
+        [field]: value
+      }
+    }));
   }
 
   if (loading) {
@@ -194,8 +200,8 @@ export default function SettingsPage() {
       <SectionCard
         title={t("locations")}
         action={
-          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
-            <Box sx={{ minWidth: 260, flex: "1 1 320px" }}>
+          <Stack direction={{ xs: "column", md: "row" }} spacing={1} sx={{ width: { xs: "100%", md: "auto" }, alignItems: { md: "center" } }}>
+            <Box sx={{ minWidth: { md: 280 }, width: { xs: "100%", md: 360 } }}>
               <SearchableSelect
                 label={t("addLocation")}
                 value={locationDraft}
@@ -204,10 +210,10 @@ export default function SettingsPage() {
                 allowAdd
               />
             </Box>
-            <Button variant="outlined" size="small" onClick={addLocation}>
+            <Button variant="outlined" onClick={addLocation} disabled={!locationDraft.trim()} sx={{ minWidth: 120, minHeight: 40 }}>
               {t("addLocation")}
             </Button>
-            <Button variant="contained" size="small" onClick={() => void handleSaveSettings()} disabled={saving}>
+            <Button variant="contained" onClick={() => void handleSaveSettings()} disabled={saving} sx={{ minWidth: 96, minHeight: 40 }}>
               {saving ? tc("saving") : tc("save")}
             </Button>
           </Stack>
@@ -232,6 +238,56 @@ export default function SettingsPage() {
             ))}
           </List>
         )}
+      </SectionCard>
+
+      <SectionCard
+        title={t("legalAndCompany")}
+        action={
+          <Button variant="contained" size="small" onClick={() => void handleSaveSettings()} disabled={saving}>
+            {saving ? tc("saving") : tc("save")}
+          </Button>
+        }
+      >
+        <Stack spacing={2}>
+          <TextField
+            label={t("appVersion")}
+            value={settings.appVersion}
+            onChange={(event) =>
+              setSettings((prev) => ({
+                ...prev,
+                appVersion: event.target.value
+              }))
+            }
+            fullWidth
+            size="small"
+          />
+          <TextField label={t("company")} value={settings.company.name} onChange={(event) => updateCompanyField("name", event.target.value)} fullWidth size="small" />
+          <TextField label={tl("idNo")} value={settings.company.ico} onChange={(event) => updateCompanyField("ico", event.target.value)} fullWidth size="small" />
+          <TextField
+            label={tl("registered")}
+            value={settings.company.registered}
+            onChange={(event) => updateCompanyField("registered", event.target.value)}
+            fullWidth
+            size="small"
+          />
+          <TextField
+            label={tl("legalForm")}
+            value={settings.company.legalForm}
+            onChange={(event) => updateCompanyField("legalForm", event.target.value)}
+            fullWidth
+            size="small"
+          />
+          <TextField label={tl("address")} value={settings.company.address} onChange={(event) => updateCompanyField("address", event.target.value)} fullWidth size="small" />
+          <TextField
+            label={tl("shareCapital")}
+            value={settings.company.shareCapital}
+            onChange={(event) => updateCompanyField("shareCapital", event.target.value)}
+            fullWidth
+            size="small"
+          />
+          <TextField label={tl("vatNo")} value={settings.company.vatNo} onChange={(event) => updateCompanyField("vatNo", event.target.value)} fullWidth size="small" />
+          <TextField label={tl("website")} value={settings.company.website} onChange={(event) => updateCompanyField("website", event.target.value)} fullWidth size="small" />
+        </Stack>
       </SectionCard>
     </Stack>
   );

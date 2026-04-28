@@ -2,18 +2,22 @@ import { NextResponse } from "next/server";
 import { getGlobalSettings, updateGlobalSettings } from "@/repositories/settings.repository";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { parseSettingsPayload } from "@/lib/validations";
+import { DEFAULT_KIDEX_SETTINGS } from "@/services/settings-service";
 
 export async function GET() {
   try {
     const settings = await getGlobalSettings();
     if (!settings) {
-      return NextResponse.json({
-        conductors: [],
-        observers: [],
-        locations: []
-      });
+      return NextResponse.json(DEFAULT_KIDEX_SETTINGS);
     }
-    return NextResponse.json(settings);
+    return NextResponse.json({
+      ...DEFAULT_KIDEX_SETTINGS,
+      ...settings,
+      company: {
+        ...DEFAULT_KIDEX_SETTINGS.company,
+        ...(settings.company ?? {})
+      }
+    });
   } catch (error) {
     return jsonError((error as Error).message);
   }

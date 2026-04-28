@@ -1,6 +1,6 @@
 "use client";
 
-import Box from "@mui/material/Box";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -8,14 +8,19 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { APP_VERSION, COMPANY_INFO } from "@/lib/company";
+import { DEFAULT_KIDEX_SETTINGS, getSettings, type KidexSettings } from "@/services/settings-service";
 
 export default function PrivacyPolicyPage() {
   const t = useTranslations("Legal");
+  const [settings, setSettings] = useState<KidexSettings>(DEFAULT_KIDEX_SETTINGS);
+
+  useEffect(() => {
+    void getSettings().then(setSettings).catch(() => null);
+  }, []);
 
   return (
     <Stack spacing={2.5}>
-      <PageHeader title={t("privacyTitle")} subtitle={`${t("effectiveDate")}: ${COMPANY_INFO.registered}`} />
+      <PageHeader title={t("privacyTitle")} subtitle={`${t("effectiveDate")}: ${settings.company.registered}`} />
 
       <SectionCard title={t("privacyCollectionTitle")}>
         <Typography variant="body2">{t("privacyCollectionBody")}</Typography>
@@ -31,17 +36,17 @@ export default function PrivacyPolicyPage() {
 
       <SectionCard title={t("companyDataTitle")}>
         <Stack spacing={0.75}>
-          <Row label={t("companyDataTitle")} value={COMPANY_INFO.name} />
-          <Row label={t("idNo")} value={COMPANY_INFO.ico} />
-          <Row label={t("registered")} value={COMPANY_INFO.registered} />
-          <Row label={t("legalForm")} value={COMPANY_INFO.legalForm} />
-          <Row label={t("address")} value={COMPANY_INFO.address} />
-          <Row label={t("shareCapital")} value={COMPANY_INFO.shareCapital} />
-          <Row label={t("vatNo")} value={COMPANY_INFO.vatNo} />
-          <Row label={t("website")} value={COMPANY_INFO.website} />
+          <Row label={t("companyDataTitle")} value={settings.company.name} />
+          <Row label={t("idNo")} value={settings.company.ico} />
+          <Row label={t("registered")} value={settings.company.registered} />
+          <Row label={t("legalForm")} value={settings.company.legalForm} />
+          <Row label={t("address")} value={settings.company.address} />
+          <Row label={t("shareCapital")} value={settings.company.shareCapital} />
+          <Row label={t("vatNo")} value={settings.company.vatNo} />
+          <Row label={t("website")} value={settings.company.website} />
         </Stack>
         <Typography variant="body2" sx={{ mt: 1 }}>
-          <strong>App:</strong> KIDEX v{APP_VERSION}
+          <strong>App:</strong> KIDEX v{settings.appVersion}
         </Typography>
       </SectionCard>
 

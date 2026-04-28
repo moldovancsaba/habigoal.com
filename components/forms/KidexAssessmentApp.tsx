@@ -31,6 +31,7 @@ import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { formatScore } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { getSettings, saveSettings } from "@/services/settings-service";
@@ -182,7 +183,7 @@ export function KidexAssessmentApp() {
         dominantFoot?: string;
       };
 
-      setAssessment((current) => {
+      setAssessment(() => {
         const ageGroup = calculateAgeGroup(child.birthDate) || "";
         return {
           ...cloneAssessment(emptyAssessment),
@@ -410,28 +411,20 @@ export function KidexAssessmentApp() {
 
   return (
     <Stack spacing={3}>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={2}
-        sx={{ justifyContent: "space-between", alignItems: { xs: "stretch", sm: "flex-start" } }}
-      >
-        <Box>
-          <Typography variant="overline" color="text.secondary">
-            {t("appSubtitle")}
-          </Typography>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-            {t("appTitle")}
-          </Typography>
-        </Box>
-        <Stack direction="row" spacing={1} sx={{ justifyContent: "flex-end" }}>
-          <Button variant="outlined" onClick={newAssessment}>
-            {tc("new")}
-          </Button>
-          <Button variant="contained" onClick={() => void saveAssessment()} disabled={saveState === "saving"}>
-            {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
-          </Button>
-        </Stack>
-      </Stack>
+      <PageHeader
+        title={t("appTitle")}
+        subtitle={t("appSubtitle")}
+        actions={
+          <>
+            <Button variant="outlined" onClick={newAssessment} sx={{ minWidth: 96 }}>
+              {tc("new")}
+            </Button>
+            <Button variant="contained" onClick={() => void saveAssessment()} disabled={saveState === "saving"} sx={{ minWidth: 96 }}>
+              {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
+            </Button>
+          </>
+        }
+      />
 
       {message ? (
         <Alert
@@ -624,7 +617,7 @@ export function KidexAssessmentApp() {
               autoPlay
               playsInline
               muted
-              sx={{ width: "100%", borderRadius: 1, border: 1, borderColor: "divider", bgcolor: "black" }}
+              sx={{ width: "100%", borderRadius: 1, border: 1, borderColor: "divider", bgcolor: "common.black" }}
             />
           )}
         </DialogContent>

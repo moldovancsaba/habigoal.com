@@ -122,7 +122,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       </SectionCard>
 
       <Box className="only-print print-report-header">
-        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: "center", justifyContent: "space-between" }}>
           <Image src="/logo.jpeg" alt="KIDEX" width={72} height={72} className="report-logo" />
           <Box>
             <Typography variant="h4" component="h1" gutterBottom>
@@ -132,10 +132,16 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               {record.child.name}
             </Typography>
           </Box>
+          <Box className="report-meta-grid">
+            <MetaRow label={tc("date")} value={reportDate} />
+            <MetaRow label={t("tableTime")} value={reportTime} />
+            <MetaRow label={t("conductor")} value={record.session.conductor || "—"} />
+            <MetaRow label={t("observers")} value={record.session.observers || "—"} />
+          </Box>
         </Stack>
       </Box>
 
-      <Stack direction="row" spacing={2} useFlexGap sx={{ mb: 3, flexWrap: "wrap" }}>
+      <Stack direction="row" spacing={2} useFlexGap sx={{ mb: 3, flexWrap: "wrap" }} className="print-metrics-grid">
         <Metric label={ts("movement")} value={formatScore(record.computed.movementAverage)} />
         <Metric label={ts("social")} value={formatScore(record.computed.socialAverage)} />
         <Metric label={ts("mental")} value={formatScore(record.computed.mentalAverage)} />
@@ -143,41 +149,41 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       </Stack>
 
       <SectionCard title={t("setupTitle")}>
-        <Stack spacing={1}>
-          <Typography variant="body2">
+        <Stack spacing={1} className="print-setup-grid">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("childName")}:</strong> {record.child.name}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("birthDate")}:</strong> {record.child.birthDate}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("ageGroup")}:</strong> {record.child.ageGroup}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("mode")}:</strong> {record.mode}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{tc("date")}:</strong> {reportDate}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("tableTime")}:</strong> {reportTime}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("location")}:</strong> {record.session.location}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("conductor")}:</strong> {record.session.conductor}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("observers")}:</strong> {record.session.observers || "—"}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("context")}:</strong> {contextLabelMap[record.session.context]}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("groupSize")}:</strong> {record.session.groupSize || "—"}
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body2" className="print-meta-row">
             <strong>{t("lastUpdated")}:</strong> {updatedTime}
           </Typography>
         </Stack>
