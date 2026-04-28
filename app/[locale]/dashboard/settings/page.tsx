@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
+
+const centerAlignStyle: CSSProperties = { textAlign: "center" };
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -17,18 +19,24 @@ export default function SettingsPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    void Promise.all([getSettings(), getUsers()]).then(([sData, uData]) => {
-      setSettings(sData);
-      setUsers(uData);
-      setLoading(false);
-    });
+    void (async () => {
+      try {
+        const [sData, uData] = await Promise.all([getSettings(), getUsers()]);
+        setSettings(sData);
+        setUsers(uData);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   async function handleSaveSettings() {
     setSaving(true);
-    await saveSettings(settings);
+    const ok = await saveSettings(settings);
+    setMessage(ok ? tc("success") : tc("error"));
     setSaving(false);
   }
 
@@ -39,18 +47,31 @@ export default function SettingsPage() {
     
     const updatedUser = { ...user, roles: nextRoles };
     
-    // Optimistic update
+    const previousUsers = users;
     setUsers(prev => prev.map(u => u.name === user.name ? updatedUser : u));
     
-    await saveUser(updatedUser);
+    const ok = await saveUser(updatedUser);
+    if (!ok) {
+      setUsers(previousUsers);
+      setMessage(tc("error"));
+      return;
+    }
+    setMessage(tc("success"));
   }
 
   function addNewUser() {
-    const name = window.prompt(t("userName"));
+    const name = window.prompt(t("userName"))?.trim();
     if (name) {
       const newUser: User = { name, roles: [] };
       setUsers(prev => [...prev, newUser]);
-      saveUser(newUser);
+      void saveUser(newUser).then((ok) => {
+        if (!ok) {
+          setUsers((prev) => prev.filter((u) => u.name !== name));
+          setMessage(tc("error"));
+        } else {
+          setMessage(tc("success"));
+        }
+      });
     }
   }
 
@@ -62,7 +83,7 @@ export default function SettingsPage() {
   }
 
   function addLocation() {
-    const loc = window.prompt(t("addLocation"));
+    const loc = window.prompt(t("addLocation"))?.trim();
     if (loc) {
       setSettings(prev => ({
         ...prev,
@@ -78,6 +99,7 @@ export default function SettingsPage() {
       <header className="panelHeader">
         <h1>{t("settings")}</h1>
       </header>
+      {message && <div className="notice">{message}</div>}
 
       <section className="panel">
         <div className="panelHeader">
@@ -89,22 +111,22 @@ export default function SettingsPage() {
             <thead>
               <tr>
                 <th>{t("userName")}</th>
-                <th style={{ textAlign: 'center' }}>{t("canConduct")}</th>
-                <th style={{ textAlign: 'center' }}>{t("canObserve")}</th>
+                <th style={centerAlignStyle}>{t("canConduct")}</th>
+                <th style={centerAlignStyle}>{t("canObserve")}</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr key={user.name}>
                   <td><strong>{user.name}</strong></td>
-                  <td style={{ textAlign: 'center' }}>
+                  <td style={centerAlignStyle}>
                     <input 
                       type="checkbox" 
                       checked={user.roles.includes("conductor")} 
                       onChange={() => toggleRole(user, "conductor")}
                     />
                   </td>
-                  <td style={{ textAlign: 'center' }}>
+                  <td style={centerAlignStyle}>
                     <input 
                       type="checkbox" 
                       checked={user.roles.includes("observer")} 

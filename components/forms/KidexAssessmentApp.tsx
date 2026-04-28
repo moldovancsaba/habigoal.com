@@ -2,6 +2,7 @@
 
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
@@ -11,6 +12,8 @@ import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { getSettings, saveSettings } from "@/services/settings-service";
 import { getConductors, getObservers } from "@/services/user-service";
 import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
+
+const DRAFT_STORAGE_KEY = "kidex-draft";
 
 const emptyAssessment: AssessmentPayload = {
   mode: "rapid",
@@ -61,7 +64,7 @@ function loadDraftAssessment(): AssessmentPayload {
     return cloneAssessment(emptyAssessment);
   }
 
-  const raw = localStorage.getItem("kidex-draft");
+  const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
   if (!raw) {
     return cloneAssessment(emptyAssessment);
   }
@@ -71,6 +74,11 @@ function loadDraftAssessment(): AssessmentPayload {
   } catch {
     return cloneAssessment(emptyAssessment);
   }
+}
+
+async function parseApiError(response: Response): Promise<string | null> {
+  const body = await response.json().catch(() => null) as { error?: string } | null;
+  return body?.error || null;
 }
 
 export function KidexAssessmentApp() {
@@ -91,6 +99,18 @@ export function KidexAssessmentApp() {
   const sections = sectionsForMode(assessment.mode);
   const computed = useMemo(() => computeAssessment(assessment), [assessment]);
   const standard = getStandardForAgeGroup(assessment.child.ageGroup);
+  const conductorOptions = useMemo(
+    () => conductors.map((name) => ({ id: name, name })),
+    [conductors]
+  );
+  const observerOptions = useMemo(
+    () => observers.map((name) => ({ id: name, name })),
+    [observers]
+  );
+  const locationOptions = useMemo(
+    () => locations.map((name) => ({ id: name, name })),
+    [locations]
+  );
 
   useEffect(() => {
     void Promise.all([
@@ -108,7 +128,7 @@ export function KidexAssessmentApp() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("kidex-draft", JSON.stringify(assessment));
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(assessment));
   }, [assessment]);
 
   function update<T extends keyof AssessmentPayload>(group: T, key: keyof AssessmentPayload[T], value: unknown) {
@@ -159,14 +179,14 @@ export function KidexAssessmentApp() {
 
     if (!response?.ok) {
       setSaveState("error");
-      setMessage(t("saveError"));
+      setMessage((response && await parseApiError(response)) || t("saveError"));
       return;
     }
 
     const data = await response.json() as { assessment: AssessmentRecord };
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
-    localStorage.removeItem("kidex-draft");
+    localStorage.removeItem(DRAFT_STORAGE_KEY);
     
     const settings = await getSettings();
     await saveSettings({ ...settings, locations });
@@ -179,6 +199,10 @@ export function KidexAssessmentApp() {
     setAssessment(cloneAssessment(emptyAssessment));
     setSaveState("idle");
     setMessage("");
+  }
+
+  function appendLocationIfMissing(value: string) {
+    setLocations((current) => (value && !current.includes(value) ? [...current, value] : current));
   }
 
   async function uploadImage(event: ChangeEvent<HTMLInputElement>) {
@@ -199,7 +223,7 @@ export function KidexAssessmentApp() {
     });
     setUploading(false);
     if (!response?.ok) {
-      setMessage(t("uploadFailed"));
+      setMessage((response && await parseApiError(response)) || t("uploadFailed"));
       return;
     }
     const data = await response.json() as { attachment: EvidenceAttachment };
@@ -267,18 +291,16 @@ export function KidexAssessmentApp() {
             <SearchableSelect 
               label={t("conductor")} 
               value={assessment.session.conductor} 
-              options={conductors.map(c => ({ id: c, name: c }))} 
+              options={conductorOptions}
               onChange={(value) => update("session", "conductor", value)} 
             />
             
             <SearchableSelect 
               label={t("location")} 
               value={assessment.session.location} 
-              options={locations.map(l => ({ id: l, name: l }))} 
+              options={locationOptions}
               onChange={(value) => {
-                if (value && !locations.includes(value)) {
-                  setLocations(prev => [...prev, value]);
-                }
+                appendLocationIfMissing(value);
                 update("session", "location", value);
               }}
               allowAdd
@@ -287,7 +309,7 @@ export function KidexAssessmentApp() {
             <SearchableSelect 
               label={t("observers")} 
               value={assessment.session.observers} 
-              options={observers.map(o => ({ id: o, name: o }))} 
+              options={observerOptions}
               onChange={(value) => update("session", "observers", value)} 
             />
             
@@ -319,7 +341,13 @@ export function KidexAssessmentApp() {
             {assessment.attachments.length === 0 && <span className="empty">{t("noImages")}</span>}
             {assessment.attachments.map((attachment) => (
               <div className="attachment" key={attachment.id}>
-                <img src={attachment.thumbUrl || attachment.url} alt={attachment.name} />
+                <Image
+                  src={attachment.thumbUrl || attachment.url}
+                  alt={attachment.name || "Image"}
+                  width={160}
+                  height={120}
+                  unoptimized
+                />
                 <div className="attachment-info">
                   <a href={attachment.url} target="_blank" rel="noreferrer" className="muted">{attachment.name || "Image"}</a>
                 </div>

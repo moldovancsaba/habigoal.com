@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
@@ -15,7 +16,7 @@ export default function DashboardLayout({
     <div className="dashboard-container">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <img src="/logo.png" alt="KIDEX Logo" />
+          <Image src="/logo.png" alt="KIDEX Logo" width={180} height={56} priority />
         </div>
         <nav>
           <Link href="/dashboard/assessment">{t("survey")}</Link>

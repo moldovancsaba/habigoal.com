@@ -1,5 +1,3 @@
-import { AssessmentDomain } from "@/types/assessment";
-
 export interface DomainStandard {
   target: number;
   min: number;

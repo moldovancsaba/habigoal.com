@@ -56,10 +56,28 @@ export async function deleteAssessmentById(id: ObjectId) {
 
 export async function listAssessmentsByChildId(childId: string) {
   const db = await getDatabase();
-  const assessments = await db
+  const objectId = ObjectId.isValid(childId) ? new ObjectId(childId) : null;
+  let assessments = await db
     .collection(collectionName)
-    .find({ childId })
+    .find(objectId ? { childId: { $in: [childId, objectId] } } : { childId })
     .sort({ createdAt: 1 })
     .toArray();
+
+  // Backward compatibility: older records may not have childId set,
+  // but they can still be linked by immutable identity fields.
+  if (assessments.length === 0 && objectId) {
+    const child = await db.collection("children").findOne({ _id: objectId });
+    if (child?.name && child?.birthDate) {
+      assessments = await db
+        .collection(collectionName)
+        .find({
+          "child.name": child.name,
+          "child.birthDate": child.birthDate
+        })
+        .sort({ createdAt: 1 })
+        .toArray();
+    }
+  }
+
   return assessments.map(toJsonId);
 }
