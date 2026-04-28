@@ -120,23 +120,20 @@ export default function SettingsPage() {
         </Alert>
       ) : null}
 
-      <SectionCard
-        title={t("userRights")}
-        action={
-          <Group gap="xs" wrap="wrap">
+      <SectionCard title={t("userRights")}>
+        <Stack gap="md">
+          <Group gap="xs" align="end" wrap="wrap">
             <TextInput
               label={t("userName")}
               value={userDraft}
               onChange={(event) => setUserDraft(event.target.value)}
-              style={{ minWidth: 220 }}
+              style={{ minWidth: 280 }}
             />
             <Button variant="light" color="kidex" onClick={addNewUser} disabled={!userDraft.trim()}>
               {t("addUser")}
             </Button>
           </Group>
-        }
-      >
-        <Paper withBorder p={0}>
+          <Paper withBorder p={0}>
           <Table striped highlightOnHover>
             <Table.Thead>
               <Table.Tr>
@@ -176,14 +173,14 @@ export default function SettingsPage() {
               ) : null}
             </Table.Tbody>
           </Table>
-        </Paper>
+          </Paper>
+        </Stack>
       </SectionCard>
 
-      <SectionCard
-        title={t("locations")}
-        action={
-          <Group gap="xs" style={{ width: "100%" }}>
-            <Box style={{ minWidth: 280, width: 360, maxWidth: "100%" }}>
+      <SectionCard title={t("locations")}>
+        <Stack gap="md">
+          <Group gap="xs" align="end" wrap="wrap">
+            <Box style={{ minWidth: 280, width: 420, maxWidth: "100%" }}>
               <SearchableSelect
                 label={t("addLocation")}
                 value={locationDraft}
@@ -199,27 +196,26 @@ export default function SettingsPage() {
               {saving ? tc("saving") : tc("save")}
             </Button>
           </Group>
-        }
-      >
-        {settings.locations.length === 0 ? (
-          <Text c="dimmed">{t("noLocations")}</Text>
-        ) : (
-          <Stack gap="xs">
-            {settings.locations.map((loc, i) => (
-              <Paper
-                key={`${loc}-${i}`}
-                withBorder
-                p="sm"
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}
-              >
-                <Text>{loc}</Text>
-                <Button color="red" variant="light" size="xs" onClick={() => removeLocation(i)}>
-                  {tc("remove")}
-                </Button>
-              </Paper>
-            ))}
-          </Stack>
-        )}
+          {settings.locations.length === 0 ? (
+            <Text c="dimmed">{t("noLocations")}</Text>
+          ) : (
+            <Stack gap="xs">
+              {settings.locations.map((loc, i) => (
+                <Paper
+                  key={`${loc}-${i}`}
+                  withBorder
+                  p="sm"
+                  style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}
+                >
+                  <Text>{loc}</Text>
+                  <Button color="red" variant="light" size="xs" onClick={() => removeLocation(i)}>
+                    {tc("remove")}
+                  </Button>
+                </Paper>
+              ))}
+            </Stack>
+          )}
+        </Stack>
       </SectionCard>
 
       <SectionCard

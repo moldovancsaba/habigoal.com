@@ -24,9 +24,9 @@ export function LocaleSwitcher() {
       size="sm"
       color="kidex"
       data={[
-        { value: "ar", label: "🇸🇦" },
-        { value: "hu", label: "🇭🇺" },
-        { value: "en", label: "🇬🇧" }
+        { value: "ar", label: "AR" },
+        { value: "hu", label: "HU" },
+        { value: "en", label: "EN" }
       ]}
       styles={{
         root: {
@@ -39,9 +39,10 @@ export function LocaleSwitcher() {
         },
         label: {
           color: KIDEX_COLORS.navTextMuted,
-          fontSize: 18,
-          lineHeight: "20px",
-          paddingInline: 8
+          fontSize: 12,
+          fontWeight: 700,
+          lineHeight: "16px",
+          paddingInline: 10
         },
         indicator: {
           backgroundColor: KIDEX_COLORS.brandTeal,

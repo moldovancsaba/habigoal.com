@@ -2,7 +2,8 @@
 
 import type { ReactNode } from "react";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Box, Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, FormControlLabel, InputLabel, Link, MenuItem, MuiSelect, Paper, Stack, TextField, ToggleButton, Typography } from "@/components/ui/legacy-form-primitives";
+import { Select } from "@mantine/core";
+import { Alert, Box, Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, Link, Paper, Stack, TextField, ToggleButton, Typography } from "@/components/ui/legacy-form-primitives";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -434,36 +435,31 @@ export function KidexAssessmentApp() {
               />
             </FieldWrap>
             <FieldWrap>
-              <FormControl fullWidth disabled={!assessment.child.birthDate}>
-                <InputLabel id="age-group-label">{t("ageGroup")}</InputLabel>
-                <MuiSelect
-                  labelId="age-group-label"
-                  label={t("ageGroup")}
-                  value={assessment.child.ageGroup}
-                  onChange={(e: { target: { value: string } }) => update("child", "ageGroup", e.target.value)}
-                >
-                  <MenuItem value="">{t("ageGroupPending")}</MenuItem>
-                  <MenuItem value="4-6">4-6</MenuItem>
-                  <MenuItem value="7-9">7-9</MenuItem>
-                  <MenuItem value="10-12">10-12</MenuItem>
-                </MuiSelect>
-              </FormControl>
+              <Select
+                label={t("ageGroup")}
+                value={assessment.child.ageGroup || ""}
+                disabled={!assessment.child.birthDate}
+                data={[
+                  { value: "", label: t("ageGroupPending") },
+                  { value: "4-6", label: "4-6" },
+                  { value: "7-9", label: "7-9" },
+                  { value: "10-12", label: "10-12" }
+                ]}
+                onChange={(value) => update("child", "ageGroup", value ?? "")}
+              />
             </FieldWrap>
             <FieldWrap>
-              <FormControl fullWidth>
-                <InputLabel id="mode-label">{t("mode")}</InputLabel>
-                <MuiSelect
-                  labelId="mode-label"
-                  label={t("mode")}
-                  value={assessment.mode}
-                  onChange={(e: { target: { value: string } }) =>
-                    setAssessment((current) => ({ ...current, mode: e.target.value as AssessmentPayload["mode"] }))
-                  }
-                >
-                  <MenuItem value="rapid">{t("modeRapid")}</MenuItem>
-                  <MenuItem value="full">{t("modeFull")}</MenuItem>
-                </MuiSelect>
-              </FormControl>
+              <Select
+                label={t("mode")}
+                value={assessment.mode}
+                data={[
+                  { value: "rapid", label: t("modeRapid") },
+                  { value: "full", label: t("modeFull") }
+                ]}
+                onChange={(value) =>
+                  setAssessment((current) => ({ ...current, mode: (value as AssessmentPayload["mode"]) ?? "rapid" }))
+                }
+              />
             </FieldWrap>
             <FieldWrap>
               <SearchableSelect label={t("conductor")} value={assessment.session.conductor} options={conductorOptions} onChange={(value) => update("session", "conductor", value)} />
@@ -484,20 +480,17 @@ export function KidexAssessmentApp() {
               <SearchableSelect label={t("observers")} value={assessment.session.observers} options={observerOptions} onChange={(value) => update("session", "observers", value)} />
             </FieldWrap>
             <FieldWrap>
-              <FormControl fullWidth>
-                <InputLabel id="context-label">{t("context")}</InputLabel>
-                <MuiSelect
-                  labelId="context-label"
-                  label={t("context")}
-                  value={assessment.session.context}
-                  onChange={(e: { target: { value: string } }) => update("session", "context", e.target.value)}
-                >
-                  <MenuItem value="event">{t("contextEvent")}</MenuItem>
-                  <MenuItem value="structured">{t("contextStructured")}</MenuItem>
-                  <MenuItem value="spontaneous">{t("contextSpontaneous")}</MenuItem>
-                  <MenuItem value="mixed">{t("contextMixed")}</MenuItem>
-                </MuiSelect>
-              </FormControl>
+              <Select
+                label={t("context")}
+                value={assessment.session.context}
+                data={[
+                  { value: "event", label: t("contextEvent") },
+                  { value: "structured", label: t("contextStructured") },
+                  { value: "spontaneous", label: t("contextSpontaneous") },
+                  { value: "mixed", label: t("contextMixed") }
+                ]}
+                onChange={(value) => update("session", "context", value ?? "event")}
+              />
             </FieldWrap>
             <FieldWide>
               <TextField

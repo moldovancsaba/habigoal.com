@@ -16,6 +16,11 @@
 html,
 body {
   margin: 0;
+  font-family: var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-noto-sans-arabic), "Noto Sans Arabic", var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
 }
 
 /* Record detail + print */

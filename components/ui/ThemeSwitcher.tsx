@@ -16,8 +16,8 @@ export function ThemeSwitcher() {
       size="sm"
       color="kidex"
       data={[
-        { value: "light", label: "☀️" },
-        { value: "dark", label: "🌙" }
+        { value: "light", label: "Light" },
+        { value: "dark", label: "Dark" }
       ]}
       styles={{
         root: {
@@ -30,9 +30,10 @@ export function ThemeSwitcher() {
         },
         label: {
           color: KIDEX_COLORS.navTextMuted,
-          fontSize: 18,
-          lineHeight: "20px",
-          paddingInline: 8
+          fontSize: 12,
+          fontWeight: 700,
+          lineHeight: "16px",
+          paddingInline: 10
         },
         indicator: {
           backgroundColor: KIDEX_COLORS.brandTeal,
