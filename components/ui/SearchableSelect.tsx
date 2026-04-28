@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, KeyboardEvent } from "react";
 
 interface Option {
   id: string;
@@ -13,9 +13,10 @@ interface SearchableSelectProps {
   options: Option[];
   onChange: (value: string) => void;
   placeholder?: string;
+  allowAdd?: boolean;
 }
 
-export function SearchableSelect({ label, value, options, onChange, placeholder }: SearchableSelectProps) {
+export function SearchableSelect({ label, value, options, onChange, placeholder, allowAdd }: SearchableSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -34,6 +35,15 @@ export function SearchableSelect({ label, value, options, onChange, placeholder 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" && allowAdd && search) {
+      onChange(search);
+      setIsOpen(false);
+      setSearch("");
+      e.preventDefault();
+    }
+  }
+
   return (
     <div className="field" ref={containerRef}>
       <span>{label}</span>
@@ -42,6 +52,7 @@ export function SearchableSelect({ label, value, options, onChange, placeholder 
           type="text"
           value={isOpen ? search : value}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleKeyDown}
           onFocus={() => {
             setIsOpen(true);
             setSearch("");
@@ -65,7 +76,17 @@ export function SearchableSelect({ label, value, options, onChange, placeholder 
                 </div>
               ))
             ) : (
-              <div className="dropdown-item muted">No results</div>
+              allowAdd && search ? (
+                <div className="dropdown-item active" onClick={() => {
+                  onChange(search);
+                  setIsOpen(false);
+                  setSearch("");
+                }}>
+                  Add "{search}" (Press Enter)
+                </div>
+              ) : (
+                <div className="dropdown-item muted">No results</div>
+              )
             )}
           </div>
         )}

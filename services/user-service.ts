@@ -4,16 +4,19 @@ export interface User {
   roles: ("conductor" | "observer")[];
 }
 
-// Mock data for initial development
-const mockUsers: User[] = [
-  { id: "1", name: "Kovács János", roles: ["conductor"] },
-  { id: "2", name: "Nagy Anna", roles: ["conductor", "observer"] },
-  { id: "3", name: "Szabó Péter", roles: ["observer"] },
-];
-
 export async function getUsers(): Promise<User[]> {
-  // In a real app, this would fetch from MongoDB
-  return mockUsers;
+  const response = await fetch("/api/users").catch(() => null);
+  if (response?.ok) {
+    const data = await response.json();
+    return data.users;
+  }
+  
+  // Fallback
+  return [
+    { id: "1", name: "Kovács János", roles: ["conductor"] },
+    { id: "2", name: "Nagy Anna", roles: ["conductor", "observer"] },
+    { id: "3", name: "Szabó Péter", roles: ["observer"] },
+  ];
 }
 
 export async function getConductors(): Promise<User[]> {

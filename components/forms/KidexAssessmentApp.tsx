@@ -7,7 +7,8 @@ import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
-import { getSettings } from "@/services/settings-service";
+import { getSettings, saveSettings } from "@/services/settings-service";
+import { getConductors, getObservers } from "@/services/user-service";
 import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
 
 const emptyAssessment: AssessmentPayload = {
@@ -83,11 +84,19 @@ export function KidexAssessmentApp() {
       setAssessment({ ...cloneAssessment(emptyAssessment), ...JSON.parse(raw) });
     }
     
-    // Load settings
-    void getSettings().then((data) => {
-      setConductors(data.conductors);
-      setObservers(data.observers);
-      setLocations(data.locations);
+    // Load settings and users
+    void Promise.all([
+      getSettings(),
+      getConductors(),
+      getObservers()
+    ]).then(([settingsData, conductorUsers, observerUsers]) => {
+      // Merge settings with role-based users
+      const allConductors = Array.from(new Set([...settingsData.conductors, ...conductorUsers.map(u => u.name)]));
+      const allObservers = Array.from(new Set([...settingsData.observers, ...observerUsers.map(u => u.name)]));
+      
+      setConductors(allConductors);
+      setObservers(allObservers);
+      setLocations(settingsData.locations);
     });
   }, []);
 
@@ -151,6 +160,12 @@ export function KidexAssessmentApp() {
     const data = await response.json() as { assessment: AssessmentRecord };
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
+    localStorage.removeItem("kidex-draft");
+    
+    // Persist newly added locations to settings
+    const settings = await getSettings();
+    await saveSettings({ ...settings, locations });
+
     setMessage(t("saved"));
   }
 
@@ -243,11 +258,17 @@ export function KidexAssessmentApp() {
               onChange={(value) => update("session", "conductor", value)} 
             />
             
-            <Select 
+            <SearchableSelect 
               label={t("location")} 
               value={assessment.session.location} 
-              onChange={(value) => update("session", "location", value)} 
-              options={locations} 
+              options={locations.map(l => ({ id: l, name: l }))} 
+              onChange={(value) => {
+                if (value && !locations.includes(value)) {
+                  setLocations(prev => [...prev, value]);
+                }
+                update("session", "location", value);
+              }}
+              allowAdd
             />
             
             <SearchableSelect 
