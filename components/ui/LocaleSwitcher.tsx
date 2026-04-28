@@ -9,9 +9,11 @@ export function LocaleSwitcher() {
   const pathname = usePathname();
 
   function switchLocale(nextLocale: "en" | "hu") {
-    // next-intl's useRouter.replace with the locale option 
-    // expects a locale-free pathname.
-    router.replace(pathname, { locale: nextLocale });
+    // We ensure the pathname is clean. 
+    // createNavigation's usePathname should already be locale-free,
+    // but we add this defensive check to prevent duplication.
+    const cleanPath = pathname.replace(/^\/(en|hu)(\/|$)/, "/");
+    router.replace(cleanPath, { locale: nextLocale });
   }
 
   return (

@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 
 export default function DashboardLayout({ 
   children 
@@ -23,6 +24,7 @@ export default function DashboardLayout({
           <Link href="/dashboard/settings">{t("settings")}</Link>
         </nav>
         <LocaleSwitcher />
+        <ThemeSwitcher />
       </aside>
       <main className="main-content">
         {children}
