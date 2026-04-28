@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
+import { getStandardForAgeGroup } from "@/lib/standards";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { getSettings } from "@/services/settings-service";
 import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
@@ -74,6 +75,7 @@ export function KidexAssessmentApp() {
 
   const sections = sectionsForMode(assessment.mode);
   const computed = useMemo(() => computeAssessment(assessment), [assessment]);
+  const standard = getStandardForAgeGroup(assessment.child.ageGroup);
 
   useEffect(() => {
     const raw = localStorage.getItem("kidex-draft");
@@ -220,10 +222,10 @@ export function KidexAssessmentApp() {
       {message && <div className={`notice ${saveState === "error" ? "error" : ""}`}>{message}</div>}
 
       <section className="metrics">
-        <Metric label={ts("movement")} value={fmt(computed.movementAverage)} />
-        <Metric label={ts("social")} value={fmt(computed.socialAverage)} />
-        <Metric label={ts("mental")} value={fmt(computed.mentalAverage)} />
-        <Metric label="SKI" value={fmt(computed.ski)} />
+        <Metric label={ts("movement")} value={fmt(computed.movementAverage)} target={standard?.movement.target} />
+        <Metric label={ts("social")} value={fmt(computed.socialAverage)} target={standard?.social.target} />
+        <Metric label={ts("mental")} value={fmt(computed.mentalAverage)} target={standard?.mental.target} />
+        <Metric label="SKI" value={fmt(computed.ski)} target={standard?.ski.target} />
       </section>
 
       <section className="grid two" id="setup">
@@ -346,8 +348,14 @@ function labelFor(key: string) {
   return key;
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
-  return <div className="metric"><span>{label}</span><strong>{value}</strong><small>/ 6</small></div>;
+function Metric({ label, value, target }: { label: string; value: string; target?: number }) {
+  return (
+    <div className="metric">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      {target && <small>target: {target.toFixed(1)}</small>}
+    </div>
+  );
 }
 
 function Panel({ title, children, right, id }: { title: string; children: React.ReactNode; right?: React.ReactNode; id?: string }) {

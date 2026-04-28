@@ -615,3 +615,19 @@ textarea {
   color: var(--foreground-muted);
   white-space: nowrap;
 }
+
+/* Target Marker Styles */
+.bar {
+  position: relative;
+}
+
+.target-marker {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: white;
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  z-index: 2;
+  pointer-events: none;
+}

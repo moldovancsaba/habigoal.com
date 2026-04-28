@@ -16,7 +16,9 @@
     "scoring": "Scoring",
     "report": "Report",
     "records": "Records",
-    "settings": "Settings"
+    "settings": "Settings",
+    "children": "Children",
+    "viewHistory": "History"
   },
   "Assessment": {
     "saved": "Assessment saved.",

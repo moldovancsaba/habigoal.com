@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
 import { calculateTrend, TrendPoint } from "@/lib/utils/trends";
+import { getStandardForAgeGroup } from "@/lib/standards";
+import { calculateAgeGroup } from "@/lib/utils/age";
 
 function fmt(value: number | null | undefined) {
   return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
@@ -30,6 +32,8 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   if (!data) return <div className="error">{tc("error")}</div>;
 
   const trend = calculateTrend(data.assessments);
+  const currentAgeGroup = calculateAgeGroup(data.child.birthDate);
+  const standard = getStandardForAgeGroup(currentAgeGroup || "");
 
   return (
     <div className="child-history">
@@ -46,9 +50,15 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           {trend.map((point, i) => (
             <div key={i} className="trend-point">
               <div className="trend-bars">
-                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`Movement: ${fmt(point.movement)}`} />
-                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`Social: ${fmt(point.social)}`} />
-                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`Mental: ${fmt(point.mental)}`} />
+                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`Movement: ${fmt(point.movement)}`}>
+                  {standard && <div className="target-marker" style={{ bottom: `${(standard.movement.target / 6) * 100}%` }} />}
+                </div>
+                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`Social: ${fmt(point.social)}`}>
+                  {standard && <div className="target-marker" style={{ bottom: `${(standard.social.target / 6) * 100}%` }} />}
+                </div>
+                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`Mental: ${fmt(point.mental)}`}>
+                  {standard && <div className="target-marker" style={{ bottom: `${(standard.mental.target / 6) * 100}%` }} />}
+                </div>
               </div>
               <span className="trend-date">{point.date}</span>
             </div>

@@ -25,6 +25,7 @@ export default function DashboardLayout({
           <Link href="/dashboard/assessment#scoring">{t("scoring")}</Link>
           <Link href="/dashboard/assessment#report">{t("report")}</Link>
           <Link href="/dashboard/records">{t("records")}</Link>
+          <Link href="/dashboard/children">{t("children")}</Link>
           <Link href="/dashboard/settings">{t("settings")}</Link>
         </nav>
         <LocaleSwitcher />

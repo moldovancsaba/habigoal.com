@@ -16,7 +16,9 @@
     "scoring": "Pontozás",
     "report": "Riport",
     "records": "Rekordok",
-    "settings": "Beállítások"
+    "settings": "Beállítások",
+    "children": "Gyermekek",
+    "viewHistory": "Történet"
   },
   "Assessment": {
     "saved": "Felmérés elmentve.",
