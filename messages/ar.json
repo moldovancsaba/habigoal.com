@@ -45,6 +45,7 @@
     "avgRecordsPerChild": "متوسط السجلات لكل طفل",
     "recordsChartTitle": "السجلات حسب الشهر",
     "recordsChartSubtitle": "آخر 6 أشهر",
+    "recordsChartYRange": "النطاق النسبي للمحور Y: {min} - {max}",
     "usersChartTitle": "توزيع أدوار المستخدمين",
     "usersChartSubtitle": "تغطية المشرفين والملاحظين",
     "conductors": "المشرفون",

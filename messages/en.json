@@ -45,6 +45,7 @@
     "avgRecordsPerChild": "Average records per child",
     "recordsChartTitle": "Records by month",
     "recordsChartSubtitle": "Last 6 months",
+    "recordsChartYRange": "Relative Y range: {min} - {max}",
     "usersChartTitle": "User role distribution",
     "usersChartSubtitle": "Conductor and observer coverage",
     "conductors": "Conductors",

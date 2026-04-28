@@ -45,6 +45,7 @@
     "avgRecordsPerChild": "Átlagos rekord/gyermek",
     "recordsChartTitle": "Rekordok havi bontásban",
     "recordsChartSubtitle": "Elmúlt 6 hónap",
+    "recordsChartYRange": "Relatív Y tartomány: {min} - {max}",
     "usersChartTitle": "Felhasználói szerepkör megoszlás",
     "usersChartSubtitle": "Konduktor és megfigyelő lefedettség",
     "conductors": "Konduktorok",
