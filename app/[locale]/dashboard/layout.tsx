@@ -1,7 +1,12 @@
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({ 
+  children 
+}: { 
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
   const t = useTranslations("Dashboard");
 
   return (
