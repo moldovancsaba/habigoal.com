@@ -826,6 +826,7 @@ export function KidexAssessmentApp() {
                     minRows={2}
                     variant="outlined"
                     size="small"
+                    style={{ marginTop: 2 }}
                   />
                 </Paper>
               );

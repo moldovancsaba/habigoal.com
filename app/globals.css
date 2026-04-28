@@ -23,6 +23,20 @@ html[dir="rtl"] body {
   font-family: var(--font-noto-sans-arabic), "Noto Sans Arabic", var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
 }
 
+.recharts-text,
+.recharts-legend-item-text,
+.recharts-default-tooltip,
+.recharts-tooltip-wrapper {
+  font-family: var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif !important;
+}
+
+html[dir="rtl"] .recharts-text,
+html[dir="rtl"] .recharts-legend-item-text,
+html[dir="rtl"] .recharts-default-tooltip,
+html[dir="rtl"] .recharts-tooltip-wrapper {
+  font-family: var(--font-noto-sans-arabic), "Noto Sans Arabic", var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif !important;
+}
+
 /* Record detail + print */
 .only-print {
   display: none;
