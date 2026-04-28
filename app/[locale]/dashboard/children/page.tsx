@@ -27,7 +27,7 @@ export default function ChildrenListPage() {
         <h2>{t("children")}</h2>
       </div>
       <div className="records">
-        {children.length === 0 && <span className="empty">No children registered yet.</span>}
+        {children.length === 0 && <span className="empty">{tc("noChildren")}</span>}
         {children.map((child) => (
           <div key={child._id} className="record-item">
             <div className="record-info">

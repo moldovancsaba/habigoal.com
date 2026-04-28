@@ -7,6 +7,7 @@
     "delete": "Törlés",
     "remove": "Eltávolítás",
     "loading": "Betöltés...",
+    "noChildren": "Még nincsenek felmérésből származó gyermek profilok.",
     "error": "Hiba",
     "success": "Sikeres"
   },

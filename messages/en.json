@@ -7,6 +7,7 @@
     "delete": "Delete",
     "remove": "Remove",
     "loading": "Loading...",
+    "noChildren": "No children profiles found from assessments yet.",
     "error": "Error",
     "success": "Success"
   },

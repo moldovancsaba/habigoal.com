@@ -33,9 +33,11 @@ export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt
   const db = await getDatabase();
   const now = new Date().toISOString();
   
+  const name = profile.name.trim();
+  
   // Try to find existing child by name and birthDate to avoid duplicates
   const existing = await db.collection(collectionName).findOne({ 
-    name: profile.name, 
+    name: name, 
     birthDate: profile.birthDate 
   });
 
@@ -47,7 +49,7 @@ export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt
     return toJsonId({ ...existing, ...profile, updatedAt: now });
   }
 
-  const newChild = { ...profile, createdAt: now, updatedAt: now };
+  const newChild = { ...profile, name, createdAt: now, updatedAt: now };
   const result = await db.collection(collectionName).insertOne(newChild);
   return { ...newChild, _id: result.insertedId.toString() };
 }
