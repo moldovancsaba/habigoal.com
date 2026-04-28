@@ -22,7 +22,16 @@
     "records": "Records",
     "settings": "Settings",
     "children": "Children",
-    "viewHistory": "History"
+    "viewHistory": "History",
+    "userRights": "User Rights Management",
+    "addUser": "Add User",
+    "userName": "User Name (Teacher / Coach / Observer)",
+    "canConduct": "Conduct Survey",
+    "canObserve": "Observe / Assist",
+    "noUsers": "No users defined yet.",
+    "locations": "Locations",
+    "addLocation": "Add Location",
+    "noLocations": "No locations added."
   },
   "Assessment": {
     "saved": "Assessment saved.",

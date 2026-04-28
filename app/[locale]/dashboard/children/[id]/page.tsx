@@ -7,10 +7,7 @@ import type { ChildProfile } from "@/repositories/child.repository";
 import { calculateTrend } from "@/lib/utils/trends";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { calculateAgeGroup } from "@/lib/utils/age";
-
-function fmt(value: number | null | undefined) {
-  return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
-}
+import { formatScore } from "@/lib/utils";
 
 export default function ChildHistoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -50,13 +47,13 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           {trend.map((point, i) => (
             <div key={i} className="trend-point">
               <div className="trend-bars">
-                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`${ts("movement")}: ${fmt(point.movement)}`}>
+                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`${ts("movement")}: ${formatScore(point.movement)}`}>
                   {standard && <div className="target-marker" style={{ bottom: `${(standard.movement.target / 6) * 100}%` }} />}
                 </div>
-                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`${ts("social")}: ${fmt(point.social)}`}>
+                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`${ts("social")}: ${formatScore(point.social)}`}>
                   {standard && <div className="target-marker" style={{ bottom: `${(standard.social.target / 6) * 100}%` }} />}
                 </div>
-                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`${ts("mental")}: ${fmt(point.mental)}`}>
+                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`${ts("mental")}: ${formatScore(point.mental)}`}>
                   {standard && <div className="target-marker" style={{ bottom: `${(standard.mental.target / 6) * 100}%` }} />}
                 </div>
               </div>
@@ -86,10 +83,10 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                 <tr key={a._id}>
                   <td>{a.session.date}</td>
                   <td>{a.mode}</td>
-                  <td>{fmt(a.computed.movementAverage)}</td>
-                  <td>{fmt(a.computed.socialAverage)}</td>
-                  <td>{fmt(a.computed.mentalAverage)}</td>
-                  <td><strong>{fmt(a.computed.ski)}</strong></td>
+                  <td>{formatScore(a.computed.movementAverage)}</td>
+                  <td>{formatScore(a.computed.socialAverage)}</td>
+                  <td>{formatScore(a.computed.mentalAverage)}</td>
+                  <td><strong>{formatScore(a.computed.ski)}</strong></td>
                 </tr>
               ))}
             </tbody>

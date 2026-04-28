@@ -5,6 +5,7 @@ import {
   removeAssessment,
   updateAssessmentFromPayload
 } from "@/services/assessment.service";
+import { jsonError, readJson, requireRole } from "@/lib/api";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -16,51 +17,60 @@ async function objectIdFromContext(context: RouteContext) {
 }
 
 export async function GET(_request: Request, context: RouteContext) {
+  const authError = requireRole(_request, ["admin", "conductor", "observer"]);
+  if (authError) return authError;
+
   const _id = await objectIdFromContext(context);
   if (!_id) {
-    return NextResponse.json({ error: "Invalid assessment id" }, { status: 400 });
+    return jsonError("Invalid assessment id", 400, "VALIDATION_ERROR");
   }
 
   try {
     const assessment = await getAssessment(_id);
     if (!assessment) {
-      return NextResponse.json({ error: "Assessment not found" }, { status: 404 });
+      return jsonError("Assessment not found", 404, "NOT_FOUND");
     }
 
     return NextResponse.json({ assessment });
   } catch (error) {
-    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+    return jsonError((error as Error).message);
   }
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const authError = requireRole(request, ["admin", "conductor"]);
+  if (authError) return authError;
+
   const _id = await objectIdFromContext(context);
   if (!_id) {
-    return NextResponse.json({ error: "Invalid assessment id" }, { status: 400 });
+    return jsonError("Invalid assessment id", 400, "VALIDATION_ERROR");
   }
 
   try {
-    const assessment = await updateAssessmentFromPayload(_id, await request.json().catch(() => null));
+    const assessment = await updateAssessmentFromPayload(_id, await readJson(request));
     if (!assessment) {
-      return NextResponse.json({ error: "Assessment not found" }, { status: 404 });
+      return jsonError("Assessment not found", 404, "NOT_FOUND");
     }
 
     return NextResponse.json({ assessment });
   } catch (error) {
-    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+    return jsonError((error as Error).message);
   }
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
+  const authError = requireRole(_request, ["admin"]);
+  if (authError) return authError;
+
   const _id = await objectIdFromContext(context);
   if (!_id) {
-    return NextResponse.json({ error: "Invalid assessment id" }, { status: 400 });
+    return jsonError("Invalid assessment id", 400, "VALIDATION_ERROR");
   }
 
   try {
     await removeAssessment(_id);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+    return jsonError((error as Error).message);
   }
 }

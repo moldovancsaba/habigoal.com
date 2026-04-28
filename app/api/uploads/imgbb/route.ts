@@ -1,26 +1,30 @@
 import { NextResponse } from "next/server";
 import { env } from "@/config/env";
+import { jsonError, requireRole } from "@/lib/api";
 
 const maxSize = 32 * 1024 * 1024;
 
 export async function POST(request: Request) {
+  const authError = requireRole(request, ["admin", "conductor"]);
+  if (authError) return authError;
+
   const apiKey = env.imgbbApiKey;
   if (!apiKey) {
-    return NextResponse.json({ error: "IMGBB_API_KEY is not configured" }, { status: 500 });
+    return jsonError("IMGBB_API_KEY is not configured");
   }
 
   const incoming = await request.formData().catch(() => null);
   const file = incoming?.get("image");
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "Upload requires an image file field named image" }, { status: 400 });
+    return jsonError("Upload requires an image file field named image", 400, "VALIDATION_ERROR");
   }
 
   if (!file.type.startsWith("image/")) {
-    return NextResponse.json({ error: "Only image uploads are allowed" }, { status: 400 });
+    return jsonError("Only image uploads are allowed", 400, "VALIDATION_ERROR");
   }
 
   if (file.size > maxSize) {
-    return NextResponse.json({ error: "Image exceeds ImgBB 32 MB limit" }, { status: 400 });
+    return jsonError("Image exceeds ImgBB 32 MB limit", 400, "VALIDATION_ERROR");
   }
 
   const upload = new FormData();
@@ -46,9 +50,7 @@ export async function POST(request: Request) {
   } | null;
 
   if (!response.ok || !body?.success || !body.data?.url) {
-    return NextResponse.json({
-      error: body?.error?.message || "ImgBB upload failed"
-    }, { status: response.ok ? 502 : response.status });
+    return jsonError(body?.error?.message || "ImgBB upload failed", response.ok ? 502 : response.status, "UPLOAD_FAILED");
   }
 
   return NextResponse.json({

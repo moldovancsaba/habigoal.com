@@ -82,7 +82,7 @@ export function SearchableSelect({ label, value, options, onChange, placeholder,
                   setIsOpen(false);
                   setSearch("");
                 }}>
-                  Add "{search}" (Press Enter)
+                  Add &quot;{search}&quot; (Press Enter)
                 </div>
               ) : (
                 <div className="dropdown-item muted">No results</div>

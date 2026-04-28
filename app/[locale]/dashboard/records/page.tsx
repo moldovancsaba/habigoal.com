@@ -3,11 +3,8 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { formatScore } from "@/lib/utils";
 import type { AssessmentRecord } from "@/types/assessment";
-
-function fmt(value: number | null | undefined) {
-  return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
-}
 
 export default function RecordsPage() {
   const t = useTranslations("Dashboard");
@@ -15,15 +12,13 @@ export default function RecordsPage() {
   const [savedRecords, setSavedRecords] = useState<AssessmentRecord[]>([]);
 
   useEffect(() => {
-    void refreshRecords();
+    void (async () => {
+      const response = await fetch("/api/assessments").catch(() => null);
+      if (!response?.ok) return;
+      const data = await response.json() as { assessments?: AssessmentRecord[] };
+      setSavedRecords(data.assessments || []);
+    })();
   }, []);
-
-  async function refreshRecords() {
-    const response = await fetch("/api/assessments").catch(() => null);
-    if (!response?.ok) return;
-    const data = await response.json() as { assessments?: AssessmentRecord[] };
-    setSavedRecords(data.assessments || []);
-  }
 
   return (
     <section className="panel">
@@ -43,7 +38,7 @@ export default function RecordsPage() {
                 <strong style={{ fontSize: '1.125rem' }}>{record.child.name || "---"}</strong>
               )}
               <div className="muted" style={{ marginTop: '0.25rem' }}>
-                {record.mode} · SKI {fmt(record.computed.ski)} · {record.session.date}
+                {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
               </div>
             </div>
             <Link href={`/dashboard/records/${record._id}`} className="btn ghost">View</Link>

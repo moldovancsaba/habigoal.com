@@ -1,0 +1,48 @@
+import { describe, expect, it } from "vitest";
+import { parseChildPayload, parseSettingsPayload, parseUserPayload } from "./validations";
+
+describe("parseUserPayload", () => {
+  it("keeps valid roles and normalizes values", () => {
+    const parsed = parseUserPayload({
+      name: "  Alex  ",
+      roles: ["CONDUCTOR", "observer", "invalid"]
+    });
+
+    expect(parsed).toEqual({
+      name: "Alex",
+      roles: ["conductor", "observer"]
+    });
+  });
+});
+
+describe("parseSettingsPayload", () => {
+  it("returns trimmed lists and removes blanks", () => {
+    const parsed = parseSettingsPayload({
+      conductors: [" Anna ", "", "Bela"],
+      observers: ["  "],
+      locations: [" Budapest ", "Debrecen"]
+    });
+
+    expect(parsed).toEqual({
+      conductors: ["Anna", "Bela"],
+      observers: [],
+      locations: ["Budapest", "Debrecen"]
+    });
+  });
+});
+
+describe("parseChildPayload", () => {
+  it("extracts known fields only", () => {
+    const parsed = parseChildPayload({
+      name: "  Test Kid ",
+      birthDate: "2020-01-01",
+      dominantHand: "right",
+      extra: "ignored"
+    });
+
+    expect(parsed.name).toBe("Test Kid");
+    expect(parsed.birthDate).toBe("2020-01-01");
+    expect(parsed.dominantHand).toBe("right");
+    expect(parsed.knownTraits).toBe("");
+  });
+});

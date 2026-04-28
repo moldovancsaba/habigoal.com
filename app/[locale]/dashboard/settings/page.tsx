@@ -46,7 +46,7 @@ export default function SettingsPage() {
   }
 
   function addNewUser() {
-    const name = window.prompt("Enter name for new user (Teacher/Coach/Observer):");
+    const name = window.prompt(t("userName"));
     if (name) {
       const newUser: User = { name, roles: [] };
       setUsers(prev => [...prev, newUser]);
@@ -62,7 +62,7 @@ export default function SettingsPage() {
   }
 
   function addLocation() {
-    const loc = window.prompt("Add new location:");
+    const loc = window.prompt(t("addLocation"));
     if (loc) {
       setSettings(prev => ({
         ...prev,
@@ -81,16 +81,16 @@ export default function SettingsPage() {
 
       <section className="panel">
         <div className="panelHeader">
-          <h2>User Rights Management</h2>
-          <button className="btn ghost" onClick={addNewUser}>+ Add User</button>
+          <h2>{t("userRights")}</h2>
+          <button className="btn ghost" onClick={addNewUser}>+ {t("addUser")}</button>
         </div>
         <div className="table-wrapper">
           <table className="table">
             <thead>
               <tr>
-                <th>User Name (Teacher / Coach / Observer)</th>
-                <th style={{ textAlign: 'center' }}>Conduct Survey</th>
-                <th style={{ textAlign: 'center' }}>Observe / Assist</th>
+                <th>{t("userName")}</th>
+                <th style={{ textAlign: 'center' }}>{t("canConduct")}</th>
+                <th style={{ textAlign: 'center' }}>{t("canObserve")}</th>
               </tr>
             </thead>
             <tbody>
@@ -115,7 +115,7 @@ export default function SettingsPage() {
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={3} className="empty">No users defined yet.</td>
+                  <td colSpan={3} className="empty">{t("noUsers")}</td>
                 </tr>
               )}
             </tbody>
@@ -125,9 +125,9 @@ export default function SettingsPage() {
 
       <section className="panel">
         <div className="panelHeader">
-          <h2>Locations</h2>
+          <h2>{t("locations")}</h2>
           <div className="topActions">
-            <button className="btn ghost" onClick={addLocation}>+ Add Location</button>
+            <button className="btn ghost" onClick={addLocation}>+ {t("addLocation")}</button>
             <button className="btn primary" onClick={handleSaveSettings} disabled={saving}>
               {saving ? tc("saving") : tc("save")}
             </button>
@@ -140,7 +140,7 @@ export default function SettingsPage() {
               <button className="btn ghost" onClick={() => removeLocation(i)}>×</button>
             </div>
           ))}
-          {settings.locations.length === 0 && <div className="empty">No locations added.</div>}
+          {settings.locations.length === 0 && <div className="empty">{t("noLocations")}</div>}
         </div>
       </section>
     </div>

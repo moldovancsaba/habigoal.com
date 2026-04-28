@@ -4,10 +4,7 @@ import { useEffect, useState, use } from "react";
 import { useTranslations } from "next-intl";
 import type { AssessmentRecord } from "@/types/assessment";
 import { sectionsForMode } from "@/lib/kidex-schema";
-
-function fmt(value: number | null | undefined) {
-  return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
-}
+import { formatScore } from "@/lib/utils";
 
 export default function RecordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -50,19 +47,19 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       <section className="metrics">
         <div className="metric">
           <span>{ts("movement")}</span>
-          <strong>{fmt(record.computed.movementAverage)}</strong>
+          <strong>{formatScore(record.computed.movementAverage)}</strong>
         </div>
         <div className="metric">
           <span>{ts("social")}</span>
-          <strong>{fmt(record.computed.socialAverage)}</strong>
+          <strong>{formatScore(record.computed.socialAverage)}</strong>
         </div>
         <div className="metric">
           <span>{ts("mental")}</span>
-          <strong>{fmt(record.computed.mentalAverage)}</strong>
+          <strong>{formatScore(record.computed.mentalAverage)}</strong>
         </div>
         <div className="metric">
           <span>SKI</span>
-          <strong>{fmt(record.computed.ski)}</strong>
+          <strong>{formatScore(record.computed.ski)}</strong>
         </div>
       </section>
 

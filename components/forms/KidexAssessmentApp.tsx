@@ -6,6 +6,7 @@ import { sectionsForMode } from "@/lib/kidex-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { getStandardForAgeGroup } from "@/lib/standards";
+import { formatScore } from "@/lib/utils";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { getSettings, saveSettings } from "@/services/settings-service";
 import { getConductors, getObservers } from "@/services/user-service";
@@ -55,8 +56,21 @@ function scoreValue(entry?: ScoreEntry) {
   return typeof entry?.score === "number" ? entry.score : "";
 }
 
-function fmt(value: number | null | undefined) {
-  return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
+function loadDraftAssessment(): AssessmentPayload {
+  if (typeof window === "undefined") {
+    return cloneAssessment(emptyAssessment);
+  }
+
+  const raw = localStorage.getItem("kidex-draft");
+  if (!raw) {
+    return cloneAssessment(emptyAssessment);
+  }
+
+  try {
+    return { ...cloneAssessment(emptyAssessment), ...JSON.parse(raw) };
+  } catch {
+    return cloneAssessment(emptyAssessment);
+  }
 }
 
 export function KidexAssessmentApp() {
@@ -64,7 +78,7 @@ export function KidexAssessmentApp() {
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
   
-  const [assessment, setAssessment] = useState<AssessmentPayload>(() => cloneAssessment(emptyAssessment));
+  const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
   const [recordId, setRecordId] = useState<string>("");
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
@@ -79,11 +93,6 @@ export function KidexAssessmentApp() {
   const standard = getStandardForAgeGroup(assessment.child.ageGroup);
 
   useEffect(() => {
-    const raw = localStorage.getItem("kidex-draft");
-    if (raw) {
-      setAssessment({ ...cloneAssessment(emptyAssessment), ...JSON.parse(raw) });
-    }
-    
     void Promise.all([
       getSettings(),
       getConductors(),
@@ -233,10 +242,10 @@ export function KidexAssessmentApp() {
       {message && <div className={`notice ${saveState === "error" ? "error" : ""}`}>{message}</div>}
 
       <section className="metrics">
-        <Metric label={ts("movement")} value={fmt(computed.movementAverage)} target={standard?.movement.target} />
-        <Metric label={ts("social")} value={fmt(computed.socialAverage)} target={standard?.social.target} />
-        <Metric label={ts("mental")} value={fmt(computed.mentalAverage)} target={standard?.mental.target} />
-        <Metric label="SKI" value={fmt(computed.ski)} target={standard?.ski.target} />
+        <Metric label={ts("movement")} value={formatScore(computed.movementAverage)} target={standard?.movement.target} />
+        <Metric label={ts("social")} value={formatScore(computed.socialAverage)} target={standard?.social.target} />
+        <Metric label={ts("mental")} value={formatScore(computed.mentalAverage)} target={standard?.mental.target} />
+        <Metric label="SKI" value={formatScore(computed.ski)} target={standard?.ski.target} />
       </section>
 
       <section className="formGrid" id="setup">

@@ -44,6 +44,14 @@ function attachment(value: unknown): EvidenceAttachment | null {
   };
 }
 
+function stringArray(value: unknown, maxItems = 100, maxLength = 240): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => stringValue(item, maxLength).trim())
+    .filter(Boolean)
+    .slice(0, maxItems);
+}
+
 export function parseAssessmentPayload(input: unknown): AssessmentPayload {
   const data = input && typeof input === "object" ? input as Record<string, unknown> : {};
   const child = data.child && typeof data.child === "object" ? data.child as Record<string, unknown> : {};
@@ -87,5 +95,63 @@ export function parseAssessmentPayload(input: unknown): AssessmentPayload {
       referral: stringValue(notes.referral)
     },
     attachments: rawAttachments.map(attachment).filter((item): item is EvidenceAttachment => Boolean(item)).slice(0, 20)
+  };
+}
+
+export interface SettingsPayload {
+  conductors: string[];
+  observers: string[];
+  locations: string[];
+}
+
+export function parseSettingsPayload(input: unknown): SettingsPayload {
+  const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
+  return {
+    conductors: stringArray(data.conductors, 100, 240),
+    observers: stringArray(data.observers, 100, 240),
+    locations: stringArray(data.locations, 100, 240)
+  };
+}
+
+export interface UserPayload {
+  name: string;
+  roles: ("conductor" | "observer")[];
+}
+
+export function parseUserPayload(input: unknown): UserPayload {
+  const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
+  const roleValues = Array.isArray(data.roles) ? data.roles : [];
+  const allowedRoleSet = new Set(["conductor", "observer"]);
+  const roles = roleValues
+    .map((role) => String(role).toLowerCase())
+    .filter((role): role is "conductor" | "observer" => allowedRoleSet.has(role))
+    .slice(0, 2);
+
+  return {
+    name: stringValue(data.name, 240).trim(),
+    roles: Array.from(new Set(roles))
+  };
+}
+
+export interface ChildPayload {
+  name: string;
+  birthDate: string;
+  dominantHand: string;
+  dominantEye: string;
+  dominantFoot: string;
+  knownTraits: string;
+  parentSignals: string;
+}
+
+export function parseChildPayload(input: unknown): ChildPayload {
+  const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
+  return {
+    name: stringValue(data.name, 240).trim(),
+    birthDate: stringValue(data.birthDate, 80).trim(),
+    dominantHand: stringValue(data.dominantHand, 80),
+    dominantEye: stringValue(data.dominantEye, 80),
+    dominantFoot: stringValue(data.dominantFoot, 80),
+    knownTraits: stringValue(data.knownTraits),
+    parentSignals: stringValue(data.parentSignals)
   };
 }

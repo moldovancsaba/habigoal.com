@@ -2,19 +2,25 @@
 
 import { useEffect, useState } from "react";
 
+function getInitialTheme(): "light" | "dark" {
+  if (typeof window === "undefined") {
+    return "light";
+  }
+
+  const saved = localStorage.getItem("theme");
+  if (saved === "light" || saved === "dark") {
+    return saved;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as "light" | "dark";
-    if (saved) {
-      setTheme(saved);
-      document.documentElement.setAttribute("data-theme", saved);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-      document.documentElement.setAttribute("data-theme", "dark");
-    }
-  }, []);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   const toggle = (next: "light" | "dark") => {
     setTheme(next);

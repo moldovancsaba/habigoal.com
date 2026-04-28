@@ -22,7 +22,16 @@
     "records": "Rekordok",
     "settings": "Beállítások",
     "children": "Gyermekek",
-    "viewHistory": "Történet"
+    "viewHistory": "Történet",
+    "userRights": "Jogosultságkezelés",
+    "addUser": "Felhasználó hozzáadása",
+    "userName": "Név (Tanár / Edző / Megfigyelő)",
+    "canConduct": "Felmérés végzése",
+    "canObserve": "Megfigyelés / Asszisztálás",
+    "noUsers": "Még nincsenek felhasználók.",
+    "locations": "Helyszínek",
+    "addLocation": "Helyszín hozzáadása",
+    "noLocations": "Még nincsenek helyszínek."
   },
   "Assessment": {
     "saved": "Felmérés elmentve.",
