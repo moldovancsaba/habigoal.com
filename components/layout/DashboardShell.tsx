@@ -36,7 +36,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const drawer = (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column", bgcolor: "#1e293b", color: "common.white" }}>
       <Box sx={{ p: 2, display: "flex", justifyContent: "center", bgcolor: "common.white", borderRadius: 1, mx: 1.5, mt: 1.5 }}>
-        <Image src="/logo.png" alt="KIDEX" width={160} height={50} priority />
+        <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
       </Box>
       <List sx={{ px: 1, py: 2, flex: 1 }}>
         {nav.map((item) => {
