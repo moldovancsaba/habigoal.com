@@ -1,17 +1,6 @@
 "use client";
 
-import MenuIcon from "@mui/icons-material/Menu";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import { alpha } from "@mui/material/styles";
+import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack, Text } from "@mantine/core";
 import Image from "next/image";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -20,8 +9,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { AppFooter } from "@/components/layout/AppFooter";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
-
-const DRAWER_WIDTH = 260;
+import { KIDEX_COLORS, KIDEX_LAYOUT } from "@/theme/tokens";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
@@ -36,114 +24,113 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     { href: "/dashboard/settings", label: t("settings") }
   ];
 
-  const drawer = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", bgcolor: "primary.dark", color: "common.white" }}>
-      <Box sx={{ p: 2, display: "flex", justifyContent: "center", bgcolor: "common.white", borderRadius: 1, mx: 1.5, mt: 1.5 }}>
-        <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
+  const navContent = (
+    <Stack h="100%" gap={0} bg={KIDEX_COLORS.brandNavy}>
+      <Box p="md" style={{ display: "flex", justifyContent: "center" }}>
+        <Box style={{ backgroundColor: KIDEX_COLORS.white, borderRadius: 8, padding: 12 }}>
+          <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
+        </Box>
       </Box>
-      <List sx={{ px: 1, py: 2, flex: 1 }}>
+      <Stack gap={6} px="sm" pb="md" style={{ flex: 1 }}>
         {nav.map((item) => {
           const active =
             item.href === "/dashboard"
               ? pathname === "/dashboard"
               : pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
-            <ListItemButton
+            <NavLink
               key={item.href}
               component={Link}
               href={item.href}
-              selected={active}
+              label={item.label}
+              active={active}
               onClick={() => setMobileOpen(false)}
-              sx={{
-                borderRadius: 1,
-                mb: 0.5,
-                color: (theme) => alpha(theme.palette.common.white, 0.9),
-                "&.Mui-selected": { bgcolor: "secondary.main", color: "common.white" },
-                "&.Mui-selected:hover": { bgcolor: "secondary.dark" },
-                "&:hover": { bgcolor: (theme) => alpha(theme.palette.common.white, 0.12) }
+              styles={{
+                root: {
+                  borderRadius: 8
+                },
+                label: {
+                  color: KIDEX_COLORS.navTextMuted,
+                  fontWeight: 500
+                },
+                section: {
+                  color: KIDEX_COLORS.navTextMuted
+                }
               }}
-            >
-              <ListItemText primary={item.label} slotProps={{ primary: { sx: { fontWeight: 500 } } }} />
-            </ListItemButton>
+              c={KIDEX_COLORS.navTextMuted}
+              bg={active ? KIDEX_COLORS.brandTeal : "transparent"}
+            />
           );
         })}
-      </List>
-      <Divider sx={{ borderColor: (theme) => alpha(theme.palette.common.white, 0.2) }} />
-      <Box sx={{ p: 1.5, display: "flex", flexDirection: "column", gap: 1 }}>
+      </Stack>
+      <Divider color={KIDEX_COLORS.navBorderMuted} />
+      <Stack p="md" gap="xs">
         <LocaleSwitcher />
         <ThemeSwitcher />
-      </Box>
-    </Box>
+      </Stack>
+    </Stack>
   );
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      <AppBar
-        position="fixed"
-        elevation={0}
-        sx={{
-          display: { xs: "block", md: "none" },
-          bgcolor: "background.paper",
-          color: "text.primary",
-          borderBottom: 1,
-          borderColor: "divider"
+    <>
+      <Drawer
+        opened={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        padding={0}
+        withCloseButton={false}
+        size={KIDEX_LAYOUT.drawerWidth}
+        hiddenFrom="md"
+        styles={{
+          content: {
+            backgroundColor: KIDEX_COLORS.brandNavy
+          },
+          body: {
+            padding: 0
+          }
         }}
       >
-        <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setMobileOpen(true)}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700 }}>
-            KIDEX
-          </Typography>
-        </Toolbar>
-      </AppBar>
+        {navContent}
+      </Drawer>
 
-      <Box component="nav" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: DRAWER_WIDTH }
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: DRAWER_WIDTH, borderRight: "none" }
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-
-      <Box
-        component="main"
-        className="dashboard-main"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 1,
-          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-          minHeight: "100vh",
-          bgcolor: "background.default",
-          pt: { xs: 8, md: 0 },
-          px: 0,
-          pb: { xs: 2, md: 3 }
+      <AppShell
+        header={{ height: 56, collapsed: false }}
+        navbar={{ width: KIDEX_LAYOUT.drawerWidth, breakpoint: "md" }}
+        padding={0}
+        styles={{
+          header: {
+            backgroundColor: KIDEX_COLORS.white,
+            color: KIDEX_COLORS.navText,
+            borderBottomColor: KIDEX_COLORS.navBorder
+          },
+          navbar: {
+            borderInlineEnd: "none",
+            backgroundColor: KIDEX_COLORS.brandNavy
+          },
+          main: {
+            backgroundColor: "var(--mantine-color-body)"
+          }
         }}
       >
-        <Box sx={{ flex: 1 }}>
-          <PageContainer>{children}</PageContainer>
-        </Box>
-        <AppFooter />
-      </Box>
-    </Box>
+        <AppShell.Header>
+          <Group h="100%" px="md" hiddenFrom="md">
+            <Burger opened={mobileOpen} onClick={() => setMobileOpen((v) => !v)} size="sm" />
+            <Text fw={700}>KIDEX</Text>
+          </Group>
+        </AppShell.Header>
+
+        <AppShell.Navbar visibleFrom="md" p={0}>
+          {navContent}
+        </AppShell.Navbar>
+
+        <AppShell.Main>
+          <Box className="dashboard-main" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
+            <Box style={{ flex: 1, paddingTop: 56 }}>
+              <PageContainer>{children}</PageContainer>
+            </Box>
+            <AppFooter />
+          </Box>
+        </AppShell.Main>
+      </AppShell>
+    </>
   );
 }

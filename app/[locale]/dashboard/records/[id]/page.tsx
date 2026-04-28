@@ -1,19 +1,7 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
-import Stack from "@mui/material/Stack";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
+import { Box, Button, Group, Loader, Paper, Stack, Table, Text } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { jsPDF } from "jspdf";
@@ -43,17 +31,17 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }} role="status" aria-live="polite">
-        <CircularProgress aria-label={tc("loading")} />
+      <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status" aria-live="polite">
+        <Loader aria-label={tc("loading")} />
       </Box>
     );
   }
 
   if (!record) {
     return (
-      <Typography color="error" sx={{ py: 4 }}>
+      <Text c="red" py="md">
         {tc("error")}
-      </Typography>
+      </Text>
     );
   }
 
@@ -203,17 +191,12 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
   return (
     <Box className="record-detail print-container">
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={2}
-        className="no-print"
-        sx={{ mb: 3, justifyContent: "space-between", alignItems: { sm: "flex-start" } }}
-      >
+      <Stack gap="md" className="no-print" mb="lg">
         <PageHeader
           title={t("recordTitle")}
           subtitle={`${record.session.date} · ${record.child.name}`}
           actions={
-            <Button variant="outlined" onClick={() => void downloadPdf()} disabled={downloadingPdf}>
+            <Button variant="light" color="kidex" onClick={() => void downloadPdf()} disabled={downloadingPdf}>
               {downloadingPdf ? tc("loading") : t("downloadPdf")}
             </Button>
           }
@@ -221,18 +204,18 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       </Stack>
 
       <SectionCard title={t("reportPreview")} className="no-print">
-        <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ alignItems: { md: "center" }, justifyContent: "space-between" }}>
-          <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+        <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
+          <Group gap="md" align="center">
             <Image src="/logo.jpeg" alt="KIDEX" width={64} height={64} className="report-logo" />
             <Box>
-              <Typography variant="h5" component="h2" sx={{ fontWeight: 800 }}>
+              <Text fw={800} size="xl">
                 {t("reportPrintTitle")}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              </Text>
+              <Text size="sm" c="dimmed">
                 {record.child.name}
-              </Typography>
+              </Text>
             </Box>
-          </Stack>
+          </Group>
           <Box className="report-meta-grid">
             <MetaRow label={tc("date")} value={reportDate} />
             <MetaRow label={t("tableTime")} value={reportTime} />
@@ -243,15 +226,15 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       </SectionCard>
 
       <Box className="only-print print-report-header">
-        <Stack direction="row" spacing={2} sx={{ alignItems: "center", justifyContent: "space-between" }}>
+        <Stack gap="md" style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <Image src="/logo.jpeg" alt="KIDEX" width={72} height={72} className="report-logo" />
           <Box>
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Text size="xl" fw={700} mb="xs">
               {t("reportPrintTitle")}
-            </Typography>
-            <Typography variant="body1">
+            </Text>
+            <Text>
               {record.child.name}
-            </Typography>
+            </Text>
           </Box>
           <Box className="report-meta-grid">
             <MetaRow label={tc("date")} value={reportDate} />
@@ -262,7 +245,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
         </Stack>
       </Box>
 
-      <Stack direction="row" spacing={2} useFlexGap sx={{ mb: 3, flexWrap: "wrap" }} className="print-metrics-grid">
+      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }} className="print-metrics-grid">
         <Metric label={ts("movement")} value={formatScore(record.computed.movementAverage)} />
         <Metric label={ts("social")} value={formatScore(record.computed.socialAverage)} />
         <Metric label={ts("mental")} value={formatScore(record.computed.mentalAverage)} />
@@ -270,85 +253,85 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       </Stack>
 
       <SectionCard title={t("setupTitle")}>
-        <Stack spacing={1} className="print-setup-grid">
-          <Typography variant="body2" className="print-meta-row">
+        <Stack gap={6} className="print-setup-grid">
+          <Text size="sm" className="print-meta-row">
             <strong>{t("childName")}:</strong> {record.child.name}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("birthDate")}:</strong> {record.child.birthDate}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("ageGroup")}:</strong> {record.child.ageGroup}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("mode")}:</strong> {record.mode}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{tc("date")}:</strong> {reportDate}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("tableTime")}:</strong> {reportTime}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("location")}:</strong> {record.session.location}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("conductor")}:</strong> {record.session.conductor}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("observers")}:</strong> {record.session.observers || "—"}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("context")}:</strong> {contextLabelMap[record.session.context]}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("groupSize")}:</strong> {record.session.groupSize || "—"}
-          </Typography>
-          <Typography variant="body2" className="print-meta-row">
+          </Text>
+          <Text size="sm" className="print-meta-row">
             <strong>{t("lastUpdated")}:</strong> {updatedTime}
-          </Typography>
+          </Text>
         </Stack>
       </SectionCard>
 
       {sections.map((section) => (
         <SectionCard key={section.key} title={ts(section.key)}>
-          <TableContainer component={Paper} variant="outlined">
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>{t("tableObservation")}</TableCell>
-                  <TableCell align="right" sx={{ width: 100 }}>
+          <Paper withBorder p={0}>
+            <Table striped highlightOnHover>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>{t("tableObservation")}</Table.Th>
+                  <Table.Th style={{ width: 100, textAlign: "right" }}>
                     {t("tableScore")}
-                  </TableCell>
-                  <TableCell>{t("tableNote")}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+                  </Table.Th>
+                  <Table.Th>{t("tableNote")}</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {section.items.map((item) => {
                   const entry = record.scores[item.key];
                   return (
-                    <TableRow key={item.key}>
-                      <TableCell>{ts(`${item.key}.title`)}</TableCell>
-                      <TableCell align="right">{entry?.score ?? "—"}</TableCell>
-                      <TableCell sx={{ color: "text.secondary" }}>{entry?.note || "—"}</TableCell>
-                    </TableRow>
+                    <Table.Tr key={item.key}>
+                      <Table.Td>{ts(`${item.key}.title`)}</Table.Td>
+                      <Table.Td style={{ textAlign: "right" }}>{entry?.score ?? "—"}</Table.Td>
+                      <Table.Td><Text c="dimmed">{entry?.note || "—"}</Text></Table.Td>
+                    </Table.Tr>
                   );
                 })}
-              </TableBody>
+              </Table.Tbody>
             </Table>
-          </TableContainer>
+          </Paper>
         </SectionCard>
       ))}
 
       <SectionCard title={t("evidenceImages")}>
         {record.attachments.length === 0 ? (
-          <Typography variant="body2" color="text.secondary">
+          <Text size="sm" c="dimmed">
             {t("noImages")}
-          </Typography>
+          </Text>
         ) : (
-          <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: "wrap" }}>
+          <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
             {record.attachments.map((attachment) => (
-              <Paper key={attachment.id} variant="outlined" sx={{ p: 1.25, width: 220 }}>
+              <Paper key={attachment.id} withBorder p="sm" style={{ width: 220 }}>
                 <Image
                   src={attachment.thumbUrl || attachment.url}
                   alt={attachment.name || "Evidence image"}
@@ -357,12 +340,12 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                   style={{ width: "100%", height: "auto", borderRadius: 8 }}
                   unoptimized
                 />
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.75, display: "block" }}>
+                <Text size="xs" c="dimmed" mt={8}>
                   {new Date(attachment.uploadedAt).toLocaleString()}
-                </Typography>
-                <Link href={attachment.url} target="_blank" rel="noreferrer" variant="body2" sx={{ mt: 0.5, display: "inline-block" }}>
+                </Text>
+                <Text component="a" href={attachment.url} target="_blank" rel="noreferrer" size="sm" mt={6} style={{ display: "inline-block" }}>
                   {tc("view")}
-                </Link>
+                </Text>
               </Paper>
             ))}
           </Stack>
@@ -370,22 +353,22 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       </SectionCard>
 
       <SectionCard title={t("professionalNotes")}>
-        <Stack spacing={2}>
+        <Stack gap="md">
           <Box>
-            <Typography variant="subtitle2" gutterBottom>
+            <Text size="sm" fw={600} mb={4}>
               {t("generalObservation")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            </Text>
+            <Text size="sm" c="dimmed">
               {record.notes.general || "—"}
-            </Typography>
+            </Text>
           </Box>
           <Box>
-            <Typography variant="subtitle2" gutterBottom>
+            <Text size="sm" fw={600} mb={4}>
               {t("adaptationNeeds")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            </Text>
+            <Text size="sm" c="dimmed">
               {record.notes.adaptations || "—"}
-            </Typography>
+            </Text>
           </Box>
         </Stack>
       </SectionCard>
@@ -395,21 +378,21 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <Paper variant="outlined" sx={{ p: 2, flex: "1 1 140px", minWidth: 120 }}>
-      <Typography variant="body2" color="text.secondary">
+    <Paper withBorder p="md" style={{ flex: "1 1 140px", minWidth: 120 }}>
+      <Text size="sm" c="dimmed">
         {label}
-      </Typography>
-      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+      </Text>
+      <Text fw={700} size="lg">
         {value}
-      </Typography>
+      </Text>
     </Paper>
   );
 }
 
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
-    <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+    <Text size="sm" style={{ whiteSpace: "nowrap" }}>
       <strong>{label}:</strong> {value}
-    </Typography>
+    </Text>
   );
 }

@@ -1,11 +1,9 @@
 "use client";
 
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Tooltip from "@mui/material/Tooltip";
-import { alpha } from "@mui/material/styles";
+import { SegmentedControl } from "@mantine/core";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
+import { KIDEX_COLORS } from "@/theme/tokens";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -18,42 +16,38 @@ export function LocaleSwitcher() {
   }
 
   return (
-    <ToggleButtonGroup
-      exclusive
+    <SegmentedControl
       value={locale}
-      onChange={(_, value) => value && switchLocale(value)}
-      size="small"
+      onChange={(value) => switchLocale(value as "en" | "hu" | "ar")}
       fullWidth
-      sx={{
-        "& .MuiToggleButton-root": {
-          color: (theme) => alpha(theme.palette.common.white, 0.8),
-          borderColor: (theme) => alpha(theme.palette.common.white, 0.35),
-          py: 0.6,
-          minWidth: 0
+      radius="md"
+      size="sm"
+      color="kidex"
+      data={[
+        { value: "ar", label: "🇸🇦" },
+        { value: "hu", label: "🇭🇺" },
+        { value: "en", label: "🇬🇧" }
+      ]}
+      styles={{
+        root: {
+          backgroundColor: "transparent",
+          border: `1px solid ${KIDEX_COLORS.navBorderMuted}`,
+          padding: 2
         },
-        "& .MuiToggleButton-root.Mui-selected": {
-          bgcolor: "secondary.main",
-          color: "common.white",
-          borderColor: "secondary.main",
-          "&:hover": { bgcolor: "secondary.dark" }
+        control: {
+          minHeight: 38
+        },
+        label: {
+          color: KIDEX_COLORS.navTextMuted,
+          fontSize: 18,
+          lineHeight: "20px",
+          paddingInline: 8
+        },
+        indicator: {
+          backgroundColor: KIDEX_COLORS.brandTeal,
+          borderRadius: 10
         }
       }}
-    >
-      <Tooltip title="Arabic" arrow>
-        <ToggleButton value="ar" aria-label="Switch to Arabic">
-          <span role="img" aria-hidden="true">🇸🇦</span>
-        </ToggleButton>
-      </Tooltip>
-      <Tooltip title="Hungarian" arrow>
-        <ToggleButton value="hu" aria-label="Switch to Hungarian">
-          <span role="img" aria-hidden="true">🇭🇺</span>
-        </ToggleButton>
-      </Tooltip>
-      <Tooltip title="English" arrow>
-        <ToggleButton value="en" aria-label="Switch to English">
-          <span role="img" aria-hidden="true">🇬🇧</span>
-        </ToggleButton>
-      </Tooltip>
-    </ToggleButtonGroup>
+    />
   );
 }

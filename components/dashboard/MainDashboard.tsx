@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material/styles";
+import { Box, Loader, Paper, Stack, Text, useMantineTheme } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -103,48 +98,48 @@ export function MainDashboard() {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }} role="status">
-        <CircularProgress aria-label={tc("loading")} />
+      <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
+        <Loader aria-label={tc("loading")} />
       </Box>
     );
   }
 
   return (
-    <Stack spacing={3}>
+    <Stack gap="lg">
       <PageHeader title={t("overview")} subtitle={t("overviewSubtitle")} />
 
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <MetricCard label={t("totalUsers")} value={String(data?.users.length ?? 0)} />
         <MetricCard label={t("totalRecords")} value={String(data?.assessments.length ?? 0)} />
       </Stack>
 
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <MetricCard label={t("totalChildren")} value={String(data?.childrenCount ?? 0)} />
         <MetricCard label={t("avgRecordsPerChild")} value={avgRecordsPerChild} />
       </Stack>
 
       <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
-        <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          <Box style={{ flex: 1, minWidth: 0 }}>
             <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} domain="movement" />
           </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box style={{ flex: 1, minWidth: 0 }}>
             <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} domain="social" />
           </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box style={{ flex: 1, minWidth: 0 }}>
             <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} domain="mental" />
           </Box>
         </Stack>
       </SectionCard>
 
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-        <Box sx={{ flex: 1, minWidth: 0, display: "flex" }}>
+      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
+        <Box style={{ flex: 1, minWidth: 0, display: "flex" }}>
           <SectionCard title={t("recordsChartTitle")} subheader={t("recordsChartSubtitle")} sx={{ width: "100%", height: "100%", mb: 0 }}>
             <RecordsLineChart points={recordsByMonth} />
           </SectionCard>
         </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0, display: "flex" }}>
+        <Box style={{ flex: 1, minWidth: 0, display: "flex" }}>
           <SectionCard title={t("usersChartTitle")} subheader={t("usersChartSubtitle")} sx={{ width: "100%", height: "100%", mb: 0 }}>
             <UserRolePieChart items={userRoleStats} />
           </SectionCard>
@@ -157,13 +152,13 @@ export function MainDashboard() {
 
 function MetricCard({ label, value }: { label: string; value: string }) {
   return (
-    <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
-      <Typography variant="body2" color="text.secondary">
+    <Paper withBorder p="md" style={{ flex: "1 1 220px" }}>
+      <Text size="sm" c="dimmed">
         {label}
-      </Typography>
-      <Typography variant="h4" sx={{ fontWeight: 800 }}>
+      </Text>
+      <Text size="xl" fw={800}>
         {value}
-      </Typography>
+      </Text>
     </Paper>
   );
 }
@@ -173,7 +168,7 @@ function RecordsLineChart({
 }: {
   points: Array<{ key: string; label: string; count: number }>;
 }) {
-  const theme = useTheme();
+  const theme = useMantineTheme();
   const t = useTranslations("Dashboard");
 
   const values = points.map((p) => p.count);
@@ -183,40 +178,40 @@ function RecordsLineChart({
   const yMax = min === max ? max + 1 : max;
 
   return (
-    <Stack spacing={1}>
-      <Box sx={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
+    <Stack gap={6}>
+      <Box style={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={points} margin={DASHBOARD_CHART_CONFIG.lineMargin}>
-            <CartesianGrid stroke={theme.palette.divider} strokeDasharray="3 3" />
-            <XAxis dataKey="label" stroke={theme.palette.text.secondary} tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize }} />
+            <CartesianGrid stroke={theme.colors.gray[4]} strokeDasharray="3 3" />
+            <XAxis dataKey="label" stroke={theme.colors.gray[5]} tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize }} />
             <YAxis
               domain={[yMin, yMax]}
               allowDecimals={false}
-              stroke={theme.palette.text.secondary}
+              stroke={theme.colors.gray[5]}
               tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize }}
               width={28}
             />
             <Tooltip
               contentStyle={{
-                background: theme.palette.background.paper,
-                border: `1px solid ${theme.palette.divider}`,
+                background: theme.colors.dark[7],
+                border: `1px solid ${theme.colors.dark[4]}`,
                 borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
               }}
             />
             <Line
               type="monotone"
               dataKey="count"
-              stroke={theme.palette.primary.main}
+              stroke={theme.colors.kidex[6]}
               strokeWidth={DASHBOARD_CHART_CONFIG.lineStrokeWidth}
-              dot={{ r: DASHBOARD_CHART_CONFIG.dotRadius, fill: theme.palette.primary.main }}
+              dot={{ r: DASHBOARD_CHART_CONFIG.dotRadius, fill: theme.colors.kidex[6] }}
               activeDot={{ r: DASHBOARD_CHART_CONFIG.activeDotRadius }}
             />
           </LineChart>
         </ResponsiveContainer>
       </Box>
-      <Typography variant="caption" color="text.secondary">
+      <Text size="xs" c="dimmed">
         {t("recordsChartYRange", { min: yMin, max: yMax })}
-      </Typography>
+      </Text>
     </Stack>
   );
 }
@@ -226,18 +221,18 @@ function UserRolePieChart({
 }: {
   items: Array<{ label: string; count: number }>;
 }) {
-  const theme = useTheme();
+  const theme = useMantineTheme();
   const chartData = items.map((item) => ({ name: item.label, value: item.count }));
-  const colors = [theme.palette.secondary.main, theme.palette.primary.main];
+  const colors = [theme.colors.kidex[6], theme.black];
 
   return (
-    <Box sx={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
+    <Box style={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Tooltip
             contentStyle={{
-              background: theme.palette.background.paper,
-              border: `1px solid ${theme.palette.divider}`,
+              background: theme.colors.dark[7],
+              border: `1px solid ${theme.colors.dark[4]}`,
               borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
             }}
           />
@@ -270,24 +265,24 @@ function RapidRadarChart({
   data: Array<{ label: string; value: number }>;
   domain: AssessmentDomain;
 }) {
-  const theme = useTheme();
-  const domainColor = getDomainMainColor(theme, domain);
+  const theme = useMantineTheme();
+  const domainColor = getDomainMainColor(domain);
 
   return (
-    <Paper variant="outlined" sx={{ p: 1.5 }}>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+    <Paper withBorder p="sm">
+      <Text fw={600} mb={6}>
         {title}
-      </Typography>
-      <Box sx={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
+      </Text>
+      <Box style={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
-            <PolarGrid stroke={theme.palette.divider} />
-            <PolarAngleAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} />
-            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fill: theme.palette.text.secondary, fontSize: 10 }} />
+            <PolarGrid stroke={theme.colors.gray[4]} />
+            <PolarAngleAxis dataKey="label" tick={{ fontSize: 11, fill: theme.colors.gray[5] }} />
+            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fill: theme.colors.gray[5], fontSize: 10 }} />
             <Tooltip
               contentStyle={{
-                background: theme.palette.background.paper,
-                border: `1px solid ${theme.palette.divider}`,
+                background: theme.colors.dark[7],
+                border: `1px solid ${theme.colors.dark[4]}`,
                 borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
               }}
             />

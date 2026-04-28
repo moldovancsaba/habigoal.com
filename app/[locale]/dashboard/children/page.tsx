@@ -1,19 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CircularProgress from "@mui/material/CircularProgress";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import { Alert, Box, Button, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -132,107 +120,98 @@ export default function ChildrenListPage() {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }} role="status">
-        <CircularProgress aria-label={tc("loading")} />
+      <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
+        <Loader aria-label={tc("loading")} />
       </Box>
     );
   }
 
   return (
-    <Stack spacing={2.5}>
+    <Stack gap="md">
       <PageHeader title={t("children")} />
       <SectionCard>
-        <Stack spacing={2}>
+        <Stack gap="md">
           {message ? (
-            <Alert severity={error ? "error" : "success"} onClose={() => setMessage("")}>
+            <Alert color={error ? "red" : "green"} withCloseButton onClose={() => setMessage("")}>
               {message}
             </Alert>
           ) : null}
 
-          <TextField
+          <TextInput
             label={t("searchChildren")}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t("searchChildrenPlaceholder")}
-            fullWidth
-            size="small"
           />
 
           {filtered.length === 0 ? (
-            <Typography color="text.secondary">{query ? t("noChildrenMatch") : tc("noChildren")}</Typography>
+            <Text c="dimmed">{query ? t("noChildrenMatch") : tc("noChildren")}</Text>
           ) : (
-            <Stack spacing={2}>
+            <Stack gap="md">
               {filtered.map((child) => {
                 const ageGroup = calculateAgeGroup(child.birthDate) || "-";
                 return (
-                  <Card key={child._id} variant="outlined">
-                    <CardContent>
-                      <Stack spacing={2}>
-                        <Box sx={{ minWidth: 0 }}>
-                          <Typography
+                  <Paper key={child._id} withBorder p="md">
+                      <Stack gap="md">
+                        <Box style={{ minWidth: 0 }}>
+                          <Text
                             component={Link}
                             href={`/dashboard/children/${child._id}`}
-                            variant="h6"
-                            sx={{ fontWeight: 700, textDecoration: "none", color: "primary.main", "&:hover": { textDecoration: "underline" } }}
+                            fw={700}
+                            size="lg"
+                            style={{ textDecoration: "none", color: "var(--mantine-color-kidex-6)" }}
                           >
                             {child.name}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                          </Text>
+                          <Text size="sm" c="dimmed">
                             {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
-                          </Typography>
+                          </Text>
                         </Box>
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-                          <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} variant="contained">
+                        <Group gap="xs" wrap="wrap">
+                          <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex">
                             {t("newSurveyForChild")}
                           </Button>
-                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="outlined">
+                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="light" color="kidex">
                             {t("viewHistory")}
                           </Button>
-                          <Button variant="outlined" onClick={() => startEdit(child)}>
+                          <Button variant="light" color="gray" onClick={() => startEdit(child)}>
                             {t("editChild")}
                           </Button>
-                          <Button color="error" variant="outlined" onClick={() => void deleteChild(child)}>
+                          <Button color="red" variant="light" onClick={() => void deleteChild(child)}>
                             {t("deleteChild")}
                           </Button>
-                        </Stack>
+                        </Group>
                       </Stack>
-                    </CardContent>
-                  </Card>
+                  </Paper>
                 );
               })}
             </Stack>
           )}
         </Stack>
       </SectionCard>
-      <Dialog open={Boolean(editing)} onClose={() => (saving ? null : setEditing(null))} fullWidth maxWidth="sm">
-        <DialogTitle>{t("editChild")}</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ mt: 1 }}>
-            <TextField
+      <Modal opened={Boolean(editing)} onClose={() => (saving ? null : setEditing(null))} title={t("editChild")} centered>
+          <Stack gap="md" mt="xs">
+            <TextInput
               label={ta("childName")}
               value={draftName}
               onChange={(event) => setDraftName(event.target.value)}
-              fullWidth
             />
-            <TextField
+            <TextInput
               label={ta("birthDate")}
               type="date"
               value={draftBirthDate}
               onChange={(event) => setDraftBirthDate(event.target.value)}
-              fullWidth
-              slotProps={{ inputLabel: { shrink: true } }}
             />
           </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditing(null)} disabled={saving}>
+          <Group justify="flex-end" mt="md">
+          <Button variant="subtle" onClick={() => setEditing(null)} disabled={saving}>
             {tc("cancel")}
           </Button>
-          <Button onClick={() => void saveEdit()} variant="contained" disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>
+          <Button onClick={() => void saveEdit()} color="kidex" disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>
             {saving ? tc("saving") : tc("save")}
           </Button>
-        </DialogActions>
-      </Dialog>
+        </Group>
+      </Modal>
     </Stack>
   );
 }

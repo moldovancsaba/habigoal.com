@@ -1,8 +1,6 @@
 "use client";
 
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import { Box, Flex, Text, Title } from "@mantine/core";
 import type { ReactNode } from "react";
 
 type PageHeaderProps = {
@@ -13,22 +11,27 @@ type PageHeaderProps = {
 
 export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   return (
-    <Stack
-      direction={{ xs: "column", md: "row" }}
-      spacing={1.5}
-      sx={{ alignItems: { md: "center" }, justifyContent: "space-between" }}
+    <Flex
+      gap="sm"
+      direction={{ base: "column", md: "row" }}
+      justify="space-between"
+      align={{ base: "stretch", md: "center" }}
     >
       <Box>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
+        <Title order={1} size="h2" fw={800}>
           {title}
-        </Typography>
+        </Title>
         {subtitle ? (
-          <Typography variant="body2" color="text.secondary">
+          <Text c="dimmed" size="sm">
             {subtitle}
-          </Typography>
+          </Text>
         ) : null}
       </Box>
-      {actions ? <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>{actions}</Stack> : null}
-    </Stack>
+      {actions ? (
+        <Flex gap="xs" wrap="wrap">
+          {actions}
+        </Flex>
+      ) : null}
+    </Flex>
   );
 }

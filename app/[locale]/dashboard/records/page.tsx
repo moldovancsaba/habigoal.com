@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import { Box, Button, Paper, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -30,42 +25,41 @@ export default function RecordsPage() {
   }, []);
 
   return (
-    <Stack spacing={2.5}>
+    <Stack gap="md">
       <PageHeader title={t("records")} />
       <SectionCard>
         {savedRecords.length === 0 ? (
-          <Typography color="text.secondary">{ta("noHistory")}</Typography>
+          <Text c="dimmed">{ta("noHistory")}</Text>
         ) : (
-          <Stack spacing={2}>
+          <Stack gap="md">
             {savedRecords.map((record) => (
-              <Card key={record._id} variant="outlined">
-                <CardContent>
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { sm: "center" }, justifyContent: "space-between" }}>
-                    <Box sx={{ minWidth: 0 }}>
+              <Paper key={record._id} withBorder p="md">
+                <Stack gap="md" style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
+                    <Box style={{ minWidth: 0 }}>
                       {record.childId ? (
-                        <Typography
+                        <Text
                           component={Link}
                           href={`/dashboard/children/${record.childId}`}
-                          variant="h6"
-                          sx={{ fontWeight: 700, textDecoration: "none", color: "primary.main", "&:hover": { textDecoration: "underline" } }}
+                          fw={700}
+                          size="lg"
+                          style={{ textDecoration: "none", color: "var(--mantine-color-kidex-6)" }}
                         >
                           {record.child.name || "---"}
-                        </Typography>
+                        </Text>
                       ) : (
-                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        <Text fw={700} size="lg">
                           {record.child.name || "---"}
-                        </Typography>
+                        </Text>
                       )}
-                      <Typography variant="body2" color="text.secondary">
+                      <Text size="sm" c="dimmed">
                         {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
-                      </Typography>
+                      </Text>
                     </Box>
-                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="outlined">
+                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="light" color="kidex">
                       {tc("view")}
                     </Button>
-                  </Stack>
-                </CardContent>
-              </Card>
+                </Stack>
+              </Paper>
             ))}
           </Stack>
         )}

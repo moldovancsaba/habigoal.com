@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import { Button, Paper, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useSyncExternalStore } from "react";
@@ -44,21 +41,26 @@ export function CookieConsentBanner() {
 
   return (
     <Paper
-      elevation={8}
-      sx={{
+      shadow="md"
+      withBorder
+      style={{
         position: "fixed",
         left: 16,
         right: 16,
         bottom: 16,
-        zIndex: (theme) => theme.zIndex.snackbar
+        zIndex: 400
       }}
     >
-      <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} sx={{ p: 2, alignItems: { md: "center" }, justifyContent: "space-between" }}>
-        <Typography variant="body2">
+      <Stack
+        gap="sm"
+        p="md"
+        style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}
+      >
+        <Text size="sm">
           {t("cookieConsentMessage")}{" "}
           <Link href="/dashboard/legal/privacy">{t("cookiePolicyLink")}</Link>
-        </Typography>
-        <Button variant="contained" onClick={acceptCookies}>
+        </Text>
+        <Button color="kidex" onClick={acceptCookies}>
           {t("cookieAccept")}
         </Button>
       </Stack>

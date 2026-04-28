@@ -1,9 +1,23 @@
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
 import { getMessages } from "next-intl/server";
-import { MuiRegistry } from "@/components/theme/MuiRegistry";
+import { Noto_Sans, Noto_Sans_Arabic } from "next/font/google";
+import { ThemeRegistry } from "@/components/theme/ThemeRegistry";
 import { CookieConsentBanner } from "@/components/ui/CookieConsentBanner";
+import "@mantine/core/styles.css";
 import "../globals.css";
+
+const notoSans = Noto_Sans({
+  subsets: ["latin"],
+  variable: "--font-noto-sans",
+  display: "swap"
+});
+
+const notoSansArabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-noto-sans-arabic",
+  display: "swap"
+});
 
 export default async function LocaleLayout({
   children,
@@ -21,12 +35,12 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={direction}>
-      <body dir={direction}>
+      <body dir={direction} className={`${notoSans.variable} ${notoSansArabic.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <MuiRegistry initialMode={initialMode}>
+          <ThemeRegistry initialMode={initialMode}>
             {children}
             <CookieConsentBanner />
-          </MuiRegistry>
+          </ThemeRegistry>
         </NextIntlClientProvider>
       </body>
     </html>

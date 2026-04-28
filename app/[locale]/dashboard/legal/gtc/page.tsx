@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import { Button, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -20,29 +18,29 @@ export default function GtcPage() {
   }, []);
 
   return (
-    <Stack spacing={2.5}>
+    <Stack gap="md">
       <PageHeader title={t("gtcTitle")} subtitle={`${t("effectiveDate")}: ${settings.company.registered}`} />
 
       <SectionCard title={t("scopeTitle")}>
-        <Typography variant="body2">{t("scopeBody")}</Typography>
+        <Text size="sm">{t("scopeBody")}</Text>
       </SectionCard>
 
       <SectionCard title={t("serviceTitle")}>
-        <Typography variant="body2">{t("serviceBody")}</Typography>
+        <Text size="sm">{t("serviceBody")}</Text>
       </SectionCard>
 
       <SectionCard title={t("responsibilityTitle")}>
-        <Typography variant="body2">{t("responsibilityBody")}</Typography>
+        <Text size="sm">{t("responsibilityBody")}</Text>
       </SectionCard>
 
       <SectionCard title={t("companyDataTitle")}>
         <CompanyData settings={settings} />
-        <Typography variant="body2" sx={{ mt: 1 }}>
+        <Text size="sm" mt="xs">
           <strong>App:</strong> KIDEX v{APP_VERSION}
-        </Typography>
+        </Text>
       </SectionCard>
 
-      <Button component={Link} href="/dashboard" variant="outlined" sx={{ alignSelf: "flex-start" }}>
+      <Button component={Link} href="/dashboard" variant="light" color="kidex" style={{ alignSelf: "flex-start" }}>
         {t("backToDashboard")}
       </Button>
     </Stack>
@@ -52,7 +50,7 @@ export default function GtcPage() {
 function CompanyData({ settings }: { settings: KidexSettings }) {
   const t = useTranslations("Legal");
   return (
-    <Stack spacing={0.75}>
+    <Stack gap={6}>
       <Row label={t("companyDataTitle")} value={settings.company.name} />
       <Row label={t("idNo")} value={settings.company.ico} />
       <Row label={t("registered")} value={settings.company.registered} />
@@ -67,8 +65,8 @@ function CompanyData({ settings }: { settings: KidexSettings }) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <Typography variant="body2">
+    <Text size="sm">
       <strong>{label}:</strong> {value}
-    </Typography>
+    </Text>
   );
 }

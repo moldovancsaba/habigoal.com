@@ -12,13 +12,8 @@
     "db:setup": "node scripts/setup-database.mjs"
   },
   "dependencies": {
-    "@emotion/cache": "^11.14.0",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^9.0.0",
-    "@mui/material": "^9.0.0",
-    "@mui/material-nextjs": "^9.0.0",
-    "@mui/stylis-plugin-rtl": "^9.0.0",
+    "@mantine/core": "^8.3.6",
+    "@mantine/hooks": "^8.3.6",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "mongodb": "^6.12.0",
@@ -26,14 +21,12 @@
     "next-intl": "^4.9.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "recharts": "^3.8.1",
-    "stylis": "^4.4.0"
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@types/stylis": "^4.2.7",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.4",
     "typescript": "^5.7.3",

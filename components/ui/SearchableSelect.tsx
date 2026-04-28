@@ -1,8 +1,7 @@
 "use client";
 
+import { ComboboxItem, Select } from "@mantine/core";
 import { useMemo } from "react";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
 
 interface Option {
   id: string;
@@ -19,42 +18,39 @@ interface SearchableSelectProps {
 }
 
 export function SearchableSelect({ label, value, options, onChange, placeholder, allowAdd }: SearchableSelectProps) {
-  const resolvedValue = useMemo((): Option | null => {
+  const data = useMemo<ComboboxItem[]>(() => {
+    return options.map((option) => ({ value: option.name, label: option.name }));
+  }, [options]);
+
+  const selectValue = useMemo(() => {
     const hit = options.find((o) => o.name === value);
-    if (hit) return hit;
-    if (allowAdd && value) return { id: value, name: value };
+    if (hit) return hit.name;
+    if (allowAdd && value.trim()) return value.trim();
     return null;
   }, [options, value, allowAdd]);
 
   return (
-    <Autocomplete<Option, false, false, boolean>
-      freeSolo={Boolean(allowAdd)}
-      options={options}
-      value={resolvedValue}
-      inputValue={value}
-      onInputChange={(_, newInputValue) => {
-        onChange(newInputValue);
+    <Select
+      searchable
+      clearable
+      data={data}
+      value={selectValue}
+      label={label}
+      placeholder={placeholder || undefined}
+      onSearchChange={(query) => {
+        if (allowAdd) {
+          onChange(query);
+        }
       }}
-      onChange={(_, newValue) => {
-        if (newValue === null) {
+      searchValue={allowAdd ? value : undefined}
+      onChange={(newValue) => {
+        if (!newValue) {
           onChange("");
           return;
         }
-        if (typeof newValue === "string") {
-          onChange(newValue.trim());
-          return;
-        }
-        onChange(newValue.name);
+        onChange(newValue.trim());
       }}
-      getOptionLabel={(option) => (typeof option === "string" ? option : option.name)}
-      isOptionEqualToValue={(a, b) => {
-        const an = typeof a === "string" ? a : a.name;
-        const bn = typeof b === "string" ? b : b.name;
-        return an === bn;
-      }}
-      renderInput={(params) => (
-        <TextField {...params} label={label} placeholder={placeholder || undefined} />
-      )}
+      nothingFoundMessage={placeholder || ""}
     />
   );
 }

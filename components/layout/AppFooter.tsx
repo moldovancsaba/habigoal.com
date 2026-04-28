@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import { Box, Divider, Group, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { APP_VERSION } from "@/lib/app-version";
@@ -19,25 +16,25 @@ export function AppFooter() {
   }, []);
 
   return (
-    <Box component="footer" className="no-print" sx={{ mt: 4, px: { xs: 2, sm: 3 }, pb: { xs: 1, sm: 2 } }}>
-      <Divider sx={{ mb: 1.5 }} />
-      <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} sx={{ justifyContent: "space-between", alignItems: { md: "center" } }}>
-        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
-          <Typography component={Link} href="/dashboard/legal/gtc" variant="body2" sx={{ textDecoration: "none", color: "text.secondary", "&:hover": { color: "text.primary" } }}>
+    <Box component="footer" className="no-print" mt="xl" px={{ base: "md", sm: "lg" }} pb={{ base: "xs", sm: "sm" }}>
+      <Divider mb="sm" />
+      <Group justify="space-between" align="center" gap="sm">
+        <Group gap="xs" wrap="wrap">
+          <Text component={Link} href="/dashboard/legal/gtc" size="sm" c="dimmed" style={{ textDecoration: "none" }}>
             {t("gtc")}
-          </Typography>
-          <Typography variant="body2" color="text.disabled">
+          </Text>
+          <Text size="sm" c="dimmed">
             |
-          </Typography>
-          <Typography component={Link} href="/dashboard/legal/privacy" variant="body2" sx={{ textDecoration: "none", color: "text.secondary", "&:hover": { color: "text.primary" } }}>
+          </Text>
+          <Text component={Link} href="/dashboard/legal/privacy" size="sm" c="dimmed" style={{ textDecoration: "none" }}>
             {t("privacyPolicy")}
-          </Typography>
-        </Stack>
+          </Text>
+        </Group>
 
-        <Typography variant="body2" color="text.secondary">
+        <Text size="sm" c="dimmed">
           {settings.company.name} · v{APP_VERSION}
-        </Typography>
-      </Stack>
+        </Text>
+      </Group>
     </Box>
   );
 }

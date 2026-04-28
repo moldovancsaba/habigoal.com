@@ -2,28 +2,7 @@
 
 import type { ReactNode } from "react";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import Chip from "@mui/material/Chip";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import Divider from "@mui/material/Divider";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import InputLabel from "@mui/material/InputLabel";
-import Link from "@mui/material/Link";
-import MenuItem from "@mui/material/MenuItem";
-import Paper from "@mui/material/Paper";
-import MuiSelect from "@mui/material/Select";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import ToggleButton from "@mui/material/ToggleButton";
-import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material/styles";
+import { Alert, Box, Button, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, FormControlLabel, InputLabel, Link, MenuItem, MuiSelect, Paper, Stack, TextField, ToggleButton, Typography } from "@/components/ui/legacy-form-primitives";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -32,7 +11,7 @@ import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { formatScore } from "@/lib/utils";
-import { getDomainChipSx, type AssessmentDomain } from "@/lib/domain-colors";
+import { getDomainChipStyles, type AssessmentDomain } from "@/lib/domain-colors";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -114,7 +93,6 @@ export function KidexAssessmentApp() {
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
   const searchParams = useSearchParams();
-  const theme = useTheme();
   const childIdParam = searchParams.get("childId");
 
   const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
@@ -443,14 +421,14 @@ export function KidexAssessmentApp() {
         <SectionCard title={t("setupTitle")}>
           <Stack direction="row" spacing={2} useFlexGap sx={{ width: "100%", flexWrap: "wrap" }}>
             <FieldWrap>
-              <TextField label={t("childName")} value={assessment.child.name} onChange={(e) => update("child", "name", e.target.value)} fullWidth />
+              <TextField label={t("childName")} value={assessment.child.name} onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "name", e.target.value)} fullWidth />
             </FieldWrap>
             <FieldWrap>
               <TextField
                 label={t("birthDate")}
                 type="date"
                 value={assessment.child.birthDate}
-                onChange={(e) => update("child", "birthDate", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "birthDate", e.target.value)}
                 fullWidth
                 slotProps={{ inputLabel: { shrink: true } }}
               />
@@ -462,7 +440,7 @@ export function KidexAssessmentApp() {
                   labelId="age-group-label"
                   label={t("ageGroup")}
                   value={assessment.child.ageGroup}
-                  onChange={(e) => update("child", "ageGroup", e.target.value)}
+                  onChange={(e: { target: { value: string } }) => update("child", "ageGroup", e.target.value)}
                 >
                   <MenuItem value="">{t("ageGroupPending")}</MenuItem>
                   <MenuItem value="4-6">4-6</MenuItem>
@@ -478,7 +456,7 @@ export function KidexAssessmentApp() {
                   labelId="mode-label"
                   label={t("mode")}
                   value={assessment.mode}
-                  onChange={(e) =>
+                  onChange={(e: { target: { value: string } }) =>
                     setAssessment((current) => ({ ...current, mode: e.target.value as AssessmentPayload["mode"] }))
                   }
                 >
@@ -512,7 +490,7 @@ export function KidexAssessmentApp() {
                   labelId="context-label"
                   label={t("context")}
                   value={assessment.session.context}
-                  onChange={(e) => update("session", "context", e.target.value)}
+                  onChange={(e: { target: { value: string } }) => update("session", "context", e.target.value)}
                 >
                   <MenuItem value="event">{t("contextEvent")}</MenuItem>
                   <MenuItem value="structured">{t("contextStructured")}</MenuItem>
@@ -525,7 +503,7 @@ export function KidexAssessmentApp() {
               <TextField
                 label={t("knownTraits")}
                 value={assessment.child.knownTraits}
-                onChange={(e) => update("child", "knownTraits", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "knownTraits", e.target.value)}
                 fullWidth
                 multiline
                 minRows={2}
@@ -536,7 +514,7 @@ export function KidexAssessmentApp() {
               <TextField
                 label={t("parentSignals")}
                 value={assessment.child.parentSignals}
-                onChange={(e) => update("child", "parentSignals", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "parentSignals", e.target.value)}
                 fullWidth
                 multiline
                 minRows={2}
@@ -545,8 +523,8 @@ export function KidexAssessmentApp() {
             </FieldWide>
             <FieldWide>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                <FormControlLabel control={<Checkbox checked={assessment.session.consentPhoto} onChange={(e) => update("session", "consentPhoto", e.target.checked)} />} label={t("consentPhoto")} />
-                <FormControlLabel control={<Checkbox checked={assessment.session.consentReport} onChange={(e) => update("session", "consentReport", e.target.checked)} />} label={t("consentReport")} />
+                <FormControlLabel control={<Checkbox checked={assessment.session.consentPhoto} onChange={(e: ChangeEvent<HTMLInputElement>) => update("session", "consentPhoto", e.target.checked)} />} label={t("consentPhoto")} />
+                <FormControlLabel control={<Checkbox checked={assessment.session.consentReport} onChange={(e: ChangeEvent<HTMLInputElement>) => update("session", "consentReport", e.target.checked)} />} label={t("consentReport")} />
               </Stack>
             </FieldWide>
           </Stack>
@@ -563,7 +541,7 @@ export function KidexAssessmentApp() {
                   type="file"
                   accept="image/*"
                   hidden
-                  onChange={(e) => void uploadImage(e)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => void uploadImage(e)}
                   disabled={!assessment.session.consentPhoto || uploading}
                 />
                 {uploading ? t("uploading") : t("uploadImage")}
@@ -645,7 +623,7 @@ export function KidexAssessmentApp() {
         <SectionCard
           key={section.key}
           title={`${ts(section.key)} (${Math.round(section.weight * 100)}%)`}
-          action={<Chip label={ts(section.domain)} size="small" variant="outlined" sx={getDomainChipSx(theme, section.domain as AssessmentDomain)} />}
+          action={<Chip label={ts(section.domain)} size="small" variant="outlined" sx={getDomainChipStyles(section.domain as AssessmentDomain)} />}
         >
           <Stack spacing={1.25}>
             {section.items.map((item, itemIndex) => {
@@ -714,7 +692,7 @@ export function KidexAssessmentApp() {
                   <Divider sx={{ my: 1.25 }} />
                   <TextField
                     value={entry?.note || ""}
-                    onChange={(e) => updateScore(item.key, { note: e.target.value })}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => updateScore(item.key, { note: e.target.value })}
                     placeholder={t("observationNote")}
                     fullWidth
                     multiline
@@ -736,7 +714,7 @@ export function KidexAssessmentApp() {
               <TextField
                 label={t("generalObservation")}
                 value={assessment.notes.general}
-                onChange={(e) => update("notes", "general", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => update("notes", "general", e.target.value)}
                 fullWidth
                 multiline
                 minRows={3}
@@ -745,7 +723,7 @@ export function KidexAssessmentApp() {
               <TextField
                 label={t("adaptationNeeds")}
                 value={assessment.notes.adaptations}
-                onChange={(e) => update("notes", "adaptations", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => update("notes", "adaptations", e.target.value)}
                 fullWidth
                 multiline
                 minRows={3}
@@ -754,7 +732,7 @@ export function KidexAssessmentApp() {
               <TextField
                 label={t("referralNote")}
                 value={assessment.notes.referral}
-                onChange={(e) => update("notes", "referral", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => update("notes", "referral", e.target.value)}
                 fullWidth
                 multiline
                 minRows={3}

@@ -1,20 +1,7 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
-import LinearProgress from "@mui/material/LinearProgress";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import { useTheme } from "@mui/material/styles";
+import { Box, Loader, Paper, Progress, Stack, Table, Text } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
@@ -47,17 +34,17 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }} role="status">
-        <CircularProgress aria-label={tc("loading")} />
+      <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
+        <Loader aria-label={tc("loading")} />
       </Box>
     );
   }
 
   if (!data) {
     return (
-      <Typography color="error" sx={{ py: 4 }}>
+      <Text c="red" py="md">
         {tc("error")}
-      </Typography>
+      </Text>
     );
   }
 
@@ -68,87 +55,87 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   const rapidDomainSummary = buildRapidDomainSummary(data.assessments, ts);
 
   return (
-    <Stack spacing={3}>
+    <Stack gap="lg">
       <PageHeader title={data.child.name} subtitle={data.child.birthDate} />
 
       <SectionCard title={t("longitudinalTrends")}>
-        <Stack spacing={2}>
+        <Stack gap="md">
           {trend.map((point, i) => (
-            <Paper key={i} variant="outlined" sx={{ p: 2 }}>
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2} useFlexGap sx={{ alignItems: { md: "stretch" }, flexWrap: "wrap" }}>
+            <Paper key={i} withBorder p="md">
+              <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "stretch" }}>
                 <TrendMetric label={ts("movement")} value={point.movement || 0} target={standard?.movement.target} domain="movement" />
                 <TrendMetric label={ts("social")} value={point.social || 0} target={standard?.social.target} domain="social" />
                 <TrendMetric label={ts("mental")} value={point.mental || 0} target={standard?.mental.target} domain="mental" />
               </Stack>
-              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+              <Text size="xs" c="dimmed" mt="xs">
                 {point.date}
-              </Typography>
+              </Text>
             </Paper>
           ))}
           {trend.length === 0 ? (
-            <Typography color="text.secondary">{t("noHistory")}</Typography>
+            <Text c="dimmed">{t("noHistory")}</Text>
           ) : null}
         </Stack>
       </SectionCard>
 
       <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
-        <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          <Box style={{ flex: 1, minWidth: 0 }}>
             <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} domain="movement" />
           </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box style={{ flex: 1, minWidth: 0 }}>
             <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} domain="social" />
           </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box style={{ flex: 1, minWidth: 0 }}>
             <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} domain="mental" />
           </Box>
         </Stack>
       </SectionCard>
 
       <SectionCard title={t("assessmentHistory")}>
-        <TableContainer component={Paper} variant="outlined">
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>{tc("date")}</TableCell>
-                <TableCell>{tc("mode")}</TableCell>
-                <TableCell>{ts("movement")}</TableCell>
-                <TableCell>{ts("social")}</TableCell>
-                <TableCell>{ts("mental")}</TableCell>
-                <TableCell>{ts("ski")}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+        <Paper withBorder p={0}>
+          <Table striped highlightOnHover>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>{tc("date")}</Table.Th>
+                <Table.Th>{tc("mode")}</Table.Th>
+                <Table.Th>{ts("movement")}</Table.Th>
+                <Table.Th>{ts("social")}</Table.Th>
+                <Table.Th>{ts("mental")}</Table.Th>
+                <Table.Th>{ts("ski")}</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {data.assessments.map((a) => (
-                <TableRow key={a._id}>
-                  <TableCell>{a.session.date}</TableCell>
-                  <TableCell>{a.mode}</TableCell>
-                  <TableCell>{formatScore(a.computed.movementAverage)}</TableCell>
-                  <TableCell>{formatScore(a.computed.socialAverage)}</TableCell>
-                  <TableCell>{formatScore(a.computed.mentalAverage)}</TableCell>
-                  <TableCell>
+                <Table.Tr key={a._id}>
+                  <Table.Td>{a.session.date}</Table.Td>
+                  <Table.Td>{a.mode}</Table.Td>
+                  <Table.Td>{formatScore(a.computed.movementAverage)}</Table.Td>
+                  <Table.Td>{formatScore(a.computed.socialAverage)}</Table.Td>
+                  <Table.Td>{formatScore(a.computed.mentalAverage)}</Table.Td>
+                  <Table.Td>
                     <strong>{formatScore(a.computed.ski)}</strong>
-                  </TableCell>
-                </TableRow>
+                  </Table.Td>
+                </Table.Tr>
               ))}
-            </TableBody>
+            </Table.Tbody>
           </Table>
-        </TableContainer>
+        </Paper>
       </SectionCard>
 
       <SectionCard title={t("evidenceImages")}>
         {assessmentsWithImages.length === 0 ? (
-          <Typography color="text.secondary">{t("noImages")}</Typography>
+          <Text c="dimmed">{t("noImages")}</Text>
         ) : (
-          <Stack spacing={2}>
+          <Stack gap="md">
             {assessmentsWithImages.map((assessment) => (
-              <Paper key={assessment._id} variant="outlined" sx={{ p: 1.5 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <Paper key={assessment._id} withBorder p="sm">
+                <Text size="sm" fw={600} mb="xs">
                   {assessment.session.date}
-                </Typography>
-                <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: "wrap" }}>
+                </Text>
+                <Stack gap="sm" style={{ flexDirection: "row", flexWrap: "wrap" }}>
                   {assessment.attachments.map((attachment) => (
-                    <Paper key={attachment.id} variant="outlined" sx={{ p: 1, width: 180 }}>
+                    <Paper key={attachment.id} withBorder p="xs" style={{ width: 180 }}>
                       <Image
                         src={attachment.thumbUrl || attachment.url}
                         alt={attachment.name || "Evidence image"}
@@ -157,9 +144,9 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                         style={{ width: "100%", height: "auto", borderRadius: 8 }}
                         unoptimized
                       />
-                      <Link href={attachment.url} target="_blank" rel="noreferrer" variant="caption" sx={{ mt: 0.5, display: "inline-block" }}>
+                      <Text component="a" href={attachment.url} target="_blank" rel="noreferrer" size="xs" mt={6} style={{ display: "inline-block" }}>
                         {tc("view")}
-                      </Link>
+                      </Text>
                     </Paper>
                   ))}
                 </Stack>
@@ -183,34 +170,29 @@ function TrendMetric({
   target?: number;
   domain: AssessmentDomain;
 }) {
-  const theme = useTheme();
-  const barColor = getDomainMainColor(theme, domain);
+  const barColor = getDomainMainColor(domain);
   const pct = Math.min(100, Math.max(0, (value / 6) * 100));
   return (
-    <Box sx={{ flex: "1 1 200px", minWidth: 160 }}>
-      <Stack direction="row" sx={{ mb: 0.5, justifyContent: "space-between", alignItems: "baseline" }}>
-        <Typography variant="body2" color="text.secondary">
+    <Box style={{ flex: "1 1 200px", minWidth: 160 }}>
+      <Stack gap={4} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" }}>
+        <Text size="sm" c="dimmed">
           {label}
-        </Typography>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+        </Text>
+        <Text fw={700}>
           {formatScore(value)}
-        </Typography>
+        </Text>
       </Stack>
-      <LinearProgress
-        variant="determinate"
+      <Progress
         value={pct}
-        sx={{
-          height: 10,
-          borderRadius: 1,
-          bgcolor: "action.hover",
-          "& .MuiLinearProgress-bar": { borderRadius: 1, bgcolor: barColor }
-        }}
+        color={barColor}
+        radius="sm"
+        size="md"
         aria-label={label}
       />
       {typeof target === "number" ? (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
+        <Text size="xs" c="dimmed" mt={6}>
           Target: {formatScore(target)}
-        </Typography>
+        </Text>
       ) : null}
     </Box>
   );
@@ -225,14 +207,13 @@ function RapidRadarChart({
   data: Array<{ label: string; value: number }>;
   domain: AssessmentDomain;
 }) {
-  const theme = useTheme();
-  const domainColor = getDomainMainColor(theme, domain);
+  const domainColor = getDomainMainColor(domain);
   return (
-    <Paper variant="outlined" sx={{ p: 1.5 }}>
-      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+    <Paper withBorder p="sm">
+      <Text size="sm" fw={600} mb="xs">
         {title}
-      </Typography>
-      <Box sx={{ width: "100%", height: 220 }}>
+      </Text>
+      <Box style={{ width: "100%", height: 220 }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
             <PolarGrid />

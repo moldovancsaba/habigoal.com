@@ -1,42 +1,44 @@
 "use client";
 
-import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { alpha } from "@mui/material/styles";
+import { SegmentedControl } from "@mantine/core";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
+import { KIDEX_COLORS } from "@/theme/tokens";
 
 export function ThemeSwitcher() {
   const { mode, setMode } = useThemeMode();
 
   return (
-    <ToggleButtonGroup
-      exclusive
+    <SegmentedControl
       value={mode}
-      onChange={(_, value) => value && setMode(value)}
-      size="small"
+      onChange={(value) => value && setMode(value as "light" | "dark")}
       fullWidth
-      sx={{
-        "& .MuiToggleButton-root": {
-          color: (theme) => alpha(theme.palette.common.white, 0.8),
-          borderColor: (theme) => alpha(theme.palette.common.white, 0.35),
-          py: 0.75
+      radius="md"
+      size="sm"
+      color="kidex"
+      data={[
+        { value: "light", label: "☀️" },
+        { value: "dark", label: "🌙" }
+      ]}
+      styles={{
+        root: {
+          backgroundColor: "transparent",
+          border: `1px solid ${KIDEX_COLORS.navBorderMuted}`,
+          padding: 2
         },
-        "& .MuiToggleButton-root.Mui-selected": {
-          bgcolor: "secondary.main",
-          color: "common.white",
-          borderColor: "secondary.main",
-          "&:hover": { bgcolor: "secondary.dark" }
+        control: {
+          minHeight: 38
+        },
+        label: {
+          color: KIDEX_COLORS.navTextMuted,
+          fontSize: 18,
+          lineHeight: "20px",
+          paddingInline: 8
+        },
+        indicator: {
+          backgroundColor: KIDEX_COLORS.brandTeal,
+          borderRadius: 10
         }
       }}
-    >
-      <ToggleButton value="light" aria-label="light mode">
-        <LightModeOutlined fontSize="small" sx={{ mr: 0.5 }} />
-      </ToggleButton>
-      <ToggleButton value="dark" aria-label="dark mode">
-        <DarkModeOutlined fontSize="small" sx={{ mr: 0.5 }} />
-      </ToggleButton>
-    </ToggleButtonGroup>
+    />
   );
 }

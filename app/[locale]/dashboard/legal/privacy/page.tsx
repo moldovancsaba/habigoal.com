@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import { Button, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -20,23 +18,23 @@ export default function PrivacyPolicyPage() {
   }, []);
 
   return (
-    <Stack spacing={2.5}>
+    <Stack gap="md">
       <PageHeader title={t("privacyTitle")} subtitle={`${t("effectiveDate")}: ${settings.company.registered}`} />
 
       <SectionCard title={t("privacyCollectionTitle")}>
-        <Typography variant="body2">{t("privacyCollectionBody")}</Typography>
+        <Text size="sm">{t("privacyCollectionBody")}</Text>
       </SectionCard>
 
       <SectionCard title={t("privacyUseTitle")}>
-        <Typography variant="body2">{t("privacyUseBody")}</Typography>
+        <Text size="sm">{t("privacyUseBody")}</Text>
       </SectionCard>
 
       <SectionCard title={t("privacyRetentionTitle")}>
-        <Typography variant="body2">{t("privacyRetentionBody")}</Typography>
+        <Text size="sm">{t("privacyRetentionBody")}</Text>
       </SectionCard>
 
       <SectionCard title={t("companyDataTitle")}>
-        <Stack spacing={0.75}>
+        <Stack gap={6}>
           <Row label={t("companyDataTitle")} value={settings.company.name} />
           <Row label={t("idNo")} value={settings.company.ico} />
           <Row label={t("registered")} value={settings.company.registered} />
@@ -46,12 +44,12 @@ export default function PrivacyPolicyPage() {
           <Row label={t("vatNo")} value={settings.company.vatNo} />
           <Row label={t("website")} value={settings.company.website} />
         </Stack>
-        <Typography variant="body2" sx={{ mt: 1 }}>
+        <Text size="sm" mt="xs">
           <strong>App:</strong> KIDEX v{APP_VERSION}
-        </Typography>
+        </Text>
       </SectionCard>
 
-      <Button component={Link} href="/dashboard" variant="outlined" sx={{ alignSelf: "flex-start" }}>
+      <Button component={Link} href="/dashboard" variant="light" color="kidex" style={{ alignSelf: "flex-start" }}>
         {t("backToDashboard")}
       </Button>
     </Stack>
@@ -60,8 +58,8 @@ export default function PrivacyPolicyPage() {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <Typography variant="body2">
+    <Text size="sm">
       <strong>{label}:</strong> {value}
-    </Typography>
+    </Text>
   );
 }
