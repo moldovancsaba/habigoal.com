@@ -1,0 +1,49 @@
+{
+  "Common": {
+    "save": "Save",
+    "update": "Update",
+    "saving": "Saving...",
+    "new": "New",
+    "delete": "Delete",
+    "remove": "Remove",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "setup": "Setup",
+    "scoring": "Scoring",
+    "report": "Report",
+    "records": "Records",
+    "settings": "Settings"
+  },
+  "Assessment": {
+    "saved": "Assessment saved.",
+    "saveError": "Save failed. Please check your connection.",
+    "setupTitle": "Assessment setup",
+    "childName": "Child name",
+    "birthDate": "Birth date",
+    "ageGroup": "Age group",
+    "mode": "Mode",
+    "conductor": "Conductor",
+    "location": "Location",
+    "observers": "Observers",
+    "context": "Context",
+    "knownTraits": "Known traits",
+    "parentSignals": "Parent / pedagogue signals",
+    "consentPhoto": "Video/photo consent",
+    "consentReport": "Parent report consent",
+    "evidenceImages": "Evidence images",
+    "uploadImage": "Upload image",
+    "uploading": "Uploading...",
+    "noImages": "No evidence images attached.",
+    "professionalNotes": "Professional notes",
+    "generalObservation": "General observation",
+    "adaptationNeeds": "Adaptation needs",
+    "referralNote": "Referral-safe note",
+    "reportPreview": "Report preview",
+    "strengths": "Strengths",
+    "developmentPriorities": "Development priorities"
+  }
+}

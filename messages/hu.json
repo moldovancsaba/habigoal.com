@@ -1,0 +1,49 @@
+{
+  "Common": {
+    "save": "Mentés",
+    "update": "Frissítés",
+    "saving": "Mentés...",
+    "new": "Új",
+    "delete": "Törlés",
+    "remove": "Eltávolítás",
+    "loading": "Betöltés...",
+    "error": "Hiba",
+    "success": "Sikeres"
+  },
+  "Dashboard": {
+    "title": "Vezérlőpult",
+    "setup": "Beállítás",
+    "scoring": "Pontozás",
+    "report": "Riport",
+    "records": "Rekordok",
+    "settings": "Beállítások"
+  },
+  "Assessment": {
+    "saved": "Felmérés elmentve.",
+    "saveError": "A mentés sikertelen. Kérjük, ellenőrizze a kapcsolatot.",
+    "setupTitle": "Felmérés beállítása",
+    "childName": "Gyermek neve",
+    "birthDate": "Születési dátum",
+    "ageGroup": "Korcsoport",
+    "mode": "Mód",
+    "conductor": "Konduktor",
+    "location": "Helyszín",
+    "observers": "Megfigyelők",
+    "context": "Kontextus",
+    "knownTraits": "Ismert jellemzők",
+    "parentSignals": "Szülői / pedagógusi jelzések",
+    "consentPhoto": "Videó/fotó hozzájárulás",
+    "consentReport": "Szülői riport hozzájárulás",
+    "evidenceImages": "Bizonyíték képek",
+    "uploadImage": "Kép feltöltése",
+    "uploading": "Feltöltés...",
+    "noImages": "Nincsenek csatolt bizonyíték képek.",
+    "professionalNotes": "Szakmai megjegyzések",
+    "generalObservation": "Általános megfigyelés",
+    "adaptationNeeds": "Adaptációs igények",
+    "referralNote": "Beutaló-biztos megjegyzés",
+    "reportPreview": "Riport előnézet",
+    "strengths": "Erősségek",
+    "developmentPriorities": "Fejlesztési prioritások"
+  }
+}

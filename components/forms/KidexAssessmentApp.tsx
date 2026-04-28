@@ -1,8 +1,12 @@
 "use client";
 
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { computeAssessment } from "@/lib/scoring";
+import { calculateAgeGroup } from "@/lib/utils/age";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
+import { getConductors, getObservers, User } from "@/services/user-service";
 import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
 
 const emptyAssessment: AssessmentPayload = {
@@ -54,12 +58,18 @@ function fmt(value: number | null) {
 }
 
 export function KidexAssessmentApp() {
+  const t = useTranslations("Assessment");
+  const tc = useTranslations("Common");
+  
   const [assessment, setAssessment] = useState<AssessmentPayload>(() => cloneAssessment(emptyAssessment));
   const [recordId, setRecordId] = useState<string>("");
-  const [savedRecords, setSavedRecords] = useState<AssessmentRecord[]>([]);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  
+  const [conductors, setConductors] = useState<User[]>([]);
+  const [observers, setObservers] = useState<User[]>([]);
+
   const sections = sectionsForMode(assessment.mode);
   const computed = useMemo(() => computeAssessment(assessment), [assessment]);
 
@@ -68,28 +78,36 @@ export function KidexAssessmentApp() {
     if (raw) {
       setAssessment({ ...cloneAssessment(emptyAssessment), ...JSON.parse(raw) });
     }
-    void refreshRecords();
+    
+    // Load settings
+    void getConductors().then(setConductors);
+    void getObservers().then(setObservers);
   }, []);
 
   useEffect(() => {
     localStorage.setItem("kidex-draft", JSON.stringify(assessment));
   }, [assessment]);
 
-  async function refreshRecords() {
-    const response = await fetch("/api/assessments").catch(() => null);
-    if (!response?.ok) return;
-    const data = await response.json() as { assessments?: AssessmentRecord[] };
-    setSavedRecords(data.assessments || []);
-  }
-
   function update<T extends keyof AssessmentPayload>(group: T, key: keyof AssessmentPayload[T], value: unknown) {
-    setAssessment((current) => ({
-      ...current,
-      [group]: {
-        ...(current[group] as object),
-        [key]: value
+    setAssessment((current) => {
+      const next = {
+        ...current,
+        [group]: {
+          ...(current[group] as object),
+          [key]: value
+        }
+      };
+
+      // Auto-calculate age group if birthDate changed
+      if (group === "child" && key === "birthDate") {
+        const ageGroup = calculateAgeGroup(value as string);
+        if (ageGroup) {
+          next.child.ageGroup = ageGroup;
+        }
       }
-    }));
+
+      return next;
+    });
     setSaveState("idle");
   }
 
@@ -118,30 +136,15 @@ export function KidexAssessmentApp() {
     });
 
     if (!response?.ok) {
-      const data = await response?.json().catch(() => null) as { error?: string } | null;
       setSaveState("error");
-      setMessage(data?.error || "Save failed. Check MongoDB Atlas environment variables.");
+      setMessage(t("saveError"));
       return;
     }
 
     const data = await response.json() as { assessment: AssessmentRecord };
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
-    setMessage("Assessment saved to MongoDB Atlas.");
-    await refreshRecords();
-  }
-
-  async function loadAssessment(id: string) {
-    const response = await fetch(`/api/assessments/${id}`);
-    if (!response.ok) return;
-    const data = await response.json() as { assessment: AssessmentRecord };
-    const { _id, createdAt, updatedAt, computed: _computed, ...payload } = data.assessment;
-    void createdAt;
-    void updatedAt;
-    void _computed;
-    setRecordId(_id || "");
-    setAssessment(payload);
-    setSaveState("idle");
+    setMessage(t("saved"));
   }
 
   function newAssessment() {
@@ -169,8 +172,7 @@ export function KidexAssessmentApp() {
     });
     setUploading(false);
     if (!response?.ok) {
-      const data = await response?.json().catch(() => null) as { error?: string } | null;
-      setMessage(data?.error || "ImgBB upload failed.");
+      setMessage("Upload failed.");
       return;
     }
     const data = await response.json() as { attachment: EvidenceAttachment };
@@ -178,7 +180,7 @@ export function KidexAssessmentApp() {
       ...current,
       attachments: [...current.attachments, data.attachment]
     }));
-    setMessage("Image uploaded to ImgBB and attached to this assessment.");
+    setMessage("Image uploaded and attached.");
   }
 
   function removeAttachment(id: string) {
@@ -196,152 +198,130 @@ export function KidexAssessmentApp() {
     .slice(0, 3);
 
   return (
-    <div className="shell">
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brandMark">K</div>
-          <div>
-            <strong>KIDEX</strong>
-            <span>Assessment OS</span>
-          </div>
+    <div className="assessment-container">
+      <header className="topbar">
+        <div>
+          <span className="eyebrow">Bio-psycho-social sport assessment</span>
+          <h1>KIDEX conductor survey</h1>
         </div>
-        <nav className="nav">
-          <a className="active" href="#setup">Setup</a>
-          <a href="#scoring">Scoring</a>
-          <a href="#report">Report</a>
-          <a href="#records">Records</a>
-        </nav>
-        <div className="sidePanel">
-          <span className="eyebrow">Current status</span>
-          <strong>{computed.completion.done}/{computed.completion.total}</strong>
-          <small>items scored</small>
-          <small>{assessment.session.consentPhoto ? "Media consent OK" : "Media consent missing"}</small>
+        <div className="topActions">
+          <button className="btn ghost" onClick={newAssessment}>{tc("new")}</button>
+          <button className="btn primary" onClick={saveAssessment} disabled={saveState === "saving"}>
+            {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
+          </button>
         </div>
-      </aside>
+      </header>
 
-      <main className="main">
-        <header className="topbar">
-          <div>
-            <span className="eyebrow">Bio-psycho-social sport assessment</span>
-            <h1>KIDEX conductor survey</h1>
+      {message && <div className={`notice ${saveState === "error" ? "error" : ""}`}>{message}</div>}
+
+      <section className="metrics">
+        <Metric label="Movement" value={fmt(computed.movementAverage)} />
+        <Metric label="Social" value={fmt(computed.socialAverage)} />
+        <Metric label="Mental" value={fmt(computed.mentalAverage)} />
+        <Metric label="SKI" value={fmt(computed.ski)} />
+      </section>
+
+      <section className="grid two" id="setup">
+        <Panel title={t("setupTitle")}>
+          <div className="formGrid">
+            <Field label={t("childName")} value={assessment.child.name} onChange={(value) => update("child", "name", value)} />
+            <Field label={t("birthDate")} type="date" value={assessment.child.birthDate} onChange={(value) => update("child", "birthDate", value)} />
+            <Select label={t("ageGroup")} value={assessment.child.ageGroup} onChange={(value) => update("child", "ageGroup", value)} options={["4-6", "7-9", "10-12"]} />
+            <Select label={t("mode")} value={assessment.mode} onChange={(value) => setAssessment((current) => ({ ...current, mode: value as AssessmentPayload["mode"] }))} options={["rapid", "full"]} />
+            
+            <SearchableSelect 
+              label={t("conductor")} 
+              value={assessment.session.conductor} 
+              options={conductors} 
+              onChange={(value) => update("session", "conductor", value)} 
+            />
+            
+            <Field label={t("location")} value={assessment.session.location} onChange={(value) => update("session", "location", value)} />
+            
+            <SearchableSelect 
+              label={t("observers")} 
+              value={assessment.session.observers} 
+              options={observers} 
+              onChange={(value) => update("session", "observers", value)} 
+            />
+            
+            <Select label={t("context")} value={assessment.session.context} onChange={(value) => update("session", "context", value)} options={["event", "structured", "spontaneous", "mixed"]} />
+            <TextArea label={t("knownTraits")} value={assessment.child.knownTraits} onChange={(value) => update("child", "knownTraits", value)} />
+            <TextArea label={t("parentSignals")} value={assessment.child.parentSignals} onChange={(value) => update("child", "parentSignals", value)} />
+            <label className="check"><input type="checkbox" checked={assessment.session.consentPhoto} onChange={(event) => update("session", "consentPhoto", event.target.checked)} /> {t("consentPhoto")}</label>
+            <label className="check"><input type="checkbox" checked={assessment.session.consentReport} onChange={(event) => update("session", "consentReport", event.target.checked)} /> {t("consentReport")}</label>
           </div>
-          <div className="topActions">
-            <button className="btn ghost" onClick={newAssessment}>New</button>
-            <button className="btn primary" onClick={saveAssessment} disabled={saveState === "saving"}>
-              {saveState === "saving" ? "Saving..." : recordId ? "Update" : "Save"}
-            </button>
-          </div>
-        </header>
+        </Panel>
 
-        {message && <div className={`notice ${saveState === "error" ? "error" : ""}`}>{message}</div>}
-
-        <section className="metrics">
-          <Metric label="Movement" value={fmt(computed.movementAverage)} />
-          <Metric label="Social" value={fmt(computed.socialAverage)} />
-          <Metric label="Mental" value={fmt(computed.mentalAverage)} />
-          <Metric label="SKI" value={fmt(computed.ski)} />
-        </section>
-
-        <section className="grid two" id="setup">
-          <Panel title="Assessment setup">
-            <div className="formGrid">
-              <Field label="Child name" value={assessment.child.name} onChange={(value) => update("child", "name", value)} />
-              <Field label="Birth date" type="date" value={assessment.child.birthDate} onChange={(value) => update("child", "birthDate", value)} />
-              <Select label="Age group" value={assessment.child.ageGroup} onChange={(value) => update("child", "ageGroup", value)} options={["4-6", "7-9", "10-12"]} />
-              <Select label="Mode" value={assessment.mode} onChange={(value) => setAssessment((current) => ({ ...current, mode: value as AssessmentPayload["mode"] }))} options={["rapid", "full"]} />
-              <Field label="Conductor" value={assessment.session.conductor} onChange={(value) => update("session", "conductor", value)} />
-              <Field label="Location" value={assessment.session.location} onChange={(value) => update("session", "location", value)} />
-              <Field label="Observers" value={assessment.session.observers} onChange={(value) => update("session", "observers", value)} />
-              <Select label="Context" value={assessment.session.context} onChange={(value) => update("session", "context", value)} options={["event", "structured", "spontaneous", "mixed"]} />
-              <TextArea label="Known traits" value={assessment.child.knownTraits} onChange={(value) => update("child", "knownTraits", value)} />
-              <TextArea label="Parent / pedagogue signals" value={assessment.child.parentSignals} onChange={(value) => update("child", "parentSignals", value)} />
-              <label className="check"><input type="checkbox" checked={assessment.session.consentPhoto} onChange={(event) => update("session", "consentPhoto", event.target.checked)} /> Video/photo consent</label>
-              <label className="check"><input type="checkbox" checked={assessment.session.consentReport} onChange={(event) => update("session", "consentReport", event.target.checked)} /> Parent report consent</label>
-            </div>
-          </Panel>
-
-          <Panel title="Evidence images">
-            <p className="muted">Images are uploaded to ImgBB through the server route. Upload is blocked until photo/video consent is checked.</p>
-            <label className={`upload ${assessment.session.consentPhoto ? "" : "disabled"}`}>
-              <input type="file" accept="image/*" onChange={uploadImage} disabled={!assessment.session.consentPhoto || uploading} />
-              {uploading ? "Uploading..." : "Upload image to ImgBB"}
-            </label>
-            <div className="attachments">
-              {assessment.attachments.length === 0 && <span className="empty">No evidence images attached.</span>}
-              {assessment.attachments.map((attachment) => (
-                <div className="attachment" key={attachment.id}>
-                  <img src={attachment.thumbUrl || attachment.url} alt={attachment.name} />
-                  <div>
-                    <a href={attachment.url} target="_blank" rel="noreferrer">{attachment.name || "Image"}</a>
-                    <button onClick={() => removeAttachment(attachment.id)}>Remove</button>
-                  </div>
+        <Panel title={t("evidenceImages")}>
+          <p className="muted">Images are uploaded securely. Upload is blocked until photo/video consent is checked.</p>
+          <label className={`upload ${assessment.session.consentPhoto ? "" : "disabled"}`}>
+            <input type="file" accept="image/*" onChange={uploadImage} disabled={!assessment.session.consentPhoto || uploading} />
+            {uploading ? t("uploading") : t("uploadImage")}
+          </label>
+          <div className="attachments">
+            {assessment.attachments.length === 0 && <span className="empty">{t("noImages")}</span>}
+            {assessment.attachments.map((attachment) => (
+              <div className="attachment" key={attachment.id}>
+                <img src={attachment.thumbUrl || attachment.url} alt={attachment.name} />
+                <div>
+                  <a href={attachment.url} target="_blank" rel="noreferrer">{attachment.name || "Image"}</a>
+                  <button onClick={() => removeAttachment(attachment.id)}>{tc("remove")}</button>
                 </div>
-              ))}
-            </div>
-          </Panel>
-        </section>
-
-        <div id="scoring" />
-        {sections.map((section, sectionIndex) => (
-          <Panel
-            key={section.key}
-            title={`${section.title} (${Math.round(section.weight * 100)}%)`}
-            right={<span className={`badge ${section.key}`}>{section.key}</span>}
-          >
-            <div className="scoreList">
-              {section.items.map((item, itemIndex) => {
-                const entry = assessment.scores[item.key];
-                return (
-                  <div className="scoreRow" key={item.key}>
-                    <div className="scoreNum">{sectionIndex * 25 + itemIndex + 1}</div>
-                    <div className="scoreText">
-                      <strong>{item.title}</strong>
-                      <span>{item.prompt}</span>
-                      <textarea
-                        value={entry?.note || ""}
-                        onChange={(event) => updateScore(item.key, { note: event.target.value })}
-                        aria-label={`${item.title} observation note`}
-                      />
-                    </div>
-                    <select
-                      value={scoreValue(entry)}
-                      onChange={(event) => updateScore(item.key, { score: event.target.value ? Number(event.target.value) : "" })}
-                    >
-                      <option value="">-</option>
-                      {[1, 2, 3, 4, 5, 6].map((value) => <option value={value} key={value}>{value}</option>)}
-                    </select>
-                  </div>
-                );
-              })}
-            </div>
-          </Panel>
-        ))}
-
-        <section className="grid two" id="report">
-          <Panel title="Professional notes">
-            <TextArea label="General observation" value={assessment.notes.general} onChange={(value) => update("notes", "general", value)} />
-            <TextArea label="Adaptation needs" value={assessment.notes.adaptations} onChange={(value) => update("notes", "adaptations", value)} />
-            <TextArea label="Referral-safe note" value={assessment.notes.referral} onChange={(value) => update("notes", "referral", value)} />
-          </Panel>
-          <Panel title="Report preview">
-            <ReportList title="Strengths" items={strengths.map(([key, entry]) => `${labelFor(key)} (${entry.score})`)} />
-            <ReportList title="Development priorities" items={needs.map(([key, entry]) => `${labelFor(key)} (${entry.score})`)} />
-            <p className="muted">Next step: {computed.ski === null ? "Complete all dimensions." : computed.ski < 3.5 ? "Stabilizing and coordination-focused program." : "Sport orientation and follow-up measurement."}</p>
-          </Panel>
-        </section>
-
-        <Panel title="Saved MongoDB Atlas records" id="records">
-          <div className="records">
-            {savedRecords.length === 0 && <span className="empty">No saved records loaded.</span>}
-            {savedRecords.map((record) => (
-              <button key={record._id} onClick={() => record._id && loadAssessment(record._id)}>
-                <strong>{record.child.name || "Unnamed child"}</strong>
-                <span>{record.mode} · SKI {fmt(record.computed.ski)} · {record.updatedAt?.slice(0, 10)}</span>
-              </button>
+              </div>
             ))}
           </div>
         </Panel>
-      </main>
+      </section>
+
+      <div id="scoring" />
+      {sections.map((section, sectionIndex) => (
+        <Panel
+          key={section.key}
+          title={`${section.title} (${Math.round(section.weight * 100)}%)`}
+          right={<span className={`badge ${section.key}`}>{section.key}</span>}
+        >
+          <div className="scoreList">
+            {section.items.map((item, itemIndex) => {
+              const entry = assessment.scores[item.key];
+              return (
+                <div className="scoreRow" key={item.key}>
+                  <div className="scoreNum">{sectionIndex * 25 + itemIndex + 1}</div>
+                  <div className="scoreText">
+                    <strong>{item.title}</strong>
+                    <span>{item.prompt}</span>
+                    <textarea
+                      value={entry?.note || ""}
+                      onChange={(event) => updateScore(item.key, { note: event.target.value })}
+                      aria-label={`${item.title} observation note`}
+                    />
+                  </div>
+                  <select
+                    value={scoreValue(entry)}
+                    onChange={(event) => updateScore(item.key, { score: event.target.value ? Number(event.target.value) : "" })}
+                  >
+                    <option value="">-</option>
+                    {[1, 2, 3, 4, 5, 6].map((value) => <option value={value} key={value}>{value}</option>)}
+                  </select>
+                </div>
+              );
+            })}
+          </div>
+        </Panel>
+      ))}
+
+      <section className="grid two" id="report">
+        <Panel title={t("professionalNotes")}>
+          <TextArea label={t("generalObservation")} value={assessment.notes.general} onChange={(value) => update("notes", "general", value)} />
+          <TextArea label={t("adaptationNeeds")} value={assessment.notes.adaptations} onChange={(value) => update("notes", "adaptations", value)} />
+          <TextArea label={t("referralNote")} value={assessment.notes.referral} onChange={(value) => update("notes", "referral", value)} />
+        </Panel>
+        <Panel title={t("reportPreview")}>
+          <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${labelFor(key)} (${entry.score})`)} />
+          <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${labelFor(key)} (${entry.score})`)} />
+          <p className="muted">Next step: {computed.ski === null ? "Complete all dimensions." : computed.ski < 3.5 ? "Stabilizing and coordination-focused program." : "Sport orientation and follow-up measurement."}</p>
+        </Panel>
+      </section>
     </div>
   );
 }
