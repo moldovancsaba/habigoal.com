@@ -90,7 +90,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </Drawer>
 
       <AppShell
-        header={{ height: { base: 56, md: 0 }, collapsed: false }}
+        header={{ height: 56, collapsed: false }}
         navbar={{ width: KIDEX_LAYOUT.drawerWidth, breakpoint: "md" }}
         padding={0}
         styles={{
@@ -127,7 +127,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
         <AppShell.Main>
           <Box className="dashboard-main" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
-            <Box style={{ flex: 1 }} pt={{ base: 56, md: 0 }}>
+            <Box style={{ flex: 1 }} pt={56}>
               <PageContainer>{children}</PageContainer>
             </Box>
             <AppFooter />

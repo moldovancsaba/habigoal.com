@@ -5,6 +5,8 @@ import { KIDEX_FONT_FAMILY_LTR, KIDEX_FONT_FAMILY_RTL, KIDEX_FONT_SIZES, KIDEX_F
 type Direction = "ltr" | "rtl";
 
 export function getKidexMantineTheme(mode: "light" | "dark", direction: Direction = "ltr"): MantineThemeOverride {
+  const isDark = mode === "dark";
+
   return createTheme({
     primaryColor: "kidex",
     defaultRadius: "md",
@@ -40,6 +42,18 @@ export function getKidexMantineTheme(mode: "light" | "dark", direction: Directio
     },
     black: KIDEX_COLORS.brandNavy,
     white: KIDEX_COLORS.white,
-    primaryShade: 5
+    primaryShade: 5,
+    components: {
+      Text: {
+        defaultProps: {
+          c: isDark ? "white" : "black"
+        }
+      },
+      Title: {
+        defaultProps: {
+          c: isDark ? "white" : "black"
+        }
+      }
+    }
   });
 }

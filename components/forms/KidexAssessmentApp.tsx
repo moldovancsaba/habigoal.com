@@ -190,20 +190,26 @@ function Stack({ spacing, direction, sx, children, divider, ...rest }: AnyProps)
     ? nodes.flatMap((node, index) => (index === 0 ? [node] : [isValidElement(divider) ? cloneElement(divider) : divider, node]))
     : nodes) as ReactNode[];
   return (
-    <MantineStack gap={typeof spacing === "number" ? `${spacing * 0.25}rem` : (spacing as string | number | undefined)} style={style} {...(rest as Record<string, unknown>)}>
+    <MantineStack gap={typeof spacing === "number" ? `${spacing * 0.5}rem` : (spacing as string | number | undefined)} style={style} {...(rest as Record<string, unknown>)}>
       {withDividers}
     </MantineStack>
   );
 }
 
-function TextField({ multiline, minRows, type, slotProps, ...rest }: AnyProps) {
+function TextField({ multiline, minRows, type, slotProps, fullWidth, variant, size, style, ...rest }: AnyProps) {
   const extraProps = slotProps as { inputLabel?: { shrink?: boolean } } | undefined;
   const textProps = { ...(rest as Record<string, unknown>) };
+  const normalizedVariant = variant === "outlined" ? "default" : (variant as string | undefined);
+  const normalizedSize = size === "small" ? "sm" : size === "medium" ? "md" : (size as string | undefined);
+  const mergedStyle = {
+    ...(style as CSSProperties | undefined),
+    ...(fullWidth ? { width: "100%" } : null)
+  } as CSSProperties;
   if (extraProps?.inputLabel?.shrink) {
     textProps.labelProps = { style: { transform: "translate(0, -0.35rem) scale(0.85)" } };
   }
-  if (multiline) return <Textarea minRows={(minRows as number) ?? 2} {...textProps} />;
-  return <TextInput type={type as string | undefined} {...textProps} />;
+  if (multiline) return <Textarea minRows={(minRows as number) ?? 2} variant={normalizedVariant} size={normalizedSize} style={mergedStyle} {...textProps} />;
+  return <TextInput type={type as string | undefined} variant={normalizedVariant} size={normalizedSize} style={mergedStyle} {...textProps} />;
 }
 
 function ToggleButton({ selected, onChange, sx, children, ...rest }: AnyProps) {
