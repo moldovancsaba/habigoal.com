@@ -3,7 +3,10 @@ import { listAllUsers, upsertUser } from "@/repositories/user.repository";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { parseUserPayload } from "@/lib/validations";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authError = requireRole(request, ["admin", "conductor", "observer"]);
+  if (authError) return authError;
+
   try {
     const users = await listAllUsers();
     return NextResponse.json({ users });

@@ -6,6 +6,9 @@ import { deleteAssessmentsForChild, updateAssessmentsForChildProfile } from "@/r
 import { deleteChildById, getChildById, updateChildById } from "@/repositories/child.repository";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const authError = requireRole(_request, ["admin", "conductor", "observer"]);
+  if (authError) return authError;
+
   try {
     const { id } = await params;
     if (!ObjectId.isValid(id)) {

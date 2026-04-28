@@ -4,7 +4,10 @@ import { jsonError, readJson, requireRole } from "@/lib/api";
 import { parseSettingsPayload } from "@/lib/validations";
 import { DEFAULT_KIDEX_SETTINGS } from "@/services/settings-service";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authError = requireRole(request, ["admin", "conductor", "observer"]);
+  if (authError) return authError;
+
   try {
     const settings = await getGlobalSettings();
     if (!settings) {

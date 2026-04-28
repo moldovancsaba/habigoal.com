@@ -45,6 +45,7 @@ Allowed roles currently used:
 - `GET /api/children`
   - Returns centralized child profiles.
   - If empty, attempts a sync from historical assessments.
+  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
 
 - `POST /api/children`
   - Creates/updates child profile by identity (`name` + `birthDate`).
@@ -52,6 +53,7 @@ Allowed roles currently used:
 
 - `GET /api/children/:id`
   - Returns one child profile.
+  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
 
 - `PATCH /api/children/:id`
   - Updates child profile fields.
@@ -71,6 +73,7 @@ Allowed roles currently used:
 
 - `GET /api/users`
   - Returns user list with roles.
+  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
 
 - `POST /api/users`
   - Upserts user with role set (`conductor`, `observer`).
@@ -84,6 +87,7 @@ Allowed roles currently used:
     - `observers[]`
     - `locations[]`
     - `company` profile fields (name, ID, legal form, address, VAT, etc.)
+  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
 
 - `POST /api/settings`
   - Saves settings document.
