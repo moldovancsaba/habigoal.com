@@ -762,7 +762,6 @@ export function KidexAssessmentApp() {
               return (
                 <Paper
                   key={item.key}
-                  variant="outlined"
                   sx={{
                     px: { xs: 1.5, sm: 2 },
                     py: { xs: 1.25, sm: 1.5 },
