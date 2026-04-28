@@ -438,51 +438,76 @@ export function KidexAssessmentApp() {
           title={`${ts(section.key)} (${Math.round(section.weight * 100)}%)`}
           action={<Chip label={ts(section.domain)} size="small" color={domainChipColor(section.domain)} variant={section.domain === "movement" ? "outlined" : "filled"} />}
         >
-          <Stack divider={<Divider flexItem />} spacing={2}>
+          <Stack spacing={1.25}>
             {section.items.map((item, itemIndex) => {
               const entry = assessment.scores[item.key];
               return (
-                <Stack key={item.key} direction={{ xs: "column", md: "row" }} spacing={2} sx={{ alignItems: { md: "flex-start" } }}>
-                  <Typography variant="subtitle2" sx={{ width: { md: 40 }, flexShrink: 0, pt: 1 }}>
-                    {sectionIndex * 25 + itemIndex + 1}
-                  </Typography>
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                      {ts(`${item.key}.title`)}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      {ts(`${item.key}.prompt`)}
-                    </Typography>
-                    <TextField
-                      value={entry?.note || ""}
-                      onChange={(e) => updateScore(item.key, { note: e.target.value })}
-                      placeholder={t("observationNote")}
-                      fullWidth
-                      multiline
-                      minRows={2}
-                    />
-                  </Box>
-                  <FormControl sx={{ minWidth: 80 }} size="small">
-                    <MuiSelect
-                      displayEmpty
-                      value={scoreValue(entry) === "" ? "" : String(scoreValue(entry))}
-                      onChange={(e) =>
-                        updateScore(item.key, { score: e.target.value ? Number(e.target.value) : "" })
-                      }
-                      slotProps={{ input: { "aria-label": t("observationNote") } }}
-                      renderValue={(selected) => (selected === "" ? "–" : selected)}
+                <Paper
+                  key={item.key}
+                  variant="outlined"
+                  sx={{
+                    px: { xs: 1.5, sm: 2 },
+                    py: { xs: 1.25, sm: 1.5 },
+                    borderRadius: 2,
+                    bgcolor: "background.paper"
+                  }}
+                >
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={1}
+                    sx={{ justifyContent: "space-between", alignItems: { sm: "flex-start" } }}
+                  >
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        {sectionIndex * 25 + itemIndex + 1}
+                      </Typography>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+                        {ts(`${item.key}.title`)}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {ts(`${item.key}.prompt`)}
+                      </Typography>
+                    </Box>
+                    <FormControl
+                      size="small"
+                      sx={{
+                        minWidth: 84,
+                        alignSelf: { xs: "flex-end", sm: "flex-start" },
+                        "& .MuiSelect-select": { py: 0.75 }
+                      }}
                     >
-                      <MenuItem value="">
-                        <em>–</em>
-                      </MenuItem>
-                      {[1, 2, 3, 4, 5, 6].map((n) => (
-                        <MenuItem key={n} value={String(n)}>
-                          {n}
+                      <MuiSelect
+                        displayEmpty
+                        value={scoreValue(entry) === "" ? "" : String(scoreValue(entry))}
+                        onChange={(e) =>
+                          updateScore(item.key, { score: e.target.value ? Number(e.target.value) : "" })
+                        }
+                        slotProps={{ input: { "aria-label": t("observationNote") } }}
+                        renderValue={(selected) => (selected === "" ? "–" : selected)}
+                      >
+                        <MenuItem value="">
+                          <em>–</em>
                         </MenuItem>
-                      ))}
-                    </MuiSelect>
-                  </FormControl>
-                </Stack>
+                        {[1, 2, 3, 4, 5, 6].map((n) => (
+                          <MenuItem key={n} value={String(n)}>
+                            {n}
+                          </MenuItem>
+                        ))}
+                      </MuiSelect>
+                    </FormControl>
+                  </Stack>
+                  <Divider sx={{ my: 1.25 }} />
+                  <TextField
+                    value={entry?.note || ""}
+                    onChange={(e) => updateScore(item.key, { note: e.target.value })}
+                    placeholder={t("observationNote")}
+                    fullWidth
+                    multiline
+                    minRows={2}
+                    variant="outlined"
+                    size="small"
+                  />
+                </Paper>
               );
             })}
           </Stack>
