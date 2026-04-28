@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
 import { getChildById } from "@/repositories/child.repository";
 import { listAssessmentsByChildId } from "@/repositories/assessment.repository";
 import { ObjectId } from "mongodb";
-import { jsonError } from "@/lib/api";
+import { jsonError, requireRole } from "@/lib/api";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const authError = requireRole(request, ["admin", "conductor", "observer"]);
+    if (authError) {
+      return authError;
+    }
+
     const { id } = await params;
     if (!ObjectId.isValid(id)) {
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");

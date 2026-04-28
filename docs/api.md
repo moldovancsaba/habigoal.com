@@ -65,6 +65,7 @@ Allowed roles currently used:
 
 - `GET /api/children/:id/history`
   - Returns child profile plus linked chronological assessment history.
+  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
 
 ### Users
 
