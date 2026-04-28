@@ -112,12 +112,54 @@ function resolveResponsiveValue(value: unknown) {
   return map.lg ?? map.md ?? map.sm ?? map.xs ?? map.base ?? Object.values(map)[0];
 }
 
+function spacingToRem(value: unknown) {
+  if (typeof value === "number") return `${value * 0.25}rem`;
+  return value;
+}
+
 function sxToStyle(sx?: unknown): CSSProperties | undefined {
   if (!sx || typeof sx === "function") return undefined;
   const raw = sx as Record<string, unknown>;
   const normalized: Record<string, unknown> = {};
+  const spacingMap: Record<string, string[]> = {
+    p: ["padding"],
+    px: ["paddingLeft", "paddingRight"],
+    py: ["paddingTop", "paddingBottom"],
+    pt: ["paddingTop"],
+    pr: ["paddingRight"],
+    pb: ["paddingBottom"],
+    pl: ["paddingLeft"],
+    m: ["margin"],
+    mx: ["marginLeft", "marginRight"],
+    my: ["marginTop", "marginBottom"],
+    mt: ["marginTop"],
+    mr: ["marginRight"],
+    mb: ["marginBottom"],
+    ml: ["marginLeft"]
+  };
   for (const [key, value] of Object.entries(raw)) {
-    normalized[key] = resolveResponsiveValue(value);
+    const resolved = resolveResponsiveValue(value);
+    if (key in spacingMap) {
+      for (const target of spacingMap[key]) {
+        normalized[target] = spacingToRem(resolved);
+      }
+      continue;
+    }
+    if (key === "bgcolor") {
+      if (resolved === "background.paper") {
+        normalized.backgroundColor = "var(--mantine-color-body)";
+      } else if (resolved === "common.black") {
+        normalized.backgroundColor = "#000";
+      } else {
+        normalized.backgroundColor = resolved;
+      }
+      continue;
+    }
+    if (key === "borderColor" && resolved === "divider") {
+      normalized.borderColor = "var(--mantine-color-default-border)";
+      continue;
+    }
+    normalized[key] = resolved;
   }
   return normalized as CSSProperties;
 }
