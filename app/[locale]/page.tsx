@@ -1,4 +1,4 @@
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "next/navigation";
 
 export default async function RootPage({
   params
@@ -6,5 +6,5 @@ export default async function RootPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect({ href: "/dashboard/assessment", locale });
+  redirect(`/${locale}/dashboard/assessment`);
 }
