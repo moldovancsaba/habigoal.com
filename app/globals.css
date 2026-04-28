@@ -19,7 +19,39 @@ body {
   font-family: var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
 }
 
+button,
+input,
+textarea,
+select,
+option,
+table,
+thead,
+tbody,
+tfoot,
+tr,
+th,
+td,
+label {
+  font-family: var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
+}
+
 html[dir="rtl"] body {
+  font-family: var(--font-noto-sans-arabic), "Noto Sans Arabic", var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
+}
+
+html[dir="rtl"] button,
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select,
+html[dir="rtl"] option,
+html[dir="rtl"] table,
+html[dir="rtl"] thead,
+html[dir="rtl"] tbody,
+html[dir="rtl"] tfoot,
+html[dir="rtl"] tr,
+html[dir="rtl"] th,
+html[dir="rtl"] td,
+html[dir="rtl"] label {
   font-family: var(--font-noto-sans-arabic), "Noto Sans Arabic", var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
 }
 

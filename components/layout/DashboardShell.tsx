@@ -15,6 +15,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const t = useTranslations("Dashboard");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const sideInset = 12;
 
   const nav = [
     { href: "/dashboard", label: t("overview") },
@@ -31,11 +32,20 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
         </Box>
       </Box>
-      <Group gap={8} p="sm" style={{ marginInline: 8, border: "1px solid var(--mantine-color-default-border)", borderRadius: "var(--mantine-radius-md)" }}>
+      <Group
+        gap={8}
+        p={8}
+        justify="flex-start"
+        style={{
+          marginInline: sideInset,
+          border: "1px solid var(--mantine-color-default-border)",
+          borderRadius: "var(--mantine-radius-md)"
+        }}
+      >
         <LocaleSwitcher />
         <ThemeSwitcher />
       </Group>
-      <Stack gap={6} px="sm" pb="md" style={{ flex: 1 }}>
+      <Stack gap={6} px={sideInset} pb="md" style={{ flex: 1 }}>
         {nav.map((item) => {
           const active =
             item.href === "/dashboard"
@@ -51,11 +61,15 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               onClick={() => setMobileOpen(false)}
               styles={{
                 root: {
-                  borderRadius: "var(--mantine-radius-md)"
+                  borderRadius: "var(--mantine-radius-md)",
+                  paddingInlineStart: 16,
+                  paddingInlineEnd: 16
                 },
+                body: { paddingInlineStart: 0 },
                 label: {
                   color: KIDEX_COLORS.navTextMuted,
-                  fontWeight: 500
+                  fontWeight: 500,
+                  textAlign: "left"
                 },
                 section: {
                   color: KIDEX_COLORS.navTextMuted

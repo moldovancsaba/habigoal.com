@@ -86,6 +86,19 @@ export function getKidexMantineTheme(mode: "light" | "dark", direction: Directio
             fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
           }
         }
+      },
+      Table: {
+        styles: {
+          table: {
+            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          },
+          th: {
+            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          },
+          td: {
+            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          }
+        }
       }
     }
   });

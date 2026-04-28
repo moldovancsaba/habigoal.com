@@ -32,6 +32,7 @@ const DASHBOARD_CHART_CONFIG = {
   pieInnerRadius: 34,
   radarOuterRadius: 74
 } as const;
+const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
 
 function monthLabel(date: Date) {
   return new Intl.DateTimeFormat(undefined, { month: "short" }).format(date);
@@ -183,12 +184,16 @@ function RecordsLineChart({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={points} margin={DASHBOARD_CHART_CONFIG.lineMargin}>
             <CartesianGrid stroke={theme.colors.gray[4]} strokeDasharray="3 3" />
-            <XAxis dataKey="label" stroke={theme.colors.gray[5]} tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize }} />
+            <XAxis
+              dataKey="label"
+              stroke={theme.colors.gray[5]}
+              tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+            />
             <YAxis
               domain={[yMin, yMax]}
               allowDecimals={false}
               stroke={theme.colors.gray[5]}
-              tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize }}
+              tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
               width={28}
             />
             <Tooltip
@@ -236,7 +241,7 @@ function UserRolePieChart({
               borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
             }}
           />
-          <Legend verticalAlign="middle" align="right" layout="vertical" />
+          <Legend verticalAlign="middle" align="right" layout="vertical" wrapperStyle={{ fontFamily: CHART_FONT_FAMILY, color: "var(--mantine-color-text)" }} />
           <Pie
             data={chartData}
             dataKey="value"
@@ -277,8 +282,17 @@ function RapidRadarChart({
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
             <PolarGrid stroke={theme.colors.gray[4]} />
-            <PolarAngleAxis dataKey="label" tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: theme.colors.gray[5] }} />
-            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fill: theme.colors.gray[5], fontSize: DASHBOARD_CHART_CONFIG.tickFontSize }} />
+            <PolarAngleAxis
+              dataKey="label"
+              tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 6]}
+              tickCount={4}
+              tick={(props) => renderRotatedRadiusTick(props)}
+              stroke={theme.colors.gray[6]}
+            />
             <Tooltip
               contentStyle={{
                 background: theme.colors.dark[7],
@@ -296,6 +310,26 @@ function RapidRadarChart({
         </ResponsiveContainer>
       </Box>
     </Paper>
+  );
+}
+
+function renderRotatedRadiusTick(props: { x?: string | number; y?: string | number; payload?: { value?: string | number } }) {
+  const x = Number(props.x ?? 0);
+  const y = Number(props.y ?? 0);
+  const value = props.payload?.value ?? "";
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="var(--mantine-color-text)"
+      fontSize={DASHBOARD_CHART_CONFIG.tickFontSize}
+      fontFamily={CHART_FONT_FAMILY}
+      textAnchor="middle"
+      dominantBaseline="central"
+      transform={`rotate(90, ${x}, ${y})`}
+    >
+      {value}
+    </text>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { Box, Loader, Paper, Progress, Stack, Table, Text } from "@mantine/core";
+import { Box, Loader, Paper, Progress, Stack, Table, Text, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
@@ -18,6 +18,7 @@ import type { ChildProfile } from "@/repositories/child.repository";
 
 const RADAR_CHART_HEIGHT = 220;
 const RADAR_TICK_FONT_SIZE = 12;
+const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
 
 export default function ChildHistoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -210,6 +211,7 @@ function RapidRadarChart({
   data: Array<{ label: string; value: number }>;
   domain: AssessmentDomain;
 }) {
+  const theme = useMantineTheme();
   const domainColor = getDomainMainColor(domain);
   return (
     <Paper withBorder p="sm">
@@ -220,14 +222,43 @@ function RapidRadarChart({
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
             <PolarGrid />
-            <PolarAngleAxis dataKey="label" tick={{ fontSize: RADAR_TICK_FONT_SIZE }} />
-            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fontSize: RADAR_TICK_FONT_SIZE }} />
+            <PolarAngleAxis
+              dataKey="label"
+              tick={{ fontSize: RADAR_TICK_FONT_SIZE, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 6]}
+              tickCount={4}
+              tick={(props) => renderRotatedRadiusTick(props)}
+              stroke={theme.colors.gray[6]}
+            />
             <Tooltip />
             <Radar dataKey="value" stroke={domainColor} fill={domainColor} fillOpacity={0.25} />
           </RadarChart>
         </ResponsiveContainer>
       </Box>
     </Paper>
+  );
+}
+
+function renderRotatedRadiusTick(props: { x?: string | number; y?: string | number; payload?: { value?: string | number } }) {
+  const x = Number(props.x ?? 0);
+  const y = Number(props.y ?? 0);
+  const value = props.payload?.value ?? "";
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="var(--mantine-color-text)"
+      fontSize={RADAR_TICK_FONT_SIZE}
+      fontFamily={CHART_FONT_FAMILY}
+      textAnchor="middle"
+      dominantBaseline="central"
+      transform={`rotate(90, ${x}, ${y})`}
+    >
+      {value}
+    </text>
   );
 }
 

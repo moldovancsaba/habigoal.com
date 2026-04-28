@@ -248,9 +248,7 @@ function TextField({ multiline, minRows, type, slotProps, fullWidth, variant, si
     ...(style as CSSProperties | undefined),
     ...(fullWidth ? { width: "100%" } : null)
   } as CSSProperties;
-  if (extraProps?.inputLabel?.shrink) {
-    textProps.labelProps = { style: { transform: "translate(0, -0.35rem) scale(0.85)" } };
-  }
+  void extraProps;
   if (multiline) return <Textarea minRows={(minRows as number) ?? 2} variant={normalizedVariant} size={normalizedSize} style={mergedStyle} {...textProps} />;
   return <TextInput type={type as string | undefined} variant={normalizedVariant} size={normalizedSize} style={mergedStyle} {...textProps} />;
 }
