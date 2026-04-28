@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ImgHTMLAttributes, MouseEvent, ReactNode, VideoHTMLAttributes } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { ChangeEvent, Children, cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert as MantineAlert,
@@ -10,7 +10,6 @@ import {
   Button as MantineButton,
   Checkbox as MantineCheckbox,
   Divider as MantineDivider,
-  Flex as MantineFlex,
   Group as MantineGroup,
   Modal as MantineModal,
   Paper as MantinePaper,
@@ -130,11 +129,9 @@ function Alert({ severity, children, onClose }: AnyProps) {
 
 function Box({ sx, component, ...rest }: AnyProps) {
   const style = sxToStyle(sx);
-  if (component === "img") {
-    return <img style={style} {...(rest as ImgHTMLAttributes<HTMLImageElement>)} />;
-  }
-  if (component === "video") {
-    return <video style={style} {...(rest as VideoHTMLAttributes<HTMLVideoElement>)} />;
+  const MantineBoxAny = MantineBox as unknown as (props: Record<string, unknown>) => ReactNode;
+  if (component) {
+    return MantineBoxAny({ component, style, ...(rest as Record<string, unknown>) });
   }
   return <MantineBox style={style} {...(rest as Record<string, unknown>)} />;
 }
