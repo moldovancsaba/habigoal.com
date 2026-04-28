@@ -64,10 +64,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         })}
       </Stack>
       <Divider color={KIDEX_COLORS.navBorderMuted} />
-      <Stack p="md" gap="xs">
-        <LocaleSwitcher />
-        <ThemeSwitcher />
-      </Stack>
+      <Box h={16} />
     </Stack>
   );
 
@@ -112,9 +109,15 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         }}
       >
         <AppShell.Header>
-          <Group h="100%" px="md" hiddenFrom="md">
-            <Burger opened={mobileOpen} onClick={() => setMobileOpen((v) => !v)} size="sm" />
-            <Text fw={700}>KIDEX</Text>
+          <Group h="100%" px="md" justify="space-between">
+            <Group gap="xs">
+              <Burger opened={mobileOpen} onClick={() => setMobileOpen((v) => !v)} size="sm" hiddenFrom="md" />
+              <Text fw={700} hiddenFrom="md">KIDEX</Text>
+            </Group>
+            <Group gap={6}>
+              <LocaleSwitcher />
+              <ThemeSwitcher />
+            </Group>
           </Group>
         </AppShell.Header>
 

@@ -1,9 +1,8 @@
 "use client";
 
-import { SegmentedControl } from "@mantine/core";
+import { Button, Menu } from "@mantine/core";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { KIDEX_COLORS } from "@/theme/tokens";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -15,40 +14,20 @@ export function LocaleSwitcher() {
     router.replace(cleanPath, { locale: nextLocale });
   }
 
+  const localeLabel = locale === "ar" ? "AR" : locale === "hu" ? "HU" : "EN";
+
   return (
-    <SegmentedControl
-      value={locale}
-      onChange={(value) => switchLocale(value as "en" | "hu" | "ar")}
-      fullWidth
-      radius="md"
-      size="sm"
-      color="kidex"
-      data={[
-        { value: "ar", label: "AR" },
-        { value: "hu", label: "HU" },
-        { value: "en", label: "EN" }
-      ]}
-      styles={{
-        root: {
-          backgroundColor: "transparent",
-          border: `1px solid ${KIDEX_COLORS.navBorderMuted}`,
-          padding: 2
-        },
-        control: {
-          minHeight: 38
-        },
-        label: {
-          color: KIDEX_COLORS.navTextMuted,
-          fontSize: 12,
-          fontWeight: 700,
-          lineHeight: "16px",
-          paddingInline: 10
-        },
-        indicator: {
-          backgroundColor: KIDEX_COLORS.brandTeal,
-          borderRadius: 10
-        }
-      }}
-    />
+    <Menu shadow="md" width={170} position="bottom-end">
+      <Menu.Target>
+        <Button variant="subtle" size="xs" color="gray">
+          {localeLabel}
+        </Button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item onClick={() => switchLocale("en")}>English</Menu.Item>
+        <Menu.Item onClick={() => switchLocale("hu")}>Magyar</Menu.Item>
+        <Menu.Item onClick={() => switchLocale("ar")}>العربية</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 }
