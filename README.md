@@ -20,6 +20,10 @@ The app supports:
 
 For the future vision of the project, see the [Product Roadmap](ROADMAP.md).
 
+## UI & design system
+
+The app shell and dashboard use **Material UI** with a shared theme and layout components. See [docs/design-system.md](docs/design-system.md) for providers, primitives, and conventions (including MUI v9 `Stack` / `Typography` patterns).
+
 ## Local Development
 
 ```bash

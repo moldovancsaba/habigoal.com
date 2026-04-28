@@ -1,35 +1,10 @@
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
-import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
+import DashboardShell from "@/components/layout/DashboardShell";
 
-export default function DashboardLayout({ 
-  children 
-}: { 
+export default function DashboardLayout({
+  children
+}: {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const t = useTranslations("Dashboard");
-
-  return (
-    <div className="dashboard-container">
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <Image src="/logo.png" alt="KIDEX Logo" width={180} height={56} priority />
-        </div>
-        <nav>
-          <Link href="/dashboard/assessment">{t("survey")}</Link>
-          <Link href="/dashboard/records">{t("records")}</Link>
-          <Link href="/dashboard/children">{t("children")}</Link>
-          <Link href="/dashboard/settings">{t("settings")}</Link>
-        </nav>
-        <LocaleSwitcher />
-        <ThemeSwitcher />
-      </aside>
-      <main className="main-content">
-        {children}
-      </main>
-    </div>
-  );
+  return <DashboardShell>{children}</DashboardShell>;
 }

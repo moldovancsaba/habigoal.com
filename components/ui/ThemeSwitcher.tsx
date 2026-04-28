@@ -1,49 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-function getInitialTheme(): "light" | "dark" {
-  if (typeof window === "undefined") {
-    return "light";
-  }
-
-  const saved = localStorage.getItem("theme");
-  if (saved === "light" || saved === "dark") {
-    return saved;
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
+import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { useThemeMode } from "@/components/theme/ThemeModeContext";
 
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
-
-  const toggle = (next: "light" | "dark") => {
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-  };
+  const { mode, setMode } = useThemeMode();
 
   return (
-    <div className="theme-switcher">
-      <button 
-        className={theme === "light" ? "active" : ""} 
-        onClick={() => toggle("light")}
-        title="Light Mode"
-      >
-        ☀️
-      </button>
-      <button 
-        className={theme === "dark" ? "active" : ""} 
-        onClick={() => toggle("dark")}
-        title="Dark Mode"
-      >
-        🌙
-      </button>
-    </div>
+    <ToggleButtonGroup
+      exclusive
+      value={mode}
+      onChange={(_, value) => value && setMode(value)}
+      size="small"
+      fullWidth
+      sx={{
+        "& .MuiToggleButton-root": {
+          color: "rgba(255,255,255,0.75)",
+          borderColor: "rgba(255,255,255,0.25)",
+          py: 0.75
+        },
+        "& .MuiToggleButton-root.Mui-selected": {
+          bgcolor: "secondary.main",
+          color: "common.white",
+          borderColor: "secondary.main",
+          "&:hover": { bgcolor: "secondary.dark" }
+        }
+      }}
+    >
+      <ToggleButton value="light" aria-label="light mode">
+        <LightModeOutlined fontSize="small" sx={{ mr: 0.5 }} />
+      </ToggleButton>
+      <ToggleButton value="dark" aria-label="dark mode">
+        <DarkModeOutlined fontSize="small" sx={{ mr: 0.5 }} />
+      </ToggleButton>
+    </ToggleButtonGroup>
   );
 }

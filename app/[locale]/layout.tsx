@@ -1,5 +1,6 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { MuiRegistry } from "@/components/theme/MuiRegistry";
 import "../globals.css";
 
 export default async function LocaleLayout({
@@ -16,7 +17,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <MuiRegistry>{children}</MuiRegistry>
         </NextIntlClientProvider>
       </body>
     </html>

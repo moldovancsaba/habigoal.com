@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
+import { useMemo } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 
 interface Option {
   id: string;
@@ -17,80 +19,38 @@ interface SearchableSelectProps {
 }
 
 export function SearchableSelect({ label, value, options, onChange, placeholder, allowAdd }: SearchableSelectProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const filteredOptions = options.filter((option) =>
-    option.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && allowAdd && search) {
-      onChange(search);
-      setIsOpen(false);
-      setSearch("");
-      e.preventDefault();
-    }
-  }
+  const resolvedValue = useMemo((): Option | null => {
+    const hit = options.find((o) => o.name === value);
+    if (hit) return hit;
+    if (allowAdd && value) return { id: value, name: value };
+    return null;
+  }, [options, value, allowAdd]);
 
   return (
-    <div className="field" ref={containerRef}>
-      <span>{label}</span>
-      <div className="searchable-select">
-        <input
-          type="text"
-          value={isOpen ? search : value}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => {
-            setIsOpen(true);
-            setSearch("");
-          }}
-          placeholder={placeholder || value || "Select..."}
-        />
-        {isOpen && (
-          <div className="dropdown-menu">
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((option) => (
-                <div
-                  key={option.id}
-                  className="dropdown-item"
-                  onClick={() => {
-                    onChange(option.name);
-                    setIsOpen(false);
-                    setSearch("");
-                  }}
-                >
-                  {option.name}
-                </div>
-              ))
-            ) : (
-              allowAdd && search ? (
-                <div className="dropdown-item active" onClick={() => {
-                  onChange(search);
-                  setIsOpen(false);
-                  setSearch("");
-                }}>
-                  Add &quot;{search}&quot; (Press Enter)
-                </div>
-              ) : (
-                <div className="dropdown-item muted">No results</div>
-              )
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+    <Autocomplete<Option, false, false, boolean>
+      freeSolo={Boolean(allowAdd)}
+      options={options}
+      value={resolvedValue}
+      onChange={(_, newValue) => {
+        if (newValue === null) {
+          onChange("");
+          return;
+        }
+        if (typeof newValue === "string") {
+          onChange(newValue.trim());
+          return;
+        }
+        onChange(newValue.name);
+      }}
+      getOptionLabel={(option) => (typeof option === "string" ? option : option.name)}
+      isOptionEqualToValue={(a, b) => {
+        const an = typeof a === "string" ? a : a.name;
+        const bn = typeof b === "string" ? b : b.name;
+        return an === bn;
+      }}
+      renderInput={(params) => (
+        <TextField {...params} label={label} placeholder={placeholder || undefined} />
+      )}
+    />
   );
 }

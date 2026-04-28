@@ -11,7 +11,8 @@
     "error": "Error",
     "success": "Success",
     "date": "Date",
-    "mode": "Mode"
+    "mode": "Mode",
+    "view": "View"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -81,9 +82,16 @@
     "contextEvent": "Event / Competition",
     "contextStructured": "Structured session",
     "contextSpontaneous": "Spontaneous play",
-    "contextMixed": "Mixed / Other"
+    "contextMixed": "Mixed / Other",
+    "recordTitle": "Assessment record",
+    "printSavePdf": "Print / Save PDF",
+    "reportPrintTitle": "KIDEX Bio-Psycho-Social Report",
+    "tableObservation": "Observation",
+    "tableScore": "Score",
+    "tableNote": "Note"
   },
   "Schema": {
+    "ski": "SKI",
     "movement": "Movement Profile",
     "social": "Social-Emotional Profile",
     "mental": "Psycho-Mental Profile",

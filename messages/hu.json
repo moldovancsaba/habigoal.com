@@ -11,7 +11,8 @@
     "error": "Hiba",
     "success": "Sikeres",
     "date": "Dátum",
-    "mode": "Mód"
+    "mode": "Mód",
+    "view": "Megtekintés"
   },
   "Dashboard": {
     "title": "Vezérlőpult",
@@ -81,9 +82,16 @@
     "contextEvent": "Esemény / Verseny",
     "contextStructured": "Strukturált foglalkozás",
     "contextSpontaneous": "Spontán játék",
-    "contextMixed": "Vegyes / Egyéb"
+    "contextMixed": "Vegyes / Egyéb",
+    "recordTitle": "Értékelési rekord",
+    "printSavePdf": "Nyomtatás / PDF mentés",
+    "reportPrintTitle": "KIDEX bio-pszicho-szociális jelentés",
+    "tableObservation": "Megfigyelés",
+    "tableScore": "Pontszám",
+    "tableNote": "Jegyzet"
   },
   "Schema": {
+    "ski": "SKI",
     "movement": "Mozgásprofil",
     "social": "Szociális-érzelmi profil",
     "mental": "Pszichés-mentális profil",
