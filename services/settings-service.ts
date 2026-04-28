@@ -2,7 +2,6 @@ export interface KidexSettings {
   conductors: string[];
   observers: string[];
   locations: string[];
-  appVersion: string;
   company: {
     name: string;
     ico: string;
@@ -20,7 +19,6 @@ export const DEFAULT_KIDEX_SETTINGS: KidexSettings = {
   conductors: [],
   observers: [],
   locations: [],
-  appVersion: "0.3.0",
   company: {
     name: "KIDEX s.r.o.",
     ico: "57474869",
@@ -34,12 +32,15 @@ export const DEFAULT_KIDEX_SETTINGS: KidexSettings = {
 };
 
 function normalizeSettings(raw: Partial<KidexSettings> | null | undefined): KidexSettings {
+  const next = raw ?? {};
   return {
     ...DEFAULT_KIDEX_SETTINGS,
-    ...raw,
+    conductors: next.conductors ?? DEFAULT_KIDEX_SETTINGS.conductors,
+    observers: next.observers ?? DEFAULT_KIDEX_SETTINGS.observers,
+    locations: next.locations ?? DEFAULT_KIDEX_SETTINGS.locations,
     company: {
       ...DEFAULT_KIDEX_SETTINGS.company,
-      ...(raw?.company ?? {})
+      ...(next.company ?? {})
     }
   };
 }

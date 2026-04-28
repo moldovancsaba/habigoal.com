@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { APP_VERSION } from "@/lib/app-version";
 import { DEFAULT_KIDEX_SETTINGS, getSettings, type KidexSettings } from "@/services/settings-service";
 
 export default function GtcPage() {
@@ -37,7 +38,7 @@ export default function GtcPage() {
       <SectionCard title={t("companyDataTitle")}>
         <CompanyData settings={settings} />
         <Typography variant="body2" sx={{ mt: 1 }}>
-          <strong>App:</strong> KIDEX v{settings.appVersion}
+          <strong>App:</strong> KIDEX v{APP_VERSION}
         </Typography>
       </SectionCard>
 

@@ -20,7 +20,8 @@ Supported locales currently include `hu`, `en`, and `ar`.
 
 ## App version and company profile source
 
-The app version and company profile are managed from Dashboard Settings and persisted in global settings.
+The app version is developer-managed in `lib/app-version.ts`.
+The company profile is managed from Dashboard Settings and persisted in global settings.
 
 They are displayed in:
 

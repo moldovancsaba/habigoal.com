@@ -249,18 +249,6 @@ export default function SettingsPage() {
         }
       >
         <Stack spacing={2}>
-          <TextField
-            label={t("appVersion")}
-            value={settings.appVersion}
-            onChange={(event) =>
-              setSettings((prev) => ({
-                ...prev,
-                appVersion: event.target.value
-              }))
-            }
-            fullWidth
-            size="small"
-          />
           <TextField label={t("company")} value={settings.company.name} onChange={(event) => updateCompanyField("name", event.target.value)} fullWidth size="small" />
           <TextField label={tl("idNo")} value={settings.company.ico} onChange={(event) => updateCompanyField("ico", event.target.value)} fullWidth size="small" />
           <TextField

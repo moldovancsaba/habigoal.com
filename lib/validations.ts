@@ -103,7 +103,6 @@ export interface SettingsPayload {
   conductors: string[];
   observers: string[];
   locations: string[];
-  appVersion: string;
   company: {
     name: string;
     ico: string;
@@ -123,7 +122,6 @@ export function parseSettingsPayload(input: unknown): SettingsPayload {
     conductors: stringArray(data.conductors, 100, 240),
     observers: stringArray(data.observers, 100, 240),
     locations: stringArray(data.locations, 100, 240),
-    appVersion: stringValue(data.appVersion, 40).trim(),
     company: {
       name: stringValue(company.name, 240).trim(),
       ico: stringValue(company.ico, 120).trim(),

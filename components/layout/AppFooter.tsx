@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { APP_VERSION } from "@/lib/app-version";
 import { DEFAULT_KIDEX_SETTINGS, getSettings, type KidexSettings } from "@/services/settings-service";
 
 export function AppFooter() {
@@ -34,7 +35,7 @@ export function AppFooter() {
         </Stack>
 
         <Typography variant="body2" color="text.secondary">
-          {settings.company.name} · v{settings.appVersion}
+          {settings.company.name} · v{APP_VERSION}
         </Typography>
       </Stack>
     </Box>

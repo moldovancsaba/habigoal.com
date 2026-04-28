@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { APP_VERSION } from "@/lib/app-version";
 import { DEFAULT_KIDEX_SETTINGS, getSettings, type KidexSettings } from "@/services/settings-service";
 
 export default function PrivacyPolicyPage() {
@@ -46,7 +47,7 @@ export default function PrivacyPolicyPage() {
           <Row label={t("website")} value={settings.company.website} />
         </Stack>
         <Typography variant="body2" sx={{ mt: 1 }}>
-          <strong>App:</strong> KIDEX v{settings.appVersion}
+          <strong>App:</strong> KIDEX v{APP_VERSION}
         </Typography>
       </SectionCard>
 

@@ -14,9 +14,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { rapidSections } from "@/lib/kidex-schema";
 import { calculateTrend } from "@/lib/utils/trends";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { calculateAgeGroup } from "@/lib/utils/age";
@@ -61,6 +64,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   const currentAgeGroup = calculateAgeGroup(data.child.birthDate);
   const standard = getStandardForAgeGroup(currentAgeGroup || "");
   const assessmentsWithImages = data.assessments.filter((assessment) => assessment.attachments.length > 0);
+  const rapidDomainSummary = buildRapidDomainSummary(data.assessments, ts);
 
   return (
     <Stack spacing={3}>
@@ -83,6 +87,20 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           {trend.length === 0 ? (
             <Typography color="text.secondary">{t("noHistory")}</Typography>
           ) : null}
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
+        <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} />
+          </Box>
         </Stack>
       </SectionCard>
 
@@ -193,4 +211,62 @@ function TrendMetric({
       ) : null}
     </Box>
   );
+}
+
+function RapidRadarChart({
+  title,
+  data
+}: {
+  title: string;
+  data: Array<{ label: string; value: number }>;
+}) {
+  const theme = useTheme();
+  return (
+    <Paper variant="outlined" sx={{ p: 1.5 }}>
+      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+        {title}
+      </Typography>
+      <Box sx={{ width: "100%", height: 220 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart data={data}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="label" tick={{ fontSize: 11 }} />
+            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fontSize: 10 }} />
+            <Tooltip />
+            <Radar dataKey="value" stroke={theme.palette.primary.main} fill={theme.palette.primary.main} fillOpacity={0.25} />
+          </RadarChart>
+        </ResponsiveContainer>
+      </Box>
+    </Paper>
+  );
+}
+
+function buildRapidDomainSummary(assessments: AssessmentRecord[], translateSchema: (key: string) => string) {
+  const rapidRecords = assessments.filter((assessment) => assessment.mode === "rapid");
+  const buildDomain = (sectionKey: "rapid_movement" | "rapid_social" | "rapid_mental") => {
+    const section = rapidSections.find((item) => item.key === sectionKey);
+    if (!section) return [];
+
+    return section.items.map((item) => {
+      let sum = 0;
+      let count = 0;
+      for (const assessment of rapidRecords) {
+        const raw = assessment.scores[item.key]?.score;
+        if (typeof raw === "number") {
+          sum += raw;
+          count += 1;
+        }
+      }
+      return {
+        label: translateSchema(`${item.key}.title`),
+        value: count ? Number((sum / count).toFixed(2)) : 0
+      };
+    });
+  };
+
+  return {
+    movement: buildDomain("rapid_movement"),
+    social: buildDomain("rapid_social"),
+    mental: buildDomain("rapid_mental")
+  };
 }

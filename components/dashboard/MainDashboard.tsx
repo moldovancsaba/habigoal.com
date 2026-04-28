@@ -8,9 +8,10 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { useTranslations } from "next-intl";
-import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { rapidSections } from "@/lib/kidex-schema";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { User } from "@/services/user-service";
 
@@ -32,7 +33,8 @@ const DASHBOARD_CHART_CONFIG = {
   pieCx: "35%" as const,
   pieCy: "50%" as const,
   pieOuterRadius: 72,
-  pieInnerRadius: 34
+  pieInnerRadius: 34,
+  radarOuterRadius: 74
 } as const;
 
 function monthLabel(date: Date) {
@@ -42,6 +44,7 @@ function monthLabel(date: Date) {
 export function MainDashboard() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
+  const ts = useTranslations("Schema");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -95,6 +98,8 @@ export function MainDashboard() {
     return (records / children).toFixed(1);
   }, [data]);
 
+  const rapidDomainSummary = useMemo(() => buildRapidDomainSummary(data?.assessments ?? [], ts), [data, ts]);
+
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 8 }} role="status">
@@ -117,15 +122,29 @@ export function MainDashboard() {
         <MetricCard label={t("avgRecordsPerChild")} value={avgRecordsPerChild} />
       </Stack>
 
+      <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
+        <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} />
+          </Box>
+        </Stack>
+      </SectionCard>
+
       <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <SectionCard title={t("recordsChartTitle")} subheader={t("recordsChartSubtitle")}>
+        <Box sx={{ flex: 1, minWidth: 0, display: "flex" }}>
+          <SectionCard title={t("recordsChartTitle")} subheader={t("recordsChartSubtitle")} sx={{ width: "100%", height: "100%", mb: 0 }}>
             <RecordsLineChart points={recordsByMonth} />
           </SectionCard>
         </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <SectionCard title={t("usersChartTitle")} subheader={t("usersChartSubtitle")}>
+        <Box sx={{ flex: 1, minWidth: 0, display: "flex" }}>
+          <SectionCard title={t("usersChartTitle")} subheader={t("usersChartSubtitle")} sx={{ width: "100%", height: "100%", mb: 0 }}>
             <UserRolePieChart items={userRoleStats} />
           </SectionCard>
         </Box>
@@ -239,4 +258,74 @@ function UserRolePieChart({
       </ResponsiveContainer>
     </Box>
   );
+}
+
+function RapidRadarChart({
+  title,
+  data
+}: {
+  title: string;
+  data: Array<{ label: string; value: number }>;
+}) {
+  const theme = useTheme();
+
+  return (
+    <Paper variant="outlined" sx={{ p: 1.5 }}>
+      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+        {title}
+      </Typography>
+      <Box sx={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart data={data}>
+            <PolarGrid stroke={theme.palette.divider} />
+            <PolarAngleAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} />
+            <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fill: theme.palette.text.secondary, fontSize: 10 }} />
+            <Tooltip
+              contentStyle={{
+                background: theme.palette.background.paper,
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
+              }}
+            />
+            <Radar
+              dataKey="value"
+              stroke={theme.palette.primary.main}
+              fill={theme.palette.primary.main}
+              fillOpacity={0.28}
+            />
+          </RadarChart>
+        </ResponsiveContainer>
+      </Box>
+    </Paper>
+  );
+}
+
+function buildRapidDomainSummary(assessments: AssessmentRecord[], translateSchema: (key: string) => string) {
+  const rapidRecords = assessments.filter((assessment) => assessment.mode === "rapid");
+  const buildDomain = (sectionKey: "rapid_movement" | "rapid_social" | "rapid_mental") => {
+    const section = rapidSections.find((item) => item.key === sectionKey);
+    if (!section) return [];
+
+    return section.items.map((item) => {
+      let sum = 0;
+      let count = 0;
+      for (const assessment of rapidRecords) {
+        const raw = assessment.scores[item.key]?.score;
+        if (typeof raw === "number") {
+          sum += raw;
+          count += 1;
+        }
+      }
+      return {
+        label: translateSchema(`${item.key}.title`),
+        value: count ? Number((sum / count).toFixed(2)) : 0
+      };
+    });
+  };
+
+  return {
+    movement: buildDomain("rapid_movement"),
+    social: buildDomain("rapid_social"),
+    mental: buildDomain("rapid_mental")
+  };
 }

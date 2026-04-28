@@ -14,6 +14,7 @@ export async function listAssessmentSummaries() {
         child: 1,
         session: 1,
         mode: 1,
+        scores: 1,
         computed: 1,
         createdAt: 1,
         updatedAt: 1
