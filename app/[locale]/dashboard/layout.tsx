@@ -17,9 +17,7 @@ export default function DashboardLayout({
           <img src="/logo.png" alt="KIDEX Logo" />
         </div>
         <nav>
-          <Link href="/dashboard/assessment">{t("setup")}</Link>
-          <Link href="/dashboard/assessment#scoring">{t("scoring")}</Link>
-          <Link href="/dashboard/assessment#report">{t("report")}</Link>
+          <Link href="/dashboard/assessment">{t("survey")}</Link>
           <Link href="/dashboard/records">{t("records")}</Link>
           <Link href="/dashboard/children">{t("children")}</Link>
           <Link href="/dashboard/settings">{t("settings")}</Link>
