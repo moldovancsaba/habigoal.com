@@ -9,8 +9,10 @@ export function ThemeSwitcher() {
   return (
     <Tooltip label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"} withArrow>
       <ActionIcon
-        variant="subtle"
+        variant="default"
         color="gray"
+        size="lg"
+        radius="md"
         onClick={() => setMode(mode === "light" ? "dark" : "light")}
         aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       >

@@ -19,7 +19,7 @@ export function LocaleSwitcher() {
   return (
     <Menu shadow="md" width={170} position="bottom-end">
       <Menu.Target>
-        <Button variant="subtle" size="sm" color="gray">
+        <Button variant="default" size="sm" color="gray" style={{ minWidth: 64, fontWeight: 600 }}>
           {localeLabel}
         </Button>
       </Menu.Target>

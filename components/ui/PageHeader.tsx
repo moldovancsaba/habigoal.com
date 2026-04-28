@@ -12,7 +12,7 @@ type PageHeaderProps = {
 export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   return (
     <Flex
-      gap="sm"
+      gap="md"
       direction={{ base: "column", md: "row" }}
       justify="space-between"
       align={{ base: "stretch", md: "center" }}
@@ -28,7 +28,7 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
         ) : null}
       </Box>
       {actions ? (
-        <Flex gap="xs" wrap="wrap">
+        <Flex gap="sm" wrap={{ base: "wrap", md: "nowrap" }} justify={{ base: "flex-start", md: "flex-end" }}>
           {actions}
         </Flex>
       ) : null}

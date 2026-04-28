@@ -114,7 +114,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               <Burger opened={mobileOpen} onClick={() => setMobileOpen((v) => !v)} size="sm" hiddenFrom="md" />
               <Text fw={700} hiddenFrom="md">KIDEX</Text>
             </Group>
-            <Group gap={6}>
+            <Group gap={8} p={4} style={{ border: "1px solid var(--mantine-color-default-border)", borderRadius: "var(--mantine-radius-md)" }}>
               <LocaleSwitcher />
               <ThemeSwitcher />
             </Group>

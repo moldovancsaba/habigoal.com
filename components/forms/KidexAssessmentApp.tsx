@@ -138,7 +138,7 @@ function Box({ sx, component, ...rest }: AnyProps) {
 
 function Button({ variant, sx, children, ...rest }: AnyProps) {
   const mappedVariant = variant === "contained" ? "filled" : variant === "outlined" ? "default" : (variant as string | undefined);
-  return <MantineButton variant={mappedVariant} style={sxToStyle(sx)} {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantineButton>;
+  return <MantineButton variant={mappedVariant} size="md" style={sxToStyle(sx)} {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantineButton>;
 }
 
 function Checkbox(props: AnyProps) {
@@ -200,7 +200,7 @@ function Stack({ spacing, direction, sx, children, divider, ...rest }: AnyProps)
 function TextField({ multiline, minRows, type, slotProps, fullWidth, variant, size, style, ...rest }: AnyProps) {
   const extraProps = slotProps as { inputLabel?: { shrink?: boolean } } | undefined;
   const textProps = { ...(rest as Record<string, unknown>) };
-  const normalizedVariant = variant === "outlined" ? "default" : (variant as string | undefined);
+  const normalizedVariant = variant === "outlined" ? "filled" : (variant as string | undefined);
   const normalizedSize = size === "small" ? "sm" : size === "medium" ? "md" : (size as string | undefined);
   const mergedStyle = {
     ...(style as CSSProperties | undefined),
@@ -530,10 +530,10 @@ export function KidexAssessmentApp() {
         subtitle={t("appSubtitle")}
         actions={
           <>
-            <Button variant="outlined" onClick={newAssessment} sx={{ minWidth: 96 }}>
+            <Button variant="outlined" onClick={newAssessment} sx={{ minWidth: 112, fontWeight: 600 }}>
               {tc("new")}
             </Button>
-            <Button variant="contained" onClick={() => void saveAssessment()} disabled={saveState === "saving"} sx={{ minWidth: 96 }}>
+            <Button variant="contained" onClick={() => void saveAssessment()} disabled={saveState === "saving"} sx={{ minWidth: 112, fontWeight: 700 }}>
               {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
             </Button>
           </>
@@ -556,9 +556,9 @@ export function KidexAssessmentApp() {
         <MetricCard label="SKI" value={formatScore(computed.ski)} target={standard?.ski.target} />
       </Stack>
 
-      <Stack spacing={2} id="setup">
+      <Stack spacing={3} id="setup">
         <SectionCard title={t("setupTitle")}>
-          <Stack direction="row" spacing={2} useFlexGap sx={{ width: "100%", flexWrap: "wrap" }}>
+          <Stack direction="row" spacing={3} useFlexGap sx={{ width: "100%", flexWrap: "wrap" }}>
             <FieldWrap>
               <TextField label={t("childName")} value={assessment.child.name} onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "name", e.target.value)} fullWidth />
             </FieldWrap>
