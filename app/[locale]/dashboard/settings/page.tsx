@@ -1,11 +1,9 @@
 "use client";
 
-import { CSSProperties, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
-
-const centerAlignStyle: CSSProperties = { textAlign: "center" };
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -111,22 +109,22 @@ export default function SettingsPage() {
             <thead>
               <tr>
                 <th>{t("userName")}</th>
-                <th style={centerAlignStyle}>{t("canConduct")}</th>
-                <th style={centerAlignStyle}>{t("canObserve")}</th>
+                <th className="text-center">{t("canConduct")}</th>
+                <th className="text-center">{t("canObserve")}</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr key={user.name}>
                   <td><strong>{user.name}</strong></td>
-                  <td style={centerAlignStyle}>
+                  <td className="text-center">
                     <input 
                       type="checkbox" 
                       checked={user.roles.includes("conductor")} 
                       onChange={() => toggleRole(user, "conductor")}
                     />
                   </td>
-                  <td style={centerAlignStyle}>
+                  <td className="text-center">
                     <input 
                       type="checkbox" 
                       checked={user.roles.includes("observer")} 
@@ -155,10 +153,10 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>
-        <div className="settings-list" style={{ display: 'grid', gap: '0.5rem' }}>
+        <div className="settings-list">
           {settings.locations.map((loc, i) => (
-            <div key={i} className="attachment" style={{ padding: '0.75rem 1rem' }}>
-              <div style={{ flex: 1 }}>{loc}</div>
+            <div key={i} className="attachment settings-location-item">
+              <div className="settings-location-name">{loc}</div>
               <button className="btn ghost" onClick={() => removeLocation(i)}>×</button>
             </div>
           ))}

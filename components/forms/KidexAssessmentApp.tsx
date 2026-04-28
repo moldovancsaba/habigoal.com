@@ -334,7 +334,7 @@ export function KidexAssessmentApp() {
         <Panel title={t("evidenceImages")}>
           <p className="muted">{t("uploadSecurityNote")}</p>
           <label className={`btn ghost ${assessment.session.consentPhoto ? "" : "disabled"}`}>
-            <input type="file" accept="image/*" onChange={uploadImage} disabled={!assessment.session.consentPhoto || uploading} style={{ display: 'none' }} />
+            <input type="file" accept="image/*" onChange={uploadImage} disabled={!assessment.session.consentPhoto || uploading} className="hidden-file-input" />
             {uploading ? t("uploading") : t("uploadImage")}
           </label>
           <div className="attachments">
@@ -346,6 +346,7 @@ export function KidexAssessmentApp() {
                   alt={attachment.name || "Image"}
                   width={160}
                   height={120}
+                  className="attachment-thumb"
                   unoptimized
                 />
                 <div className="attachment-info">

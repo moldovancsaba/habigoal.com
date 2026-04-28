@@ -46,16 +46,25 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
         <div className="trend-viz">
           {trend.map((point, i) => (
             <div key={i} className="trend-point">
-              <div className="trend-bars">
-                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`${ts("movement")}: ${formatScore(point.movement)}`}>
-                  {standard && <div className="target-marker" style={{ bottom: `${(standard.movement.target / 6) * 100}%` }} />}
-                </div>
-                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`${ts("social")}: ${formatScore(point.social)}`}>
-                  {standard && <div className="target-marker" style={{ bottom: `${(standard.social.target / 6) * 100}%` }} />}
-                </div>
-                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`${ts("mental")}: ${formatScore(point.mental)}`}>
-                  {standard && <div className="target-marker" style={{ bottom: `${(standard.mental.target / 6) * 100}%` }} />}
-                </div>
+              <div className="trend-values">
+                <TrendMetric
+                  label={ts("movement")}
+                  value={point.movement || 0}
+                  target={standard?.movement.target}
+                  variant="movement"
+                />
+                <TrendMetric
+                  label={ts("social")}
+                  value={point.social || 0}
+                  target={standard?.social.target}
+                  variant="social"
+                />
+                <TrendMetric
+                  label={ts("mental")}
+                  value={point.mental || 0}
+                  target={standard?.mental.target}
+                  variant="mental"
+                />
               </div>
               <span className="trend-date">{point.date}</span>
             </div>
@@ -93,6 +102,31 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           </table>
         </div>
       </section>
+    </div>
+  );
+}
+
+function TrendMetric({
+  label,
+  value,
+  target,
+  variant
+}: {
+  label: string;
+  value: number;
+  target?: number;
+  variant: "movement" | "social" | "mental";
+}) {
+  return (
+    <div className="trend-metric">
+      <div className="trend-metric-label">
+        <span>{label}</span>
+        <strong>{formatScore(value)}</strong>
+      </div>
+      <progress className={`trend-progress ${variant}`} max={6} value={value} aria-label={label} />
+      {typeof target === "number" && (
+        <small className="trend-target">Target: {formatScore(target)}</small>
+      )}
     </div>
   );
 }

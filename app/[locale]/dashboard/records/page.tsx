@@ -28,16 +28,16 @@ export default function RecordsPage() {
       <div className="records">
         {savedRecords.length === 0 && <span className="empty">{ta("noHistory")}</span>}
         {savedRecords.map((record) => (
-          <div key={record._id} className="attachment" style={{ marginBottom: '1rem' }}>
-            <div className="record-info" style={{ flex: 1 }}>
+          <div key={record._id} className="attachment record-card">
+            <div className="record-info record-info-grow">
               {record.childId ? (
                 <Link href={`/dashboard/children/${record.childId}`}>
-                  <strong style={{ fontSize: '1.125rem' }}>{record.child.name || "---"}</strong>
+                  <strong className="record-name">{record.child.name || "---"}</strong>
                 </Link>
               ) : (
-                <strong style={{ fontSize: '1.125rem' }}>{record.child.name || "---"}</strong>
+                <strong className="record-name">{record.child.name || "---"}</strong>
               )}
-              <div className="muted" style={{ marginTop: '0.25rem' }}>
+              <div className="muted record-meta">
                 {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
               </div>
             </div>

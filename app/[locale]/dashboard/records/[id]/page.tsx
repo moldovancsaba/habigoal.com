@@ -83,7 +83,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               <thead>
                 <tr>
                   <th>Observation</th>
-                  <th style={{ width: '80px' }}>Score</th>
+                  <th className="score-col">Score</th>
                   <th>Note</th>
                 </tr>
               </thead>
@@ -93,7 +93,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                   return (
                     <tr key={item.key}>
                       <td>{ts(`${item.key}.title`)}</td>
-                      <td style={{ fontWeight: 700 }}>{entry?.score || "-"}</td>
+                      <td className="score-value">{entry?.score || "-"}</td>
                       <td className="muted">{entry?.note || "-"}</td>
                     </tr>
                   );
@@ -106,14 +106,14 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
       <section className="panel">
         <h2>{t("professionalNotes")}</h2>
-        <div style={{ display: 'grid', gap: '1.5rem' }}>
+        <div className="notes-grid">
           <div>
             <strong>{t("generalObservation")}:</strong>
-            <p className="muted" style={{ marginTop: '0.5rem' }}>{record.notes.general || "-"}</p>
+            <p className="muted note-content">{record.notes.general || "-"}</p>
           </div>
           <div>
             <strong>{t("adaptationNeeds")}:</strong>
-            <p className="muted" style={{ marginTop: '0.5rem' }}>{record.notes.adaptations || "-"}</p>
+            <p className="muted note-content">{record.notes.adaptations || "-"}</p>
           </div>
         </div>
       </section>
