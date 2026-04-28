@@ -4,7 +4,7 @@ import { useEffect, useState, use } from "react";
 import { useTranslations } from "next-intl";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
-import { calculateTrend, TrendPoint } from "@/lib/utils/trends";
+import { calculateTrend } from "@/lib/utils/trends";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { calculateAgeGroup } from "@/lib/utils/age";
 
@@ -50,35 +50,35 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           {trend.map((point, i) => (
             <div key={i} className="trend-point">
               <div className="trend-bars">
-                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`Movement: ${fmt(point.movement)}`}>
+                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`${ts("movement")}: ${fmt(point.movement)}`}>
                   {standard && <div className="target-marker" style={{ bottom: `${(standard.movement.target / 6) * 100}%` }} />}
                 </div>
-                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`Social: ${fmt(point.social)}`}>
+                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`${ts("social")}: ${fmt(point.social)}`}>
                   {standard && <div className="target-marker" style={{ bottom: `${(standard.social.target / 6) * 100}%` }} />}
                 </div>
-                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`Mental: ${fmt(point.mental)}`}>
+                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`${ts("mental")}: ${fmt(point.mental)}`}>
                   {standard && <div className="target-marker" style={{ bottom: `${(standard.mental.target / 6) * 100}%` }} />}
                 </div>
               </div>
               <span className="trend-date">{point.date}</span>
             </div>
           ))}
-          {trend.length === 0 && <p className="empty">No historical data available.</p>}
+          {trend.length === 0 && <p className="empty">{t("noHistory")}</p>}
         </div>
       </section>
 
       <section className="panel">
-        <h2>Assessment History</h2>
+        <h2>{t("assessmentHistory")}</h2>
         <div className="table-wrapper">
           <table className="table">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Mode</th>
-                <th>Movement</th>
-                <th>Social</th>
-                <th>Mental</th>
-                <th>SKI</th>
+                <th>{tc("date")}</th>
+                <th>{tc("mode")}</th>
+                <th>{ts("movement")}</th>
+                <th>{ts("social")}</th>
+                <th>{ts("mental")}</th>
+                <th>{ts("ski")}</th>
               </tr>
             </thead>
             <tbody>

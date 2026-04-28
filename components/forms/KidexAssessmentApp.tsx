@@ -219,8 +219,8 @@ export function KidexAssessmentApp() {
     <div className="assessment-page">
       <header className="panelHeader">
         <div>
-          <span className="eyebrow">Bio-psycho-social sport assessment</span>
-          <h1>KIDEX conductor survey</h1>
+          <span className="eyebrow">{t("appSubtitle")}</span>
+          <h1>{t("appTitle")}</h1>
         </div>
         <div className="topActions">
           <button className="btn ghost" onClick={newAssessment}>{tc("new")}</button>
@@ -283,7 +283,7 @@ export function KidexAssessmentApp() {
         </Panel>
 
         <Panel title={t("evidenceImages")}>
-          <p className="muted">Images are uploaded securely. Upload is blocked until photo/video consent is checked.</p>
+          <p className="muted">{t("uploadSecurityNote")}</p>
           <label className={`btn ghost ${assessment.session.consentPhoto ? "" : "disabled"}`}>
             <input type="file" accept="image/*" onChange={uploadImage} disabled={!assessment.session.consentPhoto || uploading} style={{ display: 'none' }} />
             {uploading ? t("uploading") : t("uploadImage")}
@@ -348,8 +348,8 @@ export function KidexAssessmentApp() {
           <TextArea label={t("referralNote")} value={assessment.notes.referral} onChange={(value) => update("notes", "referral", value)} />
         </Panel>
         <Panel title={t("reportPreview")}>
-          <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} />
-          <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} />
+          <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
+          <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
           <div className="ski-summary">
             <p className="muted">{t("nextStep")}:</p>
             <p className="ski-result">
@@ -403,7 +403,7 @@ function TextArea({ label, value, onChange }: { label: string; value: string; on
   return <label className="field full"><span>{label}</span><textarea value={value} onChange={(event) => onChange(event.target.value)} /></label>;
 }
 
-function ReportList({ title, items }: { title: string; items: string[] }) {
+function ReportList({ title, items, emptyText }: { title: string; items: string[]; emptyText: string }) {
   return (
     <div className="report-block">
       <strong>{title}</strong>
@@ -412,7 +412,7 @@ function ReportList({ title, items }: { title: string; items: string[] }) {
           {items.map((item) => <li key={item}>{item}</li>)}
         </ul>
       ) : (
-        <span className="empty">No data yet.</span>
+        <span className="empty">{emptyText}</span>
       )}
     </div>
   );

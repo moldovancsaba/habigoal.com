@@ -11,6 +11,7 @@ function fmt(value: number | null | undefined) {
 
 export default function RecordsPage() {
   const t = useTranslations("Dashboard");
+  const ta = useTranslations("Assessment");
   const [savedRecords, setSavedRecords] = useState<AssessmentRecord[]>([]);
 
   useEffect(() => {
@@ -30,19 +31,22 @@ export default function RecordsPage() {
         <h2>{t("records")}</h2>
       </div>
       <div className="records">
-        {savedRecords.length === 0 && <span className="empty">No saved records loaded.</span>}
+        {savedRecords.length === 0 && <span className="empty">{ta("noHistory")}</span>}
         {savedRecords.map((record) => (
-          <div key={record._id} className="record-item">
-            <div className="record-info">
+          <div key={record._id} className="attachment" style={{ marginBottom: '1rem' }}>
+            <div className="record-info" style={{ flex: 1 }}>
               {record.childId ? (
                 <Link href={`/dashboard/children/${record.childId}`}>
-                  <strong>{record.child.name || "Unnamed child"}</strong>
+                  <strong style={{ fontSize: '1.125rem' }}>{record.child.name || "---"}</strong>
                 </Link>
               ) : (
-                <strong>{record.child.name || "Unnamed child"}</strong>
+                <strong style={{ fontSize: '1.125rem' }}>{record.child.name || "---"}</strong>
               )}
-              <span>{record.mode} · SKI {fmt(record.computed.ski)} · {record.updatedAt?.slice(0, 10)}</span>
+              <div className="muted" style={{ marginTop: '0.25rem' }}>
+                {record.mode} · SKI {fmt(record.computed.ski)} · {record.session.date}
+              </div>
             </div>
+            <Link href={`/dashboard/records/${record._id}`} className="btn ghost">View</Link>
           </div>
         ))}
       </div>

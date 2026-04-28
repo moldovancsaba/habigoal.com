@@ -9,7 +9,9 @@
     "loading": "Loading...",
     "noChildren": "No children profiles found from assessments yet.",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "date": "Date",
+    "mode": "Mode"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -60,7 +62,10 @@
     "nextStep": "Next step",
     "completeAll": "Complete all dimensions.",
     "stabilizing": "Stabilizing and coordination-focused program.",
-    "sportOrientation": "Sport orientation and follow-up measurement."
+    "sportOrientation": "Sport orientation and follow-up measurement.",
+    "noData": "No data yet.",
+    "assessmentHistory": "Assessment History",
+    "noHistory": "No historical data available."
   },
   "Schema": {
     "movement": "Movement Profile",

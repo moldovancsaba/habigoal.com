@@ -9,7 +9,9 @@
     "loading": "Betöltés...",
     "noChildren": "Még nincsenek felmérésből származó gyermek profilok.",
     "error": "Hiba",
-    "success": "Sikeres"
+    "success": "Sikeres",
+    "date": "Dátum",
+    "mode": "Mód"
   },
   "Dashboard": {
     "title": "Vezérlőpult",
@@ -60,7 +62,10 @@
     "nextStep": "Következő lépés",
     "completeAll": "Minden dimenziót ki kell tölteni.",
     "stabilizing": "Stabilizáló és koordináció-fókuszú program.",
-    "sportOrientation": "Sportorientáció és követő mérés."
+    "sportOrientation": "Sportorientáció és követő mérés.",
+    "noData": "Még nincs adat.",
+    "assessmentHistory": "Felmérési történet",
+    "noHistory": "Nem áll rendelkezésre korábbi adat."
   },
   "Schema": {
     "movement": "Mozgásprofil",
@@ -126,7 +131,7 @@
     "figyelem_rapid": { "title": "Figyelmi fókusz", "prompt": "Gyors instrukció követés" },
     "feladatmegertes": { "title": "Feladatmegértés", "prompt": "Instrukció értése" },
     "kitartas_rapid": { "title": "Kitartás", "prompt": "Feladat végigvitele" },
-    "frusztracio": { "title": "Frustration handling", "prompt": "Hibára adott reakció" },
+    "frusztracio": { "title": "Frusztráció kezelése", "prompt": "Hibára adott reakció" },
     "egyuttmukodes_rapid": { "title": "Együttműködés", "prompt": "Páros/csoportos feladat" },
     "szabalykovetes_rapid": { "title": "Szabálykövetés", "prompt": "Mini versenyhelyzet" },
     "kommunikacio_rapid": { "title": "Kommunikáció", "prompt": "Válasz, kezdeményezés" },
