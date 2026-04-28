@@ -41,6 +41,8 @@
     "overviewSubtitle": "General product and activity metrics",
     "totalUsers": "Total users",
     "totalRecords": "Total records",
+    "totalChildren": "Total children",
+    "avgRecordsPerChild": "Average records per child",
     "recordsChartTitle": "Records by month",
     "recordsChartSubtitle": "Last 6 months",
     "usersChartTitle": "User role distribution",

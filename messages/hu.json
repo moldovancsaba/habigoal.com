@@ -41,6 +41,8 @@
     "overviewSubtitle": "Általános termék- és aktivitási mutatók",
     "totalUsers": "Felhasználók száma",
     "totalRecords": "Rekordok száma",
+    "totalChildren": "Gyermekek száma",
+    "avgRecordsPerChild": "Átlagos rekord/gyermek",
     "recordsChartTitle": "Rekordok havi bontásban",
     "recordsChartSubtitle": "Elmúlt 6 hónap",
     "usersChartTitle": "Felhasználói szerepkör megoszlás",

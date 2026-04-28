@@ -583,7 +583,14 @@ export function KidexAssessmentApp() {
               <Stack spacing={2} divider={<Divider flexItem />}>
                 {assessment.attachments.map((attachment) => (
                   <Stack key={attachment.id} direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { sm: "center" } }}>
-                    <Image src={attachment.thumbUrl || attachment.url} alt={attachment.name || "Image"} width={160} height={120} unoptimized />
+                    <Image
+                      src={attachment.thumbUrl || attachment.url}
+                      alt={attachment.name || "Image"}
+                      width={160}
+                      height={120}
+                      style={{ width: 160, height: "auto", maxHeight: 160, borderRadius: 8 }}
+                      unoptimized
+                    />
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Link href={attachment.url} target="_blank" rel="noreferrer" variant="body2">
                         {attachment.name || "Image"}

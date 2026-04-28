@@ -41,6 +41,8 @@
     "overviewSubtitle": "مؤشرات عامة للنظام والنشاط",
     "totalUsers": "إجمالي المستخدمين",
     "totalRecords": "إجمالي السجلات",
+    "totalChildren": "إجمالي الأطفال",
+    "avgRecordsPerChild": "متوسط السجلات لكل طفل",
     "recordsChartTitle": "السجلات حسب الشهر",
     "recordsChartSubtitle": "آخر 6 أشهر",
     "usersChartTitle": "توزيع أدوار المستخدمين",
