@@ -653,7 +653,7 @@ export function KidexAssessmentApp() {
               />
             </FieldWide>
             <FieldWide>
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
                 <FormControlLabel control={<Checkbox checked={assessment.session.consentPhoto} onChange={(e: ChangeEvent<HTMLInputElement>) => update("session", "consentPhoto", e.target.checked)} />} label={t("consentPhoto")} />
                 <FormControlLabel control={<Checkbox checked={assessment.session.consentReport} onChange={(e: ChangeEvent<HTMLInputElement>) => update("session", "consentReport", e.target.checked)} />} label={t("consentReport")} />
               </Stack>
@@ -817,7 +817,6 @@ export function KidexAssessmentApp() {
                       })}
                     </Box>
                   </Stack>
-                  <Divider sx={{ my: 1.25 }} />
                   <TextField
                     value={entry?.note || ""}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => updateScore(item.key, { note: e.target.value })}
@@ -890,7 +889,7 @@ export function KidexAssessmentApp() {
 
 function FieldWrap({ children }: { children: ReactNode }) {
   return (
-    <Box sx={{ flex: "1 1 240px", minWidth: 200, maxWidth: { lg: "calc(50% - 8px)" } }}>{children}</Box>
+    <Box sx={{ flex: "1 1 260px", minWidth: 220, maxWidth: "100%" }}>{children}</Box>
   );
 }
 

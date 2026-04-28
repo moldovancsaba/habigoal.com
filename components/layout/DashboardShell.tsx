@@ -1,6 +1,6 @@
 "use client";
 
-import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack, Text } from "@mantine/core";
+import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack } from "@mantine/core";
 import Image from "next/image";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -31,6 +31,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
         </Box>
       </Box>
+      <Group gap={8} p="sm" style={{ marginInline: 8, border: "1px solid var(--mantine-color-default-border)", borderRadius: "var(--mantine-radius-md)" }}>
+        <LocaleSwitcher />
+        <ThemeSwitcher />
+      </Group>
       <Stack gap={6} px="sm" pb="md" style={{ flex: 1 }}>
         {nav.map((item) => {
           const active =
@@ -90,15 +94,9 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </Drawer>
 
       <AppShell
-        header={{ height: 56, collapsed: false }}
         navbar={{ width: KIDEX_LAYOUT.drawerWidth, breakpoint: "md" }}
         padding={0}
         styles={{
-          header: {
-            backgroundColor: "var(--mantine-color-body)",
-            color: "var(--mantine-color-text)",
-            borderBottomColor: "var(--mantine-color-default-border)"
-          },
           navbar: {
             borderInlineEnd: "none",
             backgroundColor: KIDEX_COLORS.brandNavy
@@ -108,26 +106,22 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           }
         }}
       >
-        <AppShell.Header>
-          <Group h="100%" px="md" justify="space-between">
-            <Group gap="xs">
-              <Burger opened={mobileOpen} onClick={() => setMobileOpen((v) => !v)} size="sm" hiddenFrom="md" />
-              <Text fw={700} hiddenFrom="md">KIDEX</Text>
-            </Group>
-            <Group gap={8} p={4} style={{ border: "1px solid var(--mantine-color-default-border)", borderRadius: "var(--mantine-radius-md)" }}>
-              <LocaleSwitcher />
-              <ThemeSwitcher />
-            </Group>
-          </Group>
-        </AppShell.Header>
-
         <AppShell.Navbar visibleFrom="md" p={0}>
           {navContent}
         </AppShell.Navbar>
 
         <AppShell.Main>
+          <Burger
+            opened={mobileOpen}
+            onClick={() => setMobileOpen((v) => !v)}
+            size="sm"
+            hiddenFrom="md"
+            style={{ position: "fixed", top: 10, left: 10, zIndex: 300 }}
+            color={KIDEX_COLORS.navText}
+            bg={KIDEX_COLORS.white}
+          />
           <Box className="dashboard-main" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
-            <Box style={{ flex: 1 }} pt={56}>
+            <Box style={{ flex: 1 }}>
               <PageContainer>{children}</PageContainer>
             </Box>
             <AppFooter />
