@@ -53,3 +53,13 @@ export async function deleteAssessmentById(id: ObjectId) {
   const db = await getDatabase();
   await db.collection(collectionName).deleteOne({ _id: id });
 }
+
+export async function listAssessmentsByChildId(childId: string) {
+  const db = await getDatabase();
+  const assessments = await db
+    .collection(collectionName)
+    .find({ childId })
+    .sort({ createdAt: 1 })
+    .toArray();
+  return assessments.map(toJsonId);
+}

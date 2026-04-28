@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { AssessmentRecord } from "@/types/assessment";
 
 function fmt(value: number | null) {
@@ -33,10 +34,15 @@ export default function RecordsPage() {
         {savedRecords.map((record) => (
           <div key={record._id} className="record-item">
             <div className="record-info">
-              <strong>{record.child.name || "Unnamed child"}</strong>
+              {record.childId ? (
+                <Link href={`/dashboard/children/${record.childId}`}>
+                  <strong>{record.child.name || "Unnamed child"}</strong>
+                </Link>
+              ) : (
+                <strong>{record.child.name || "Unnamed child"}</strong>
+              )}
               <span>{record.mode} · SKI {fmt(record.computed.ski)} · {record.updatedAt?.slice(0, 10)}</span>
             </div>
-            <button className="btn ghost">View</button>
           </div>
         ))}
       </div>

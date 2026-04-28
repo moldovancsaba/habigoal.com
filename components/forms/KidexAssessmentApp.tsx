@@ -6,7 +6,7 @@ import { sectionsForMode } from "@/lib/kidex-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
-import { getConductors, getObservers, User } from "@/services/user-service";
+import { getSettings } from "@/services/settings-service";
 import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
 
 const emptyAssessment: AssessmentPayload = {
@@ -60,6 +60,7 @@ function fmt(value: number | null) {
 export function KidexAssessmentApp() {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
+  const ts = useTranslations("Schema");
   
   const [assessment, setAssessment] = useState<AssessmentPayload>(() => cloneAssessment(emptyAssessment));
   const [recordId, setRecordId] = useState<string>("");
@@ -67,8 +68,9 @@ export function KidexAssessmentApp() {
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   
-  const [conductors, setConductors] = useState<User[]>([]);
-  const [observers, setObservers] = useState<User[]>([]);
+  const [conductors, setConductors] = useState<string[]>([]);
+  const [observers, setObservers] = useState<string[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
 
   const sections = sectionsForMode(assessment.mode);
   const computed = useMemo(() => computeAssessment(assessment), [assessment]);
@@ -80,8 +82,11 @@ export function KidexAssessmentApp() {
     }
     
     // Load settings
-    void getConductors().then(setConductors);
-    void getObservers().then(setObservers);
+    void getSettings().then((data) => {
+      setConductors(data.conductors);
+      setObservers(data.observers);
+      setLocations(data.locations);
+    });
   }, []);
 
   useEffect(() => {
@@ -159,7 +164,7 @@ export function KidexAssessmentApp() {
     event.target.value = "";
     if (!file) return;
     if (!assessment.session.consentPhoto) {
-      setMessage("Image upload requires video/photo consent.");
+      setMessage(t("consentRequired"));
       return;
     }
     setUploading(true);
@@ -172,7 +177,7 @@ export function KidexAssessmentApp() {
     });
     setUploading(false);
     if (!response?.ok) {
-      setMessage("Upload failed.");
+      setMessage(t("uploadFailed"));
       return;
     }
     const data = await response.json() as { attachment: EvidenceAttachment };
@@ -180,7 +185,7 @@ export function KidexAssessmentApp() {
       ...current,
       attachments: [...current.attachments, data.attachment]
     }));
-    setMessage("Image uploaded and attached.");
+    setMessage(t("uploadSuccess"));
   }
 
   function removeAttachment(id: string) {
@@ -215,9 +220,9 @@ export function KidexAssessmentApp() {
       {message && <div className={`notice ${saveState === "error" ? "error" : ""}`}>{message}</div>}
 
       <section className="metrics">
-        <Metric label="Movement" value={fmt(computed.movementAverage)} />
-        <Metric label="Social" value={fmt(computed.socialAverage)} />
-        <Metric label="Mental" value={fmt(computed.mentalAverage)} />
+        <Metric label={ts("movement")} value={fmt(computed.movementAverage)} />
+        <Metric label={ts("social")} value={fmt(computed.socialAverage)} />
+        <Metric label={ts("mental")} value={fmt(computed.mentalAverage)} />
         <Metric label="SKI" value={fmt(computed.ski)} />
       </section>
 
@@ -232,16 +237,21 @@ export function KidexAssessmentApp() {
             <SearchableSelect 
               label={t("conductor")} 
               value={assessment.session.conductor} 
-              options={conductors} 
+              options={conductors.map(c => ({ id: c, name: c }))} 
               onChange={(value) => update("session", "conductor", value)} 
             />
             
-            <Field label={t("location")} value={assessment.session.location} onChange={(value) => update("session", "location", value)} />
+            <Select 
+              label={t("location")} 
+              value={assessment.session.location} 
+              onChange={(value) => update("session", "location", value)} 
+              options={locations} 
+            />
             
             <SearchableSelect 
               label={t("observers")} 
               value={assessment.session.observers} 
-              options={observers} 
+              options={observers.map(o => ({ id: o, name: o }))} 
               onChange={(value) => update("session", "observers", value)} 
             />
             
@@ -278,8 +288,8 @@ export function KidexAssessmentApp() {
       {sections.map((section, sectionIndex) => (
         <Panel
           key={section.key}
-          title={`${section.title} (${Math.round(section.weight * 100)}%)`}
-          right={<span className={`badge ${section.key}`}>{section.key}</span>}
+          title={`${ts(section.key)} (${Math.round(section.weight * 100)}%)`}
+          right={<span className={`badge ${section.domain}`}>{ts(section.domain)}</span>}
         >
           <div className="scoreList">
             {section.items.map((item, itemIndex) => {
@@ -288,12 +298,12 @@ export function KidexAssessmentApp() {
                 <div className="scoreRow" key={item.key}>
                   <div className="scoreNum">{sectionIndex * 25 + itemIndex + 1}</div>
                   <div className="scoreText">
-                    <strong>{item.title}</strong>
-                    <span>{item.prompt}</span>
+                    <strong>{ts(`${item.key}.title`)}</strong>
+                    <span>{ts(`${item.key}.prompt`)}</span>
                     <textarea
                       value={entry?.note || ""}
                       onChange={(event) => updateScore(item.key, { note: event.target.value })}
-                      aria-label={`${item.title} observation note`}
+                      aria-label={`${ts(`${item.key}.title`)} ${t("observationNote")}`}
                     />
                   </div>
                   <select
@@ -317,9 +327,9 @@ export function KidexAssessmentApp() {
           <TextArea label={t("referralNote")} value={assessment.notes.referral} onChange={(value) => update("notes", "referral", value)} />
         </Panel>
         <Panel title={t("reportPreview")}>
-          <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${labelFor(key)} (${entry.score})`)} />
-          <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${labelFor(key)} (${entry.score})`)} />
-          <p className="muted">Next step: {computed.ski === null ? "Complete all dimensions." : computed.ski < 3.5 ? "Stabilizing and coordination-focused program." : "Sport orientation and follow-up measurement."}</p>
+          <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} />
+          <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} />
+          <p className="muted">{t("nextStep")}: {computed.ski === null ? t("completeAll") : computed.ski < 3.5 ? t("stabilizing") : t("sportOrientation")}</p>
         </Panel>
       </section>
     </div>
