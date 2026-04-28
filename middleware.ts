@@ -5,10 +5,10 @@ export default createMiddleware(routing);
 
 export const config = {
   // Match all paths except for api, _next, and static files.
-  // The 'always' locale prefix strategy will handle redirects to /hu/ or /en/ automatically.
+  // The 'always' locale prefix strategy will handle redirects to /hu/, /en/, or /ar/ automatically.
   matcher: [
     '/', 
-    '/(hu|en)/:path*',
+    '/(hu|en|ar)/:path*',
     '/((?!api|_next|_vercel|.*\\..*).*)'
   ]
 };

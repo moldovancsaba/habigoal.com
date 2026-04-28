@@ -2,6 +2,7 @@
 
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 
@@ -10,8 +11,8 @@ export function LocaleSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
 
-  function switchLocale(nextLocale: "en" | "hu") {
-    const cleanPath = pathname.replace(/^\/(en|hu)(\/|$)/, "/");
+  function switchLocale(nextLocale: "en" | "hu" | "ar") {
+    const cleanPath = pathname.replace(/^\/(en|hu|ar)(\/|$)/, "/");
     router.replace(cleanPath, { locale: nextLocale });
   }
 
@@ -26,9 +27,8 @@ export function LocaleSwitcher() {
         "& .MuiToggleButton-root": {
           color: "rgba(255,255,255,0.75)",
           borderColor: "rgba(255,255,255,0.25)",
-          py: 0.75,
-          fontWeight: 700,
-          fontSize: "0.75rem"
+          py: 0.6,
+          minWidth: 0
         },
         "& .MuiToggleButton-root.Mui-selected": {
           bgcolor: "secondary.main",
@@ -38,8 +38,21 @@ export function LocaleSwitcher() {
         }
       }}
     >
-      <ToggleButton value="hu">HU</ToggleButton>
-      <ToggleButton value="en">EN</ToggleButton>
+      <Tooltip title="Arabic" arrow>
+        <ToggleButton value="ar" aria-label="Switch to Arabic">
+          <span role="img" aria-hidden="true">🇸🇦</span>
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title="Hungarian" arrow>
+        <ToggleButton value="hu" aria-label="Switch to Hungarian">
+          <span role="img" aria-hidden="true">🇭🇺</span>
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title="English" arrow>
+        <ToggleButton value="en" aria-label="Switch to English">
+          <span role="img" aria-hidden="true">🇬🇧</span>
+        </ToggleButton>
+      </Tooltip>
     </ToggleButtonGroup>
   );
 }

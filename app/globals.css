@@ -23,6 +23,21 @@ body {
   display: none;
 }
 
+.report-logo {
+  object-fit: contain;
+}
+
+.report-meta-grid {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.print-report-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #3d3f4d;
+}
+
 @media print {
   .no-print {
     display: none !important;
@@ -51,5 +66,27 @@ body {
   body {
     background: white !important;
     color: black !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  .print-container {
+    max-width: none !important;
+  }
+
+  .print-container .MuiPaper-root {
+    box-shadow: none !important;
+    border-color: #d7dce5 !important;
+  }
+
+  .print-container .MuiTableCell-root {
+    border-color: #d7dce5 !important;
+  }
+
+  .print-report-header {
+    display: block !important;
   }
 }

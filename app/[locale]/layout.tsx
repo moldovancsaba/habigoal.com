@@ -12,10 +12,11 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
   const messages = await getMessages();
+  const direction = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale}>
-      <body>
+    <html lang={locale} dir={direction}>
+      <body dir={direction}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MuiRegistry>{children}</MuiRegistry>
         </NextIntlClientProvider>

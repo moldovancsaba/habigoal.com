@@ -1,21 +1,24 @@
-import { createTheme, type ThemeOptions } from "@mui/material/styles";
+import { createTheme, type Direction, type ThemeOptions } from "@mui/material/styles";
 
 const brandNavy = "#3D3F4D";
 const brandTeal = "#13A59E";
 const brandGold = "#FDCB58";
 
+const baseFontFamily = '"Outfit","Inter","Helvetica","Arial",sans-serif';
+
 const baseTypography: ThemeOptions["typography"] = {
-  fontFamily: '"Outfit","Inter","Helvetica","Arial",sans-serif',
+  fontFamily: baseFontFamily,
   h1: { fontWeight: 700, fontSize: "1.75rem" },
   h2: { fontWeight: 700, fontSize: "1.35rem" },
   h3: { fontWeight: 600, fontSize: "1.1rem" },
   button: { textTransform: "none", fontWeight: 600 }
 };
 
-export function getKidexTheme(mode: "light" | "dark") {
+export function getKidexTheme(mode: "light" | "dark", direction: Direction = "ltr") {
   const isLight = mode === "light";
 
   return createTheme({
+    direction,
     palette: {
       mode,
       primary: {
@@ -40,7 +43,14 @@ export function getKidexTheme(mode: "light" | "dark") {
       },
       divider: isLight ? "#e5e7eb" : "#334155"
     },
-    typography: baseTypography,
+    typography: {
+      ...baseTypography,
+      // Arabic gets a more readable fallback stack.
+      fontFamily:
+        direction === "rtl"
+          ? '"Cairo","Tajawal","Noto Kufi Arabic","Outfit","Inter","Helvetica","Arial",sans-serif'
+          : baseFontFamily
+    },
     shape: { borderRadius: 10 },
     components: {
       MuiButton: {

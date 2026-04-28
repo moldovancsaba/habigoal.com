@@ -27,6 +27,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const nav = [
+    { href: "/dashboard", label: t("overview") },
     { href: "/dashboard/assessment", label: t("survey") },
     { href: "/dashboard/records", label: t("records") },
     { href: "/dashboard/children", label: t("children") },
@@ -40,7 +41,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </Box>
       <List sx={{ px: 1, py: 2, flex: 1 }}>
         {nav.map((item) => {
-          const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const active =
+            item.href === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
             <ListItemButton
               key={item.href}
@@ -127,7 +131,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           bgcolor: "background.default",
           pt: { xs: 8, md: 0 },
           px: 0,
-          py: { xs: 2, md: 3 }
+          pb: { xs: 2, md: 3 }
         }}
       >
         <PageContainer>{children}</PageContainer>

@@ -1,0 +1,395 @@
+{
+  "Common": {
+    "save": "حفظ",
+    "update": "تحديث",
+    "saving": "جارٍ الحفظ...",
+    "new": "جديد",
+    "delete": "حذف",
+    "remove": "إزالة",
+    "loading": "جارٍ التحميل...",
+    "noChildren": "لا توجد ملفات أطفال مستخرجة من التقييمات بعد.",
+    "error": "خطأ",
+    "success": "تم بنجاح",
+    "date": "التاريخ",
+    "mode": "الوضع",
+    "view": "عرض"
+  },
+  "Dashboard": {
+    "title": "لوحة التحكم",
+    "setup": "الإعداد",
+    "survey": "التقييم",
+    "scoring": "التقييم الرقمي",
+    "report": "التقرير",
+    "records": "السجلات",
+    "settings": "الإعدادات",
+    "children": "الأطفال",
+    "viewHistory": "السجل",
+    "userRights": "إدارة صلاحيات المستخدمين",
+    "addUser": "إضافة مستخدم",
+    "userName": "اسم المستخدم",
+    "canConduct": "إجراء التقييم",
+    "canObserve": "الملاحظة / المساعدة",
+    "noUsers": "لا يوجد مستخدمون بعد.",
+    "locations": "المواقع",
+    "addLocation": "إضافة موقع",
+    "noLocations": "لا توجد مواقع مضافة.",
+    "overview": "نظرة عامة",
+    "overviewSubtitle": "مؤشرات عامة للنظام والنشاط",
+    "totalUsers": "إجمالي المستخدمين",
+    "totalRecords": "إجمالي السجلات",
+    "recordsChartTitle": "السجلات حسب الشهر",
+    "recordsChartSubtitle": "آخر 6 أشهر",
+    "usersChartTitle": "توزيع أدوار المستخدمين",
+    "usersChartSubtitle": "تغطية المشرفين والملاحظين",
+    "conductors": "المشرفون",
+    "observers": "الملاحظون",
+    "legalAndCompany": "معلومات قانونية وإصدار التطبيق وبيانات الشركة",
+    "gtc": "الشروط والأحكام العامة",
+    "privacyPolicy": "سياسة الخصوصية",
+    "appVersion": "إصدار التطبيق",
+    "company": "الشركة"
+  },
+  "Assessment": {
+    "saved": "تم حفظ التقييم.",
+    "saveError": "فشل الحفظ. يرجى التحقق من الاتصال.",
+    "appSubtitle": "تقييم رياضي حيوي-نفسي-اجتماعي",
+    "appTitle": "استبيان KIDEX للمشرف",
+    "setupTitle": "إعداد التقييم",
+    "childName": "اسم الطفل",
+    "birthDate": "تاريخ الميلاد",
+    "ageGroup": "الفئة العمرية",
+    "ageGroupPending": "أدخل تاريخ الميلاد أولاً",
+    "mode": "الوضع",
+    "conductor": "المشرف",
+    "location": "الموقع",
+    "observers": "الملاحظون",
+    "context": "السياق",
+    "knownTraits": "سمات معروفة",
+    "parentSignals": "ملاحظات ولي الأمر / المربي",
+    "consentPhoto": "موافقة على الصور/الفيديو",
+    "consentReport": "موافقة تقرير ولي الأمر",
+    "evidenceImages": "صور الأدلة",
+    "uploadSecurityNote": "يتم رفع الصور بشكل آمن. الرفع معطّل حتى تفعيل موافقة الصور/الفيديو.",
+    "uploadImage": "رفع صورة",
+    "uploading": "جارٍ الرفع...",
+    "noImages": "لا توجد صور أدلة مرفقة.",
+    "professionalNotes": "ملاحظات مهنية",
+    "generalObservation": "ملاحظة عامة",
+    "adaptationNeeds": "احتياجات التكيّف",
+    "referralNote": "ملاحظة مناسبة للإحالة",
+    "reportPreview": "معاينة التقرير",
+    "strengths": "نقاط القوة",
+    "developmentPriorities": "أولويات التطوير",
+    "longitudinalTrends": "اتجاهات طولية",
+    "observationNote": "ملاحظة المشاهدة",
+    "consentRequired": "رفع الصور يتطلب موافقة الصور/الفيديو.",
+    "uploadFailed": "فشل الرفع.",
+    "uploadSuccess": "تم رفع الصورة وإرفاقها.",
+    "nextStep": "الخطوة التالية",
+    "completeAll": "أكمل جميع الأبعاد.",
+    "stabilizing": "برنامج يركز على الاستقرار والتنسيق.",
+    "sportOrientation": "توجيه رياضي مع قياس متابعة.",
+    "noData": "لا توجد بيانات بعد.",
+    "assessmentHistory": "سجل التقييمات",
+    "noHistory": "لا توجد بيانات سابقة.",
+    "modeRapid": "سريع",
+    "modeFull": "كامل",
+    "contextEvent": "فعالية / منافسة",
+    "contextStructured": "جلسة منظمة",
+    "contextSpontaneous": "لعب عفوي",
+    "contextMixed": "مختلط / آخر",
+    "recordTitle": "سجل التقييم",
+    "printSavePdf": "طباعة / حفظ PDF",
+    "reportPrintTitle": "تقرير KIDEX الحيوي-النفسي-الاجتماعي",
+    "tableObservation": "الملاحظة",
+    "tableScore": "الدرجة",
+    "tableNote": "ملاحظة",
+    "takePhoto": "التقاط صورة",
+    "tableTime": "الوقت",
+    "groupSize": "حجم المجموعة",
+    "lastUpdated": "آخر تحديث"
+  },
+  "Schema": {
+    "ski": "SKI",
+    "movement": "الملف الحركي",
+    "social": "الملف الاجتماعي-العاطفي",
+    "mental": "الملف النفسي-الذهني",
+    "rapid_movement": "سريع - حركي",
+    "rapid_mental": "سريع - نفسي",
+    "rapid_social": "سريع - اجتماعي",
+    "futotechnika": {
+      "title": "Running technique",
+      "prompt": "Rhythm, arm work, foot strike"
+    },
+    "iranyvaltas": {
+      "title": "Direction change",
+      "prompt": "Fast, controlled turns"
+    },
+    "dinamikus_egyensuly": {
+      "title": "Dynamic balance",
+      "prompt": "Stability during movement"
+    },
+    "statikus_egyensuly": {
+      "title": "Static balance",
+      "prompt": "Stability on one leg"
+    },
+    "ugraskeszseg": {
+      "title": "Jumping skill",
+      "prompt": "Double/single leg takeoff"
+    },
+    "erkezestechnika": {
+      "title": "Landing technique",
+      "prompt": "Joint protection, damping"
+    },
+    "esesbiztonsag": {
+      "title": "Rolling/Falling safety",
+      "prompt": "Controlled ground work"
+    },
+    "testsema": {
+      "title": "Body schema awareness",
+      "prompt": "Body position awareness in space"
+    },
+    "lateralitas": {
+      "title": "Laterality",
+      "prompt": "Right-left coordination"
+    },
+    "keresztezo_mozgas": {
+      "title": "Crossing movements",
+      "prompt": "Limb integration"
+    },
+    "szem_kez": {
+      "title": "Eye-hand coordination",
+      "prompt": "Accurate throw/catch"
+    },
+    "szem_lab": {
+      "title": "Eye-foot coordination",
+      "prompt": "Ball handling"
+    },
+    "eroadagolas": {
+      "title": "Force modulation",
+      "prompt": "Throw/bounce control"
+    },
+    "reakcioido": {
+      "title": "Reaction time",
+      "prompt": "Color-movement task"
+    },
+    "ritmuserzek": {
+      "title": "Rhythm sense",
+      "prompt": "Coordination ladder"
+    },
+    "mozgassor": {
+      "title": "Execution of movement sequence",
+      "prompt": "Multi-step task"
+    },
+    "praxis": {
+      "title": "Praxis / Motor planning",
+      "prompt": "Learning new movements"
+    },
+    "terbeli_tajekozodas": {
+      "title": "Spatial orientation",
+      "prompt": "Safety within the field"
+    },
+    "utkozeskezeles": {
+      "title": "Collision handling",
+      "prompt": "Tolerance for body contact"
+    },
+    "gyorsasag": {
+      "title": "Speed",
+      "prompt": "Short-term intensity"
+    },
+    "allokepesseg": {
+      "title": "Endurance",
+      "prompt": "Carrying task through"
+    },
+    "izomtonus": {
+      "title": "Muscle tone",
+      "prompt": "Stable trunk"
+    },
+    "finommotorika": {
+      "title": "Fine motor skills",
+      "prompt": "Tool handling"
+    },
+    "propriocepcio": {
+      "title": "Proprioception",
+      "prompt": "Balance board control"
+    },
+    "mozgasadaptacio": {
+      "title": "Movement adaptation",
+      "prompt": "Adjusting movement to rule changes"
+    },
+    "kooperacio": {
+      "title": "Cooperation",
+      "prompt": "Active participation in a team"
+    },
+    "szabalykovetes": {
+      "title": "Rule following",
+      "prompt": "Conscious compliance"
+    },
+    "varakozasi_tolerancia": {
+      "title": "Waiting tolerance",
+      "prompt": "Standing in line"
+    },
+    "kudarctures": {
+      "title": "Failure tolerance",
+      "prompt": "Reaction to mistakes"
+    },
+    "gyozelem_kezelese": {
+      "title": "Handling victory",
+      "prompt": "Non-dominant behavior"
+    },
+    "erzelemszabalyozas": {
+      "title": "Emotional regulation",
+      "prompt": "Impulse control"
+    },
+    "empatia": {
+      "title": "Empathy",
+      "prompt": "Helpfulness"
+    },
+    "kapcsolatkezdemenyezes": {
+      "title": "Initiating contact",
+      "prompt": "Starting communication"
+    },
+    "instrukcio_elfogadas": {
+      "title": "Accepting instructions",
+      "prompt": "Accepting coach guidance"
+    },
+    "szerepvallalas": {
+      "title": "Dominance-passvitiy ratio",
+      "prompt": "Role taking"
+    },
+    "fair_play": {
+      "title": "Fair play attitude",
+      "prompt": "Reaction to rule breaking"
+    },
+    "konfliktuskezeles": {
+      "title": "Conflict management",
+      "prompt": "Situation resolution"
+    },
+    "motivacio": {
+      "title": "Type of motivation",
+      "prompt": "Intrinsic vs extrinsic drive"
+    },
+    "kitartas": {
+      "title": "Perseverance",
+      "prompt": "Finishing difficult tasks"
+    },
+    "onbizalom": {
+      "title": "Self-confidence",
+      "prompt": "Judging own performance"
+    },
+    "figyelmi_fokusz": {
+      "title": "Attention focus",
+      "prompt": "Task maintenance"
+    },
+    "megosztott_figyelem": {
+      "title": "Divided attention",
+      "prompt": "Movement + external stimulus"
+    },
+    "munkamemoria": {
+      "title": "Working memory",
+      "prompt": "Remembering movement sequence"
+    },
+    "kognitiv_rugalmassag": {
+      "title": "Cognitive flexibility",
+      "prompt": "Handling rule changes"
+    },
+    "impulzuskontroll": {
+      "title": "Impulse control",
+      "prompt": "Delaying reaction"
+    },
+    "tervezes": {
+      "title": "Planning",
+      "prompt": "Forward-looking movement"
+    },
+    "onjavitas": {
+      "title": "Self-correction",
+      "prompt": "Correction from mistakes"
+    },
+    "terhelhetoseg": {
+      "title": "Mental load capacity",
+      "prompt": "Signs of mental fatigue"
+    },
+    "teljesitmenyszorongas": {
+      "title": "Performance anxiety",
+      "prompt": "Reaction to competition"
+    },
+    "celorientacio": {
+      "title": "Goal orientation",
+      "prompt": "Formulating own goal"
+    },
+    "labboltozat": {
+      "title": "Foot arch activity",
+      "prompt": "Heel/toe walking"
+    },
+    "egyensuly_rapid": {
+      "title": "Balance",
+      "prompt": "One leg stand 10s"
+    },
+    "szokdeles": {
+      "title": "Hopping symmetry",
+      "prompt": "Double hopping on a line"
+    },
+    "testtartas": {
+      "title": "Posture baseline",
+      "prompt": "Standing, axes, compensation"
+    },
+    "figyelem_rapid": {
+      "title": "Attention focus",
+      "prompt": "Following fast instructions"
+    },
+    "feladatmegertes": {
+      "title": "Task comprehension",
+      "prompt": "Understanding instructions"
+    },
+    "kitartas_rapid": {
+      "title": "Perseverance",
+      "prompt": "Carrying task through"
+    },
+    "frusztracio": {
+      "title": "Frustration handling",
+      "prompt": "Reaction to mistakes"
+    },
+    "egyuttmukodes_rapid": {
+      "title": "Cooperation",
+      "prompt": "Pair/group task"
+    },
+    "szabalykovetes_rapid": {
+      "title": "Rule following",
+      "prompt": "Mini competition situation"
+    },
+    "kommunikacio_rapid": {
+      "title": "Communication",
+      "prompt": "Response, initiative"
+    },
+    "versenyreakcio": {
+      "title": "Competition reaction",
+      "prompt": "Handling victory/defeat"
+    }
+  },
+  "Legal": {
+    "gtcTitle": "الشروط والأحكام العامة",
+    "privacyTitle": "سياسة الخصوصية",
+    "backToDashboard": "العودة إلى لوحة التحكم",
+    "effectiveDate": "تاريخ السريان",
+    "scopeTitle": "النطاق",
+    "scopeBody": "تحكم هذه الشروط استخدام منصة KIDEX والخدمات المرتبطة بها.",
+    "serviceTitle": "وصف الخدمة",
+    "serviceBody": "تدعم KIDEX إجراءات تقييم الأطفال وإدارة السجلات وإعداد التقارير للموظفين المخولين.",
+    "responsibilityTitle": "مسؤولية المستخدم",
+    "responsibilityBody": "يتحمل المستخدمون مسؤولية إدخال بيانات دقيقة والمعالجة القانونية للبيانات وحماية الوصول للحسابات.",
+    "privacyCollectionTitle": "البيانات التي نعالجها",
+    "privacyCollectionBody": "تعالج KIDEX سجلات التقييم وبيانات الملفات الشخصية والبيانات الوصفية والصور المرفوعة اللازمة لتقديم الخدمة.",
+    "privacyUseTitle": "كيفية استخدام البيانات",
+    "privacyUseBody": "تُستخدم البيانات للتوثيق وتحليل الاتجاهات وإعداد التقارير وتشغيل الخدمة.",
+    "privacyRetentionTitle": "الاحتفاظ والوصول",
+    "privacyRetentionBody": "يتم الاحتفاظ بالسجلات وفق الالتزامات القانونية والتعاقدية، ويكون الوصول قائمًا على الأدوار وخاضعًا للتدقيق.",
+    "companyDataTitle": "بيانات الشركة",
+    "idNo": "رقم التعريف (IČO)",
+    "registered": "تاريخ التسجيل",
+    "legalForm": "الشكل القانوني",
+    "address": "العنوان",
+    "shareCapital": "رأس المال",
+    "vatNo": "رقم ضريبة القيمة المضافة",
+    "website": "الموقع الإلكتروني"
+  }
+}

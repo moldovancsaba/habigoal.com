@@ -13,6 +13,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { calculateTrend } from "@/lib/utils/trends";
 import { getStandardForAgeGroup } from "@/lib/standards";
@@ -57,6 +59,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   const trend = calculateTrend(data.assessments);
   const currentAgeGroup = calculateAgeGroup(data.child.birthDate);
   const standard = getStandardForAgeGroup(currentAgeGroup || "");
+  const assessmentsWithImages = data.assessments.filter((assessment) => assessment.attachments.length > 0);
 
   return (
     <Stack spacing={3}>
@@ -118,6 +121,39 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
             </TableBody>
           </Table>
         </TableContainer>
+      </SectionCard>
+
+      <SectionCard title={t("evidenceImages")}>
+        {assessmentsWithImages.length === 0 ? (
+          <Typography color="text.secondary">{t("noImages")}</Typography>
+        ) : (
+          <Stack spacing={2}>
+            {assessmentsWithImages.map((assessment) => (
+              <Paper key={assessment._id} variant="outlined" sx={{ p: 1.5 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  {assessment.session.date}
+                </Typography>
+                <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: "wrap" }}>
+                  {assessment.attachments.map((attachment) => (
+                    <Paper key={attachment.id} variant="outlined" sx={{ p: 1, width: 180 }}>
+                      <Image
+                        src={attachment.thumbUrl || attachment.url}
+                        alt={attachment.name || "Evidence image"}
+                        width={160}
+                        height={110}
+                        style={{ width: "100%", height: "auto", borderRadius: 8 }}
+                        unoptimized
+                      />
+                      <Link href={attachment.url} target="_blank" rel="noreferrer" variant="caption" sx={{ mt: 0.5, display: "inline-block" }}>
+                        {tc("view")}
+                      </Link>
+                    </Paper>
+                  ))}
+                </Stack>
+              </Paper>
+            ))}
+          </Stack>
+        )}
       </SectionCard>
     </Stack>
   );

@@ -32,7 +32,22 @@
     "noUsers": "No users defined yet.",
     "locations": "Locations",
     "addLocation": "Add Location",
-    "noLocations": "No locations added."
+    "noLocations": "No locations added.",
+    "overview": "Overview",
+    "overviewSubtitle": "General product and activity metrics",
+    "totalUsers": "Total users",
+    "totalRecords": "Total records",
+    "recordsChartTitle": "Records by month",
+    "recordsChartSubtitle": "Last 6 months",
+    "usersChartTitle": "User role distribution",
+    "usersChartSubtitle": "Conductor and observer coverage",
+    "conductors": "Conductors",
+    "observers": "Observers",
+    "legalAndCompany": "Legal, version and company information",
+    "gtc": "General Terms and Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "appVersion": "App version",
+    "company": "Company"
   },
   "Assessment": {
     "saved": "Assessment saved.",
@@ -88,7 +103,11 @@
     "reportPrintTitle": "KIDEX Bio-Psycho-Social Report",
     "tableObservation": "Observation",
     "tableScore": "Score",
-    "tableNote": "Note"
+    "tableNote": "Note",
+    "takePhoto": "Take photo",
+    "tableTime": "Time",
+    "groupSize": "Group size",
+    "lastUpdated": "Last updated"
   },
   "Schema": {
     "ski": "SKI",
@@ -98,67 +117,279 @@
     "rapid_movement": "Rapid Bio",
     "rapid_mental": "Rapid Psycho",
     "rapid_social": "Rapid Social",
-    "futotechnika": { "title": "Running technique", "prompt": "Rhythm, arm work, foot strike" },
-    "iranyvaltas": { "title": "Direction change", "prompt": "Fast, controlled turns" },
-    "dinamikus_egyensuly": { "title": "Dynamic balance", "prompt": "Stability during movement" },
-    "statikus_egyensuly": { "title": "Static balance", "prompt": "Stability on one leg" },
-    "ugraskeszseg": { "title": "Jumping skill", "prompt": "Double/single leg takeoff" },
-    "erkezestechnika": { "title": "Landing technique", "prompt": "Joint protection, damping" },
-    "esesbiztonsag": { "title": "Rolling/Falling safety", "prompt": "Controlled ground work" },
-    "testsema": { "title": "Body schema awareness", "prompt": "Body position awareness in space" },
-    "lateralitas": { "title": "Laterality", "prompt": "Right-left coordination" },
-    "keresztezo_mozgas": { "title": "Crossing movements", "prompt": "Limb integration" },
-    "szem_kez": { "title": "Eye-hand coordination", "prompt": "Accurate throw/catch" },
-    "szem_lab": { "title": "Eye-foot coordination", "prompt": "Ball handling" },
-    "eroadagolas": { "title": "Force modulation", "prompt": "Throw/bounce control" },
-    "reakcioido": { "title": "Reaction time", "prompt": "Color-movement task" },
-    "ritmuserzek": { "title": "Rhythm sense", "prompt": "Coordination ladder" },
-    "mozgassor": { "title": "Execution of movement sequence", "prompt": "Multi-step task" },
-    "praxis": { "title": "Praxis / Motor planning", "prompt": "Learning new movements" },
-    "terbeli_tajekozodas": { "title": "Spatial orientation", "prompt": "Safety within the field" },
-    "utkozeskezeles": { "title": "Collision handling", "prompt": "Tolerance for body contact" },
-    "gyorsasag": { "title": "Speed", "prompt": "Short-term intensity" },
-    "allokepesseg": { "title": "Endurance", "prompt": "Carrying task through" },
-    "izomtonus": { "title": "Muscle tone", "prompt": "Stable trunk" },
-    "finommotorika": { "title": "Fine motor skills", "prompt": "Tool handling" },
-    "propriocepcio": { "title": "Proprioception", "prompt": "Balance board control" },
-    "mozgasadaptacio": { "title": "Movement adaptation", "prompt": "Adjusting movement to rule changes" },
-    "kooperacio": { "title": "Cooperation", "prompt": "Active participation in a team" },
-    "szabalykovetes": { "title": "Rule following", "prompt": "Conscious compliance" },
-    "varakozasi_tolerancia": { "title": "Waiting tolerance", "prompt": "Standing in line" },
-    "kudarctures": { "title": "Failure tolerance", "prompt": "Reaction to mistakes" },
-    "gyozelem_kezelese": { "title": "Handling victory", "prompt": "Non-dominant behavior" },
-    "erzelemszabalyozas": { "title": "Emotional regulation", "prompt": "Impulse control" },
-    "empatia": { "title": "Empathy", "prompt": "Helpfulness" },
-    "kapcsolatkezdemenyezes": { "title": "Initiating contact", "prompt": "Starting communication" },
-    "instrukcio_elfogadas": { "title": "Accepting instructions", "prompt": "Accepting coach guidance" },
-    "szerepvallalas": { "title": "Dominance-passvitiy ratio", "prompt": "Role taking" },
-    "fair_play": { "title": "Fair play attitude", "prompt": "Reaction to rule breaking" },
-    "konfliktuskezeles": { "title": "Conflict management", "prompt": "Situation resolution" },
-    "motivacio": { "title": "Type of motivation", "prompt": "Intrinsic vs extrinsic drive" },
-    "kitartas": { "title": "Perseverance", "prompt": "Finishing difficult tasks" },
-    "onbizalom": { "title": "Self-confidence", "prompt": "Judging own performance" },
-    "figyelmi_fokusz": { "title": "Attention focus", "prompt": "Task maintenance" },
-    "megosztott_figyelem": { "title": "Divided attention", "prompt": "Movement + external stimulus" },
-    "munkamemoria": { "title": "Working memory", "prompt": "Remembering movement sequence" },
-    "kognitiv_rugalmassag": { "title": "Cognitive flexibility", "prompt": "Handling rule changes" },
-    "impulzuskontroll": { "title": "Impulse control", "prompt": "Delaying reaction" },
-    "tervezes": { "title": "Planning", "prompt": "Forward-looking movement" },
-    "onjavitas": { "title": "Self-correction", "prompt": "Correction from mistakes" },
-    "terhelhetoseg": { "title": "Mental load capacity", "prompt": "Signs of mental fatigue" },
-    "teljesitmenyszorongas": { "title": "Performance anxiety", "prompt": "Reaction to competition" },
-    "celorientacio": { "title": "Goal orientation", "prompt": "Formulating own goal" },
-    "labboltozat": { "title": "Foot arch activity", "prompt": "Heel/toe walking" },
-    "egyensuly_rapid": { "title": "Balance", "prompt": "One leg stand 10s" },
-    "szokdeles": { "title": "Hopping symmetry", "prompt": "Double hopping on a line" },
-    "testtartas": { "title": "Posture baseline", "prompt": "Standing, axes, compensation" },
-    "figyelem_rapid": { "title": "Attention focus", "prompt": "Following fast instructions" },
-    "feladatmegertes": { "title": "Task comprehension", "prompt": "Understanding instructions" },
-    "kitartas_rapid": { "title": "Perseverance", "prompt": "Carrying task through" },
-    "frusztracio": { "title": "Frustration handling", "prompt": "Reaction to mistakes" },
-    "egyuttmukodes_rapid": { "title": "Cooperation", "prompt": "Pair/group task" },
-    "szabalykovetes_rapid": { "title": "Rule following", "prompt": "Mini competition situation" },
-    "kommunikacio_rapid": { "title": "Communication", "prompt": "Response, initiative" },
-    "versenyreakcio": { "title": "Competition reaction", "prompt": "Handling victory/defeat" }
+    "futotechnika": {
+      "title": "Running technique",
+      "prompt": "Rhythm, arm work, foot strike"
+    },
+    "iranyvaltas": {
+      "title": "Direction change",
+      "prompt": "Fast, controlled turns"
+    },
+    "dinamikus_egyensuly": {
+      "title": "Dynamic balance",
+      "prompt": "Stability during movement"
+    },
+    "statikus_egyensuly": {
+      "title": "Static balance",
+      "prompt": "Stability on one leg"
+    },
+    "ugraskeszseg": {
+      "title": "Jumping skill",
+      "prompt": "Double/single leg takeoff"
+    },
+    "erkezestechnika": {
+      "title": "Landing technique",
+      "prompt": "Joint protection, damping"
+    },
+    "esesbiztonsag": {
+      "title": "Rolling/Falling safety",
+      "prompt": "Controlled ground work"
+    },
+    "testsema": {
+      "title": "Body schema awareness",
+      "prompt": "Body position awareness in space"
+    },
+    "lateralitas": {
+      "title": "Laterality",
+      "prompt": "Right-left coordination"
+    },
+    "keresztezo_mozgas": {
+      "title": "Crossing movements",
+      "prompt": "Limb integration"
+    },
+    "szem_kez": {
+      "title": "Eye-hand coordination",
+      "prompt": "Accurate throw/catch"
+    },
+    "szem_lab": {
+      "title": "Eye-foot coordination",
+      "prompt": "Ball handling"
+    },
+    "eroadagolas": {
+      "title": "Force modulation",
+      "prompt": "Throw/bounce control"
+    },
+    "reakcioido": {
+      "title": "Reaction time",
+      "prompt": "Color-movement task"
+    },
+    "ritmuserzek": {
+      "title": "Rhythm sense",
+      "prompt": "Coordination ladder"
+    },
+    "mozgassor": {
+      "title": "Execution of movement sequence",
+      "prompt": "Multi-step task"
+    },
+    "praxis": {
+      "title": "Praxis / Motor planning",
+      "prompt": "Learning new movements"
+    },
+    "terbeli_tajekozodas": {
+      "title": "Spatial orientation",
+      "prompt": "Safety within the field"
+    },
+    "utkozeskezeles": {
+      "title": "Collision handling",
+      "prompt": "Tolerance for body contact"
+    },
+    "gyorsasag": {
+      "title": "Speed",
+      "prompt": "Short-term intensity"
+    },
+    "allokepesseg": {
+      "title": "Endurance",
+      "prompt": "Carrying task through"
+    },
+    "izomtonus": {
+      "title": "Muscle tone",
+      "prompt": "Stable trunk"
+    },
+    "finommotorika": {
+      "title": "Fine motor skills",
+      "prompt": "Tool handling"
+    },
+    "propriocepcio": {
+      "title": "Proprioception",
+      "prompt": "Balance board control"
+    },
+    "mozgasadaptacio": {
+      "title": "Movement adaptation",
+      "prompt": "Adjusting movement to rule changes"
+    },
+    "kooperacio": {
+      "title": "Cooperation",
+      "prompt": "Active participation in a team"
+    },
+    "szabalykovetes": {
+      "title": "Rule following",
+      "prompt": "Conscious compliance"
+    },
+    "varakozasi_tolerancia": {
+      "title": "Waiting tolerance",
+      "prompt": "Standing in line"
+    },
+    "kudarctures": {
+      "title": "Failure tolerance",
+      "prompt": "Reaction to mistakes"
+    },
+    "gyozelem_kezelese": {
+      "title": "Handling victory",
+      "prompt": "Non-dominant behavior"
+    },
+    "erzelemszabalyozas": {
+      "title": "Emotional regulation",
+      "prompt": "Impulse control"
+    },
+    "empatia": {
+      "title": "Empathy",
+      "prompt": "Helpfulness"
+    },
+    "kapcsolatkezdemenyezes": {
+      "title": "Initiating contact",
+      "prompt": "Starting communication"
+    },
+    "instrukcio_elfogadas": {
+      "title": "Accepting instructions",
+      "prompt": "Accepting coach guidance"
+    },
+    "szerepvallalas": {
+      "title": "Dominance-passvitiy ratio",
+      "prompt": "Role taking"
+    },
+    "fair_play": {
+      "title": "Fair play attitude",
+      "prompt": "Reaction to rule breaking"
+    },
+    "konfliktuskezeles": {
+      "title": "Conflict management",
+      "prompt": "Situation resolution"
+    },
+    "motivacio": {
+      "title": "Type of motivation",
+      "prompt": "Intrinsic vs extrinsic drive"
+    },
+    "kitartas": {
+      "title": "Perseverance",
+      "prompt": "Finishing difficult tasks"
+    },
+    "onbizalom": {
+      "title": "Self-confidence",
+      "prompt": "Judging own performance"
+    },
+    "figyelmi_fokusz": {
+      "title": "Attention focus",
+      "prompt": "Task maintenance"
+    },
+    "megosztott_figyelem": {
+      "title": "Divided attention",
+      "prompt": "Movement + external stimulus"
+    },
+    "munkamemoria": {
+      "title": "Working memory",
+      "prompt": "Remembering movement sequence"
+    },
+    "kognitiv_rugalmassag": {
+      "title": "Cognitive flexibility",
+      "prompt": "Handling rule changes"
+    },
+    "impulzuskontroll": {
+      "title": "Impulse control",
+      "prompt": "Delaying reaction"
+    },
+    "tervezes": {
+      "title": "Planning",
+      "prompt": "Forward-looking movement"
+    },
+    "onjavitas": {
+      "title": "Self-correction",
+      "prompt": "Correction from mistakes"
+    },
+    "terhelhetoseg": {
+      "title": "Mental load capacity",
+      "prompt": "Signs of mental fatigue"
+    },
+    "teljesitmenyszorongas": {
+      "title": "Performance anxiety",
+      "prompt": "Reaction to competition"
+    },
+    "celorientacio": {
+      "title": "Goal orientation",
+      "prompt": "Formulating own goal"
+    },
+    "labboltozat": {
+      "title": "Foot arch activity",
+      "prompt": "Heel/toe walking"
+    },
+    "egyensuly_rapid": {
+      "title": "Balance",
+      "prompt": "One leg stand 10s"
+    },
+    "szokdeles": {
+      "title": "Hopping symmetry",
+      "prompt": "Double hopping on a line"
+    },
+    "testtartas": {
+      "title": "Posture baseline",
+      "prompt": "Standing, axes, compensation"
+    },
+    "figyelem_rapid": {
+      "title": "Attention focus",
+      "prompt": "Following fast instructions"
+    },
+    "feladatmegertes": {
+      "title": "Task comprehension",
+      "prompt": "Understanding instructions"
+    },
+    "kitartas_rapid": {
+      "title": "Perseverance",
+      "prompt": "Carrying task through"
+    },
+    "frusztracio": {
+      "title": "Frustration handling",
+      "prompt": "Reaction to mistakes"
+    },
+    "egyuttmukodes_rapid": {
+      "title": "Cooperation",
+      "prompt": "Pair/group task"
+    },
+    "szabalykovetes_rapid": {
+      "title": "Rule following",
+      "prompt": "Mini competition situation"
+    },
+    "kommunikacio_rapid": {
+      "title": "Communication",
+      "prompt": "Response, initiative"
+    },
+    "versenyreakcio": {
+      "title": "Competition reaction",
+      "prompt": "Handling victory/defeat"
+    }
+  },
+  "Legal": {
+    "gtcTitle": "General Terms and Conditions",
+    "privacyTitle": "Privacy Policy",
+    "backToDashboard": "Back to dashboard",
+    "effectiveDate": "Effective date",
+    "scopeTitle": "Scope",
+    "scopeBody": "These terms govern use of the KIDEX platform and related services.",
+    "serviceTitle": "Service description",
+    "serviceBody": "KIDEX supports child assessment workflows, records management, and reporting for authorized staff.",
+    "responsibilityTitle": "User responsibility",
+    "responsibilityBody": "Users are responsible for accurate data entry, lawful processing, and safeguarding account access.",
+    "privacyCollectionTitle": "Data we process",
+    "privacyCollectionBody": "KIDEX processes assessment records, profile information, metadata, and uploaded evidence necessary for service delivery.",
+    "privacyUseTitle": "How data is used",
+    "privacyUseBody": "Data is used for assessment documentation, trend analysis, reporting, and service operation.",
+    "privacyRetentionTitle": "Retention and access",
+    "privacyRetentionBody": "Records are retained according to legal and contractual obligations; access is role-based and audited.",
+    "companyDataTitle": "Company data",
+    "idNo": "ID-No. (IČO)",
+    "registered": "Registered",
+    "legalForm": "Legal form",
+    "address": "Address",
+    "shareCapital": "Share capital",
+    "vatNo": "VAT No.",
+    "website": "Website"
   }
 }

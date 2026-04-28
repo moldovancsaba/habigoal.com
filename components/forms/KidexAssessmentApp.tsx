@@ -17,6 +17,8 @@ import Paper from "@mui/material/Paper";
 import MuiSelect from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -383,10 +385,26 @@ export function KidexAssessmentApp() {
               </FormControl>
             </FieldWrap>
             <FieldWide>
-              <TextField label={t("knownTraits")} value={assessment.child.knownTraits} onChange={(e) => update("child", "knownTraits", e.target.value)} fullWidth multiline minRows={2} />
+              <TextField
+                label={t("knownTraits")}
+                value={assessment.child.knownTraits}
+                onChange={(e) => update("child", "knownTraits", e.target.value)}
+                fullWidth
+                multiline
+                minRows={2}
+                slotProps={{ inputLabel: { shrink: true } }}
+              />
             </FieldWide>
             <FieldWide>
-              <TextField label={t("parentSignals")} value={assessment.child.parentSignals} onChange={(e) => update("child", "parentSignals", e.target.value)} fullWidth multiline minRows={2} />
+              <TextField
+                label={t("parentSignals")}
+                value={assessment.child.parentSignals}
+                onChange={(e) => update("child", "parentSignals", e.target.value)}
+                fullWidth
+                multiline
+                minRows={2}
+                slotProps={{ inputLabel: { shrink: true } }}
+              />
             </FieldWide>
             <FieldWide>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -402,10 +420,29 @@ export function KidexAssessmentApp() {
             <Typography variant="body2" color="text.secondary">
               {t("uploadSecurityNote")}
             </Typography>
-            <Button variant="outlined" component="label" disabled={!assessment.session.consentPhoto || uploading}>
-              <input type="file" accept="image/*" hidden onChange={(e) => void uploadImage(e)} disabled={!assessment.session.consentPhoto || uploading} />
-              {uploading ? t("uploading") : t("uploadImage")}
-            </Button>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+              <Button variant="outlined" component="label" disabled={!assessment.session.consentPhoto || uploading}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => void uploadImage(e)}
+                  disabled={!assessment.session.consentPhoto || uploading}
+                />
+                {uploading ? t("uploading") : t("uploadImage")}
+              </Button>
+              <Button variant="outlined" component="label" disabled={!assessment.session.consentPhoto || uploading}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  hidden
+                  onChange={(e) => void uploadImage(e)}
+                  disabled={!assessment.session.consentPhoto || uploading}
+                />
+                {uploading ? t("uploading") : t("takePhoto")}
+              </Button>
+            </Stack>
             {assessment.attachments.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
                 {t("noImages")}
@@ -468,33 +505,29 @@ export function KidexAssessmentApp() {
                         {ts(`${item.key}.prompt`)}
                       </Typography>
                     </Box>
-                    <FormControl
+                    <ToggleButtonGroup
+                      exclusive
                       size="small"
+                      value={scoreValue(entry) === "" ? null : String(scoreValue(entry))}
+                      onChange={(_, selected) =>
+                        updateScore(item.key, { score: selected ? Number(selected) : "" })
+                      }
+                      aria-label={t("tableScore")}
                       sx={{
-                        minWidth: 84,
                         alignSelf: { xs: "flex-end", sm: "flex-start" },
-                        "& .MuiSelect-select": { py: 0.75 }
+                        "& .MuiToggleButton-root": {
+                          minWidth: 36,
+                          px: 0.75,
+                          fontWeight: 700
+                        }
                       }}
                     >
-                      <MuiSelect
-                        displayEmpty
-                        value={scoreValue(entry) === "" ? "" : String(scoreValue(entry))}
-                        onChange={(e) =>
-                          updateScore(item.key, { score: e.target.value ? Number(e.target.value) : "" })
-                        }
-                        slotProps={{ input: { "aria-label": t("observationNote") } }}
-                        renderValue={(selected) => (selected === "" ? "–" : selected)}
-                      >
-                        <MenuItem value="">
-                          <em>–</em>
-                        </MenuItem>
-                        {[1, 2, 3, 4, 5, 6].map((n) => (
-                          <MenuItem key={n} value={String(n)}>
-                            {n}
-                          </MenuItem>
-                        ))}
-                      </MuiSelect>
-                    </FormControl>
+                      {[1, 2, 3, 4, 5, 6].map((n) => (
+                        <ToggleButton key={n} value={String(n)} aria-label={`score-${n}`}>
+                          {n}
+                        </ToggleButton>
+                      ))}
+                    </ToggleButtonGroup>
                   </Stack>
                   <Divider sx={{ my: 1.25 }} />
                   <TextField
@@ -518,9 +551,33 @@ export function KidexAssessmentApp() {
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <SectionCard title={t("professionalNotes")}>
             <Stack spacing={2}>
-              <TextField label={t("generalObservation")} value={assessment.notes.general} onChange={(e) => update("notes", "general", e.target.value)} fullWidth multiline minRows={3} />
-              <TextField label={t("adaptationNeeds")} value={assessment.notes.adaptations} onChange={(e) => update("notes", "adaptations", e.target.value)} fullWidth multiline minRows={3} />
-              <TextField label={t("referralNote")} value={assessment.notes.referral} onChange={(e) => update("notes", "referral", e.target.value)} fullWidth multiline minRows={3} />
+              <TextField
+                label={t("generalObservation")}
+                value={assessment.notes.general}
+                onChange={(e) => update("notes", "general", e.target.value)}
+                fullWidth
+                multiline
+                minRows={3}
+                slotProps={{ inputLabel: { shrink: true } }}
+              />
+              <TextField
+                label={t("adaptationNeeds")}
+                value={assessment.notes.adaptations}
+                onChange={(e) => update("notes", "adaptations", e.target.value)}
+                fullWidth
+                multiline
+                minRows={3}
+                slotProps={{ inputLabel: { shrink: true } }}
+              />
+              <TextField
+                label={t("referralNote")}
+                value={assessment.notes.referral}
+                onChange={(e) => update("notes", "referral", e.target.value)}
+                fullWidth
+                multiline
+                minRows={3}
+                slotProps={{ inputLabel: { shrink: true } }}
+              />
             </Stack>
           </SectionCard>
         </Box>
