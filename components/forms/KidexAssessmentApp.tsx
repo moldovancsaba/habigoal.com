@@ -131,7 +131,7 @@ function Box({ sx, component, ...rest }: AnyProps) {
   const style = sxToStyle(sx);
   const MantineBoxAny = MantineBox as unknown as (props: Record<string, unknown>) => ReactNode;
   if (component) {
-    return MantineBoxAny({ component, style, ...(rest as Record<string, unknown>) });
+    return <MantineBoxAny component={component} style={style} {...(rest as Record<string, unknown>)} />;
   }
   return <MantineBox style={style} {...(rest as Record<string, unknown>)} />;
 }
