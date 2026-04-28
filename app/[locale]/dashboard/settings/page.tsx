@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
+import { getUsers, saveUser, User } from "@/services/user-service";
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -13,95 +14,135 @@ export default function SettingsPage() {
     observers: [],
     locations: []
   });
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    void getSettings().then((data) => {
-      setSettings(data);
+    void Promise.all([getSettings(), getUsers()]).then(([sData, uData]) => {
+      setSettings(sData);
+      setUsers(uData);
       setLoading(false);
     });
   }, []);
 
-  async function handleSave() {
+  async function handleSaveSettings() {
     setSaving(true);
     await saveSettings(settings);
     setSaving(false);
   }
 
-  function addItem(key: keyof KidexSettings) {
-    const item = window.prompt(`Add new ${key}`);
-    if (item) {
-      setSettings((prev) => ({
-        ...prev,
-        [key]: [...prev[key], item]
-      }));
+  async function toggleRole(user: User, role: "conductor" | "observer") {
+    const nextRoles = user.roles.includes(role)
+      ? user.roles.filter(r => r !== role)
+      : [...user.roles, role];
+    
+    const updatedUser = { ...user, roles: nextRoles };
+    
+    // Optimistic update
+    setUsers(prev => prev.map(u => u.name === user.name ? updatedUser : u));
+    
+    await saveUser(updatedUser);
+  }
+
+  function addNewUser() {
+    const name = window.prompt("Enter name for new user (Teacher/Coach/Observer):");
+    if (name) {
+      const newUser: User = { name, roles: [] };
+      setUsers(prev => [...prev, newUser]);
+      saveUser(newUser);
     }
   }
 
-  function removeItem(key: keyof KidexSettings, index: number) {
-    setSettings((prev) => ({
+  function removeLocation(index: number) {
+    setSettings(prev => ({
       ...prev,
-      [key]: prev[key].filter((_, i) => i !== index)
+      locations: prev.locations.filter((_, i) => i !== index)
     }));
+  }
+
+  function addLocation() {
+    const loc = window.prompt("Add new location:");
+    if (loc) {
+      setSettings(prev => ({
+        ...prev,
+        locations: [...prev.locations, loc]
+      }));
+    }
   }
 
   if (loading) return <div className="loading">{tc("loading")}</div>;
 
   return (
-    <div className="settings-container">
+    <div className="settings-page">
       <header className="panelHeader">
-        <h2>{t("settings")}</h2>
-        <button className="btn primary" onClick={handleSave} disabled={saving}>
-          {saving ? tc("saving") : tc("save")}
-        </button>
+        <h1>{t("settings")}</h1>
       </header>
 
-      <div className="grid three">
-        <SettingsList 
-          title="Conductors" 
-          items={settings.conductors} 
-          onAdd={() => addItem("conductors")} 
-          onRemove={(i) => removeItem("conductors", i)} 
-        />
-        <SettingsList 
-          title="Observers" 
-          items={settings.observers} 
-          onAdd={() => addItem("observers")} 
-          onRemove={(i) => removeItem("observers", i)} 
-        />
-        <SettingsList 
-          title="Locations" 
-          items={settings.locations} 
-          onAdd={() => addItem("locations")} 
-          onRemove={(i) => removeItem("locations", i)} 
-        />
-      </div>
-    </div>
-  );
-}
+      <section className="panel">
+        <div className="panelHeader">
+          <h2>User Rights Management</h2>
+          <button className="btn ghost" onClick={addNewUser}>+ Add User</button>
+        </div>
+        <div className="table-wrapper">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>User Name (Teacher / Coach / Observer)</th>
+                <th style={{ textAlign: 'center' }}>Conduct Survey</th>
+                <th style={{ textAlign: 'center' }}>Observe / Assist</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.name}>
+                  <td><strong>{user.name}</strong></td>
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={user.roles.includes("conductor")} 
+                      onChange={() => toggleRole(user, "conductor")}
+                    />
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={user.roles.includes("observer")} 
+                      onChange={() => toggleRole(user, "observer")}
+                    />
+                  </td>
+                </tr>
+              ))}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="empty">No users defined yet.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-function SettingsList({ title, items, onAdd, onRemove }: { 
-  title: string; 
-  items: string[]; 
-  onAdd: () => void; 
-  onRemove: (index: number) => void;
-}) {
-  return (
-    <section className="panel">
-      <div className="panelHeader">
-        <h3>{title}</h3>
-        <button className="btn ghost sm" onClick={onAdd}>+</button>
-      </div>
-      <div className="settings-list">
-        {items.map((item, i) => (
-          <div key={i} className="settings-item">
-            <span>{item}</span>
-            <button onClick={() => onRemove(i)}>×</button>
+      <section className="panel">
+        <div className="panelHeader">
+          <h2>Locations</h2>
+          <div className="topActions">
+            <button className="btn ghost" onClick={addLocation}>+ Add Location</button>
+            <button className="btn primary" onClick={handleSaveSettings} disabled={saving}>
+              {saving ? tc("saving") : tc("save")}
+            </button>
           </div>
-        ))}
-        {items.length === 0 && <div className="empty">No items added.</div>}
-      </div>
-    </section>
+        </div>
+        <div className="settings-list" style={{ display: 'grid', gap: '0.5rem' }}>
+          {settings.locations.map((loc, i) => (
+            <div key={i} className="attachment" style={{ padding: '0.75rem 1rem' }}>
+              <div style={{ flex: 1 }}>{loc}</div>
+              <button className="btn ghost" onClick={() => removeLocation(i)}>×</button>
+            </div>
+          ))}
+          {settings.locations.length === 0 && <div className="empty">No locations added.</div>}
+        </div>
+      </section>
+    </div>
   );
 }

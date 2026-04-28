@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  id?: string;
   name: string;
   roles: ("conductor" | "observer")[];
 }
@@ -11,12 +11,17 @@ export async function getUsers(): Promise<User[]> {
     return data.users;
   }
   
-  // Fallback
-  return [
-    { id: "1", name: "Kovács János", roles: ["conductor"] },
-    { id: "2", name: "Nagy Anna", roles: ["conductor", "observer"] },
-    { id: "3", name: "Szabó Péter", roles: ["observer"] },
-  ];
+  return [];
+}
+
+export async function saveUser(user: User): Promise<boolean> {
+  const response = await fetch("/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(user)
+  }).catch(() => null);
+  
+  return !!response?.ok;
 }
 
 export async function getConductors(): Promise<User[]> {
