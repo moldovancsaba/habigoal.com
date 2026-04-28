@@ -37,10 +37,16 @@ function ThemedTree({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function MuiRegistry({ children }: { children: React.ReactNode }) {
+export function MuiRegistry({
+  children,
+  initialMode
+}: {
+  children: React.ReactNode;
+  initialMode?: "light" | "dark";
+}) {
   return (
     <AppRouterCacheProvider options={{ key: "mui" }}>
-      <ThemeModeProvider>
+      <ThemeModeProvider initialMode={initialMode}>
         <ThemedTree>{children}</ThemedTree>
       </ThemeModeProvider>
     </AppRouterCacheProvider>

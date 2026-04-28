@@ -40,6 +40,7 @@ import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntr
 const DRAFT_STORAGE_KEY = "kidex-draft";
 
 const emptyAssessment: AssessmentPayload = {
+  childId: "",
   mode: "rapid",
   child: {
     name: "",
@@ -128,6 +129,7 @@ export function KidexAssessmentApp() {
   const [capturedBlob, setCapturedBlob] = useState<Blob | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const initializedChildPrefill = useRef(false);
 
   const [conductors, setConductors] = useState<string[]>([]);
   const [observers, setObservers] = useState<string[]>([]);
@@ -164,6 +166,8 @@ export function KidexAssessmentApp() {
   useEffect(() => {
     if (!childIdParam) return;
     if (recordId) return;
+    if (initializedChildPrefill.current) return;
+    initializedChildPrefill.current = true;
 
     void (async () => {
       const response = await fetch(`/api/children/${childIdParam}`).catch(() => null);
@@ -179,23 +183,19 @@ export function KidexAssessmentApp() {
       };
 
       setAssessment((current) => {
-        if (current.child.name || current.child.birthDate) {
-          return current;
-        }
-
         const ageGroup = calculateAgeGroup(child.birthDate) || "";
         return {
-          ...current,
+          ...cloneAssessment(emptyAssessment),
+          childId: childIdParam,
           child: {
-            ...current.child,
             name: child.name || "",
             birthDate: child.birthDate || "",
             ageGroup,
-            knownTraits: child.knownTraits || "",
-            parentSignals: child.parentSignals || "",
-            dominantHand: child.dominantHand || "",
-            dominantEye: child.dominantEye || "",
-            dominantFoot: child.dominantFoot || ""
+            knownTraits: "",
+            parentSignals: "",
+            dominantHand: "",
+            dominantEye: "",
+            dominantFoot: ""
           }
         };
       });
@@ -266,7 +266,22 @@ export function KidexAssessmentApp() {
 
   function newAssessment() {
     setRecordId("");
-    setAssessment(cloneAssessment(emptyAssessment));
+    setAssessment((current) => {
+      if (!childIdParam) {
+        return cloneAssessment(emptyAssessment);
+      }
+
+      return {
+        ...cloneAssessment(emptyAssessment),
+        childId: current.childId || childIdParam,
+        child: {
+          ...cloneAssessment(emptyAssessment).child,
+          name: current.child.name,
+          birthDate: current.child.birthDate,
+          ageGroup: current.child.ageGroup
+        }
+      };
+    });
     setSaveState("idle");
     setMessage("");
   }

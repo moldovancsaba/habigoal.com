@@ -27,6 +27,7 @@ export interface EvidenceAttachment {
 }
 
 export interface AssessmentPayload {
+  childId?: string;
   mode: AssessmentMode;
   child: {
     name: string;

@@ -13,7 +13,10 @@
     "date": "Date",
     "mode": "Mode",
     "view": "View",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "cookieConsentMessage": "We use cookies to keep your theme and essential preferences after refresh.",
+    "cookieAccept": "Accept cookies",
+    "cookiePolicyLink": "Privacy policy"
   },
   "Dashboard": {
     "title": "Dashboard",

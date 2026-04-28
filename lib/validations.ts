@@ -64,6 +64,7 @@ export function parseAssessmentPayload(input: unknown): AssessmentPayload {
   const context = contexts.has(String(session.context)) ? session.context as AssessmentPayload["session"]["context"] : "structured";
 
   return {
+    childId: stringValue(data.childId, 120).trim(),
     mode,
     child: {
       name: stringValue(child.name, 240),

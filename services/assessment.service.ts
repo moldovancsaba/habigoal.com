@@ -1,7 +1,7 @@
 import { computeAssessment } from "@/lib/scoring";
 import { parseAssessmentPayload } from "@/lib/validations";
 import { createAssessment, deleteAssessmentById, getAssessmentById, listAssessmentSummaries, updateAssessmentById } from "@/repositories/assessment.repository";
-import { upsertChild } from "@/repositories/child.repository";
+import { getChildById, updateChildById, upsertChild } from "@/repositories/child.repository";
 import { ObjectId } from "mongodb";
 
 export function parseObjectId(id: string) {
@@ -19,9 +19,8 @@ export async function listAssessments() {
 export async function createAssessmentFromPayload(input: unknown) {
   const payload = parseAssessmentPayload(input);
   const now = new Date().toISOString();
-  
-  // Centralize child profile
-  const child = await upsertChild({
+
+  const childProfile = {
     name: payload.child.name,
     birthDate: payload.child.birthDate,
     knownTraits: payload.child.knownTraits,
@@ -29,7 +28,11 @@ export async function createAssessmentFromPayload(input: unknown) {
     dominantHand: payload.child.dominantHand,
     dominantEye: payload.child.dominantEye,
     dominantFoot: payload.child.dominantFoot
-  });
+  };
+  const childObjectId = payload.childId ? parseObjectId(payload.childId) : null;
+  const existingChild = childObjectId ? await getChildById(childObjectId) : null;
+  const updatedChild = existingChild && childObjectId ? await updateChildById(childObjectId, childProfile) : null;
+  const child = updatedChild ?? (await upsertChild(childProfile));
 
   return createAssessment({
     ...payload,
@@ -46,9 +49,8 @@ export async function getAssessment(id: ObjectId) {
 
 export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) {
   const payload = parseAssessmentPayload(input);
-  
-  // Sync child profile
-  const child = await upsertChild({
+
+  const childProfile = {
     name: payload.child.name,
     birthDate: payload.child.birthDate,
     knownTraits: payload.child.knownTraits,
@@ -56,7 +58,11 @@ export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) 
     dominantHand: payload.child.dominantHand,
     dominantEye: payload.child.dominantEye,
     dominantFoot: payload.child.dominantFoot
-  });
+  };
+  const childObjectId = payload.childId ? parseObjectId(payload.childId) : null;
+  const existingChild = childObjectId ? await getChildById(childObjectId) : null;
+  const updatedChild = existingChild && childObjectId ? await updateChildById(childObjectId, childProfile) : null;
+  const child = updatedChild ?? (await upsertChild(childProfile));
 
   return updateAssessmentById(id, {
     ...payload,

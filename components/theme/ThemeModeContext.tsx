@@ -3,10 +3,24 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 type ThemeMode = "light" | "dark";
+const THEME_COOKIE_NAME = "kidex_theme";
+const CONSENT_COOKIE_NAME = "kidex_cookie_consent";
 
-function readInitialMode(): ThemeMode {
+function hasCookieConsent() {
+  if (typeof document === "undefined") return false;
+  return document.cookie.split("; ").some((cookie) => cookie.startsWith(`${CONSENT_COOKIE_NAME}=accepted`));
+}
+
+function writeThemeCookie(mode: ThemeMode) {
+  if (typeof document === "undefined") return;
+  if (!hasCookieConsent()) return;
+  document.cookie = `${THEME_COOKIE_NAME}=${mode}; path=/; max-age=31536000; samesite=lax`;
+}
+
+function readInitialMode(initialMode?: ThemeMode): ThemeMode {
+  if (initialMode) return initialMode;
   if (typeof window === "undefined") return "light";
-  const saved = localStorage.getItem("theme");
+  const saved = localStorage.getItem(THEME_COOKIE_NAME);
   if (saved === "light" || saved === "dark") return saved;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
@@ -18,16 +32,27 @@ type ThemeModeContextValue = {
 
 const ThemeModeContext = createContext<ThemeModeContextValue | null>(null);
 
-export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>(readInitialMode);
+export function ThemeModeProvider({
+  children,
+  initialMode
+}: {
+  children: React.ReactNode;
+  initialMode?: ThemeMode;
+}) {
+  const [mode, setModeState] = useState<ThemeMode>(() => readInitialMode(initialMode));
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", mode);
   }, [mode]);
 
+  useEffect(() => {
+    writeThemeCookie(mode);
+  }, [mode]);
+
   const setMode = useCallback((next: ThemeMode) => {
     setModeState(next);
-    localStorage.setItem("theme", next);
+    localStorage.setItem(THEME_COOKIE_NAME, next);
+    writeThemeCookie(next);
   }, []);
 
   const value = useMemo(() => ({ mode, setMode }), [mode, setMode]);
