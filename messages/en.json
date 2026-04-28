@@ -116,7 +116,12 @@
     "takePhoto": "Take photo",
     "tableTime": "Time",
     "groupSize": "Group size",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "capturePhoto": "Capture photo",
+    "retakePhoto": "Retake",
+    "usePhoto": "Use photo",
+    "cameraUnsupported": "Camera is not supported on this device/browser.",
+    "cameraAccessError": "Unable to access camera. Please allow camera permission."
   },
   "Schema": {
     "ski": "SKI",

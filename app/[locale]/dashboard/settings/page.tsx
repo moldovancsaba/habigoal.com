@@ -17,11 +17,13 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import { useTranslations } from "next-intl";
 import { getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 
@@ -39,6 +41,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [locationDraft, setLocationDraft] = useState("");
+  const [userDraft, setUserDraft] = useState("");
 
   useEffect(() => {
     void (async () => {
@@ -77,10 +80,11 @@ export default function SettingsPage() {
   }
 
   function addNewUser() {
-    const name = window.prompt(t("userName"))?.trim();
+    const name = userDraft.trim();
     if (name) {
       const newUser: User = { name, roles: [] };
       setUsers((prev) => [...prev, newUser]);
+      setUserDraft("");
       void saveUser(newUser).then((ok) => {
         if (!ok) {
           setUsers((prev) => prev.filter((u) => u.name !== name));
@@ -119,9 +123,7 @@ export default function SettingsPage() {
 
   return (
     <Stack spacing={3}>
-      <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-        {t("settings")}
-      </Typography>
+      <PageHeader title={t("settings")} />
 
       {message ? (
         <Alert severity={message === tc("error") ? "error" : "success"} onClose={() => setMessage("")}>
@@ -132,9 +134,18 @@ export default function SettingsPage() {
       <SectionCard
         title={t("userRights")}
         action={
-          <Button variant="outlined" size="small" onClick={addNewUser}>
-            + {t("addUser")}
-          </Button>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ alignItems: { sm: "center" } }}>
+            <TextField
+              size="small"
+              label={t("userName")}
+              value={userDraft}
+              onChange={(event) => setUserDraft(event.target.value)}
+              sx={{ minWidth: { sm: 220 } }}
+            />
+            <Button variant="outlined" size="small" onClick={addNewUser} disabled={!userDraft.trim()}>
+              {t("addUser")}
+            </Button>
+          </Stack>
         }
       >
         <TableContainer component={Paper} variant="outlined">
@@ -194,7 +205,7 @@ export default function SettingsPage() {
               />
             </Box>
             <Button variant="outlined" size="small" onClick={addLocation}>
-              + {t("addLocation")}
+              {t("addLocation")}
             </Button>
             <Button variant="contained" size="small" onClick={() => void handleSaveSettings()} disabled={saving}>
               {saving ? tc("saving") : tc("save")}
@@ -210,9 +221,9 @@ export default function SettingsPage() {
               <ListItem
                 key={`${loc}-${i}`}
                 secondaryAction={
-                  <IconButton edge="end" aria-label={tc("remove")} onClick={() => removeLocation(i)} size="small">
-                    ×
-                  </IconButton>
+                  <Button color="error" variant="outlined" size="small" onClick={() => removeLocation(i)}>
+                    {tc("remove")}
+                  </Button>
                 }
                 sx={{ border: 1, borderColor: "divider", borderRadius: 1, mb: 1 }}
               >

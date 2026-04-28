@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { COMPANY_INFO } from "@/lib/company";
 import type { AssessmentRecord } from "@/types/assessment";
@@ -79,14 +80,7 @@ export function MainDashboard({ appVersion }: { appVersion: string }) {
 
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-          {t("overview")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t("overviewSubtitle")}
-        </Typography>
-      </Box>
+      <PageHeader title={t("overview")} subtitle={t("overviewSubtitle")} />
 
       <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
         <MetricCard label={t("totalUsers")} value={String(data?.users.length ?? 0)} />

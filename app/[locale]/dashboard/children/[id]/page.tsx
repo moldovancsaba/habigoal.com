@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { calculateTrend } from "@/lib/utils/trends";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { calculateAgeGroup } from "@/lib/utils/age";
@@ -63,14 +64,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
 
   return (
     <Stack spacing={3}>
-      <Box>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-          {data.child.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {data.child.birthDate}
-        </Typography>
-      </Box>
+      <PageHeader title={data.child.name} subtitle={data.child.birthDate} />
 
       <SectionCard title={t("longitudinalTrends")}>
         <Stack spacing={2}>

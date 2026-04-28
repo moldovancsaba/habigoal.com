@@ -16,6 +16,7 @@ import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -87,17 +88,15 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
         className="no-print"
         sx={{ mb: 3, justifyContent: "space-between", alignItems: { sm: "flex-start" } }}
       >
-        <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-            {t("recordTitle")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {record.session.date} · {record.child.name}
-          </Typography>
-        </Box>
-        <Button variant="outlined" onClick={() => window.print()}>
-          {t("printSavePdf")}
-        </Button>
+        <PageHeader
+          title={t("recordTitle")}
+          subtitle={`${record.session.date} · ${record.child.name}`}
+          actions={
+            <Button variant="outlined" onClick={() => window.print()}>
+              {t("printSavePdf")}
+            </Button>
+          }
+        />
       </Stack>
 
       <SectionCard title={t("reportPreview")} className="no-print">

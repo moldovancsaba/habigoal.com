@@ -57,6 +57,22 @@ export function getKidexTheme(mode: "light" | "dark", direction: Direction = "lt
         defaultProps: { disableElevation: true },
         styleOverrides: { root: { borderRadius: 10, fontWeight: 600 } }
       },
+      MuiToggleButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 10,
+            "&.Mui-selected": {
+              backgroundColor: brandTeal,
+              borderColor: brandTeal,
+              color: "#ffffff"
+            },
+            "&.Mui-selected:hover": {
+              backgroundColor: "#0f8f89",
+              borderColor: "#0f8f89"
+            }
+          }
+        }
+      },
       MuiCard: {
         styleOverrides: {
           root: {

@@ -1,12 +1,16 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -18,7 +22,6 @@ import MuiSelect from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -120,6 +123,11 @@ export function KidexAssessmentApp() {
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
+  const [capturedBlob, setCapturedBlob] = useState<Blob | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const [conductors, setConductors] = useState<string[]>([]);
   const [observers, setObservers] = useState<string[]>([]);
@@ -146,6 +154,12 @@ export function KidexAssessmentApp() {
   useEffect(() => {
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(assessment));
   }, [assessment]);
+
+  useEffect(() => {
+    return () => {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
 
   useEffect(() => {
     if (!childIdParam) return;
@@ -261,10 +275,7 @@ export function KidexAssessmentApp() {
     setLocations((current) => (value && !current.includes(value) ? [...current, value] : current));
   }
 
-  async function uploadImage(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
+  async function uploadImageFile(file: File | Blob) {
     if (!assessment.session.consentPhoto) {
       setMessage(t("consentRequired"));
       return;
@@ -272,7 +283,7 @@ export function KidexAssessmentApp() {
     setUploading(true);
     setMessage("");
     const form = new FormData();
-    form.set("image", file);
+    form.set("image", file, file instanceof File ? file.name : "camera-capture.jpg");
     const response = await fetch("/api/uploads/imgbb", { method: "POST", body: form }).catch((error: Error) => {
       setMessage(error.message);
       return null;
@@ -289,6 +300,83 @@ export function KidexAssessmentApp() {
       attachments: [...current.attachments, data.attachment]
     }));
     setMessage(t("uploadSuccess"));
+  }
+
+  async function uploadImage(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    await uploadImageFile(file);
+  }
+
+  function stopCameraStream() {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+  }
+
+  async function openCamera() {
+    if (!assessment.session.consentPhoto) {
+      setMessage(t("consentRequired"));
+      return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setMessage(t("cameraUnsupported"));
+      return;
+    }
+
+    if (capturedPreview) {
+      URL.revokeObjectURL(capturedPreview);
+    }
+    setCapturedPreview(null);
+    setCapturedBlob(null);
+    setCameraOpen(true);
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
+        audio: false
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch {
+      setMessage(t("cameraAccessError"));
+      setCameraOpen(false);
+    }
+  }
+
+  function capturePhotoFrame() {
+    const video = videoRef.current;
+    if (!video) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      setCapturedBlob(blob);
+      setCapturedPreview(URL.createObjectURL(blob));
+      stopCameraStream();
+    }, "image/jpeg", 0.92);
+  }
+
+  async function uploadCapturedPhoto() {
+    if (!capturedBlob) return;
+    await uploadImageFile(capturedBlob);
+    closeCameraDialog();
+  }
+
+  function closeCameraDialog() {
+    stopCameraStream();
+    if (capturedPreview) {
+      URL.revokeObjectURL(capturedPreview);
+    }
+    setCapturedPreview(null);
+    setCapturedBlob(null);
+    setCameraOpen(false);
   }
 
   function removeAttachment(id: string) {
@@ -475,15 +563,7 @@ export function KidexAssessmentApp() {
                 />
                 {uploading ? t("uploading") : t("uploadImage")}
               </Button>
-              <Button variant="outlined" component="label" disabled={!assessment.session.consentPhoto || uploading}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  hidden
-                  onChange={(e) => void uploadImage(e)}
-                  disabled={!assessment.session.consentPhoto || uploading}
-                />
+              <Button variant="outlined" onClick={() => void openCamera()} disabled={!assessment.session.consentPhoto || uploading}>
                 {uploading ? t("uploading") : t("takePhoto")}
               </Button>
             </Stack>
@@ -511,6 +591,42 @@ export function KidexAssessmentApp() {
           </Stack>
         </SectionCard>
       </Stack>
+
+      <Dialog open={cameraOpen} onClose={closeCameraDialog} fullWidth maxWidth="sm">
+        <DialogTitle>{t("takePhoto")}</DialogTitle>
+        <DialogContent>
+          {capturedPreview ? (
+            <Box
+              component="img"
+              src={capturedPreview}
+              alt={t("takePhoto")}
+              sx={{ width: "100%", borderRadius: 1, border: 1, borderColor: "divider" }}
+            />
+          ) : (
+            <Box
+              component="video"
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              sx={{ width: "100%", borderRadius: 1, border: 1, borderColor: "divider", bgcolor: "black" }}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeCameraDialog}>{tc("cancel")}</Button>
+          {capturedPreview ? (
+            <>
+              <Button onClick={() => void openCamera()} variant="outlined">{t("retakePhoto")}</Button>
+              <Button onClick={() => void uploadCapturedPhoto()} variant="contained" disabled={uploading}>
+                {uploading ? t("uploading") : t("usePhoto")}
+              </Button>
+            </>
+          ) : (
+            <Button onClick={capturePhotoFrame} variant="contained">{t("capturePhoto")}</Button>
+          )}
+        </DialogActions>
+      </Dialog>
 
       <div id="scoring" />
       {sections.map((section, sectionIndex) => (
@@ -549,29 +665,39 @@ export function KidexAssessmentApp() {
                         {ts(`${item.key}.prompt`)}
                       </Typography>
                     </Box>
-                    <ToggleButtonGroup
-                      exclusive
-                      size="small"
-                      value={scoreValue(entry) === "" ? null : String(scoreValue(entry))}
-                      onChange={(_, selected) =>
-                        updateScore(item.key, { score: selected ? Number(selected) : "" })
-                      }
+                    <Box
+                      role="group"
                       aria-label={t("tableScore")}
                       sx={{
                         alignSelf: { xs: "flex-end", sm: "flex-start" },
-                        "& .MuiToggleButton-root": {
-                          minWidth: 36,
-                          px: 0.75,
-                          fontWeight: 700
-                        }
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "flex-end",
+                        gap: 0.75
                       }}
                     >
-                      {[1, 2, 3, 4, 5, 6].map((n) => (
-                        <ToggleButton key={n} value={String(n)} aria-label={`score-${n}`}>
-                          {n}
-                        </ToggleButton>
-                      ))}
-                    </ToggleButtonGroup>
+                      {[1, 2, 3, 4, 5, 6].map((n) => {
+                        const selected = scoreValue(entry) === n;
+                        return (
+                          <ToggleButton
+                            key={n}
+                            value={String(n)}
+                            selected={selected}
+                            aria-label={`score-${n}`}
+                            onChange={() => updateScore(item.key, { score: selected ? "" : n })}
+                            sx={{
+                              minWidth: { xs: 44, sm: 42 },
+                              minHeight: { xs: 44, sm: 40 },
+                              px: 1,
+                              borderRadius: 1.25,
+                              fontWeight: 700
+                            }}
+                          >
+                            {n}
+                          </ToggleButton>
+                        );
+                      })}
+                    </Box>
                   </Stack>
                   <Divider sx={{ my: 1.25 }} />
                   <TextField

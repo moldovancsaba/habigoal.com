@@ -116,7 +116,12 @@
     "takePhoto": "التقاط صورة",
     "tableTime": "الوقت",
     "groupSize": "حجم المجموعة",
-    "lastUpdated": "آخر تحديث"
+    "lastUpdated": "آخر تحديث",
+    "capturePhoto": "التقاط الصورة",
+    "retakePhoto": "إعادة الالتقاط",
+    "usePhoto": "استخدام الصورة",
+    "cameraUnsupported": "الكاميرا غير مدعومة على هذا الجهاز/المتصفح.",
+    "cameraAccessError": "تعذر الوصول إلى الكاميرا. يرجى السماح بإذن الكاميرا."
   },
   "Schema": {
     "ski": "SKI",

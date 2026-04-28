@@ -6,6 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { APP_VERSION, COMPANY_INFO } from "@/lib/company";
 
@@ -14,14 +15,7 @@ export default function GtcPage() {
 
   return (
     <Stack spacing={2.5}>
-      <Box>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-          {t("gtcTitle")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t("effectiveDate")}: {COMPANY_INFO.registered}
-        </Typography>
-      </Box>
+      <PageHeader title={t("gtcTitle")} subtitle={`${t("effectiveDate")}: ${COMPANY_INFO.registered}`} />
 
       <SectionCard title={t("scopeTitle")}>
         <Typography variant="body2">{t("scopeBody")}</Typography>

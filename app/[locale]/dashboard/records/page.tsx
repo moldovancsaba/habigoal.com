@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
 import type { AssessmentRecord } from "@/types/assessment";
@@ -29,43 +30,46 @@ export default function RecordsPage() {
   }, []);
 
   return (
-    <SectionCard title={t("records")}>
-      {savedRecords.length === 0 ? (
-        <Typography color="text.secondary">{ta("noHistory")}</Typography>
-      ) : (
-        <Stack spacing={2}>
-          {savedRecords.map((record) => (
-            <Card key={record._id} variant="outlined">
-              <CardContent>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { sm: "center" }, justifyContent: "space-between" }}>
-                  <Box sx={{ minWidth: 0 }}>
-                    {record.childId ? (
-                      <Typography
-                        component={Link}
-                        href={`/dashboard/children/${record.childId}`}
-                        variant="h6"
-                        sx={{ fontWeight: 700, textDecoration: "none", color: "primary.main", "&:hover": { textDecoration: "underline" } }}
-                      >
-                        {record.child.name || "---"}
+    <Stack spacing={2.5}>
+      <PageHeader title={t("records")} />
+      <SectionCard>
+        {savedRecords.length === 0 ? (
+          <Typography color="text.secondary">{ta("noHistory")}</Typography>
+        ) : (
+          <Stack spacing={2}>
+            {savedRecords.map((record) => (
+              <Card key={record._id} variant="outlined">
+                <CardContent>
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { sm: "center" }, justifyContent: "space-between" }}>
+                    <Box sx={{ minWidth: 0 }}>
+                      {record.childId ? (
+                        <Typography
+                          component={Link}
+                          href={`/dashboard/children/${record.childId}`}
+                          variant="h6"
+                          sx={{ fontWeight: 700, textDecoration: "none", color: "primary.main", "&:hover": { textDecoration: "underline" } }}
+                        >
+                          {record.child.name || "---"}
+                        </Typography>
+                      ) : (
+                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          {record.child.name || "---"}
+                        </Typography>
+                      )}
+                      <Typography variant="body2" color="text.secondary">
+                        {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
                       </Typography>
-                    ) : (
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        {record.child.name || "---"}
-                      </Typography>
-                    )}
-                    <Typography variant="body2" color="text.secondary">
-                      {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
-                    </Typography>
-                  </Box>
-                  <Button component={Link} href={`/dashboard/records/${record._id}`} variant="outlined">
-                    {tc("view")}
-                  </Button>
-                </Stack>
-              </CardContent>
-            </Card>
-          ))}
-        </Stack>
-      )}
-    </SectionCard>
+                    </Box>
+                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="outlined">
+                      {tc("view")}
+                    </Button>
+                  </Stack>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+        )}
+      </SectionCard>
+    </Stack>
   );
 }

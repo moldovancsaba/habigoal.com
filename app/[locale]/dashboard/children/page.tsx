@@ -16,6 +16,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import type { ChildProfile } from "@/repositories/child.repository";
@@ -138,69 +139,71 @@ export default function ChildrenListPage() {
   }
 
   return (
-    <SectionCard title={t("children")}>
-      <Stack spacing={2}>
-        {message ? (
-          <Alert severity={error ? "error" : "success"} onClose={() => setMessage("")}>
-            {message}
-          </Alert>
-        ) : null}
+    <Stack spacing={2.5}>
+      <PageHeader title={t("children")} />
+      <SectionCard>
+        <Stack spacing={2}>
+          {message ? (
+            <Alert severity={error ? "error" : "success"} onClose={() => setMessage("")}>
+              {message}
+            </Alert>
+          ) : null}
 
-        <TextField
-          label={t("searchChildren")}
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t("searchChildrenPlaceholder")}
-          fullWidth
-          size="small"
-        />
+          <TextField
+            label={t("searchChildren")}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t("searchChildrenPlaceholder")}
+            fullWidth
+            size="small"
+          />
 
-        {filtered.length === 0 ? (
-          <Typography color="text.secondary">{query ? t("noChildrenMatch") : tc("noChildren")}</Typography>
-        ) : (
-          <Stack spacing={2}>
-            {filtered.map((child) => {
-              const ageGroup = calculateAgeGroup(child.birthDate) || "-";
-              return (
-                <Card key={child._id} variant="outlined">
-                  <CardContent>
-                    <Stack spacing={2}>
-                      <Box sx={{ minWidth: 0 }}>
-                        <Typography
-                          component={Link}
-                          href={`/dashboard/children/${child._id}`}
-                          variant="h6"
-                          sx={{ fontWeight: 700, textDecoration: "none", color: "primary.main", "&:hover": { textDecoration: "underline" } }}
-                        >
-                          {child.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
-                        </Typography>
-                      </Box>
-                      <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-                        <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} variant="contained">
-                          {t("newSurveyForChild")}
-                        </Button>
-                        <Button component={Link} href={`/dashboard/children/${child._id}`} variant="outlined">
-                          {t("viewHistory")}
-                        </Button>
-                        <Button variant="outlined" onClick={() => startEdit(child)}>
-                          {t("editChild")}
-                        </Button>
-                        <Button color="error" variant="outlined" onClick={() => void deleteChild(child)}>
-                          {t("deleteChild")}
-                        </Button>
+          {filtered.length === 0 ? (
+            <Typography color="text.secondary">{query ? t("noChildrenMatch") : tc("noChildren")}</Typography>
+          ) : (
+            <Stack spacing={2}>
+              {filtered.map((child) => {
+                const ageGroup = calculateAgeGroup(child.birthDate) || "-";
+                return (
+                  <Card key={child._id} variant="outlined">
+                    <CardContent>
+                      <Stack spacing={2}>
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography
+                            component={Link}
+                            href={`/dashboard/children/${child._id}`}
+                            variant="h6"
+                            sx={{ fontWeight: 700, textDecoration: "none", color: "primary.main", "&:hover": { textDecoration: "underline" } }}
+                          >
+                            {child.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
+                          </Typography>
+                        </Box>
+                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                          <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} variant="contained">
+                            {t("newSurveyForChild")}
+                          </Button>
+                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="outlined">
+                            {t("viewHistory")}
+                          </Button>
+                          <Button variant="outlined" onClick={() => startEdit(child)}>
+                            {t("editChild")}
+                          </Button>
+                          <Button color="error" variant="outlined" onClick={() => void deleteChild(child)}>
+                            {t("deleteChild")}
+                          </Button>
+                        </Stack>
                       </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </Stack>
-        )}
-      </Stack>
-
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </Stack>
+          )}
+        </Stack>
+      </SectionCard>
       <Dialog open={Boolean(editing)} onClose={() => (saving ? null : setEditing(null))} fullWidth maxWidth="sm">
         <DialogTitle>{t("editChild")}</DialogTitle>
         <DialogContent>
@@ -230,6 +233,6 @@ export default function ChildrenListPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </SectionCard>
+    </Stack>
   );
 }

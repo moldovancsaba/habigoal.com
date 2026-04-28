@@ -56,7 +56,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                 borderRadius: 1,
                 mb: 0.5,
                 color: "rgba(255,255,255,0.85)",
-                "&.Mui-selected": { bgcolor: "rgba(255,255,255,0.12)", color: "common.white" },
+                "&.Mui-selected": { bgcolor: "secondary.main", color: "common.white" },
+                "&.Mui-selected:hover": { bgcolor: "#0f8f89" },
                 "&:hover": { bgcolor: "rgba(255,255,255,0.08)" }
               }}
             >

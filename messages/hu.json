@@ -116,7 +116,12 @@
     "takePhoto": "Fotó készítése",
     "tableTime": "Idő",
     "groupSize": "Csoportlétszám",
-    "lastUpdated": "Utolsó frissítés"
+    "lastUpdated": "Utolsó frissítés",
+    "capturePhoto": "Fotó elkészítése",
+    "retakePhoto": "Újrafotózás",
+    "usePhoto": "Fotó használata",
+    "cameraUnsupported": "A kamera nem támogatott ezen az eszközön/böngészőben.",
+    "cameraAccessError": "Nem érhető el a kamera. Engedélyezd a kamera-hozzáférést."
   },
   "Schema": {
     "ski": "SKI",
