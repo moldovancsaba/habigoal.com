@@ -16,6 +16,8 @@ import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { formatScore } from "@/lib/utils";
@@ -30,6 +32,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
   const [record, setRecord] = useState<AssessmentRecord | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   useEffect(() => {
     fetch(`/api/assessments/${id}`)
@@ -80,6 +83,124 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
     mixed: t("contextMixed")
   };
 
+  async function downloadPdf() {
+    const currentRecord = record;
+    if (!currentRecord) return;
+
+    setDownloadingPdf(true);
+    try {
+      const doc = new jsPDF({ unit: "mm", format: "a4" });
+      const logoDataUrl = await fetch("/logo.jpeg")
+        .then((response) => response.blob())
+        .then(
+          (blob) =>
+            new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            })
+        )
+        .catch(() => "");
+
+      if (logoDataUrl) {
+        doc.addImage(logoDataUrl, "JPEG", 14, 10, 20, 20);
+      }
+
+      doc.setFontSize(16);
+      doc.text(t("reportPrintTitle"), 38, 16);
+      doc.setFontSize(11);
+      doc.text(currentRecord.child.name, 38, 22);
+      doc.setFontSize(10);
+      doc.text(`${tc("date")}: ${reportDate}`, 140, 14);
+      doc.text(`${t("tableTime")}: ${reportTime}`, 140, 19);
+      doc.text(`${t("conductor")}: ${currentRecord.session.conductor || "—"}`, 140, 24);
+      doc.text(`${t("observers")}: ${currentRecord.session.observers || "—"}`, 140, 29);
+
+      autoTable(doc, {
+        startY: 34,
+        head: [[ts("movement"), ts("social"), ts("mental"), ts("ski")]],
+        body: [[
+          formatScore(currentRecord.computed.movementAverage),
+          formatScore(currentRecord.computed.socialAverage),
+          formatScore(currentRecord.computed.mentalAverage),
+          formatScore(currentRecord.computed.ski)
+        ]],
+        theme: "grid",
+        styles: { fontSize: 10 }
+      });
+
+      autoTable(doc, {
+        startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
+          ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 4
+          : 52,
+        head: [[t("setupTitle"), ""]],
+        body: [
+          [t("childName"), currentRecord.child.name],
+          [t("birthDate"), currentRecord.child.birthDate],
+          [t("ageGroup"), currentRecord.child.ageGroup],
+          [t("mode"), currentRecord.mode],
+          [tc("date"), reportDate],
+          [t("tableTime"), reportTime],
+          [t("location"), currentRecord.session.location || "—"],
+          [t("conductor"), currentRecord.session.conductor || "—"],
+          [t("observers"), currentRecord.session.observers || "—"],
+          [t("context"), contextLabelMap[currentRecord.session.context]],
+          [t("groupSize"), currentRecord.session.groupSize || "—"],
+          [t("lastUpdated"), updatedTime]
+        ],
+        theme: "grid",
+        styles: { fontSize: 9 },
+        columnStyles: { 0: { cellWidth: 55 }, 1: { cellWidth: 125 } }
+      });
+
+      for (const section of sections) {
+        autoTable(doc, {
+          startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
+            ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 6
+            : 20,
+          head: [[ts(section.key), "", ""]],
+          body: [],
+          theme: "plain",
+          styles: { fontSize: 11, fontStyle: "bold" }
+        });
+
+        autoTable(doc, {
+          startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
+            ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 1
+            : 24,
+          head: [[t("tableObservation"), t("tableScore"), t("tableNote")]],
+          body: section.items.map((item) => {
+                  const entry = currentRecord.scores[item.key];
+            return [ts(`${item.key}.title`), `${entry?.score ?? "—"}`, entry?.note || "—"];
+          }),
+          theme: "grid",
+          styles: { fontSize: 9 },
+          columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 24 }, 2: { cellWidth: 86 } }
+        });
+      }
+
+      autoTable(doc, {
+        startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
+          ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 6
+          : 20,
+        head: [[t("professionalNotes"), ""]],
+        body: [
+          [t("generalObservation"), currentRecord.notes.general || "—"],
+          [t("adaptationNeeds"), currentRecord.notes.adaptations || "—"]
+        ],
+        theme: "grid",
+        styles: { fontSize: 9 },
+        columnStyles: { 0: { cellWidth: 55 }, 1: { cellWidth: 125 } }
+      });
+
+      const safeName = (currentRecord.child.name || "report").replace(/[^\w-]+/g, "_");
+      doc.save(`kidex_report_${safeName}_${currentRecord.session.date || reportDate}.pdf`);
+    } finally {
+      setDownloadingPdf(false);
+    }
+  }
+
   return (
     <Box className="record-detail print-container">
       <Stack
@@ -92,8 +213,8 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           title={t("recordTitle")}
           subtitle={`${record.session.date} · ${record.child.name}`}
           actions={
-            <Button variant="outlined" onClick={() => window.print()}>
-              {t("printSavePdf")}
+            <Button variant="outlined" onClick={() => void downloadPdf()} disabled={downloadingPdf}>
+              {downloadingPdf ? tc("loading") : t("downloadPdf")}
             </Button>
           }
         />
