@@ -7,7 +7,9 @@ This app includes localized legal pages available under the dashboard:
 
 Supported locales currently include `hu`, `en`, and `ar`.
 
-## Company profile
+## Default company profile
+
+These are the current default values seeded in settings and used until modified in Dashboard Settings.
 
 - **Name:** KIDEX s.r.o.
 - **ID-No. (IČO):** 57474869
@@ -21,7 +23,7 @@ Supported locales currently include `hu`, `en`, and `ar`.
 ## App version and company profile source
 
 The app version is developer-managed in `lib/app-version.ts`.
-The company profile is managed from Dashboard Settings and persisted in global settings.
+The company profile is managed from Dashboard Settings and persisted in global settings (`/api/settings`).
 
 They are displayed in:
 

@@ -78,7 +78,11 @@ Allowed roles currently used:
 ### Settings
 
 - `GET /api/settings`
-  - Returns settings document (conductors/observers/locations).
+  - Returns settings document:
+    - `conductors[]`
+    - `observers[]`
+    - `locations[]`
+    - `company` profile fields (name, ID, legal form, address, VAT, etc.)
 
 - `POST /api/settings`
   - Saves settings document.
@@ -89,6 +93,11 @@ Allowed roles currently used:
 - `POST /api/uploads/imgbb`
   - Uploads image to ImgBB server-side.
   - Returns attachment metadata used in assessments.
+
+## Reporting and export behavior
+
+- Record page provides **direct PDF file generation and download** (client-side `jsPDF` + `jspdf-autotable`).
+- Browser print styles remain available for print view tuning, but export action is now download-oriented.
 
 ## Validation and error response
 
