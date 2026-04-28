@@ -6,6 +6,10 @@ import type { AssessmentRecord } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
 import { calculateTrend, TrendPoint } from "@/lib/utils/trends";
 
+function fmt(value: number | null | undefined) {
+  return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
+}
+
 export default function ChildHistoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations("Assessment");
@@ -42,9 +46,9 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           {trend.map((point, i) => (
             <div key={i} className="trend-point">
               <div className="trend-bars">
-                <div className="bar movement" style={{ height: `${(point.movement / 6) * 100}%` }} title={`Movement: ${point.movement.toFixed(1)}`} />
-                <div className="bar social" style={{ height: `${(point.social / 6) * 100}%` }} title={`Social: ${point.social.toFixed(1)}`} />
-                <div className="bar mental" style={{ height: `${(point.mental / 6) * 100}%` }} title={`Mental: ${point.mental.toFixed(1)}`} />
+                <div className="bar movement" style={{ height: `${((point.movement || 0) / 6) * 100}%` }} title={`Movement: ${fmt(point.movement)}`} />
+                <div className="bar social" style={{ height: `${((point.social || 0) / 6) * 100}%` }} title={`Social: ${fmt(point.social)}`} />
+                <div className="bar mental" style={{ height: `${((point.mental || 0) / 6) * 100}%` }} title={`Mental: ${fmt(point.mental)}`} />
               </div>
               <span className="trend-date">{point.date}</span>
             </div>
@@ -72,10 +76,10 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                 <tr key={a._id}>
                   <td>{a.session.date}</td>
                   <td>{a.mode}</td>
-                  <td>{a.computed.movementAverage?.toFixed(2)}</td>
-                  <td>{a.computed.socialAverage?.toFixed(2)}</td>
-                  <td>{a.computed.mentalAverage?.toFixed(2)}</td>
-                  <td><strong>{a.computed.ski?.toFixed(2)}</strong></td>
+                  <td>{fmt(a.computed.movementAverage)}</td>
+                  <td>{fmt(a.computed.socialAverage)}</td>
+                  <td>{fmt(a.computed.mentalAverage)}</td>
+                  <td><strong>{fmt(a.computed.ski)}</strong></td>
                 </tr>
               ))}
             </tbody>

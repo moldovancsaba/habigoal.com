@@ -53,8 +53,8 @@ function scoreValue(entry?: ScoreEntry) {
   return typeof entry?.score === "number" ? entry.score : "";
 }
 
-function fmt(value: number | null) {
-  return value === null ? "-" : value.toFixed(2);
+function fmt(value: number | null | undefined) {
+  return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
 }
 
 export function KidexAssessmentApp() {

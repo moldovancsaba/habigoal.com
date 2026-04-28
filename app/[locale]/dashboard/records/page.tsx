@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { AssessmentRecord } from "@/types/assessment";
 
-function fmt(value: number | null) {
-  return value === null ? "-" : value.toFixed(2);
+function fmt(value: number | null | undefined) {
+  return (value === null || value === undefined || typeof value !== "number") ? "-" : value.toFixed(2);
 }
 
 export default function RecordsPage() {
