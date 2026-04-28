@@ -46,12 +46,28 @@ export function getKidexMantineTheme(mode: "light" | "dark", direction: Directio
     components: {
       Text: {
         defaultProps: {
-          c: isDark ? "white" : "black"
+          c: isDark ? "white" : "black",
+          ff: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
         }
       },
       Title: {
         defaultProps: {
-          c: isDark ? "white" : "black"
+          c: isDark ? "white" : "black",
+          ff: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+        }
+      },
+      Input: {
+        styles: {
+          input: {
+            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          }
+        }
+      },
+      Button: {
+        styles: {
+          root: {
+            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          }
         }
       }
     }

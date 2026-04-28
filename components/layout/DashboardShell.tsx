@@ -95,9 +95,9 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         padding={0}
         styles={{
           header: {
-            backgroundColor: KIDEX_COLORS.white,
-            color: KIDEX_COLORS.navText,
-            borderBottomColor: KIDEX_COLORS.navBorder
+            backgroundColor: "var(--mantine-color-body)",
+            color: "var(--mantine-color-text)",
+            borderBottomColor: "var(--mantine-color-default-border)"
           },
           navbar: {
             borderInlineEnd: "none",

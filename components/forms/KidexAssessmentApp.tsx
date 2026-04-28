@@ -109,7 +109,7 @@ type AnyProps = Record<string, unknown>;
 function resolveResponsiveValue(value: unknown) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return value;
   const map = value as Record<string, unknown>;
-  return map.lg ?? map.md ?? map.sm ?? map.xs ?? Object.values(map)[0];
+  return map.lg ?? map.md ?? map.sm ?? map.xs ?? map.base ?? Object.values(map)[0];
 }
 
 function sxToStyle(sx?: unknown): CSSProperties | undefined {
@@ -183,14 +183,15 @@ function Paper({ variant, sx, children, ...rest }: AnyProps) {
 }
 
 function Stack({ spacing, direction, sx, children, divider, ...rest }: AnyProps) {
-  const dir = typeof direction === "string" ? direction : "column";
+  const dir = (typeof direction === "string" ? direction : resolveResponsiveValue(direction)) as string | undefined;
+  const resolvedGap = resolveResponsiveValue(spacing);
   const style = { ...sxToStyle(sx), display: "flex", flexDirection: dir } as CSSProperties;
   const nodes = Children.toArray(children as ReactNode);
   const withDividers = (divider
     ? nodes.flatMap((node, index) => (index === 0 ? [node] : [isValidElement(divider) ? cloneElement(divider) : divider, node]))
     : nodes) as ReactNode[];
   return (
-    <MantineStack gap={typeof spacing === "number" ? `${spacing * 0.5}rem` : (spacing as string | number | undefined)} style={style} {...(rest as Record<string, unknown>)}>
+    <MantineStack gap={typeof resolvedGap === "number" ? `${resolvedGap * 0.5}rem` : (resolvedGap as string | number | undefined)} style={style} {...(rest as Record<string, unknown>)}>
       {withDividers}
     </MantineStack>
   );
