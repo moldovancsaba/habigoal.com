@@ -12,14 +12,14 @@ export async function getSettings(): Promise<KidexSettings> {
     return await response.json();
   }
   
-  // Fallback to local storage or defaults
+  // Fallback to local storage or empty settings
   const local = localStorage.getItem(STORAGE_KEY);
   if (local) return JSON.parse(local);
   
   return {
-    conductors: ["Dr. Kovács Anna", "Szabó Márton", "Német László"],
-    observers: ["Papp Imre", "Varga Edit", "Kiss Zoltán"],
-    locations: ["Budapest Sportcsarnok", "Debrecen Training Center", "Online"]
+    conductors: [],
+    observers: [],
+    locations: []
   };
 }
 

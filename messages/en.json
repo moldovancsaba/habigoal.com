@@ -42,6 +42,7 @@
     "childName": "Child name",
     "birthDate": "Birth date",
     "ageGroup": "Age group",
+    "ageGroupPending": "Set birth date first",
     "mode": "Mode",
     "conductor": "Conductor",
     "location": "Location",

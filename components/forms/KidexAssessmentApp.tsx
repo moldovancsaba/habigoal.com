@@ -20,7 +20,7 @@ const emptyAssessment: AssessmentPayload = {
   child: {
     name: "",
     birthDate: "",
-    ageGroup: "7-9",
+    ageGroup: "",
     dominantHand: "",
     dominantEye: "",
     dominantFoot: "",
@@ -118,8 +118,8 @@ export function KidexAssessmentApp() {
       getConductors(),
       getObservers()
     ]).then(([settingsData, conductorUsers, observerUsers]) => {
-      const allConductors = Array.from(new Set([...settingsData.conductors, ...conductorUsers.map(u => u.name)]));
-      const allObservers = Array.from(new Set([...settingsData.observers, ...observerUsers.map(u => u.name)]));
+      const allConductors = Array.from(new Set(conductorUsers.map((user) => user.name)));
+      const allObservers = Array.from(new Set(observerUsers.map((user) => user.name)));
       
       setConductors(allConductors);
       setObservers(allObservers);
@@ -143,9 +143,7 @@ export function KidexAssessmentApp() {
 
       if (group === "child" && key === "birthDate") {
         const ageGroup = calculateAgeGroup(value as string);
-        if (ageGroup) {
-          next.child.ageGroup = ageGroup;
-        }
+        next.child.ageGroup = ageGroup || "";
       }
 
       return next;
@@ -277,7 +275,18 @@ export function KidexAssessmentApp() {
           <div className="formGrid">
             <Field label={t("childName")} value={assessment.child.name} onChange={(value) => update("child", "name", value)} />
             <Field label={t("birthDate")} type="date" value={assessment.child.birthDate} onChange={(value) => update("child", "birthDate", value)} />
-            <Select label={t("ageGroup")} value={assessment.child.ageGroup} onChange={(value) => update("child", "ageGroup", value)} options={["4-6", "7-9", "10-12"]} />
+            <Select
+              label={t("ageGroup")}
+              value={assessment.child.ageGroup}
+              onChange={(value) => update("child", "ageGroup", value)}
+              options={[
+                { id: "", name: t("ageGroupPending") },
+                "4-6",
+                "7-9",
+                "10-12"
+              ]}
+              disabled={!assessment.child.birthDate}
+            />
             <Select 
               label={t("mode")} 
               value={assessment.mode} 
@@ -444,16 +453,17 @@ function Field({ label, value, onChange, type = "text" }: { label: string; value
   return <label className="field"><span>{label}</span><input type={type} value={value} onChange={(event) => onChange(event.target.value)} /></label>;
 }
 
-function Select({ label, value, onChange, options }: { 
+function Select({ label, value, onChange, options, disabled = false }: {
   label: string; 
   value: string; 
   onChange: (value: string) => void; 
-  options: (string | { id: string; name: string })[] 
+  options: (string | { id: string; name: string })[];
+  disabled?: boolean;
 }) {
   return (
     <label className="field">
       <span>{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
+      <select value={value} onChange={(event) => onChange(event.target.value)} disabled={disabled}>
         {options.map((option) => {
           const id = typeof option === "string" ? option : option.id;
           const name = typeof option === "string" ? option : option.name;

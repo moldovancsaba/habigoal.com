@@ -8,9 +8,9 @@ export async function GET() {
     const settings = await getGlobalSettings();
     if (!settings) {
       return NextResponse.json({
-        conductors: ["Dr. Kovács Anna", "Szabó Márton", "Német László"],
-        observers: ["Papp Imre", "Varga Edit", "Kiss Zoltán"],
-        locations: ["Budapest Sportcsarnok", "Debrecen Training Center", "Online"]
+        conductors: [],
+        observers: [],
+        locations: []
       });
     }
     return NextResponse.json(settings);

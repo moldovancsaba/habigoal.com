@@ -31,7 +31,7 @@ export interface AssessmentPayload {
   child: {
     name: string;
     birthDate: string;
-    ageGroup: "4-6" | "7-9" | "10-12";
+    ageGroup: "4-6" | "7-9" | "10-12" | "";
     dominantHand: string;
     dominantEye: string;
     dominantFoot: string;
