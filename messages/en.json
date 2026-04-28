@@ -65,7 +65,13 @@
     "sportOrientation": "Sport orientation and follow-up measurement.",
     "noData": "No data yet.",
     "assessmentHistory": "Assessment History",
-    "noHistory": "No historical data available."
+    "noHistory": "No historical data available.",
+    "modeRapid": "Rapid",
+    "modeFull": "Full",
+    "contextEvent": "Event / Competition",
+    "contextStructured": "Structured session",
+    "contextSpontaneous": "Spontaneous play",
+    "contextMixed": "Mixed / Other"
   },
   "Schema": {
     "movement": "Movement Profile",

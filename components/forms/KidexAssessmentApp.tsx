@@ -245,7 +245,15 @@ export function KidexAssessmentApp() {
             <Field label={t("childName")} value={assessment.child.name} onChange={(value) => update("child", "name", value)} />
             <Field label={t("birthDate")} type="date" value={assessment.child.birthDate} onChange={(value) => update("child", "birthDate", value)} />
             <Select label={t("ageGroup")} value={assessment.child.ageGroup} onChange={(value) => update("child", "ageGroup", value)} options={["4-6", "7-9", "10-12"]} />
-            <Select label={t("mode")} value={assessment.mode} onChange={(value) => setAssessment((current) => ({ ...current, mode: value as AssessmentPayload["mode"] }))} options={["rapid", "full"]} />
+            <Select 
+              label={t("mode")} 
+              value={assessment.mode} 
+              onChange={(value) => setAssessment((current) => ({ ...current, mode: value as AssessmentPayload["mode"] }))} 
+              options={[
+                { id: "rapid", name: t("modeRapid") },
+                { id: "full", name: t("modeFull") }
+              ]} 
+            />
             
             <SearchableSelect 
               label={t("conductor")} 
@@ -274,7 +282,17 @@ export function KidexAssessmentApp() {
               onChange={(value) => update("session", "observers", value)} 
             />
             
-            <Select label={t("context")} value={assessment.session.context} onChange={(value) => update("session", "context", value)} options={["event", "structured", "spontaneous", "mixed"]} />
+            <Select 
+              label={t("context")} 
+              value={assessment.session.context} 
+              onChange={(value) => update("session", "context", value)} 
+              options={[
+                { id: "event", name: t("contextEvent") },
+                { id: "structured", name: t("contextStructured") },
+                { id: "spontaneous", name: t("contextSpontaneous") },
+                { id: "mixed", name: t("contextMixed") }
+              ]} 
+            />
             <TextArea label={t("knownTraits")} value={assessment.child.knownTraits} onChange={(value) => update("child", "knownTraits", value)} />
             <TextArea label={t("parentSignals")} value={assessment.child.parentSignals} onChange={(value) => update("child", "parentSignals", value)} />
             <label className="check"><input type="checkbox" checked={assessment.session.consentPhoto} onChange={(event) => update("session", "consentPhoto", event.target.checked)} /> {t("consentPhoto")}</label>
@@ -388,12 +406,21 @@ function Field({ label, value, onChange, type = "text" }: { label: string; value
   return <label className="field"><span>{label}</span><input type={type} value={value} onChange={(event) => onChange(event.target.value)} /></label>;
 }
 
-function Select({ label, value, onChange, options }: { label: string; value: string; onChange: (value: string) => void; options: string[] }) {
+function Select({ label, value, onChange, options }: { 
+  label: string; 
+  value: string; 
+  onChange: (value: string) => void; 
+  options: (string | { id: string; name: string })[] 
+}) {
   return (
     <label className="field">
       <span>{label}</span>
       <select value={value} onChange={(event) => onChange(event.target.value)}>
-        {options.map((option) => <option key={option} value={option}>{option}</option>)}
+        {options.map((option) => {
+          const id = typeof option === "string" ? option : option.id;
+          const name = typeof option === "string" ? option : option.name;
+          return <option key={id} value={id}>{name}</option>;
+        })}
       </select>
     </label>
   );

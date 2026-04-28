@@ -65,7 +65,13 @@
     "sportOrientation": "Sportorientáció és követő mérés.",
     "noData": "Még nincs adat.",
     "assessmentHistory": "Felmérési történet",
-    "noHistory": "Nem áll rendelkezésre korábbi adat."
+    "noHistory": "Nem áll rendelkezésre korábbi adat.",
+    "modeRapid": "Rapid",
+    "modeFull": "Teljes",
+    "contextEvent": "Esemény / Verseny",
+    "contextStructured": "Strukturált foglalkozás",
+    "contextSpontaneous": "Spontán játék",
+    "contextMixed": "Vegyes / Egyéb"
   },
   "Schema": {
     "movement": "Mozgásprofil",

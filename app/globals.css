@@ -194,7 +194,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
   padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
 }
 .badge.movement { background: var(--color-movement); color: white; }
-.badge.social { background: var(--brand-teal); color: white; }
+.badge.social { background: var(--brand-teal) !important; color: white !important; box-shadow: 0 0 10px var(--brand-teal); border: 1.5px solid white !important; color: white; }
 .badge.mental { background: var(--brand-gold); color: black; }
 
 /* Trends & Visualization */
@@ -207,7 +207,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
 .trend-bars { display: flex; align-items: flex-end; gap: 8px; height: 100%; width: 60px; position: relative; }
 .bar { flex: 1; border-radius: 4px 4px 0 0; transition: height 0.4s ease; }
 .bar.movement { background: var(--color-movement); }
-.bar.social { background: var(--brand-teal); }
+.bar.social { background: var(--brand-teal) !important; color: white !important; box-shadow: 0 0 10px var(--brand-teal); border: 1.5px solid white !important; }
 .bar.mental { background: var(--brand-gold); }
 .target-marker {
   position: absolute; left: -6px; right: -6px; height: 3px;
@@ -234,7 +234,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
   padding: 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 700;
   transition: 0.2s;
 }
-.locale-switcher button.active, .theme-switcher button.active { background: var(--brand-teal); }
+.locale-switcher button.active, .theme-switcher button.active { background: var(--brand-teal) !important; color: white !important; box-shadow: 0 0 10px var(--brand-teal); border: 1.5px solid white !important; }
 
 /* Attachments */
 .attachments { display: grid; gap: 1rem; margin-top: 1rem; }
@@ -278,3 +278,29 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
   .scoreAction { grid-column: 1 / -1; margin-top: 0.5rem; }
   .scoreAction select { width: 100%; }
 }
+
+/* Print Optimization */
+@media print {
+  .no-print { display: none !important; }
+  .only-print { display: block !important; }
+  
+  .sidebar, .topActions, .locale-switcher, .theme-switcher { display: none !important; }
+  
+  .dashboard-container { display: block; }
+  .main-content { padding: 0; }
+  
+  body { background: white; color: black; }
+  .panel { border: none; box-shadow: none; padding: 1rem 0; margin-bottom: 0; page-break-inside: avoid; }
+  .panelHeader { border-bottom: 2px solid #3d3f4d; margin-bottom: 1rem; }
+  
+  .metrics { grid-template-columns: repeat(4, 1fr); border: 1px solid #eee; }
+  .metric { box-shadow: none; border-right: 1px solid #eee; }
+  .metric:last-child { border-right: none; }
+  
+  .table-wrapper { border: none; }
+  .table th { background: #eee; color: black; }
+  
+  h1, h2, h3 { color: #3d3f4d !important; }
+}
+
+.only-print { display: none; }
