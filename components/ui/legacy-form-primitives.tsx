@@ -6,10 +6,21 @@ import { Alert as MantineAlert, Badge, Box as MantineBox, Button as MantineButto
 
 type AnyProps = Record<string, any>;
 
+function resolveResponsiveValue(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+  const map = value as Record<string, unknown>;
+  return map.lg ?? map.md ?? map.sm ?? map.xs ?? Object.values(map)[0];
+}
+
 function sxToStyle(sx?: any): CSSProperties | undefined {
   if (!sx) return undefined;
   if (typeof sx === "function") return undefined;
-  return sx as CSSProperties;
+  const raw = sx as Record<string, unknown>;
+  const normalized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    normalized[key] = resolveResponsiveValue(value);
+  }
+  return normalized as CSSProperties;
 }
 
 export function Alert(props: AnyProps) {
@@ -140,6 +151,7 @@ export function ToggleButton(props: AnyProps) {
   return (
     <MantineButton
       variant={selected ? "filled" : "light"}
+      size="md"
       onClick={(event) => onChange?.(event)}
       style={sxToStyle(sx)}
       {...(rest as any)}
@@ -151,7 +163,7 @@ export function ToggleButton(props: AnyProps) {
 
 export function Typography(props: AnyProps) {
   const { variant, children, color, sx, ...rest } = props;
-  const size = variant === "h6" ? "lg" : variant === "h5" ? "xl" : variant === "caption" ? "xs" : "sm";
+  const size = variant === "h6" ? "xl" : variant === "h5" ? "xl" : variant === "subtitle1" ? "lg" : variant === "caption" ? "sm" : "md";
   const fw = variant === "h6" || variant === "h5" || variant === "subtitle1" ? 700 : undefined;
   const c = color === "text.secondary" ? "dimmed" : undefined;
   return <Text size={size as any} fw={fw as any} c={c as any} style={sxToStyle(sx)} {...(rest as any)}>{children as any}</Text>;
