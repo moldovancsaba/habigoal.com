@@ -12,6 +12,7 @@ import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, PolarAngle
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { rapidSections } from "@/lib/kidex-schema";
+import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { User } from "@/services/user-service";
 
@@ -125,13 +126,13 @@ export function MainDashboard() {
       <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
         <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} />
+            <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} domain="movement" />
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} />
+            <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} domain="social" />
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} />
+            <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} domain="mental" />
           </Box>
         </Stack>
       </SectionCard>
@@ -262,12 +263,15 @@ function UserRolePieChart({
 
 function RapidRadarChart({
   title,
-  data
+  data,
+  domain
 }: {
   title: string;
   data: Array<{ label: string; value: number }>;
+  domain: AssessmentDomain;
 }) {
   const theme = useTheme();
+  const domainColor = getDomainMainColor(theme, domain);
 
   return (
     <Paper variant="outlined" sx={{ p: 1.5 }}>
@@ -289,8 +293,8 @@ function RapidRadarChart({
             />
             <Radar
               dataKey="value"
-              stroke={theme.palette.primary.main}
-              fill={theme.palette.primary.main}
+              stroke={domainColor}
+              fill={domainColor}
               fillOpacity={0.28}
             />
           </RadarChart>

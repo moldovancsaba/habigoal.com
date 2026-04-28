@@ -23,6 +23,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -31,6 +32,7 @@ import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { formatScore } from "@/lib/utils";
+import { getDomainChipSx, type AssessmentDomain } from "@/lib/domain-colors";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -107,17 +109,12 @@ async function parseApiError(response: Response): Promise<string | null> {
   return body?.error || null;
 }
 
-function domainChipColor(domain: string): "default" | "primary" | "secondary" | "warning" {
-  if (domain === "social") return "primary";
-  if (domain === "mental") return "warning";
-  return "default";
-}
-
 export function KidexAssessmentApp() {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
   const searchParams = useSearchParams();
+  const theme = useTheme();
   const childIdParam = searchParams.get("childId");
 
   const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
@@ -648,7 +645,7 @@ export function KidexAssessmentApp() {
         <SectionCard
           key={section.key}
           title={`${ts(section.key)} (${Math.round(section.weight * 100)}%)`}
-          action={<Chip label={ts(section.domain)} size="small" color={domainChipColor(section.domain)} variant={section.domain === "movement" ? "outlined" : "filled"} />}
+          action={<Chip label={ts(section.domain)} size="small" variant="outlined" sx={getDomainChipSx(theme, section.domain as AssessmentDomain)} />}
         >
           <Stack spacing={1.25}>
             {section.items.map((item, itemIndex) => {

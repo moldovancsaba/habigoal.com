@@ -25,6 +25,7 @@ import { getStandardForAgeGroup } from "@/lib/standards";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
 
@@ -75,9 +76,9 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           {trend.map((point, i) => (
             <Paper key={i} variant="outlined" sx={{ p: 2 }}>
               <Stack direction={{ xs: "column", md: "row" }} spacing={2} useFlexGap sx={{ alignItems: { md: "stretch" }, flexWrap: "wrap" }}>
-                <TrendMetric label={ts("movement")} value={point.movement || 0} target={standard?.movement.target} barColor="primary.main" />
-                <TrendMetric label={ts("social")} value={point.social || 0} target={standard?.social.target} barColor="secondary.main" />
-                <TrendMetric label={ts("mental")} value={point.mental || 0} target={standard?.mental.target} barColor="warning.main" />
+                <TrendMetric label={ts("movement")} value={point.movement || 0} target={standard?.movement.target} domain="movement" />
+                <TrendMetric label={ts("social")} value={point.social || 0} target={standard?.social.target} domain="social" />
+                <TrendMetric label={ts("mental")} value={point.mental || 0} target={standard?.mental.target} domain="mental" />
               </Stack>
               <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
                 {point.date}
@@ -93,13 +94,13 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
       <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
         <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} />
+            <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} domain="movement" />
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} />
+            <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} domain="social" />
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} />
+            <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} domain="mental" />
           </Box>
         </Stack>
       </SectionCard>
@@ -175,13 +176,15 @@ function TrendMetric({
   label,
   value,
   target,
-  barColor
+  domain
 }: {
   label: string;
   value: number;
   target?: number;
-  barColor: string;
+  domain: AssessmentDomain;
 }) {
+  const theme = useTheme();
+  const barColor = getDomainMainColor(theme, domain);
   const pct = Math.min(100, Math.max(0, (value / 6) * 100));
   return (
     <Box sx={{ flex: "1 1 200px", minWidth: 160 }}>
@@ -215,12 +218,15 @@ function TrendMetric({
 
 function RapidRadarChart({
   title,
-  data
+  data,
+  domain
 }: {
   title: string;
   data: Array<{ label: string; value: number }>;
+  domain: AssessmentDomain;
 }) {
   const theme = useTheme();
+  const domainColor = getDomainMainColor(theme, domain);
   return (
     <Paper variant="outlined" sx={{ p: 1.5 }}>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -233,7 +239,7 @@ function RapidRadarChart({
             <PolarAngleAxis dataKey="label" tick={{ fontSize: 11 }} />
             <PolarRadiusAxis domain={[0, 6]} tickCount={4} tick={{ fontSize: 10 }} />
             <Tooltip />
-            <Radar dataKey="value" stroke={theme.palette.primary.main} fill={theme.palette.primary.main} fillOpacity={0.25} />
+            <Radar dataKey="value" stroke={domainColor} fill={domainColor} fillOpacity={0.25} />
           </RadarChart>
         </ResponsiveContainer>
       </Box>
