@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { env, requireServerEnv } from "@/config/env";
+import { requireServerEnv } from "@/config/env";
 
 const SESSION_COOKIE_NAME = "kidex_session";
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -32,7 +32,7 @@ export async function decrypt(input: string): Promise<SessionPayload | null> {
       algorithms: ["HS256"]
     });
     return payload as SessionPayload;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }

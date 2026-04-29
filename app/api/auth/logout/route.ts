@@ -2,7 +2,7 @@ import { env } from "@/config/env";
 import { deleteSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   await deleteSession();
   
   // Also log out from the SSO provider to ensure a full logout
