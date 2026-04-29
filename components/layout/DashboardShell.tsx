@@ -2,7 +2,7 @@
 
 import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack } from "@mantine/core";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { PageContainer } from "@/components/ui/PageContainer";
@@ -16,6 +16,19 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const sideInset = 12;
+
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          setUser(data.user);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const nav = [
     { href: "/dashboard", label: t("overview") },
@@ -32,6 +45,30 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
         </Box>
       </Box>
+      
+      {user && (
+        <Stack gap={0} px={sideInset} pb="md" align="center">
+          <Box 
+            p="xs" 
+            style={{ 
+              width: "100%",
+              backgroundColor: "rgba(255, 255, 255, 0.05)", 
+              borderRadius: "var(--mantine-radius-md)",
+              border: "1px solid rgba(255, 255, 255, 0.1)"
+            }}
+          >
+            <Stack gap={0}>
+              <Box style={{ color: KIDEX_COLORS.white, fontWeight: 700, fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {user.name}
+              </Box>
+              <Box style={{ color: KIDEX_COLORS.navTextMuted, fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {user.email}
+              </Box>
+            </Stack>
+          </Box>
+        </Stack>
+      )}
+
       <Group
         gap={8}
         p={8}
@@ -45,7 +82,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         <LocaleSwitcher />
         <ThemeSwitcher />
       </Group>
-      <Stack gap={6} px={sideInset} pb="md" style={{ flex: 1 }}>
+      <Stack gap={6} px={sideInset} py="md" style={{ flex: 1 }}>
         {nav.map((item) => {
           const active =
             item.href === "/dashboard"
@@ -85,8 +122,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       <Box px={sideInset} py="md">
         <NavLink
           label={t("logout")}
-          onClick={() => {
-            window.location.href = "/api/auth/logout";
+          onClick={async () => {
+            // First call POST to ensure cookie is cleared, then redirect
+            await fetch("/api/auth/logout", { method: "POST" });
+            window.location.href = "/api/auth/login";
           }}
           styles={{
             root: {
