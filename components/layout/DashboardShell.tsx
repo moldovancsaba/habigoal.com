@@ -82,6 +82,27 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         })}
       </Stack>
       <Divider color={KIDEX_COLORS.navBorderMuted} />
+      <Box px={sideInset} py="md">
+        <NavLink
+          label={t("logout")}
+          onClick={() => {
+            window.location.href = "/api/auth/logout";
+          }}
+          styles={{
+            root: {
+              borderRadius: "var(--mantine-radius-md)",
+              paddingInlineStart: 16,
+              paddingInlineEnd: 16
+            },
+            label: {
+              color: KIDEX_COLORS.navTextMuted,
+              fontWeight: 500,
+              textAlign: "left"
+            }
+          }}
+          c={KIDEX_COLORS.navTextMuted}
+        />
+      </Box>
       <Box h={16} />
     </Stack>
   );

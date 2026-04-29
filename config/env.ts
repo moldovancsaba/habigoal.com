@@ -2,7 +2,12 @@ export const env = {
   mongodbUri: process.env.MONGODB_URI,
   mongodbDb: process.env.MONGODB_DB || "kidex",
   imgbbApiKey: process.env.IMGBB_API_KEY,
-  kidexEnforceAuth: process.env.KIDEX_ENFORCE_AUTH === "true"
+  kidexEnforceAuth: process.env.KIDEX_ENFORCE_AUTH === "true",
+  ssoClientId: process.env.SSO_Client_ID || process.env.SSO_CLIENT_ID,
+  ssoClientSecret: process.env.SSO_Client_Secret || process.env.SSO_CLIENT_SECRET,
+  ssoBaseUrl: process.env.SSO_BASE_URL || "https://sso.doneisbetter.com",
+  ssoRedirectUri: process.env.SSO_REDIRECT_URI || "https://kidex.messmass.com/api/oauth/callback",
+  authSecret: process.env.AUTH_SECRET
 };
 
 type StringEnvKey = {
