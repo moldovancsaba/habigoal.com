@@ -30,11 +30,11 @@
     "children": "Children",
     "viewHistory": "History",
     "userRights": "User Rights Management",
-    "addUser": "Add User",
-    "userName": "User Name",
+    "inviteUser": "Invite User",
+    "email": "Email",
     "canConduct": "Conduct Survey",
     "canObserve": "Observe / Assist",
-    "noUsers": "No users defined yet.",
+    "noUsers": "No users invited yet.",
     "locations": "Locations",
     "addLocation": "Add Location",
     "noLocations": "No locations added.",
@@ -430,6 +430,7 @@
     "login": "Login to Dashboard",
     "feature1": "Evidence-based assessments",
     "feature2": "Longitudinal trend analysis",
-    "feature3": "Automated professional reporting"
+    "feature3": "Automated professional reporting",
+    "accessDenied": "Access denied. Your email is not on the invited user list. Please contact your administrator."
   }
 }

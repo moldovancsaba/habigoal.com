@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { exchangeCodeForToken, getUserInfo } from "@/services/auth-service";
 import { createSession } from "@/lib/session";
 import { cookies } from "next/headers";
+import { findUserByEmail } from "@/repositories/user.repository";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -17,14 +18,43 @@ export async function GET(request: NextRequest) {
 
   try {
     const tokens = await exchangeCodeForToken(code);
-    const user = await getUserInfo(tokens.access_token);
+    const ssoUser = await getUserInfo(tokens.access_token);
 
-    await createSession(user);
+    // Check if the user's email is in our local approved list
+    let localUser = await findUserByEmail(ssoUser.email);
+    
+    // Bootstrap: If no users exist in the system, make the first one an admin
+    const allUsers = await listAllUsers();
+    if (allUsers.length === 0) {
+      console.info(`Bootstrapping first user as admin: ${ssoUser.email}`);
+      await upsertUser({
+        email: ssoUser.email,
+        name: ssoUser.name,
+        roles: ["admin", "conductor"]
+      });
+      localUser = await findUserByEmail(ssoUser.email);
+    }
+    
+    if (!localUser) {
+      console.warn(`Login denied for non-whitelisted email: ${ssoUser.email}`);
+      // Redirect to landing page with an error parameter
+      const loginUrl = new URL("/", request.url);
+      loginUrl.searchParams.set("error", "access_denied");
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Create session using SSO info but merging local roles
+    await createSession({
+      id: ssoUser.id,
+      email: ssoUser.email,
+      name: ssoUser.name,
+      role: localUser.roles.join(",") || "user"
+    });
 
     // Clean up state cookie
     cookieStore.delete("oauth_state");
 
-    // Redirect to dashboard (adjust as needed)
+    // Redirect to dashboard
     return NextResponse.redirect(new URL("/", request.url));
   } catch (error) {
     console.error("Auth callback error:", error);

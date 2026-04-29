@@ -1,7 +1,8 @@
 export interface User {
   id?: string;
-  name: string;
-  roles: ("conductor" | "observer")[];
+  name?: string;
+  email: string;
+  roles: ("admin" | "conductor" | "observer")[];
 }
 
 export async function getUsers(): Promise<User[]> {

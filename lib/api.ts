@@ -19,12 +19,15 @@ export function requireRole(request: Request, allowedRoles: string[]) {
     return null;
   }
 
-  const role = request.headers.get(roleHeader)?.trim().toLowerCase();
-  if (!role) {
+  const roleHeaderValue = request.headers.get(roleHeader)?.trim().toLowerCase() || "";
+  const userRoles = roleHeaderValue.split(",").map(r => r.trim());
+
+  if (userRoles.length === 0 || roleHeaderValue === "") {
     return jsonError("Missing role header", 401, "AUTH_REQUIRED");
   }
 
-  if (!allowedRoles.includes(role)) {
+  const hasPermission = allowedRoles.some(role => userRoles.includes(role));
+  if (!hasPermission) {
     return jsonError("Insufficient permissions", 403, "FORBIDDEN");
   }
 

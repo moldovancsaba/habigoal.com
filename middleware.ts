@@ -55,8 +55,8 @@ export default async function middleware(request: NextRequest) {
   // 7. Proceed with intl middleware and inject auth headers
   const requestHeaders = new Headers(request.headers);
   if (session) {
-    requestHeaders.set('x-kidex-role', (session.role as string) || 'user');
-    requestHeaders.set('x-kidex-user-id', (session.userId as string) || '');
+    requestHeaders.set('x-kidex-role', session.role || 'user');
+    requestHeaders.set('x-kidex-user-id', session.userId || '');
   }
 
   // Create a new request with the updated headers

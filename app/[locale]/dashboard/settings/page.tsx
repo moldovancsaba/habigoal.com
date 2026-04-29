@@ -41,13 +41,13 @@ export default function SettingsPage() {
     setSaving(false);
   }
 
-  async function toggleRole(user: User, role: "conductor" | "observer") {
+  async function toggleRole(user: User, role: "admin" | "conductor" | "observer") {
     const nextRoles = user.roles.includes(role) ? user.roles.filter((r) => r !== role) : [...user.roles, role];
 
     const updatedUser = { ...user, roles: nextRoles };
 
     const previousUsers = users;
-    setUsers((prev) => prev.map((u) => (u.name === user.name ? updatedUser : u)));
+    setUsers((prev) => prev.map((u) => (u.email === user.email ? updatedUser : u)));
 
     const ok = await saveUser(updatedUser);
     if (!ok) {
@@ -59,14 +59,14 @@ export default function SettingsPage() {
   }
 
   function addNewUser() {
-    const name = userDraft.trim();
-    if (name) {
-      const newUser: User = { name, roles: [] };
+    const email = userDraft.trim().toLowerCase();
+    if (email) {
+      const newUser: User = { email, roles: [] };
       setUsers((prev) => [...prev, newUser]);
       setUserDraft("");
       void saveUser(newUser).then((ok) => {
         if (!ok) {
-          setUsers((prev) => prev.filter((u) => u.name !== name));
+          setUsers((prev) => prev.filter((u) => u.email !== email));
           setMessage(tc("error"));
         } else {
           setMessage(tc("success"));
@@ -124,49 +124,58 @@ export default function SettingsPage() {
         <Stack gap="md">
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
-              label={t("userName")}
+              label={t("email")}
+              placeholder="user@example.com"
               value={userDraft}
               onChange={(event) => setUserDraft(event.target.value)}
               style={{ minWidth: 280 }}
             />
             <Button variant="default" onClick={addNewUser} disabled={!userDraft.trim()}>
-              {t("addUser")}
+              {t("inviteUser")}
             </Button>
           </Group>
           <Paper withBorder p={0}>
           <Table striped highlightOnHover>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>{t("userName")}</Table.Th>
+                <Table.Th>{t("email")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>{t("canConduct")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>{t("canObserve")}</Table.Th>
+                <Table.Th style={{ textAlign: "center" }}>Admin</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
               {users.map((user) => (
-                <Table.Tr key={user.name}>
+                <Table.Tr key={user.email}>
                   <Table.Td>
-                    <Text fw={600}>{user.name}</Text>
+                    <Text fw={600}>{user.email}</Text>
                   </Table.Td>
                   <Table.Td style={{ textAlign: "center" }}>
                     <Checkbox
                       checked={user.roles.includes("conductor")}
                       onChange={() => void toggleRole(user, "conductor")}
-                      aria-label={`${user.name} conductor`}
+                      aria-label={`${user.email} conductor`}
                     />
                   </Table.Td>
                   <Table.Td style={{ textAlign: "center" }}>
                     <Checkbox
                       checked={user.roles.includes("observer")}
                       onChange={() => void toggleRole(user, "observer")}
-                      aria-label={`${user.name} observer`}
+                      aria-label={`${user.email} observer`}
+                    />
+                  </Table.Td>
+                  <Table.Td style={{ textAlign: "center" }}>
+                    <Checkbox
+                      checked={user.roles.includes("admin")}
+                      onChange={() => void toggleRole(user, "admin")}
+                      aria-label={`${user.email} admin`}
                     />
                   </Table.Td>
                 </Table.Tr>
               ))}
               {users.length === 0 ? (
                 <Table.Tr>
-                  <Table.Td colSpan={3}>
+                  <Table.Td colSpan={4}>
                     <Text c="dimmed">{t("noUsers")}</Text>
                   </Table.Td>
                 </Table.Tr>

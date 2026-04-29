@@ -29,12 +29,12 @@
     "settings": "Beállítások",
     "children": "Gyermekek",
     "viewHistory": "Történet",
-    "userRights": "Jogosultságkezelés",
-    "addUser": "Felhasználó hozzáadása",
-    "userName": "Felhasználónév",
+    "userRights": "Felhasználói jogosultságok kezelése",
+    "inviteUser": "Felhasználó meghívása",
+    "email": "Email",
     "canConduct": "Felmérés végzése",
-    "canObserve": "Megfigyelés / Asszisztálás",
-    "noUsers": "Még nincsenek felhasználók.",
+    "canObserve": "Megfigyelés / Segítség",
+    "noUsers": "Még nincsenek meghívott felhasználók.",
     "locations": "Helyszínek",
     "addLocation": "Helyszín hozzáadása",
     "noLocations": "Még nincsenek helyszínek.",
@@ -430,6 +430,7 @@
     "login": "Belépés a Vezérlőpultra",
     "feature1": "Bizonyítékokon alapuló felmérések",
     "feature2": "Longitudinális trendelemzés",
-    "feature3": "Automatizált szakmai jelentések"
+    "feature3": "Automatizált szakmai jelentések",
+    "accessDenied": "Hozzáférés megtagadva. Az Ön e-mail címe nem szerepel a meghívott felhasználók listáján. Kérjük, forduljon a rendszergazdához."
   }
 }

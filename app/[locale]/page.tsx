@@ -1,15 +1,26 @@
-import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon } from "@mantine/core";
+import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon, Alert } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { KIDEX_COLORS } from "@/theme/tokens";
 
-export default function LandingPage() {
+
+export default async function LandingPage({
+  searchParams
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const t = useTranslations("Landing");
+  const { error } = await searchParams;
 
   return (
     <Box bg={KIDEX_COLORS.brandNavy} style={{ minHeight: "100vh", color: KIDEX_COLORS.white }}>
       <Container size="lg" py={100}>
         <Stack gap={60} align="center" style={{ textAlign: "center" }}>
+          {error === "access_denied" && (
+            <Alert color="red" title="Access Denied" radius="md" style={{ maxWidth: 500 }}>
+              {t("accessDenied")}
+            </Alert>
+          )}
           {/* Logo */}
           <Box style={{ backgroundColor: KIDEX_COLORS.white, borderRadius: "var(--mantine-radius-lg)", padding: 24, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}>
             <Image src="/logo.jpeg" alt="KIDEX" width={180} height={180} priority />
