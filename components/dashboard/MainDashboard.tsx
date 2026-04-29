@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Box, Loader, Paper, Stack, Text, useMantineTheme } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { rapidSections } from "@/lib/kidex-schema";
@@ -79,6 +79,45 @@ export function MainDashboard() {
     }
     return days;
   }, [data]);
+  
+  const dailyAverages = useMemo(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const days = Array.from({ length: DASHBOARD_CHART_CONFIG.dayWindow }, (_, idx) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() - (DASHBOARD_CHART_CONFIG.dayWindow - 1 - idx));
+      return { 
+        key: d.toISOString().slice(0, 10), 
+        label: dayLabel(d), 
+        movement: 0, 
+        social: 0, 
+        mental: 0,
+        mSum: 0, mCount: 0,
+        sSum: 0, sCount: 0,
+        pSum: 0, pCount: 0
+      };
+    });
+    
+    const indexByKey = new Map(days.map((d) => [d.key, d]));
+    
+    for (const record of data?.assessments ?? []) {
+      const createdAt = new Date(record.createdAt);
+      const key = new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate()).toISOString().slice(0, 10);
+      const hit = indexByKey.get(key);
+      if (hit) {
+        if (record.computed.movementAverage) { hit.mSum += record.computed.movementAverage; hit.mCount++; }
+        if (record.computed.socialAverage) { hit.sSum += record.computed.socialAverage; hit.sCount++; }
+        if (record.computed.mentalAverage) { hit.pSum += record.computed.mentalAverage; hit.pCount++; }
+      }
+    }
+    
+    return days.map(d => ({
+      ...d,
+      movement: d.mCount ? Number((d.mSum / d.mCount).toFixed(2)) : 0,
+      social: d.sCount ? Number((d.sSum / d.sCount).toFixed(2)) : 0,
+      mental: d.pCount ? Number((d.pSum / d.pCount).toFixed(2)) : 0
+    }));
+  }, [data]);
 
   const userRoleStats = useMemo(() => {
     const users = data?.users ?? [];
@@ -148,6 +187,14 @@ export function MainDashboard() {
           </SectionCard>
         </Box>
       </Stack>
+
+      <SectionCard title={t("dailyAverageTrendsTitle")} subheader={t("dailyAverageTrendsSubtitle")}>
+        <Stack gap="lg">
+          <DailyAverageBarChart title={ts("movement")} data={dailyAverages} dataKey="movement" domain="movement" />
+          <DailyAverageBarChart title={ts("social")} data={dailyAverages} dataKey="social" domain="social" />
+          <DailyAverageBarChart title={ts("mental")} data={dailyAverages} dataKey="mental" domain="mental" />
+        </Stack>
+      </SectionCard>
 
     </Stack>
   );
@@ -260,6 +307,70 @@ function UserRolePieChart({
         </PieChart>
       </ResponsiveContainer>
     </Box>
+  );
+}
+
+interface DailyAveragePoint {
+  label: string;
+  movement: number;
+  social: number;
+  mental: number;
+}
+
+function DailyAverageBarChart({
+  title,
+  data,
+  dataKey,
+  domain
+}: {
+  title: string;
+  data: DailyAveragePoint[];
+  dataKey: keyof Omit<DailyAveragePoint, "label">;
+  domain: AssessmentDomain;
+}) {
+  const theme = useMantineTheme();
+  const barColor = getDomainMainColor(domain);
+
+  return (
+    <Paper withBorder p="md">
+      <Stack gap="xs">
+        <Text fw={700} size="sm">{title}</Text>
+        <Box style={{ width: "100%", height: 140 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 5, right: 10, left: -30, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme.colors.gray[3]} />
+              <XAxis 
+                dataKey="label" 
+                tick={{ fontSize: 9, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis 
+                domain={[0, 6]} 
+                tick={{ fontSize: 9, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+                axisLine={false}
+                tickLine={false}
+                width={30}
+              />
+              <Tooltip 
+                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+                contentStyle={{ 
+                  borderRadius: 'var(--mantine-radius-md)',
+                  border: '1px solid var(--mantine-color-default-border)',
+                  fontFamily: CHART_FONT_FAMILY,
+                  fontSize: '12px'
+                }}
+              />
+              <Bar dataKey={dataKey} radius={[3, 3, 0, 0]} barSize={12}>
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={barColor} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
+      </Stack>
+    </Paper>
   );
 }
 
