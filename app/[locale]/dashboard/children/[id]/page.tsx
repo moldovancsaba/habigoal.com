@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { Box, Loader, Paper, Progress, Stack, Table, Text, useMantineTheme } from "@mantine/core";
+import { Box, Group, Loader, Paper, Stack, Table, Text, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { rapidSections } from "@/lib/kidex-schema";
-import { calculateTrend } from "@/lib/utils/trends";
+import { calculateTrend, type TrendPoint } from "@/lib/utils/trends";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { formatScore } from "@/lib/utils";
@@ -63,22 +63,34 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
       <PageHeader title={data.child.name} subtitle={data.child.birthDate} />
 
       <SectionCard title={t("longitudinalTrends")}>
-        <Stack gap="md">
-          {trend.map((point, i) => (
-            <Paper key={i} withBorder p="md">
-              <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "stretch" }}>
-                <TrendMetric label={ts("movement")} value={point.movement || 0} target={standard?.movement.target} domain="movement" />
-                <TrendMetric label={ts("social")} value={point.social || 0} target={standard?.social.target} domain="social" />
-                <TrendMetric label={ts("mental")} value={point.mental || 0} target={standard?.mental.target} domain="mental" />
-              </Stack>
-              <Text size="sm" c="dimmed" mt="xs">
-                {point.date}
-              </Text>
-            </Paper>
-          ))}
-          {trend.length === 0 ? (
+        <Stack gap="xl">
+          {trend.length > 0 ? (
+            <>
+              <TrendBarChart 
+                title={ts("movement")} 
+                data={trend} 
+                dataKey="movement" 
+                target={standard?.movement.target} 
+                domain="movement" 
+              />
+              <TrendBarChart 
+                title={ts("social")} 
+                data={trend} 
+                dataKey="social" 
+                target={standard?.social.target} 
+                domain="social" 
+              />
+              <TrendBarChart 
+                title={ts("mental")} 
+                data={trend} 
+                dataKey="mental" 
+                target={standard?.mental.target} 
+                domain="mental" 
+              />
+            </>
+          ) : (
             <Text c="dimmed">{t("noHistory")}</Text>
-          ) : null}
+          )}
         </Stack>
       </SectionCard>
 
@@ -163,42 +175,81 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   );
 }
 
-function TrendMetric({
-  label,
-  value,
+function TrendBarChart({
+  title,
+  data,
+  dataKey,
   target,
   domain
 }: {
-  label: string;
-  value: number;
+  title: string;
+  data: TrendPoint[];
+  dataKey: keyof Omit<TrendPoint, "date">;
   target?: number;
   domain: AssessmentDomain;
 }) {
   const barColor = getDomainMainColor(domain);
-  const pct = Math.min(100, Math.max(0, (value / 6) * 100));
+
   return (
-    <Box style={{ flex: "1 1 200px", minWidth: 160 }}>
-      <Stack gap={4} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" }}>
-        <Text size="sm" c="dimmed">
-          {label}
-        </Text>
-        <Text fw={700}>
-          {formatScore(value)}
-        </Text>
+    <Paper withBorder p="md">
+      <Stack gap="xs">
+        <Group justify="space-between" align="center">
+          <Text fw={700} size="lg">{title}</Text>
+          {target && (
+            <Text size="sm" c="dimmed">
+              Target: <Text component="span" fw={700} c="blue">{formatScore(target)}</Text>
+            </Text>
+          )}
+        </Group>
+        <Box style={{ width: "100%", height: 180 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis 
+                dataKey="date" 
+                tick={{ fontSize: 10, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis 
+                domain={[0, 6]} 
+                tick={{ fontSize: 10, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+                axisLine={false}
+                tickLine={false}
+                width={30}
+              />
+              <Tooltip 
+                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+                contentStyle={{ 
+                  borderRadius: 'var(--mantine-radius-md)',
+                  border: '1px solid var(--mantine-color-default-border)',
+                  fontFamily: CHART_FONT_FAMILY
+                }}
+              />
+              <Bar dataKey={dataKey} radius={[4, 4, 0, 0]} barSize={40}>
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={barColor} />
+                ))}
+              </Bar>
+              {target && (
+                <ReferenceLine 
+                  y={target} 
+                  stroke="var(--mantine-color-blue-filled)" 
+                  strokeDasharray="3 3" 
+                  label={{ 
+                    position: 'right', 
+                    value: 'T', 
+                    fill: 'var(--mantine-color-blue-filled)', 
+                    fontSize: 10,
+                    fontWeight: 700 
+                  }} 
+                />
+              )}
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
       </Stack>
-      <Progress
-        value={pct}
-        color={barColor}
-        radius="md"
-        size="md"
-        aria-label={label}
-      />
-      {typeof target === "number" ? (
-        <Text size="sm" c="dimmed" mt={6}>
-          Target: {formatScore(target)}
-        </Text>
-      ) : null}
-    </Box>
+    </Paper>
   );
 }
 
