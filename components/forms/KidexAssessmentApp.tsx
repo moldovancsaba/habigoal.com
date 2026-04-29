@@ -299,8 +299,8 @@ export function KidexAssessmentApp() {
 
   useEffect(() => {
     void Promise.all([getSettings(), getConductors(), getObservers()]).then(([settingsData, conductorUsers, observerUsers]) => {
-      const allConductors = Array.from(new Set(conductorUsers.map((user) => user.name)));
-      const allObservers = Array.from(new Set(observerUsers.map((user) => user.name)));
+      const allConductors = Array.from(new Set(conductorUsers.map((user) => user.email)));
+      const allObservers = Array.from(new Set(observerUsers.map((user) => user.email)));
 
       setConductors(allConductors);
       setObservers(allObservers);

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { exchangeCodeForToken, getUserInfo } from "@/services/auth-service";
 import { createSession } from "@/lib/session";
 import { cookies } from "next/headers";
-import { findUserByEmail } from "@/repositories/user.repository";
+import { findUserByEmail, listAllUsers, upsertUser } from "@/repositories/user.repository";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

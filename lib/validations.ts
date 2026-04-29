@@ -136,21 +136,22 @@ export function parseSettingsPayload(input: unknown): SettingsPayload {
 }
 
 export interface UserPayload {
-  name: string;
-  roles: ("conductor" | "observer")[];
+  name?: string;
+  email: string;
+  roles: ("admin" | "conductor" | "observer")[];
 }
 
 export function parseUserPayload(input: unknown): UserPayload {
   const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
   const roleValues = Array.isArray(data.roles) ? data.roles : [];
-  const allowedRoleSet = new Set(["conductor", "observer"]);
+  const allowedRoleSet = new Set(["admin", "conductor", "observer"]);
   const roles = roleValues
     .map((role) => String(role).toLowerCase())
-    .filter((role): role is "conductor" | "observer" => allowedRoleSet.has(role))
-    .slice(0, 2);
+    .filter((role): role is "admin" | "conductor" | "observer" => allowedRoleSet.has(role));
 
   return {
-    name: stringValue(data.name, 240).trim(),
+    name: data.name ? stringValue(data.name, 240).trim() : undefined,
+    email: stringValue(data.email, 240).trim().toLowerCase(),
     roles: Array.from(new Set(roles))
   };
 }

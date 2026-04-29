@@ -21,8 +21,8 @@ export async function POST(request: Request) {
 
   try {
     const user = parseUserPayload(await readJson(request));
-    if (!user.name) {
-      return jsonError("User name is required", 400, "VALIDATION_ERROR");
+    if (!user.email) {
+      return jsonError("User email is required", 400, "VALIDATION_ERROR");
     }
     await upsertUser(user);
     return NextResponse.json({ success: true });
