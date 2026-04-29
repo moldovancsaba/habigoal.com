@@ -14,7 +14,7 @@ export default async function middleware(request: NextRequest) {
     return intlMiddleware(request);
   }
 
-  // 2. Identify public routes (including login/callback)
+  // 2. Identify public routes
   const isPublicRoute = 
     pathname.startsWith('/api/auth') || 
     pathname.startsWith('/api/oauth') ||
@@ -24,56 +24,45 @@ export default async function middleware(request: NextRequest) {
     pathname.endsWith('.png') ||
     pathname.endsWith('.svg');
 
-  if (isPublicRoute) {
-    return intlMiddleware(request);
+  // 3. Handle API routes
+  if (pathname.startsWith('/api')) {
+    if (isPublicRoute) return NextResponse.next();
+
+    const cookie = request.cookies.get("kidex_session")?.value;
+    const session = cookie ? await decrypt(cookie) : null;
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-kidex-role', session.role || 'user');
+    requestHeaders.set('x-kidex-user-id', session.userId || '');
+
+    return NextResponse.next({
+      request: { headers: requestHeaders }
+    });
   }
 
-  // 3. Check for session
+  // 4. Handle Page routes
   const cookie = request.cookies.get("kidex_session")?.value;
   const session = cookie ? await decrypt(cookie) : null;
-
-  // 4. Identify if it's a root/landing page
   const isLandingPage = pathname === '/' || /^\/(hu|en|ar)$/.test(pathname) || /^\/(hu|en|ar)\/$/.test(pathname);
 
-  // 5. If logged in and on landing page, redirect to dashboard
   if (session && isLandingPage) {
     const locale = pathname.match(/^\/(hu|en|ar)/)?.[1] || 'en';
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }
 
-  // 6. Redirect to login if no session and not a public route/landing page
-  if (!session && !isLandingPage && !isPublicRoute) {
-    // If it's an API request (not auth), return 401
-    if (pathname.startsWith('/api') && !pathname.startsWith('/api/auth') && !pathname.startsWith('/api/oauth')) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    
-    // Otherwise redirect to landing page
+  if (!session && !isLandingPage) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  // 7. Proceed with intl middleware and inject auth headers
-  const requestHeaders = new Headers(request.headers);
-  if (session) {
-    requestHeaders.set('x-kidex-role', session.role || 'user');
-    requestHeaders.set('x-kidex-user-id', session.userId || '');
-  }
-
-  // Create a new request with the updated headers
-  const modifiedRequest = new NextRequest(request, {
-    headers: requestHeaders,
-  });
-
-  return intlMiddleware(modifiedRequest);
+  return intlMiddleware(request);
 }
 
 export const config = {
-  // Match all paths except for api, _next, and static files.
-  // The 'always' locale prefix strategy will handle redirects to /hu/, /en/, or /ar/ automatically.
   matcher: [
-    '/', 
-    '/(hu|en|ar)/:path*',
-    '/api/((?!auth|oauth).*)', // Match all API routes EXCEPT auth/oauth
     '/((?!_next|_vercel|.*\\..*).*)'
   ]
 };
