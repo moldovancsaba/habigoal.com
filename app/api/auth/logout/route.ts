@@ -1,4 +1,3 @@
-import { env } from "@/config/env";
 import { deleteSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -142,10 +142,13 @@ export default function SettingsPage() {
                 <Table.Th style={{ textAlign: "center" }}>{t("canConduct")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>{t("canObserve")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>Admin</Table.Th>
+                <Table.Th style={{ textAlign: "right" }}>{tc("actions")}</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {users.map((user) => (
+              {users
+                .filter(u => !!u.email)
+                .map((user) => (
                 <Table.Tr key={user.email}>
                   <Table.Td>
                     <Text fw={600}>{user.email}</Text>
@@ -171,11 +174,27 @@ export default function SettingsPage() {
                       aria-label={`${user.email} admin`}
                     />
                   </Table.Td>
+                  <Table.Td style={{ textAlign: "right" }}>
+                    <Button 
+                      variant="light" 
+                      color="red" 
+                      size="sm" 
+                      onClick={async () => {
+                        const { deleteUser } = await import("@/services/user-service");
+                        if (confirm(`Remove access for ${user.email}?`)) {
+                          const ok = await deleteUser(user.email);
+                          if (ok) setUsers(prev => prev.filter(u => u.email !== user.email));
+                        }
+                      }}
+                    >
+                      {tc("remove")}
+                    </Button>
+                  </Table.Td>
                 </Table.Tr>
               ))}
               {users.length === 0 ? (
                 <Table.Tr>
-                  <Table.Td colSpan={4}>
+                  <Table.Td colSpan={5}>
                     <Text c="dimmed">{t("noUsers")}</Text>
                   </Table.Td>
                 </Table.Tr>

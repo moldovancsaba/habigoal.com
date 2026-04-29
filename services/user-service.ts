@@ -34,3 +34,11 @@ export async function getObservers(): Promise<User[]> {
   const users = await getUsers();
   return users.filter(u => u.roles.includes("observer"));
 }
+
+export async function deleteUser(email: string): Promise<boolean> {
+  const response = await fetch(`/api/users?email=\${encodeURIComponent(email)}`, {
+    method: "DELETE"
+  }).catch(() => null);
+  
+  return !!response?.ok;
+}
