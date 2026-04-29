@@ -3,6 +3,7 @@ import { exchangeCodeForToken, getUserInfo } from "@/services/auth-service";
 import { createSession } from "@/lib/session";
 import { cookies } from "next/headers";
 import { findUserByEmail, listAllUsers, upsertUser } from "@/repositories/user.repository";
+import { getDatabase } from "@/lib/mongodb";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -23,7 +24,22 @@ export async function GET(request: NextRequest) {
     // Check if the user's email is in our local approved list
     let localUser = await findUserByEmail(ssoUser.email);
     
-    // Bootstrap: If no users exist in the system, make the first one an admin
+    // Migration Fallback: If not found by email, try to find by name (for existing users)
+    if (!localUser && ssoUser.name) {
+      const db = await getDatabase();
+      const doc = await db.collection("users").findOne({ name: ssoUser.name, email: { $exists: false } });
+      if (doc) {
+        console.info(`Migrating existing user ${ssoUser.name} to email ${ssoUser.email}`);
+        await upsertUser({
+          email: ssoUser.email,
+          name: ssoUser.name,
+          roles: doc.roles || ["user"]
+        });
+        localUser = await findUserByEmail(ssoUser.email);
+      }
+    }
+
+    // Bootstrap: If no users exist AT ALL in the system, make the first one an admin
     const allUsers = await listAllUsers();
     if (allUsers.length === 0) {
       console.info(`Bootstrapping first user as admin: ${ssoUser.email}`);
