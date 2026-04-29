@@ -16,7 +16,8 @@
     "cancel": "Mégse",
     "cookieConsentMessage": "Sütiket használunk a téma és az alapvető beállítások megőrzéséhez frissítés után.",
     "cookieAccept": "Sütik elfogadása",
-    "cookiePolicyLink": "Adatvédelmi tájékoztató"
+    "cookiePolicyLink": "Adatvédelmi tájékoztató",
+    "actions": "Műveletek"
   },
   "Dashboard": {
     "title": "Vezérlőpult",
@@ -68,7 +69,9 @@
     "editChild": "Gyermek szerkesztése",
     "deleteChild": "Gyermek törlése",
     "deleteChildConfirm": "Törlöd ezt: {name}, és az összes kapcsolódó előzményt? Ez nem visszavonható.",
-    "childDeleted": "A gyermek és az előzmények törölve."
+    "childDeleted": "A gyermek és az előzmények törölve.",
+    "dailyAverageTrendsTitle": "Napi átlag trendek",
+    "dailyAverageTrendsSubtitle": "Az összes felmért gyermek átlagteljesítménye az elmúlt 30 napban"
   },
   "Assessment": {
     "saved": "Felmérés elmentve.",

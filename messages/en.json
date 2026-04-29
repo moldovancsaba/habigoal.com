@@ -16,7 +16,8 @@
     "cancel": "Cancel",
     "cookieConsentMessage": "We use cookies to keep your theme and essential preferences after refresh.",
     "cookieAccept": "Accept cookies",
-    "cookiePolicyLink": "Privacy policy"
+    "cookiePolicyLink": "Privacy policy",
+    "actions": "Actions"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -68,7 +69,9 @@
     "editChild": "Edit child",
     "deleteChild": "Delete child",
     "deleteChildConfirm": "Delete {name} and all related history? This cannot be undone.",
-    "childDeleted": "Child and history deleted."
+    "childDeleted": "Child and history deleted.",
+    "dailyAverageTrendsTitle": "Daily Average Trends",
+    "dailyAverageTrendsSubtitle": "Average performance of all children assessed over the last 30 days"
   },
   "Assessment": {
     "saved": "Assessment saved.",
