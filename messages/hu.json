@@ -423,5 +423,13 @@
     "shareCapital": "Jegyzett tőke",
     "vatNo": "ÁFA szám",
     "website": "Weboldal"
+  },
+  "Landing": {
+    "title": "KIDEX Platform",
+    "subtitle": "Bio-pszicho-szociális sport ökoszisztéma professzionális teljesítmény- és tehetséggondozáshoz.",
+    "login": "Belépés a Vezérlőpultra",
+    "feature1": "Bizonyítékokon alapuló felmérések",
+    "feature2": "Longitudinális trendelemzés",
+    "feature3": "Automatizált szakmai jelentések"
   }
 }

@@ -423,5 +423,13 @@
     "shareCapital": "Share capital",
     "vatNo": "VAT No.",
     "website": "Website"
+  },
+  "Landing": {
+    "title": "KIDEX Platform",
+    "subtitle": "Bio-Psycho-Social Sport Ecosystem for professional performance and talent management.",
+    "login": "Login to Dashboard",
+    "feature1": "Evidence-based assessments",
+    "feature2": "Longitudinal trend analysis",
+    "feature3": "Automated professional reporting"
   }
 }
