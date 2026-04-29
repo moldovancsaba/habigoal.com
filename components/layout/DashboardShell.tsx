@@ -123,9 +123,16 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         <NavLink
           label={t("logout")}
           onClick={async () => {
-            // First call POST to ensure cookie is cleared, then redirect
-            await fetch("/api/auth/logout", { method: "POST" });
-            window.location.href = "/api/auth/login";
+            try {
+              // Ensure session is destroyed on server
+              await fetch("/api/auth/logout", { method: "POST" });
+              // Force browser to go to login page and prevent back navigation
+              window.location.replace("/api/auth/login");
+            } catch (error) {
+              console.error("Logout failed:", error);
+              // Fallback to GET logout if POST fails
+              window.location.href = "/api/auth/logout";
+            }
           }}
           styles={{
             root: {
