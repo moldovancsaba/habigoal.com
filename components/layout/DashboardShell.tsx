@@ -122,17 +122,9 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       <Box px={sideInset} py="md">
         <NavLink
           label={t("logout")}
-          onClick={async () => {
-            try {
-              // Ensure session is destroyed on server
-              await fetch("/api/auth/logout", { method: "POST" });
-              // Force browser to go to login page and prevent back navigation
-              window.location.replace("/api/auth/login");
-            } catch (error) {
-              console.error("Logout failed:", error);
-              // Fallback to GET logout if POST fails
-              window.location.href = "/api/auth/logout";
-            }
+          onClick={() => {
+            // Use the GET route to trigger the full SSO logout redirect
+            window.location.href = "/api/auth/logout";
           }}
           styles={{
             root: {
