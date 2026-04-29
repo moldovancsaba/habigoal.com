@@ -73,6 +73,7 @@ export const config = {
   matcher: [
     '/', 
     '/(hu|en|ar)/:path*',
-    '/((?!api|_next|_vercel|.*\\..*).*)'
+    '/api/((?!auth|oauth).*)', // Match all API routes EXCEPT auth/oauth
+    '/((?!_next|_vercel|.*\\..*).*)'
   ]
 };
