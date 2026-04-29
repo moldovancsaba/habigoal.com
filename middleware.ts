@@ -52,8 +52,19 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  // 7. Proceed with intl middleware
-  return intlMiddleware(request);
+  // 7. Proceed with intl middleware and inject auth headers
+  const requestHeaders = new Headers(request.headers);
+  if (session) {
+    requestHeaders.set('x-kidex-role', (session.role as string) || 'user');
+    requestHeaders.set('x-kidex-user-id', (session.userId as string) || '');
+  }
+
+  // Create a new request with the updated headers
+  const modifiedRequest = new NextRequest(request, {
+    headers: requestHeaders,
+  });
+
+  return intlMiddleware(modifiedRequest);
 }
 
 export const config = {
