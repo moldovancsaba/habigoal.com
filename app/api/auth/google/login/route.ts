@@ -17,10 +17,11 @@ export async function GET() {
     });
 
     return NextResponse.redirect(authUrl);
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error("Google login initiator error:", error);
     return new NextResponse(
-      `Google Configuration Error: ${error.message}. Please ensure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are set in your .env.local`,
+      `Google Configuration Error: ${message}. Please ensure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are set in your .env.local`,
       { status: 500 }
     );
   }

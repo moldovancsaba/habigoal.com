@@ -33,7 +33,7 @@ export async function decrypt(input: string): Promise<SessionPayload | null> {
       algorithms: ["HS256"]
     });
     return payload as SessionPayload;
-  } catch (_error) {
+  } catch {
     return null;
   }
 }
