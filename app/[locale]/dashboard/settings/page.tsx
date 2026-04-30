@@ -79,16 +79,24 @@ export default function SettingsPage() {
           setMessage(tc("error"));
         } else {
           setMessage(tc("success"));
-          // Send invitation email
-          void fetch("/api/invite", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, locale })
-          });
+      void fetch("/api/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, locale })
+      }).then(async (res) => {
+        const data = await res.json();
+        if (data.error) {
+          setMessage(`Error: ${data.error}`);
+        } else if (data.message) {
+          setMessage(data.message);
+        } else {
+          setMessage(tc("success"));
         }
       });
     }
-  }
+  });
+}
+}
 
   function removeLocation(index: number) {
     setSettings((prev) => ({

@@ -8,9 +8,9 @@ export const env = {
   ssoBaseUrl: process.env.SSO_BASE_URL || "https://sso.doneisbetter.com",
   ssoRedirectUri: process.env.SSO_REDIRECT_URI || "https://kidex.messmass.com/api/oauth/callback",
   authSecret: process.env.AUTH_SECRET,
-  googleClientId: process.env.GOOGLE_CLIENT_ID,
-  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  googleRedirectUri: process.env.GOOGLE_REDIRECT_URI || "https://kidex.messmass.com/api/auth/google/callback"
+  googleClientId: process.env.GOOGLE_CLIENT_ID?.trim(),
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET?.trim(),
+  googleRedirectUri: (process.env.GOOGLE_REDIRECT_URI || "https://kidex.messmass.com/api/auth/google/callback").trim()
 };
 
 type StringEnvKey = {

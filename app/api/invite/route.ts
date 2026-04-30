@@ -47,9 +47,24 @@ export async function POST(request: Request) {
       accessToken
     });
 
-    return NextResponse.json({ success: ok });
+    if (!ok && accessToken) {
+      return NextResponse.json({ 
+        error: "Gmail API failed. Check your Google Cloud Console for errors or try reconnecting.",
+        debug: "Token was present but Gmail API rejected the request."
+      }, { status: 500 });
+    }
+
+    if (!ok) {
+      return NextResponse.json({ 
+        success: true, 
+        message: "Invite logged to console (Mock mode). Link your Gmail in Settings to send real emails." 
+      });
+    }
+
+    return NextResponse.json({ success: true });
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error("Invite API error:", error);
-    return NextResponse.json({ error: "Failed to send invitation" }, { status: 500 });
+    return NextResponse.json({ error: `Failed to send invitation: ${message}` }, { status: 500 });
   }
 }
