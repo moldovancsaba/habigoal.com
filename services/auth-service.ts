@@ -16,7 +16,7 @@ export function getAuthorizationUrl(state: string) {
   url.searchParams.set("client_id", clientId);
   url.searchParams.set("redirect_uri", redirectUri);
   url.searchParams.set("response_type", "code");
-  url.searchParams.set("scope", "openid profile email https://www.googleapis.com/auth/gmail.send");
+  url.searchParams.set("scope", "openid profile email");
   url.searchParams.set("state", state);
 
   return url.toString();
