@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Alert, Box, Button, Group, Loader, Modal, MultiSelect, Paper, RangeSlider, Stack, Text, TextInput } from "@mantine/core";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -14,6 +15,7 @@ export default function ChildrenListPage() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const ta = useTranslations("Assessment");
+  const { locale } = useParams();
 
   const [children, setChildren] = useState<ChildProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -246,7 +248,14 @@ export default function ChildrenListPage() {
               {filtered.map((child) => {
                 const ageGroup = calculateAgeGroup(child.birthDate) || "-";
                 return (
-                  <Paper key={child._id} withBorder p="md">
+                  <Paper 
+                    key={child._id} 
+                    withBorder 
+                    p="md"
+                    onClick={() => window.location.href = `/${locale}/dashboard/children/${child._id}`}
+                    style={{ cursor: "pointer" }}
+                    className="clickable-card"
+                  >
                       <Stack gap="md">
                         <Box style={{ minWidth: 0 }}>
                           <Text
@@ -255,6 +264,7 @@ export default function ChildrenListPage() {
                             fw={700}
                             size="lg"
                             style={{ textDecoration: "none", color: "var(--mantine-color-kidex-6)" }}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             {child.name}
                           </Text>
@@ -275,16 +285,16 @@ export default function ChildrenListPage() {
                           )}
                         </Box>
                         <Group gap="xs" wrap="wrap">
-                          <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex">
+                          <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex" onClick={(e) => e.stopPropagation()}>
                             {t("newSurveyForChild")}
                           </Button>
-                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default">
+                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" onClick={(e) => e.stopPropagation()}>
                             {t("viewHistory")}
                           </Button>
-                          <Button variant="light" color="gray" onClick={() => startEdit(child)}>
+                          <Button variant="light" color="gray" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>
                             {t("editChild")}
                           </Button>
-                          <Button color="red" variant="light" onClick={() => void deleteChild(child)}>
+                          <Button color="red" variant="light" onClick={(e) => { e.stopPropagation(); void deleteChild(child); }}>
                             {t("deleteChild")}
                           </Button>
                         </Group>

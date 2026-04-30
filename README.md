@@ -12,8 +12,11 @@ KIDEX is a conductor-facing assessment and reporting app for recording child exa
 - Evidence image upload and camera capture support
 - Report view with direct PDF download export
 - Dashboard analytics (KPI cards + line, pie, and radar charts)
-- Localized legal pages (GTC and Privacy Policy)
+- Localized legal pages (GTC and Privacy Policy) - Publicly accessible for Google Verification
 - Multilingual UI: Hungarian, English, Arabic (RTL)
+- **Gmail Integration**: Send invitations directly from your linked Gmail account
+- **Custom Email Templates**: Manage localized invitation subjects and HTML bodies via Settings
+- **Internal Deep Linking**: Unified navigation between children profiles, assessment records, and trend charts
 
 ## Documentation
 
@@ -47,6 +50,9 @@ npm run dev
 MONGODB_URI=
 MONGODB_DB=kidex
 IMGBB_API_KEY=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=https://your-domain.com/api/auth/google/callback
 ```
 
 ## Data and privacy notes

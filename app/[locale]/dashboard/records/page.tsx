@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Box, Button, Paper, Stack, Text } from "@mantine/core";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -13,6 +14,7 @@ export default function RecordsPage() {
   const t = useTranslations("Dashboard");
   const ta = useTranslations("Assessment");
   const tc = useTranslations("Common");
+  const { locale } = useParams();
   const [savedRecords, setSavedRecords] = useState<AssessmentRecord[]>([]);
 
   useEffect(() => {
@@ -33,7 +35,14 @@ export default function RecordsPage() {
         ) : (
           <Stack gap="md">
             {savedRecords.map((record) => (
-              <Paper key={record._id} withBorder p="md">
+              <Paper 
+                key={record._id} 
+                withBorder 
+                p="md" 
+                onClick={() => window.location.href = `/${locale}/dashboard/records/${record._id}`}
+                style={{ cursor: "pointer", transition: "transform 0.1s ease", hover: { transform: "translateY(-2px)" } }}
+                className="clickable-card"
+              >
                 <Stack gap="md" style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
                     <Box style={{ minWidth: 0 }}>
                       {record.childId ? (
@@ -43,6 +52,7 @@ export default function RecordsPage() {
                           fw={700}
                           size="lg"
                           style={{ textDecoration: "none", color: "var(--mantine-color-kidex-6)" }}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           {record.child.name || "---"}
                         </Text>
@@ -55,7 +65,7 @@ export default function RecordsPage() {
                         {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
                       </Text>
                     </Box>
-                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default">
+                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default" onClick={(e) => e.stopPropagation()}>
                       {tc("view")}
                     </Button>
                 </Stack>

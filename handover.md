@@ -28,19 +28,20 @@ This document summarizes the state of the project after the first major enhancem
 - **Predictive Search**: `SearchableSelect` component implemented for Conductor and Observer fields.
 - **Service Layer**: Initial `user-service.ts` created for future RBAC integration.
 
+### 4. Gmail & Invitation System (v0.4.0)
+- **OAuth Integration**: Google OAuth flow for linking Admin Gmail accounts.
+- **Gmail API**: Real email dispatch using `gmail.send` scope.
+- **Dynamic Templates**: Customizable invitation messages stored in MongoDB with `{{link}}` placeholder support.
+- **Internal Linking**: Deep linking between Children, Records, and trend charts.
+- **Legal Compliance**: Publicly accessible `/legal` routes for Google Verification.
+
 ## Next Steps (Roadmap Focus)
 
-### User Right Management
-- Transition from mock data in `user-service.ts` to a real `users` collection in MongoDB.
-- Implement middleware to protect routes based on roles (Admin, Conductor, Observer).
+### 1. Google OAuth Verification
+- **IMPORTANT**: The application is currently in "Testing" mode in the Google Cloud Console. You must submit for verification to remove the "Testing" restriction for external users.
+- Ensure the Privacy Policy and GTC on `https://kidex.messmass.com/legal` remain publicly accessible.
 
-### Children Data Management
-- Create a `children` collection to store unique profiles.
-- Link assessment records to child IDs instead of just names.
-
-### Data Analysis & Standards
-- Implement dynamic scoring calculations in `lib/scoring.ts`.
-- Add benchmarking logic to compare child scores against age-group standards.
+### 2. Offline Capability (PWA)
 
 ## Deployment Notes
 - Ensure `MONGODB_URI`, `MONGODB_DB`, and `IMGBB_API_KEY` are set in the production environment.

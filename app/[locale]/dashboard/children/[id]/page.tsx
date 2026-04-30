@@ -20,8 +20,8 @@ const RADAR_CHART_HEIGHT = 220;
 const RADAR_TICK_FONT_SIZE = 12;
 const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
 
-export default function ChildHistoryPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function ChildHistoryPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
+  const { id, locale } = use(params);
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
@@ -72,6 +72,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                 dataKey="movement" 
                 target={standard?.movement.target} 
                 domain="movement" 
+                locale={locale}
               />
               <TrendBarChart 
                 title={ts("social")} 
@@ -79,6 +80,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                 dataKey="social" 
                 target={standard?.social.target} 
                 domain="social" 
+                locale={locale}
               />
               <TrendBarChart 
                 title={ts("mental")} 
@@ -86,6 +88,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                 dataKey="mental" 
                 target={standard?.mental.target} 
                 domain="mental" 
+                locale={locale}
               />
             </>
           ) : (
@@ -123,7 +126,11 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
             </Table.Thead>
             <Table.Tbody>
               {data.assessments.map((a) => (
-                <Table.Tr key={a._id}>
+                <Table.Tr 
+                  key={a._id} 
+                  onClick={() => window.location.href = `/${locale}/dashboard/records/${a._id}`}
+                  style={{ cursor: "pointer" }}
+                >
                   <Table.Td>{a.session.date}</Table.Td>
                   <Table.Td>{a.mode}</Table.Td>
                   <Table.Td>{formatScore(a.computed.movementAverage)}</Table.Td>
@@ -180,13 +187,15 @@ function TrendBarChart({
   data,
   dataKey,
   target,
-  domain
+  domain,
+  locale
 }: {
   title: string;
   data: TrendPoint[];
   dataKey: keyof Omit<TrendPoint, "date">;
   target?: number;
   domain: AssessmentDomain;
+  locale: string;
 }) {
   const barColor = getDomainMainColor(domain);
 
@@ -226,9 +235,25 @@ function TrendBarChart({
                   fontFamily: CHART_FONT_FAMILY
                 }}
               />
-              <Bar dataKey={dataKey} radius={[4, 4, 0, 0]} barSize={40}>
+              <Bar 
+                dataKey={dataKey} 
+                radius={[4, 4, 0, 0]} 
+                barSize={40}
+                onClick={(data) => {
+                  if (data && data.id) {
+                    window.location.href = `/${locale}/dashboard/records/${data.id}`;
+                  }
+                }}
+                style={{ cursor: "pointer" }}
+              >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={barColor} />
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={barColor} 
+                    style={{ transition: "opacity 0.2s" }}
+                    onMouseEnter={(e: React.MouseEvent) => { (e.target as SVGElement).setAttribute("style", "opacity: 0.8; transition: opacity 0.2s"); }}
+                    onMouseLeave={(e: React.MouseEvent) => { (e.target as SVGElement).setAttribute("style", "opacity: 1; transition: opacity 0.2s"); }}
+                  />
                 ))}
               </Bar>
               {target && (

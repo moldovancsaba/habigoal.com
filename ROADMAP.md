@@ -22,8 +22,11 @@ KIDEX is evolving from a simple assessment tool into a comprehensive Bio-Psycho-
 - [x] **Standards & Benchmarking**: Performance standards and optimal measures for age groups.
 - [x] **Auto-Sync**: Migration and synchronization of children data from historical assessments.
 
-## Phase 4: Advanced Functionality & Offline (Next)
+## Phase 4: Advanced Functionality & Production Readiness
 - [x] **Advanced PDF Reporting**: Automated generation of high-fidelity reports for parents.
+- [x] **Gmail Invitation System**: Real-world email dispatch via Google OAuth.
+- [x] **Custom Email Templates**: Admin-managed localized invitation content.
+- [x] **Internal Deep Linking**: Seamless navigation across the entire ecosystem.
 - [ ] **Offline Capability (PWA)**: Support for conducting assessments in areas with unstable internet.
 - [ ] **Parent Portal**: Secure access for parents to view results and recommendations.
 
@@ -32,4 +35,4 @@ KIDEX is evolving from a simple assessment tool into a comprehensive Bio-Psycho-
 - [ ] **API Integration**: Connect with existing club management systems.
 
 ---
-*Last updated: 2026-04-28 (v0.3.1)*
+*Last updated: 2026-04-30 (v0.4.0)*

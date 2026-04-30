@@ -11,6 +11,7 @@ export interface ChildProfile {
   dominantFoot?: string;
   knownTraits?: string;
   parentSignals?: string;
+  locale?: string;
   createdAt: string;
   updatedAt: string;
   // Metrics fields (populated via aggregation)

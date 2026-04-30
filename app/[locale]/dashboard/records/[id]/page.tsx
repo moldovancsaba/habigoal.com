@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme } from "@mantine/core";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { jsPDF } from "jspdf";
@@ -31,6 +32,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
+  const { locale } = useParams();
 
   const [record, setRecord] = useState<AssessmentRecord | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,7 +125,18 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       <Stack gap="md" className="no-print" mb="lg">
         <PageHeader
           title={t("recordTitle")}
-          subtitle={`${record.session.date} · ${record.child.name}`}
+          subtitle={
+            <Box>
+              <Text component="span">{record.session.date} · </Text>
+              <Text 
+                component="a" 
+                href={`/${locale}/dashboard/children/${record.childId}`}
+                style={{ cursor: "pointer", color: "var(--mantine-color-kidex-6)", fontWeight: 700, textDecoration: "none" }}
+              >
+                {record.child.name}
+              </Text>
+            </Box>
+          }
           actions={
             <Button variant="default" onClick={() => void downloadPdf()} disabled={downloadingPdf}>
               {downloadingPdf ? tc("loading") : t("downloadPdf")}
