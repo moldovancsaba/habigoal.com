@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import { 
   PolarAngleAxis, 
@@ -27,6 +28,12 @@ const RADAR_CHART_HEIGHT = 200;
 const RADAR_TICK_FONT_SIZE = 10;
 const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
 
+interface JsPDFWithAutoTable extends jsPDF {
+  lastAutoTable?: {
+    finalY: number;
+  };
+}
+
 export default function RecordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations("Assessment");
@@ -40,6 +47,171 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const [record, setRecord] = useState<AssessmentRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+
+  const sections = record ? sectionsForMode(record.mode) : [];
+  const recordedAt = record ? new Date(record.createdAt) : new Date();
+  const reportDate = new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(recordedAt);
+  const reportTime = new Intl.DateTimeFormat(undefined, {
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(recordedAt);
+
+  const contextLabelMap: Record<string, string> = {
+    home: tc("contextHome"),
+    school: tc("contextSchool"),
+    training: tc("contextTraining"),
+    competition: tc("contextCompetition"),
+    mixed: tc("contextMixed")
+  };
+
+  const updatedTime = record ? new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(new Date(record.updatedAt)) : "";
+
+  const downloadPdf = async () => {
+    if (!record) return;
+
+    setDownloadingPdf(true);
+    try {
+      if (reportFormat === "map") {
+        const reportElement = document.getElementById("kidex-map-print-view");
+        if (!reportElement) return;
+
+        reportElement.style.display = "block";
+        const canvas = await html2canvas(reportElement, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#ffffff"
+        });
+        const imgData = canvas.toDataURL("image/jpeg", 0.95);
+        const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+        
+        const safeName = (record.child.name || "report").replace(/[^\w-]+/g, " ").trim();
+        pdf.save(`${safeName}  Kidex Bio-Pszicho-Szocialis Terkep.pdf`);
+        reportElement.style.display = "none";
+      } else {
+        // ORIGINAL FORMAT (autoTable)
+        const doc = new jsPDF({ unit: "mm", format: "a4" });
+        
+        // Logo
+        const logoDataUrl = await fetch("/logo.jpeg")
+          .then((response) => response.blob())
+          .then((blob) => new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          }))
+          .catch(() => "");
+
+        if (logoDataUrl) {
+          doc.addImage(logoDataUrl, "JPEG", 14, 10, 20, 20);
+        }
+
+        // Header info
+        doc.setFontSize(16);
+        doc.text(t("reportPrintTitle"), 38, 16);
+        doc.setFontSize(11);
+        doc.text(record.child.name, 38, 22);
+        
+        doc.setFontSize(10);
+        doc.text(`${tc("date")}: ${reportDate}`, 140, 14);
+        doc.text(`${t("tableTime")}: ${reportTime}`, 140, 19);
+        doc.text(`${t("conductor")}: ${record.session.conductor || "—"}`, 140, 24);
+        doc.text(`${t("observers")}: ${record.session.observers || "—"}`, 140, 29);
+
+        // Summary Table (SKI and Domain Averages)
+        autoTable(doc, {
+          startY: 34,
+          head: [[ts("movement"), ts("social"), ts("mental"), ts("ski")]],
+          body: [[
+            formatScore(record.computed.movementAverage),
+            formatScore(record.computed.socialAverage),
+            formatScore(record.computed.mentalAverage),
+            formatScore(record.computed.ski)
+          ]],
+          theme: "grid",
+          styles: { fontSize: 10, halign: "center" }
+        });
+
+        // Setup Details Table
+        autoTable(doc, {
+          startY: (doc as JsPDFWithAutoTable).lastAutoTable?.finalY ? (doc as JsPDFWithAutoTable).lastAutoTable!.finalY + 4 : 34,
+          head: [[{ content: t("setupTitle"), colSpan: 2 }]],
+          body: [
+            [t("childName"), record.child.name],
+            [t("birthDate"), record.child.birthDate],
+            [t("ageGroup"), record.child.ageGroup],
+            [t("mode"), record.mode],
+            [tc("date"), reportDate],
+            [t("tableTime"), reportTime],
+            [t("location"), record.session.location || "—"],
+            [t("conductor"), record.session.conductor || "—"],
+            [t("observers"), record.session.observers || "—"],
+            [t("context"), contextLabelMap[record.session.context]],
+            [t("groupSize"), record.session.groupSize || "—"],
+            [t("lastUpdated"), updatedTime]
+          ],
+          theme: "grid",
+          styles: { fontSize: 9 },
+          columnStyles: { 0: { cellWidth: 55, fontStyle: "bold" }, 1: { cellWidth: 125 } }
+        });
+
+        // Detailed Assessment Tables (Section by Section)
+        for (const section of sections) {
+          autoTable(doc, {
+            startY: (doc as JsPDFWithAutoTable).lastAutoTable?.finalY ? (doc as JsPDFWithAutoTable).lastAutoTable!.finalY + 6 : 20,
+            head: [[{ content: ts(section.key), colSpan: 3 }]],
+            body: [],
+            theme: "plain",
+            styles: { fontSize: 11, fontStyle: "bold" }
+          });
+
+          autoTable(doc, {
+            startY: (doc as JsPDFWithAutoTable).lastAutoTable?.finalY ? (doc as JsPDFWithAutoTable).lastAutoTable!.finalY + 1 : 24,
+            head: [[t("tableObservation"), t("tableScore"), t("tableNote")]],
+            body: section.items.map((item) => {
+              const entry = record.scores[item.key];
+              return [ts(`${item.key}.title`), `${entry?.score ?? "—"}`, entry?.note || "—"];
+            }),
+            theme: "grid",
+            styles: { fontSize: 9 },
+            columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 24, halign: "center" }, 2: { cellWidth: 86 } }
+          });
+        }
+
+        // Professional Notes
+        autoTable(doc, {
+          startY: (doc as JsPDFWithAutoTable).lastAutoTable?.finalY ? (doc as JsPDFWithAutoTable).lastAutoTable!.finalY + 6 : 20,
+          head: [[{ content: t("professionalNotes"), colSpan: 2 }]],
+          body: [
+            [t("generalObservation"), record.notes.general || "—"],
+            [t("adaptationNeeds"), record.notes.adaptations || "—"]
+          ],
+          theme: "grid",
+          styles: { fontSize: 9 },
+          columnStyles: { 0: { cellWidth: 55, fontStyle: "bold" }, 1: { cellWidth: 125 } }
+        });
+
+        const safeName = (record.child.name || "report").replace(/[^\w-]+/g, "_");
+        doc.save(`kidex_report_${safeName}_${record.session.date || reportDate}.pdf`);
+      }
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
 
   useEffect(() => {
     fetch(`/api/assessments/${id}`)
@@ -75,69 +247,11 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
     );
   }
 
-  const sections = sectionsForMode(record.mode);
-  const recordedAt = new Date(record.createdAt);
-  const reportDate = new Intl.DateTimeFormat(undefined, {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).format(recordedAt);
-  const reportTime = new Intl.DateTimeFormat(undefined, {
-    hour: "2-digit",
-    minute: "2-digit"
-  }).format(recordedAt);
-  
-
   const radarData = {
     movement: buildRadarData("rapid_movement", record, ts),
     social: buildRadarData("rapid_social", record, ts),
     mental: buildRadarData("rapid_mental", record, ts)
   };
-
-  async function downloadPdf() {
-    const elementId = reportFormat === "map" ? "kidex-map-print-view" : "kidex-report-print-view";
-    const reportElement = document.getElementById(elementId);
-    if (!reportElement) return;
-
-    setDownloadingPdf(true);
-    try {
-      // Temporarily show the print view for capture
-      reportElement.style.display = "block";
-      
-      const canvas = await html2canvas(reportElement, {
-        scale: 2, // Higher quality
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff"
-      });
-      
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
-      
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      
-      const safeName = (record?.child.name || "report").replace(/[^\w-]+/g, " ").trim();
-      const fileName = reportFormat === "map" 
-        ? `${safeName}  Kidex Bio-Pszicho-Szocialis Terkep.pdf`
-        : `kidex_report_${safeName}_${record?.session.date}.pdf`;
-      
-      pdf.save(fileName);
-      
-      reportElement.style.display = "none";
-    } catch (error) {
-      console.error("PDF generation failed:", error);
-    } finally {
-      setDownloadingPdf(false);
-    }
-  }
 
   return (
     <Box className="record-detail print-container">
