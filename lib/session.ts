@@ -11,6 +11,7 @@ export type SessionPayload = {
   name: string;
   role: string;
   expires: number;
+  accessToken?: string;
 };
 
 function getSecretKey() {
@@ -37,9 +38,16 @@ export async function decrypt(input: string): Promise<SessionPayload | null> {
   }
 }
 
-export async function createSession(user: { id: string; email: string; name: string; role: string }) {
+export async function createSession(user: { id: string; email: string; name: string; role: string; accessToken?: string }) {
   const expires = Date.now() + SESSION_DURATION;
-  const session = await encrypt({ userId: user.id, email: user.email, name: user.name, role: user.role, expires });
+  const session = await encrypt({ 
+    userId: user.id, 
+    email: user.email, 
+    name: user.name, 
+    role: user.role, 
+    expires,
+    accessToken: user.accessToken
+  });
 
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, session, {

@@ -64,7 +64,8 @@ export async function GET(request: NextRequest) {
       id: ssoUser.id,
       email: ssoUser.email,
       name: ssoUser.name,
-      role: localUser.roles.join(",") || "user"
+      role: localUser.roles.join(",") || "user",
+      accessToken: tokens.access_token
     });
 
     // Clean up state cookie

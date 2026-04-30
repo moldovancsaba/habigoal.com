@@ -1,9 +1,10 @@
-import { env } from "@/config/env";
+import { sendGmailEmail } from "./gmail-service";
 
 export interface InviteEmailParams {
   to: string;
   inviteLink: string;
   locale: "en" | "hu" | "ar";
+  accessToken?: string;
 }
 
 const TEMPLATES = {
@@ -46,10 +47,19 @@ const TEMPLATES = {
  * Currently uses a Mock implementation that logs to console.
  * To enable real emails, plug in Resend/SendGrid/SES here.
  */
-export async function sendInviteEmail({ to, inviteLink, locale }: InviteEmailParams): Promise<boolean> {
+export async function sendInviteEmail({ to, inviteLink, locale, accessToken }: InviteEmailParams): Promise<boolean> {
   const template = TEMPLATES[locale] || TEMPLATES.en;
   const subject = template.subject;
   const html = template.body(inviteLink);
+
+  if (accessToken) {
+    return await sendGmailEmail({
+      accessToken,
+      to,
+      subject,
+      html
+    });
+  }
 
   console.log("------------------------------------------");
   console.log(`[MOCK EMAIL] To: ${to}`);
@@ -57,15 +67,5 @@ export async function sendInviteEmail({ to, inviteLink, locale }: InviteEmailPar
   console.log(`[MOCK EMAIL] Body HTML: ${html}`);
   console.log("------------------------------------------");
 
-  // Placeholder for real email provider integration:
-  // if (process.env.RESEND_API_KEY) {
-  //   const res = await fetch('https://api.resend.com/emails', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
-  //     body: JSON.stringify({ from: 'KIDEX <no-reply@kidex.messmass.com>', to, subject, html })
-  //   });
-  //   return res.ok;
-  // }
-
-  return true; // Return true as mock success
+  return true; 
 }

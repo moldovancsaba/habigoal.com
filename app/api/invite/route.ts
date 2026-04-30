@@ -11,10 +11,14 @@ export async function POST(request: Request) {
 
     const inviteLink = new URL("/", request.url).toString();
     
+    const { getSession } = await import("@/lib/session");
+    const session = await getSession();
+    
     const ok = await sendInviteEmail({
       to: email,
       inviteLink,
-      locale: (locale as "en" | "hu" | "ar") || "en"
+      locale: (locale as "en" | "hu" | "ar") || "en",
+      accessToken: session?.accessToken || undefined
     });
 
     return NextResponse.json({ success: ok });
