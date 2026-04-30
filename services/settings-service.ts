@@ -12,6 +12,11 @@ export interface KidexSettings {
     vatNo: string;
     website: string;
   };
+  emailTemplates: {
+    en: { subject: string; body: string };
+    hu: { subject: string; body: string };
+    ar: { subject: string; body: string };
+  };
 }
 
 const STORAGE_KEY = "kidex-settings-local";
@@ -28,6 +33,20 @@ export const DEFAULT_KIDEX_SETTINGS: KidexSettings = {
     shareCapital: "EUR 5 000",
     vatNo: "SK2122770606",
     website: "https://kidex.eu"
+  },
+  emailTemplates: {
+    en: {
+      subject: "Welcome to KIDEX - You have been invited",
+      body: "<h1>Welcome to KIDEX</h1><p>You have been invited to join the KIDEX Bio-Psycho-Social Sport Ecosystem.</p><p>You can now log in using your email address at:</p><a href=\"{{link}}\" style=\"padding: 12px 24px; background: #008080; color: white; text-decoration: none; border-radius: 6px; display: inline-block;\">Login to Dashboard</a><p>If the button doesn't work, copy and paste this link: {{link}}</p>"
+    },
+    hu: {
+      subject: "Üdvözöljük a KIDEX-ben - Meghívót kapott",
+      body: "<h1>Üdvözöljük a KIDEX-ben</h1><p>Meghívást kapott a KIDEX Bio-pszicho-szociális sport ökoszisztémába.</p><p>Mostantól bejelentkezhet az e-mail címével az alábbi linken:</p><a href=\"{{link}}\" style=\"padding: 12px 24px; background: #008080; color: white; text-decoration: none; border-radius: 6px; display: inline-block;\">Belépés a Vezérlőpultra</a><p>Ha a gomb nem működik, másolja be ezt a linket a böngészőjébe: {{link}}</p>"
+    },
+    ar: {
+      subject: "مرحباً بك في كيديكس - لقد تم دعوتك",
+      body: "<div dir=\"rtl\"><h1>مرحباً بك في كيديكس</h1><p>لقد تم دعوتك للانضمام إلى نظام كيديكس الرياضي الحيوي-النفسي-الاجتماعي.</p><p>يمكنك الآن تسجيل الدخول باستخدام بريدك الإلكتروني عبر الرابط التالي:</p><a href=\"{{link}}\" style=\"padding: 12px 24px; background: #008080; color: white; text-decoration: none; border-radius: 6px; display: inline-block;\">تسجيل الدخول إلى لوحة التحكم</a><p>إذا لم يعمل الزر، قم بنسخ ولصق هذا الرابط: {{link}}</p></div>"
+    }
   }
 };
 
@@ -41,6 +60,10 @@ function normalizeSettings(raw: Partial<KidexSettings> | null | undefined): Kide
     company: {
       ...DEFAULT_KIDEX_SETTINGS.company,
       ...(next.company ?? {})
+    },
+    emailTemplates: {
+      ...DEFAULT_KIDEX_SETTINGS.emailTemplates,
+      ...(next.emailTemplates ?? {})
     }
   };
 }

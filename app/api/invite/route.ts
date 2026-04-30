@@ -14,9 +14,16 @@ export async function POST(request: Request) {
     const { getSession } = await import("@/lib/session");
     const { findUserByEmail, updateGoogleToken } = await import("@/repositories/user.repository");
     const { refreshGoogleToken } = await import("@/services/google-auth-service");
+    const { getGlobalSettings } = await import("@/repositories/settings.repository");
     
-    const session = await getSession();
+    const [session, globalSettings] = await Promise.all([
+      getSession(),
+      getGlobalSettings()
+    ]);
+
     let accessToken: string | undefined = undefined;
+    const localeKey = (locale as "en" | "hu" | "ar") || "en";
+    const customTemplate = globalSettings?.emailTemplates?.[localeKey];
 
     if (session?.email) {
       const user = await findUserByEmail(session.email);
@@ -43,8 +50,9 @@ export async function POST(request: Request) {
     const ok = await sendInviteEmail({
       to: email,
       inviteLink,
-      locale: (locale as "en" | "hu" | "ar") || "en",
-      accessToken
+      locale: localeKey,
+      accessToken,
+      customTemplate
     });
 
     if (!ok && accessToken) {

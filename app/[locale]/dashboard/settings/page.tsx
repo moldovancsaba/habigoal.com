@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Box, Button, Checkbox, Group, Loader, Paper, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Alert, Box, Button, Checkbox, Divider, Group, Loader, Paper, Stack, Table, Tabs, Text, Textarea, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { DEFAULT_KIDEX_SETTINGS, getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
@@ -121,6 +121,19 @@ export default function SettingsPage() {
       company: {
         ...prev.company,
         [field]: value
+      }
+    }));
+  }
+
+  function updateEmailTemplate(locale: "en" | "hu" | "ar", field: "subject" | "body", value: string) {
+    setSettings((prev) => ({
+      ...prev,
+      emailTemplates: {
+        ...prev.emailTemplates,
+        [locale]: {
+          ...prev.emailTemplates[locale],
+          [field]: value
+        }
       }
     }));
   }
@@ -301,8 +314,15 @@ export default function SettingsPage() {
         </Stack>
       </SectionCard>
 
-      <SectionCard title={t("emailIntegration")}>
-        <Stack gap="sm">
+      <SectionCard
+        title={t("emailIntegration")}
+        action={
+          <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
+            {saving ? tc("saving") : tc("save")}
+          </Button>
+        }
+      >
+        <Stack gap="md">
           <Text size="sm" c="dimmed">
             {t("gmailIntegrationDescription")}
           </Text>
@@ -322,6 +342,36 @@ export default function SettingsPage() {
               </Button>
             )}
           </Group>
+
+          <Divider my="md" label={t("inviteTemplates")} labelPosition="center" />
+
+          <Tabs defaultValue="en" color="kidex">
+            <Tabs.List>
+              <Tabs.Tab value="en">English</Tabs.Tab>
+              <Tabs.Tab value="hu">Magyar</Tabs.Tab>
+              <Tabs.Tab value="ar">العربية</Tabs.Tab>
+            </Tabs.List>
+
+            {(["en", "hu", "ar"] as const).map((lang) => (
+              <Tabs.Panel key={lang} value={lang} pt="md">
+                <Stack gap="md">
+                  <TextInput
+                    label={t("emailSubject")}
+                    value={settings.emailTemplates[lang].subject}
+                    onChange={(e) => updateEmailTemplate(lang, "subject", e.target.value)}
+                  />
+                  <Textarea
+                    label={t("emailBody")}
+                    description={t("placeholderHint")}
+                    value={settings.emailTemplates[lang].body}
+                    onChange={(e) => updateEmailTemplate(lang, "body", e.target.value)}
+                    minRows={6}
+                    autosize
+                  />
+                </Stack>
+              </Tabs.Panel>
+            ))}
+          </Tabs>
         </Stack>
       </SectionCard>
     </Stack>

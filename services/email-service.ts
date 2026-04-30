@@ -5,6 +5,7 @@ export interface InviteEmailParams {
   inviteLink: string;
   locale: "en" | "hu" | "ar";
   accessToken?: string;
+  customTemplate?: { subject: string; body: string };
 }
 
 const TEMPLATES = {
@@ -47,10 +48,17 @@ const TEMPLATES = {
  * Currently uses a Mock implementation that logs to console.
  * To enable real emails, plug in Resend/SendGrid/SES here.
  */
-export async function sendInviteEmail({ to, inviteLink, locale, accessToken }: InviteEmailParams): Promise<boolean> {
+export async function sendInviteEmail({ to, inviteLink, locale, accessToken, customTemplate }: InviteEmailParams): Promise<boolean> {
   const template = TEMPLATES[locale] || TEMPLATES.en;
-  const subject = template.subject;
-  const html = template.body(inviteLink);
+  
+  let subject = customTemplate?.subject || template.subject;
+  let html = customTemplate?.body || template.body(inviteLink);
+
+  // If using custom template, we need to replace the link placeholder
+  if (customTemplate) {
+    // Replace all occurrences of {{link}} with the actual inviteLink
+    html = html.replace(/{{link}}/g, inviteLink);
+  }
 
   if (accessToken) {
     return await sendGmailEmail({

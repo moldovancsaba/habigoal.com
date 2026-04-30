@@ -113,6 +113,11 @@ export interface SettingsPayload {
     vatNo: string;
     website: string;
   };
+  emailTemplates: {
+    en: { subject: string; body: string };
+    hu: { subject: string; body: string };
+    ar: { subject: string; body: string };
+  };
 }
 
 export function parseSettingsPayload(input: unknown): SettingsPayload {
@@ -131,6 +136,20 @@ export function parseSettingsPayload(input: unknown): SettingsPayload {
       shareCapital: stringValue(company.shareCapital, 120).trim(),
       vatNo: stringValue(company.vatNo, 120).trim(),
       website: stringValue(company.website, 240).trim()
+    },
+    emailTemplates: {
+      en: {
+        subject: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.en?.subject, 240).trim(),
+        body: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.en?.body, 10000).trim()
+      },
+      hu: {
+        subject: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.hu?.subject, 240).trim(),
+        body: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.hu?.body, 10000).trim()
+      },
+      ar: {
+        subject: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.ar?.subject, 240).trim(),
+        body: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.ar?.body, 10000).trim()
+      }
     }
   };
 }
