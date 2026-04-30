@@ -20,13 +20,13 @@ export function AppFooter() {
       <Divider mb="sm" />
       <Group justify="space-between" align="center" gap="sm">
         <Group gap="xs" wrap="wrap">
-          <Text component={Link} href="/dashboard/legal/gtc" size="sm" c="dimmed" style={{ textDecoration: "none" }}>
+          <Text component={Link} href="/legal/gtc" size="sm" c="dimmed" style={{ textDecoration: "none" }}>
             {t("gtc")}
           </Text>
           <Text size="sm" c="dimmed">
             |
           </Text>
-          <Text component={Link} href="/dashboard/legal/privacy" size="sm" c="dimmed" style={{ textDecoration: "none" }}>
+          <Text component={Link} href="/legal/privacy" size="sm" c="dimmed" style={{ textDecoration: "none" }}>
             {t("privacyPolicy")}
           </Text>
         </Group>

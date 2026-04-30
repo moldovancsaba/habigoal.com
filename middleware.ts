@@ -47,6 +47,7 @@ export default async function middleware(request: NextRequest) {
   // 4. Handle Page routes
   const cookie = request.cookies.get("kidex_session")?.value;
   const session = cookie ? await decrypt(cookie) : null;
+  const isLegalPage = /\/(hu|en|ar)\/legal\//.test(pathname);
   const isLandingPage = pathname === '/' || /^\/(hu|en|ar)$/.test(pathname) || /^\/(hu|en|ar)\/$/.test(pathname);
 
   if (session && isLandingPage) {
@@ -54,7 +55,7 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }
 
-  if (!session && !isLandingPage) {
+  if (!session && !isLandingPage && !isLegalPage) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
