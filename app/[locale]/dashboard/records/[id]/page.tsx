@@ -274,24 +274,47 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           </Text>
         ) : (
           <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {record.attachments.map((attachment) => (
-              <Paper key={attachment.id} withBorder p="sm" style={{ width: 220 }}>
-                <Image
-                  src={attachment.thumbUrl || attachment.url}
-                  alt={attachment.name || "Evidence image"}
-                  width={196}
-                  height={132}
-                  style={{ width: "100%", height: "auto", borderRadius: "var(--mantine-radius-md)" }}
-                  unoptimized
-                />
-                <Text size="sm" c="dimmed" mt={8}>
-                  {new Date(attachment.uploadedAt).toLocaleString()}
-                </Text>
-                <Text component="a" href={attachment.url} target="_blank" rel="noreferrer" size="sm" mt={6} style={{ display: "inline-block" }}>
-                  {tc("view")}
-                </Text>
-              </Paper>
-            ))}
+            {record.attachments.map((attachment) => {
+              const isPdf = attachment.mimeType === "application/pdf" || attachment.url.toLowerCase().endsWith(".pdf");
+              return (
+                <Paper key={attachment.id} withBorder p="sm" style={{ width: 220, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  {isPdf ? (
+                    <Box style={{ height: 132, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--mantine-color-gray-0)", borderRadius: "var(--mantine-radius-md)" }}>
+                       <Stack align="center" gap={4}>
+                         <Text size="xl" style={{ fontSize: 40 }}>📄</Text>
+                         <Text size="sm" c="dimmed" style={{ textAlign: "center", paddingInline: 8 }}>{attachment.name || "PDF Report"}</Text>
+                       </Stack>
+                    </Box>
+                  ) : (
+                    <Image
+                      src={attachment.thumbUrl || attachment.url}
+                      alt={attachment.name || "Evidence image"}
+                      width={196}
+                      height={132}
+                      style={{ width: "100%", height: "auto", borderRadius: "var(--mantine-radius-md)" }}
+                      unoptimized
+                    />
+                  )}
+                  <Box mt={8}>
+                    <Text size="sm" c="dimmed" mb={4}>
+                      {new Date(attachment.uploadedAt).toLocaleString()}
+                    </Text>
+                    <Button 
+                      component="a" 
+                      href={attachment.url} 
+                      download={attachment.name || "report.pdf"}
+                      target="_blank" 
+                      rel="noreferrer" 
+                      variant="light"
+                      size="sm"
+                      fullWidth
+                    >
+                      {isPdf ? tc("download") : tc("view")}
+                    </Button>
+                  </Box>
+                </Paper>
+              );
+            })}
           </Stack>
         )}
       </SectionCard>

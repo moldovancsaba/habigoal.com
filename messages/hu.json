@@ -21,7 +21,8 @@
     "advancedFilters": "Részletes szűrők",
     "hideFilters": "Szűrők elrejtése",
     "resetFilters": "Szűrők alaphelyzetbe állítása",
-    "all": "Mind"
+    "all": "Mind",
+    "download": "Letöltés"
   },
   "Dashboard": {
     "title": "Vezérlőpult",
@@ -105,8 +106,8 @@
     "parentSignals": "Szülői / pedagógusi jelzések",
     "consentPhoto": "Videó/fotó hozzájárulás",
     "consentReport": "Szülői riport hozzájárulás",
-    "evidenceImages": "Evidencia képek",
-    "noImages": "Nincs rögzített evidencia kép ehhez a gyermekhez.",
+    "evidenceImages": "Feltöltött Riportok és Evidenciák",
+    "noImages": "Nincsenek rögzített riportok vagy evidenciák ehhez a gyermekhez.",
     "downloadMap": "Térkép letöltése",
     "downloadRecommendation": "Ajánlás letöltése",
     "bioPsychoSocialMap": "Bio-Pszicho-Szociális Térkép",

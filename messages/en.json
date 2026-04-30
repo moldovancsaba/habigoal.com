@@ -21,7 +21,8 @@
     "advancedFilters": "Advanced Filters",
     "hideFilters": "Hide Filters",
     "resetFilters": "Reset Filters",
-    "all": "All"
+    "all": "All",
+    "download": "Download"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -105,8 +106,8 @@
     "parentSignals": "Parent / pedagogue signals",
     "consentPhoto": "Video/photo consent",
     "consentReport": "Parent report consent",
-    "evidenceImages": "Evidence Images",
-    "noImages": "No evidence images recorded for this child.",
+    "evidenceImages": "Uploaded Reports & Evidence",
+    "noImages": "No reports or evidence files recorded for this child.",
     "downloadMap": "Download Map",
     "downloadRecommendation": "Download Recommendation",
     "bioPsychoSocialMap": "Bio-Psycho-Social Map",
