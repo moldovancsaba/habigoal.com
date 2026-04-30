@@ -67,7 +67,8 @@ export default function ChildrenListPage() {
     };
   }, []);
 
-  const downloadLatestMap = async (childId: string, latestRecordId: string) => {
+  const downloadLatestMap = async (childId?: string, latestRecordId?: string) => {
+    if (!childId || !latestRecordId) return;
     setDownloadingId(childId);
     try {
       const res = await fetch(`/api/assessments/${latestRecordId}`);

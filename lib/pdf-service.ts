@@ -148,7 +148,7 @@ export const PdfService = {
         ["6", "Kiemelkedő", "Magas tehetség-potenciál."]
       ],
       theme: "striped",
-      headStyles: { fillStyle: "F", fillColor: [61, 63, 77] }
+      headStyles: { fillColor: [61, 63, 77] }
     });
 
     // --- PAGE 3: GENERAL OBSERVATION ---
@@ -160,7 +160,7 @@ export const PdfService = {
     doc.text(doc.splitTextToSize(record.notes.general || "Nincs rögzített általános megfigyelés.", 170), 20, 60);
 
     // --- PAGE 4-6: PROFILES ---
-    const domains: Array<{key: string, label: string, color: number[]}> = [
+    const domains: Array<{key: string, label: string, color: [number, number, number]}> = [
       { key: "rapid_movement", label: "II. MOZGÁSPROFIL", color: [19, 165, 158] },
       { key: "rapid_social", label: "III. SZOCIÁLIS PROFIL", color: [253, 203, 88] },
       { key: "rapid_mental", label: "IV. MENTÁLIS PROFIL", color: [61, 63, 77] }
