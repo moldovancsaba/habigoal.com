@@ -5,14 +5,13 @@ import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, Cell, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { rapidSections } from "@/lib/kidex-schema";
 import { calculateTrend, type TrendPoint } from "@/lib/utils/trends";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { formatScore } from "@/lib/utils";
+import { PdfService } from "@/lib/pdf-service";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import type { AssessmentRecord } from "@/types/assessment";
@@ -27,6 +26,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
+  const td = useTranslations("Dashboard");
 
   const [data, setData] = useState<{ child: ChildProfile; assessments: AssessmentRecord[] } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,39 +40,13 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   }, [id]);
 
   async function downloadPdf() {
-    const reportElement = document.getElementById("kidex-report-print-view");
-    if (!reportElement || !data || data.assessments.length === 0) return;
+    if (!data || data.assessments.length === 0) return;
 
     setDownloadingPdf(true);
     try {
-      reportElement.style.display = "block";
-      
-      const canvas = await html2canvas(reportElement, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff"
-      });
-      
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
-      
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      // Multi-page support if needed, but for now we fit on one long page or multiple A4
-      // The current print view is designed to be multi-page if we add page breaks
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      
-      const safeName = (data.child.name || "report").replace(/[^\w-]+/g, " ").trim();
-      pdf.save(`${safeName}  Kidex Bio-Pszicho-Szocialis Terkep.pdf`);
-      
-      reportElement.style.display = "none";
+      // For children history, we generate the "Map" report for the LATEST assessment
+      const latestRecord = data.assessments[0];
+      await PdfService.generateMapReport(latestRecord, t, tc, ts);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {
@@ -111,9 +85,10 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           <Button 
             color="kidex" 
             onClick={() => void downloadPdf()} 
-            disabled={data.assessments.length === 0 || downloadingPdf}
+            loading={downloadingPdf}
+            disabled={data.assessments.length === 0}
           >
-            {downloadingPdf ? tc("loading") : tc("downloadMap")}
+            {td("downloadPdf")}
           </Button>
         }
       />
@@ -256,234 +231,6 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           </Stack>
         )}
       </SectionCard>
-
-      {/* HIDDEN PRINT VIEW - BIO-PSYCHO-SOCIAL MAP STYLE */}
-      {data.assessments.length > 0 && (
-        <Box id="kidex-report-print-view" style={{ 
-          display: "none", 
-          width: "210mm", 
-          padding: "20mm", 
-          background: "white", 
-          color: "black",
-          position: "absolute",
-          left: "-10000px",
-          fontFamily: "'Times New Roman', Times, serif"
-        }}>
-          <Stack gap="xl">
-            {/* Header / Page 1 */}
-            <Stack align="center" gap="xl" mb={60}>
-              <Image src="/logo.jpeg" alt="KIDEX" width={180} height={180} />
-              <Box style={{ textAlign: "center" }}>
-                <Text size="sm" mt="xl" style={{ maxWidth: 600, margin: "0 auto" }}>
-                  Az alábbi értékelés a fejlesztő pedagógus strukturált megfigyelése, a szülői 
-                  pszicho-szociális teszt eredmény kiegészítés, valamint a Kidex rendszer és az 
-                  ESÉSIK megfigyelési protokoll alapján készült.
-                </Text>
-                <Text fw={900} size="42px" mt="xl" style={{ lineHeight: 1.1, textTransform: "uppercase" }}>
-                  KIDEX BIO–PSZICHO–SZOCIÁLIS TÉRKÉP
-                </Text>
-                <Text size="24px" mt="lg" fw={700}>
-                  {data.child.name} – {calculateAgeGroup(data.child.birthDate)} fejlesztési szakasz
-                </Text>
-              </Box>
-
-              <Box mt={40} style={{ width: "100%", textAlign: "left" }}>
-                <Text fw={700} mb="sm">Skála: 1–6</Text>
-                <Stack gap={2}>
-                  <Text size="sm">- 1 jelentős eltérés</Text>
-                  <Text size="sm">- 2 komoly támogatást igényel</Text>
-                  <Text size="sm">- 3 fejleszthető alap</Text>
-                  <Text size="sm">- 4 életkorhoz közeli, stabil</Text>
-                  <Text size="sm">- 5 jó szint, átlag vagy átlag feletti, erős</Text>
-                  <Text size="sm">- 6 kiemelkedően magas</Text>
-                </Stack>
-              </Box>
-            </Stack>
-
-            {/* I. Section */}
-            <Box>
-              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
-                I. KIDEX ALAP MEGFIGYELÉS ÉS ELEMZÉS
-              </Text>
-              <Text fw={700} mb="xs">Általános megfigyelés</Text>
-              <Text style={{ textAlign: "justify" }}>
-                {data?.assessments?.[0]?.notes?.general || "—"}
-              </Text>
-            </Box>
-
-            {/* II. Section - Mozgásprofil */}
-            <Box mt="xl">
-              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
-                II. MOZGÁSPROFIL – SPORTSPECIFIKUS ÉRTÉKELÉS (50%)
-              </Text>
-              <Text fw={700} mb="sm">Mozgás index (1–6)</Text>
-              <Table withTableBorder withColumnBorders>
-                <Table.Thead>
-                  <Table.Tr bg="gray.1">
-                    <Table.Th>Terület</Table.Th>
-                    <Table.Th style={{ width: 80 }}>Érték</Table.Th>
-                    <Table.Th>Indoklás</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {rapidSections.find(s => s.key === "rapid_movement")?.items.map(item => (
-                    <Table.Tr key={item.key}>
-                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
-                      <Table.Td style={{ textAlign: "center" }}>{data?.assessments?.[0]?.scores?.[item.key]?.score || "—"}</Table.Td>
-                      <Table.Td c="dimmed">{data?.assessments?.[0]?.scores?.[item.key]?.note || "—"}</Table.Td>
-                    </Table.Tr>
-                  ))}
-                  <Table.Tr bg="gray.0">
-                    <Table.Td fw={800}>MOZGÁS INDEX ÁTLAG</Table.Td>
-                    <Table.Td style={{ textAlign: "center" }} fw={800}>
-                      {formatScore(data?.assessments?.[0]?.computed?.movementAverage)}
-                    </Table.Td>
-                    <Table.Td fw={700}>
-                      {(data?.assessments?.[0]?.computed?.movementAverage ?? 0) >= 4 ? "Magas koordinációs és technikai potenciál" : "Fejlesztendő koordináció"}
-                    </Table.Td>
-                  </Table.Tr>
-                </Table.Tbody>
-              </Table>
-            </Box>
-
-            {/* III. Section - Szociális */}
-            <Box mt="xl">
-              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
-                III. SZOCIÁLIS–ÉRZELMI PROFIL (30%)
-              </Text>
-              <Table withTableBorder withColumnBorders>
-                <Table.Thead>
-                  <Table.Tr bg="gray.1">
-                    <Table.Th>Terület</Table.Th>
-                    <Table.Th style={{ width: 80 }}>Érték</Table.Th>
-                    <Table.Th>Jelentés</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {rapidSections.find(s => s.key === "rapid_social")?.items.map(item => (
-                    <Table.Tr key={item.key}>
-                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
-                      <Table.Td style={{ textAlign: "center" }}>{data?.assessments?.[0]?.scores?.[item.key]?.score || "—"}</Table.Td>
-                      <Table.Td c="dimmed">{data?.assessments?.[0]?.scores?.[item.key]?.note || "—"}</Table.Td>
-                    </Table.Tr>
-                  ))}
-                  <Table.Tr bg="gray.0">
-                    <Table.Td fw={800}>SZOCIÁLIS INDEX ÁTLAG</Table.Td>
-                    <Table.Td style={{ textAlign: "center" }} fw={800}>
-                      {formatScore(data?.assessments?.[0]?.computed?.socialAverage)}
-                    </Table.Td>
-                    <Table.Td fw={700}>
-                      {(data?.assessments?.[0]?.computed?.socialAverage ?? 0) >= 4 ? "Strukturált közegben jól működő" : "Szociális támogatást igényel"}
-                    </Table.Td>
-                  </Table.Tr>
-                </Table.Tbody>
-              </Table>
-            </Box>
-
-            {/* IV. Section - Mentális */}
-            <Box mt="xl">
-              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
-                IV. PSZICHÉS–MENTÁLIS PROFIL (20%)
-              </Text>
-              <Table withTableBorder withColumnBorders>
-                <Table.Thead>
-                  <Table.Tr bg="gray.1">
-                    <Table.Th>Terület</Table.Th>
-                    <Table.Th style={{ width: 80 }}>Érték</Table.Th>
-                    <Table.Th>Jelentés</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {rapidSections.find(s => s.key === "rapid_mental")?.items.map(item => (
-                    <Table.Tr key={item.key}>
-                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
-                      <Table.Td style={{ textAlign: "center" }}>{data?.assessments?.[0]?.scores?.[item.key]?.score || "—"}</Table.Td>
-                      <Table.Td c="dimmed">{data?.assessments?.[0]?.scores?.[item.key]?.note || "—"}</Table.Td>
-                    </Table.Tr>
-                  ))}
-                  <Table.Tr bg="gray.0">
-                    <Table.Td fw={800}>MENTÁLIS INDEX ÁTLAG</Table.Td>
-                    <Table.Td style={{ textAlign: "center" }} fw={800}>
-                      {formatScore(data?.assessments?.[0]?.computed?.mentalAverage)}
-                    </Table.Td>
-                    <Table.Td fw={700}>
-                      {(data?.assessments?.[0]?.computed?.mentalAverage ?? 0) >= 4 ? "Stabil kognitív funkciók" : "Kognitív fejlesztés javasolt"}
-                    </Table.Td>
-                  </Table.Tr>
-                </Table.Tbody>
-              </Table>
-            </Box>
-
-            {/* V. Section - SKI */}
-            <Box mt="xl" style={{ pageBreakBefore: "always" }}>
-              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
-                V. ÖSSZESÍTETT SPORTÁGI KOMPATIBILITÁSI INDEX (SKI)
-              </Text>
-              <Group grow align="start" gap="xl">
-                <Box>
-                  <Stack gap="xs">
-                    <Text fw={700}>• Mozgás: {formatScore(data?.assessments?.[0]?.computed?.movementAverage)}</Text>
-                    <Text fw={700}>• Szociális: {formatScore(data?.assessments?.[0]?.computed?.socialAverage)}</Text>
-                    <Text fw={700}>• Mentális: {formatScore(data?.assessments?.[0]?.computed?.mentalAverage)}</Text>
-                  </Stack>
-                  <Box mt="xl" p="md" style={{ border: "4px solid #333", textAlign: "center" }}>
-                    <Text size="lg" fw={800}>ÖSSZES SKI = {formatScore(data?.assessments?.[0]?.computed?.ski)} / 6</Text>
-                  </Box>
-                </Box>
-                <Box style={{ height: 300 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={[
-                      { subject: ts("movement"), A: data?.assessments?.[0]?.computed?.movementAverage, fullMark: 6 },
-                      { subject: ts("social"), A: data?.assessments?.[0]?.computed?.socialAverage, fullMark: 6 },
-                      { subject: ts("mental"), A: data?.assessments?.[0]?.computed?.mentalAverage, fullMark: 6 },
-                    ]}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="subject" />
-                      <PolarRadiusAxis angle={30} domain={[0, 6]} />
-                      <Radar name="Child" dataKey="A" stroke="var(--mantine-color-kidex-6)" fill="var(--mantine-color-kidex-6)" fillOpacity={0.6} />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </Box>
-              </Group>
-            </Box>
-
-            {/* VI. & VII. & VIII. Sections - Placeholders for Professional content */}
-            <Box mt="xl">
-               <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
-                VI. SPORTÁG SZŰKÍTÉS (KIDEX LOGIKA)
-              </Text>
-              <Text style={{ fontStyle: "italic" }}>
-                A Kidex logika alapján javasolt sportágak listája a felmérés eredményei alapján kerül összeállításra.
-              </Text>
-            </Box>
-
-            <Box mt="xl">
-               <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
-                VII. FEJLESZTÉSI PRIORITÁS (12 HÓNAP)
-              </Text>
-              <Text>
-                {data?.assessments?.[0]?.notes?.adaptations || "Nincs rögzített fejlesztési prioritás."}
-              </Text>
-            </Box>
-
-            <Box mt={60} style={{ borderTop: "1px solid #ccc", paddingTop: 40 }}>
-              <Group justify="space-between">
-                <Box style={{ textAlign: "center" }}>
-                  <Text fw={700}>Vígh Milán</Text>
-                  <Text size="sm">Elnök</Text>
-                </Box>
-                <Box style={{ textAlign: "center" }}>
-                   <Image src="/logo.jpeg" alt="KIDEX APPROVED" width={100} height={40} style={{ opacity: 0.5 }} />
-                </Box>
-                <Box style={{ textAlign: "center" }}>
-                  <Text fw={700}>{data?.assessments?.[0]?.session?.conductor}</Text>
-                  <Text size="sm">Kidex Fejlesztő</Text>
-                </Box>
-              </Group>
-            </Box>
-          </Stack>
-        </Box>
-      )}
     </Stack>
   );
 }

@@ -10,11 +10,14 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { formatScore } from "@/lib/utils";
 import type { ChildProfile } from "@/repositories/child.repository";
+import { PdfService } from "@/lib/pdf-service";
+import type { AssessmentRecord } from "@/types/assessment";
 
 export default function ChildrenListPage() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const ta = useTranslations("Assessment");
+  const ts = useTranslations("Schema");
   const { locale } = useParams();
 
   const [children, setChildren] = useState<ChildProfile[]>([]);
@@ -26,6 +29,7 @@ export default function ChildrenListPage() {
   const [draftName, setDraftName] = useState("");
   const [draftBirthDate, setDraftBirthDate] = useState("");
   const [saving, setSaving] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
   
   // Advanced filters state
@@ -62,6 +66,22 @@ export default function ChildrenListPage() {
       active = false;
     };
   }, []);
+
+  const downloadLatestMap = async (childId: string, latestRecordId: string) => {
+    setDownloadingId(childId);
+    try {
+      const res = await fetch(`/api/assessments/${latestRecordId}`);
+      if (!res.ok) throw new Error("Failed to fetch assessment");
+      const { assessment } = (await res.json()) as { assessment: AssessmentRecord };
+      await PdfService.generateMapReport(assessment, ta, tc, ts);
+    } catch (err) {
+      console.error(err);
+      setMessage(tc("error"));
+      setError(true);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -290,14 +310,15 @@ export default function ChildrenListPage() {
                           </Button>
                           {child.latestRecordId && (
                             <Button 
-                              component="a" 
-                              href={`/${locale}/dashboard/records/${child.latestRecordId}?print=true&format=map`} 
-                              target="_blank"
                               variant="outline" 
                               color="kidex" 
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={(e) => { 
+                                e.stopPropagation(); 
+                                void downloadLatestMap(child._id, child.latestRecordId!); 
+                              }}
+                              loading={downloadingId === child._id}
                             >
-                              PDF
+                              {t("downloadPdf")}
                             </Button>
                           )}
                           <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" onClick={(e) => e.stopPropagation()}>

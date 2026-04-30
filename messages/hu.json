@@ -22,7 +22,8 @@
     "hideFilters": "Szűrők elrejtése",
     "resetFilters": "Szűrők alaphelyzetbe állítása",
     "all": "Mind",
-    "download": "Letöltés"
+    "download": "Letöltés",
+    "downloadPdf": "PDF letöltése"
   },
   "Dashboard": {
     "title": "Vezérlőpult",
@@ -80,6 +81,7 @@
     "searchChildrenPlaceholder": "Név, születési dátum, korcsoport...",
     "noChildrenMatch": "Nincs találat a keresésre.",
     "newSurveyForChild": "Új felmérés indítása",
+    "downloadPdf": "PDF letöltése",
     "editChild": "Gyermek szerkesztése",
     "deleteChild": "Gyermek törlése",
     "deleteChildConfirm": "Törlöd ezt: {name}, és az összes kapcsolódó előzményt? Ez nem visszavonható.",
