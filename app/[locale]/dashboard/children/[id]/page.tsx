@@ -65,10 +65,12 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
       
+      // Multi-page support if needed, but for now we fit on one long page or multiple A4
+      // The current print view is designed to be multi-page if we add page breaks
       pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
       
-      const safeName = (data.child.name || "report").replace(/[^\w-]+/g, "_");
-      pdf.save(`kidex_report_${safeName}_${data.assessments[0].session.date}.pdf`);
+      const safeName = (data.child.name || "report").replace(/[^\w-]+/g, " ").trim();
+      pdf.save(`${safeName}  Kidex Bio-Pszicho-Szocialis Terkep.pdf`);
       
       reportElement.style.display = "none";
     } catch (error) {
@@ -111,7 +113,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
             onClick={() => void downloadPdf()} 
             disabled={data.assessments.length === 0 || downloadingPdf}
           >
-            {downloadingPdf ? tc("loading") : t("reportPrintTitle")}
+            {downloadingPdf ? tc("loading") : tc("downloadMap")}
           </Button>
         }
       />
@@ -255,57 +257,229 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
         )}
       </SectionCard>
 
-      {/* HIDDEN PRINT VIEW (Original Style) */}
+      {/* HIDDEN PRINT VIEW - BIO-PSYCHO-SOCIAL MAP STYLE */}
       {data.assessments.length > 0 && (
         <Box id="kidex-report-print-view" style={{ 
           display: "none", 
           width: "210mm", 
-          padding: "15mm", 
+          padding: "20mm", 
           background: "white", 
           color: "black",
           position: "absolute",
-          left: "-10000px"
+          left: "-10000px",
+          fontFamily: "'Times New Roman', Times, serif"
         }}>
           <Stack gap="xl">
-            <Group justify="space-between" align="start">
-              <Group gap="md">
-                <Image src="/logo.jpeg" alt="KIDEX" width={80} height={80} />
+            {/* Header / Page 1 */}
+            <Stack align="center" gap="xl" mb={60}>
+              <Image src="/logo.jpeg" alt="KIDEX" width={180} height={180} />
+              <Box style={{ textAlign: "center" }}>
+                <Text size="sm" mt="xl" style={{ maxWidth: 600, margin: "0 auto" }}>
+                  Az alábbi értékelés a fejlesztő pedagógus strukturált megfigyelése, a szülői 
+                  pszicho-szociális teszt eredmény kiegészítés, valamint a Kidex rendszer és az 
+                  ESÉSIK megfigyelési protokoll alapján készült.
+                </Text>
+                <Text fw={900} size="42px" mt="xl" style={{ lineHeight: 1.1, textTransform: "uppercase" }}>
+                  KIDEX BIO–PSZICHO–SZOCIÁLIS TÉRKÉP
+                </Text>
+                <Text size="24px" mt="lg" fw={700}>
+                  {data.child.name} – {calculateAgeGroup(data.child.birthDate)} fejlesztési szakasz
+                </Text>
+              </Box>
+
+              <Box mt={40} style={{ width: "100%", textAlign: "left" }}>
+                <Text fw={700} mb="sm">Skála: 1–6</Text>
+                <Stack gap={2}>
+                  <Text size="sm">- 1 jelentős eltérés</Text>
+                  <Text size="sm">- 2 komoly támogatást igényel</Text>
+                  <Text size="sm">- 3 fejleszthető alap</Text>
+                  <Text size="sm">- 4 életkorhoz közeli, stabil</Text>
+                  <Text size="sm">- 5 jó szint, átlag vagy átlag feletti, erős</Text>
+                  <Text size="sm">- 6 kiemelkedően magas</Text>
+                </Stack>
+              </Box>
+            </Stack>
+
+            {/* I. Section */}
+            <Box>
+              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
+                I. KIDEX ALAP MEGFIGYELÉS ÉS ELEMZÉS
+              </Text>
+              <Text fw={700} mb="xs">Általános megfigyelés</Text>
+              <Text style={{ textAlign: "justify" }}>
+                {data?.assessments?.[0]?.notes?.general || "—"}
+              </Text>
+            </Box>
+
+            {/* II. Section - Mozgásprofil */}
+            <Box mt="xl">
+              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
+                II. MOZGÁSPROFIL – SPORTSPECIFIKUS ÉRTÉKELÉS (50%)
+              </Text>
+              <Text fw={700} mb="sm">Mozgás index (1–6)</Text>
+              <Table withTableBorder withColumnBorders>
+                <Table.Thead>
+                  <Table.Tr bg="gray.1">
+                    <Table.Th>Terület</Table.Th>
+                    <Table.Th style={{ width: 80 }}>Érték</Table.Th>
+                    <Table.Th>Indoklás</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {rapidSections.find(s => s.key === "rapid_movement")?.items.map(item => (
+                    <Table.Tr key={item.key}>
+                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
+                      <Table.Td style={{ textAlign: "center" }}>{data?.assessments?.[0]?.scores?.[item.key]?.score || "—"}</Table.Td>
+                      <Table.Td c="dimmed">{data?.assessments?.[0]?.scores?.[item.key]?.note || "—"}</Table.Td>
+                    </Table.Tr>
+                  ))}
+                  <Table.Tr bg="gray.0">
+                    <Table.Td fw={800}>MOZGÁS INDEX ÁTLAG</Table.Td>
+                    <Table.Td style={{ textAlign: "center" }} fw={800}>
+                      {formatScore(data?.assessments?.[0]?.computed?.movementAverage)}
+                    </Table.Td>
+                    <Table.Td fw={700}>
+                      {(data?.assessments?.[0]?.computed?.movementAverage ?? 0) >= 4 ? "Magas koordinációs és technikai potenciál" : "Fejlesztendő koordináció"}
+                    </Table.Td>
+                  </Table.Tr>
+                </Table.Tbody>
+              </Table>
+            </Box>
+
+            {/* III. Section - Szociális */}
+            <Box mt="xl">
+              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
+                III. SZOCIÁLIS–ÉRZELMI PROFIL (30%)
+              </Text>
+              <Table withTableBorder withColumnBorders>
+                <Table.Thead>
+                  <Table.Tr bg="gray.1">
+                    <Table.Th>Terület</Table.Th>
+                    <Table.Th style={{ width: 80 }}>Érték</Table.Th>
+                    <Table.Th>Jelentés</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {rapidSections.find(s => s.key === "rapid_social")?.items.map(item => (
+                    <Table.Tr key={item.key}>
+                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
+                      <Table.Td style={{ textAlign: "center" }}>{data?.assessments?.[0]?.scores?.[item.key]?.score || "—"}</Table.Td>
+                      <Table.Td c="dimmed">{data?.assessments?.[0]?.scores?.[item.key]?.note || "—"}</Table.Td>
+                    </Table.Tr>
+                  ))}
+                  <Table.Tr bg="gray.0">
+                    <Table.Td fw={800}>SZOCIÁLIS INDEX ÁTLAG</Table.Td>
+                    <Table.Td style={{ textAlign: "center" }} fw={800}>
+                      {formatScore(data?.assessments?.[0]?.computed?.socialAverage)}
+                    </Table.Td>
+                    <Table.Td fw={700}>
+                      {(data?.assessments?.[0]?.computed?.socialAverage ?? 0) >= 4 ? "Strukturált közegben jól működő" : "Szociális támogatást igényel"}
+                    </Table.Td>
+                  </Table.Tr>
+                </Table.Tbody>
+              </Table>
+            </Box>
+
+            {/* IV. Section - Mentális */}
+            <Box mt="xl">
+              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
+                IV. PSZICHÉS–MENTÁLIS PROFIL (20%)
+              </Text>
+              <Table withTableBorder withColumnBorders>
+                <Table.Thead>
+                  <Table.Tr bg="gray.1">
+                    <Table.Th>Terület</Table.Th>
+                    <Table.Th style={{ width: 80 }}>Érték</Table.Th>
+                    <Table.Th>Jelentés</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {rapidSections.find(s => s.key === "rapid_mental")?.items.map(item => (
+                    <Table.Tr key={item.key}>
+                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
+                      <Table.Td style={{ textAlign: "center" }}>{data?.assessments?.[0]?.scores?.[item.key]?.score || "—"}</Table.Td>
+                      <Table.Td c="dimmed">{data?.assessments?.[0]?.scores?.[item.key]?.note || "—"}</Table.Td>
+                    </Table.Tr>
+                  ))}
+                  <Table.Tr bg="gray.0">
+                    <Table.Td fw={800}>MENTÁLIS INDEX ÁTLAG</Table.Td>
+                    <Table.Td style={{ textAlign: "center" }} fw={800}>
+                      {formatScore(data?.assessments?.[0]?.computed?.mentalAverage)}
+                    </Table.Td>
+                    <Table.Td fw={700}>
+                      {(data?.assessments?.[0]?.computed?.mentalAverage ?? 0) >= 4 ? "Stabil kognitív funkciók" : "Kognitív fejlesztés javasolt"}
+                    </Table.Td>
+                  </Table.Tr>
+                </Table.Tbody>
+              </Table>
+            </Box>
+
+            {/* V. Section - SKI */}
+            <Box mt="xl" style={{ pageBreakBefore: "always" }}>
+              <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
+                V. ÖSSZESÍTETT SPORTÁGI KOMPATIBILITÁSI INDEX (SKI)
+              </Text>
+              <Group grow align="start" gap="xl">
                 <Box>
-                  <Text fw={900} size="28px">{t("reportPrintTitle")}</Text>
-                  <Text size="lg">{data.child.name}</Text>
+                  <Stack gap="xs">
+                    <Text fw={700}>• Mozgás: {formatScore(data?.assessments?.[0]?.computed?.movementAverage)}</Text>
+                    <Text fw={700}>• Szociális: {formatScore(data?.assessments?.[0]?.computed?.socialAverage)}</Text>
+                    <Text fw={700}>• Mentális: {formatScore(data?.assessments?.[0]?.computed?.mentalAverage)}</Text>
+                  </Stack>
+                  <Box mt="xl" p="md" style={{ border: "4px solid #333", textAlign: "center" }}>
+                    <Text size="lg" fw={800}>ÖSSZES SKI = {formatScore(data?.assessments?.[0]?.computed?.ski)} / 6</Text>
+                  </Box>
+                </Box>
+                <Box style={{ height: 300 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart data={[
+                      { subject: ts("movement"), A: data?.assessments?.[0]?.computed?.movementAverage, fullMark: 6 },
+                      { subject: ts("social"), A: data?.assessments?.[0]?.computed?.socialAverage, fullMark: 6 },
+                      { subject: ts("mental"), A: data?.assessments?.[0]?.computed?.mentalAverage, fullMark: 6 },
+                    ]}>
+                      <PolarGrid />
+                      <PolarAngleAxis dataKey="subject" />
+                      <PolarRadiusAxis angle={30} domain={[0, 6]} />
+                      <Radar name="Child" dataKey="A" stroke="var(--mantine-color-kidex-6)" fill="var(--mantine-color-kidex-6)" fillOpacity={0.6} />
+                    </RadarChart>
+                  </ResponsiveContainer>
                 </Box>
               </Group>
-              <Box style={{ textAlign: "right" }}>
-                <Text><strong>{tc("date")}:</strong> {data.assessments[0].session.date}</Text>
-                <Text><strong>{t("conductor")}:</strong> {data.assessments[0].session.conductor}</Text>
-              </Box>
-            </Group>
+            </Box>
 
-            <Group grow gap="lg">
-              <Paper withBorder p="md" style={{ textAlign: "center" }}>
-                <Text size="sm" c="dimmed">{ts("ski")}</Text>
-                <Text size="32px" fw={900}>{formatScore(data.assessments[0].computed.ski)}</Text>
-              </Paper>
-            </Group>
+            {/* VI. & VII. & VIII. Sections - Placeholders for Professional content */}
+            <Box mt="xl">
+               <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
+                VI. SPORTÁG SZŰKÍTÉS (KIDEX LOGIKA)
+              </Text>
+              <Text style={{ fontStyle: "italic" }}>
+                A Kidex logika alapján javasolt sportágak listája a felmérés eredményei alapján kerül összeállításra.
+              </Text>
+            </Box>
 
-            <Group gap="md" wrap="nowrap">
-              <Box style={{ flex: 1 }}>
-                <RecordRadarChart title={ts("movement")} data={buildRadarData("rapid_movement", data.assessments[0], ts)} domain="movement" animate={false} />
-              </Box>
-              <Box style={{ flex: 1 }}>
-                <RecordRadarChart title={ts("social")} data={buildRadarData("rapid_social", data.assessments[0], ts)} domain="social" animate={false} />
-              </Box>
-              <Box style={{ flex: 1 }}>
-                <RecordRadarChart title={ts("mental")} data={buildRadarData("rapid_mental", data.assessments[0], ts)} domain="mental" animate={false} />
-              </Box>
-            </Group>
+            <Box mt="xl">
+               <Text fw={900} size="22px" mb="lg" style={{ borderBottom: "2px solid #333", paddingBottom: 4 }}>
+                VII. FEJLESZTÉSI PRIORITÁS (12 HÓNAP)
+              </Text>
+              <Text>
+                {data?.assessments?.[0]?.notes?.adaptations || "Nincs rögzített fejlesztési prioritás."}
+              </Text>
+            </Box>
 
-            <Box>
-              <Text fw={700} mb="sm" style={{ borderBottom: "2px solid #eee" }}>{t("professionalNotes")}</Text>
-              <Stack gap="xs">
-                <Text><strong>{t("generalObservation")}:</strong> {data.assessments[0].notes.general || "—"}</Text>
-                <Text><strong>{t("adaptationNeeds")}:</strong> {data.assessments[0].notes.adaptations || "—"}</Text>
-              </Stack>
+            <Box mt={60} style={{ borderTop: "1px solid #ccc", paddingTop: 40 }}>
+              <Group justify="space-between">
+                <Box style={{ textAlign: "center" }}>
+                  <Text fw={700}>Vígh Milán</Text>
+                  <Text size="sm">Elnök</Text>
+                </Box>
+                <Box style={{ textAlign: "center" }}>
+                   <Image src="/logo.jpeg" alt="KIDEX APPROVED" width={100} height={40} style={{ opacity: 0.5 }} />
+                </Box>
+                <Box style={{ textAlign: "center" }}>
+                  <Text fw={700}>{data?.assessments?.[0]?.session?.conductor}</Text>
+                  <Text size="sm">Kidex Fejlesztő</Text>
+                </Box>
+              </Group>
             </Box>
           </Stack>
         </Box>
@@ -498,64 +672,4 @@ function buildRapidDomainSummary(assessments: AssessmentRecord[], translateSchem
     social: buildDomain("rapid_social"),
     mental: buildDomain("rapid_mental")
   };
-}
-
-function RecordRadarChart({
-  title,
-  data,
-  domain,
-  animate = true
-}: {
-  title: string;
-  data: Array<{ label: string; value: number }>;
-  domain: AssessmentDomain;
-  animate?: boolean;
-}) {
-  const theme = useMantineTheme();
-  const domainColor = getDomainMainColor(domain);
-  return (
-    <Paper withBorder p="sm">
-      <Text size="sm" fw={700} mb="xs" c="dimmed" style={{ textTransform: "uppercase" }}>
-        {title}
-      </Text>
-      <Box style={{ width: "100%", height: 180 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <RadarChart data={data}>
-            <PolarGrid />
-            <PolarAngleAxis
-              dataKey="label"
-              tick={{ fontSize: 10, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-            />
-            <PolarRadiusAxis
-              angle={90}
-              domain={[0, 6]}
-              tickCount={4}
-              tick={(props) => renderRotatedRadiusTick(props)}
-              stroke={theme.colors.gray[6]}
-            />
-            <Radar 
-              dataKey="value" 
-              stroke={domainColor} 
-              fill={domainColor} 
-              fillOpacity={0.25} 
-              isAnimationActive={animate}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
-      </Box>
-    </Paper>
-  );
-}
-
-function buildRadarData(sectionKey: string, record: AssessmentRecord, translateSchema: (key: string) => string) {
-  const section = rapidSections.find((item) => item.key === sectionKey);
-  if (!section) return [];
-
-  return section.items.map((item) => {
-    const score = record.scores[item.key]?.score;
-    return {
-      label: translateSchema(`${item.key}.title`),
-      value: typeof score === "number" ? score : 0
-    };
-  });
 }

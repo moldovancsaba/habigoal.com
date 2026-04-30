@@ -291,7 +291,7 @@ export default function ChildrenListPage() {
                           {child.latestRecordId && (
                             <Button 
                               component="a" 
-                              href={`/${locale}/dashboard/records/${child.latestRecordId}?print=true`} 
+                              href={`/${locale}/dashboard/records/${child.latestRecordId}?print=true&format=map`} 
                               target="_blank"
                               variant="outline" 
                               color="kidex" 
