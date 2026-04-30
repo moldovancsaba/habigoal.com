@@ -24,13 +24,19 @@ export default function SettingsPage() {
   const [message, setMessage] = useState("");
   const [locationDraft, setLocationDraft] = useState("");
   const [userDraft, setUserDraft] = useState("");
+  const [me, setMe] = useState<{ isGoogleLinked: boolean } | null>(null);
 
   useEffect(() => {
     void (async () => {
       try {
-        const [sData, uData] = await Promise.all([getSettings(), getUsers()]);
+        const [sData, uData, meRes] = await Promise.all([
+          getSettings(), 
+          getUsers(),
+          fetch("/api/auth/me").then(r => r.json()).catch(() => null)
+        ]);
         setSettings(sData);
         setUsers(uData);
+        if (meRes?.user) setMe(meRes.user);
       } finally {
         setLoading(false);
       }
@@ -284,6 +290,30 @@ export default function SettingsPage() {
           />
           <TextInput label={tl("vatNo")} value={settings.company.vatNo} onChange={(event) => updateCompanyField("vatNo", event.target.value)} />
           <TextInput label={tl("website")} value={settings.company.website} onChange={(event) => updateCompanyField("website", event.target.value)} />
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title={t("emailIntegration")}>
+        <Stack gap="sm">
+          <Text size="sm" c="dimmed">
+            {t("gmailIntegrationDescription")}
+          </Text>
+          <Group>
+            {me?.isGoogleLinked ? (
+              <Alert color="teal" style={{ flex: 1 }}>
+                <Group justify="space-between">
+                  <Text fw={700}>{t("gmailLinked")}</Text>
+                  <Button variant="white" color="teal" size="sm" onClick={() => window.location.href = "/api/auth/google/login"}>
+                    {t("reconnect")}
+                  </Button>
+                </Group>
+              </Alert>
+            ) : (
+              <Button color="kidex" onClick={() => window.location.href = "/api/auth/google/login"}>
+                {t("linkGmail")}
+              </Button>
+            )}
+          </Group>
         </Stack>
       </SectionCard>
     </Stack>

@@ -7,7 +7,10 @@ export const env = {
   ssoClientSecret: process.env.SSO_Client_Secret || process.env.SSO_CLIENT_SECRET,
   ssoBaseUrl: process.env.SSO_BASE_URL || "https://sso.doneisbetter.com",
   ssoRedirectUri: process.env.SSO_REDIRECT_URI || "https://kidex.messmass.com/api/oauth/callback",
-  authSecret: process.env.AUTH_SECRET
+  authSecret: process.env.AUTH_SECRET,
+  googleClientId: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  googleRedirectUri: process.env.GOOGLE_REDIRECT_URI || "https://kidex.messmass.com/api/auth/google/callback"
 };
 
 type StringEnvKey = {

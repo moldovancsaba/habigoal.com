@@ -8,7 +8,8 @@ function mapUser(doc: any): User {
     id: doc._id.toString(),
     name: doc.name,
     email: doc.email,
-    roles: doc.roles || []
+    roles: doc.roles || [],
+    googleToken: doc.googleToken
   };
 }
 
@@ -42,6 +43,14 @@ export async function upsertUser(user: Omit<User, "id">) {
     { upsert: true }
   );
   return result;
+}
+
+export async function updateGoogleToken(email: string, token: any) {
+  const db = await getDatabase();
+  await db.collection(collectionName).updateOne(
+    { email: email.toLowerCase().trim() },
+    { $set: { googleToken: token } }
+  );
 }
 
 export async function deleteUserByEmail(email: string) {

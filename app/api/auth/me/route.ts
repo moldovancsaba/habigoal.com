@@ -3,8 +3,17 @@ import { getSession } from "@/lib/session";
 
 export async function GET() {
   const session = await getSession();
-  if (!session) {
+  if (!session?.email) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
-  return NextResponse.json({ user: session });
+
+  const { findUserByEmail } = await import("@/repositories/user.repository");
+  const user = await findUserByEmail(session.email);
+
+  return NextResponse.json({ 
+    user: {
+      ...session,
+      isGoogleLinked: !!user?.googleToken
+    }
+  });
 }

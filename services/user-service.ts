@@ -3,6 +3,14 @@ export interface User {
   name?: string;
   email: string;
   roles: ("admin" | "conductor" | "observer")[];
+  googleToken?: {
+    access_token: string;
+    refresh_token?: string;
+    expires_in: number;
+    token_type: string;
+    scope: string;
+    id_token?: string;
+  };
 }
 
 export async function getUsers(): Promise<User[]> {
