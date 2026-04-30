@@ -78,13 +78,43 @@ export default async function LandingPage({
         </Stack>
       </Container>
       
+      {/* Legal Footer */}
+      <Box 
+        component="footer" 
+        py="xl" 
+        style={{ 
+          borderTop: `1px solid rgba(255, 255, 255, 0.1)`,
+          textAlign: "center"
+        }}
+      >
+        <Container size="lg">
+          <Group justify="center" gap="xl">
+            <Text 
+              component="a" 
+              href="/en/legal/gtc" 
+              size="sm" 
+              c={KIDEX_COLORS.navTextMuted}
+              style={{ textDecoration: "none" }}
+            >
+              Terms of Service
+            </Text>
+            <Text 
+              component="a" 
+              href="/en/legal/privacy" 
+              size="sm" 
+              c={KIDEX_COLORS.navTextMuted}
+              style={{ textDecoration: "none" }}
+            >
+              Privacy Policy
+            </Text>
+          </Group>
+        </Container>
+      </Box>
+
       {/* Footer Decoration */}
       <Box 
         style={{ 
-          position: "fixed", 
-          bottom: 0, 
-          left: 0, 
-          right: 0, 
+          position: "relative", 
           height: 10, 
           background: `linear-gradient(90deg, ${KIDEX_COLORS.brandTeal}, ${KIDEX_COLORS.brandNavy})` 
         }} 
