@@ -10,6 +10,8 @@ interface JsPDFWithAutoTable extends jsPDF {
   };
 }
 
+type TFunction = (key: string) => string;
+
 /**
  * PDF Service for Kidex Reports
  * Handles generation of "Original" and "Map" report formats.
@@ -18,7 +20,7 @@ export const PdfService = {
   /**
    * Generates the "Original" technical assessment report.
    */
-  async generateOriginalReport(record: AssessmentRecord, t: any, tc: any, ts: any): Promise<void> {
+  async generateOriginalReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
     const reportDate = new Date(record.createdAt).toLocaleDateString();
     const reportTime = new Date(record.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -103,7 +105,7 @@ export const PdfService = {
   /**
    * Generates the high-fidelity 10-page "Map" professional report.
    */
-  async generateMapReport(record: AssessmentRecord, t: any, tc: any, ts: any): Promise<void> {
+  async generateMapReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
     const logoDataUrl = await this.getLogoDataUrl();
 
