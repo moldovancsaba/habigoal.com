@@ -17,6 +17,7 @@ export interface ChildProfile {
   // Metrics fields (populated via aggregation)
   latestLocation?: string;
   latestSki?: number;
+  latestRecordId?: string;
   latestScores?: {
     movement: number;
     social: number;
@@ -70,6 +71,7 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
       $addFields: {
         latestLocation: "$latestAssessment.session.location",
         latestSki: "$latestAssessment.computed.ski",
+        latestRecordId: { $toString: "$latestAssessment._id" },
         latestScores: {
           movement: "$latestAssessment.computed.movementAverage",
           social: "$latestAssessment.computed.socialAverage",

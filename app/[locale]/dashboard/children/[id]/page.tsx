@@ -5,6 +5,8 @@ import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, Cell, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { rapidSections } from "@/lib/kidex-schema";
 import { calculateTrend, type TrendPoint } from "@/lib/utils/trends";
@@ -28,6 +30,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
 
   const [data, setData] = useState<{ child: ChildProfile; assessments: AssessmentRecord[] } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   useEffect(() => {
     fetch(`/api/children/${id}/history`)
@@ -35,6 +38,45 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
       .then(setData)
       .finally(() => setLoading(false));
   }, [id]);
+
+  async function downloadPdf() {
+    const reportElement = document.getElementById("kidex-report-print-view");
+    if (!reportElement || !data || data.assessments.length === 0) return;
+
+    setDownloadingPdf(true);
+    try {
+      reportElement.style.display = "block";
+      
+      const canvas = await html2canvas(reportElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff"
+      });
+      
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+      
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      
+      const safeName = (data.child.name || "report").replace(/[^\w-]+/g, "_");
+      pdf.save(`kidex_report_${safeName}_${data.assessments[0].session.date}.pdf`);
+      
+      reportElement.style.display = "none";
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    } finally {
+      setDownloadingPdf(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -63,6 +105,15 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
       <PageHeader 
         title={data.child.name} 
         subtitle={data.child.birthDate} 
+        actions={
+          <Button 
+            color="kidex" 
+            onClick={() => void downloadPdf()} 
+            disabled={data.assessments.length === 0 || downloadingPdf}
+          >
+            {downloadingPdf ? tc("loading") : t("reportPrintTitle")}
+          </Button>
+        }
       />
 
       <SectionCard title={t("longitudinalTrends")}>
@@ -203,6 +254,62 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           </Stack>
         )}
       </SectionCard>
+
+      {/* HIDDEN PRINT VIEW (Original Style) */}
+      {data.assessments.length > 0 && (
+        <Box id="kidex-report-print-view" style={{ 
+          display: "none", 
+          width: "210mm", 
+          padding: "15mm", 
+          background: "white", 
+          color: "black",
+          position: "absolute",
+          left: "-10000px"
+        }}>
+          <Stack gap="xl">
+            <Group justify="space-between" align="start">
+              <Group gap="md">
+                <Image src="/logo.jpeg" alt="KIDEX" width={80} height={80} />
+                <Box>
+                  <Text fw={900} size="28px">{t("reportPrintTitle")}</Text>
+                  <Text size="lg">{data.child.name}</Text>
+                </Box>
+              </Group>
+              <Box style={{ textAlign: "right" }}>
+                <Text><strong>{tc("date")}:</strong> {data.assessments[0].session.date}</Text>
+                <Text><strong>{t("conductor")}:</strong> {data.assessments[0].session.conductor}</Text>
+              </Box>
+            </Group>
+
+            <Group grow gap="lg">
+              <Paper withBorder p="md" style={{ textAlign: "center" }}>
+                <Text size="sm" c="dimmed">{ts("ski")}</Text>
+                <Text size="32px" fw={900}>{formatScore(data.assessments[0].computed.ski)}</Text>
+              </Paper>
+            </Group>
+
+            <Group gap="md" wrap="nowrap">
+              <Box style={{ flex: 1 }}>
+                <RecordRadarChart title={ts("movement")} data={buildRadarData("rapid_movement", data.assessments[0], ts)} domain="movement" animate={false} />
+              </Box>
+              <Box style={{ flex: 1 }}>
+                <RecordRadarChart title={ts("social")} data={buildRadarData("rapid_social", data.assessments[0], ts)} domain="social" animate={false} />
+              </Box>
+              <Box style={{ flex: 1 }}>
+                <RecordRadarChart title={ts("mental")} data={buildRadarData("rapid_mental", data.assessments[0], ts)} domain="mental" animate={false} />
+              </Box>
+            </Group>
+
+            <Box>
+              <Text fw={700} mb="sm" style={{ borderBottom: "2px solid #eee" }}>{t("professionalNotes")}</Text>
+              <Stack gap="xs">
+                <Text><strong>{t("generalObservation")}:</strong> {data.assessments[0].notes.general || "—"}</Text>
+                <Text><strong>{t("adaptationNeeds")}:</strong> {data.assessments[0].notes.adaptations || "—"}</Text>
+              </Stack>
+            </Box>
+          </Stack>
+        </Box>
+      )}
     </Stack>
   );
 }
@@ -391,4 +498,64 @@ function buildRapidDomainSummary(assessments: AssessmentRecord[], translateSchem
     social: buildDomain("rapid_social"),
     mental: buildDomain("rapid_mental")
   };
+}
+
+function RecordRadarChart({
+  title,
+  data,
+  domain,
+  animate = true
+}: {
+  title: string;
+  data: Array<{ label: string; value: number }>;
+  domain: AssessmentDomain;
+  animate?: boolean;
+}) {
+  const theme = useMantineTheme();
+  const domainColor = getDomainMainColor(domain);
+  return (
+    <Paper withBorder p="sm">
+      <Text size="sm" fw={700} mb="xs" c="dimmed" style={{ textTransform: "uppercase" }}>
+        {title}
+      </Text>
+      <Box style={{ width: "100%", height: 180 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart data={data}>
+            <PolarGrid />
+            <PolarAngleAxis
+              dataKey="label"
+              tick={{ fontSize: 10, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 6]}
+              tickCount={4}
+              tick={(props) => renderRotatedRadiusTick(props)}
+              stroke={theme.colors.gray[6]}
+            />
+            <Radar 
+              dataKey="value" 
+              stroke={domainColor} 
+              fill={domainColor} 
+              fillOpacity={0.25} 
+              isAnimationActive={animate}
+            />
+          </RadarChart>
+        </ResponsiveContainer>
+      </Box>
+    </Paper>
+  );
+}
+
+function buildRadarData(sectionKey: string, record: AssessmentRecord, translateSchema: (key: string) => string) {
+  const section = rapidSections.find((item) => item.key === sectionKey);
+  if (!section) return [];
+
+  return section.items.map((item) => {
+    const score = record.scores[item.key]?.score;
+    return {
+      label: translateSchema(`${item.key}.title`),
+      value: typeof score === "number" ? score : 0
+    };
+  });
 }

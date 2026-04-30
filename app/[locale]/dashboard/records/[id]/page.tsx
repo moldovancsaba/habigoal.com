@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme } from "@mantine/core";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { jsPDF } from "jspdf";
@@ -33,6 +33,8 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
   const { locale } = useParams();
+  const searchParams = useSearchParams();
+  const shouldPrint = searchParams.get("print") === "true";
 
   const [record, setRecord] = useState<AssessmentRecord | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,6 +46,16 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       .then((data) => setRecord(data.assessment))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (record && shouldPrint && !downloadingPdf) {
+      // Small delay to ensure charts are rendered
+      const timer = setTimeout(() => {
+        void downloadPdf();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [record, shouldPrint, downloadingPdf, downloadPdf]);
 
   if (loading) {
     return (

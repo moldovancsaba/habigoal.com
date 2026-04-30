@@ -288,6 +288,18 @@ export default function ChildrenListPage() {
                           <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex" onClick={(e) => e.stopPropagation()}>
                             {t("newSurveyForChild")}
                           </Button>
+                          {child.latestRecordId && (
+                            <Button 
+                              component="a" 
+                              href={`/${locale}/dashboard/records/${child.latestRecordId}?print=true`} 
+                              target="_blank"
+                              variant="outline" 
+                              color="kidex" 
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              PDF
+                            </Button>
+                          )}
                           <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" onClick={(e) => e.stopPropagation()}>
                             {t("viewHistory")}
                           </Button>
