@@ -17,7 +17,11 @@
     "cookieConsentMessage": "Sütiket használunk a téma és az alapvető beállítások megőrzéséhez frissítés után.",
     "cookieAccept": "Sütik elfogadása",
     "cookiePolicyLink": "Adatvédelmi tájékoztató",
-    "actions": "Műveletek"
+    "actions": "Műveletek",
+    "advancedFilters": "Részletes szűrők",
+    "hideFilters": "Szűrők elrejtése",
+    "resetFilters": "Szűrők alaphelyzetbe állítása",
+    "all": "Mind"
   },
   "Dashboard": {
     "title": "Vezérlőpult",

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Box, Button, Checkbox, Group, Loader, Paper, Stack, Table, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { DEFAULT_KIDEX_SETTINGS, getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -13,6 +14,8 @@ export default function SettingsPage() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const tl = useTranslations("Legal");
+  const params = useParams();
+  const locale = params.locale as string;
 
   const [settings, setSettings] = useState<KidexSettings>(DEFAULT_KIDEX_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
@@ -70,6 +73,12 @@ export default function SettingsPage() {
           setMessage(tc("error"));
         } else {
           setMessage(tc("success"));
+          // Send invitation email
+          void fetch("/api/invite", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, locale })
+          });
         }
       });
     }

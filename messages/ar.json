@@ -17,7 +17,11 @@
     "cookieConsentMessage": "نستخدم ملفات تعريف الارتباط للحفاظ على المظهر والتفضيلات الأساسية بعد التحديث.",
     "cookieAccept": "قبول ملفات الارتباط",
     "cookiePolicyLink": "سياسة الخصوصية",
-    "actions": "الإجراءات"
+    "actions": "الإجراءات",
+    "advancedFilters": "فلترة متقدمة",
+    "hideFilters": "إخفاء الفلاتر",
+    "resetFilters": "إعادة تعيين الفلاتر",
+    "all": "الكل"
   },
   "Dashboard": {
     "title": "لوحة التحكم",

@@ -13,6 +13,14 @@ export interface ChildProfile {
   parentSignals?: string;
   createdAt: string;
   updatedAt: string;
+  // Metrics fields (populated via aggregation)
+  latestLocation?: string;
+  latestSki?: number;
+  latestScores?: {
+    movement: number;
+    social: number;
+    mental: number;
+  };
 }
 
 const collectionName = "children";
@@ -21,6 +29,58 @@ export async function listChildren() {
   const db = await getDatabase();
   const children = await db.collection(collectionName).find({}).sort({ name: 1 }).toArray();
   return children.map(toJsonId);
+}
+
+export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
+  const db = await getDatabase();
+  const pipeline = [
+    {
+      $lookup: {
+        from: "assessments",
+        let: { childId: { $toString: "$_id" } },
+        pipeline: [
+          { 
+            $match: { 
+              $expr: { 
+                $or: [
+                  { $eq: ["$childId", "$$childId"] },
+                  { 
+                    $and: [
+                      { $eq: ["$child.name", "$name"] },
+                      { $eq: ["$child.birthDate", "$birthDate"] }
+                    ]
+                  }
+                ] 
+              } 
+            } 
+          },
+          { $sort: { createdAt: -1 } as any },
+          { $limit: 1 }
+        ],
+        as: "latestAssessment"
+      }
+    },
+    {
+      $addFields: {
+        latestAssessment: { $arrayElemAt: ["$latestAssessment", 0] }
+      }
+    },
+    {
+      $addFields: {
+        latestLocation: "$latestAssessment.session.location",
+        latestSki: "$latestAssessment.computed.ski",
+        latestScores: {
+          movement: "$latestAssessment.computed.movementAverage",
+          social: "$latestAssessment.computed.socialAverage",
+          mental: "$latestAssessment.computed.mentalAverage"
+        }
+      }
+    },
+    { $sort: { name: 1 } as any }
+  ];
+
+  const children = await db.collection(collectionName).aggregate(pipeline).toArray();
+  return children.map(toJsonId) as any;
 }
 
 export async function getChildById(id: ObjectId) {

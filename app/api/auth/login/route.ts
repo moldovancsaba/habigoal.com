@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getAuthorizationUrl } from "@/services/auth-service";
 import { cookies } from "next/headers";
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const state = Math.random().toString(36).substring(7);
   const authUrl = getAuthorizationUrl(state);
 

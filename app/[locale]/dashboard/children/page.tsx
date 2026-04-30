@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Box, Button, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
+import { Alert, Box, Button, Group, Loader, Modal, MultiSelect, Paper, RangeSlider, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { calculateAgeGroup } from "@/lib/utils/age";
+import { formatScore } from "@/lib/utils";
 import type { ChildProfile } from "@/repositories/child.repository";
 
 export default function ChildrenListPage() {
@@ -23,22 +24,35 @@ export default function ChildrenListPage() {
   const [draftName, setDraftName] = useState("");
   const [draftBirthDate, setDraftBirthDate] = useState("");
   const [saving, setSaving] = useState(false);
+  const [locations, setLocations] = useState<string[]>([]);
+  
+  // Advanced filters state
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>([]);
+  const [skiRange, setSkiRange] = useState<[number, number]>([0, 100]);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
     let active = true;
 
     void (async () => {
-      const response = await fetch("/api/children").catch(() => null);
+      const [cRes, sRes] = await Promise.all([
+        fetch("/api/children?metrics=true").catch(() => null),
+        fetch("/api/settings").catch(() => null)
+      ]);
+      
       if (!active) return;
 
-      if (!response?.ok) {
-        setChildren([]);
-        setLoading(false);
-        return;
+      if (cRes?.ok) {
+        const data = (await cRes.json()) as ChildProfile[];
+        setChildren(data);
       }
-
-      const data = (await response.json()) as ChildProfile[];
-      setChildren(data);
+      
+      if (sRes?.ok) {
+        const data = await sRes.json();
+        setLocations(data.locations || []);
+      }
+      
       setLoading(false);
     })();
 
@@ -49,16 +63,44 @@ export default function ChildrenListPage() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return children;
+    
     return children.filter((child) => {
       const ageGroup = calculateAgeGroup(child.birthDate) || "";
-      return (
+      
+      // Basic search
+      const matchesQuery = !q || 
         child.name.toLowerCase().includes(q) ||
         child.birthDate.toLowerCase().includes(q) ||
-        ageGroup.toLowerCase().includes(q)
-      );
+        ageGroup.toLowerCase().includes(q);
+      
+      if (!matchesQuery) return false;
+
+      // Advanced filters
+      if (selectedLocations.length > 0 && (!child.latestLocation || !selectedLocations.includes(child.latestLocation))) {
+        return false;
+      }
+
+      if (selectedAgeGroups.length > 0 && !selectedAgeGroups.includes(ageGroup)) {
+        return false;
+      }
+
+      const ski = child.latestSki ?? 0;
+      if (ski < skiRange[0] || ski > skiRange[1]) {
+        return false;
+      }
+
+      return true;
     });
-  }, [children, query]);
+  }, [children, query, selectedLocations, selectedAgeGroups, skiRange]);
+
+  const allAgeGroups = useMemo(() => {
+    const groups = new Set<string>();
+    children.forEach(c => {
+      const g = calculateAgeGroup(c.birthDate);
+      if (g) groups.add(g);
+    });
+    return Array.from(groups).sort();
+  }, [children]);
 
   function startEdit(child: ChildProfile) {
     setEditing(child);
@@ -137,12 +179,65 @@ export default function ChildrenListPage() {
             </Alert>
           ) : null}
 
-          <TextInput
-            label={t("searchChildren")}
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={t("searchChildrenPlaceholder")}
-          />
+          <Group align="end" gap="xs">
+            <TextInput
+              label={t("searchChildren")}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={t("searchChildrenPlaceholder")}
+              style={{ flex: 1 }}
+            />
+            <Button variant="light" color="gray" onClick={() => setShowAdvanced(!showAdvanced)}>
+              {showAdvanced ? tc("hideFilters") : tc("advancedFilters")}
+            </Button>
+          </Group>
+
+          {showAdvanced && (
+            <Paper withBorder p="md" bg="gray.0">
+              <Stack gap="md">
+                <Group grow align="start">
+                  <MultiSelect
+                    label={t("location")}
+                    placeholder={tc("all")}
+                    data={locations}
+                    value={selectedLocations}
+                    onChange={setSelectedLocations}
+                    clearable
+                    searchable
+                  />
+                  <MultiSelect
+                    label={ta("ageGroup")}
+                    placeholder={tc("all")}
+                    data={allAgeGroups}
+                    value={selectedAgeGroups}
+                    onChange={setSelectedAgeGroups}
+                    clearable
+                  />
+                </Group>
+                <Box>
+                  <Text size="sm" fw={500} mb="xs">SKI Score Range: {skiRange[0]} - {skiRange[1]}</Text>
+                  <RangeSlider
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={skiRange}
+                    onChange={setSkiRange}
+                    label={null}
+                    color="kidex"
+                  />
+                </Box>
+                <Group justify="flex-end">
+                  <Button variant="subtle" size="sm" onClick={() => {
+                    setSelectedLocations([]);
+                    setSelectedAgeGroups([]);
+                    setSkiRange([0, 100]);
+                  }}>
+                    {tc("resetFilters")}
+                  </Button>
+                </Group>
+              </Stack>
+            </Paper>
+          )}
 
           {filtered.length === 0 ? (
             <Text c="dimmed">{query ? t("noChildrenMatch") : tc("noChildren")}</Text>
@@ -166,6 +261,18 @@ export default function ChildrenListPage() {
                           <Text size="sm" c="dimmed">
                             {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
                           </Text>
+                          {child.latestSki !== undefined && (
+                            <Group gap="xs" mt={4}>
+                              <Text size="sm" fw={700} c="kidex" bg="teal.0" px={6} py={2} style={{ borderRadius: 4 }}>
+                                LATEST SKI: {formatScore(child.latestSki)}
+                              </Text>
+                              {child.latestLocation && (
+                                <Text size="sm" c="dimmed">
+                                  @{child.latestLocation}
+                                </Text>
+                              )}
+                            </Group>
+                          )}
                         </Box>
                         <Group gap="xs" wrap="wrap">
                           <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex">

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listChildren, upsertChild } from "@/repositories/child.repository";
+import { listChildren, listChildrenWithMetrics, upsertChild } from "@/repositories/child.repository";
 import { syncChildrenFromAssessments } from "@/lib/sync-children";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { parseChildPayload } from "@/lib/validations";
@@ -9,10 +9,14 @@ export async function GET(request: Request) {
   if (authError) return authError;
 
   try {
-    let children = await listChildren();
+    const { searchParams } = new URL(request.url);
+    const includeMetrics = searchParams.get("metrics") === "true";
+
+    let children = includeMetrics ? await listChildrenWithMetrics() : await listChildren();
+    
     if (children.length === 0) {
       await syncChildrenFromAssessments();
-      children = await listChildren();
+      children = includeMetrics ? await listChildrenWithMetrics() : await listChildren();
     }
     return NextResponse.json(children);
   } catch (error) {

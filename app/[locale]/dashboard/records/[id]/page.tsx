@@ -1,23 +1,30 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { Box, Button, Group, Loader, Paper, Stack, Table, Text } from "@mantine/core";
+import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
+import html2canvas from "html2canvas";
+import { 
+  PolarAngleAxis, 
+  PolarGrid, 
+  PolarRadiusAxis, 
+  Radar, 
+  RadarChart, 
+  ResponsiveContainer
+} from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { rapidSections } from "@/lib/kidex-schema";
+import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
 import type { AssessmentRecord } from "@/types/assessment";
 
-const PDF_FONT_SIZES = {
-  title: 16,
-  header: 11,
-  body: 10,
-  compact: 9
-} as const;
+const RADAR_CHART_HEIGHT = 200;
+const RADAR_TICK_FONT_SIZE = 10;
+const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
 
 export default function RecordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -54,7 +61,6 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
   const sections = sectionsForMode(record.mode);
   const recordedAt = new Date(record.createdAt);
-  const updatedAt = new Date(record.updatedAt);
   const reportDate = new Intl.DateTimeFormat(undefined, {
     year: "numeric",
     month: "2-digit",
@@ -64,133 +70,49 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
     hour: "2-digit",
     minute: "2-digit"
   }).format(recordedAt);
-  const updatedTime = new Intl.DateTimeFormat(undefined, {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
-  }).format(updatedAt);
-  const contextLabelMap: Record<AssessmentRecord["session"]["context"], string> = {
-    event: t("contextEvent"),
-    structured: t("contextStructured"),
-    spontaneous: t("contextSpontaneous"),
-    mixed: t("contextMixed")
+  
+
+  const radarData = {
+    movement: buildRadarData("rapid_movement", record, ts),
+    social: buildRadarData("rapid_social", record, ts),
+    mental: buildRadarData("rapid_mental", record, ts)
   };
 
   async function downloadPdf() {
-    const currentRecord = record;
-    if (!currentRecord) return;
+    const reportElement = document.getElementById("kidex-report-print-view");
+    if (!reportElement) return;
 
     setDownloadingPdf(true);
     try {
-      const doc = new jsPDF({ unit: "mm", format: "a4" });
-      const logoDataUrl = await fetch("/logo.jpeg")
-        .then((response) => response.blob())
-        .then(
-          (blob) =>
-            new Promise<string>((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = () => resolve(reader.result as string);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
-            })
-        )
-        .catch(() => "");
-
-      if (logoDataUrl) {
-        doc.addImage(logoDataUrl, "JPEG", 14, 10, 20, 20);
-      }
-
-      doc.setFontSize(PDF_FONT_SIZES.title);
-      doc.text(t("reportPrintTitle"), 38, 16);
-      doc.setFontSize(PDF_FONT_SIZES.header);
-      doc.text(currentRecord.child.name, 38, 22);
-      doc.setFontSize(PDF_FONT_SIZES.body);
-      doc.text(`${tc("date")}: ${reportDate}`, 140, 14);
-      doc.text(`${t("tableTime")}: ${reportTime}`, 140, 19);
-      doc.text(`${t("conductor")}: ${currentRecord.session.conductor || "—"}`, 140, 24);
-      doc.text(`${t("observers")}: ${currentRecord.session.observers || "—"}`, 140, 29);
-
-      autoTable(doc, {
-        startY: 34,
-        head: [[ts("movement"), ts("social"), ts("mental"), ts("ski")]],
-        body: [[
-          formatScore(currentRecord.computed.movementAverage),
-          formatScore(currentRecord.computed.socialAverage),
-          formatScore(currentRecord.computed.mentalAverage),
-          formatScore(currentRecord.computed.ski)
-        ]],
-        theme: "grid",
-        styles: { fontSize: PDF_FONT_SIZES.body }
+      // Temporarily show the print view for capture
+      reportElement.style.display = "block";
+      
+      const canvas = await html2canvas(reportElement, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff"
       });
-
-      autoTable(doc, {
-        startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
-          ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 4
-          : 52,
-        head: [[t("setupTitle"), ""]],
-        body: [
-          [t("childName"), currentRecord.child.name],
-          [t("birthDate"), currentRecord.child.birthDate],
-          [t("ageGroup"), currentRecord.child.ageGroup],
-          [t("mode"), currentRecord.mode],
-          [tc("date"), reportDate],
-          [t("tableTime"), reportTime],
-          [t("location"), currentRecord.session.location || "—"],
-          [t("conductor"), currentRecord.session.conductor || "—"],
-          [t("observers"), currentRecord.session.observers || "—"],
-          [t("context"), contextLabelMap[currentRecord.session.context]],
-          [t("groupSize"), currentRecord.session.groupSize || "—"],
-          [t("lastUpdated"), updatedTime]
-        ],
-        theme: "grid",
-        styles: { fontSize: PDF_FONT_SIZES.compact },
-        columnStyles: { 0: { cellWidth: 55 }, 1: { cellWidth: 125 } }
+      
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
       });
-
-      for (const section of sections) {
-        autoTable(doc, {
-          startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
-            ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 6
-            : 20,
-          head: [[ts(section.key), "", ""]],
-          body: [],
-          theme: "plain",
-          styles: { fontSize: PDF_FONT_SIZES.header, fontStyle: "bold" }
-        });
-
-        autoTable(doc, {
-          startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
-            ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 1
-            : 24,
-          head: [[t("tableObservation"), t("tableScore"), t("tableNote")]],
-          body: section.items.map((item) => {
-                  const entry = currentRecord.scores[item.key];
-            return [ts(`${item.key}.title`), `${entry?.score ?? "—"}`, entry?.note || "—"];
-          }),
-          theme: "grid",
-          styles: { fontSize: PDF_FONT_SIZES.compact },
-          columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 24 }, 2: { cellWidth: 86 } }
-        });
-      }
-
-      autoTable(doc, {
-        startY: (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY
-          ? (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable!.finalY! + 6
-          : 20,
-        head: [[t("professionalNotes"), ""]],
-        body: [
-          [t("generalObservation"), currentRecord.notes.general || "—"],
-          [t("adaptationNeeds"), currentRecord.notes.adaptations || "—"]
-        ],
-        theme: "grid",
-        styles: { fontSize: PDF_FONT_SIZES.compact },
-        columnStyles: { 0: { cellWidth: 55 }, 1: { cellWidth: 125 } }
-      });
-
-      const safeName = (currentRecord.child.name || "report").replace(/[^\w-]+/g, "_");
-      doc.save(`kidex_report_${safeName}_${currentRecord.session.date || reportDate}.pdf`);
+      
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      
+      const safeName = (record?.child.name || "report").replace(/[^\w-]+/g, "_");
+      pdf.save(`kidex_report_${safeName}_${record?.session.date}.pdf`);
+      
+      reportElement.style.display = "none";
+    } catch (error) {
+      console.error("PDF generation failed:", error);
     } finally {
       setDownloadingPdf(false);
     }
@@ -211,94 +133,96 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       </Stack>
 
       <SectionCard title={t("reportPreview")} className="no-print">
-        <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-          <Group gap="md" align="center">
-            <Image src="/logo.jpeg" alt="KIDEX" width={64} height={64} className="report-logo" />
-            <Box>
-              <Text fw={800} size="xl">
-                {t("reportPrintTitle")}
-              </Text>
-              <Text size="sm" c="dimmed">
-                {record.child.name}
-              </Text>
+        <Stack gap="md">
+          <Group gap="md" align="center" justify="space-between" wrap="wrap">
+            <Group gap="md">
+              <Image src="/logo.jpeg" alt="KIDEX" width={64} height={64} style={{ borderRadius: "var(--mantine-radius-md)" }} />
+              <Box>
+                <Text fw={800} size="xl">{t("reportPrintTitle")}</Text>
+                <Text size="sm" c="dimmed">{record.child.name}</Text>
+              </Box>
+            </Group>
+            <Box style={{ textAlign: "right" }}>
+              <MetaRow label={tc("date")} value={reportDate} />
+              <MetaRow label={t("tableTime")} value={reportTime} />
             </Box>
           </Group>
-          <Box className="report-meta-grid">
-            <MetaRow label={tc("date")} value={reportDate} />
-            <MetaRow label={t("tableTime")} value={reportTime} />
-            <MetaRow label={t("conductor")} value={record.session.conductor || "—"} />
-            <MetaRow label={t("observers")} value={record.session.observers || "—"} />
-          </Box>
+
+          <Group gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }} mt="md">
+            <Metric label={ts("movement")} value={formatScore(record.computed.movementAverage)} />
+            <Metric label={ts("social")} value={formatScore(record.computed.socialAverage)} />
+            <Metric label={ts("mental")} value={formatScore(record.computed.mentalAverage)} />
+            <Metric label={ts("ski")} value={formatScore(record.computed.ski)} />
+          </Group>
+
+          <Stack gap="md" mt="xl" style={{ flexDirection: "row", flexWrap: "wrap" }}>
+            <Box style={{ flex: 1, minWidth: 300 }}>
+              <RecordRadarChart title={t("rapidMovementTitle")} data={radarData.movement} domain="movement" />
+            </Box>
+            <Box style={{ flex: 1, minWidth: 300 }}>
+              <RecordRadarChart title={t("rapidSocialTitle")} data={radarData.social} domain="social" />
+            </Box>
+            <Box style={{ flex: 1, minWidth: 300 }}>
+              <RecordRadarChart title={t("rapidMentalTitle")} data={radarData.mental} domain="mental" />
+            </Box>
+          </Stack>
         </Stack>
       </SectionCard>
 
-      <Box className="only-print print-report-header">
-        <Stack gap="md" style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Image src="/logo.jpeg" alt="KIDEX" width={72} height={72} className="report-logo" />
+      {/* Hidden view for PDF generation */}
+      <Box id="kidex-report-print-view" style={{ 
+        display: "none", 
+        width: "210mm", 
+        padding: "15mm", 
+        background: "white", 
+        color: "black",
+        position: "absolute",
+        left: "-10000px"
+      }}>
+        <Stack gap="xl">
+          <Group justify="space-between" align="start">
+            <Group gap="md">
+              <Image src="/logo.jpeg" alt="KIDEX" width={80} height={80} />
+              <Box>
+                <Text fw={900} size="28px">{t("reportPrintTitle")}</Text>
+                <Text size="lg">{record.child.name}</Text>
+              </Box>
+            </Group>
+            <Box style={{ textAlign: "right" }}>
+              <Text><strong>{tc("date")}:</strong> {reportDate}</Text>
+              <Text><strong>{t("conductor")}:</strong> {record.session.conductor}</Text>
+            </Box>
+          </Group>
+
+          <Group grow gap="lg">
+            <Paper withBorder p="md" style={{ textAlign: "center" }}>
+              <Text size="sm" c="dimmed">{ts("ski")}</Text>
+              <Text size="32px" fw={900}>{formatScore(record.computed.ski)}</Text>
+            </Paper>
+          </Group>
+
+          <Group gap="md" wrap="nowrap">
+            <Box style={{ flex: 1 }}>
+              <RecordRadarChart title={ts("movement")} data={radarData.movement} domain="movement" animate={false} />
+            </Box>
+            <Box style={{ flex: 1 }}>
+              <RecordRadarChart title={ts("social")} data={radarData.social} domain="social" animate={false} />
+            </Box>
+            <Box style={{ flex: 1 }}>
+              <RecordRadarChart title={ts("mental")} data={radarData.mental} domain="mental" animate={false} />
+            </Box>
+          </Group>
+
           <Box>
-            <Text size="xl" fw={700} mb="xs">
-              {t("reportPrintTitle")}
-            </Text>
-            <Text>
-              {record.child.name}
-            </Text>
-          </Box>
-          <Box className="report-meta-grid">
-            <MetaRow label={tc("date")} value={reportDate} />
-            <MetaRow label={t("tableTime")} value={reportTime} />
-            <MetaRow label={t("conductor")} value={record.session.conductor || "—"} />
-            <MetaRow label={t("observers")} value={record.session.observers || "—"} />
+            <Text fw={700} mb="sm" style={{ borderBottom: "2px solid #eee" }}>{t("professionalNotes")}</Text>
+            <Stack gap="xs">
+              <Text><strong>{t("generalObservation")}:</strong> {record.notes.general || "—"}</Text>
+              <Text><strong>{t("adaptationNeeds")}:</strong> {record.notes.adaptations || "—"}</Text>
+            </Stack>
           </Box>
         </Stack>
       </Box>
 
-      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }} className="print-metrics-grid">
-        <Metric label={ts("movement")} value={formatScore(record.computed.movementAverage)} />
-        <Metric label={ts("social")} value={formatScore(record.computed.socialAverage)} />
-        <Metric label={ts("mental")} value={formatScore(record.computed.mentalAverage)} />
-        <Metric label={ts("ski")} value={formatScore(record.computed.ski)} />
-      </Stack>
-
-      <SectionCard title={t("setupTitle")}>
-        <Stack gap={6} className="print-setup-grid">
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("childName")}:</strong> {record.child.name}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("birthDate")}:</strong> {record.child.birthDate}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("ageGroup")}:</strong> {record.child.ageGroup}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("mode")}:</strong> {record.mode}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{tc("date")}:</strong> {reportDate}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("tableTime")}:</strong> {reportTime}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("location")}:</strong> {record.session.location}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("conductor")}:</strong> {record.session.conductor}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("observers")}:</strong> {record.session.observers || "—"}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("context")}:</strong> {contextLabelMap[record.session.context]}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("groupSize")}:</strong> {record.session.groupSize || "—"}
-          </Text>
-          <Text size="sm" className="print-meta-row">
-            <strong>{t("lastUpdated")}:</strong> {updatedTime}
-          </Text>
-        </Stack>
-      </SectionCard>
 
       {sections.map((section) => (
         <SectionCard key={section.key} title={ts(section.key)}>
@@ -402,4 +326,84 @@ function MetaRow({ label, value }: { label: string; value: string }) {
       <strong>{label}:</strong> {value}
     </Text>
   );
+}
+
+function RecordRadarChart({
+  title,
+  data,
+  domain,
+  animate = true
+}: {
+  title: string;
+  data: Array<{ label: string; value: number }>;
+  domain: AssessmentDomain;
+  animate?: boolean;
+}) {
+  const theme = useMantineTheme();
+  const domainColor = getDomainMainColor(domain);
+  return (
+    <Paper withBorder p="sm">
+      <Text size="sm" fw={700} mb="xs" c="dimmed" style={{ textTransform: "uppercase" }}>
+        {title}
+      </Text>
+      <Box style={{ width: "100%", height: RADAR_CHART_HEIGHT }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart data={data}>
+            <PolarGrid />
+            <PolarAngleAxis
+              dataKey="label"
+              tick={{ fontSize: RADAR_TICK_FONT_SIZE, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 6]}
+              tickCount={4}
+              tick={(props) => renderRotatedRadiusTick(props)}
+              stroke={theme.colors.gray[6]}
+            />
+            <Radar 
+              dataKey="value" 
+              stroke={domainColor} 
+              fill={domainColor} 
+              fillOpacity={0.25} 
+              isAnimationActive={animate}
+            />
+          </RadarChart>
+        </ResponsiveContainer>
+      </Box>
+    </Paper>
+  );
+}
+
+function renderRotatedRadiusTick(props: { x?: string | number; y?: string | number; payload?: { value?: string | number } }) {
+  const x = Number(props.x ?? 0);
+  const y = Number(props.y ?? 0);
+  const value = props.payload?.value ?? "";
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="var(--mantine-color-text)"
+      fontSize={RADAR_TICK_FONT_SIZE}
+      fontFamily={CHART_FONT_FAMILY}
+      textAnchor="middle"
+      dominantBaseline="central"
+      transform={`rotate(90, ${x}, ${y})`}
+    >
+      {value}
+    </text>
+  );
+}
+
+function buildRadarData(sectionKey: string, record: AssessmentRecord, translateSchema: (key: string) => string) {
+  const section = rapidSections.find((item) => item.key === sectionKey);
+  if (!section) return [];
+
+  return section.items.map((item) => {
+    const score = record.scores[item.key]?.score;
+    return {
+      label: translateSchema(`${item.key}.title`),
+      value: typeof score === "number" ? score : 0
+    };
+  });
 }
