@@ -273,6 +273,7 @@ export function KidexAssessmentApp() {
   const ts = useTranslations("Schema");
   const searchParams = useSearchParams();
   const childIdParam = searchParams.get("childId");
+  const idParam = searchParams.get("id");
 
   const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
   const [recordId, setRecordId] = useState<string>("");
@@ -311,6 +312,17 @@ export function KidexAssessmentApp() {
   useEffect(() => {
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(assessment));
   }, [assessment]);
+
+  useEffect(() => {
+    if (!idParam) return;
+    void (async () => {
+      const response = await fetch(`/api/assessments/${idParam}`).catch(() => null);
+      if (!response?.ok) return;
+      const data = (await response.json()) as { assessment: AssessmentRecord };
+      setAssessment(data.assessment);
+      setRecordId(data.assessment._id || "");
+    })();
+  }, [idParam]);
 
   useEffect(() => {
     return () => {

@@ -286,6 +286,45 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           </Box>
         </Stack>
       </SectionCard>
+
+      <SectionCard title={t("historyLog") || "History Log"}>
+        <Stack gap="xs">
+          <Text size="sm">
+            <strong>{t("recordedAt") || "Recorded at"}:</strong> {new Date(record.createdAt).toLocaleString(undefined, {
+              hour: "2-digit",
+              minute: "2-digit",
+              timeZoneName: "short",
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric"
+            })}
+          </Text>
+          {record.updateHistory?.map((timestamp, idx) => (
+            <Text key={idx} size="sm">
+              <strong>{t("updatedAt") || "Updated at"}:</strong> {new Date(timestamp).toLocaleString(undefined, {
+                hour: "2-digit",
+                minute: "2-digit",
+                timeZoneName: "short",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+              })}
+            </Text>
+          ))}
+          {!record.updateHistory?.length && record.updatedAt !== record.createdAt && (
+            <Text size="sm">
+              <strong>{t("updatedAt") || "Updated at"}:</strong> {new Date(record.updatedAt).toLocaleString(undefined, {
+                hour: "2-digit",
+                minute: "2-digit",
+                timeZoneName: "short",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+              })}
+            </Text>
+          )}
+        </Stack>
+      </SectionCard>
     </Box>
   );
 }

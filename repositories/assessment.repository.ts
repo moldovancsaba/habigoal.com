@@ -17,7 +17,8 @@ export async function listAssessmentSummaries() {
         scores: 1,
         computed: 1,
         createdAt: 1,
-        updatedAt: 1
+        updatedAt: 1,
+        updateHistory: 1
       }
     })
     .sort({ updatedAt: -1 })

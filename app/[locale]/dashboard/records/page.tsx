@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Button, Paper, Stack, Text } from "@mantine/core";
+import { Box, Button, Group, Paper, Stack, Text } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -65,9 +65,14 @@ export default function RecordsPage() {
                         {record.mode} · SKI {formatScore(record.computed.ski)} · {record.session.date}
                       </Text>
                     </Box>
-                    <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default" onClick={(e) => e.stopPropagation()}>
-                      {tc("view")}
-                    </Button>
+                    <Group gap="xs">
+                      <Button component={Link} href={`/dashboard/assessment?id=${record._id}`} variant="light" color="kidex" onClick={(e) => e.stopPropagation()}>
+                        {tc("update")}
+                      </Button>
+                      <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default" onClick={(e) => e.stopPropagation()}>
+                        {tc("view")}
+                      </Button>
+                    </Group>
                 </Stack>
               </Paper>
             ))}

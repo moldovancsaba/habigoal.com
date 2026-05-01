@@ -66,6 +66,7 @@ export interface AssessmentRecord extends AssessmentPayload {
   childId?: string;
   createdAt: string;
   updatedAt: string;
+  updateHistory?: string[];
   computed: {
     movementAverage: number | null;
     socialAverage: number | null;

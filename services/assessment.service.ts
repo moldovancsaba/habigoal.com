@@ -64,11 +64,16 @@ export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) 
   const updatedChild = existingChild && childObjectId ? await updateChildById(childObjectId, childProfile) : null;
   const child = updatedChild ?? (await upsertChild(childProfile));
 
+  const existing = await getAssessmentById(id);
+  const updateHistory = existing?.updateHistory || [];
+  const now = new Date().toISOString();
+  
   return updateAssessmentById(id, {
     ...payload,
     childId: child._id,
     computed: computeAssessment(payload),
-    updatedAt: new Date().toISOString()
+    updatedAt: now,
+    updateHistory: [...updateHistory, now]
   });
 }
 
