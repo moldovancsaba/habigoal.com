@@ -5,6 +5,7 @@ import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme 
 import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { 
   PolarAngleAxis, 
@@ -135,14 +136,24 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             </Box>
           }
           actions={
-            <Button 
-              color="kidex" 
-              variant="outline" 
-              onClick={() => void downloadPdf()} 
-              loading={downloadingPdf}
-            >
-              {td("downloadPdf")}
-            </Button>
+            <Group gap="xs">
+              <Button 
+                component={Link}
+                href={`/dashboard/assessment?id=${record._id}`}
+                color="kidex" 
+                variant="light"
+              >
+                {tc("update")}
+              </Button>
+              <Button 
+                color="kidex" 
+                variant="outline" 
+                onClick={() => void downloadPdf()} 
+                loading={downloadingPdf}
+              >
+                {td("downloadPdf")}
+              </Button>
+            </Group>
           }
         />
       </Stack>
