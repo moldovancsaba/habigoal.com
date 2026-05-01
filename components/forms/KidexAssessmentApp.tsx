@@ -924,6 +924,17 @@ export function KidexAssessmentApp() {
           </SectionCard>
         </Box>
       </Stack>
+
+      <Paper variant="outlined" sx={{ p: 2, display: "flex", justifyContent: "flex-end" }} mt="xl">
+        <MantineGroup>
+          <Button variant="outlined" onClick={newAssessment} sx={{ minWidth: 112, fontWeight: 600 }}>
+            {tc("new")}
+          </Button>
+          <Button variant="contained" onClick={() => void saveAssessment()} disabled={saveState === "saving"} sx={{ minWidth: 150, fontWeight: 700 }}>
+            {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
+          </Button>
+        </MantineGroup>
+      </Paper>
     </Stack>
   );
 }
