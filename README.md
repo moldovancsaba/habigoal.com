@@ -7,6 +7,9 @@ KIDEX is a conductor-facing assessment and reporting app for recording child exa
 - Rapid KRAS and Full KIDEX assessment modes
 - Bio-psycho-social weighted scoring with SKI calculation
 - Centralized child profiles with longitudinal history
+- **Professional Reporting**: Data-driven PDF exports with longitudinal "Bio-Psycho-Social Maps" and development trend analysis
+- **Persistent Audit Log**: Full modification history for assessments, tracking multiple "Updated at" timestamps
+- **Unified Updates**: Ability to re-open and update any existing assessment record directly in survey mode
 - Child management actions (search, edit, delete with history cleanup)
 - New survey from child profile pre-fills only child administration fields (identity context preserved via child UUID)
 - Evidence image upload and camera capture support

@@ -36,6 +36,7 @@ Allowed roles currently used:
 
 - `PATCH /api/assessments/:id`
   - Updates one assessment and re-syncs child profile.
+  - Automatically appends the current modification timestamp to the `updateHistory` log.
 
 - `DELETE /api/assessments/:id`
   - Deletes one assessment.
@@ -101,8 +102,9 @@ Allowed roles currently used:
 
 ## Reporting and export behavior
 
-- Record page provides **direct PDF file generation and download** (client-side `jsPDF` + `jspdf-autotable`).
-- Browser print styles remain available for print view tuning, but export action is now download-oriented.
+- **Bio-Psycho-Social Map**: Data-driven PDF generation that aggregates a child's full assessment history to provide longitudinal development trends and expert recommendations.
+- **Direct PDF Download**: Export action is client-side (`jsPDF` + `jspdf-autotable`), producing professional, localized documents.
+- **Audit Trail**: Every generated report displays the original recording date and the list of update timestamps from the persistent audit log.
 
 ## Validation and error response
 
