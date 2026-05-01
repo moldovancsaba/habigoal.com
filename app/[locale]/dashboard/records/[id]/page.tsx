@@ -32,12 +32,14 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
   const td = useTranslations("Dashboard");
+  const tr = useTranslations("Report");
   const { locale } = useParams();
   const searchParams = useSearchParams();
   const shouldPrint = searchParams.get("print") === "true";
   const reportFormat = searchParams.get("format") || "original";
 
   const [record, setRecord] = useState<AssessmentRecord | null>(null);
+  const [history, setHistory] = useState<AssessmentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
 
@@ -58,7 +60,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
     setDownloadingPdf(true);
     try {
       if (reportFormat === "map") {
-        await PdfService.generateMapReport(record, t, tc, ts);
+        await PdfService.generateMapReport(record, t, tc, ts, tr, history);
       } else {
         await PdfService.generateOriginalReport(record, t, tc, ts);
       }
@@ -72,7 +74,14 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   useEffect(() => {
     fetch(`/api/assessments/${id}`)
       .then((res) => res.json())
-      .then((data) => setRecord(data.assessment))
+      .then((data) => {
+        setRecord(data.assessment);
+        if (data.assessment?.childId) {
+          fetch(`/api/children/${data.assessment.childId}/history`)
+            .then(r => r.json())
+            .then(hData => setHistory(hData.assessments || []));
+        }
+      })
       .finally(() => setLoading(false));
   }, [id]);
 

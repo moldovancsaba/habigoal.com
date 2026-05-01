@@ -105,7 +105,14 @@ export const PdfService = {
   /**
    * Generates the high-fidelity 10-page "Map" professional report.
    */
-  async generateMapReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction): Promise<void> {
+  async generateMapReport(
+    record: AssessmentRecord, 
+    t: TFunction, 
+    tc: TFunction, 
+    ts: TFunction, 
+    tr: TFunction,
+    history: AssessmentRecord[] = []
+  ): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
     const logoDataUrl = await this.getLogoDataUrl();
 
@@ -115,37 +122,36 @@ export const PdfService = {
     doc.setFontSize(28);
     doc.text("KIDEX", 105, 130, { align: "center" });
     doc.setFontSize(22);
-    doc.text("BIO–PSZICHO–SZOCIÁLIS TÉRKÉP", 105, 145, { align: "center" });
+    doc.text(tr("assessmentReport").toUpperCase(), 105, 145, { align: "center" });
     
     doc.setFont("times", "normal");
     doc.setFontSize(18);
     doc.text(record.child.name, 105, 170, { align: "center" });
     doc.setFontSize(14);
-    doc.text(`${record.session.date} · Professzionális Értékelés`, 105, 180, { align: "center" });
+    doc.text(`${record.session.date} · ${tr("latestAssessment")}`, 105, 180, { align: "center" });
     
     doc.setDrawColor(19, 165, 158); // Brand Teal
     doc.setLineWidth(1.5);
     doc.line(40, 200, 170, 200);
 
-    // --- PAGE 2: METHODOLOGY ---
+    // --- PAGE 2: METHODOLOGY & SCALE ---
     doc.addPage();
-    this.drawPageHeader(doc, "MÓDSZERTAN ÉS ÉRTÉKELÉSI SKÁLA", logoDataUrl);
+    this.drawPageHeader(doc, tr("methodologyTitle").toUpperCase(), logoDataUrl);
     
     doc.setFontSize(11);
     doc.setFont("times", "normal");
-    const introText = "Az alábbi szakmai dokumentum a Kidex Assessment OS keretrendszerében készült, amely a gyermeki fejlődés bio-pszicho-szociális aspektusait vizsgálja. Az értékelés alapját a fejlesztő pedagógus strukturált megfigyelései, az ESÉSIK protokoll és a szülői visszajelzések képezik.";
-    doc.text(doc.splitTextToSize(introText, 170), 20, 50);
+    doc.text(doc.splitTextToSize(tr("methodologyIntro"), 170), 20, 50);
 
     autoTable(doc, {
       startY: 70,
-      head: [["Érték", "Megnevezés", "Leírás"]],
+      head: [[tr("scaleValue"), tr("scaleName"), tr("scaleDescription")]],
       body: [
-        ["1", "Jelentős eltérés", "Azonnali intervenciót igényel."],
-        ["2", "Komoly támogatás", "Célzott fejlesztés javasolt."],
-        ["3", "Fejleszthető alap", "Stabilizálást igénylő készségek."],
-        ["4", "Életkornak megfelelő", "Stabil, korosztályos szint."],
-        ["5", "Jó / Erős", "Átlag feletti teljesítmény."],
-        ["6", "Kiemelkedő", "Magas tehetség-potenciál."]
+        ["1", tr("scale1Name"), tr("scale1Desc")],
+        ["2", tr("scale2Name"), tr("scale2Desc")],
+        ["3", tr("scale3Name"), tr("scale3Desc")],
+        ["4", tr("scale4Name"), tr("scale4Desc")],
+        ["5", tr("scale5Name"), tr("scale5Desc")],
+        ["6", tr("scale6Name"), tr("scale6Desc")]
       ],
       theme: "striped",
       headStyles: { fillColor: [61, 63, 77] }
@@ -153,17 +159,42 @@ export const PdfService = {
 
     // --- PAGE 3: GENERAL OBSERVATION ---
     doc.addPage();
-    this.drawPageHeader(doc, "I. ÁLTALÁNOS MEGFIGYELÉSEK", logoDataUrl);
+    this.drawPageHeader(doc, `I. ${t("generalObservation").toUpperCase()}`, logoDataUrl);
     doc.setFontSize(12);
-    doc.text("Szakértői vélemény:", 20, 50);
+    doc.text(tr("professionalOpinion"), 20, 50);
     doc.setFont("times", "italic");
-    doc.text(doc.splitTextToSize(record.notes.general || "Nincs rögzített általános megfigyelés.", 170), 20, 60);
+    doc.text(doc.splitTextToSize(record.notes.general || tr("noGeneralObservation"), 170), 20, 60);
 
-    // --- PAGE 4-6: PROFILES ---
+    // --- PAGE 4: DEVELOPMENT TRENDS (NEW) ---
+    if (history.length > 1) {
+      doc.addPage();
+      this.drawPageHeader(doc, tr("developmentTrends").toUpperCase(), logoDataUrl);
+      doc.setFontSize(11);
+      doc.setFont("times", "normal");
+      doc.text(doc.splitTextToSize(tr("trendExplanation"), 170), 20, 50);
+
+      const trendData = [...history].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      
+      autoTable(doc, {
+        startY: 65,
+        head: [[tc("date"), ts("movement"), ts("social"), ts("mental"), ts("ski")]],
+        body: trendData.map(a => [
+          a.session.date,
+          formatScore(a.computed.movementAverage),
+          formatScore(a.computed.socialAverage),
+          formatScore(a.computed.mentalAverage),
+          formatScore(a.computed.ski)
+        ]),
+        theme: "grid",
+        headStyles: { fillColor: [19, 165, 158] }
+      });
+    }
+
+    // --- PAGE 5-7: PROFILES ---
     const domains: Array<{key: string, label: string, color: [number, number, number]}> = [
-      { key: "rapid_movement", label: "II. MOZGÁSPROFIL", color: [19, 165, 158] },
-      { key: "rapid_social", label: "III. SZOCIÁLIS PROFIL", color: [253, 203, 88] },
-      { key: "rapid_mental", label: "IV. MENTÁLIS PROFIL", color: [61, 63, 77] }
+      { key: "rapid_movement", label: `II. ${ts("movement").toUpperCase()}`, color: [19, 165, 158] },
+      { key: "rapid_social", label: `III. ${ts("social").toUpperCase()}`, color: [253, 203, 88] },
+      { key: "rapid_mental", label: `IV. ${ts("mental").toUpperCase()}`, color: [61, 63, 77] }
     ];
 
     for (const domain of domains) {
@@ -173,7 +204,7 @@ export const PdfService = {
       const items = rapidSections.find(s => s.key === domain.key)?.items || [];
       autoTable(doc, {
         startY: 50,
-        head: [["Terület", "Érték", "Megjegyzés"]],
+        head: [[t("tableObservation"), t("tableScore"), t("tableNote")]],
         body: items.map(item => [
           ts(`${item.key}.title`),
           record.scores[item.key]?.score || "—",
@@ -184,50 +215,60 @@ export const PdfService = {
       });
     }
 
-    // --- PAGE 7: SKI ---
+    // --- PAGE 8: SKI ---
     doc.addPage();
-    this.drawPageHeader(doc, "V. SPORTÁGI KOMPATIBILITÁSI INDEX (SKI)", logoDataUrl);
+    this.drawPageHeader(doc, `V. ${ts("ski").toUpperCase()} INDEX`, logoDataUrl);
     
     doc.setFontSize(32);
     doc.setTextColor(19, 165, 158);
     doc.text(formatScore(record.computed.ski), 105, 80, { align: "center" });
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
-    doc.text("KIDEX SKI INDEX", 105, 95, { align: "center" });
+    doc.text(`KIDEX ${ts("ski").toUpperCase()}`, 105, 95, { align: "center" });
     
     doc.setFontSize(11);
-    const skiExplanation = "Az SKI index a gyermek mozgásos, szociális és mentális érettségének súlyozott átlaga, amely megmutatja a sportági terhelhetőséget és a közösségi beilleszkedés fokát.";
-    doc.text(doc.splitTextToSize(skiExplanation, 150), 30, 110);
+    doc.text(doc.splitTextToSize(tr("skiExplanation"), 150), 30, 110);
 
-    // --- PAGE 8: SPORT RECOMMENDATIONS ---
+    // --- PAGE 9: SPORT RECOMMENDATIONS ---
     doc.addPage();
-    this.drawPageHeader(doc, "VI. SPORTÁGI AJÁNLÁSOK", logoDataUrl);
+    this.drawPageHeader(doc, tr("recommendationsTitle").toUpperCase(), logoDataUrl);
     doc.setFontSize(12);
-    doc.text("A mért adatok alapján javasolt fejlesztési irányok:", 20, 50);
-    doc.text("• Koordináció alapú sportágak", 30, 65);
-    doc.text("• Csapatsportok szociális érzékenyítéssel", 30, 75);
-    doc.text("• Egyéni készségfejlesztő foglalkozások", 30, 85);
+    doc.text(tr("recommendationsIntro"), 20, 50);
+    
+    // Dynamic recommendations based on data
+    const recs = [];
+    const mvAvg = record.computed.movementAverage;
+    if (mvAvg !== null && mvAvg < 3) recs.push(t("stabilizing"));
+    if (mvAvg !== null && mvAvg >= 4) recs.push(t("sportOrientation"));
+    
+    if (recs.length > 0) {
+      recs.forEach((rec, idx) => {
+        doc.text(`• ${rec}`, 30, 65 + (idx * 10));
+      });
+    } else {
+      doc.text("• —", 30, 65);
+    }
 
-    // --- PAGE 9: PRIORITIES ---
+    // --- PAGE 10: PRIORITIES ---
     doc.addPage();
-    this.drawPageHeader(doc, "VII. FEJLESZTÉSI PRIORITÁSOK (12 HÓNAP)", logoDataUrl);
+    this.drawPageHeader(doc, tr("developmentPrioritiesTitle").toUpperCase(), logoDataUrl);
     doc.setFont("times", "normal");
-    doc.text(doc.splitTextToSize(record.notes.adaptations || "Specifikus fejlesztési célok a következő időszakra.", 170), 20, 60);
+    doc.text(doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170), 20, 60);
 
-    // --- PAGE 10: SIGNATURES ---
+    // --- PAGE 11: SIGNATURES ---
     doc.addPage();
-    this.drawPageHeader(doc, "ZÁRÓ ÉRTÉKELÉS", logoDataUrl);
+    this.drawPageHeader(doc, tr("signaturesTitle").toUpperCase(), logoDataUrl);
     
     doc.line(20, 200, 80, 200);
     doc.text("Vígh Milán", 20, 210);
     doc.setFontSize(9);
-    doc.text("Elnök", 20, 215);
+    doc.text(tr("president"), 20, 215);
 
     doc.setFontSize(12);
     doc.line(130, 200, 190, 200);
     doc.text(record.session.conductor || "Kidex Fejlesztő", 130, 210);
     doc.setFontSize(9);
-    doc.text("Szakértő", 130, 215);
+    doc.text(tr("expert"), 130, 215);
 
     const safeName = (record.child.name || "map").replace(/[^\w-]+/g, "_");
     doc.save(`${safeName}_Kidex_Bio-Pszicho-Szocialis_Terkep.pdf`);

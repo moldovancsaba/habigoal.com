@@ -18,6 +18,7 @@ export default function ChildrenListPage() {
   const tc = useTranslations("Common");
   const ta = useTranslations("Assessment");
   const ts = useTranslations("Schema");
+  const tr = useTranslations("Report");
   const { locale } = useParams();
 
   const [children, setChildren] = useState<ChildProfile[]>([]);
@@ -71,10 +72,18 @@ export default function ChildrenListPage() {
     if (!childId || !latestRecordId) return;
     setDownloadingId(childId);
     try {
-      const res = await fetch(`/api/assessments/${latestRecordId}`);
-      if (!res.ok) throw new Error("Failed to fetch assessment");
-      const { assessment } = (await res.json()) as { assessment: AssessmentRecord };
-      await PdfService.generateMapReport(assessment, ta, tc, ts);
+      // Fetch both the assessment and the child's history for a complete map report
+      const [aRes, hRes] = await Promise.all([
+        fetch(`/api/assessments/${latestRecordId}`),
+        fetch(`/api/children/${childId}/history`)
+      ]);
+
+      if (!aRes.ok) throw new Error("Failed to fetch assessment");
+      
+      const { assessment } = (await aRes.json()) as { assessment: AssessmentRecord };
+      const historyData = hRes.ok ? (await hRes.json()).assessments : [];
+      
+      await PdfService.generateMapReport(assessment, ta, tc, ts, tr, historyData);
     } catch (err) {
       console.error(err);
       setMessage(tc("error"));
@@ -315,7 +324,7 @@ export default function ChildrenListPage() {
                               color="kidex" 
                               onClick={(e) => { 
                                 e.stopPropagation(); 
-                                void downloadLatestMap(child._id, child.latestRecordId!); 
+                                void downloadLatestMap(child._id, child.latestRecordId); 
                               }}
                               loading={downloadingId === child._id}
                             >

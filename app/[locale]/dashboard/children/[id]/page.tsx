@@ -27,6 +27,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
   const td = useTranslations("Dashboard");
+  const tr = useTranslations("Report");
 
   const [data, setData] = useState<{ child: ChildProfile; assessments: AssessmentRecord[] } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,7 +47,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
     try {
       // For children history, we generate the "Map" report for the LATEST assessment
       const latestRecord = data.assessments[0];
-      await PdfService.generateMapReport(latestRecord, t, tc, ts);
+      await PdfService.generateMapReport(latestRecord, t, tc, ts, tr, data.assessments);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {
