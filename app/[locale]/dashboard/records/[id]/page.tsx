@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme } from "@mantine/core";
-import { useParams, useSearchParams } from "next/navigation";
+import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Table, Text, Title, useMantineTheme } from "@mantine/core";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -21,6 +21,8 @@ import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import { sectionsForMode } from "@/lib/kidex-schema";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
+import { MaturityRadarChart } from "@/components/analytics/MaturityRadarChart";
 import type { AssessmentRecord } from "@/types/assessment";
 
 const RADAR_CHART_HEIGHT = 200;
@@ -34,7 +36,6 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const ts = useTranslations("Schema");
   const td = useTranslations("Dashboard");
   const tr = useTranslations("Report");
-  const { locale } = useParams();
   const searchParams = useSearchParams();
   const shouldPrint = searchParams.get("print") === "true";
   const reportFormat = searchParams.get("format") || "original";
@@ -118,6 +119,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
     mental: buildRadarData("rapid_mental", record, ts)
   };
 
+  const baseline = history.length > 0 ? history[history.length - 1] : null;
+  const deltaRadarData = [
+    { subject: ts("movement"), A: record.computed.movementAverage || 0, B: baseline?.computed.movementAverage || 0, fullMark: 6 },
+    { subject: ts("social"), A: record.computed.socialAverage || 0, B: baseline?.computed.socialAverage || 0, fullMark: 6 },
+    { subject: ts("mental"), A: record.computed.mentalAverage || 0, B: baseline?.computed.mentalAverage || 0, fullMark: 6 },
+  ];
+
   return (
     <Box className="record-detail">
       <Stack gap="md" mb="lg">
@@ -127,9 +135,11 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             <Box>
               <Text component="span">{record.session.date} · </Text>
               <Text 
-                component="a" 
-                href={`/${locale}/dashboard/children/${record.childId}`}
-                style={{ cursor: "pointer", color: "var(--mantine-color-kidex-6)", fontWeight: 700, textDecoration: "none" }}
+                component={Link} 
+                href={`/dashboard/children/${record.childId}`}
+                fw={700}
+                color="kidex"
+                style={{ textDecoration: "none" }}
               >
                 {record.child.name}
               </Text>
@@ -157,14 +167,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           }
         />
       </Stack>
-
       <SectionCard title={t("reportPreview")}>
-        <Stack gap="md">
+        <Stack gap="xl">
           <Group gap="md" align="center" justify="space-between" wrap="wrap">
             <Group gap="md">
               <Image src="/logo.jpeg" alt="KIDEX" width={64} height={64} style={{ borderRadius: "var(--mantine-radius-md)" }} />
               <Box>
-                <Text fw={800} size="xl">{t("reportPrintTitle")}</Text>
+                <Title order={3} fw={800}>{t("reportPrintTitle")}</Title>
                 <Text size="sm" c="dimmed">{record.child.name}</Text>
               </Box>
             </Group>
@@ -174,31 +183,45 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             </Box>
           </Group>
 
-          <Group gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }} mt="md">
+          <SimpleGrid cols={{ base: 1, md: 3 }} spacing="lg" style={{ alignItems: "flex-end" }}>
+            <Box>
+              <ReadinessGauge 
+                value={record.computed.ski || 0} 
+                title={td("sportReadiness")}
+                subtitle={td("readinessStatus")}
+              />
+            </Box>
+            <Box style={{ gridColumn: "span 2" }}>
+              <MaturityRadarChart 
+                title={td("deltaProfile")}
+                data={deltaRadarData}
+                labels={{
+                  A: td("currentAssessment"),
+                  B: history.length > 1 ? td("baselineAssessment") : undefined
+                }}
+              />
+            </Box>
+          </SimpleGrid>
+
+          <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md">
             <Metric label={ts("movement")} value={formatScore(record.computed.movementAverage)} />
             <Metric label={ts("social")} value={formatScore(record.computed.socialAverage)} />
             <Metric label={ts("mental")} value={formatScore(record.computed.mentalAverage)} />
             <Metric label={ts("ski")} value={formatScore(record.computed.ski)} />
-          </Group>
+          </SimpleGrid>
 
-          <Stack gap="md" mt="xl" style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            <Box style={{ flex: 1, minWidth: 300 }}>
-              <RecordRadarChart title={t("rapidMovementTitle")} data={radarData.movement} domain="movement" />
-            </Box>
-            <Box style={{ flex: 1, minWidth: 300 }}>
-              <RecordRadarChart title={t("rapidSocialTitle")} data={radarData.social} domain="social" />
-            </Box>
-            <Box style={{ flex: 1, minWidth: 300 }}>
-              <RecordRadarChart title={t("rapidMentalTitle")} data={radarData.mental} domain="mental" />
-            </Box>
-          </Stack>
+          <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
+            <RecordRadarChart title={t("rapidMovementTitle")} data={radarData.movement} domain="movement" />
+            <RecordRadarChart title={t("rapidSocialTitle")} data={radarData.social} domain="social" />
+            <RecordRadarChart title={t("rapidMentalTitle")} data={radarData.mental} domain="mental" />
+          </SimpleGrid>
         </Stack>
       </SectionCard>
 
       {sections.map((section) => (
         <SectionCard key={section.key} title={ts(section.key)}>
-          <Paper withBorder p="0">
-            <Table striped highlightOnHover>
+          <Paper withBorder radius="md" style={{ overflow: "hidden" }}>
+            <Table striped highlightOnHover verticalSpacing="sm">
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>{t("tableObservation")}</Table.Th>
@@ -213,9 +236,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                   const entry = record.scores[item.key];
                   return (
                     <Table.Tr key={item.key}>
-                      <Table.Td>{ts(`${item.key}.title`)}</Table.Td>
-                      <Table.Td style={{ textAlign: "right" }}>{entry?.score ?? "—"}</Table.Td>
-                      <Table.Td><Text c="dimmed">{entry?.note || "—"}</Text></Table.Td>
+                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
+                      <Table.Td style={{ textAlign: "right" }}>
+                        <Badge color="kidex" variant="light" size="lg">
+                          {entry?.score ?? "—"}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td><Text size="sm" c="dimmed">{entry?.note || "—"}</Text></Table.Td>
                     </Table.Tr>
                   );
                 })}
@@ -227,35 +254,35 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
       <SectionCard title={t("evidenceImages")}>
         {record.attachments.length === 0 ? (
-          <Text size="sm" c="dimmed">
+          <Text size="sm" c="dimmed" fs="italic">
             {t("noImages")}
           </Text>
         ) : (
-          <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          <SimpleGrid cols={{ base: 2, sm: 3, md: 4, lg: 5 }} spacing="md">
             {record.attachments.map((attachment) => {
               const isPdf = attachment.mimeType === "application/pdf" || attachment.url.toLowerCase().endsWith(".pdf");
               return (
-                <Paper key={attachment.id} withBorder p="sm" style={{ width: 220, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <Paper key={attachment.id} withBorder p="xs" radius="md" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   {isPdf ? (
-                    <Box style={{ height: 132, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--mantine-color-gray-0)", borderRadius: "var(--mantine-radius-md)" }}>
+                    <Box style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--mantine-color-gray-0)", borderRadius: "var(--mantine-radius-md)" }}>
                        <Stack align="center" gap={4}>
-                         <Text size="xl" style={{ fontSize: 40 }}>📄</Text>
-                         <Text size="sm" c="dimmed" style={{ textAlign: "center", paddingInline: 8 }}>{attachment.name || "PDF Report"}</Text>
+                         <Text style={{ fontSize: 32 }}>📄</Text>
+                         <Text size="sm" c="dimmed" style={{ textAlign: "center", paddingInline: 4 }} lineClamp={1}>{attachment.name || "PDF Report"}</Text>
                        </Stack>
                     </Box>
                   ) : (
                     <Image
                       src={attachment.thumbUrl || attachment.url}
                       alt={attachment.name || "Evidence image"}
-                      width={196}
-                      height={132}
-                      style={{ width: "100%", height: "auto", borderRadius: "var(--mantine-radius-md)" }}
+                      width={160}
+                      height={120}
+                      style={{ width: "100%", height: "auto", borderRadius: "var(--mantine-radius-md)", aspectRatio: "4/3", objectFit: "cover" }}
                       unoptimized
                     />
                   )}
-                  <Box mt={8}>
+                  <Box>
                     <Text size="sm" c="dimmed" mb={4}>
-                      {new Date(attachment.uploadedAt).toLocaleString()}
+                      {new Date(attachment.uploadedAt).toLocaleDateString()}
                     </Text>
                     <Button 
                       component="a" 
@@ -273,7 +300,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                 </Paper>
               );
             })}
-          </Stack>
+          </SimpleGrid>
         )}
       </SectionCard>
 
@@ -342,11 +369,11 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <Paper withBorder p="md" style={{ flex: "1 1 140px", minWidth: 120 }}>
-      <Text size="sm" c="dimmed">
+    <Paper withBorder p="md" radius="md" style={{ flex: 1 }}>
+      <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </Text>
-      <Text fw={700} size="lg">
+      <Text size="xl" mt={4} fw={800} color="kidex">
         {value}
       </Text>
     </Paper>
@@ -355,9 +382,10 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
-    <Text size="sm" style={{ whiteSpace: "nowrap" }}>
-      <strong>{label}:</strong> {value}
-    </Text>
+    <Group gap={4} justify="flex-end">
+      <Text size="sm" fw={700}>{label}:</Text>
+      <Text size="sm">{value}</Text>
+    </Group>
   );
 }
 

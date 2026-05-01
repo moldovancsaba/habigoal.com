@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Box, Button, Group, Loader, Modal, MultiSelect, Paper, RangeSlider, Stack, Text, TextInput } from "@mantine/core";
+import { Alert, Badge, Box, Button, Group, Loader, Modal, MultiSelect, Paper, RangeSlider, Stack, Text, TextInput } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -272,7 +272,7 @@ export default function ChildrenListPage() {
           )}
 
           {filtered.length === 0 ? (
-            <Text c="dimmed">{query ? t("noChildrenMatch") : tc("noChildren")}</Text>
+            <Text c="dimmed" fs="italic">{query ? t("noChildrenMatch") : tc("noChildren")}</Text>
           ) : (
             <Stack gap="md">
               {filtered.map((child) => {
@@ -282,66 +282,68 @@ export default function ChildrenListPage() {
                     key={child._id} 
                     withBorder 
                     p="md"
+                    radius="md"
                     onClick={() => window.location.href = `/${locale}/dashboard/children/${child._id}`}
                     style={{ cursor: "pointer" }}
-                    className="clickable-card"
                   >
-                      <Stack gap="md">
-                        <Box style={{ minWidth: 0 }}>
-                          <Text
-                            component={Link}
-                            href={`/dashboard/children/${child._id}`}
-                            fw={700}
-                            size="lg"
-                            style={{ textDecoration: "none", color: "var(--mantine-color-kidex-6)" }}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {child.name}
-                          </Text>
-                          <Text size="sm" c="dimmed">
-                            {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
-                          </Text>
-                          {child.latestSki !== undefined && (
-                            <Group gap="xs" mt={4}>
-                              <Text size="sm" fw={700} c="kidex" bg="teal.0" px={6} py={2} style={{ borderRadius: 4 }}>
-                                LATEST SKI: {formatScore(child.latestSki)}
+                    <Stack gap="md">
+                      <Box>
+                        <Text
+                          component={Link}
+                          href={`/dashboard/children/${child._id}`}
+                          fw={800}
+                          size="lg"
+                          color="kidex"
+                          style={{ textDecoration: "none" }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {child.name}
+                        </Text>
+                        <Text size="sm" c="dimmed">
+                          {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
+                        </Text>
+                        {child.latestSki !== undefined && (
+                          <Group gap="xs" mt={8}>
+                            <Badge color="kidex" variant="filled" size="sm">
+                              LATEST SKI: {formatScore(child.latestSki)}
+                            </Badge>
+                            {child.latestLocation && (
+                              <Text size="sm" c="dimmed" fw={500}>
+                                @{child.latestLocation}
                               </Text>
-                              {child.latestLocation && (
-                                <Text size="sm" c="dimmed">
-                                  @{child.latestLocation}
-                                </Text>
-                              )}
-                            </Group>
-                          )}
-                        </Box>
-                        <Group gap="xs" wrap="wrap">
-                          <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex" onClick={(e) => e.stopPropagation()}>
-                            {t("newSurveyForChild")}
+                            )}
+                          </Group>
+                        )}
+                      </Box>
+                      <Group gap="sm">
+                        <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex" size="sm" onClick={(e) => e.stopPropagation()}>
+                          {t("newSurveyForChild")}
+                        </Button>
+                        {child.latestRecordId && (
+                          <Button 
+                            variant="outline" 
+                            color="kidex" 
+                            size="sm"
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              void downloadLatestMap(child._id, child.latestRecordId); 
+                            }}
+                            loading={downloadingId === child._id}
+                          >
+                            {t("downloadPdf")}
                           </Button>
-                          {child.latestRecordId && (
-                            <Button 
-                              variant="outline" 
-                              color="kidex" 
-                              onClick={(e) => { 
-                                e.stopPropagation(); 
-                                void downloadLatestMap(child._id, child.latestRecordId); 
-                              }}
-                              loading={downloadingId === child._id}
-                            >
-                              {t("downloadPdf")}
-                            </Button>
-                          )}
-                          <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" onClick={(e) => e.stopPropagation()}>
-                            {t("viewHistory")}
-                          </Button>
-                          <Button variant="light" color="gray" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>
-                            {t("editChild")}
-                          </Button>
-                          <Button color="red" variant="light" onClick={(e) => { e.stopPropagation(); void deleteChild(child); }}>
-                            {t("deleteChild")}
-                          </Button>
-                        </Group>
-                      </Stack>
+                        )}
+                        <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
+                          {t("viewHistory")}
+                        </Button>
+                        <Button variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>
+                          {t("editChild")}
+                        </Button>
+                        <Button color="red" variant="subtle" size="sm" onClick={(e) => { e.stopPropagation(); void deleteChild(child); }}>
+                          {t("deleteChild")}
+                        </Button>
+                      </Group>
+                    </Stack>
                   </Paper>
                 );
               })}

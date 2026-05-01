@@ -1,20 +1,19 @@
 "use client";
 
-import type { CSSProperties, MouseEvent, ReactNode } from "react";
-import { ChangeEvent, Children, cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Alert as MantineAlert,
-  Anchor as MantineAnchor,
-  Badge as MantineBadge,
-  Box as MantineBox,
-  Button as MantineButton,
-  Checkbox as MantineCheckbox,
-  Divider as MantineDivider,
-  Group as MantineGroup,
-  Modal as MantineModal,
-  Paper as MantinePaper,
+  Alert,
+  Anchor,
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  Group,
+  Modal,
+  Paper,
   Select,
-  Stack as MantineStack,
+  SimpleGrid,
+  Stack,
   Text,
   TextInput,
   Textarea
@@ -27,7 +26,7 @@ import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { getStandardForAgeGroup } from "@/lib/standards";
 import { formatScore } from "@/lib/utils";
-import { getDomainChipStyles, type AssessmentDomain } from "@/lib/domain-colors";
+
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -102,169 +101,6 @@ function loadDraftAssessment(): AssessmentPayload {
 async function parseApiError(response: Response): Promise<string | null> {
   const body = (await response.json().catch(() => null)) as { error?: string } | null;
   return body?.error || null;
-}
-
-type AnyProps = Record<string, unknown>;
-
-function resolveResponsiveValue(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
-  const map = value as Record<string, unknown>;
-  return map.lg ?? map.md ?? map.sm ?? map.xs ?? map.base ?? Object.values(map)[0];
-}
-
-function spacingToRem(value: unknown) {
-  if (typeof value === "number") return `${value * 0.25}rem`;
-  return value;
-}
-
-function sxToStyle(sx?: unknown): CSSProperties | undefined {
-  if (!sx || typeof sx === "function") return undefined;
-  const raw = sx as Record<string, unknown>;
-  const normalized: Record<string, unknown> = {};
-  const spacingMap: Record<string, string[]> = {
-    p: ["padding"],
-    px: ["paddingLeft", "paddingRight"],
-    py: ["paddingTop", "paddingBottom"],
-    pt: ["paddingTop"],
-    pr: ["paddingRight"],
-    pb: ["paddingBottom"],
-    pl: ["paddingLeft"],
-    m: ["margin"],
-    mx: ["marginLeft", "marginRight"],
-    my: ["marginTop", "marginBottom"],
-    mt: ["marginTop"],
-    mr: ["marginRight"],
-    mb: ["marginBottom"],
-    ml: ["marginLeft"]
-  };
-  for (const [key, value] of Object.entries(raw)) {
-    const resolved = resolveResponsiveValue(value);
-    if (key in spacingMap) {
-      for (const target of spacingMap[key]) {
-        normalized[target] = spacingToRem(resolved);
-      }
-      continue;
-    }
-    if (key === "bgcolor") {
-      if (resolved === "background.paper") {
-        normalized.backgroundColor = "var(--mantine-color-body)";
-      } else if (resolved === "common.black") {
-        normalized.backgroundColor = "#000";
-      } else {
-        normalized.backgroundColor = resolved;
-      }
-      continue;
-    }
-    if (key === "borderColor" && resolved === "divider") {
-      normalized.borderColor = "var(--mantine-color-default-border)";
-      continue;
-    }
-    normalized[key] = resolved;
-  }
-  return normalized as CSSProperties;
-}
-
-function Alert({ severity, children, onClose }: AnyProps) {
-  const color = severity === "error" ? "red" : severity === "success" ? "kidex" : "blue";
-  return <MantineAlert color={color as string} withCloseButton={Boolean(onClose)} onClose={onClose as (() => void) | undefined}>{children as ReactNode}</MantineAlert>;
-}
-
-function Box({ sx, component, ...rest }: AnyProps) {
-  const style = sxToStyle(sx);
-  const MantineBoxAny = MantineBox as unknown as (props: Record<string, unknown>) => ReactNode;
-  if (component) {
-    return <MantineBoxAny component={component} style={style} {...(rest as Record<string, unknown>)} />;
-  }
-  return <MantineBox style={style} {...(rest as Record<string, unknown>)} />;
-}
-
-function Button({ variant, sx, children, ...rest }: AnyProps) {
-  const mappedVariant = variant === "contained" ? "filled" : variant === "outlined" ? "default" : (variant as string | undefined);
-  return <MantineButton variant={mappedVariant} size="md" style={sxToStyle(sx)} {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantineButton>;
-}
-
-function Checkbox(props: AnyProps) {
-  return <MantineCheckbox {...(props as Record<string, unknown>)} />;
-}
-
-function Chip({ label, sx }: AnyProps) {
-  return <MantineBadge variant="light" style={sxToStyle(sx)}>{label as ReactNode}</MantineBadge>;
-}
-
-function Dialog({ open, onClose, children, maxWidth }: AnyProps) {
-  const size = maxWidth === "sm" ? "md" : "lg";
-  return <MantineModal opened={Boolean(open)} onClose={(onClose as (() => void) | undefined) ?? (() => {})} size={size}>{children as ReactNode}</MantineModal>;
-}
-
-function DialogTitle({ children }: AnyProps) {
-  return <Text size="lg" fw={600} mb="xs">{children as ReactNode}</Text>;
-}
-
-function DialogContent({ children }: AnyProps) {
-  return <Box>{children}</Box>;
-}
-
-function DialogActions({ children }: AnyProps) {
-  return <MantineGroup justify="flex-end" mt="md">{children as ReactNode}</MantineGroup>;
-}
-
-function Divider({ sx }: AnyProps) {
-  return <MantineDivider style={sxToStyle(sx)} />;
-}
-
-function FormControlLabel({ control, label }: AnyProps) {
-  return <MantineGroup gap="xs">{control as ReactNode}<Text size="sm">{label as ReactNode}</Text></MantineGroup>;
-}
-
-function Link({ children, ...rest }: AnyProps) {
-  return <MantineAnchor {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantineAnchor>;
-}
-
-function Paper({ variant, sx, children, ...rest }: AnyProps) {
-  return <MantinePaper withBorder={variant === "outlined" ? true : (rest.withBorder as boolean | undefined)} style={sxToStyle(sx)} {...(rest as Record<string, unknown>)}>{children as ReactNode}</MantinePaper>;
-}
-
-function Stack({ spacing, direction, sx, children, divider, ...rest }: AnyProps) {
-  const dir = (typeof direction === "string" ? direction : resolveResponsiveValue(direction)) as string | undefined;
-  const resolvedGap = resolveResponsiveValue(spacing);
-  const style = { ...sxToStyle(sx), display: "flex", flexDirection: dir } as CSSProperties;
-  const nodes = Children.toArray(children as ReactNode);
-  const withDividers = (divider
-    ? nodes.flatMap((node, index) => (index === 0 ? [node] : [isValidElement(divider) ? cloneElement(divider) : divider, node]))
-    : nodes) as ReactNode[];
-  return (
-    <MantineStack gap={typeof resolvedGap === "number" ? `${resolvedGap * 0.5}rem` : (resolvedGap as string | number | undefined)} style={style} {...(rest as Record<string, unknown>)}>
-      {withDividers}
-    </MantineStack>
-  );
-}
-
-function TextField({ multiline, minRows, type, slotProps, fullWidth, variant, size, style, ...rest }: AnyProps) {
-  const extraProps = slotProps as { inputLabel?: { shrink?: boolean } } | undefined;
-  const textProps = { ...(rest as Record<string, unknown>) };
-  const normalizedVariant = variant === "outlined" ? "filled" : (variant as string | undefined);
-  const normalizedSize = size === "small" ? "sm" : size === "medium" ? "md" : (size as string | undefined);
-  const mergedStyle = {
-    ...(style as CSSProperties | undefined),
-    ...(fullWidth ? { width: "100%" } : null)
-  } as CSSProperties;
-  void extraProps;
-  if (multiline) return <Textarea minRows={(minRows as number) ?? 2} variant={normalizedVariant} size={normalizedSize} style={mergedStyle} {...textProps} />;
-  return <TextInput type={type as string | undefined} variant={normalizedVariant} size={normalizedSize} style={mergedStyle} {...textProps} />;
-}
-
-function ToggleButton({ selected, onChange, sx, children, ...rest }: AnyProps) {
-  return (
-    <MantineButton
-      variant={selected ? "filled" : "default"}
-      color={selected ? "kidex" : "gray"}
-      onClick={onChange as ((event: MouseEvent<HTMLButtonElement>) => void) | undefined}
-      style={sxToStyle(sx)}
-      {...(rest as Record<string, unknown>)}
-    >
-      {children as ReactNode}
-    </MantineButton>
-  );
 }
 
 export function KidexAssessmentApp() {
@@ -576,55 +412,54 @@ export function KidexAssessmentApp() {
     .slice(0, 3);
 
   return (
-    <Stack spacing={3}>
+    <Stack gap="xl">
       <PageHeader
         title={t("appTitle")}
         subtitle={t("appSubtitle")}
         actions={
-          <>
-            <Button variant="outlined" onClick={newAssessment} sx={{ minWidth: 112, fontWeight: 600 }}>
+          <Group gap="sm">
+            <Button variant="default" onClick={newAssessment} style={{ minWidth: 112, fontWeight: 600 }}>
               {tc("new")}
             </Button>
-            <Button variant="contained" onClick={() => void saveAssessment()} disabled={saveState === "saving"} sx={{ minWidth: 112, fontWeight: 700 }}>
+            <Button color="kidex" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 112, fontWeight: 700 }}>
               {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
             </Button>
-          </>
+          </Group>
         }
       />
 
       {message ? (
         <Alert
-          severity={saveState === "error" ? "error" : saveState === "saved" ? "success" : "info"}
+          color={saveState === "error" ? "red" : saveState === "saved" ? "kidex" : "blue"}
+          withCloseButton
           onClose={() => setMessage("")}
         >
           {message}
         </Alert>
       ) : null}
 
-      <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: "wrap" }}>
+      <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md">
         <MetricCard label={ts("movement")} value={formatScore(computed.movementAverage)} target={standard?.movement.target} />
         <MetricCard label={ts("social")} value={formatScore(computed.socialAverage)} target={standard?.social.target} />
         <MetricCard label={ts("mental")} value={formatScore(computed.mentalAverage)} target={standard?.mental.target} />
         <MetricCard label="SKI" value={formatScore(computed.ski)} target={standard?.ski.target} />
-      </Stack>
+      </SimpleGrid>
 
-      <Stack spacing={3} id="setup">
+      <Stack gap="xl" id="setup">
         <SectionCard title={t("setupTitle")}>
-          <Stack direction="row" spacing={3} useFlexGap sx={{ width: "100%", flexWrap: "wrap" }}>
-            <FieldWrap>
-              <TextField label={t("childName")} value={assessment.child.name} onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "name", e.target.value)} fullWidth />
-            </FieldWrap>
-            <FieldWrap>
-              <TextField
+          <Stack gap="md">
+            <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="md">
+              <TextInput 
+                label={t("childName")} 
+                value={assessment.child.name} 
+                onChange={(e) => update("child", "name", e.target.value)} 
+              />
+              <TextInput
                 label={t("birthDate")}
                 type="date"
                 value={assessment.child.birthDate}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "birthDate", e.target.value)}
-                fullWidth
-                slotProps={{ inputLabel: { shrink: true } }}
+                onChange={(e) => update("child", "birthDate", e.target.value)}
               />
-            </FieldWrap>
-            <FieldWrap>
               <Select
                 label={t("ageGroup")}
                 value={assessment.child.ageGroup || ""}
@@ -637,8 +472,6 @@ export function KidexAssessmentApp() {
                 ]}
                 onChange={(value) => update("child", "ageGroup", value ?? "")}
               />
-            </FieldWrap>
-            <FieldWrap>
               <Select
                 label={t("mode")}
                 value={assessment.mode}
@@ -650,11 +483,12 @@ export function KidexAssessmentApp() {
                   setAssessment((current) => ({ ...current, mode: (value as AssessmentPayload["mode"]) ?? "rapid" }))
                 }
               />
-            </FieldWrap>
-            <FieldWrap>
-              <SearchableSelect label={t("conductor")} value={assessment.session.conductor} options={conductorOptions} onChange={(value) => update("session", "conductor", value)} />
-            </FieldWrap>
-            <FieldWrap>
+              <SearchableSelect 
+                label={t("conductor")} 
+                value={assessment.session.conductor} 
+                options={conductorOptions} 
+                onChange={(value) => update("session", "conductor", value)} 
+              />
               <SearchableSelect
                 label={t("location")}
                 value={assessment.session.location}
@@ -665,11 +499,12 @@ export function KidexAssessmentApp() {
                 }}
                 allowAdd
               />
-            </FieldWrap>
-            <FieldWrap>
-              <SearchableSelect label={t("observers")} value={assessment.session.observers} options={observerOptions} onChange={(value) => update("session", "observers", value)} />
-            </FieldWrap>
-            <FieldWrap>
+              <SearchableSelect 
+                label={t("observers")} 
+                value={assessment.session.observers} 
+                options={observerOptions} 
+                onChange={(value) => update("session", "observers", value)} 
+              />
               <Select
                 label={t("context")}
                 value={assessment.session.context}
@@ -681,83 +516,83 @@ export function KidexAssessmentApp() {
                 ]}
                 onChange={(value) => update("session", "context", value ?? "event")}
               />
-            </FieldWrap>
-            <FieldWide>
-              <TextField
+            </SimpleGrid>
+
+            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+              <Textarea
                 label={t("knownTraits")}
                 value={assessment.child.knownTraits}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "knownTraits", e.target.value)}
-                fullWidth
-                multiline
-                minRows={2}
-                slotProps={{ inputLabel: { shrink: true } }}
+                onChange={(e) => update("child", "knownTraits", e.target.value)}
+                minRows={3}
               />
-            </FieldWide>
-            <FieldWide>
-              <TextField
+              <Textarea
                 label={t("parentSignals")}
                 value={assessment.child.parentSignals}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => update("child", "parentSignals", e.target.value)}
-                fullWidth
-                multiline
-                minRows={2}
-                slotProps={{ inputLabel: { shrink: true } }}
+                onChange={(e) => update("child", "parentSignals", e.target.value)}
+                minRows={3}
               />
-            </FieldWide>
-            <FieldWide>
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
-                <FormControlLabel control={<Checkbox checked={assessment.session.consentPhoto} onChange={(e: ChangeEvent<HTMLInputElement>) => update("session", "consentPhoto", e.target.checked)} />} label={t("consentPhoto")} />
-                <FormControlLabel control={<Checkbox checked={assessment.session.consentReport} onChange={(e: ChangeEvent<HTMLInputElement>) => update("session", "consentReport", e.target.checked)} />} label={t("consentReport")} />
-              </Stack>
-            </FieldWide>
+            </SimpleGrid>
+
+            <Group gap="xl" mt="xs">
+              <Checkbox 
+                label={t("consentPhoto")} 
+                checked={assessment.session.consentPhoto} 
+                onChange={(e) => update("session", "consentPhoto", e.target.checked)} 
+              />
+              <Checkbox 
+                label={t("consentReport")} 
+                checked={assessment.session.consentReport} 
+                onChange={(e) => update("session", "consentReport", e.target.checked)} 
+              />
+            </Group>
           </Stack>
         </SectionCard>
 
         <SectionCard title={t("evidenceImages")}>
-          <Stack spacing={2}>
+          <Stack gap="md">
             <Text size="sm" c="dimmed">
               {t("uploadSecurityNote")}
             </Text>
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-              <Button variant="outlined" component="label" disabled={!assessment.session.consentPhoto || uploading}>
+            <Group gap="sm">
+              <Button variant="outline" component="label" disabled={!assessment.session.consentPhoto || uploading}>
                 <input
                   type="file"
                   accept="image/*"
                   hidden
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => void uploadImage(e)}
+                  onChange={(e) => void uploadImage(e)}
                   disabled={!assessment.session.consentPhoto || uploading}
                 />
                 {uploading ? t("uploading") : t("uploadImage")}
               </Button>
-              <Button variant="outlined" onClick={() => void openCamera()} disabled={!assessment.session.consentPhoto || uploading}>
+              <Button variant="outline" onClick={() => void openCamera()} disabled={!assessment.session.consentPhoto || uploading}>
                 {uploading ? t("uploading") : t("takePhoto")}
               </Button>
-            </Stack>
+            </Group>
             {assessment.attachments.length === 0 ? (
               <Text size="sm" c="dimmed">
                 {t("noImages")}
               </Text>
             ) : (
-              <Stack spacing={2} divider={<Divider flexItem />}>
+              <Stack gap="md">
                 {assessment.attachments.map((attachment) => (
-                  <Stack key={attachment.id} direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ alignItems: { sm: "center" } }}>
+                  <Group key={attachment.id} gap="md" align="center" wrap="nowrap">
                     <Image
                       src={attachment.thumbUrl || attachment.url}
                       alt={attachment.name || "Image"}
                       width={160}
                       height={120}
-                      style={{ width: 160, height: "auto", maxHeight: 160, borderRadius: "var(--mantine-radius-md)" }}
+                      style={{ width: 160, height: "auto", borderRadius: "var(--mantine-radius-md)" }}
                       unoptimized
                     />
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Link href={attachment.url} target="_blank" rel="noreferrer" variant="body2">
+                    <Box style={{ flex: 1, minWidth: 0 }}>
+                      <Anchor href={attachment.url} target="_blank" rel="noreferrer" size="sm">
                         {attachment.name || "Image"}
-                      </Link>
+                      </Anchor>
                     </Box>
-                    <Button variant="outlined" color="inherit" onClick={() => removeAttachment(attachment.id)}>
+                    <Button variant="subtle" color="red" size="sm" onClick={() => removeAttachment(attachment.id)}>
                       {tc("remove")}
                     </Button>
-                  </Stack>
+                  </Group>
                 ))}
               </Stack>
             )}
@@ -765,121 +600,104 @@ export function KidexAssessmentApp() {
         </SectionCard>
       </Stack>
 
-      <Dialog open={cameraOpen} onClose={closeCameraDialog} fullWidth maxWidth="sm">
-        <DialogTitle>{t("takePhoto")}</DialogTitle>
-        <DialogContent>
+      <Modal opened={cameraOpen} onClose={closeCameraDialog} title={t("takePhoto")} centered size="lg">
+        <Stack gap="md">
           {capturedPreview ? (
-            <Box
-              component="img"
+            <Image
               src={capturedPreview}
               alt={t("takePhoto")}
-              sx={{ width: "100%", border: 1, borderColor: "divider" }}
+              width={640}
+              height={480}
+              style={{ width: "100%", height: "auto", border: "1px solid var(--mantine-color-default-border)", borderRadius: "var(--mantine-radius-md)" }}
             />
           ) : (
-            <Box
-              component="video"
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              sx={{ width: "100%", border: 1, borderColor: "divider", bgcolor: "common.black" }}
-            />
+            <Box style={{ width: "100%", aspectRatio: "4/3", background: "#000", borderRadius: "var(--mantine-radius-md)", overflow: "hidden" }}>
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </Box>
           )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeCameraDialog}>{tc("cancel")}</Button>
-          {capturedPreview ? (
-            <>
-              <Button onClick={() => void openCamera()} variant="outlined">{t("retakePhoto")}</Button>
-              <Button onClick={() => void uploadCapturedPhoto()} variant="contained" disabled={uploading}>
-                {uploading ? t("uploading") : t("usePhoto")}
-              </Button>
-            </>
-          ) : (
-            <Button onClick={capturePhotoFrame} variant="contained">{t("capturePhoto")}</Button>
-          )}
-        </DialogActions>
-      </Dialog>
+          <Group justify="flex-end" gap="sm">
+            <Button variant="default" onClick={closeCameraDialog}>{tc("cancel")}</Button>
+            {capturedPreview ? (
+              <>
+                <Button onClick={() => void openCamera()} variant="outline">{t("retakePhoto")}</Button>
+                <Button onClick={() => void uploadCapturedPhoto()} color="kidex" disabled={uploading}>
+                  {uploading ? t("uploading") : t("usePhoto")}
+                </Button>
+              </>
+            ) : (
+              <Button onClick={capturePhotoFrame} color="kidex">{t("capturePhoto")}</Button>
+            )}
+          </Group>
+        </Stack>
+      </Modal>
 
       <div id="scoring" />
       {sections.map((section, sectionIndex) => (
         <SectionCard
           key={section.key}
           title={`${ts(section.key)} (${Math.round(section.weight * 100)}%)`}
-          action={<Chip label={ts(section.domain)} size="small" variant="outlined" sx={getDomainChipStyles(section.domain as AssessmentDomain)} />}
+          action={<Badge variant="light" color="kidex" size="lg">{ts(section.domain)}</Badge>}
         >
-          <Stack spacing={1.25}>
+          <Stack gap="md">
             {section.items.map((item, itemIndex) => {
               const entry = assessment.scores[item.key];
               return (
                 <Paper
                   key={item.key}
-                  sx={{
-                    px: { xs: 1.5, sm: 2 },
-                    py: { xs: 1.25, sm: 1.5 },
-                    bgcolor: "background.paper"
-                  }}
+                  withBorder
+                  p="md"
+                  bg="gray.0"
                 >
-                  <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={1}
-                    sx={{ justifyContent: "space-between", alignItems: { sm: "flex-start" } }}
-                  >
-                    <Box sx={{ minWidth: 0 }}>
-                      <Text size="sm" c="dimmed">
-                        {sectionIndex * 25 + itemIndex + 1}
-                      </Text>
-                      <Text size="lg" fw={700} lh={1.2}>
-                        {ts(`${item.key}.title`)}
-                      </Text>
-                      <Text size="sm" c="dimmed">
-                        {ts(`${item.key}.prompt`)}
-                      </Text>
-                    </Box>
-                    <Box
-                      role="group"
-                      aria-label={t("tableScore")}
-                      sx={{
-                        alignSelf: { xs: "flex-end", sm: "flex-start" },
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "flex-end",
-                        gap: 0.75
-                      }}
-                    >
-                      {[1, 2, 3, 4, 5, 6].map((n) => {
-                        const selected = scoreValue(entry) === n;
-                        return (
-                          <ToggleButton
-                            key={n}
-                            value={String(n)}
-                            selected={selected}
-                            aria-label={`score-${n}`}
-                            onChange={() => updateScore(item.key, { score: selected ? "" : n })}
-                            sx={{
-                              minWidth: { xs: 44, sm: 42 },
-                              minHeight: { xs: 44, sm: 40 },
-                              px: 1,
-                              fontWeight: 700
-                            }}
-                          >
-                            {n}
-                          </ToggleButton>
-                        );
-                      })}
-                    </Box>
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start">
+                      <Box style={{ flex: 1, minWidth: 0 }}>
+                        <Text size="sm" c="dimmed" fw={500}>
+                          {sectionIndex * 25 + itemIndex + 1}
+                        </Text>
+                        <Text size="md" fw={700} lh={1.3}>
+                          {ts(`${item.key}.title`)}
+                        </Text>
+                        <Text size="sm" c="dimmed">
+                          {ts(`${item.key}.prompt`)}
+                        </Text>
+                      </Box>
+                      <Group gap={6} wrap="wrap" justify="flex-end">
+                        {[1, 2, 3, 4, 5, 6].map((n) => {
+                          const selected = scoreValue(entry) === n;
+                          return (
+                            <Button
+                              key={n}
+                              variant={selected ? "filled" : "default"}
+                              color={selected ? "kidex" : "gray"}
+                              onClick={() => updateScore(item.key, { score: selected ? "" : n })}
+                              style={{
+                                width: 42,
+                                height: 42,
+                                padding: 0,
+                                fontWeight: 700
+                              }}
+                            >
+                              {n}
+                            </Button>
+                          );
+                        })}
+                      </Group>
+                    </Group>
+                    <Textarea
+                      value={entry?.note || ""}
+                      onChange={(e) => updateScore(item.key, { note: e.target.value })}
+                      placeholder={t("observationNote")}
+                      minRows={2}
+                      variant="default"
+                      size="sm"
+                    />
                   </Stack>
-                  <TextField
-                    value={entry?.note || ""}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => updateScore(item.key, { note: e.target.value })}
-                    placeholder={t("observationNote")}
-                    fullWidth
-                    multiline
-                    minRows={2}
-                    variant="outlined"
-                    size="small"
-                    style={{ marginTop: 2 }}
-                  />
                 </Paper>
               );
             })}
@@ -887,94 +705,72 @@ export function KidexAssessmentApp() {
         </SectionCard>
       ))}
 
-      <Stack direction={{ xs: "column", lg: "row" }} spacing={2} sx={{ alignItems: "stretch" }} id="report">
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <SectionCard title={t("professionalNotes")}>
-            <Stack spacing={2}>
-              <TextField
-                label={t("generalObservation")}
-                value={assessment.notes.general}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => update("notes", "general", e.target.value)}
-                fullWidth
-                multiline
-                minRows={3}
-                slotProps={{ inputLabel: { shrink: true } }}
-              />
-              <TextField
-                label={t("adaptationNeeds")}
-                value={assessment.notes.adaptations}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => update("notes", "adaptations", e.target.value)}
-                fullWidth
-                multiline
-                minRows={3}
-                slotProps={{ inputLabel: { shrink: true } }}
-              />
-              <TextField
-                label={t("referralNote")}
-                value={assessment.notes.referral}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => update("notes", "referral", e.target.value)}
-                fullWidth
-                multiline
-                minRows={3}
-                slotProps={{ inputLabel: { shrink: true } }}
-              />
-            </Stack>
-          </SectionCard>
-        </Box>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <SectionCard title={t("reportPreview")}>
+      <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="xl" id="report">
+        <SectionCard title={t("professionalNotes")}>
+          <Stack gap="md">
+            <Textarea
+              label={t("generalObservation")}
+              value={assessment.notes.general}
+              onChange={(e) => update("notes", "general", e.target.value)}
+              minRows={4}
+            />
+            <Textarea
+              label={t("adaptationNeeds")}
+              value={assessment.notes.adaptations}
+              onChange={(e) => update("notes", "adaptations", e.target.value)}
+              minRows={4}
+            />
+            <Textarea
+              label={t("referralNote")}
+              value={assessment.notes.referral}
+              onChange={(e) => update("notes", "referral", e.target.value)}
+              minRows={4}
+            />
+          </Stack>
+        </SectionCard>
+        
+        <SectionCard title={t("reportPreview")}>
+          <Stack gap="lg">
             <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
             <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
-            <Box sx={{ mt: 2 }}>
+            <Box mt="md">
               <Text size="sm" c="dimmed">
                 {t("nextStep")}:
               </Text>
-              <Text size="md" mt={4} fw={600}>
+              <Text size="lg" mt={4} fw={700} color="kidex">
                 {computed.ski === null ? t("completeAll") : computed.ski < 3.5 ? t("stabilizing") : t("sportOrientation")}
               </Text>
             </Box>
-          </SectionCard>
-        </Box>
-      </Stack>
+          </Stack>
+        </SectionCard>
+      </SimpleGrid>
 
-      <Paper variant="outlined" sx={{ p: 2, display: "flex", justifyContent: "flex-end" }} mt="xl">
-        <MantineGroup>
-          <Button variant="outlined" onClick={newAssessment} sx={{ minWidth: 112, fontWeight: 600 }}>
+      <Paper withBorder p="lg" radius="md" mt="xl">
+        <Group justify="flex-end" gap="md">
+          <Button variant="default" onClick={newAssessment} style={{ minWidth: 112, fontWeight: 600 }}>
             {tc("new")}
           </Button>
-          <Button variant="contained" onClick={() => void saveAssessment()} disabled={saveState === "saving"} sx={{ minWidth: 150, fontWeight: 700 }}>
+          <Button color="kidex" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 150, fontWeight: 700 }}>
             {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
           </Button>
-        </MantineGroup>
+        </Group>
       </Paper>
     </Stack>
   );
 }
 
-function FieldWrap({ children }: { children: ReactNode }) {
-  return (
-    <Box sx={{ flex: "1 1 260px", minWidth: 220, maxWidth: "100%" }}>{children}</Box>
-  );
-}
-
-function FieldWide({ children }: { children: ReactNode }) {
-  return (
-    <Box sx={{ flex: "1 1 100%", minWidth: 0, width: "100%" }}>{children}</Box>
-  );
-}
-
 function MetricCard({ label, value, target }: { label: string; value: string; target?: number }) {
   return (
-    <Paper variant="outlined" sx={{ p: 2, flex: "1 1 160px", minWidth: 140 }}>
-      <Text size="sm" c="dimmed">
+    <Paper withBorder p="md" radius="md" style={{ flex: 1 }}>
+      <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </Text>
-      <Text size="xl" component="p" mt={4} fw={700}>
+      <Text size="xl" mt={4} fw={800} color="kidex">
         {value}
       </Text>
       {target ? (
-        <Text size="sm" c="dimmed" mt={4} style={{ display: "block" }}>
-          target: {target.toFixed(1)}
+        <Text size="sm" c="dimmed" mt={4}>
+          TARGET: {target.toFixed(1)}
         </Text>
       ) : null}
     </Paper>
@@ -983,20 +779,21 @@ function MetricCard({ label, value, target }: { label: string; value: string; ta
 
 function ReportList({ title, items, emptyText }: { title: string; items: string[]; emptyText: string }) {
   return (
-    <Box sx={{ mb: 2 }}>
-      <Text size="lg" fw={700} mb={4}>
+    <Box>
+      <Text size="md" fw={700} mb="xs">
         {title}
       </Text>
       {items.length ? (
-        <Box component="ul" sx={{ pl: 2, m: 0 }}>
+        <Stack gap={4} component="ul" style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {items.map((item, idx) => (
-            <Text key={`${idx}-${item}`} component="li" size="sm">
+            <Text key={`${idx}-${item}`} component="li" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+              <Box component="span" c="kidex" mt="xs" style={{ display: "inline-block", alignSelf: "flex-start" }}>•</Box>
               {item}
             </Text>
           ))}
-        </Box>
+        </Stack>
       ) : (
-        <Text size="sm" c="dimmed">
+        <Text size="sm" c="dimmed" fs="italic">
           {emptyText}
         </Text>
       )}

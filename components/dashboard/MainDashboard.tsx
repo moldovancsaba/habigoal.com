@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { rapidSections } from "@/lib/kidex-schema";
 import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
+import { SymmetryChart } from "@/components/analytics/SymmetryChart";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { User } from "@/services/user-service";
 
@@ -42,6 +43,7 @@ export function MainDashboard() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
+  const theme = useMantineTheme();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -136,6 +138,94 @@ export function MainDashboard() {
     return (records / children).toFixed(1);
   }, [data]);
 
+  const assessmentVelocity = useMemo(() => {
+    if (!data?.assessments || data.assessments.length < 2) return "—";
+    
+    // Group assessments by child
+    const byChild = new Map<string, number[]>();
+    for (const a of data.assessments) {
+      if (!a.childId) continue;
+      if (!byChild.has(a.childId)) byChild.set(a.childId, []);
+      byChild.get(a.childId)!.push(new Date(a.createdAt).getTime());
+    }
+    
+    let totalDiff = 0;
+    let totalGaps = 0;
+    
+    for (const times of byChild.values()) {
+      if (times.length < 2) continue;
+      times.sort((a, b) => a - b);
+      for (let i = 1; i < times.length; i++) {
+        totalDiff += (times[i] - times[i-1]);
+        totalGaps++;
+      }
+    }
+    
+    if (totalGaps === 0) return "—";
+    const avgDays = totalDiff / (1000 * 60 * 60 * 24 * totalGaps);
+    return `${avgDays.toFixed(0)} ${tc("days")}`;
+  }, [data, tc]);
+
+  const successRatio = useMemo(() => {
+    if (!data?.assessments) return [];
+    const latestByChild = new Map<string, number>();
+    for (const a of data.assessments) {
+      if (!a.childId) continue;
+      const current = latestByChild.get(a.childId) || 0;
+      const time = new Date(a.createdAt).getTime();
+      if (time > current) latestByChild.set(a.childId, a.computed.ski || 0);
+    }
+    
+    let success = 0;
+    let other = 0;
+    for (const ski of latestByChild.values()) {
+      if (ski >= 3.5) success++;
+      else other++;
+    }
+    
+    return [
+      { name: "Ready", value: success, color: theme.colors.kidex[6] },
+      { name: "Developing", value: other, color: theme.colors.gray[4] }
+    ];
+  }, [data]);
+
+  const locationPerformance = useMemo(() => {
+    if (!data?.assessments) return [];
+    const locMap = new Map<string, { sum: number, count: number }>();
+    for (const a of data.assessments) {
+      const loc = a.session.location || "Unknown";
+      if (!locMap.has(loc)) locMap.set(loc, { sum: 0, count: 0 });
+      const stats = locMap.get(loc)!;
+      if (a.computed.ski) {
+        stats.sum += a.computed.ski;
+        stats.count++;
+      }
+    }
+    
+    return Array.from(locMap.entries())
+      .map(([name, stats]) => ({
+        name,
+        value: Number((stats.sum / stats.count).toFixed(2))
+      }))
+      .sort((a, b) => b.value - a.value);
+  }, [data]);
+
+  const globalBalance = useMemo(() => {
+    if (!data?.assessments || data.assessments.length === 0) return [];
+    let m = 0, s = 0, p = 0, count = 0;
+    for (const a of data.assessments) {
+      if (a.computed.movementAverage !== null) { m += a.computed.movementAverage; count++; }
+      if (a.computed.socialAverage !== null) s += a.computed.socialAverage;
+      if (a.computed.mentalAverage !== null) p += a.computed.mentalAverage;
+    }
+    if (count === 0) return [];
+    return [
+      { domain: ts("movement"), value: Number((m / count).toFixed(2)) },
+      { domain: ts("social"), value: Number((s / count).toFixed(2)) },
+      { domain: ts("mental"), value: Number((p / count).toFixed(2)) }
+    ];
+  }, [data, ts]);
+
   const rapidDomainSummary = useMemo(() => buildRapidDomainSummary(data?.assessments ?? [], ts), [data, ts]);
 
   if (loading) {
@@ -153,12 +243,66 @@ export function MainDashboard() {
       <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <MetricCard label={t("totalUsers")} value={String(data?.users.length ?? 0)} />
         <MetricCard label={t("totalRecords")} value={String(data?.assessments.length ?? 0)} />
+        <MetricCard label={t("assessmentVelocity")} value={assessmentVelocity} />
       </Stack>
 
       <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <MetricCard label={t("totalChildren")} value={String(data?.childrenCount ?? 0)} />
         <MetricCard label={t("avgRecordsPerChild")} value={avgRecordsPerChild} />
       </Stack>
+
+      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
+        <Box style={{ flex: 1, minWidth: 320 }}>
+          <SectionCard title={t("firstTimeSuccessTitle")} subheader={t("firstTimeSuccessSubtitle")}>
+            <Box style={{ height: 220 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={successRatio}
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {successRatio.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend verticalAlign="bottom" height={36}/>
+                </PieChart>
+              </ResponsiveContainer>
+            </Box>
+          </SectionCard>
+        </Box>
+
+        <Box style={{ flex: 1, minWidth: 320 }}>
+          <SymmetryChart 
+            title={t("globalBalanceTitle")} 
+            data={globalBalance}
+          />
+        </Box>
+      </Stack>
+
+      <SectionCard title={t("locationPerformanceTitle")} subheader={t("locationPerformanceSubtitle")}>
+        <Box style={{ height: 240 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={locationPerformance} layout="vertical" margin={{ left: 40, right: 20 }}>
+              <XAxis type="number" domain={[0, 6]} hide />
+              <YAxis 
+                dataKey="name" 
+                type="category" 
+                tick={{ fontSize: 12, fill: "var(--mantine-color-text)" }} 
+                width={100}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip />
+              <Bar dataKey="value" fill="var(--mantine-color-kidex-6)" radius={[0, 4, 4, 0]} barSize={20} />
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
+      </SectionCard>
 
       <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
         <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>

@@ -134,30 +134,7 @@ export const PdfService = {
     doc.setLineWidth(1.5);
     doc.line(40, 200, 170, 200);
 
-    // --- PAGE 2: METHODOLOGY & SCALE ---
-    doc.addPage();
-    this.drawPageHeader(doc, tr("methodologyTitle").toUpperCase(), logoDataUrl);
-    
-    doc.setFontSize(11);
-    doc.setFont("times", "normal");
-    doc.text(doc.splitTextToSize(tr("methodologyIntro"), 170), 20, 50);
-
-    autoTable(doc, {
-      startY: 70,
-      head: [[tr("scaleValue"), tr("scaleName"), tr("scaleDescription")]],
-      body: [
-        ["1", tr("scale1Name"), tr("scale1Desc")],
-        ["2", tr("scale2Name"), tr("scale2Desc")],
-        ["3", tr("scale3Name"), tr("scale3Desc")],
-        ["4", tr("scale4Name"), tr("scale4Desc")],
-        ["5", tr("scale5Name"), tr("scale5Desc")],
-        ["6", tr("scale6Name"), tr("scale6Desc")]
-      ],
-      theme: "striped",
-      headStyles: { fillColor: [61, 63, 77] }
-    });
-
-    // --- PAGE 3: GENERAL OBSERVATION ---
+    // --- PAGE 2: GENERAL OBSERVATION ---
     doc.addPage();
     this.drawPageHeader(doc, `I. ${t("generalObservation").toUpperCase()}`, logoDataUrl);
     doc.setFontSize(12);
@@ -165,7 +142,7 @@ export const PdfService = {
     doc.setFont("times", "italic");
     doc.text(doc.splitTextToSize(record.notes.general || tr("noGeneralObservation"), 170), 20, 60);
 
-    // --- PAGE 4: DEVELOPMENT TRENDS (NEW) ---
+    // --- PAGE 3: DEVELOPMENT TRENDS ---
     if (history.length > 1) {
       doc.addPage();
       this.drawPageHeader(doc, tr("developmentTrends").toUpperCase(), logoDataUrl);
@@ -175,8 +152,40 @@ export const PdfService = {
 
       const trendData = [...history].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
       
+      // Draw a simple line chart
+      const chartX = 30;
+      const chartY = 120;
+      const chartWidth = 150;
+      const chartHeight = 40;
+      
+      // Axes
+      doc.setDrawColor(200);
+      doc.line(chartX, chartY, chartX + chartWidth, chartY); // X axis
+      doc.line(chartX, chartY, chartX, chartY - chartHeight); // Y axis
+      
+      // Plot SKI Trend
+      doc.setDrawColor(19, 165, 158);
+      doc.setLineWidth(0.8);
+      
+      if (trendData.length > 1) {
+        const step = chartWidth / (trendData.length - 1);
+        for (let i = 0; i < trendData.length - 1; i++) {
+          const x1 = chartX + (i * step);
+          const y1 = chartY - ((trendData[i].computed.ski || 0) / 6 * chartHeight);
+          const x2 = chartX + ((i + 1) * step);
+          const y2 = chartY - ((trendData[i+1].computed.ski || 0) / 6 * chartHeight);
+          doc.line(x1, y1, x2, y2);
+          doc.circle(x1, y1, 0.8, "F");
+          if (i === trendData.length - 2) doc.circle(x2, y2, 0.8, "F");
+        }
+      }
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      doc.text("SKI Index Evolution", chartX, chartY - chartHeight - 5);
+      doc.setTextColor(0);
+
       autoTable(doc, {
-        startY: 65,
+        startY: 130,
         head: [[tc("date"), ts("movement"), ts("social"), ts("mental"), ts("ski")]],
         body: trendData.map(a => [
           a.session.date,
@@ -190,7 +199,7 @@ export const PdfService = {
       });
     }
 
-    // --- PAGE 5-7: PROFILES ---
+    // --- PAGE 4-6: PROFILES ---
     const domains: Array<{key: string, label: string, color: [number, number, number]}> = [
       { key: "rapid_movement", label: `II. ${ts("movement").toUpperCase()}`, color: [19, 165, 158] },
       { key: "rapid_social", label: `III. ${ts("social").toUpperCase()}`, color: [253, 203, 88] },
@@ -215,21 +224,74 @@ export const PdfService = {
       });
     }
 
-    // --- PAGE 8: SKI ---
+    // --- PAGE 7: SKI ---
     doc.addPage();
     this.drawPageHeader(doc, `V. ${ts("ski").toUpperCase()} INDEX`, logoDataUrl);
     
+    const currentSki = record.computed.ski;
+    const firstSki = history.length > 0 ? history[history.length - 1].computed.ski : null;
+
     doc.setFontSize(32);
     doc.setTextColor(19, 165, 158);
-    doc.text(formatScore(record.computed.ski), 105, 80, { align: "center" });
+    doc.text(formatScore(currentSki), 105, 80, { align: "center" });
+    
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
     doc.text(`KIDEX ${ts("ski").toUpperCase()}`, 105, 95, { align: "center" });
-    
-    doc.setFontSize(11);
-    doc.text(doc.splitTextToSize(tr("skiExplanation"), 150), 30, 110);
 
-    // --- PAGE 9: SPORT RECOMMENDATIONS ---
+    // Draw a Gauge
+    const gaugeX = 105;
+    const gaugeY = 125;
+    const gaugeRadius = 25;
+    
+    // Background arc
+    doc.setDrawColor(230);
+    doc.setLineWidth(4);
+    for (let a = 0; a <= 180; a += 5) {
+      const rad1 = (180 + a) * Math.PI / 180;
+      const rad2 = (180 + a + 5) * Math.PI / 180;
+      doc.line(
+        gaugeX + Math.cos(rad1) * gaugeRadius, gaugeY + Math.sin(rad1) * gaugeRadius,
+        gaugeX + Math.cos(rad2) * gaugeRadius, gaugeY + Math.sin(rad2) * gaugeRadius
+      );
+    }
+    
+    // Active arc
+    const val = (currentSki || 0) / 6;
+    doc.setDrawColor(19, 165, 158);
+    for (let a = 0; a <= 180 * val; a += 5) {
+      const rad1 = (180 + a) * Math.PI / 180;
+      const rad2 = (180 + a + 5) * Math.PI / 180;
+      doc.line(
+        gaugeX + Math.cos(rad1) * gaugeRadius, gaugeY + Math.sin(rad1) * gaugeRadius,
+        gaugeX + Math.cos(rad2) * gaugeRadius, gaugeY + Math.sin(rad2) * gaugeRadius
+      );
+    }
+
+    // Needle
+    const needleRad = (180 + (180 * val)) * Math.PI / 180;
+    doc.setDrawColor(0);
+    doc.setLineWidth(1);
+    doc.line(gaugeX, gaugeY, gaugeX + Math.cos(needleRad) * (gaugeRadius + 5), gaugeY + Math.sin(needleRad) * (gaugeRadius + 5));
+    doc.circle(gaugeX, gaugeY, 2, "F");
+    
+    if (firstSki !== null && history.length > 1) {
+      doc.setFontSize(11);
+      doc.text(`${tr("latestAssessment")}: ${formatScore(currentSki)}`, 105, 140, { align: "center" });
+      doc.text(`${tc("date")} (1.): ${formatScore(firstSki)}`, 105, 147, { align: "center" });
+      
+      const diff = (currentSki !== null && firstSki !== null) ? currentSki - firstSki : 0;
+      if (diff > 0) {
+        doc.setTextColor(0, 128, 0);
+        doc.text(`+${formatScore(diff)} Improvement`, 105, 155, { align: "center" });
+      }
+      doc.setTextColor(0, 0, 0);
+    }
+
+    doc.setFontSize(11);
+    doc.text(doc.splitTextToSize(tr("skiExplanation"), 150), 30, 170);
+
+    // --- PAGE 8: SPORT RECOMMENDATIONS ---
     doc.addPage();
     this.drawPageHeader(doc, tr("recommendationsTitle").toUpperCase(), logoDataUrl);
     doc.setFontSize(12);
@@ -249,13 +311,13 @@ export const PdfService = {
       doc.text("• —", 30, 65);
     }
 
-    // --- PAGE 10: PRIORITIES ---
+    // --- PAGE 9: PRIORITIES ---
     doc.addPage();
     this.drawPageHeader(doc, tr("developmentPrioritiesTitle").toUpperCase(), logoDataUrl);
     doc.setFont("times", "normal");
     doc.text(doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170), 20, 60);
 
-    // --- PAGE 11: SIGNATURES ---
+    // --- PAGE 10: SIGNATURES ---
     doc.addPage();
     this.drawPageHeader(doc, tr("signaturesTitle").toUpperCase(), logoDataUrl);
     

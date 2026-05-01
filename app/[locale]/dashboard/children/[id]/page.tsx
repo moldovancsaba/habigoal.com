@@ -14,8 +14,12 @@ import { formatScore } from "@/lib/utils";
 import { PdfService } from "@/lib/pdf-service";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
+import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
+import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
+import { SparklineChart } from "@/components/analytics/SparklineChart";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
+import { Badge, SimpleGrid } from "@mantine/core";
 
 const RADAR_CHART_HEIGHT = 220;
 const RADAR_TICK_FONT_SIZE = 12;
@@ -45,7 +49,6 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
 
     setDownloadingPdf(true);
     try {
-      // For children history, we generate the "Map" report for the LATEST assessment
       const latestRecord = data.assessments[0];
       await PdfService.generateMapReport(latestRecord, t, tc, ts, tr, data.assessments);
     } catch (error) {
@@ -71,6 +74,25 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
     );
   }
 
+  const latest = data.assessments[0];
+  const baseline = data.assessments.length > 0 ? data.assessments[data.assessments.length - 1] : null;
+
+  const benchmarkData = [
+    { subject: ts("movement"), individual: latest?.computed.movementAverage || 0, average: baseline?.computed.movementAverage || 0 },
+    { subject: ts("social"), individual: latest?.computed.socialAverage || 0, average: baseline?.computed.socialAverage || 0 },
+    { subject: ts("mental"), individual: latest?.computed.mentalAverage || 0, average: baseline?.computed.mentalAverage || 0 },
+  ];
+
+  // Calculate Strengths & Focus Areas from the latest record
+  const allScores = latest ? Object.entries(latest.scores).map(([key, val]) => ({
+    key,
+    label: ts(`${key}.title`),
+    score: val.score || 0
+  })).filter(s => s.score > 0) : [];
+
+  const strengths = allScores.sort((a, b) => b.score - a.score).slice(0, 3);
+  const focusAreas = allScores.sort((a, b) => a.score - b.score).slice(0, 3);
+
   const trend = calculateTrend(data.assessments);
   const currentAgeGroup = calculateAgeGroup(data.child.birthDate);
   const standard = getStandardForAgeGroup(currentAgeGroup || "");
@@ -94,40 +116,72 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
         }
       />
 
-      <SectionCard title={t("longitudinalTrends")}>
-        <Stack gap="xl">
-          {trend.length > 0 ? (
-            <>
-              <TrendBarChart 
-                title={ts("movement")} 
-                data={trend} 
-                dataKey="movement" 
-                target={standard?.movement.target} 
-                domain="movement" 
-                locale={locale}
-              />
-              <TrendBarChart 
-                title={ts("social")} 
-                data={trend} 
-                dataKey="social" 
-                target={standard?.social.target} 
-                domain="social" 
-                locale={locale}
-              />
-              <TrendBarChart 
-                title={ts("mental")} 
-                data={trend} 
-                dataKey="mental" 
-                target={standard?.mental.target} 
-                domain="mental" 
-                locale={locale}
-              />
-            </>
-          ) : (
-            <Text c="dimmed">{t("noHistory")}</Text>
-          )}
-        </Stack>
+      <SectionCard title={td("skiProgression")}>
+        <LongitudinalChart 
+          data={data.assessments.slice().reverse().map(a => ({ 
+            date: a.session.date, 
+            value: a.computed.ski || 0 
+          }))} 
+        />
       </SectionCard>
+
+      <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
+        <Box>
+          <SectionCard title={t("longitudinalTrends")}>
+            <Stack gap="md">
+              <LongitudinalChart 
+                title={ts("movement")}
+                data={trend.map(p => ({ date: p.date, value: p.movement }))}
+                color={getDomainMainColor("movement")}
+              />
+              <LongitudinalChart 
+                title={ts("social")}
+                data={trend.map(p => ({ date: p.date, value: p.social }))}
+                color={getDomainMainColor("social")}
+              />
+              <LongitudinalChart 
+                title={ts("mental")}
+                data={trend.map(p => ({ date: p.date, value: p.mental }))}
+                color={getDomainMainColor("mental")}
+              />
+            </Stack>
+          </SectionCard>
+        </Box>
+        <Box>
+          <BenchmarkChart 
+            title={td("ageBenchmarking")}
+            data={benchmarkData}
+            labels={{
+              individual: tc("latestAssessment") || "Latest",
+              average: td("baselineAssessment") || "Baseline"
+            }}
+          />
+          <Stack gap="md" mt="lg">
+            <Paper withBorder p="md" radius="md">
+              <Text fw={700} size="sm" mb="xs" c="green">{td("strengthsTitle")}</Text>
+              <Stack gap={4}>
+                {strengths.map(s => (
+                  <Group key={s.key} justify="space-between">
+                    <Text size="sm">{s.label}</Text>
+                    <Badge variant="light" color="green">{s.score}</Badge>
+                  </Group>
+                ))}
+              </Stack>
+            </Paper>
+            <Paper withBorder p="md" radius="md">
+              <Text fw={700} size="sm" mb="xs" c="orange">{td("focusAreasTitle")}</Text>
+              <Stack gap={4}>
+                {focusAreas.map(s => (
+                  <Group key={s.key} justify="space-between">
+                    <Text size="sm">{s.label}</Text>
+                    <Badge variant="light" color="orange">{s.score}</Badge>
+                  </Group>
+                ))}
+              </Stack>
+            </Paper>
+          </Stack>
+        </Box>
+      </SimpleGrid>
 
       <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
         <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -145,7 +199,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
 
       <SectionCard title={t("assessmentHistory")}>
         <Paper withBorder p={0}>
-          <Table striped highlightOnHover>
+          <Table striped highlightOnHover verticalSpacing="sm">
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>{tc("date")}</Table.Th>
@@ -154,6 +208,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                 <Table.Th>{ts("social")}</Table.Th>
                 <Table.Th>{ts("mental")}</Table.Th>
                 <Table.Th>{ts("ski")}</Table.Th>
+                <Table.Th>{td("volatility")}</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -164,12 +219,21 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                   style={{ cursor: "pointer" }}
                 >
                   <Table.Td>{a.session.date}</Table.Td>
-                  <Table.Td>{a.mode}</Table.Td>
+                  <Table.Td>
+                    <Badge variant="outline" size="sm" color="gray">{a.mode}</Badge>
+                  </Table.Td>
                   <Table.Td>{formatScore(a.computed.movementAverage)}</Table.Td>
                   <Table.Td>{formatScore(a.computed.socialAverage)}</Table.Td>
                   <Table.Td>{formatScore(a.computed.mentalAverage)}</Table.Td>
                   <Table.Td>
-                    <strong>{formatScore(a.computed.ski)}</strong>
+                    <Text fw={700} color="kidex">{formatScore(a.computed.ski)}</Text>
+                  </Table.Td>
+                  <Table.Td>
+                    <SparklineChart data={[
+                      a.computed.movementAverage || 0,
+                      a.computed.socialAverage || 0,
+                      a.computed.mentalAverage || 0
+                    ]} />
                   </Table.Td>
                 </Table.Tr>
               ))}
@@ -233,102 +297,6 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
         )}
       </SectionCard>
     </Stack>
-  );
-}
-
-function TrendBarChart({
-  title,
-  data,
-  dataKey,
-  target,
-  domain,
-  locale
-}: {
-  title: string;
-  data: TrendPoint[];
-  dataKey: keyof Omit<TrendPoint, "date">;
-  target?: number;
-  domain: AssessmentDomain;
-  locale: string;
-}) {
-  const barColor = getDomainMainColor(domain);
-
-  return (
-    <Paper withBorder p="md">
-      <Stack gap="xs">
-        <Group justify="space-between" align="center">
-          <Text fw={700} size="lg">{title}</Text>
-          {target && (
-            <Text size="sm" c="dimmed">
-              Target: <Text component="span" fw={700} c="blue">{formatScore(target)}</Text>
-            </Text>
-          )}
-        </Group>
-        <Box style={{ width: "100%", height: 180 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis 
-                dataKey="date" 
-                tick={{ fontSize: 10, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis 
-                domain={[0, 6]} 
-                tick={{ fontSize: 10, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-                axisLine={false}
-                tickLine={false}
-                width={30}
-              />
-              <Tooltip 
-                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-                contentStyle={{ 
-                  borderRadius: 'var(--mantine-radius-md)',
-                  border: '1px solid var(--mantine-color-default-border)',
-                  fontFamily: CHART_FONT_FAMILY
-                }}
-              />
-              <Bar 
-                dataKey={dataKey} 
-                radius={[4, 4, 0, 0]} 
-                barSize={40}
-                onClick={(data) => {
-                  if (data && data.id) {
-                    window.location.href = `/${locale}/dashboard/records/${data.id}`;
-                  }
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={barColor} 
-                    style={{ transition: "opacity 0.2s" }}
-                    onMouseEnter={(e: React.MouseEvent) => { (e.target as SVGElement).setAttribute("style", "opacity: 0.8; transition: opacity 0.2s"); }}
-                    onMouseLeave={(e: React.MouseEvent) => { (e.target as SVGElement).setAttribute("style", "opacity: 1; transition: opacity 0.2s"); }}
-                  />
-                ))}
-              </Bar>
-              {target && (
-                <ReferenceLine 
-                  y={target} 
-                  stroke="var(--mantine-color-blue-filled)" 
-                  strokeDasharray="3 3" 
-                  label={{ 
-                    position: 'right', 
-                    value: 'T', 
-                    fill: 'var(--mantine-color-blue-filled)', 
-                    fontSize: 10,
-                    fontWeight: 700 
-                  }} 
-                />
-              )}
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-      </Stack>
-    </Paper>
   );
 }
 

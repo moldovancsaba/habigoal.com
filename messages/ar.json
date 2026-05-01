@@ -84,7 +84,28 @@
     "deleteChildConfirm": "هل تريد حذف {name} مع كل السجل المرتبط؟ لا يمكن التراجع عن ذلك.",
     "childDeleted": "تم حذف الطفل وكامل السجل.",
     "dailyAverageTrendsTitle": "اتجاهات المتوسط اليومي",
-    "dailyAverageTrendsSubtitle": "متوسط أداء جميع الأطفال الذين تم تقييمهم خلال آخر 30 يومًا"
+    "dailyAverageTrendsSubtitle": "متوسط أداء جميع الأطفال الذين تم تقييمهم خلال آخر 30 يومًا",
+    "assessmentVelocity": "سرعة التقييم",
+    "days": "يوم",
+    "ready": "جاهز",
+    "developing": "قيد التطوير",
+    "firstTimeSuccessTitle": "نسبة الجاهزية الرياضية",
+    "firstTimeSuccessSubtitle": "نسبة الأطفال الذين وصلوا إلى مؤشر SKI 3.5+",
+    "locationPerformanceTitle": "أداء المواقع",
+    "locationPerformanceSubtitle": "متوسط مؤشر SKI لكل موقع تدريب",
+    "globalBalanceTitle": "التوازن التنظيمي",
+    "globalBalanceSubtitle": "المتوسط التنظيمي للأبعاد الثلاثة الرئيسية",
+    "sportReadiness": "الجاهزية الرياضية",
+    "readinessStatus": "حالة النضج",
+    "deltaProfile": "ملف التطوير",
+    "deltaProfileSubtitle": "الحالة الحالية مقابل القياس الأول",
+    "currentAssessment": "الحالي",
+    "baselineAssessment": "الأساسي (1.)",
+    "skiProgression": "تطور مؤشر SKI",
+    "strengthsTitle": "نقاط القوة",
+    "focusAreasTitle": "مجالات التركيز",
+    "ageBenchmarking": "مقارنة الفئة العمرية",
+    "volatility": "الاتجاه"
   },
   "Assessment": {
     "saved": "تم حفظ التقييم.",
@@ -451,5 +472,22 @@
     "feature2": "تحليل الاتجاهات الطولية",
     "feature3": "تقارير مهنية مؤتمتة",
     "accessDenied": "تم رفض الوصول. بريدك الإلكتروني ليس مدرجاً في قائمة المستخدمين المدعوين. يرجى الاتصال بالمسؤول."
+  },
+  "Report": {
+    "professionalOpinion": "الرأي المهني:",
+    "noGeneralObservation": "لا توجد ملاحظات عامة مسجلة.",
+    "developmentTrends": "اتجاهات التطوير",
+    "trendExplanation": "توضح الرسوم البيانية التالية تطور الطفل بمرور الوقت عبر الأبعاد الثلاثة الرئيسية.",
+    "skiExplanation": "مؤشر SKI هو متوسط مرجح للنضج الحركي والاجتماعي والذهني للطفل، ويوضح القدرة الاستيعابية للتحمل الرياضي ودرجة الاندماج المجتمعي.",
+    "recommendationsTitle": "VI. توصيات رياضية",
+    "recommendationsIntro": "اتجاهات التطوير المقترحة بناءً على البيانات المقاسة:",
+    "developmentPrioritiesTitle": "VII. أولويات التطوير (12 شهراً)",
+    "noDevelopmentPriorities": "لا توجد أولويات تطوير محددة مسجلة.",
+    "signaturesTitle": "التقييم النهائي",
+    "president": "الرئيس",
+    "expert": "الخبير",
+    "latestAssessment": "آخر تقييم",
+    "professionalRecommendation": "التوصية المهنية",
+    "assessmentReport": "التقرير المهني"
   }
 }
