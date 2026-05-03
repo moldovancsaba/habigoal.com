@@ -59,7 +59,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  const authError = requireRole(_request, ["admin"]);
+  const authError = requireRole(_request, ["admin", "conductor"]);
   if (authError) return authError;
 
   const _id = await objectIdFromContext(context);

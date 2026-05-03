@@ -21,6 +21,7 @@ export interface ChildProfile {
   // Metrics fields (populated via aggregation)
   latestLocation?: string;
   latestSki?: number;
+  avgSki?: number;
   latestRecordId?: string;
   latestScores?: {
     movement: number;
@@ -67,6 +68,36 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
       }
     },
     {
+      $lookup: {
+        from: "assessments",
+        let: { childId: { $toString: "$_id" } },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $or: [
+                  { $eq: ["$childId", "$$childId"] },
+                  {
+                    $and: [
+                      { $eq: ["$child.name", "$name"] },
+                      { $eq: ["$child.birthDate", "$birthDate"] }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              avgSki: { $avg: "$computed.ski" }
+            }
+          }
+        ],
+        as: "aggregateMetrics"
+      }
+    },
+    {
       $addFields: {
         latestAssessment: { $arrayElemAt: ["$latestAssessment", 0] }
       }
@@ -80,7 +111,8 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
           movement: "$latestAssessment.computed.movementAverage",
           social: "$latestAssessment.computed.socialAverage",
           mental: "$latestAssessment.computed.mentalAverage"
-        }
+        },
+        avgSki: { $round: [{ $ifNull: [{ $arrayElemAt: ["$aggregateMetrics.avgSki", 0] }, 0] }, 2] }
       }
     },
     { $sort: { name: 1 } as any }

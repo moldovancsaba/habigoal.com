@@ -33,7 +33,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const nav = [
     { href: "/dashboard", label: t("overview") },
     { href: "/dashboard/assessment", label: t("survey") },
-    { href: "/dashboard/records", label: t("records") },
     { href: "/dashboard/children", label: t("children") },
     { href: "/dashboard/settings", label: t("settings") }
   ];

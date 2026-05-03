@@ -44,6 +44,8 @@ export default function ChildrenListPage() {
   const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>([]);
   const [skiRange, setSkiRange] = useState<[number, number]>([0, 100]);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<ChildProfile | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -233,10 +235,6 @@ export default function ChildrenListPage() {
 
   async function deleteChild(child: ChildProfile) {
     if (!child._id) return;
-
-    const ok = window.confirm(t("deleteChildConfirm", { name: child.name }));
-    if (!ok) return;
-
     const response = await fetch(`/api/children/${child._id}`, { method: "DELETE" }).catch(() => null);
     if (!response?.ok) {
       setError(true);
@@ -364,6 +362,9 @@ export default function ChildrenListPage() {
                             <Badge color="kidex" variant="filled" size="sm">
                               LATEST SKI: {formatScore(child.latestSki)}
                             </Badge>
+                            <Badge color="blue" variant="light" size="sm">
+                              AVG SKI: {formatScore(child.avgSki)}
+                            </Badge>
                             {child.latestLocation && (
                               <Text size="sm" c="dimmed" fw={500}>
                                 @{child.latestLocation}
@@ -396,7 +397,7 @@ export default function ChildrenListPage() {
                         <Button variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>
                           {t("editChild")}
                         </Button>
-                        <Button color="red" variant="subtle" size="sm" onClick={(e) => { e.stopPropagation(); void deleteChild(child); }}>
+                        <Button color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }}>
                           {t("deleteChild")}
                         </Button>
                       </Group>
@@ -452,6 +453,29 @@ export default function ChildrenListPage() {
           <Group justify="flex-end" mt="sm">
             <Button variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving}>{tc("cancel")}</Button>
             <Button color="kidex" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : "Create"}</Button>
+          </Group>
+        </Stack>
+      </Modal>
+      <Modal opened={Boolean(deleteTarget)} onClose={() => setDeleteTarget(null)} title={t("deleteChild")} centered>
+        <Stack gap="md">
+          <Text size="sm">
+            {t("deleteChildConfirm", { name: deleteTarget?.name || "" })}
+          </Text>
+          <Text size="sm" c="dimmed">Type `delete` to confirm.</Text>
+          <TextInput value={deleteConfirmText} onChange={(e) => setDeleteConfirmText(e.currentTarget.value)} placeholder="delete" />
+          <Group justify="flex-end">
+            <Button variant="subtle" onClick={() => setDeleteTarget(null)}>{tc("cancel")}</Button>
+            <Button
+              color="red"
+              disabled={deleteConfirmText.trim().toLowerCase() !== "delete" || !deleteTarget}
+              onClick={() => {
+                if (!deleteTarget) return;
+                void deleteChild(deleteTarget);
+                setDeleteTarget(null);
+              }}
+            >
+              {t("deleteChild")}
+            </Button>
           </Group>
         </Stack>
       </Modal>

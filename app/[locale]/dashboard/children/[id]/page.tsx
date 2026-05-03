@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme } from "@mantine/core";
+import { Box, Button, Group, Loader, Modal, Paper, Stack, Table, Text, TextInput, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { rapidSections } from "@/lib/kidex-schema";
@@ -34,6 +35,9 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   const [data, setData] = useState<{ child: ChildProfile; assessments: AssessmentRecord[] } | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deletingSurvey, setDeletingSurvey] = useState(false);
 
   useEffect(() => {
     fetch(`/api/children/${id}/history`)
@@ -54,6 +58,17 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
     } finally {
       setDownloadingPdf(false);
     }
+  }
+
+  async function deleteLatestSurvey() {
+    if (!data?.assessments?.[0]?._id) return;
+    setDeletingSurvey(true);
+    const response = await fetch(`/api/assessments/${data.assessments[0]._id}`, { method: "DELETE" }).catch(() => null);
+    setDeletingSurvey(false);
+    if (!response?.ok) return;
+    setData((current) => current ? { ...current, assessments: current.assessments.slice(1) } : current);
+    setDeleteModalOpen(false);
+    setDeleteConfirmText("");
   }
 
   if (loading) {
@@ -101,14 +116,27 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
         title={data.child.name} 
         subtitle={data.child.birthDate} 
         actions={
-          <Button 
-            color="kidex" 
-            onClick={() => void downloadPdf()} 
-            loading={downloadingPdf}
-            disabled={data.assessments.length === 0}
-          >
-            {td("downloadPdf")}
-          </Button>
+          <Group>
+            <Button
+              component={Link}
+              href={data.assessments[0]?._id ? `/dashboard/assessment?id=${data.assessments[0]._id}` : "/dashboard/assessment"}
+              variant="default"
+              disabled={data.assessments.length === 0}
+            >
+              {tc("update")}
+            </Button>
+            <Button 
+              color="kidex" 
+              onClick={() => void downloadPdf()} 
+              loading={downloadingPdf}
+              disabled={data.assessments.length === 0}
+            >
+              {td("downloadPdf")}
+            </Button>
+            <Button color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0}>
+              Delete survey
+            </Button>
+          </Group>
         }
       />
 
@@ -292,7 +320,47 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           </Stack>
         )}
       </SectionCard>
+      <DeleteSurveyModal
+        opened={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        confirmValue={deleteConfirmText}
+        onConfirmValueChange={setDeleteConfirmText}
+        onDelete={() => void deleteLatestSurvey()}
+        deleting={deletingSurvey}
+      />
     </Stack>
+  );
+}
+
+function DeleteSurveyModal({
+  opened,
+  onClose,
+  confirmValue,
+  onConfirmValueChange,
+  onDelete,
+  deleting
+}: {
+  opened: boolean;
+  onClose: () => void;
+  confirmValue: string;
+  onConfirmValueChange: (next: string) => void;
+  onDelete: () => void;
+  deleting: boolean;
+}) {
+  return (
+    <Modal opened={opened} onClose={onClose} title="Delete survey" centered>
+      <Stack gap="md">
+        <Text size="sm">This will permanently remove the selected survey.</Text>
+        <Text size="sm" c="dimmed">Type `delete` to confirm.</Text>
+        <TextInput value={confirmValue} onChange={(e) => onConfirmValueChange(e.currentTarget.value)} placeholder="delete" />
+        <Group justify="flex-end">
+          <Button variant="subtle" onClick={onClose}>Cancel</Button>
+          <Button color="red" disabled={confirmValue.trim().toLowerCase() !== "delete" || deleting} loading={deleting} onClick={onDelete}>
+            Delete survey
+          </Button>
+        </Group>
+      </Stack>
+    </Modal>
   );
 }
 
