@@ -27,6 +27,7 @@ export default function SettingsPage() {
   const [me, setMe] = useState<{ isGoogleLinked: boolean } | null>(null);
   const [deletedChildren, setDeletedChildren] = useState<Array<{ _id?: string; name: string; updatedAt?: string }>>([]);
   const [deletedAssessments, setDeletedAssessments] = useState<Array<{ _id?: string; child?: { name?: string }; session?: { date?: string }; updatedAt?: string }>>([]);
+  const [newStandardsVersion, setNewStandardsVersion] = useState("");
 
   useEffect(() => {
     void (async () => {
@@ -157,6 +158,56 @@ export default function SettingsPage() {
         [locale]: {
           ...prev.emailTemplates[locale],
           [field]: value
+        }
+      }
+    }));
+  }
+
+  function cloneActiveStandardsVersion() {
+    const versionName = newStandardsVersion.trim();
+    if (!versionName) return;
+    const active = settings.standards.activeVersion;
+    const source = settings.standards.versions[active];
+    if (!source || settings.standards.versions[versionName]) return;
+    setSettings((prev) => ({
+      ...prev,
+      standards: {
+        ...prev.standards,
+        activeVersion: versionName,
+        versions: {
+          ...prev.standards.versions,
+          [versionName]: JSON.parse(JSON.stringify(source))
+        }
+      }
+    }));
+    setNewStandardsVersion("");
+  }
+
+  function updateStandardValue(
+    ageGroup: "4-6" | "7-9" | "10-12",
+    domain: "movement" | "social" | "mental" | "ski",
+    key: "target" | "min",
+    value: string
+  ) {
+    const n = Number(value);
+    if (Number.isNaN(n)) return;
+    const active = settings.standards.activeVersion;
+    setSettings((prev) => ({
+      ...prev,
+      standards: {
+        ...prev.standards,
+        versions: {
+          ...prev.standards.versions,
+          [active]: {
+            ...prev.standards.versions[active],
+            [ageGroup]: {
+              ...prev.standards.versions[active][ageGroup],
+              [domain]: {
+                ...prev.standards.versions[active][ageGroup][domain],
+                [key]: n
+              }
+            }
+          }
         }
       }
     }));
@@ -407,6 +458,53 @@ export default function SettingsPage() {
             data={Object.keys(settings.standards.versions).map((v) => ({ value: v, label: v }))}
             onChange={(value) => setSettings((prev) => ({ ...prev, standards: { ...prev.standards, activeVersion: value || prev.standards.activeVersion } }))}
           />
+          <Group align="end">
+            <TextInput
+              label="New version name"
+              placeholder="v2"
+              value={newStandardsVersion}
+              onChange={(e) => setNewStandardsVersion(e.currentTarget.value)}
+            />
+            <Button variant="default" onClick={cloneActiveStandardsVersion} disabled={!newStandardsVersion.trim()}>
+              Clone active to new version
+            </Button>
+          </Group>
+          {settings.standards.versions[settings.standards.activeVersion] ? (
+            <Paper withBorder p="sm">
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Age group</Table.Th>
+                    <Table.Th>Domain</Table.Th>
+                    <Table.Th>Target</Table.Th>
+                    <Table.Th>Min</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {(["4-6", "7-9", "10-12"] as const).flatMap((age) =>
+                    (["movement", "social", "mental", "ski"] as const).map((domain) => (
+                      <Table.Tr key={`${age}-${domain}`}>
+                        <Table.Td>{age}</Table.Td>
+                        <Table.Td>{domain}</Table.Td>
+                        <Table.Td>
+                          <TextInput
+                            value={String(settings.standards.versions[settings.standards.activeVersion][age][domain].target)}
+                            onChange={(e) => updateStandardValue(age, domain, "target", e.currentTarget.value)}
+                          />
+                        </Table.Td>
+                        <Table.Td>
+                          <TextInput
+                            value={String(settings.standards.versions[settings.standards.activeVersion][age][domain].min)}
+                            onChange={(e) => updateStandardValue(age, domain, "min", e.currentTarget.value)}
+                          />
+                        </Table.Td>
+                      </Table.Tr>
+                    ))
+                  )}
+                </Table.Tbody>
+              </Table>
+            </Paper>
+          ) : null}
           <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
             {saving ? tc("saving") : tc("save")}
           </Button>
