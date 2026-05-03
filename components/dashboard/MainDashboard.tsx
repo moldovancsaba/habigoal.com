@@ -168,21 +168,28 @@ export function MainDashboard() {
 
   const successRatio = useMemo(() => {
     if (!data?.assessments) return [];
-    const latestByChild = new Map<string, number>();
+    const latestByChild = new Map<string, { time: number; ski: number }>();
     for (const a of data.assessments) {
-      if (!a.childId) continue;
-      const current = latestByChild.get(a.childId) || 0;
+      const childKey = a.childId || `${a.child.name}|${a.child.birthDate}`;
+      if (!childKey) continue;
+      const current = latestByChild.get(childKey);
       const time = new Date(a.createdAt).getTime();
-      if (time > current) latestByChild.set(a.childId, a.computed.ski || 0);
+      if (!current || time > current.time) {
+        latestByChild.set(childKey, { time, ski: a.computed.ski || 0 });
+      }
     }
-    
+
     let success = 0;
     let other = 0;
-    for (const ski of latestByChild.values()) {
-      if (ski >= 3.5) success++;
+    for (const item of latestByChild.values()) {
+      if (item.ski >= 3.5) success++;
       else other++;
     }
-    
+
+    if (success === 0 && other === 0) {
+      return [{ name: "No data", value: 1, color: theme.colors.gray[6] }];
+    }
+
     return [
       { name: "Ready", value: success, color: theme.colors.kidex[6] },
       { name: "Developing", value: other, color: theme.colors.gray[4] }
