@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Button, Group, Loader, Paper, Stack, Text, TextInput } from "@mantine/core";
+import { Badge, Box, Button, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -16,31 +16,52 @@ export default function RecordsPage() {
   const tc = useTranslations("Common");
   const { locale } = useParams();
   const [savedRecords, setSavedRecords] = useState<AssessmentRecord[]>([]);
+  const [deletedRecords, setDeletedRecords] = useState<AssessmentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [restoreTargetId, setRestoreTargetId] = useState<string | null>(null);
+  const [restoreConfirmText, setRestoreConfirmText] = useState("");
 
   useEffect(() => {
     void (async () => {
       const response = await fetch("/api/assessments").catch(() => null);
+      const deletedResponse = await fetch("/api/assessments?deleted=true").catch(() => null);
       if (!response?.ok) {
         setLoading(false);
         return;
       }
       const data = (await response.json()) as { assessments?: AssessmentRecord[] };
       setSavedRecords(data.assessments || []);
+      if (deletedResponse?.ok) {
+        const deletedData = (await deletedResponse.json()) as { assessments?: AssessmentRecord[] };
+        setDeletedRecords(deletedData.assessments || []);
+      }
       setLoading(false);
     })();
   }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return savedRecords;
-    return savedRecords.filter(r => 
+    const source = showDeleted ? deletedRecords : savedRecords;
+    if (!q) return source;
+    return source.filter(r =>
       r.child.name.toLowerCase().includes(q) || 
       r.session.location?.toLowerCase().includes(q) ||
       r.session.date.includes(q)
     );
-  }, [savedRecords, query]);
+  }, [savedRecords, deletedRecords, query, showDeleted]);
+
+  async function restoreAssessment(id?: string) {
+    if (!id) return;
+    const res = await fetch(`/api/assessments/${id}`, { method: "POST" }).catch(() => null);
+    if (!res?.ok) return;
+    const restored = deletedRecords.find((r) => r._id === id);
+    if (restored) setSavedRecords((prev) => [restored, ...prev]);
+    setDeletedRecords((prev) => prev.filter((r) => r._id !== id));
+    setRestoreTargetId(null);
+    setRestoreConfirmText("");
+  }
 
   if (loading) {
     return (
@@ -52,7 +73,10 @@ export default function RecordsPage() {
 
   return (
     <Stack gap="md">
-      <PageHeader title={t("records")} />
+      <PageHeader
+        title={t("records")}
+        actions={<Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? "Showing Deleted" : "Show Deleted"}</Button>}
+      />
       <SectionCard>
         <Stack gap="md">
           <TextInput
@@ -101,12 +125,20 @@ export default function RecordsPage() {
                     </Box>
 
                     <Group gap="sm">
-                      <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
-                        {tc("view")}
-                      </Button>
-                      <Button component={Link} href={`/dashboard/assessment?id=${record._id}`} color="kidex" variant="light" size="sm" onClick={(e) => e.stopPropagation()}>
-                        {tc("update")}
-                      </Button>
+                      {!showDeleted ? (
+                        <>
+                          <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
+                            {tc("view")}
+                          </Button>
+                          <Button component={Link} href={`/dashboard/assessment?id=${record._id}`} color="kidex" variant="light" size="sm" onClick={(e) => e.stopPropagation()}>
+                            {tc("update")}
+                          </Button>
+                        </>
+                      ) : (
+                        <Button color="kidex" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }}>
+                          Restore
+                        </Button>
+                      )}
                     </Group>
                   </Stack>
                 </Paper>
@@ -115,6 +147,16 @@ export default function RecordsPage() {
           )}
         </Stack>
       </SectionCard>
+      <Modal opened={Boolean(restoreTargetId)} onClose={() => setRestoreTargetId(null)} title="Restore assessment" centered>
+        <Stack gap="md">
+          <Text size="sm">Type `restore` to confirm restoring this assessment.</Text>
+          <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
+          <Group justify="flex-end">
+            <Button variant="subtle" onClick={() => setRestoreTargetId(null)}>{tc("cancel")}</Button>
+            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)}>Restore</Button>
+          </Group>
+        </Stack>
+      </Modal>
     </Stack>
   );
 }

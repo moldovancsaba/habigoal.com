@@ -46,6 +46,10 @@ export default function ChildrenListPage() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ChildProfile | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deletedChildren, setDeletedChildren] = useState<ChildProfile[]>([]);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [restoreTarget, setRestoreTarget] = useState<ChildProfile | null>(null);
+  const [restoreConfirmText, setRestoreConfirmText] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -55,12 +59,17 @@ export default function ChildrenListPage() {
         fetch("/api/children?metrics=true").catch(() => null),
         fetch("/api/settings").catch(() => null)
       ]);
+      const dcRes = await fetch("/api/children?deleted=true").catch(() => null);
       
       if (!active) return;
 
       if (cRes?.ok) {
         const data = (await cRes.json()) as ChildProfile[];
         setChildren(data);
+      }
+      if (dcRes?.ok) {
+        const d = (await dcRes.json()) as ChildProfile[];
+        setDeletedChildren(Array.isArray(d) ? d : []);
       }
       
       if (sRes?.ok) {
@@ -104,7 +113,8 @@ export default function ChildrenListPage() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     
-    return children.filter((child) => {
+    const source = showDeleted ? deletedChildren : children;
+    return source.filter((child) => {
       const ageGroup = calculateAgeGroup(child.birthDate) || "";
       
       // Basic search
@@ -131,7 +141,17 @@ export default function ChildrenListPage() {
 
       return true;
     });
-  }, [children, query, selectedLocations, selectedAgeGroups, skiRange]);
+  }, [children, deletedChildren, query, selectedLocations, selectedAgeGroups, skiRange, showDeleted]);
+
+  async function restoreChild(child: ChildProfile) {
+    if (!child._id) return;
+    const res = await fetch(`/api/children/${child._id}/restore`, { method: "POST" }).catch(() => null);
+    if (!res?.ok) return;
+    setDeletedChildren((prev) => prev.filter((x) => x._id !== child._id));
+    setChildren((prev) => [...prev, child].sort((a, b) => a.name.localeCompare(b.name)));
+    setRestoreTarget(null);
+    setRestoreConfirmText("");
+  }
 
   const allAgeGroups = useMemo(() => {
     const groups = new Set<string>();
@@ -257,7 +277,7 @@ export default function ChildrenListPage() {
 
   return (
     <Stack gap="md">
-      <PageHeader title={t("children")} actions={<Button color="kidex" onClick={startCreate}>Add child</Button>} />
+      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? "Showing Deleted" : "Show Deleted"}</Button><Button color="kidex" onClick={startCreate}>Add child</Button></Group>} />
       <SectionCard>
         <Stack gap="md">
           {message ? (
@@ -338,7 +358,7 @@ export default function ChildrenListPage() {
                     withBorder 
                     p="md"
                     radius="md"
-                    onClick={() => window.location.href = `/${locale}/dashboard/children/${child._id}`}
+                    onClick={() => !showDeleted && (window.location.href = `/${locale}/dashboard/children/${child._id}`)}
                     style={{ cursor: "pointer" }}
                   >
                     <Stack gap="md">
@@ -374,9 +394,9 @@ export default function ChildrenListPage() {
                         )}
                       </Box>
                       <Group gap="sm">
-                        <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex" size="sm" onClick={(e) => e.stopPropagation()}>
+                        {!showDeleted ? <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex" size="sm" onClick={(e) => e.stopPropagation()}>
                           {t("newSurveyForChild")}
-                        </Button>
+                        </Button> : null}
                         {child.latestRecordId && (
                           <Button 
                             variant="outline" 
@@ -391,15 +411,15 @@ export default function ChildrenListPage() {
                             {t("downloadPdf")}
                           </Button>
                         )}
-                        <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
+                        {!showDeleted ? <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
                           {t("viewHistory")}
-                        </Button>
-                        <Button variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>
+                        </Button> : null}
+                        {!showDeleted ? <Button variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>
                           {t("editChild")}
-                        </Button>
-                        <Button color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }}>
+                        </Button> : null}
+                        {!showDeleted ? <Button color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }}>
                           {t("deleteChild")}
-                        </Button>
+                        </Button> : <Button color="kidex" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }}>Restore</Button>}
                       </Group>
                     </Stack>
                   </Paper>
@@ -476,6 +496,16 @@ export default function ChildrenListPage() {
             >
               {t("deleteChild")}
             </Button>
+          </Group>
+        </Stack>
+      </Modal>
+      <Modal opened={Boolean(restoreTarget)} onClose={() => setRestoreTarget(null)} title="Restore child" centered>
+        <Stack gap="md">
+          <Text size="sm">Type `restore` to confirm.</Text>
+          <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
+          <Group justify="flex-end">
+            <Button variant="subtle" onClick={() => setRestoreTarget(null)}>{tc("cancel")}</Button>
+            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)}>Restore</Button>
           </Group>
         </Stack>
       </Modal>
