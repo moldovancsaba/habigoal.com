@@ -48,7 +48,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     await updateAssessmentsForChildProfile(id, {
       name: payload.name,
-      birthDate: payload.birthDate
+      birthDate: payload.birthDate,
+      ageGroup: payload.ageGroup,
+      knownTraits: payload.knownTraits,
+      parentSignals: payload.parentSignals,
+      dominantHand: payload.dominantHand,
+      dominantEye: payload.dominantEye,
+      dominantFoot: payload.dominantFoot,
+      consentPhoto: payload.consentPhoto,
+      consentReport: payload.consentReport
     });
 
     return NextResponse.json(child);

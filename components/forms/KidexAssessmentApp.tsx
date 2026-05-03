@@ -15,7 +15,6 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  TextInput,
   Textarea
 } from "@mantine/core";
 import Image from "next/image";
@@ -33,6 +32,7 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { getSettings, saveSettings } from "@/services/settings-service";
 import { getConductors, getObservers } from "@/services/user-service";
 import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
+import type { ChildProfile } from "@/repositories/child.repository";
 
 const DRAFT_STORAGE_KEY = "kidex-draft";
 
@@ -126,6 +126,7 @@ export function KidexAssessmentApp() {
   const [conductors, setConductors] = useState<string[]>([]);
   const [observers, setObservers] = useState<string[]>([]);
   const [locations, setLocations] = useState<string[]>([]);
+  const [children, setChildren] = useState<ChildProfile[]>([]);
 
   const sections = sectionsForMode(assessment.mode);
   const computed = useMemo(() => computeAssessment(assessment), [assessment]);
@@ -143,6 +144,7 @@ export function KidexAssessmentApp() {
       setObservers(allObservers);
       setLocations(settingsData.locations);
     });
+    void fetch("/api/children").then((r) => r.json()).then((data: ChildProfile[]) => setChildren(Array.isArray(data) ? data : [])).catch(() => setChildren([]));
   }, []);
 
   useEffect(() => {
@@ -449,28 +451,48 @@ export function KidexAssessmentApp() {
         <SectionCard title={t("setupTitle")}>
           <Stack gap="md">
             <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="md">
-              <TextInput 
-                label={t("childName")} 
-                value={assessment.child.name} 
-                onChange={(e) => update("child", "name", e.target.value)} 
-              />
-              <TextInput
-                label={t("birthDate")}
-                type="date"
-                value={assessment.child.birthDate}
-                onChange={(e) => update("child", "birthDate", e.target.value)}
+              <Select
+                label={t("childName")}
+                placeholder="Select child"
+                searchable
+                value={assessment.childId || ""}
+                data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.kidexId || "-"})` })).filter((x) => x.value)}
+                onChange={(value) => {
+                  const child = children.find((c) => c._id === value);
+                  if (!child || !value) return;
+                  setAssessment((current) => ({
+                    ...current,
+                    childId: value,
+                    child: {
+                      ...current.child,
+                      name: child.name || "",
+                      birthDate: child.birthDate || "",
+                      ageGroup: (child.ageGroup || calculateAgeGroup(child.birthDate) || "") as AssessmentPayload["child"]["ageGroup"],
+                      knownTraits: child.knownTraits || "",
+                      parentSignals: child.parentSignals || "",
+                      dominantHand: child.dominantHand || "",
+                      dominantEye: child.dominantEye || "",
+                      dominantFoot: child.dominantFoot || ""
+                    },
+                    session: {
+                      ...current.session,
+                      consentPhoto: Boolean(child.consentPhoto),
+                      consentReport: Boolean(child.consentReport)
+                    }
+                  }));
+                }}
               />
               <Select
                 label={t("ageGroup")}
                 value={assessment.child.ageGroup || ""}
-                disabled={!assessment.child.birthDate}
+                disabled
                 data={[
                   { value: "", label: t("ageGroupPending") },
                   { value: "4-6", label: "4-6" },
                   { value: "7-9", label: "7-9" },
                   { value: "10-12", label: "10-12" }
                 ]}
-                onChange={(value) => update("child", "ageGroup", value ?? "")}
+                onChange={() => {}}
               />
               <Select
                 label={t("mode")}
@@ -522,13 +544,15 @@ export function KidexAssessmentApp() {
               <Textarea
                 label={t("knownTraits")}
                 value={assessment.child.knownTraits}
-                onChange={(e) => update("child", "knownTraits", e.target.value)}
+                onChange={() => {}}
+                readOnly
                 minRows={3}
               />
               <Textarea
                 label={t("parentSignals")}
                 value={assessment.child.parentSignals}
-                onChange={(e) => update("child", "parentSignals", e.target.value)}
+                onChange={() => {}}
+                readOnly
                 minRows={3}
               />
             </SimpleGrid>
@@ -537,12 +561,12 @@ export function KidexAssessmentApp() {
               <Checkbox 
                 label={t("consentPhoto")} 
                 checked={assessment.session.consentPhoto} 
-                onChange={(e) => update("session", "consentPhoto", e.target.checked)} 
+                disabled
               />
               <Checkbox 
                 label={t("consentReport")} 
                 checked={assessment.session.consentReport} 
-                onChange={(e) => update("session", "consentReport", e.target.checked)} 
+                disabled
               />
             </Group>
           </Stack>
@@ -652,7 +676,7 @@ export function KidexAssessmentApp() {
                   key={item.key}
                   withBorder
                   p="md"
-                  bg="gray.0"
+                  bg="var(--mantine-color-body)"
                 >
                   <Stack gap="sm">
                     <Group justify="space-between" align="flex-start">

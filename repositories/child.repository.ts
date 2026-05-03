@@ -4,8 +4,12 @@ import { toJsonId } from "@/lib/utils";
 
 export interface ChildProfile {
   _id?: string;
+  kidexId?: string;
   name: string;
   birthDate: string;
+  ageGroup?: "4-6" | "7-9" | "10-12" | "";
+  consentPhoto?: boolean;
+  consentReport?: boolean;
   dominantHand?: string;
   dominantEye?: string;
   dominantFoot?: string;
@@ -112,7 +116,7 @@ export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt
     return toJsonId({ ...existing, ...profile, updatedAt: now });
   }
 
-  const newChild = { ...profile, name, createdAt: now, updatedAt: now };
+  const newChild = { ...profile, kidexId: profile.kidexId || crypto.randomUUID(), name, createdAt: now, updatedAt: now };
   const result = await db.collection(collectionName).insertOne(newChild);
   return { ...newChild, _id: result.insertedId.toString() };
 }
@@ -149,8 +153,12 @@ export async function deleteChildById(id: ObjectId) {
   const jsonChild = toJsonId(child) as Record<string, unknown>;
   return {
     _id: typeof jsonChild._id === "string" ? jsonChild._id : undefined,
+    kidexId: typeof jsonChild.kidexId === "string" ? jsonChild.kidexId : "",
     name: typeof jsonChild.name === "string" ? jsonChild.name : "",
     birthDate: typeof jsonChild.birthDate === "string" ? jsonChild.birthDate : "",
+    ageGroup: (typeof jsonChild.ageGroup === "string" ? jsonChild.ageGroup : "") as ChildProfile["ageGroup"],
+    consentPhoto: Boolean(jsonChild.consentPhoto),
+    consentReport: Boolean(jsonChild.consentReport),
     dominantHand: typeof jsonChild.dominantHand === "string" ? jsonChild.dominantHand : "",
     dominantEye: typeof jsonChild.dominantEye === "string" ? jsonChild.dominantEye : "",
     dominantFoot: typeof jsonChild.dominantFoot === "string" ? jsonChild.dominantFoot : "",

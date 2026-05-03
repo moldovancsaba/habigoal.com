@@ -176,8 +176,12 @@ export function parseUserPayload(input: unknown): UserPayload {
 }
 
 export interface ChildPayload {
+  kidexId?: string;
   name: string;
   birthDate: string;
+  ageGroup: "4-6" | "7-9" | "10-12" | "";
+  consentPhoto: boolean;
+  consentReport: boolean;
   dominantHand: string;
   dominantEye: string;
   dominantFoot: string;
@@ -188,8 +192,12 @@ export interface ChildPayload {
 export function parseChildPayload(input: unknown): ChildPayload {
   const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
   return {
+    kidexId: stringValue(data.kidexId, 120).trim() || undefined,
     name: stringValue(data.name, 240).trim(),
     birthDate: stringValue(data.birthDate, 80).trim(),
+    ageGroup: (["4-6", "7-9", "10-12"].includes(stringValue(data.ageGroup, 10).trim()) ? stringValue(data.ageGroup, 10).trim() : "") as ChildPayload["ageGroup"],
+    consentPhoto: booleanValue(data.consentPhoto),
+    consentReport: booleanValue(data.consentReport),
     dominantHand: stringValue(data.dominantHand, 80),
     dominantEye: stringValue(data.dominantEye, 80),
     dominantFoot: stringValue(data.dominantFoot, 80),

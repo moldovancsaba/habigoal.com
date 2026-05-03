@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Badge, Box, Button, Group, Loader, Modal, MultiSelect, Paper, RangeSlider, Stack, Text, TextInput } from "@mantine/core";
+import { Alert, Badge, Box, Button, Checkbox, Group, Loader, Modal, MultiSelect, Paper, RangeSlider, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -29,7 +29,13 @@ export default function ChildrenListPage() {
   const [editing, setEditing] = useState<ChildProfile | null>(null);
   const [draftName, setDraftName] = useState("");
   const [draftBirthDate, setDraftBirthDate] = useState("");
+  const [draftKnownTraits, setDraftKnownTraits] = useState("");
+  const [draftParentSignals, setDraftParentSignals] = useState("");
+  const [draftAgeGroup, setDraftAgeGroup] = useState<"" | "4-6" | "7-9" | "10-12">("");
+  const [draftConsentPhoto, setDraftConsentPhoto] = useState(false);
+  const [draftConsentReport, setDraftConsentReport] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
   
@@ -138,6 +144,22 @@ export default function ChildrenListPage() {
     setEditing(child);
     setDraftName(child.name);
     setDraftBirthDate(child.birthDate);
+    setDraftKnownTraits(child.knownTraits || "");
+    setDraftParentSignals(child.parentSignals || "");
+    setDraftAgeGroup((child.ageGroup || calculateAgeGroup(child.birthDate) || "") as "" | "4-6" | "7-9" | "10-12");
+    setDraftConsentPhoto(Boolean(child.consentPhoto));
+    setDraftConsentReport(Boolean(child.consentReport));
+  }
+
+  function startCreate() {
+    setCreateOpen(true);
+    setDraftName("");
+    setDraftBirthDate("");
+    setDraftKnownTraits("");
+    setDraftParentSignals("");
+    setDraftAgeGroup("");
+    setDraftConsentPhoto(false);
+    setDraftConsentReport(false);
   }
 
   async function saveEdit() {
@@ -152,11 +174,14 @@ export default function ChildrenListPage() {
       body: JSON.stringify({
         name: draftName,
         birthDate: draftBirthDate,
+        ageGroup: draftAgeGroup || calculateAgeGroup(draftBirthDate) || "",
+        consentPhoto: draftConsentPhoto,
+        consentReport: draftConsentReport,
         dominantHand: editing.dominantHand || "",
         dominantEye: editing.dominantEye || "",
         dominantFoot: editing.dominantFoot || "",
-        knownTraits: editing.knownTraits || "",
-        parentSignals: editing.parentSignals || ""
+        knownTraits: draftKnownTraits,
+        parentSignals: draftParentSignals
       })
     }).catch(() => null);
     setSaving(false);
@@ -170,6 +195,38 @@ export default function ChildrenListPage() {
     const updated = (await response.json()) as ChildProfile;
     setChildren((current) => current.map((child) => (child._id === updated._id ? updated : child)));
     setEditing(null);
+    setError(false);
+    setMessage(tc("success"));
+  }
+
+  async function createChild() {
+    if (!draftName.trim() || !draftBirthDate.trim()) return;
+    setSaving(true);
+    const response = await fetch("/api/children", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: draftName,
+        birthDate: draftBirthDate,
+        ageGroup: draftAgeGroup || calculateAgeGroup(draftBirthDate) || "",
+        consentPhoto: draftConsentPhoto,
+        consentReport: draftConsentReport,
+        dominantHand: "",
+        dominantEye: "",
+        dominantFoot: "",
+        knownTraits: draftKnownTraits,
+        parentSignals: draftParentSignals
+      })
+    }).catch(() => null);
+    setSaving(false);
+    if (!response?.ok) {
+      setError(true);
+      setMessage(tc("error"));
+      return;
+    }
+    const created = (await response.json()) as ChildProfile;
+    setChildren((current) => [...current, created].sort((a, b) => a.name.localeCompare(b.name)));
+    setCreateOpen(false);
     setError(false);
     setMessage(tc("success"));
   }
@@ -202,7 +259,7 @@ export default function ChildrenListPage() {
 
   return (
     <Stack gap="md">
-      <PageHeader title={t("children")} />
+      <PageHeader title={t("children")} actions={<Button color="kidex" onClick={startCreate}>Add child</Button>} />
       <SectionCard>
         <Stack gap="md">
           {message ? (
@@ -225,7 +282,7 @@ export default function ChildrenListPage() {
           </Group>
 
           {showAdvanced && (
-            <Paper withBorder p="md" bg="gray.0">
+            <Paper withBorder p="md">
               <Stack gap="md">
                 <Group grow align="start">
                   <MultiSelect
@@ -364,6 +421,13 @@ export default function ChildrenListPage() {
               value={draftBirthDate}
               onChange={(event) => setDraftBirthDate(event.target.value)}
             />
+            <Select label={ta("ageGroup")} value={draftAgeGroup} onChange={(v) => setDraftAgeGroup(parseAgeGroup(v))} data={[{ value: "", label: ta("ageGroupPending") }, { value: "4-6", label: "4-6" }, { value: "7-9", label: "7-9" }, { value: "10-12", label: "10-12" }]} />
+            <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
+            <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
+            <Group>
+              <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
+              <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
+            </Group>
           </Stack>
           <Group justify="flex-end" mt="md">
           <Button variant="subtle" onClick={() => setEditing(null)} disabled={saving}>
@@ -374,6 +438,26 @@ export default function ChildrenListPage() {
           </Button>
         </Group>
       </Modal>
+      <Modal opened={createOpen} onClose={() => (saving ? null : setCreateOpen(false))} title="Add child" centered>
+        <Stack gap="md" mt="xs">
+          <TextInput label={ta("childName")} value={draftName} onChange={(event) => setDraftName(event.target.value)} />
+          <TextInput label={ta("birthDate")} type="date" value={draftBirthDate} onChange={(event) => setDraftBirthDate(event.target.value)} />
+          <Select label={ta("ageGroup")} value={draftAgeGroup} onChange={(v) => setDraftAgeGroup(parseAgeGroup(v))} data={[{ value: "", label: ta("ageGroupPending") }, { value: "4-6", label: "4-6" }, { value: "7-9", label: "7-9" }, { value: "10-12", label: "10-12" }]} />
+          <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
+          <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
+          <Group>
+            <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
+            <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
+          </Group>
+          <Group justify="flex-end" mt="sm">
+            <Button variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving}>{tc("cancel")}</Button>
+            <Button color="kidex" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : "Create"}</Button>
+          </Group>
+        </Stack>
+      </Modal>
     </Stack>
   );
 }
+  const parseAgeGroup = (value: string | null): "" | "4-6" | "7-9" | "10-12" => (
+    value === "4-6" || value === "7-9" || value === "10-12" ? value : ""
+  );
