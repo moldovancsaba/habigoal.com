@@ -20,6 +20,12 @@ export interface KidexSettings {
   standards: {
     activeVersion: string;
     versions: Record<string, {
+      meta?: {
+        createdBy?: string;
+        createdAt?: string;
+        notes?: string;
+        status?: "draft" | "published";
+      };
       "4-6": { movement: { target: number; min: number }; social: { target: number; min: number }; mental: { target: number; min: number }; ski: { target: number; min: number } };
       "7-9": { movement: { target: number; min: number }; social: { target: number; min: number }; mental: { target: number; min: number }; ski: { target: number; min: number } };
       "10-12": { movement: { target: number; min: number }; social: { target: number; min: number }; mental: { target: number; min: number }; ski: { target: number; min: number } };
@@ -60,6 +66,7 @@ export const DEFAULT_KIDEX_SETTINGS: KidexSettings = {
     activeVersion: "v1",
     versions: {
       v1: {
+        meta: { createdAt: new Date().toISOString(), status: "published", notes: "Initial baseline standards." },
         "4-6": {
           movement: { target: 4.5, min: 3.0 },
           social: { target: 4.0, min: 2.5 },

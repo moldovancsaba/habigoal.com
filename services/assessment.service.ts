@@ -2,6 +2,7 @@ import { computeAssessment } from "@/lib/scoring";
 import { parseAssessmentPayload } from "@/lib/validations";
 import { createAssessment, deleteAssessmentById, getAssessmentById, listAssessmentSummaries, restoreAssessmentById, updateAssessmentById, listDeletedAssessmentSummaries } from "@/repositories/assessment.repository";
 import { getChildById, updateChildById, upsertChild } from "@/repositories/child.repository";
+import { getGlobalSettings } from "@/repositories/settings.repository";
 import { ObjectId } from "mongodb";
 
 export function parseObjectId(id: string) {
@@ -41,9 +42,13 @@ export async function createAssessmentFromPayload(input: unknown) {
   const updatedChild = existingChild && childObjectId ? await updateChildById(childObjectId, childProfile) : null;
   const child = updatedChild ?? (await upsertChild(childProfile));
 
+  const settings = await getGlobalSettings();
+  const standardsVersionUsed = settings?.standards?.activeVersion || "v1";
+
   return createAssessment({
     ...payload,
     childId: child._id,
+    standardsVersionUsed,
     computed: computeAssessment(payload),
     createdAt: now,
     updatedAt: now
@@ -75,9 +80,13 @@ export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) 
   const updateHistory = existing?.updateHistory || [];
   const now = new Date().toISOString();
   
+  const settings = await getGlobalSettings();
+  const standardsVersionUsed = settings?.standards?.activeVersion || existing?.standardsVersionUsed || "v1";
+
   return updateAssessmentById(id, {
     ...payload,
     childId: child._id,
+    standardsVersionUsed,
     computed: computeAssessment(payload),
     updatedAt: now,
     updateHistory: [...updateHistory, now]

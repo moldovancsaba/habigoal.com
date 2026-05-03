@@ -64,6 +64,7 @@ export interface AssessmentPayload {
 export interface AssessmentRecord extends AssessmentPayload {
   _id?: string;
   childId?: string;
+  standardsVersionUsed?: string;
   createdAt: string;
   updatedAt: string;
   updateHistory?: string[];

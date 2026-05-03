@@ -28,6 +28,9 @@ export default function SettingsPage() {
   const [deletedChildren, setDeletedChildren] = useState<Array<{ _id?: string; name: string; updatedAt?: string }>>([]);
   const [deletedAssessments, setDeletedAssessments] = useState<Array<{ _id?: string; child?: { name?: string }; session?: { date?: string }; updatedAt?: string }>>([]);
   const [newStandardsVersion, setNewStandardsVersion] = useState("");
+  const [versionNotesDraft, setVersionNotesDraft] = useState("");
+  const [impactPreview, setImpactPreview] = useState<{ readyToDeveloping: number; developingToReady: number; total: number } | null>(null);
+  const [allAssessments, setAllAssessments] = useState<Array<{ childId?: string; child: { name: string; birthDate: string }; computed: { ski: number | null } }>>([]);
 
   useEffect(() => {
     void (async () => {
@@ -44,6 +47,8 @@ export default function SettingsPage() {
           fetch("/api/children?deleted=true").then(r => r.json()).catch(() => []),
           fetch("/api/assessments?deleted=true").then(r => r.json()).catch(() => ({ assessments: [] }))
         ]);
+        const activeAssessmentsRes = await fetch("/api/assessments").then(r => r.json()).catch(() => ({ assessments: [] }));
+        setAllAssessments(Array.isArray(activeAssessmentsRes?.assessments) ? activeAssessmentsRes.assessments : []);
         setDeletedChildren(Array.isArray(dcRes) ? dcRes : []);
         setDeletedAssessments(Array.isArray(daRes?.assessments) ? daRes.assessments : []);
       } finally {
@@ -176,11 +181,55 @@ export default function SettingsPage() {
         activeVersion: versionName,
         versions: {
           ...prev.standards.versions,
-          [versionName]: JSON.parse(JSON.stringify(source))
+          [versionName]: { ...JSON.parse(JSON.stringify(source)), meta: { createdAt: new Date().toISOString(), status: "draft", notes: `Cloned from ${active}` } }
         }
       }
     }));
     setNewStandardsVersion("");
+  }
+
+  function currentVersionMeta() {
+    const active = settings.standards.activeVersion;
+    return settings.standards.versions[active]?.meta || { status: "draft", notes: "" };
+  }
+
+  function setCurrentVersionMeta(next: { notes?: string; status?: "draft" | "published" }) {
+    const active = settings.standards.activeVersion;
+    setSettings((prev) => ({
+      ...prev,
+      standards: {
+        ...prev.standards,
+        versions: {
+          ...prev.standards.versions,
+          [active]: {
+            ...prev.standards.versions[active],
+            meta: {
+              ...prev.standards.versions[active]?.meta,
+              ...next
+            }
+          }
+        }
+      }
+    }));
+  }
+
+  function computeImpactPreview() {
+    const active = settings.standards.activeVersion;
+    const v = settings.standards.versions[active];
+    if (!v) return setImpactPreview(null);
+    const threshold = v["7-9"]?.ski?.min ?? 3.5;
+    let readyToDeveloping = 0;
+    let developingToReady = 0;
+    let total = 0;
+    for (const a of allAssessments) {
+      if (a.computed.ski === null || a.computed.ski === undefined) continue;
+      total += 1;
+      const oldReady = a.computed.ski >= 3.5;
+      const newReady = a.computed.ski >= threshold;
+      if (oldReady && !newReady) readyToDeveloping++;
+      if (!oldReady && newReady) developingToReady++;
+    }
+    setImpactPreview({ readyToDeveloping, developingToReady, total });
   }
 
   function updateStandardValue(
@@ -471,6 +520,32 @@ export default function SettingsPage() {
           </Group>
           {settings.standards.versions[settings.standards.activeVersion] ? (
             <Paper withBorder p="sm">
+              <Stack gap="sm" mb="sm">
+                <TextInput
+                  label="Version notes"
+                  value={versionNotesDraft || currentVersionMeta().notes || ""}
+                  onChange={(e) => {
+                    const v = e.currentTarget.value;
+                    setVersionNotesDraft(v);
+                    setCurrentVersionMeta({ notes: v });
+                  }}
+                />
+                <Group>
+                  <Button
+                    variant="default"
+                    onClick={() => setCurrentVersionMeta({ status: "published" })}
+                    disabled={currentVersionMeta().status === "published"}
+                  >
+                    Publish version
+                  </Button>
+                  <Button variant="light" onClick={computeImpactPreview}>Preview Impact</Button>
+                </Group>
+                {impactPreview ? (
+                  <Text size="sm" c="dimmed">
+                    Impact preview ({impactPreview.total} records): {impactPreview.developingToReady} Developing→Ready, {impactPreview.readyToDeveloping} Ready→Developing.
+                  </Text>
+                ) : null}
+              </Stack>
               <Table>
                 <Table.Thead>
                   <Table.Tr>
@@ -489,12 +564,14 @@ export default function SettingsPage() {
                         <Table.Td>
                           <TextInput
                             value={String(settings.standards.versions[settings.standards.activeVersion][age][domain].target)}
+                            disabled={currentVersionMeta().status === "published"}
                             onChange={(e) => updateStandardValue(age, domain, "target", e.currentTarget.value)}
                           />
                         </Table.Td>
                         <Table.Td>
                           <TextInput
                             value={String(settings.standards.versions[settings.standards.activeVersion][age][domain].min)}
+                            disabled={currentVersionMeta().status === "published"}
                             onChange={(e) => updateStandardValue(age, domain, "min", e.currentTarget.value)}
                           />
                         </Table.Td>
