@@ -119,7 +119,22 @@
     "insightChildBenchmark": "Latest profile: Movement {movement}, Social {social}, Mental {mental}.",
     "insightChildHistoryCount": "This child currently has {count} recorded assessments.",
     "insightRecordReadiness": "This session shows SKI {ski} with domain levels Movement {movement}, Social {social}, Mental {mental}.",
-    "insightRecordDomainSummary": "Domain summary confirms Movement {movement}, Social {social}, Mental {mental} for this record."
+    "insightRecordDomainSummary": "Domain summary confirms Movement {movement}, Social {social}, Mental {mental} for this record.",
+    "standardsActiveVersion": "Active standards version",
+    "standardsNewVersionName": "New version name",
+    "standardsVersionPlaceholder": "v2",
+    "standardsCloneActive": "Clone active to new version",
+    "standardsAgeGroup": "Age group",
+    "standardsDomain": "Domain",
+    "standardsTarget": "Target",
+    "standardsMin": "Min",
+    "restoreBinTitle": "Restore Bin",
+    "restoreDeletedChildren": "Deleted children",
+    "restoreNoDeletedChildren": "No deleted children.",
+    "restoreDeletedAssessments": "Deleted assessments",
+    "restoreNoDeletedAssessments": "No deleted assessments.",
+    "restoreUnknownChild": "Unknown",
+    "restoreAction": "Restore"
   },
   "Assessment": {
     "saved": "Assessment saved.",

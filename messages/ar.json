@@ -116,7 +116,22 @@
     "insightChildBenchmark": "الملف الأحدث: الحركة {movement}، الاجتماعي {social}، النفسي {mental}.",
     "insightChildHistoryCount": "لدى هذا الطفل حاليًا {count} تقييمات مسجلة.",
     "insightRecordReadiness": "تعرض هذه الجلسة SKI بقيمة {ski} مع مستويات: الحركة {movement}، الاجتماعي {social}، النفسي {mental}.",
-    "insightRecordDomainSummary": "ملخص الأبعاد لهذا السجل: الحركة {movement}، الاجتماعي {social}، النفسي {mental}."
+    "insightRecordDomainSummary": "ملخص الأبعاد لهذا السجل: الحركة {movement}، الاجتماعي {social}، النفسي {mental}.",
+    "standardsActiveVersion": "إصدار المعايير النشط",
+    "standardsNewVersionName": "اسم الإصدار الجديد",
+    "standardsVersionPlaceholder": "v2",
+    "standardsCloneActive": "نسخ الإصدار النشط إلى إصدار جديد",
+    "standardsAgeGroup": "الفئة العمرية",
+    "standardsDomain": "البعد",
+    "standardsTarget": "الهدف",
+    "standardsMin": "الحد الأدنى",
+    "restoreBinTitle": "سلة الاستعادة",
+    "restoreDeletedChildren": "الأطفال المحذوفون",
+    "restoreNoDeletedChildren": "لا يوجد أطفال محذوفون.",
+    "restoreDeletedAssessments": "التقييمات المحذوفة",
+    "restoreNoDeletedAssessments": "لا توجد تقييمات محذوفة.",
+    "restoreUnknownChild": "غير معروف",
+    "restoreAction": "استعادة"
   },
   "Assessment": {
     "saved": "تم حفظ التقييم.",

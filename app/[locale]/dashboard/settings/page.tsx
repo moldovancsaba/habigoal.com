@@ -453,20 +453,20 @@ export default function SettingsPage() {
       <SectionCard title="Standards Version Manager">
         <Stack gap="md">
           <Select
-            label="Active standards version"
+            label={t("standardsActiveVersion")}
             value={settings.standards.activeVersion}
             data={Object.keys(settings.standards.versions).map((v) => ({ value: v, label: v }))}
             onChange={(value) => setSettings((prev) => ({ ...prev, standards: { ...prev.standards, activeVersion: value || prev.standards.activeVersion } }))}
           />
           <Group align="end">
             <TextInput
-              label="New version name"
-              placeholder="v2"
+              label={t("standardsNewVersionName")}
+              placeholder={t("standardsVersionPlaceholder")}
               value={newStandardsVersion}
               onChange={(e) => setNewStandardsVersion(e.currentTarget.value)}
             />
             <Button variant="default" onClick={cloneActiveStandardsVersion} disabled={!newStandardsVersion.trim()}>
-              Clone active to new version
+              {t("standardsCloneActive")}
             </Button>
           </Group>
           {settings.standards.versions[settings.standards.activeVersion] ? (
@@ -474,10 +474,10 @@ export default function SettingsPage() {
               <Table>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Age group</Table.Th>
-                    <Table.Th>Domain</Table.Th>
-                    <Table.Th>Target</Table.Th>
-                    <Table.Th>Min</Table.Th>
+                    <Table.Th>{t("standardsAgeGroup")}</Table.Th>
+                    <Table.Th>{t("standardsDomain")}</Table.Th>
+                    <Table.Th>{t("standardsTarget")}</Table.Th>
+                    <Table.Th>{t("standardsMin")}</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
@@ -511,17 +511,17 @@ export default function SettingsPage() {
         </Stack>
       </SectionCard>
 
-      <SectionCard title="Restore Bin">
+      <SectionCard title={t("restoreBinTitle")}>
         <Stack gap="lg">
           <Box>
-            <Text fw={700} mb="sm">Deleted children</Text>
-            {deletedChildren.length === 0 ? <Text c="dimmed">No deleted children.</Text> : (
+            <Text fw={700} mb="sm">{t("restoreDeletedChildren")}</Text>
+            {deletedChildren.length === 0 ? <Text c="dimmed">{t("restoreNoDeletedChildren")}</Text> : (
               <Stack gap="xs">
                 {deletedChildren.map((c) => (
                   <Paper key={c._id} withBorder p="sm">
                     <Group justify="space-between">
                       <Text>{c.name}</Text>
-                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreChild(c._id)}>Restore</Button>
+                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreChild(c._id)}>{t("restoreAction")}</Button>
                     </Group>
                   </Paper>
                 ))}
@@ -529,14 +529,14 @@ export default function SettingsPage() {
             )}
           </Box>
           <Box>
-            <Text fw={700} mb="sm">Deleted assessments</Text>
-            {deletedAssessments.length === 0 ? <Text c="dimmed">No deleted assessments.</Text> : (
+            <Text fw={700} mb="sm">{t("restoreDeletedAssessments")}</Text>
+            {deletedAssessments.length === 0 ? <Text c="dimmed">{t("restoreNoDeletedAssessments")}</Text> : (
               <Stack gap="xs">
                 {deletedAssessments.map((a) => (
                   <Paper key={a._id} withBorder p="sm">
                     <Group justify="space-between">
-                      <Text>{a.child?.name || "Unknown"} · {a.session?.date || "-"}</Text>
-                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreAssessment(a._id)}>Restore</Button>
+                      <Text>{a.child?.name || t("restoreUnknownChild")} · {a.session?.date || "-"}</Text>
+                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreAssessment(a._id)}>{t("restoreAction")}</Button>
                     </Group>
                   </Paper>
                 ))}

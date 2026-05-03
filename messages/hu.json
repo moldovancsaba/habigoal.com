@@ -119,7 +119,22 @@
     "insightChildBenchmark": "Legfrissebb profil: Mozgás {movement}, Szociális {social}, Mentális {mental}.",
     "insightChildHistoryCount": "A gyermekhez jelenleg {count} rögzített felmérés tartozik.",
     "insightRecordReadiness": "Ez a mérés SKI {ski} értéket mutat, dimenziónként: Mozgás {movement}, Szociális {social}, Mentális {mental}.",
-    "insightRecordDomainSummary": "Dimenzió összegzés ehhez a rekordhoz: Mozgás {movement}, Szociális {social}, Mentális {mental}."
+    "insightRecordDomainSummary": "Dimenzió összegzés ehhez a rekordhoz: Mozgás {movement}, Szociális {social}, Mentális {mental}.",
+    "standardsActiveVersion": "Aktív sztenderd verzió",
+    "standardsNewVersionName": "Új verzió neve",
+    "standardsVersionPlaceholder": "v2",
+    "standardsCloneActive": "Aktív klónozása új verzióba",
+    "standardsAgeGroup": "Korcsoport",
+    "standardsDomain": "Dimenzió",
+    "standardsTarget": "Cél",
+    "standardsMin": "Minimum",
+    "restoreBinTitle": "Visszaállítási tár",
+    "restoreDeletedChildren": "Törölt gyermekek",
+    "restoreNoDeletedChildren": "Nincs törölt gyermek.",
+    "restoreDeletedAssessments": "Törölt felmérések",
+    "restoreNoDeletedAssessments": "Nincs törölt felmérés.",
+    "restoreUnknownChild": "Ismeretlen",
+    "restoreAction": "Visszaállítás"
   },
   "Assessment": {
     "saved": "Felmérés elmentve.",
