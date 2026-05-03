@@ -105,7 +105,18 @@
     "strengthsTitle": "نقاط القوة",
     "focusAreasTitle": "مجالات التركيز",
     "ageBenchmarking": "مقارنة الفئة العمرية",
-    "volatility": "الاتجاه"
+    "volatility": "الاتجاه",
+    "insightUsersRecords": "يوجد {users} مستخدمين نشطين يديرون {records} سجلاً؛ وسرعة التقييم الحالية هي {velocity}.",
+    "insightChildrenCoverage": "تتم متابعة {children} طفلًا بمتوسط {avg} تقييمات لكل طفل.",
+    "insightReadinessRatio": "توزيع الجاهزية: {ready} جاهز و {developing} قيد التطوير وفق أحدث SKI.",
+    "insightGlobalBalance": "المتوسطات التنظيمية الحالية: الحركة {movement}، الاجتماعي {social}، النفسي {mental}.",
+    "insightLocationPerformance": "أفضل موقع هو {location} بمتوسط SKI قدره {value}.",
+    "insightDailyAverages": "أحدث المتوسطات اليومية: الحركة {movement}، الاجتماعي {social}، النفسي {mental}.",
+    "insightChildSkiProgression": "عبر {sessions} جلسات، انتقل SKI من {baseline} إلى {current}.",
+    "insightChildBenchmark": "الملف الأحدث: الحركة {movement}، الاجتماعي {social}، النفسي {mental}.",
+    "insightChildHistoryCount": "لدى هذا الطفل حاليًا {count} تقييمات مسجلة.",
+    "insightRecordReadiness": "تعرض هذه الجلسة SKI بقيمة {ski} مع مستويات: الحركة {movement}، الاجتماعي {social}، النفسي {mental}.",
+    "insightRecordDomainSummary": "ملخص الأبعاد لهذا السجل: الحركة {movement}، الاجتماعي {social}، النفسي {mental}."
   },
   "Assessment": {
     "saved": "تم حفظ التقييم.",

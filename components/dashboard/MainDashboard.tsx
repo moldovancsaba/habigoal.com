@@ -252,11 +252,13 @@ export function MainDashboard() {
         <MetricCard label={t("totalRecords")} value={String(data?.assessments.length ?? 0)} />
         <MetricCard label={t("assessmentVelocity")} value={assessmentVelocity} />
       </Stack>
+      <Text size="sm" c="dimmed">{t("insightUsersRecords", { users: data?.users.length ?? 0, records: data?.assessments.length ?? 0, velocity: assessmentVelocity })}</Text>
 
       <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <MetricCard label={t("totalChildren")} value={String(data?.childrenCount ?? 0)} />
         <MetricCard label={t("avgRecordsPerChild")} value={avgRecordsPerChild} />
       </Stack>
+      <Text size="sm" c="dimmed">{t("insightChildrenCoverage", { children: data?.childrenCount ?? 0, avg: avgRecordsPerChild })}</Text>
 
       <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <Box style={{ flex: 1, minWidth: 320 }}>
@@ -280,6 +282,9 @@ export function MainDashboard() {
                 </PieChart>
               </ResponsiveContainer>
             </Box>
+            <Text size="sm" c="dimmed" mt="xs">
+              {t("insightReadinessRatio", { ready: successRatio.find((x) => x.name === "Ready")?.value ?? 0, developing: successRatio.find((x) => x.name === "Developing")?.value ?? 0 })}
+            </Text>
           </SectionCard>
         </Box>
 
@@ -288,6 +293,13 @@ export function MainDashboard() {
             title={t("globalBalanceTitle")} 
             data={globalBalance}
           />
+          <Text size="sm" c="dimmed" mt="xs">
+            {t("insightGlobalBalance", {
+              movement: globalBalance.find((x) => x.domain === ts("movement"))?.value ?? 0,
+              social: globalBalance.find((x) => x.domain === ts("social"))?.value ?? 0,
+              mental: globalBalance.find((x) => x.domain === ts("mental"))?.value ?? 0
+            })}
+          </Text>
         </Box>
       </Stack>
 
@@ -318,6 +330,12 @@ export function MainDashboard() {
             </BarChart>
           </ResponsiveContainer>
         </Box>
+        <Text size="sm" c="dimmed">
+          {t("insightLocationPerformance", {
+            location: locationPerformance[0]?.name ?? "—",
+            value: locationPerformance[0]?.value ?? 0
+          })}
+        </Text>
       </SectionCard>
 
       <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
@@ -354,6 +372,13 @@ export function MainDashboard() {
           <DailyAverageBarChart title={ts("social")} data={dailyAverages} dataKey="social" domain="social" />
           <DailyAverageBarChart title={ts("mental")} data={dailyAverages} dataKey="mental" domain="mental" />
         </Stack>
+        <Text size="sm" c="dimmed">
+          {t("insightDailyAverages", {
+            movement: dailyAverages[dailyAverages.length - 1]?.movement ?? 0,
+            social: dailyAverages[dailyAverages.length - 1]?.social ?? 0,
+            mental: dailyAverages[dailyAverages.length - 1]?.mental ?? 0
+          })}
+        </Text>
       </SectionCard>
 
     </Stack>

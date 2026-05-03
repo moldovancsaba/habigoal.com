@@ -147,6 +147,13 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
             value: a.computed.ski || 0 
           }))} 
         />
+        <Text size="sm" c="dimmed" mt="xs">
+          {td("insightChildSkiProgression", {
+            sessions: data.assessments.length,
+            current: latest?.computed.ski || 0,
+            baseline: baseline?.computed.ski || 0
+          })}
+        </Text>
       </SectionCard>
 
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
@@ -180,6 +187,13 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
               average: td("baselineAssessment") || "Baseline"
             }}
           />
+          <Text size="sm" c="dimmed" mt="xs">
+            {td("insightChildBenchmark", {
+              movement: latest?.computed.movementAverage || 0,
+              social: latest?.computed.socialAverage || 0,
+              mental: latest?.computed.mentalAverage || 0
+            })}
+          </Text>
           <Stack gap="md" mt="lg">
             <Paper withBorder p="md" radius="md">
               <Text fw={700} size="sm" mb="xs" c="green">{td("strengthsTitle")}</Text>
@@ -264,6 +278,9 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
             </Table.Tbody>
           </Table>
         </Paper>
+        <Text size="sm" c="dimmed" mt="xs">
+          {td("insightChildHistoryCount", { count: data.assessments.length })}
+        </Text>
       </SectionCard>
 
       <SectionCard title={t("evidenceImages")}>

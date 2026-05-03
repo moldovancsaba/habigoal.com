@@ -202,6 +202,14 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               />
             </Box>
           </SimpleGrid>
+          <Text size="sm" c="dimmed">
+            {td("insightRecordReadiness", {
+              ski: record.computed.ski || 0,
+              movement: record.computed.movementAverage || 0,
+              social: record.computed.socialAverage || 0,
+              mental: record.computed.mentalAverage || 0
+            })}
+          </Text>
 
           <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md">
             <Metric label={ts("movement")} value={formatScore(record.computed.movementAverage)} />
@@ -209,6 +217,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             <Metric label={ts("mental")} value={formatScore(record.computed.mentalAverage)} />
             <Metric label={ts("ski")} value={formatScore(record.computed.ski)} />
           </SimpleGrid>
+          <Text size="sm" c="dimmed">
+            {td("insightRecordDomainSummary", {
+              movement: record.computed.movementAverage || 0,
+              social: record.computed.socialAverage || 0,
+              mental: record.computed.mentalAverage || 0
+            })}
+          </Text>
 
           <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
             <RecordRadarChart title={t("rapidMovementTitle")} data={radarData.movement} domain="movement" />

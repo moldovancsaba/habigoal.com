@@ -108,7 +108,18 @@
     "strengthsTitle": "Strengths",
     "focusAreasTitle": "Focus Areas",
     "ageBenchmarking": "Age Group Benchmarking",
-    "volatility": "Trend"
+    "volatility": "Trend",
+    "insightUsersRecords": "There are {users} active users managing {records} records; current assessment velocity is {velocity}.",
+    "insightChildrenCoverage": "{children} children are tracked with an average of {avg} assessments per child.",
+    "insightReadinessRatio": "Readiness split: {ready} ready and {developing} developing children based on latest SKI.",
+    "insightGlobalBalance": "Current organizational domain averages are Movement {movement}, Social {social}, Mental {mental}.",
+    "insightLocationPerformance": "Top location is {location} with average SKI {value}.",
+    "insightDailyAverages": "Latest daily averages: Movement {movement}, Social {social}, Mental {mental}.",
+    "insightChildSkiProgression": "Across {sessions} sessions, SKI moved from {baseline} to {current}.",
+    "insightChildBenchmark": "Latest profile: Movement {movement}, Social {social}, Mental {mental}.",
+    "insightChildHistoryCount": "This child currently has {count} recorded assessments.",
+    "insightRecordReadiness": "This session shows SKI {ski} with domain levels Movement {movement}, Social {social}, Mental {mental}.",
+    "insightRecordDomainSummary": "Domain summary confirms Movement {movement}, Social {social}, Mental {mental} for this record."
   },
   "Assessment": {
     "saved": "Assessment saved.",

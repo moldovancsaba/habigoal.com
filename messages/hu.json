@@ -108,7 +108,18 @@
     "strengthsTitle": "Erősségek",
     "focusAreasTitle": "Fejlesztendő területek",
     "ageBenchmarking": "Életkori összehasonlítás",
-    "volatility": "Trend"
+    "volatility": "Trend",
+    "insightUsersRecords": "{users} aktív felhasználó kezeli a(z) {records} rekordot; a jelenlegi felmérési gyakoriság: {velocity}.",
+    "insightChildrenCoverage": "{children} gyermek nyomon követése történik, átlagosan {avg} felméréssel gyermekenként.",
+    "insightReadinessRatio": "Sportérettségi megoszlás: {ready} felkészült és {developing} fejlesztendő gyermek a legutóbbi SKI alapján.",
+    "insightGlobalBalance": "A jelenlegi szervezeti átlagok: Mozgás {movement}, Szociális {social}, Mentális {mental}.",
+    "insightLocationPerformance": "A legerősebb helyszín: {location}, átlagos SKI: {value}.",
+    "insightDailyAverages": "Legfrissebb napi átlagok: Mozgás {movement}, Szociális {social}, Mentális {mental}.",
+    "insightChildSkiProgression": "{sessions} mérés alapján a SKI {baseline} értékről {current} értékre változott.",
+    "insightChildBenchmark": "Legfrissebb profil: Mozgás {movement}, Szociális {social}, Mentális {mental}.",
+    "insightChildHistoryCount": "A gyermekhez jelenleg {count} rögzített felmérés tartozik.",
+    "insightRecordReadiness": "Ez a mérés SKI {ski} értéket mutat, dimenziónként: Mozgás {movement}, Szociális {social}, Mentális {mental}.",
+    "insightRecordDomainSummary": "Dimenzió összegzés ehhez a rekordhoz: Mozgás {movement}, Szociális {social}, Mentális {mental}."
   },
   "Assessment": {
     "saved": "Felmérés elmentve.",
