@@ -28,6 +28,17 @@ export async function listAssessmentSummaries() {
   return assessments.map(toJsonId);
 }
 
+export async function listDeletedAssessmentSummaries() {
+  const db = await getDatabase();
+  const assessments = await db
+    .collection(collectionName)
+    .find({ deletedAt: { $exists: true } }, { projection: { child: 1, session: 1, mode: 1, computed: 1, createdAt: 1, updatedAt: 1 } })
+    .sort({ updatedAt: -1 })
+    .limit(200)
+    .toArray();
+  return assessments.map(toJsonId);
+}
+
 export async function createAssessment(record: Omit<AssessmentRecord, "_id">) {
   const db = await getDatabase();
   const result = await db.collection(collectionName).insertOne(record);

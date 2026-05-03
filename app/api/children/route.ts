@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listChildren, listChildrenWithMetrics, upsertChild } from "@/repositories/child.repository";
+import { listChildren, listChildrenWithMetrics, listDeletedChildren, upsertChild } from "@/repositories/child.repository";
 import { syncChildrenFromAssessments } from "@/lib/sync-children";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { parseChildPayload } from "@/lib/validations";
@@ -11,6 +11,11 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const includeMetrics = searchParams.get("metrics") === "true";
+    const includeDeleted = searchParams.get("deleted") === "true";
+
+    if (includeDeleted) {
+      return NextResponse.json(await listDeletedChildren());
+    }
 
     let children = includeMetrics ? await listChildrenWithMetrics() : await listChildren();
     

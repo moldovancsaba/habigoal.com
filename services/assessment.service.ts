@@ -1,6 +1,6 @@
 import { computeAssessment } from "@/lib/scoring";
 import { parseAssessmentPayload } from "@/lib/validations";
-import { createAssessment, deleteAssessmentById, getAssessmentById, listAssessmentSummaries, restoreAssessmentById, updateAssessmentById } from "@/repositories/assessment.repository";
+import { createAssessment, deleteAssessmentById, getAssessmentById, listAssessmentSummaries, restoreAssessmentById, updateAssessmentById, listDeletedAssessmentSummaries } from "@/repositories/assessment.repository";
 import { getChildById, updateChildById, upsertChild } from "@/repositories/child.repository";
 import { ObjectId } from "mongodb";
 
@@ -14,6 +14,13 @@ export async function listAssessments() {
   }
 
   return { assessments: await listAssessmentSummaries(), configured: true };
+}
+
+export async function listDeletedAssessments() {
+  if (!process.env.MONGODB_URI) {
+    return { assessments: [], configured: false };
+  }
+  return { assessments: await listDeletedAssessmentSummaries(), configured: true };
 }
 
 export async function createAssessmentFromPayload(input: unknown) {

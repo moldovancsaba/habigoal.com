@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Box, Button, Checkbox, Divider, Group, Loader, Paper, Stack, Table, Tabs, Text, Textarea, TextInput } from "@mantine/core";
+import { Alert, Box, Button, Checkbox, Divider, Group, Loader, Paper, Select, Stack, Table, Tabs, Text, Textarea, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { DEFAULT_KIDEX_SETTINGS, getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
@@ -25,6 +25,8 @@ export default function SettingsPage() {
   const [locationDraft, setLocationDraft] = useState("");
   const [userDraft, setUserDraft] = useState("");
   const [me, setMe] = useState<{ isGoogleLinked: boolean } | null>(null);
+  const [deletedChildren, setDeletedChildren] = useState<Array<{ _id?: string; name: string; updatedAt?: string }>>([]);
+  const [deletedAssessments, setDeletedAssessments] = useState<Array<{ _id?: string; child?: { name?: string }; session?: { date?: string }; updatedAt?: string }>>([]);
 
   useEffect(() => {
     void (async () => {
@@ -37,6 +39,12 @@ export default function SettingsPage() {
         setSettings(sData);
         setUsers(uData);
         if (meRes?.user) setMe(meRes.user);
+        const [dcRes, daRes] = await Promise.all([
+          fetch("/api/children?deleted=true").then(r => r.json()).catch(() => []),
+          fetch("/api/assessments?deleted=true").then(r => r.json()).catch(() => ({ assessments: [] }))
+        ]);
+        setDeletedChildren(Array.isArray(dcRes) ? dcRes : []);
+        setDeletedAssessments(Array.isArray(daRes?.assessments) ? daRes.assessments : []);
       } finally {
         setLoading(false);
       }
@@ -48,6 +56,22 @@ export default function SettingsPage() {
     const ok = await saveSettings(settings);
     setMessage(ok ? tc("success") : tc("error"));
     setSaving(false);
+  }
+
+  async function restoreChild(id?: string) {
+    if (!id) return;
+    const res = await fetch(`/api/children/${id}/restore`, { method: "POST" }).catch(() => null);
+    if (!res?.ok) return setMessage(tc("error"));
+    setDeletedChildren((prev) => prev.filter((x) => x._id !== id));
+    setMessage(tc("success"));
+  }
+
+  async function restoreAssessment(id?: string) {
+    if (!id) return;
+    const res = await fetch(`/api/assessments/${id}`, { method: "POST" }).catch(() => null);
+    if (!res?.ok) return setMessage(tc("error"));
+    setDeletedAssessments((prev) => prev.filter((x) => x._id !== id));
+    setMessage(tc("success"));
   }
 
   async function toggleRole(user: User, role: "admin" | "conductor" | "observer") {
@@ -372,6 +396,55 @@ export default function SettingsPage() {
               </Tabs.Panel>
             ))}
           </Tabs>
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="Standards Version Manager">
+        <Stack gap="md">
+          <Select
+            label="Active standards version"
+            value={settings.standards.activeVersion}
+            data={Object.keys(settings.standards.versions).map((v) => ({ value: v, label: v }))}
+            onChange={(value) => setSettings((prev) => ({ ...prev, standards: { ...prev.standards, activeVersion: value || prev.standards.activeVersion } }))}
+          />
+          <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
+            {saving ? tc("saving") : tc("save")}
+          </Button>
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="Restore Bin">
+        <Stack gap="lg">
+          <Box>
+            <Text fw={700} mb="sm">Deleted children</Text>
+            {deletedChildren.length === 0 ? <Text c="dimmed">No deleted children.</Text> : (
+              <Stack gap="xs">
+                {deletedChildren.map((c) => (
+                  <Paper key={c._id} withBorder p="sm">
+                    <Group justify="space-between">
+                      <Text>{c.name}</Text>
+                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreChild(c._id)}>Restore</Button>
+                    </Group>
+                  </Paper>
+                ))}
+              </Stack>
+            )}
+          </Box>
+          <Box>
+            <Text fw={700} mb="sm">Deleted assessments</Text>
+            {deletedAssessments.length === 0 ? <Text c="dimmed">No deleted assessments.</Text> : (
+              <Stack gap="xs">
+                {deletedAssessments.map((a) => (
+                  <Paper key={a._id} withBorder p="sm">
+                    <Group justify="space-between">
+                      <Text>{a.child?.name || "Unknown"} · {a.session?.date || "-"}</Text>
+                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreAssessment(a._id)}>Restore</Button>
+                    </Group>
+                  </Paper>
+                ))}
+              </Stack>
+            )}
+          </Box>
         </Stack>
       </SectionCard>
     </Stack>

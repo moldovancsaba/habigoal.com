@@ -38,6 +38,12 @@ export async function listChildren() {
   return children.map(toJsonId);
 }
 
+export async function listDeletedChildren() {
+  const db = await getDatabase();
+  const children = await db.collection(collectionName).find({ deletedAt: { $exists: true } }).sort({ updatedAt: -1 }).toArray();
+  return children.map(toJsonId);
+}
+
 export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
   const db = await getDatabase();
   const pipeline = [
