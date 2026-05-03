@@ -297,7 +297,16 @@ export function MainDashboard() {
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip />
+              <Tooltip
+                cursor={{ fill: "transparent" }}
+                contentStyle={{
+                  background: "var(--mantine-color-body)",
+                  border: "1px solid var(--mantine-color-default-border)",
+                  borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
+                }}
+                labelStyle={{ color: "var(--mantine-color-text)" }}
+                itemStyle={{ color: "var(--mantine-color-text)" }}
+              />
               <Bar dataKey="value" fill="var(--mantine-color-kidex-6)" radius={[0, 4, 4, 0]} barSize={20} />
             </BarChart>
           </ResponsiveContainer>
