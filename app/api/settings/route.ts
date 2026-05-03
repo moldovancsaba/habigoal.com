@@ -32,7 +32,13 @@ export async function POST(request: Request) {
 
   try {
     const body = parseSettingsPayload(await readJson(request));
-    const settings = await updateGlobalSettings(body);
+    const settings = await updateGlobalSettings({
+      ...DEFAULT_KIDEX_SETTINGS,
+      ...body,
+      standards: body.standards?.activeVersion && body.standards?.versions
+        ? (body.standards as typeof DEFAULT_KIDEX_SETTINGS.standards)
+        : DEFAULT_KIDEX_SETTINGS.standards
+    });
     return NextResponse.json(settings);
   } catch (error) {
     return jsonError((error as Error).message);

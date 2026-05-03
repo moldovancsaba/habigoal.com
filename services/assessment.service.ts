@@ -1,6 +1,6 @@
 import { computeAssessment } from "@/lib/scoring";
 import { parseAssessmentPayload } from "@/lib/validations";
-import { createAssessment, deleteAssessmentById, getAssessmentById, listAssessmentSummaries, updateAssessmentById } from "@/repositories/assessment.repository";
+import { createAssessment, deleteAssessmentById, getAssessmentById, listAssessmentSummaries, restoreAssessmentById, updateAssessmentById } from "@/repositories/assessment.repository";
 import { getChildById, updateChildById, upsertChild } from "@/repositories/child.repository";
 import { ObjectId } from "mongodb";
 
@@ -79,4 +79,8 @@ export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) 
 
 export async function removeAssessment(id: ObjectId) {
   await deleteAssessmentById(id);
+}
+
+export async function restoreAssessment(id: ObjectId) {
+  await restoreAssessmentById(id);
 }

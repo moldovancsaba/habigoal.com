@@ -118,6 +118,10 @@ export interface SettingsPayload {
     hu: { subject: string; body: string };
     ar: { subject: string; body: string };
   };
+  standards: {
+    activeVersion: string;
+    versions: Record<string, unknown>;
+  };
 }
 
 export function parseSettingsPayload(input: unknown): SettingsPayload {
@@ -150,6 +154,10 @@ export function parseSettingsPayload(input: unknown): SettingsPayload {
         subject: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.ar?.subject, 240).trim(),
         body: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.ar?.body, 10000).trim()
       }
+    },
+    standards: {
+      activeVersion: stringValue((data.standards as Record<string, unknown>)?.activeVersion, 120).trim() || "v1",
+      versions: ((data.standards as Record<string, unknown>)?.versions as Record<string, unknown>) || {}
     }
   };
 }

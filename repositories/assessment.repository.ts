@@ -9,7 +9,7 @@ export async function listAssessmentSummaries() {
   const db = await getDatabase();
   const assessments = await db
     .collection(collectionName)
-    .find({}, {
+    .find({ deletedAt: { $exists: false } }, {
       projection: {
         child: 1,
         session: 1,
@@ -36,7 +36,7 @@ export async function createAssessment(record: Omit<AssessmentRecord, "_id">) {
 
 export async function getAssessmentById(id: ObjectId) {
   const db = await getDatabase();
-  const assessment = await db.collection(collectionName).findOne({ _id: id });
+  const assessment = await db.collection(collectionName).findOne({ _id: id, deletedAt: { $exists: false } });
   return assessment ? toJsonId(assessment) : null;
 }
 
@@ -53,7 +53,18 @@ export async function updateAssessmentById(id: ObjectId, update: Partial<Assessm
 
 export async function deleteAssessmentById(id: ObjectId) {
   const db = await getDatabase();
-  await db.collection(collectionName).deleteOne({ _id: id });
+  await db.collection(collectionName).updateOne(
+    { _id: id },
+    ({ $set: { deletedAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, $push: { updateHistory: `soft-delete:${new Date().toISOString()}` } } as any)
+  );
+}
+
+export async function restoreAssessmentById(id: ObjectId) {
+  const db = await getDatabase();
+  await db.collection(collectionName).updateOne(
+    { _id: id },
+    ({ $unset: { deletedAt: "" }, $set: { updatedAt: new Date().toISOString() }, $push: { updateHistory: `restore:${new Date().toISOString()}` } } as any)
+  );
 }
 
 export async function listAssessmentsByChildId(childId: string) {
@@ -81,7 +92,7 @@ export async function listAssessmentsByChildId(childId: string) {
     }
   }
 
-  return assessments.map(toJsonId);
+  return assessments.filter((a: any) => !a.deletedAt).map(toJsonId);
 }
 
 export async function updateAssessmentsForChildProfile(
@@ -120,13 +131,17 @@ export async function deleteAssessmentsForChild(
   const objectId = ObjectId.isValid(childId) ? new ObjectId(childId) : null;
   const childFilter = objectId ? { childId: { $in: [childId, objectId] } } : { childId };
 
-  await db.collection(collectionName).deleteMany(childFilter);
+  const now = new Date().toISOString();
+  await db.collection(collectionName).updateMany(
+    childFilter,
+    ({ $set: { deletedAt: now, updatedAt: now }, $push: { updateHistory: `soft-delete:${now}` } } as any)
+  );
 
   if (fallbackIdentity?.name && fallbackIdentity?.birthDate) {
-    await db.collection(collectionName).deleteMany({
+    await db.collection(collectionName).updateMany({
       childId: { $exists: false },
       "child.name": fallbackIdentity.name,
       "child.birthDate": fallbackIdentity.birthDate
-    });
+    }, ({ $set: { deletedAt: now, updatedAt: now }, $push: { updateHistory: `soft-delete:${now}` } } as any));
   }
 }

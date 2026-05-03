@@ -34,13 +34,14 @@ const collectionName = "children";
 
 export async function listChildren() {
   const db = await getDatabase();
-  const children = await db.collection(collectionName).find({}).sort({ name: 1 }).toArray();
+  const children = await db.collection(collectionName).find({ deletedAt: { $exists: false } }).sort({ name: 1 }).toArray();
   return children.map(toJsonId);
 }
 
 export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
   const db = await getDatabase();
   const pipeline = [
+    { $match: { deletedAt: { $exists: false } } },
     {
       $lookup: {
         from: "assessments",
@@ -124,7 +125,7 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
 
 export async function getChildById(id: ObjectId) {
   const db = await getDatabase();
-  const child = await db.collection(collectionName).findOne({ _id: id });
+  const child = await db.collection(collectionName).findOne({ _id: id, deletedAt: { $exists: false } });
   return child ? toJsonId(child) : null;
 }
 
@@ -181,7 +182,8 @@ export async function deleteChildById(id: ObjectId) {
     return null;
   }
 
-  await db.collection(collectionName).deleteOne({ _id: id });
+  const now = new Date().toISOString();
+  await db.collection(collectionName).updateOne({ _id: id }, { $set: { deletedAt: now, updatedAt: now } });
   const jsonChild = toJsonId(child) as Record<string, unknown>;
   return {
     _id: typeof jsonChild._id === "string" ? jsonChild._id : undefined,
@@ -199,4 +201,14 @@ export async function deleteChildById(id: ObjectId) {
     createdAt: typeof jsonChild.createdAt === "string" ? jsonChild.createdAt : "",
     updatedAt: typeof jsonChild.updatedAt === "string" ? jsonChild.updatedAt : ""
   } satisfies ChildProfile;
+}
+
+export async function restoreChildById(id: ObjectId) {
+  const db = await getDatabase();
+  const result = await db.collection(collectionName).findOneAndUpdate(
+    { _id: id },
+    { $unset: { deletedAt: "" }, $set: { updatedAt: new Date().toISOString() } },
+    { returnDocument: "after" }
+  );
+  return result ? toJsonId(result) : null;
 }

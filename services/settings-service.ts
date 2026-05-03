@@ -17,6 +17,14 @@ export interface KidexSettings {
     hu: { subject: string; body: string };
     ar: { subject: string; body: string };
   };
+  standards: {
+    activeVersion: string;
+    versions: Record<string, {
+      "4-6": { movement: { target: number; min: number }; social: { target: number; min: number }; mental: { target: number; min: number }; ski: { target: number; min: number } };
+      "7-9": { movement: { target: number; min: number }; social: { target: number; min: number }; mental: { target: number; min: number }; ski: { target: number; min: number } };
+      "10-12": { movement: { target: number; min: number }; social: { target: number; min: number }; mental: { target: number; min: number }; ski: { target: number; min: number } };
+    }>;
+  };
 }
 
 const STORAGE_KEY = "kidex-settings-local";
@@ -47,6 +55,31 @@ export const DEFAULT_KIDEX_SETTINGS: KidexSettings = {
       subject: "مرحباً بك في كيديكس - لقد تم دعوتك",
       body: "<div dir=\"rtl\"><h1>مرحباً بك في كيديكس</h1><p>لقد تم دعوتك للانضمام إلى نظام كيديكس الرياضي الحيوي-النفسي-الاجتماعي.</p><p>يمكنك الآن تسجيل الدخول باستخدام بريدك الإلكتروني عبر الرابط التالي:</p><a href=\"{{link}}\" style=\"padding: 12px 24px; background: #008080; color: white; text-decoration: none; border-radius: 6px; display: inline-block;\">تسجيل الدخول إلى لوحة التحكم</a><p>إذا لم يعمل الزر، قم بنسخ ولصق هذا الرابط: {{link}}</p></div>"
     }
+  },
+  standards: {
+    activeVersion: "v1",
+    versions: {
+      v1: {
+        "4-6": {
+          movement: { target: 4.5, min: 3.0 },
+          social: { target: 4.0, min: 2.5 },
+          mental: { target: 3.5, min: 2.0 },
+          ski: { target: 4.0, min: 2.5 }
+        },
+        "7-9": {
+          movement: { target: 5.0, min: 3.5 },
+          social: { target: 4.5, min: 3.0 },
+          mental: { target: 4.0, min: 2.5 },
+          ski: { target: 4.5, min: 3.0 }
+        },
+        "10-12": {
+          movement: { target: 5.5, min: 4.0 },
+          social: { target: 5.0, min: 3.5 },
+          mental: { target: 4.5, min: 3.0 },
+          ski: { target: 5.0, min: 3.5 }
+        }
+      }
+    }
   }
 };
 
@@ -64,6 +97,10 @@ function normalizeSettings(raw: Partial<KidexSettings> | null | undefined): Kide
     emailTemplates: {
       ...DEFAULT_KIDEX_SETTINGS.emailTemplates,
       ...(next.emailTemplates ?? {})
+    },
+    standards: {
+      ...DEFAULT_KIDEX_SETTINGS.standards,
+      ...(next.standards ?? {})
     }
   };
 }

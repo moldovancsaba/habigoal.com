@@ -3,6 +3,7 @@ import {
   getAssessment,
   parseObjectId,
   removeAssessment,
+  restoreAssessment,
   updateAssessmentFromPayload
 } from "@/services/assessment.service";
 import { jsonError, readJson, requireRole } from "@/lib/api";
@@ -69,6 +70,21 @@ export async function DELETE(_request: Request, context: RouteContext) {
 
   try {
     await removeAssessment(_id);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return jsonError((error as Error).message);
+  }
+}
+
+export async function POST(_request: Request, context: RouteContext) {
+  const authError = requireRole(_request, ["admin", "conductor"]);
+  if (authError) return authError;
+  const _id = await objectIdFromContext(context);
+  if (!_id) {
+    return jsonError("Invalid assessment id", 400, "VALIDATION_ERROR");
+  }
+  try {
+    await restoreAssessment(_id);
     return NextResponse.json({ ok: true });
   } catch (error) {
     return jsonError((error as Error).message);

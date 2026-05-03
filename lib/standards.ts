@@ -32,5 +32,18 @@ export const standards: Record<string, AgeGroupStandard> = {
 };
 
 export function getStandardForAgeGroup(ageGroup: string): AgeGroupStandard | null {
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem("kidex-settings-local");
+      if (raw) {
+        const parsed = JSON.parse(raw) as { standards?: { activeVersion?: string; versions?: Record<string, Record<string, AgeGroupStandard>> } };
+        const active = parsed.standards?.activeVersion;
+        const version = active ? parsed.standards?.versions?.[active] : undefined;
+        if (version && version[ageGroup]) return version[ageGroup];
+      }
+    } catch {
+      // fallback to defaults
+    }
+  }
   return standards[ageGroup] || null;
 }
