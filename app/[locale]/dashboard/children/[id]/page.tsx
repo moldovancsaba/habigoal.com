@@ -150,8 +150,8 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
         <Text size="sm" c="dimmed" mt="xs">
           {td("insightChildSkiProgression", {
             sessions: data.assessments.length,
-            current: latest?.computed.ski || 0,
-            baseline: baseline?.computed.ski || 0
+            current: formatScore(latest?.computed.ski || 0),
+            baseline: formatScore(baseline?.computed.ski || 0)
           })}
         </Text>
       </SectionCard>
@@ -189,9 +189,9 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           />
           <Text size="sm" c="dimmed" mt="xs">
             {td("insightChildBenchmark", {
-              movement: latest?.computed.movementAverage || 0,
-              social: latest?.computed.socialAverage || 0,
-              mental: latest?.computed.mentalAverage || 0
+              movement: formatScore(latest?.computed.movementAverage || 0),
+              social: formatScore(latest?.computed.socialAverage || 0),
+              mental: formatScore(latest?.computed.mentalAverage || 0)
             })}
           </Text>
           <Stack gap="md" mt="lg">

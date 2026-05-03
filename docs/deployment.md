@@ -48,3 +48,17 @@ The assessment record stores:
 - file name, MIME type, size, upload time
 
 Media upload is blocked in the UI until video/photo consent is checked.
+
+## Post-deploy checks (0.5.0)
+
+1. Open `/dashboard/settings` and verify:
+- Standards Version Manager renders active version and version table.
+- Restore Bin loads deleted children and assessments.
+2. Create and update one assessment, then verify `standardsVersionUsed` is present on the saved record.
+3. Soft-delete one child and one assessment, verify:
+- They disappear from default lists.
+- They appear in deleted views and can be restored.
+4. Verify localized chart outcome sentences appear on:
+- `/dashboard`
+- `/dashboard/children/[id]`
+- `/dashboard/records/[id]`

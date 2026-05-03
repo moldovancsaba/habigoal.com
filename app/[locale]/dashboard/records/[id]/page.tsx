@@ -204,10 +204,10 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           </SimpleGrid>
           <Text size="sm" c="dimmed">
             {td("insightRecordReadiness", {
-              ski: record.computed.ski || 0,
-              movement: record.computed.movementAverage || 0,
-              social: record.computed.socialAverage || 0,
-              mental: record.computed.mentalAverage || 0
+              ski: formatScore(record.computed.ski || 0),
+              movement: formatScore(record.computed.movementAverage || 0),
+              social: formatScore(record.computed.socialAverage || 0),
+              mental: formatScore(record.computed.mentalAverage || 0)
             })}
           </Text>
 
@@ -219,9 +219,9 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           </SimpleGrid>
           <Text size="sm" c="dimmed">
             {td("insightRecordDomainSummary", {
-              movement: record.computed.movementAverage || 0,
-              social: record.computed.socialAverage || 0,
-              mental: record.computed.mentalAverage || 0
+              movement: formatScore(record.computed.movementAverage || 0),
+              social: formatScore(record.computed.socialAverage || 0),
+              mental: formatScore(record.computed.mentalAverage || 0)
             })}
           </Text>
 

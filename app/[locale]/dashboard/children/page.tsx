@@ -39,7 +39,6 @@ export default function ChildrenListPage() {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [locations, setLocations] = useState<string[]>([]);
   
-  // Advanced filters state
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>([]);
   const [skiRange, setSkiRange] = useState<[number, number]>([0, 100]);
@@ -89,7 +88,6 @@ export default function ChildrenListPage() {
     if (!childId || !latestRecordId) return;
     setDownloadingId(childId);
     try {
-      // Fetch both the assessment and the child's history for a complete map report
       const [aRes, hRes] = await Promise.all([
         fetch(`/api/assessments/${latestRecordId}`),
         fetch(`/api/children/${childId}/history`)
@@ -117,7 +115,6 @@ export default function ChildrenListPage() {
     return source.filter((child) => {
       const ageGroup = calculateAgeGroup(child.birthDate) || "";
       
-      // Basic search
       const matchesQuery = !q || 
         child.name.toLowerCase().includes(q) ||
         child.birthDate.toLowerCase().includes(q) ||
@@ -125,7 +122,6 @@ export default function ChildrenListPage() {
       
       if (!matchesQuery) return false;
 
-      // Advanced filters
       if (selectedLocations.length > 0 && (!child.latestLocation || !selectedLocations.includes(child.latestLocation))) {
         return false;
       }

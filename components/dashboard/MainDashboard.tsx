@@ -11,6 +11,7 @@ import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import { SymmetryChart } from "@/components/analytics/SymmetryChart";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { User } from "@/services/user-service";
+import { formatScore } from "@/lib/utils";
 
 type DashboardData = {
   users: User[];
@@ -294,10 +295,10 @@ export function MainDashboard() {
             data={globalBalance}
           />
           <Text size="sm" c="dimmed" mt="xs">
-            {t("insightGlobalBalance", {
-              movement: globalBalance.find((x) => x.domain === ts("movement"))?.value ?? 0,
-              social: globalBalance.find((x) => x.domain === ts("social"))?.value ?? 0,
-              mental: globalBalance.find((x) => x.domain === ts("mental"))?.value ?? 0
+              {t("insightGlobalBalance", {
+              movement: formatScore(globalBalance.find((x) => x.domain === ts("movement"))?.value ?? 0),
+              social: formatScore(globalBalance.find((x) => x.domain === ts("social"))?.value ?? 0),
+              mental: formatScore(globalBalance.find((x) => x.domain === ts("mental"))?.value ?? 0)
             })}
           </Text>
         </Box>
@@ -333,7 +334,7 @@ export function MainDashboard() {
         <Text size="sm" c="dimmed">
           {t("insightLocationPerformance", {
             location: locationPerformance[0]?.name ?? "—",
-            value: locationPerformance[0]?.value ?? 0
+            value: formatScore(locationPerformance[0]?.value ?? 0)
           })}
         </Text>
       </SectionCard>
@@ -374,9 +375,9 @@ export function MainDashboard() {
         </Stack>
         <Text size="sm" c="dimmed">
           {t("insightDailyAverages", {
-            movement: dailyAverages[dailyAverages.length - 1]?.movement ?? 0,
-            social: dailyAverages[dailyAverages.length - 1]?.social ?? 0,
-            mental: dailyAverages[dailyAverages.length - 1]?.mental ?? 0
+            movement: formatScore(dailyAverages[dailyAverages.length - 1]?.movement ?? 0),
+            social: formatScore(dailyAverages[dailyAverages.length - 1]?.social ?? 0),
+            mental: formatScore(dailyAverages[dailyAverages.length - 1]?.mental ?? 0)
           })}
         </Text>
       </SectionCard>
