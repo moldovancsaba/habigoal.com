@@ -4,12 +4,10 @@ import { useEffect, useState, use } from "react";
 import { Box, Button, Group, Loader, Paper, Stack, Table, Text, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Bar, BarChart, CartesianGrid, Cell, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { rapidSections } from "@/lib/kidex-schema";
-import { calculateTrend, type TrendPoint } from "@/lib/utils/trends";
-import { getStandardForAgeGroup } from "@/lib/standards";
-import { calculateAgeGroup } from "@/lib/utils/age";
+import { calculateTrend } from "@/lib/utils/trends";
 import { formatScore } from "@/lib/utils";
 import { PdfService } from "@/lib/pdf-service";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -94,8 +92,6 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
   const focusAreas = allScores.sort((a, b) => a.score - b.score).slice(0, 3);
 
   const trend = calculateTrend(data.assessments);
-  const currentAgeGroup = calculateAgeGroup(data.child.birthDate);
-  const standard = getStandardForAgeGroup(currentAgeGroup || "");
   const assessmentsWithImages = data.assessments.filter((assessment) => assessment.attachments.length > 0);
   const rapidDomainSummary = buildRapidDomainSummary(data.assessments, ts);
 

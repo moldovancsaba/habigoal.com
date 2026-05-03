@@ -187,7 +187,7 @@ export function MainDashboard() {
       { name: "Ready", value: success, color: theme.colors.kidex[6] },
       { name: "Developing", value: other, color: theme.colors.gray[4] }
     ];
-  }, [data]);
+  }, [data, theme.colors.gray, theme.colors.kidex]);
 
   const locationPerformance = useMemo(() => {
     if (!data?.assessments) return [];
