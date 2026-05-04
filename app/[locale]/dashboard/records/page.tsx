@@ -75,7 +75,7 @@ export default function RecordsPage() {
     <Stack gap="md">
       <PageHeader
         title={t("records")}
-        actions={<Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? "Showing Deleted" : "Show Deleted"}</Button>}
+        actions={<Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button>}
       />
       <SectionCard>
         <Stack gap="md">
@@ -136,7 +136,7 @@ export default function RecordsPage() {
                         </>
                       ) : (
                         <Button color="kidex" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }}>
-                          Restore
+                          {t("restoreAction")}
                         </Button>
                       )}
                     </Group>
@@ -147,13 +147,13 @@ export default function RecordsPage() {
           )}
         </Stack>
       </SectionCard>
-      <Modal opened={Boolean(restoreTargetId)} onClose={() => setRestoreTargetId(null)} title="Restore assessment" centered>
+      <Modal opened={Boolean(restoreTargetId)} onClose={() => setRestoreTargetId(null)} title={t("restoreAssessment")} centered>
         <Stack gap="md">
-          <Text size="sm">Type `restore` to confirm restoring this assessment.</Text>
+          <Text size="sm">{t("typeRestoreAssessmentToConfirm")}</Text>
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
             <Button variant="subtle" onClick={() => setRestoreTargetId(null)}>{tc("cancel")}</Button>
-            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)}>Restore</Button>
+            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)}>{t("restoreAction")}</Button>
           </Group>
         </Stack>
       </Modal>

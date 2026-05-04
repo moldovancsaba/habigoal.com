@@ -134,7 +134,15 @@
     "restoreDeletedAssessments": "Törölt felmérések",
     "restoreNoDeletedAssessments": "Nincs törölt felmérés.",
     "restoreUnknownChild": "Ismeretlen",
-    "restoreAction": "Visszaállítás"
+    "restoreAction": "Visszaállítás",
+    "showDeleted": "Töröltek mutatása",
+    "showingDeleted": "Törölt elemek nézete",
+    "addChild": "Gyermek hozzáadása",
+    "typeDeleteToConfirm": "A megerősítéshez írd be: `delete`.",
+    "restoreChild": "Gyermek visszaállítása",
+    "typeRestoreToConfirm": "A megerősítéshez írd be: `restore`.",
+    "restoreAssessment": "Felmérés visszaállítása",
+    "typeRestoreAssessmentToConfirm": "A felmérés visszaállításához írd be: `restore`."
   },
   "Assessment": {
     "saved": "Felmérés elmentve.",

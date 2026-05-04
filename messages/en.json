@@ -134,7 +134,15 @@
     "restoreDeletedAssessments": "Deleted assessments",
     "restoreNoDeletedAssessments": "No deleted assessments.",
     "restoreUnknownChild": "Unknown",
-    "restoreAction": "Restore"
+    "restoreAction": "Restore",
+    "showDeleted": "Show Deleted",
+    "showingDeleted": "Showing Deleted",
+    "addChild": "Add child",
+    "typeDeleteToConfirm": "Type `delete` to confirm.",
+    "restoreChild": "Restore child",
+    "typeRestoreToConfirm": "Type `restore` to confirm.",
+    "restoreAssessment": "Restore assessment",
+    "typeRestoreAssessmentToConfirm": "Type `restore` to confirm restoring this assessment."
   },
   "Assessment": {
     "saved": "Assessment saved.",

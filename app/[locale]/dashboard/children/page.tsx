@@ -273,7 +273,7 @@ export default function ChildrenListPage() {
 
   return (
     <Stack gap="md">
-      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? "Showing Deleted" : "Show Deleted"}</Button><Button color="kidex" onClick={startCreate}>Add child</Button></Group>} />
+      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><Button color="kidex" onClick={startCreate}>{t("addChild")}</Button></Group>} />
       <SectionCard>
         <Stack gap="md">
           {message ? (
@@ -415,7 +415,7 @@ export default function ChildrenListPage() {
                         </Button> : null}
                         {!showDeleted ? <Button color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }}>
                           {t("deleteChild")}
-                        </Button> : <Button color="kidex" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }}>Restore</Button>}
+                        </Button> : <Button color="kidex" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }}>{t("restoreAction")}</Button>}
                       </Group>
                     </Stack>
                   </Paper>
@@ -455,7 +455,7 @@ export default function ChildrenListPage() {
           </Button>
         </Group>
       </Modal>
-      <Modal opened={createOpen} onClose={() => (saving ? null : setCreateOpen(false))} title="Add child" centered>
+      <Modal opened={createOpen} onClose={() => (saving ? null : setCreateOpen(false))} title={t("addChild")} centered>
         <Stack gap="md" mt="xs">
           <TextInput label={ta("childName")} value={draftName} onChange={(event) => setDraftName(event.target.value)} />
           <TextInput label={ta("birthDate")} type="date" value={draftBirthDate} onChange={(event) => setDraftBirthDate(event.target.value)} />
@@ -468,7 +468,7 @@ export default function ChildrenListPage() {
           </Group>
           <Group justify="flex-end" mt="sm">
             <Button variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving}>{tc("cancel")}</Button>
-            <Button color="kidex" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : "Create"}</Button>
+            <Button color="kidex" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : tc("save")}</Button>
           </Group>
         </Stack>
       </Modal>
@@ -477,7 +477,7 @@ export default function ChildrenListPage() {
           <Text size="sm">
             {t("deleteChildConfirm", { name: deleteTarget?.name || "" })}
           </Text>
-          <Text size="sm" c="dimmed">Type `delete` to confirm.</Text>
+          <Text size="sm" c="dimmed">{t("typeDeleteToConfirm")}</Text>
           <TextInput value={deleteConfirmText} onChange={(e) => setDeleteConfirmText(e.currentTarget.value)} placeholder="delete" />
           <Group justify="flex-end">
             <Button variant="subtle" onClick={() => setDeleteTarget(null)}>{tc("cancel")}</Button>
@@ -495,13 +495,13 @@ export default function ChildrenListPage() {
           </Group>
         </Stack>
       </Modal>
-      <Modal opened={Boolean(restoreTarget)} onClose={() => setRestoreTarget(null)} title="Restore child" centered>
+      <Modal opened={Boolean(restoreTarget)} onClose={() => setRestoreTarget(null)} title={t("restoreChild")} centered>
         <Stack gap="md">
-          <Text size="sm">Type `restore` to confirm.</Text>
+          <Text size="sm">{t("typeRestoreToConfirm")}</Text>
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
             <Button variant="subtle" onClick={() => setRestoreTarget(null)}>{tc("cancel")}</Button>
-            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)}>Restore</Button>
+            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)}>{t("restoreAction")}</Button>
           </Group>
         </Stack>
       </Modal>

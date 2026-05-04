@@ -131,7 +131,15 @@
     "restoreDeletedAssessments": "التقييمات المحذوفة",
     "restoreNoDeletedAssessments": "لا توجد تقييمات محذوفة.",
     "restoreUnknownChild": "غير معروف",
-    "restoreAction": "استعادة"
+    "restoreAction": "استعادة",
+    "showDeleted": "عرض المحذوف",
+    "showingDeleted": "عرض العناصر المحذوفة",
+    "addChild": "إضافة طفل",
+    "typeDeleteToConfirm": "اكتب `delete` للتأكيد.",
+    "restoreChild": "استعادة الطفل",
+    "typeRestoreToConfirm": "اكتب `restore` للتأكيد.",
+    "restoreAssessment": "استعادة التقييم",
+    "typeRestoreAssessmentToConfirm": "اكتب `restore` لتأكيد استعادة هذا التقييم."
   },
   "Assessment": {
     "saved": "تم حفظ التقييم.",
