@@ -225,20 +225,30 @@ export const PdfService = {
       });
     }
 
-    // --- PAGE 4-6: PROFILES ---
+    // --- PAGE 4: PROFILES (II-IV ON ONE PAGE) ---
     const domains: Array<{key: string, label: string, color: [number, number, number]}> = [
       { key: "rapid_movement", label: `II. ${ts("movement").toUpperCase()}`, color: [19, 165, 158] },
       { key: "rapid_social", label: `III. ${ts("social").toUpperCase()}`, color: [253, 203, 88] },
       { key: "rapid_mental", label: `IV. ${ts("mental").toUpperCase()}`, color: [61, 63, 77] }
     ];
 
+    doc.addPage();
+    this.drawPageHeader(doc, tr("organizationalBalance").toUpperCase(), logoDataUrl);
+    let profileY = 38;
+
     for (const domain of domains) {
-      doc.addPage();
-      this.drawPageHeader(doc, domain.label, logoDataUrl);
-      
+      autoTable(doc, {
+        startY: profileY,
+        head: [[{ content: domain.label, colSpan: 3 }]],
+        body: [],
+        theme: "grid",
+        styles: { fontSize: 10, fontStyle: "bold" },
+        headStyles: { fillColor: domain.color, textColor: [255, 255, 255] }
+      });
+
       const items = rapidSections.find(s => s.key === domain.key)?.items || [];
       autoTable(doc, {
-        startY: 50,
+        startY: (doc.lastAutoTable?.finalY || profileY) + 1,
         head: [[t("tableObservation"), t("tableScore"), t("tableNote")]],
         body: items.map(item => [
           ts(`${item.key}.title`),
@@ -248,9 +258,10 @@ export const PdfService = {
         theme: "grid",
         headStyles: { fillColor: domain.color }
       });
+      profileY = (doc.lastAutoTable?.finalY || profileY) + 4;
     }
 
-    // --- PAGE 7: SKI ---
+    // --- PAGE 5: SKI ---
     doc.addPage();
     this.drawPageHeader(doc, `V. ${ts("ski").toUpperCase()} INDEX`, logoDataUrl);
     
@@ -317,7 +328,7 @@ export const PdfService = {
     doc.setFontSize(11);
     doc.text(doc.splitTextToSize(tr("skiExplanation"), 150), 30, 170);
 
-    // --- PAGE 8: SPORT RECOMMENDATIONS ---
+    // --- PAGE 6: RECOMMENDATIONS + PRIORITIES + FINAL EVALUATION ---
     doc.addPage();
     this.drawPageHeader(doc, tr("recommendationsTitle").toUpperCase(), logoDataUrl);
     doc.setFontSize(12);
@@ -337,26 +348,29 @@ export const PdfService = {
       doc.text("• —", 30, 65);
     }
 
-    // --- PAGE 9: PRIORITIES ---
-    doc.addPage();
-    this.drawPageHeader(doc, tr("developmentPrioritiesTitle").toUpperCase(), logoDataUrl);
+    doc.setFontSize(14);
+    doc.text(`VII. ${tr("developmentPrioritiesTitle").toUpperCase()}`, 20, 105);
+    doc.setDrawColor(61, 63, 77);
+    doc.setLineWidth(0.4);
+    doc.line(20, 108, 190, 108);
+    doc.setFontSize(11);
     doc.setFont("ArialUnicode", "normal");
-    doc.text(doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170), 20, 60);
+    doc.text(doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170), 20, 118);
 
-    // --- PAGE 10: SIGNATURES ---
-    doc.addPage();
-    this.drawPageHeader(doc, tr("signaturesTitle").toUpperCase(), logoDataUrl);
+    doc.setFontSize(14);
+    doc.text(tr("signaturesTitle").toUpperCase(), 20, 190);
+    doc.line(20, 193, 190, 193);
     
-    doc.line(20, 200, 80, 200);
-    doc.text("Vígh Milán", 20, 210);
+    doc.line(20, 230, 80, 230);
+    doc.text("Vígh Milán", 20, 240);
     doc.setFontSize(9);
-    doc.text(tr("president"), 20, 215);
+    doc.text(tr("president"), 20, 245);
 
     doc.setFontSize(12);
-    doc.line(130, 200, 190, 200);
-    doc.text(record.session.conductor || "Kidex Fejlesztő", 130, 210);
+    doc.line(130, 230, 190, 230);
+    doc.text(record.session.conductor || "Kidex Fejlesztő", 130, 240);
     doc.setFontSize(9);
-    doc.text(tr("expert"), 130, 215);
+    doc.text(tr("expert"), 130, 245);
 
     const safeName = (record.child.name || "map").replace(/[^\w-]+/g, "_");
     doc.save(`${safeName}_Kidex_Bio-Pszicho-Szocialis_Terkep.pdf`);
