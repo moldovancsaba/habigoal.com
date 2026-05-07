@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const authError = requireRole(request, ["admin"]);
+  const authError = requireRole(request, ["admin", "conductor"]);
   if (authError) return authError;
 
   try {

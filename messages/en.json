@@ -1,5 +1,6 @@
 {
   "Common": {
+    "name": "Name",
     "save": "Save",
     "update": "Update",
     "saving": "Saving...",

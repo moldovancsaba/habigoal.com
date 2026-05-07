@@ -1,5 +1,6 @@
 {
   "Common": {
+    "name": "الاسم",
     "save": "حفظ",
     "update": "تحديث",
     "saving": "جارٍ الحفظ...",
@@ -21,7 +22,9 @@
     "advancedFilters": "فلترة متقدمة",
     "hideFilters": "إخفاء الفلاتر",
     "resetFilters": "إعادة تعيين الفلاتر",
-    "all": "الكل"
+    "all": "الكل",
+    "download": "تنزيل",
+    "downloadPdf": "تنزيل PDF"
   },
   "Dashboard": {
     "title": "لوحة التحكم",

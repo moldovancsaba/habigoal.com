@@ -1,5 +1,6 @@
 {
   "Common": {
+    "name": "Név",
     "save": "Mentés",
     "update": "Frissítés",
     "saving": "Mentés...",
