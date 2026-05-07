@@ -441,6 +441,8 @@ export const PdfService = {
     const x = 20; const y = 40; const w = 80; const h = 35;
     doc.setFontSize(10); doc.text("Domain Trend Lines", x, y - 4);
     doc.rect(x, y, w, h);
+    doc.setDrawColor(220);
+    doc.line(x, y + h / 2, x + w, y + h / 2);
     const domains = [
       { key: "movementAverage", color: [19, 165, 158] as [number, number, number] },
       { key: "socialAverage", color: [253, 203, 88] as [number, number, number] },
@@ -463,10 +465,10 @@ export const PdfService = {
       }
     });
     const last = data[data.length - 1];
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.text(`${ts("movement")}: ${formatScore(last?.computed.movementAverage ?? null)}`, x, y + h + 5);
-    doc.text(`${ts("social")}: ${formatScore(last?.computed.socialAverage ?? null)}`, x + 27, y + h + 5);
-    doc.text(`${ts("mental")}: ${formatScore(last?.computed.mentalAverage ?? null)}`, x + 52, y + h + 5);
+    doc.text(`${ts("social")}: ${formatScore(last?.computed.socialAverage ?? null)}`, x, y + h + 9);
+    doc.text(`${ts("mental")}: ${formatScore(last?.computed.mentalAverage ?? null)}`, x, y + h + 13);
   },
   drawReadinessZoneTimeline(doc: jsPDF, data: AssessmentRecord[]) {
     const x = 110; const y = 40; const w = 80; const h = 35;
@@ -487,12 +489,15 @@ export const PdfService = {
       }
     }
     const last = data[data.length - 1]?.computed.ski ?? null;
-    doc.setFontSize(8); doc.text(`Current SKI ${formatScore(last)} (${(last ?? 0) >= 3.5 ? "Ready" : "Developing"})`, x, y + h + 5);
+    doc.setFontSize(7);
+    doc.text(`Current SKI ${formatScore(last)} (${(last ?? 0) >= 3.5 ? "Ready" : "Developing"})`, x, y + h + 7);
   },
   drawDomainVarianceChart(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
     const x = 20; const y = 95; const w = 80; const h = 40;
     doc.setFontSize(10); doc.text("Domain Variance", x, y - 4);
     doc.rect(x, y, w, h);
+    doc.setDrawColor(220);
+    doc.line(x, y + h - 4, x + w, y + h - 4);
     const vals = [
       { label: ts("movement"), key: "movementAverage", color: [19, 165, 158] as [number, number, number] },
       { label: ts("social"), key: "socialAverage", color: [253, 203, 88] as [number, number, number] },
@@ -506,8 +511,9 @@ export const PdfService = {
       const barH = (std / 3) * (h - 8);
       const bx = x + 8 + idx * 22;
       doc.setFillColor(...d.color); doc.rect(bx, y + h - 4 - Math.max(1.5, barH), 12, Math.max(1.5, barH), "F");
-      doc.setFontSize(7); doc.text(formatScore(std), bx, y + h - barH - 6);
-      doc.text(d.label.split(" ")[0], bx, y + h + 3);
+      doc.setFontSize(7); doc.text(formatScore(std), bx, y + h - Math.max(1.5, barH) - 6);
+      const label = d.label.split(" ")[0].slice(0, 8);
+      doc.text(label, bx, y + h + 3);
     });
   },
   drawItemDeltaBars(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
@@ -525,7 +531,7 @@ export const PdfService = {
       const len = Math.min(26, Math.abs(d.delta) * 8);
       if (d.delta >= 0) { doc.setFillColor(19, 165, 158); doc.rect(x + 38, yy, len, 5, "F"); }
       else { doc.setFillColor(200, 80, 80); doc.rect(x + 38 - len, yy, len, 5, "F"); }
-      doc.setFontSize(7); doc.text(`${d.title.slice(0, 14)} ${d.delta >= 0 ? "+" : ""}${formatScore(d.delta)}`, x + 2, yy + 4);
+      doc.setFontSize(7); doc.text(`${d.title.slice(0, 12)} ${d.delta >= 0 ? "+" : ""}${formatScore(d.delta)}`, x + 2, yy + 4);
     });
   }
 };
