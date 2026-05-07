@@ -225,7 +225,16 @@ export const PdfService = {
       });
     }
 
-    // --- PAGE 4: PROFILES (II-IV ON ONE PAGE) ---
+    // --- PAGE 4: ANALYTICS SNAPSHOT (4 CHARTS) ---
+    doc.addPage();
+    this.drawPageHeader(doc, "ANALYTICS SNAPSHOT", logoDataUrl);
+    const trendData = [...(history.length ? history : [record])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    this.drawDomainTrendLines(doc, trendData, ts);
+    this.drawReadinessZoneTimeline(doc, trendData);
+    this.drawDomainVarianceChart(doc, trendData, ts);
+    this.drawItemDeltaBars(doc, trendData, ts);
+
+    // --- PAGE 5: PROFILES (II-IV ON ONE PAGE) ---
     const domains: Array<{key: string, label: string, color: [number, number, number]}> = [
       { key: "rapid_movement", label: `II. ${ts("movement").toUpperCase()}`, color: [19, 165, 158] },
       { key: "rapid_social", label: `III. ${ts("social").toUpperCase()}`, color: [253, 203, 88] },
@@ -261,7 +270,7 @@ export const PdfService = {
       profileY = (doc.lastAutoTable?.finalY || profileY) + 4;
     }
 
-    // --- PAGE 5: SKI ---
+    // --- PAGE 6: SKI ---
     doc.addPage();
     this.drawPageHeader(doc, `V. ${ts("ski").toUpperCase()} INDEX`, logoDataUrl);
     
@@ -328,7 +337,7 @@ export const PdfService = {
     doc.setFontSize(11);
     doc.text(doc.splitTextToSize(tr("skiExplanation"), 150), 30, 170);
 
-    // --- PAGE 6: RECOMMENDATIONS + PRIORITIES + FINAL EVALUATION ---
+    // --- PAGE 7: RECOMMENDATIONS + PRIORITIES + FINAL EVALUATION ---
     doc.addPage();
     this.drawPageHeader(doc, tr("recommendationsTitle").toUpperCase(), logoDataUrl);
     doc.setFontSize(12);
@@ -414,5 +423,81 @@ export const PdfService = {
     doc.setLineWidth(0.5);
     doc.line(20, 25, 190, 25);
     doc.setTextColor(0, 0, 0);
+  },
+  drawDomainTrendLines(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
+    const x = 20; const y = 40; const w = 80; const h = 35;
+    doc.setFontSize(10); doc.text("Domain Trend Lines", x, y - 4);
+    doc.rect(x, y, w, h);
+    const domains = [
+      { key: "movementAverage", color: [19, 165, 158] as [number, number, number] },
+      { key: "socialAverage", color: [253, 203, 88] as [number, number, number] },
+      { key: "mentalAverage", color: [61, 63, 77] as [number, number, number] }
+    ];
+    domains.forEach((d) => {
+      doc.setDrawColor(...d.color);
+      for (let i = 0; i < data.length - 1; i++) {
+        const step = w / Math.max(1, data.length - 1);
+        const v1 = (data[i].computed[d.key as "movementAverage"] || 0) / 6;
+        const v2 = (data[i + 1].computed[d.key as "movementAverage"] || 0) / 6;
+        doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
+      }
+    });
+    const last = data[data.length - 1];
+    doc.setFontSize(8);
+    doc.text(`${ts("movement")}: ${formatScore(last?.computed.movementAverage ?? null)} | ${ts("social")}: ${formatScore(last?.computed.socialAverage ?? null)} | ${ts("mental")}: ${formatScore(last?.computed.mentalAverage ?? null)}`, x, y + h + 5);
+  },
+  drawReadinessZoneTimeline(doc: jsPDF, data: AssessmentRecord[]) {
+    const x = 110; const y = 40; const w = 80; const h = 35;
+    doc.setFontSize(10); doc.text("Readiness Zone Timeline", x, y - 4);
+    doc.setFillColor(245, 245, 245); doc.rect(x, y, w, h, "F");
+    doc.setFillColor(230, 250, 245); doc.rect(x, y, w, h * 0.42, "F");
+    doc.rect(x, y, w, h);
+    doc.setDrawColor(19, 165, 158);
+    for (let i = 0; i < data.length - 1; i++) {
+      const step = w / Math.max(1, data.length - 1);
+      const v1 = (data[i].computed.ski || 0) / 6;
+      const v2 = (data[i + 1].computed.ski || 0) / 6;
+      doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
+    }
+    const last = data[data.length - 1]?.computed.ski ?? null;
+    doc.setFontSize(8); doc.text(`Current SKI ${formatScore(last)} (${(last ?? 0) >= 3.5 ? "Ready" : "Developing"})`, x, y + h + 5);
+  },
+  drawDomainVarianceChart(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
+    const x = 20; const y = 95; const w = 80; const h = 40;
+    doc.setFontSize(10); doc.text("Domain Variance", x, y - 4);
+    doc.rect(x, y, w, h);
+    const vals = [
+      { label: ts("movement"), key: "movementAverage", color: [19, 165, 158] as [number, number, number] },
+      { label: ts("social"), key: "socialAverage", color: [253, 203, 88] as [number, number, number] },
+      { label: ts("mental"), key: "mentalAverage", color: [61, 63, 77] as [number, number, number] }
+    ];
+    vals.forEach((d, idx) => {
+      const series = data.map((r) => r.computed[d.key as "movementAverage"] || 0);
+      const avg = series.reduce((a, b) => a + b, 0) / Math.max(1, series.length);
+      const variance = series.reduce((a, v) => a + (v - avg) ** 2, 0) / Math.max(1, series.length);
+      const std = Math.sqrt(variance);
+      const barH = (std / 3) * (h - 8);
+      const bx = x + 8 + idx * 22;
+      doc.setFillColor(...d.color); doc.rect(bx, y + h - 4 - barH, 12, barH, "F");
+      doc.setFontSize(7); doc.text(formatScore(std), bx, y + h - barH - 6);
+    });
+  },
+  drawItemDeltaBars(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
+    const x = 110; const y = 95; const w = 80; const h = 40;
+    doc.setFontSize(10); doc.text("Top Gains / Regressions", x, y - 4);
+    doc.rect(x, y, w, h);
+    const first = data[0]; const last = data[data.length - 1];
+    const deltas = rapidSections.flatMap((s) => s.items.map((i) => {
+      const a = first?.scores[i.key]?.score || 0;
+      const b = last?.scores[i.key]?.score || 0;
+      return { key: i.key, title: ts(`${i.key}.title`), delta: b - a };
+    })).sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, 3);
+    deltas.forEach((d, idx) => {
+      const yy = y + 8 + idx * 10;
+      const len = Math.min(26, Math.abs(d.delta) * 8);
+      if (d.delta >= 0) { doc.setFillColor(19, 165, 158); doc.rect(x + 38, yy, len, 5, "F"); }
+      else { doc.setFillColor(200, 80, 80); doc.rect(x + 38 - len, yy, len, 5, "F"); }
+      doc.setFontSize(7); doc.text(`${d.title.slice(0, 16)} ${d.delta >= 0 ? "+" : ""}${formatScore(d.delta)}`, x + 2, yy + 4);
+    });
   }
 };
