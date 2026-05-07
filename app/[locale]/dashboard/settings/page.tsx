@@ -332,14 +332,6 @@ export default function SettingsPage() {
                     <TextInput
                       value={user.name || ""}
                       placeholder="Full name"
-                      onBlur={async (event) => {
-                        const name = event.currentTarget.value.trim();
-                        if ((user.name || "") === name) return;
-                        const updatedUser = { ...user, name: name || undefined };
-                        setUsers((prev) => prev.map((u) => (u.email === user.email ? updatedUser : u)));
-                        const ok = await saveUser(updatedUser);
-                        if (!ok) setMessage(tc("error"));
-                      }}
                       onChange={(event) => {
                         const name = event.currentTarget.value;
                         setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
@@ -371,6 +363,19 @@ export default function SettingsPage() {
                     />
                   </Table.Td>
                   <Table.Td style={{ textAlign: "right" }}>
+                    <Button
+                      variant="light"
+                      size="sm"
+                      onClick={async () => {
+                        const latest = users.find((u) => u.email === user.email) || user;
+                        const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
+                        const ok = await saveUser(updatedUser);
+                        setMessage(ok ? tc("success") : tc("error"));
+                      }}
+                      mr="xs"
+                    >
+                      {tc("save")}
+                    </Button>
                     <Button 
                       variant="light" 
                       color="red" 
