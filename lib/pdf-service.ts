@@ -448,16 +448,25 @@ export const PdfService = {
     ];
     domains.forEach((d) => {
       doc.setDrawColor(...d.color);
-      for (let i = 0; i < data.length - 1; i++) {
-        const step = w / Math.max(1, data.length - 1);
-        const v1 = (data[i].computed[d.key as "movementAverage"] || 0) / 6;
-        const v2 = (data[i + 1].computed[d.key as "movementAverage"] || 0) / 6;
-        doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
+      const step = w / Math.max(1, data.length - 1);
+      if (data.length === 1) {
+        const v = (data[0].computed[d.key as "movementAverage"] || 0) / 6;
+        doc.circle(x + w / 2, y + h - v * h, 1, "F");
+      } else {
+        for (let i = 0; i < data.length - 1; i++) {
+          const v1 = (data[i].computed[d.key as "movementAverage"] || 0) / 6;
+          const v2 = (data[i + 1].computed[d.key as "movementAverage"] || 0) / 6;
+          doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
+          doc.circle(x + i * step, y + h - v1 * h, 0.6, "F");
+          if (i === data.length - 2) doc.circle(x + (i + 1) * step, y + h - v2 * h, 0.6, "F");
+        }
       }
     });
     const last = data[data.length - 1];
     doc.setFontSize(8);
-    doc.text(`${ts("movement")}: ${formatScore(last?.computed.movementAverage ?? null)} | ${ts("social")}: ${formatScore(last?.computed.socialAverage ?? null)} | ${ts("mental")}: ${formatScore(last?.computed.mentalAverage ?? null)}`, x, y + h + 5);
+    doc.text(`${ts("movement")}: ${formatScore(last?.computed.movementAverage ?? null)}`, x, y + h + 5);
+    doc.text(`${ts("social")}: ${formatScore(last?.computed.socialAverage ?? null)}`, x + 27, y + h + 5);
+    doc.text(`${ts("mental")}: ${formatScore(last?.computed.mentalAverage ?? null)}`, x + 52, y + h + 5);
   },
   drawReadinessZoneTimeline(doc: jsPDF, data: AssessmentRecord[]) {
     const x = 110; const y = 40; const w = 80; const h = 35;
@@ -466,11 +475,16 @@ export const PdfService = {
     doc.setFillColor(230, 250, 245); doc.rect(x, y, w, h * 0.42, "F");
     doc.rect(x, y, w, h);
     doc.setDrawColor(19, 165, 158);
-    for (let i = 0; i < data.length - 1; i++) {
-      const step = w / Math.max(1, data.length - 1);
-      const v1 = (data[i].computed.ski || 0) / 6;
-      const v2 = (data[i + 1].computed.ski || 0) / 6;
-      doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
+    if (data.length === 1) {
+      const v = (data[0].computed.ski || 0) / 6;
+      doc.circle(x + w / 2, y + h - v * h, 1, "F");
+    } else {
+      for (let i = 0; i < data.length - 1; i++) {
+        const step = w / Math.max(1, data.length - 1);
+        const v1 = (data[i].computed.ski || 0) / 6;
+        const v2 = (data[i + 1].computed.ski || 0) / 6;
+        doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
+      }
     }
     const last = data[data.length - 1]?.computed.ski ?? null;
     doc.setFontSize(8); doc.text(`Current SKI ${formatScore(last)} (${(last ?? 0) >= 3.5 ? "Ready" : "Developing"})`, x, y + h + 5);
@@ -491,8 +505,9 @@ export const PdfService = {
       const std = Math.sqrt(variance);
       const barH = (std / 3) * (h - 8);
       const bx = x + 8 + idx * 22;
-      doc.setFillColor(...d.color); doc.rect(bx, y + h - 4 - barH, 12, barH, "F");
+      doc.setFillColor(...d.color); doc.rect(bx, y + h - 4 - Math.max(1.5, barH), 12, Math.max(1.5, barH), "F");
       doc.setFontSize(7); doc.text(formatScore(std), bx, y + h - barH - 6);
+      doc.text(d.label.split(" ")[0], bx, y + h + 3);
     });
   },
   drawItemDeltaBars(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
@@ -510,7 +525,7 @@ export const PdfService = {
       const len = Math.min(26, Math.abs(d.delta) * 8);
       if (d.delta >= 0) { doc.setFillColor(19, 165, 158); doc.rect(x + 38, yy, len, 5, "F"); }
       else { doc.setFillColor(200, 80, 80); doc.rect(x + 38 - len, yy, len, 5, "F"); }
-      doc.setFontSize(7); doc.text(`${d.title.slice(0, 16)} ${d.delta >= 0 ? "+" : ""}${formatScore(d.delta)}`, x + 2, yy + 4);
+      doc.setFontSize(7); doc.text(`${d.title.slice(0, 14)} ${d.delta >= 0 ? "+" : ""}${formatScore(d.delta)}`, x + 2, yy + 4);
     });
   }
 };
