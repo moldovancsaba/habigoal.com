@@ -340,37 +340,52 @@ export const PdfService = {
     if (mvAvg !== null && mvAvg < 3) recs.push(t("stabilizing"));
     if (mvAvg !== null && mvAvg >= 4) recs.push(t("sportOrientation"));
     
+    let y = 65;
     if (recs.length > 0) {
       recs.forEach((rec, idx) => {
-        doc.text(`• ${rec}`, 30, 65 + (idx * 10));
+        doc.text(`• ${rec}`, 30, y + (idx * 8));
       });
+      y += recs.length * 8 + 8;
     } else {
-      doc.text("• —", 30, 65);
+      doc.text("• —", 30, y);
+      y += 16;
     }
 
     doc.setFontSize(14);
-    doc.text(`VII. ${tr("developmentPrioritiesTitle").toUpperCase()}`, 20, 105);
+    doc.text(`VII. ${tr("developmentPrioritiesTitle").toUpperCase()}`, 20, y);
     doc.setDrawColor(61, 63, 77);
     doc.setLineWidth(0.4);
-    doc.line(20, 108, 190, 108);
+    doc.line(20, y + 3, 190, y + 3);
     doc.setFontSize(11);
     doc.setFont("ArialUnicode", "normal");
-    doc.text(doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170), 20, 118);
+    const prioritiesLines = doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170);
+    const prioritiesStartY = y + 13;
+    doc.text(prioritiesLines, 20, prioritiesStartY);
+    const prioritiesHeight = prioritiesLines.length * 5;
+    let signatureTitleY = prioritiesStartY + prioritiesHeight + 12;
+
+    // If content gets too long, move final evaluation block to a clean new page.
+    if (signatureTitleY > 175) {
+      doc.addPage();
+      this.drawPageHeader(doc, tr("signaturesTitle").toUpperCase(), logoDataUrl);
+      signatureTitleY = 40;
+    }
 
     doc.setFontSize(14);
-    doc.text(tr("signaturesTitle").toUpperCase(), 20, 190);
-    doc.line(20, 193, 190, 193);
+    doc.text(tr("signaturesTitle").toUpperCase(), 20, signatureTitleY);
+    doc.line(20, signatureTitleY + 3, 190, signatureTitleY + 3);
     
-    doc.line(20, 230, 80, 230);
-    doc.text("Vígh Milán", 20, 240);
+    const signatureLineY = signatureTitleY + 40;
+    doc.line(20, signatureLineY, 80, signatureLineY);
+    doc.text("Vígh Milán", 20, signatureLineY + 10);
     doc.setFontSize(9);
-    doc.text(tr("president"), 20, 245);
+    doc.text(tr("president"), 20, signatureLineY + 15);
 
     doc.setFontSize(12);
-    doc.line(130, 230, 190, 230);
-    doc.text(record.session.conductor || "Kidex Fejlesztő", 130, 240);
+    doc.line(130, signatureLineY, 190, signatureLineY);
+    doc.text(record.session.conductor || "Kidex Fejlesztő", 130, signatureLineY + 10);
     doc.setFontSize(9);
-    doc.text(tr("expert"), 130, 245);
+    doc.text(tr("expert"), 130, signatureLineY + 15);
 
     const safeName = (record.child.name || "map").replace(/[^\w-]+/g, "_");
     doc.save(`${safeName}_Kidex_Bio-Pszicho-Szocialis_Terkep.pdf`);
