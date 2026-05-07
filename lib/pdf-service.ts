@@ -17,11 +17,36 @@ type TFunction = (key: string) => string;
  * Handles generation of "Original" and "Map" report formats.
  */
 export const PdfService = {
+  async ensureUnicodeFont(doc: jsPDF): Promise<void> {
+    const fontName = "ArialUnicode";
+    if (doc.getFontList()[fontName]) {
+      doc.setFont(fontName, "normal");
+      return;
+    }
+    const base64 = await fetch("/fonts/Arial.ttf")
+      .then((res) => res.arrayBuffer())
+      .then((buffer) => {
+        let binary = "";
+        const bytes = new Uint8Array(buffer);
+        const chunkSize = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          const chunk = bytes.subarray(i, i + chunkSize);
+          binary += String.fromCharCode(...chunk);
+        }
+        return btoa(binary);
+      })
+      .catch(() => "");
+    if (!base64) return;
+    doc.addFileToVFS("Arial.ttf", base64);
+    doc.addFont("Arial.ttf", fontName, "normal");
+    doc.setFont(fontName, "normal");
+  },
   /**
    * Generates the "Original" technical assessment report.
    */
   async generateOriginalReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
+    await this.ensureUnicodeFont(doc);
     const reportDate = new Date(record.createdAt).toLocaleDateString();
     const reportTime = new Date(record.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -114,17 +139,18 @@ export const PdfService = {
     history: AssessmentRecord[] = []
   ): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
+    await this.ensureUnicodeFont(doc);
     const logoDataUrl = await this.getLogoDataUrl();
 
     // --- PAGE 1: COVER ---
     if (logoDataUrl) doc.addImage(logoDataUrl, "JPEG", 70, 40, 70, 70);
-    doc.setFont("times", "bold");
+    doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(28);
     doc.text("KIDEX", 105, 130, { align: "center" });
     doc.setFontSize(22);
     doc.text(tr("assessmentReport").toUpperCase(), 105, 145, { align: "center" });
     
-    doc.setFont("times", "normal");
+    doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(18);
     doc.text(record.child.name, 105, 170, { align: "center" });
     doc.setFontSize(14);
@@ -139,7 +165,7 @@ export const PdfService = {
     this.drawPageHeader(doc, `I. ${t("generalObservation").toUpperCase()}`, logoDataUrl);
     doc.setFontSize(12);
     doc.text(tr("professionalOpinion"), 20, 50);
-    doc.setFont("times", "italic");
+    doc.setFont("ArialUnicode", "normal");
     doc.text(doc.splitTextToSize(record.notes.general || tr("noGeneralObservation"), 170), 20, 60);
 
     // --- PAGE 3: DEVELOPMENT TRENDS ---
@@ -147,7 +173,7 @@ export const PdfService = {
       doc.addPage();
       this.drawPageHeader(doc, tr("developmentTrends").toUpperCase(), logoDataUrl);
       doc.setFontSize(11);
-      doc.setFont("times", "normal");
+      doc.setFont("ArialUnicode", "normal");
       doc.text(doc.splitTextToSize(tr("trendExplanation"), 170), 20, 50);
 
       const trendData = [...history].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
@@ -314,7 +340,7 @@ export const PdfService = {
     // --- PAGE 9: PRIORITIES ---
     doc.addPage();
     this.drawPageHeader(doc, tr("developmentPrioritiesTitle").toUpperCase(), logoDataUrl);
-    doc.setFont("times", "normal");
+    doc.setFont("ArialUnicode", "normal");
     doc.text(doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170), 20, 60);
 
     // --- PAGE 10: SIGNATURES ---
@@ -351,7 +377,7 @@ export const PdfService = {
 
   drawPageHeader(doc: jsPDF, title: string, logoUrl: string) {
     if (logoUrl) doc.addImage(logoUrl, "JPEG", 180, 10, 15, 15);
-    doc.setFont("times", "bold");
+    doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(14);
     doc.setTextColor(61, 63, 77);
     doc.text(title, 20, 20);
