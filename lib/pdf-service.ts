@@ -162,7 +162,7 @@ export const PdfService = {
 
     // --- PAGE 2: GENERAL OBSERVATION ---
     doc.addPage();
-    this.drawPageHeader(doc, `I. ${t("generalObservation").toUpperCase()}`, logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
     doc.setFontSize(12);
     doc.text(tr("professionalOpinion"), 20, 50);
     doc.setFont("ArialUnicode", "normal");
@@ -171,7 +171,9 @@ export const PdfService = {
     // --- PAGE 3: DEVELOPMENT TRENDS ---
     if (history.length > 1) {
       doc.addPage();
-      this.drawPageHeader(doc, tr("developmentTrends").toUpperCase(), logoDataUrl);
+      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+      doc.setFontSize(14);
+      doc.text(tr("developmentTrends").toUpperCase(), 20, 34);
       doc.setFontSize(11);
       doc.setFont("ArialUnicode", "normal");
       doc.text(doc.splitTextToSize(tr("trendExplanation"), 170), 20, 50);
@@ -227,7 +229,9 @@ export const PdfService = {
 
     // --- PAGE 4: ANALYTICS SNAPSHOT (4 CHARTS) ---
     doc.addPage();
-    this.drawPageHeader(doc, "ANALYTICS SNAPSHOT", logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    doc.setFontSize(14);
+    doc.text("ANALYTICS SNAPSHOT", 20, 34);
     const trendData = [...(history.length ? history : [record])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     this.drawDomainTrendLines(doc, trendData, ts);
     this.drawReadinessZoneTimeline(doc, trendData);
@@ -242,7 +246,9 @@ export const PdfService = {
     ];
 
     doc.addPage();
-    this.drawPageHeader(doc, tr("organizationalBalance").toUpperCase(), logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    doc.setFontSize(14);
+    doc.text(tr("organizationalBalance").toUpperCase(), 20, 34);
     let profileY = 38;
 
     for (const domain of domains) {
@@ -272,7 +278,9 @@ export const PdfService = {
 
     // --- PAGE 6: SKI ---
     doc.addPage();
-    this.drawPageHeader(doc, `V. ${ts("ski").toUpperCase()} INDEX`, logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    doc.setFontSize(14);
+    doc.text(`V. ${ts("ski").toUpperCase()} INDEX`, 20, 34);
     
     const currentSki = record.computed.ski;
     const firstSki = history.length > 0 ? history[history.length - 1].computed.ski : null;
@@ -339,7 +347,10 @@ export const PdfService = {
 
     // --- PAGE 7: RECOMMENDATIONS + PRIORITIES + FINAL EVALUATION ---
     doc.addPage();
-    this.drawPageHeader(doc, tr("recommendationsTitle").toUpperCase(), logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    doc.setFontSize(12);
+    doc.setFontSize(14);
+    doc.text(tr("recommendationsTitle").toUpperCase(), 20, 34);
     doc.setFontSize(12);
     doc.text(tr("recommendationsIntro"), 20, 50);
     
@@ -376,7 +387,7 @@ export const PdfService = {
     // If content gets too long, move final evaluation block to a clean new page.
     if (signatureTitleY > 175) {
       doc.addPage();
-      this.drawPageHeader(doc, tr("signaturesTitle").toUpperCase(), logoDataUrl);
+      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
       signatureTitleY = 40;
     }
 
@@ -413,15 +424,17 @@ export const PdfService = {
       .catch(() => "");
   },
 
-  drawPageHeader(doc: jsPDF, title: string, logoUrl: string) {
+  drawPageHeader(doc: jsPDF, reportTitle: string, childName: string, logoUrl: string) {
     if (logoUrl) doc.addImage(logoUrl, "JPEG", 180, 10, 15, 15);
     doc.setFont("ArialUnicode", "normal");
-    doc.setFontSize(14);
+    doc.setFontSize(12);
     doc.setTextColor(61, 63, 77);
-    doc.text(title, 20, 20);
+    doc.text(`KIDEX - ${reportTitle.toUpperCase()}`, 20, 16);
+    doc.setFontSize(10);
+    doc.text(childName, 20, 22);
     doc.setDrawColor(61, 63, 77);
     doc.setLineWidth(0.5);
-    doc.line(20, 25, 190, 25);
+    doc.line(20, 26, 190, 26);
     doc.setTextColor(0, 0, 0);
   },
   drawDomainTrendLines(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
