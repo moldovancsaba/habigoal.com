@@ -30,7 +30,8 @@ export default function SettingsPage() {
   const [newStandardsVersion, setNewStandardsVersion] = useState("");
   const [versionNotesDraft, setVersionNotesDraft] = useState("");
   const [impactPreview, setImpactPreview] = useState<{ readyToDeveloping: number; developingToReady: number; total: number } | null>(null);
-  const [allAssessments, setAllAssessments] = useState<Array<{ childId?: string; child: { name: string; birthDate: string }; computed: { ski: number | null } }>>([]);
+  const [allAssessments, setAllAssessments] = useState<Array<{ childId?: string; child: { name: string; birthDate: string }; session?: { consentReport?: boolean }; computed: { ski: number | null } }>>([]);
+  const [governanceMetrics, setGovernanceMetrics] = useState<{ deletedChildren: number; deletedAssessments: number; missingConsentReport: number; missingChildLink: number }>({ deletedChildren: 0, deletedAssessments: 0, missingConsentReport: 0, missingChildLink: 0 });
 
   useEffect(() => {
     void (async () => {
@@ -51,6 +52,13 @@ export default function SettingsPage() {
         setAllAssessments(Array.isArray(activeAssessmentsRes?.assessments) ? activeAssessmentsRes.assessments : []);
         setDeletedChildren(Array.isArray(dcRes) ? dcRes : []);
         setDeletedAssessments(Array.isArray(daRes?.assessments) ? daRes.assessments : []);
+        const activeAssessments = Array.isArray(activeAssessmentsRes?.assessments) ? activeAssessmentsRes.assessments : [];
+        setGovernanceMetrics({
+          deletedChildren: Array.isArray(dcRes) ? dcRes.length : 0,
+          deletedAssessments: Array.isArray(daRes?.assessments) ? daRes.assessments.length : 0,
+          missingConsentReport: activeAssessments.filter((a: { session?: { consentReport?: boolean } }) => !a.session?.consentReport).length,
+          missingChildLink: activeAssessments.filter((a: { childId?: string }) => !a.childId).length
+        });
       } finally {
         setLoading(false);
       }
@@ -534,7 +542,7 @@ export default function SettingsPage() {
                   <Button
                     variant="default"
                     onClick={() => setCurrentVersionMeta({ status: "published" })}
-                    disabled={currentVersionMeta().status === "published"}
+                    disabled={currentVersionMeta().status === "published" || !(versionNotesDraft || currentVersionMeta().notes)}
                   >
                     Publish version
                   </Button>
@@ -620,6 +628,15 @@ export default function SettingsPage() {
               </Stack>
             )}
           </Box>
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="Governance Metrics">
+        <Stack gap="xs">
+          <Text size="sm">Deleted children: {governanceMetrics.deletedChildren}</Text>
+          <Text size="sm">Deleted assessments: {governanceMetrics.deletedAssessments}</Text>
+          <Text size="sm">Assessments missing report consent: {governanceMetrics.missingConsentReport}</Text>
+          <Text size="sm">Assessments missing child link: {governanceMetrics.missingChildLink}</Text>
         </Stack>
       </SectionCard>
     </Stack>

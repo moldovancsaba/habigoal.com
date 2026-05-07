@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "db:setup": "node scripts/setup-database.mjs"
+    "db:setup": "node scripts/setup-database.mjs",
+    "db:backfill-standards-version": "node scripts/backfill-standards-version.mjs"
   },
   "dependencies": {
     "@mantine/core": "^8.3.6",

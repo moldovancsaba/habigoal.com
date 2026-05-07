@@ -10,6 +10,7 @@ describe("parseUserPayload", () => {
 
     expect(parsed).toEqual({
       name: "Alex",
+      email: "",
       roles: ["conductor", "observer"]
     });
   });
@@ -23,11 +24,12 @@ describe("parseSettingsPayload", () => {
       locations: [" Budapest ", "Debrecen"]
     });
 
-    expect(parsed).toEqual({
-      conductors: ["Anna", "Bela"],
-      observers: [],
-      locations: ["Budapest", "Debrecen"]
-    });
+    expect(parsed.conductors).toEqual(["Anna", "Bela"]);
+    expect(parsed.observers).toEqual([]);
+    expect(parsed.locations).toEqual(["Budapest", "Debrecen"]);
+    expect(parsed.company).toBeTruthy();
+    expect(parsed.emailTemplates).toBeTruthy();
+    expect(parsed.standards).toBeTruthy();
   });
 });
 

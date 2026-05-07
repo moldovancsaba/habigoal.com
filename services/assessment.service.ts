@@ -27,6 +27,12 @@ export async function listDeletedAssessments() {
 export async function createAssessmentFromPayload(input: unknown) {
   const payload = parseAssessmentPayload(input);
   const now = new Date().toISOString();
+  const integrityIssues: string[] = [];
+  if (!payload.child.name || !payload.child.birthDate) integrityIssues.push("missing_child_identity");
+  if (!payload.childId) integrityIssues.push("missing_child_link");
+  if (!payload.session.consentReport) integrityIssues.push("missing_report_consent");
+  const scoredCount = Object.values(payload.scores).filter((entry) => typeof entry.score === "number").length;
+  if (scoredCount === 0) integrityIssues.push("no_scores_recorded");
 
   const childProfile = {
     name: payload.child.name,
@@ -51,7 +57,8 @@ export async function createAssessmentFromPayload(input: unknown) {
     standardsVersionUsed,
     computed: computeAssessment(payload),
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
+    updateHistory: integrityIssues.length > 0 ? [`integrity:${integrityIssues.join(",")}:${now}`] : []
   });
 }
 
@@ -61,6 +68,12 @@ export async function getAssessment(id: ObjectId) {
 
 export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) {
   const payload = parseAssessmentPayload(input);
+  const integrityIssues: string[] = [];
+  if (!payload.child.name || !payload.child.birthDate) integrityIssues.push("missing_child_identity");
+  if (!payload.childId) integrityIssues.push("missing_child_link");
+  if (!payload.session.consentReport) integrityIssues.push("missing_report_consent");
+  const scoredCount = Object.values(payload.scores).filter((entry) => typeof entry.score === "number").length;
+  if (scoredCount === 0) integrityIssues.push("no_scores_recorded");
 
   const childProfile = {
     name: payload.child.name,
@@ -89,7 +102,7 @@ export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) 
     standardsVersionUsed,
     computed: computeAssessment(payload),
     updatedAt: now,
-    updateHistory: [...updateHistory, now]
+    updateHistory: [...updateHistory, ...(integrityIssues.length > 0 ? [`integrity:${integrityIssues.join(",")}:${now}`] : []), now]
   });
 }
 
