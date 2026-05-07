@@ -352,7 +352,7 @@ export const PdfService = {
     }
 
     doc.setFontSize(14);
-    doc.text(`VII. ${tr("developmentPrioritiesTitle").toUpperCase()}`, 20, y);
+    doc.text(tr("developmentPrioritiesTitle").toUpperCase(), 20, y);
     doc.setDrawColor(61, 63, 77);
     doc.setLineWidth(0.4);
     doc.line(20, y + 3, 190, y + 3);

@@ -7,6 +7,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
+import { getUsers } from "@/services/user-service";
+import { withDisplayNamesForReport } from "@/lib/report-user-display";
 import { 
   PolarAngleAxis, 
   PolarGrid, 
@@ -61,10 +63,12 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
     if (!record) return;
     setDownloadingPdf(true);
     try {
+      const users = await getUsers();
+      const printableRecord = withDisplayNamesForReport(record, users);
       if (reportFormat === "map") {
-        await PdfService.generateMapReport(record, t, tc, ts, tr, history);
+        await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, history);
       } else {
-        await PdfService.generateOriginalReport(record, t, tc, ts);
+        await PdfService.generateOriginalReport(printableRecord, t, tc, ts);
       }
     } catch (error) {
       console.error("PDF generation failed:", error);

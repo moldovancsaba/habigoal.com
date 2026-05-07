@@ -11,6 +11,8 @@ import { rapidSections } from "@/lib/kidex-schema";
 import { calculateTrend } from "@/lib/utils/trends";
 import { formatScore } from "@/lib/utils";
 import { PdfService } from "@/lib/pdf-service";
+import { getUsers } from "@/services/user-service";
+import { withDisplayNamesForReport } from "@/lib/report-user-display";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
@@ -52,7 +54,9 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
     setDownloadingPdf(true);
     try {
       const latestRecord = data.assessments[0];
-      await PdfService.generateMapReport(latestRecord, t, tc, ts, tr, data.assessments);
+      const users = await getUsers();
+      const printableRecord = withDisplayNamesForReport(latestRecord, users);
+      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, data.assessments);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {

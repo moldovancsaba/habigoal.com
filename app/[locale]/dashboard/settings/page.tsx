@@ -24,6 +24,7 @@ export default function SettingsPage() {
   const [message, setMessage] = useState("");
   const [locationDraft, setLocationDraft] = useState("");
   const [userDraft, setUserDraft] = useState("");
+  const [userNameDraft, setUserNameDraft] = useState("");
   const [me, setMe] = useState<{ isGoogleLinked: boolean } | null>(null);
   const [deletedChildren, setDeletedChildren] = useState<Array<{ _id?: string; name: string; updatedAt?: string }>>([]);
   const [deletedAssessments, setDeletedAssessments] = useState<Array<{ _id?: string; child?: { name?: string }; session?: { date?: string }; updatedAt?: string }>>([]);
@@ -108,9 +109,10 @@ export default function SettingsPage() {
   function addNewUser() {
     const email = userDraft.trim().toLowerCase();
     if (email) {
-      const newUser: User = { email, roles: [] };
+      const newUser: User = { email, name: userNameDraft.trim() || undefined, roles: [] };
       setUsers((prev) => [...prev, newUser]);
       setUserDraft("");
+      setUserNameDraft("");
       void saveUser(newUser).then((ok) => {
         if (!ok) {
           setUsers((prev) => prev.filter((u) => u.email !== email));
@@ -292,6 +294,13 @@ export default function SettingsPage() {
         <Stack gap="md">
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
+              label={tc("name")}
+              placeholder="Full name"
+              value={userNameDraft}
+              onChange={(event) => setUserNameDraft(event.target.value)}
+              style={{ minWidth: 220 }}
+            />
+            <TextInput
               label={t("email")}
               placeholder="user@example.com"
               value={userDraft}
@@ -306,6 +315,7 @@ export default function SettingsPage() {
           <Table striped highlightOnHover>
             <Table.Thead>
               <Table.Tr>
+                <Table.Th>{tc("name")}</Table.Th>
                 <Table.Th>{t("email")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>{t("canConduct")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>{t("canObserve")}</Table.Th>
@@ -318,6 +328,24 @@ export default function SettingsPage() {
                 .filter(u => !!u.email)
                 .map((user) => (
                 <Table.Tr key={user.email}>
+                  <Table.Td>
+                    <TextInput
+                      value={user.name || ""}
+                      placeholder="Full name"
+                      onBlur={async (event) => {
+                        const name = event.currentTarget.value.trim();
+                        if ((user.name || "") === name) return;
+                        const updatedUser = { ...user, name: name || undefined };
+                        setUsers((prev) => prev.map((u) => (u.email === user.email ? updatedUser : u)));
+                        const ok = await saveUser(updatedUser);
+                        if (!ok) setMessage(tc("error"));
+                      }}
+                      onChange={(event) => {
+                        const name = event.currentTarget.value;
+                        setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
+                      }}
+                    />
+                  </Table.Td>
                   <Table.Td>
                     <Text fw={600}>{user.email}</Text>
                   </Table.Td>
@@ -362,7 +390,7 @@ export default function SettingsPage() {
               ))}
               {users.length === 0 ? (
                 <Table.Tr>
-                  <Table.Td colSpan={5}>
+                  <Table.Td colSpan={6}>
                     <Text c="dimmed">{t("noUsers")}</Text>
                   </Table.Td>
                 </Table.Tr>

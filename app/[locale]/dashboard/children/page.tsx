@@ -11,6 +11,8 @@ import { calculateAgeGroup } from "@/lib/utils/age";
 import { formatScore } from "@/lib/utils";
 import type { ChildProfile } from "@/repositories/child.repository";
 import { PdfService } from "@/lib/pdf-service";
+import { getUsers } from "@/services/user-service";
+import { withDisplayNamesForReport } from "@/lib/report-user-display";
 import type { AssessmentRecord } from "@/types/assessment";
 
 export default function ChildrenListPage() {
@@ -98,7 +100,9 @@ export default function ChildrenListPage() {
       const { assessment } = (await aRes.json()) as { assessment: AssessmentRecord };
       const historyData = hRes.ok ? (await hRes.json()).assessments : [];
       
-      await PdfService.generateMapReport(assessment, ta, tc, ts, tr, historyData);
+      const users = await getUsers();
+      const printableRecord = withDisplayNamesForReport(assessment, users);
+      await PdfService.generateMapReport(printableRecord, ta, tc, ts, tr, historyData);
     } catch (err) {
       console.error(err);
       setMessage(tc("error"));
