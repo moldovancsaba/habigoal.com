@@ -2,7 +2,8 @@ export const env = {
   mongodbUri: process.env.MONGODB_URI,
   mongodbDb: process.env.MONGODB_DB || "survey",
   imgbbApiKey: process.env.IMGBB_API_KEY,
-  surveyEnforceAuth: process.env.SURVEY_ENFORCE_AUTH === "true" || process.env.KIDEX_ENFORCE_AUTH === "true",
+  // Auth is currently bypassed across environments until the SSO flow is reintroduced safely.
+  surveyEnforceAuth: false,
   ssoClientId: process.env.SSO_Client_ID || process.env.SSO_CLIENT_ID,
   ssoClientSecret: process.env.SSO_Client_Secret || process.env.SSO_CLIENT_SECRET,
   ssoBaseUrl: process.env.SSO_BASE_URL || "https://sso.doneisbetter.com",

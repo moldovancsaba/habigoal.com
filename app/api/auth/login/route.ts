@@ -1,18 +1,13 @@
 import { NextResponse } from "next/server";
 import { getAuthorizationUrl } from "@/services/auth-service";
 import { cookies } from "next/headers";
-import { createSession } from "@/lib/session";
+import { env } from "@/config/env";
 
 export async function GET(request: Request) {
-  if (process.env.NODE_ENV !== "production") {
-    await createSession({
-      id: "hg-dev-user",
-      email: "dev@habigoal.local",
-      name: "Habigoal Dev",
-      role: "admin,conductor,observer"
-    });
-    const referer = request.headers.get("referer");
-    const locale = referer?.match(/\/(hu|en|ar)(\/|$)/)?.[1] || "en";
+  const referer = request.headers.get("referer");
+  const locale = referer?.match(/\/(hu|en|ar|es|de|he)(\/|$)/)?.[1] || "en";
+
+  if (!env.surveyEnforceAuth) {
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
   }
 

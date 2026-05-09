@@ -1,14 +1,20 @@
 import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon, Alert, Badge } from "@mantine/core";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { env } from "@/config/env";
 
 export default async function LandingPage({
+  params,
   searchParams
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ error?: string }>;
 }) {
-  const t = await getTranslations("Landing");
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "Landing" });
   const { error } = await searchParams;
+  const authHref = env.surveyEnforceAuth ? "/api/auth/login" : `/${locale}/dashboard`;
 
   return (
     <Box style={{ minHeight: "100vh", color: "var(--text-primary)", position: "relative", overflow: "hidden" }}>
@@ -22,7 +28,7 @@ export default async function LandingPage({
           <Group align="stretch" gap="xl">
             <Stack className="glass-panel surface-outline" gap="xl" p={{ base: "xl", md: "2rem" }} style={{ flex: 1, borderRadius: 28, minWidth: 0 }}>
               <Group justify="space-between" align="center">
-                <Badge color="strategy" variant="light" size="lg">{t("badge")}</Badge>
+                <Badge color="strategy" variant="light" size="lg">{t("badge", {brand: "{Hg}"})}</Badge>
                 <Group gap="xs">
                   <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
                     <Text size="sm" fw={700} c="var(--text-secondary)">{t("chipAdaptiveIntake")}</Text>
@@ -54,7 +60,7 @@ export default async function LandingPage({
               </Group>
 
               <Group gap="md" wrap="wrap">
-                <Button component="a" href="/api/auth/login" size="xl" color="ingress" style={{ minWidth: 220 }}>
+                <Button component="a" href={authHref} size="xl" color="ingress" style={{ minWidth: 220 }}>
                   {t("login")}
                 </Button>
                 <Text size="sm" c="var(--text-muted)">
@@ -82,10 +88,10 @@ export default async function LandingPage({
       <Box component="footer" py="xl" style={{ textAlign: "center" }}>
         <Container size="lg">
           <Group className="glass-panel surface-outline" justify="center" gap="xl" py="md" style={{ borderRadius: 999 }}>
-            <Text component="a" href="/en/legal/gtc" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
+            <Text component="a" href={`/${locale}/legal/gtc`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
               {t("termsOfService")}
             </Text>
-            <Text component="a" href="/en/legal/privacy" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
+            <Text component="a" href={`/${locale}/legal/privacy`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
               {t("privacyPolicy")}
             </Text>
           </Group>

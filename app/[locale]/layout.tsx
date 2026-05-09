@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
-import { getMessages } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { Noto_Sans, Noto_Sans_Arabic, Noto_Sans_Hebrew } from "next/font/google";
 import { ThemeRegistry } from "@/components/theme/ThemeRegistry";
 import { CookieConsentBanner } from "@/components/ui/CookieConsentBanner";
@@ -33,7 +33,8 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const messages = await getMessages();
+  setRequestLocale(locale);
+  const messages = (await import(`../../messages/${locale}.json`)).default;
   const direction = locale === "ar" || locale === "he" ? "rtl" : "ltr";
   const cookieStore = await cookies();
   const themeCookie = cookieStore.get("survey_theme")?.value ?? cookieStore.get("kidex_theme")?.value;
