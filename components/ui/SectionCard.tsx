@@ -34,15 +34,15 @@ export function SectionCard({ title, subheader, action, children, className, sx,
   return (
     <Paper withBorder radius="md" className={`surface-outline ${className ?? ""}`.trim()} style={toStyleObject(sx, true)}>
       {(title || action) ? (
-        <Group justify="space-between" align="flex-start" px="md" pt="md" pb={0}>
-          <Stack gap={2}>
+        <Group justify="space-between" align="flex-start" wrap="wrap" px="md" pt="md" pb={0}>
+          <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
             {title ? <Text fw={600}>{title}</Text> : null}
-            {subheader ? <Text size="sm" c="var(--text-secondary)">{subheader}</Text> : null}
+            {subheader ? <Text size="sm" c="var(--text-secondary)" style={{ lineHeight: 1.45 }}>{subheader}</Text> : null}
           </Stack>
-          {action ? <Box>{action}</Box> : null}
+          {action ? <Box style={{ width: "100%", minWidth: 0 }}>{action}</Box> : null}
         </Group>
       ) : null}
-      <Box p="md" style={toStyleObject(contentSx)}>
+      <Box p={{ base: "md", sm: "md" }} style={toStyleObject(contentSx)}>
         {children}
       </Box>
     </Paper>

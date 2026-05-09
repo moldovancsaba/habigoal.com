@@ -1,37 +1,30 @@
 "use client";
 
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
-  Anchor,
   Badge,
   Box,
   Button,
-  Checkbox,
   Group,
-  Modal,
   Paper,
+  Progress,
   Select,
   SimpleGrid,
   Stack,
   Text,
+  TextInput,
   Textarea
 } from "@mantine/core";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/athlete-iq-survey";
 import { sectionsForMode } from "@/lib/survey-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
-import { getStandardForAgeGroup } from "@/lib/standards";
-import { formatScore } from "@/lib/utils";
-
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SearchableSelect } from "@/components/ui/SearchableSelect";
-import { SectionCard } from "@/components/ui/SectionCard";
-import { getSettings, saveSettings } from "@/services/settings-service";
-import { getConductors, getObservers } from "@/services/user-service";
-import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
+import type { AssessmentPayload, AssessmentRecord, ScoreEntry } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
 
 const DRAFT_STORAGE_KEY = "survey-draft";
@@ -55,8 +48,8 @@ const emptyAssessment: AssessmentPayload = {
     location: "",
     conductor: "",
     observers: "",
-    groupSize: "6-8",
-    context: "event",
+    groupSize: "",
+    context: "structured",
     consentPhoto: false,
     consentReport: false
   },
@@ -74,12 +67,13 @@ const emptyAssessment: AssessmentPayload = {
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
+type ChoiceOption = {
+  value: number;
+  label: string;
+};
+
 function cloneAssessment(source: AssessmentPayload): AssessmentPayload {
   return JSON.parse(JSON.stringify(source)) as AssessmentPayload;
-}
-
-function scoreValue(entry?: ScoreEntry) {
-  return typeof entry?.score === "number" ? entry.score : "";
 }
 
 function loadDraftAssessment(): AssessmentPayload {
@@ -104,10 +98,98 @@ async function parseApiError(response: Response): Promise<string | null> {
   return body?.error || null;
 }
 
+function getQuestionOptions(questionKey: string): ChoiceOption[] {
+  const fivePoint = [1, 2, 3, 4, 5];
+
+  switch (questionKey) {
+    case "sleep_hours":
+      return [
+        { value: 1, label: "<8h" },
+        { value: 2, label: "8h" },
+        { value: 3, label: "9h" },
+        { value: 4, label: "10h" },
+        { value: 5, label: "10h+" }
+      ];
+    case "sleep_quality":
+      return ["Very poor", "Poor", "Okay", "Good", "Great"].map((label, index) => ({ value: fivePoint[index], label }));
+    case "energy_level":
+      return ["Flat", "Low", "Okay", "Ready", "Flying"].map((label, index) => ({ value: fivePoint[index], label }));
+    case "body_feel":
+      return ["Pain", "Sore", "Stiff", "Good", "Fresh"].map((label, index) => ({ value: fivePoint[index], label }));
+    case "fuel_hydration":
+      return ["Missed", "Low", "Okay", "Good", "Locked in"].map((label, index) => ({ value: fivePoint[index], label }));
+    case "mood_state":
+      return ["Heavy", "Low", "Okay", "Good", "Positive"].map((label, index) => ({ value: fivePoint[index], label }));
+    case "stress_load":
+      return ["Overloaded", "Tense", "Manageable", "Calm", "Light"].map((label, index) => ({ value: fivePoint[index], label }));
+    case "confidence_level":
+      return ["Unsure", "Hesitant", "Okay", "Confident", "Very confident"].map((label, index) => ({ value: fivePoint[index], label }));
+    case "focus_level":
+      return ["Scattered", "Distracted", "Okay", "Focused", "Sharp"].map((label, index) => ({ value: fivePoint[index], label }));
+    default:
+      return ["1", "2", "3", "4", "5"].map((label, index) => ({ value: fivePoint[index], label }));
+  }
+}
+
+function getScore(entry?: ScoreEntry) {
+  return typeof entry?.score === "number" ? entry.score : null;
+}
+
+function averageFromKeys(scores: AssessmentPayload["scores"], keys: string[]) {
+  const values = keys
+    .map((key) => scores[key]?.score)
+    .filter((value): value is number => typeof value === "number");
+
+  if (values.length === 0) {
+    return null;
+  }
+
+  return Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1));
+}
+
+function buildSupportSummary(assessment: AssessmentPayload) {
+  const sleepHours = getScore(assessment.scores.sleep_hours);
+  const energy = getScore(assessment.scores.energy_level);
+  const bodyFeel = getScore(assessment.scores.body_feel);
+  const fuelHydration = getScore(assessment.scores.fuel_hydration);
+  const mood = getScore(assessment.scores.mood_state);
+  const stress = getScore(assessment.scores.stress_load);
+  const confidence = getScore(assessment.scores.confidence_level);
+  const focus = getScore(assessment.scores.focus_level);
+
+  const physical =
+    bodyFeel !== null && bodyFeel <= 2
+      ? "Flag pain or heavy soreness early and reduce explosive load today."
+      : sleepHours !== null && sleepHours <= 2
+        ? "Protect sleep tonight with an earlier wind-down and lighter recovery work."
+        : fuelHydration !== null && fuelHydration <= 2
+          ? "Make the next support win simple: water bottle, breakfast or snack, and a recovery meal."
+          : energy !== null && energy <= 2
+            ? "Keep volume lower and prioritize mobility, easy touches, and recovery between blocks."
+            : "Physical habits look stable. Keep the same sleep, fuel, and recovery rhythm today.";
+
+  const mental =
+    stress !== null && stress <= 2
+      ? "Lower pressure today. Give one clear goal and add a short breathing reset before training."
+      : mood !== null && mood <= 2
+        ? "Check in with the athlete before pushing intensity. Connection first, challenge second."
+        : confidence !== null && confidence <= 2
+          ? "Start with easy success reps to rebuild trust before harder competitive tasks."
+          : "Mental state looks steady. Keep communication simple, calm, and specific.";
+
+  const sportBrain =
+    focus !== null && focus <= 2
+      ? "Use one coaching cue only, shorter blocks, and a demo-first approach to sharpen focus."
+      : confidence !== null && confidence <= 2
+        ? "Keep decisions simple early, then add complexity after the first successful actions."
+        : "Sport-brain readiness looks solid. Progress to decision-making and learning tasks normally.";
+
+  return { physical, mental, sportBrain };
+}
+
 export function SurveyAssessmentApp() {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
-  const ts = useTranslations("Schema");
   const searchParams = useSearchParams();
   const childIdParam = searchParams.get("childId");
   const idParam = searchParams.get("id");
@@ -116,36 +198,50 @@ export function SurveyAssessmentApp() {
   const [recordId, setRecordId] = useState<string>("");
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
-  const [capturedBlob, setCapturedBlob] = useState<Blob | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const initializedChildPrefill = useRef(false);
-
-  const [conductors, setConductors] = useState<string[]>([]);
-  const [observers, setObservers] = useState<string[]>([]);
-  const [locations, setLocations] = useState<string[]>([]);
   const [children, setChildren] = useState<ChildProfile[]>([]);
+  const initializedChildPrefill = useRef(false);
 
   const sections = sectionsForMode(assessment.mode);
   const computed = useMemo(() => computeAssessment(assessment), [assessment]);
-  const standard = getStandardForAgeGroup(assessment.child.ageGroup);
-  const conductorOptions = useMemo(() => conductors.map((name) => ({ id: name, name })), [conductors]);
-  const observerOptions = useMemo(() => observers.map((name) => ({ id: name, name })), [observers]);
-  const locationOptions = useMemo(() => locations.map((name) => ({ id: name, name })), [locations]);
+  const answeredCount = useMemo(
+    () => trackerQuestions.filter((question) => typeof assessment.scores[question.key]?.score === "number").length,
+    [assessment.scores]
+  );
+  const progressPercent = Math.round((answeredCount / trackerQuestions.length) * 100);
+  const greenChecks = useMemo(
+    () =>
+      trackerQuestions.filter((question) => {
+        const score = assessment.scores[question.key]?.score;
+        return typeof score === "number" && score >= 4;
+      }).length,
+    [assessment.scores]
+  );
+  const readinessResult = getReadinessMessage(greenChecks, trackerQuestions.length);
+  const readinessMode = getReadinessMode(greenChecks, trackerQuestions.length);
+  const readinessModeLabel = t(`readinessMode${readinessMode.charAt(0).toUpperCase()}${readinessMode.slice(1)}`);
+  const domainScores = useMemo(
+    () => ({
+      physical: averageFromKeys(assessment.scores, trackerQuestions.filter((q) => q.pillarKey === "physical_pillar").map((q) => q.key)),
+      mental: averageFromKeys(assessment.scores, trackerQuestions.filter((q) => q.pillarKey === "mental_pillar").map((q) => q.key)),
+      sportBrain: averageFromKeys(assessment.scores, trackerQuestions.filter((q) => q.pillarKey === "sport_brain_pillar").map((q) => q.key))
+    }),
+    [assessment.scores]
+  );
+  const supportSummary = useMemo(() => buildSupportSummary(assessment), [assessment]);
+  const nextSupportArea = useMemo(() => {
+    const areas = [
+      { key: "physical", value: domainScores.physical ?? 99, label: "Physical" },
+      { key: "mental", value: domainScores.mental ?? 99, label: "Mental" },
+      { key: "sportBrain", value: domainScores.sportBrain ?? 99, label: "Sport brain" }
+    ];
+    return areas.sort((a, b) => a.value - b.value)[0]?.label ?? "Physical";
+  }, [domainScores]);
 
   useEffect(() => {
-    void Promise.all([getSettings(), getConductors(), getObservers()]).then(([settingsData, conductorUsers, observerUsers]) => {
-      const allConductors = Array.from(new Set(conductorUsers.map((user) => user.email)));
-      const allObservers = Array.from(new Set(observerUsers.map((user) => user.email)));
-
-      setConductors(allConductors);
-      setObservers(allObservers);
-      setLocations(settingsData.locations);
-    });
-    void fetch("/api/children").then((r) => r.json()).then((data: ChildProfile[]) => setChildren(Array.isArray(data) ? data : [])).catch(() => setChildren([]));
+    void fetch("/api/children")
+      .then((response) => response.json())
+      .then((data: ChildProfile[]) => setChildren(Array.isArray(data) ? data : []))
+      .catch(() => setChildren([]));
   }, []);
 
   useEffect(() => {
@@ -164,12 +260,6 @@ export function SurveyAssessmentApp() {
   }, [idParam]);
 
   useEffect(() => {
-    return () => {
-      streamRef.current?.getTracks().forEach((track) => track.stop());
-    };
-  }, []);
-
-  useEffect(() => {
     if (!childIdParam) return;
     if (recordId) return;
     if (initializedChildPrefill.current) return;
@@ -178,62 +268,81 @@ export function SurveyAssessmentApp() {
     void (async () => {
       const response = await fetch(`/api/children/${childIdParam}`).catch(() => null);
       if (!response?.ok) return;
-      const child = (await response.json()) as {
-        name: string;
-        birthDate: string;
-        knownTraits?: string;
-        parentSignals?: string;
-        dominantHand?: string;
-        dominantEye?: string;
-        dominantFoot?: string;
-      };
+      const child = (await response.json()) as ChildProfile;
 
-      setAssessment(() => {
-        const ageGroup = calculateAgeGroup(child.birthDate) || "";
-        return {
-          ...cloneAssessment(emptyAssessment),
-          childId: childIdParam,
-          child: {
-            name: child.name || "",
-            birthDate: child.birthDate || "",
-            ageGroup,
-            knownTraits: "",
-            parentSignals: "",
-            dominantHand: "",
-            dominantEye: "",
-            dominantFoot: ""
-          }
-        };
-      });
+      setAssessment(() => ({
+        ...cloneAssessment(emptyAssessment),
+        childId: childIdParam,
+        child: {
+          ...cloneAssessment(emptyAssessment).child,
+          name: child.name || "",
+          birthDate: child.birthDate || "",
+          ageGroup: (child.ageGroup || calculateAgeGroup(child.birthDate) || "") as AssessmentPayload["child"]["ageGroup"],
+          knownTraits: child.knownTraits || "",
+          parentSignals: child.parentSignals || "",
+          dominantHand: child.dominantHand || "",
+          dominantEye: child.dominantEye || "",
+          dominantFoot: child.dominantFoot || ""
+        }
+      }));
     })();
   }, [childIdParam, recordId]);
 
-  function update<T extends keyof AssessmentPayload>(group: T, key: keyof AssessmentPayload[T], value: unknown) {
-    setAssessment((current) => {
-      const next = {
-        ...current,
-        [group]: {
-          ...(current[group] as object),
-          [key]: value
-        }
-      };
-
-      if (group === "child" && key === "birthDate") {
-        const ageGroup = calculateAgeGroup(value as string);
-        next.child.ageGroup = ageGroup || "";
-      }
-
-      return next;
-    });
-    setSaveState("idle");
-  }
-
-  function updateScore(key: string, patch: Partial<ScoreEntry>) {
+  function updateScore(key: string, score: number) {
     setAssessment((current) => ({
       ...current,
       scores: {
         ...current.scores,
-        [key]: { ...(current.scores[key] || { score: "", note: "" }), ...patch }
+        [key]: { ...(current.scores[key] || { score: "", note: "" }), score }
+      }
+    }));
+    setSaveState("idle");
+  }
+
+  function updateGeneralNote(value: string) {
+    setAssessment((current) => ({
+      ...current,
+      notes: {
+        ...current.notes,
+        general: value
+      }
+    }));
+    setSaveState("idle");
+  }
+
+  function updateDate(value: string | null) {
+    setAssessment((current) => ({
+      ...current,
+      session: {
+        ...current.session,
+        date: value || current.session.date
+      }
+    }));
+    setSaveState("idle");
+  }
+
+  function selectChild(value: string | null) {
+    const child = children.find((entry) => entry._id === value);
+    if (!child || !value) return;
+
+    setAssessment((current) => ({
+      ...current,
+      childId: value,
+      child: {
+        ...current.child,
+        name: child.name || "",
+        birthDate: child.birthDate || "",
+        ageGroup: (child.ageGroup || calculateAgeGroup(child.birthDate) || "") as AssessmentPayload["child"]["ageGroup"],
+        knownTraits: child.knownTraits || "",
+        parentSignals: child.parentSignals || "",
+        dominantHand: child.dominantHand || "",
+        dominantEye: child.dominantEye || "",
+        dominantFoot: child.dominantFoot || ""
+      },
+      session: {
+        ...current.session,
+        consentPhoto: Boolean(child.consentPhoto),
+        consentReport: Boolean(child.consentReport)
       }
     }));
     setSaveState("idle");
@@ -242,6 +351,7 @@ export function SurveyAssessmentApp() {
   async function saveAssessment() {
     setSaveState("saving");
     setMessage("");
+
     const url = recordId ? `/api/assessments/${recordId}` : "/api/assessments";
     const response = await fetch(url, {
       method: recordId ? "PATCH" : "POST",
@@ -263,168 +373,41 @@ export function SurveyAssessmentApp() {
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
     localStorage.removeItem(DRAFT_STORAGE_KEY);
-
-    const settings = await getSettings();
-    await saveSettings({ ...settings, locations });
-
     setMessage(t("saved"));
   }
 
   function newAssessment() {
     setRecordId("");
-    setAssessment((current) => {
-      if (!childIdParam) {
-        return cloneAssessment(emptyAssessment);
+    setAssessment((current) => ({
+      ...cloneAssessment(emptyAssessment),
+      childId: current.childId,
+      child: {
+        ...cloneAssessment(emptyAssessment).child,
+        name: current.child.name,
+        birthDate: current.child.birthDate,
+        ageGroup: current.child.ageGroup,
+        knownTraits: current.child.knownTraits,
+        parentSignals: current.child.parentSignals,
+        dominantHand: current.child.dominantHand,
+        dominantEye: current.child.dominantEye,
+        dominantFoot: current.child.dominantFoot
       }
-
-      return {
-        ...cloneAssessment(emptyAssessment),
-        childId: current.childId || childIdParam,
-        child: {
-          ...cloneAssessment(emptyAssessment).child,
-          name: current.child.name,
-          birthDate: current.child.birthDate,
-          ageGroup: current.child.ageGroup
-        }
-      };
-    });
+    }));
     setSaveState("idle");
     setMessage("");
   }
 
-  function appendLocationIfMissing(value: string) {
-    setLocations((current) => (value && !current.includes(value) ? [...current, value] : current));
-  }
-
-  async function uploadImageFile(file: File | Blob) {
-    if (!assessment.session.consentPhoto) {
-      setMessage(t("consentRequired"));
-      return;
-    }
-    setUploading(true);
-    setMessage("");
-    const form = new FormData();
-    form.set("image", file, file instanceof File ? file.name : "camera-capture.jpg");
-    const response = await fetch("/api/uploads/imgbb", { method: "POST", body: form }).catch((error: Error) => {
-      setMessage(error.message);
-      return null;
-    });
-    setUploading(false);
-    if (!response?.ok) {
-      const err = response ? await parseApiError(response) : null;
-      setMessage(err ?? t("uploadFailed"));
-      return;
-    }
-    const data = (await response.json()) as { attachment: EvidenceAttachment };
-    setAssessment((current) => ({
-      ...current,
-      attachments: [...current.attachments, data.attachment]
-    }));
-    setMessage(t("uploadSuccess"));
-  }
-
-  async function uploadImage(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-    await uploadImageFile(file);
-  }
-
-  function stopCameraStream() {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-  }
-
-  async function openCamera() {
-    if (!assessment.session.consentPhoto) {
-      setMessage(t("consentRequired"));
-      return;
-    }
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setMessage(t("cameraUnsupported"));
-      return;
-    }
-
-    if (capturedPreview) {
-      URL.revokeObjectURL(capturedPreview);
-    }
-    setCapturedPreview(null);
-    setCapturedBlob(null);
-    setCameraOpen(true);
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
-        audio: false
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch {
-      setMessage(t("cameraAccessError"));
-      setCameraOpen(false);
-    }
-  }
-
-  function capturePhotoFrame() {
-    const video = videoRef.current;
-    if (!video) return;
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      setCapturedBlob(blob);
-      setCapturedPreview(URL.createObjectURL(blob));
-      stopCameraStream();
-    }, "image/jpeg", 0.92);
-  }
-
-  async function uploadCapturedPhoto() {
-    if (!capturedBlob) return;
-    await uploadImageFile(capturedBlob);
-    closeCameraDialog();
-  }
-
-  function closeCameraDialog() {
-    stopCameraStream();
-    if (capturedPreview) {
-      URL.revokeObjectURL(capturedPreview);
-    }
-    setCapturedPreview(null);
-    setCapturedBlob(null);
-    setCameraOpen(false);
-  }
-
-  function removeAttachment(id: string) {
-    setAssessment((current) => ({
-      ...current,
-      attachments: current.attachments.filter((attachment) => attachment.id !== id)
-    }));
-  }
-
-  const strengths = Object.entries(assessment.scores)
-    .filter(([, entry]) => typeof entry.score === "number" && entry.score >= 5)
-    .slice(0, 3);
-  const needs = Object.entries(assessment.scores)
-    .filter(([, entry]) => typeof entry.score === "number" && entry.score <= 2)
-    .slice(0, 3);
-
   return (
-    <Stack gap="xl">
+    <Stack gap="lg" pb={96}>
       <PageHeader
         title={t("appTitle")}
         subtitle={t("appSubtitle")}
         actions={
-          <Group gap="sm">
-            <Button variant="default" onClick={newAssessment} style={{ minWidth: 112, fontWeight: 600 }}>
+          <Group gap="sm" grow>
+            <Button variant="default" onClick={newAssessment} style={{ flex: 1, fontWeight: 600 }}>
               {tc("new")}
             </Button>
-            <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 112, fontWeight: 700 }}>
+            <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ flex: 1, fontWeight: 700 }}>
               {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
             </Button>
           </Group>
@@ -432,296 +415,106 @@ export function SurveyAssessmentApp() {
       />
 
       {message ? (
-        <Alert
-          color={saveState === "error" ? "red" : saveState === "saved" ? "ingress" : "blue"}
-          withCloseButton
-          onClose={() => setMessage("")}
-        >
+        <Alert color={saveState === "error" ? "red" : saveState === "saved" ? "ingress" : "blue"} withCloseButton onClose={() => setMessage("")}>
           {message}
         </Alert>
       ) : null}
 
-      <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md">
-        <MetricCard label={ts("movement")} value={formatScore(computed.movementAverage)} target={standard?.movement.target} />
-        <MetricCard label={ts("social")} value={formatScore(computed.socialAverage)} target={standard?.social.target} />
-        <MetricCard label={ts("mental")} value={formatScore(computed.mentalAverage)} target={standard?.mental.target} />
-        <MetricCard label="SKI" value={formatScore(computed.ski)} target={standard?.ski.target} />
+      <SectionCard title={t("setupTitle")} subheader="Keep this daily check-in under 2 minutes.">
+        <Stack gap="md">
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+            <Select
+              label={t("childName")}
+              placeholder={t("selectAthlete")}
+              searchable
+              value={assessment.childId || ""}
+              data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
+              onChange={selectChild}
+            />
+            <TextInput
+              label={tc("date")}
+              value={assessment.session.date}
+              type="date"
+              onChange={(event) => updateDate(event.currentTarget.value)}
+            />
+          </SimpleGrid>
+
+          <SimpleGrid cols={{ base: 1, md: 3 }} spacing="sm">
+            <InfoChip label="Age group" value={assessment.child.ageGroup || "Pending"} />
+            <InfoChip label="Known traits" value={assessment.child.knownTraits || "No extra notes"} />
+            <InfoChip label="Parent or coach signals" value={assessment.child.parentSignals || "No extra notes"} />
+          </SimpleGrid>
+        </Stack>
+      </SectionCard>
+
+      <Paper withBorder p={{ base: "md", sm: "lg" }} radius="lg">
+        <Stack gap="sm">
+          <Group justify="space-between" align="center">
+            <Box>
+              <Text size="sm" c="dimmed" fw={600}>
+                Daily tracker progress
+              </Text>
+              <Text fw={800} size="lg">
+                {answeredCount}/{trackerQuestions.length} answered
+              </Text>
+            </Box>
+            <Badge variant="light" color={readinessResult.mode === "full" ? "ingress" : readinessResult.mode === "moderate" ? "review" : "red"} size="lg">
+              {greenChecks}/{trackerQuestions.length} green
+            </Badge>
+          </Group>
+          <Progress value={progressPercent} color="ingress" radius="xl" size="lg" />
+          <Text size="sm" c="dimmed">
+            Youth-athlete wellness monitoring most commonly centers on sleep, fatigue or energy, soreness, stress or mood, and focus. This version keeps the tracker to those daily signals plus fuel support.
+          </Text>
+        </Stack>
+      </Paper>
+
+      <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="sm">
+        <MetricCard label="Physical readiness" value={domainScores.physical} />
+        <MetricCard label="Mental balance" value={domainScores.mental} />
+        <MetricCard label="Sport brain" value={domainScores.sportBrain} />
       </SimpleGrid>
 
-      <Stack gap="xl" id="setup">
-        <SectionCard title={t("setupTitle")}>
-          <Stack gap="md">
-            <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="md">
-              <Select
-                label={t("childName")}
-                placeholder="Select child"
-                searchable
-                value={assessment.childId || ""}
-                data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
-                onChange={(value) => {
-                  const child = children.find((c) => c._id === value);
-                  if (!child || !value) return;
-                  setAssessment((current) => ({
-                    ...current,
-                    childId: value,
-                    child: {
-                      ...current.child,
-                      name: child.name || "",
-                      birthDate: child.birthDate || "",
-                      ageGroup: (child.ageGroup || calculateAgeGroup(child.birthDate) || "") as AssessmentPayload["child"]["ageGroup"],
-                      knownTraits: child.knownTraits || "",
-                      parentSignals: child.parentSignals || "",
-                      dominantHand: child.dominantHand || "",
-                      dominantEye: child.dominantEye || "",
-                      dominantFoot: child.dominantFoot || ""
-                    },
-                    session: {
-                      ...current.session,
-                      consentPhoto: Boolean(child.consentPhoto),
-                      consentReport: Boolean(child.consentReport)
-                    }
-                  }));
-                }}
-              />
-              <Select
-                label={t("ageGroup")}
-                value={assessment.child.ageGroup || ""}
-                disabled
-                data={[
-                  { value: "", label: t("ageGroupPending") },
-                  { value: "4-6", label: "4-6" },
-                  { value: "7-9", label: "7-9" },
-                  { value: "10-12", label: "10-12" }
-                ]}
-                onChange={() => {}}
-              />
-              <Select
-                label={t("mode")}
-                value={assessment.mode}
-                data={[
-                  { value: "rapid", label: t("modeRapid") },
-                  { value: "full", label: t("modeFull") }
-                ]}
-                onChange={(value) =>
-                  setAssessment((current) => ({ ...current, mode: (value as AssessmentPayload["mode"]) ?? "rapid" }))
-                }
-              />
-              <SearchableSelect 
-                label={t("conductor")} 
-                value={assessment.session.conductor} 
-                options={conductorOptions} 
-                onChange={(value) => update("session", "conductor", value)} 
-              />
-              <SearchableSelect
-                label={t("location")}
-                value={assessment.session.location}
-                options={locationOptions}
-                onChange={(value) => {
-                  appendLocationIfMissing(value);
-                  update("session", "location", value);
-                }}
-                allowAdd
-              />
-              <SearchableSelect 
-                label={t("observers")} 
-                value={assessment.session.observers} 
-                options={observerOptions} 
-                onChange={(value) => update("session", "observers", value)} 
-              />
-              <Select
-                label={t("context")}
-                value={assessment.session.context}
-                data={[
-                  { value: "event", label: t("contextEvent") },
-                  { value: "structured", label: t("contextStructured") },
-                  { value: "spontaneous", label: t("contextSpontaneous") },
-                  { value: "mixed", label: t("contextMixed") }
-                ]}
-                onChange={(value) => update("session", "context", value ?? "event")}
-              />
-            </SimpleGrid>
-
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-              <Textarea
-                label={t("knownTraits")}
-                value={assessment.child.knownTraits}
-                onChange={() => {}}
-                readOnly
-                minRows={3}
-              />
-              <Textarea
-                label={t("parentSignals")}
-                value={assessment.child.parentSignals}
-                onChange={() => {}}
-                readOnly
-                minRows={3}
-              />
-            </SimpleGrid>
-
-            <Group gap="xl" mt="xs">
-              <Checkbox 
-                label={t("consentPhoto")} 
-                checked={assessment.session.consentPhoto} 
-                disabled
-              />
-              <Checkbox 
-                label={t("consentReport")} 
-                checked={assessment.session.consentReport} 
-                disabled
-              />
-            </Group>
-          </Stack>
-        </SectionCard>
-
-        <SectionCard title={t("evidenceImages")}>
-          <Stack gap="md">
-            <Text size="sm" c="dimmed">
-              {t("uploadSecurityNote")}
-            </Text>
-            <Group gap="sm">
-              <Button variant="outline" component="label" disabled={!assessment.session.consentPhoto || uploading}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={(e) => void uploadImage(e)}
-                  disabled={!assessment.session.consentPhoto || uploading}
-                />
-                {uploading ? t("uploading") : t("uploadImage")}
-              </Button>
-              <Button variant="outline" onClick={() => void openCamera()} disabled={!assessment.session.consentPhoto || uploading}>
-                {uploading ? t("uploading") : t("takePhoto")}
-              </Button>
-            </Group>
-            {assessment.attachments.length === 0 ? (
-              <Text size="sm" c="dimmed">
-                {t("noImages")}
-              </Text>
-            ) : (
-              <Stack gap="md">
-                {assessment.attachments.map((attachment) => (
-                  <Group key={attachment.id} gap="md" align="center" wrap="nowrap">
-                    <Image
-                      src={attachment.thumbUrl || attachment.url}
-                      alt={attachment.name || "Image"}
-                      width={160}
-                      height={120}
-                      style={{ width: 160, height: "auto", borderRadius: "var(--mantine-radius-md)" }}
-                      unoptimized
-                    />
-                    <Box style={{ flex: 1, minWidth: 0 }}>
-                      <Anchor href={attachment.url} target="_blank" rel="noreferrer" size="sm">
-                        {attachment.name || "Image"}
-                      </Anchor>
-                    </Box>
-                    <Button variant="subtle" color="red" size="sm" onClick={() => removeAttachment(attachment.id)}>
-                      {tc("remove")}
-                    </Button>
-                  </Group>
-                ))}
-              </Stack>
-            )}
-          </Stack>
-        </SectionCard>
-      </Stack>
-
-      <Modal opened={cameraOpen} onClose={closeCameraDialog} title={t("takePhoto")} centered size="lg">
-        <Stack gap="md">
-          {capturedPreview ? (
-            <Image
-              src={capturedPreview}
-              alt={t("takePhoto")}
-              width={640}
-              height={480}
-              style={{ width: "100%", height: "auto", border: "1px solid var(--mantine-color-default-border)", borderRadius: "var(--mantine-radius-md)" }}
-            />
-          ) : (
-            <Box style={{ width: "100%", aspectRatio: "4/3", background: "#000", borderRadius: "var(--mantine-radius-md)", overflow: "hidden" }}>
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </Box>
-          )}
-          <Group justify="flex-end" gap="sm">
-            <Button variant="default" onClick={closeCameraDialog}>{tc("cancel")}</Button>
-            {capturedPreview ? (
-              <>
-                <Button onClick={() => void openCamera()} variant="outline">{t("retakePhoto")}</Button>
-                <Button onClick={() => void uploadCapturedPhoto()} color="ingress" disabled={uploading}>
-                  {uploading ? t("uploading") : t("usePhoto")}
-                </Button>
-              </>
-            ) : (
-              <Button onClick={capturePhotoFrame} color="ingress">{t("capturePhoto")}</Button>
-            )}
-          </Group>
-        </Stack>
-      </Modal>
-
-      <div id="scoring" />
-      {sections.map((section, sectionIndex) => (
+      {sections.map((section) => (
         <SectionCard
           key={section.key}
-          title={`${ts(section.key)} (${Math.round(section.weight * 100)}%)`}
-          action={<Badge variant="light" color="ingress" size="lg">{ts(section.domain)}</Badge>}
+          title={t(section.title)}
+          subheader={t(athleteIqPillars.find((pillar) => pillar.key === section.key)?.prompt || section.title)}
         >
           <Stack gap="md">
-            {section.items.map((item, itemIndex) => {
-              const entry = assessment.scores[item.key];
+            {section.items.map((item) => {
+              const currentScore = getScore(assessment.scores[item.key]);
+              const options = getQuestionOptions(item.key);
+
               return (
-                <Paper
-                  key={item.key}
-                  withBorder
-                  p="md"
-                  bg="var(--mantine-color-body)"
-                >
+                <Paper key={item.key} withBorder p={{ base: "md", sm: "lg" }} radius="lg">
                   <Stack gap="sm">
                     <Group justify="space-between" align="flex-start">
                       <Box style={{ flex: 1, minWidth: 0 }}>
-                        <Text size="sm" c="dimmed" fw={500}>
-                          {sectionIndex * 25 + itemIndex + 1}
-                        </Text>
-                        <Text size="md" fw={700} lh={1.3}>
-                          {ts(`${item.key}.title`)}
-                        </Text>
-                        <Text size="sm" c="dimmed">
-                          {ts(`${item.key}.prompt`)}
-                        </Text>
+                        <Text size="md" fw={700}>{t(item.title)}</Text>
+                        <Text size="sm" c="dimmed">{t(item.prompt)}</Text>
                       </Box>
-                      <Group gap={6} wrap="wrap" justify="flex-end">
-                        {[1, 2, 3, 4, 5, 6].map((n) => {
-                          const selected = scoreValue(entry) === n;
-                          return (
-                            <Button
-                              key={n}
-                              variant={selected ? "filled" : "default"}
-                              color={selected ? "ingress" : "gray"}
-                              onClick={() => updateScore(item.key, { score: selected ? "" : n })}
-                              style={{
-                                width: 42,
-                                height: 42,
-                                padding: 0,
-                                fontWeight: 700
-                              }}
-                            >
-                              {n}
-                            </Button>
-                          );
-                        })}
-                      </Group>
+                      <Badge variant="light" color="ingress" size="lg">
+                        {currentScore === null ? "Not set" : `${currentScore}/5`}
+                      </Badge>
                     </Group>
-                    <Textarea
-                      value={entry?.note || ""}
-                      onChange={(e) => updateScore(item.key, { note: e.target.value })}
-                      placeholder={t("observationNote")}
-                      minRows={2}
-                      variant="default"
-                      size="sm"
-                    />
+
+                    <SimpleGrid cols={{ base: 2, sm: 5 }} spacing="xs">
+                      {options.map((option) => {
+                        const active = currentScore === option.value;
+                        return (
+                          <Button
+                            key={`${item.key}-${option.value}`}
+                            variant={active ? "filled" : "default"}
+                            color="ingress"
+                            onClick={() => updateScore(item.key, option.value)}
+                            style={{ minHeight: 52, whiteSpace: "normal", textTransform: "none", letterSpacing: 0 }}
+                          >
+                            {option.label}
+                          </Button>
+                        );
+                      })}
+                    </SimpleGrid>
                   </Stack>
                 </Paper>
               );
@@ -730,98 +523,84 @@ export function SurveyAssessmentApp() {
         </SectionCard>
       ))}
 
-      <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="xl" id="report">
-        <SectionCard title={t("professionalNotes")}>
-          <Stack gap="md">
-            <Textarea
-              label={t("generalObservation")}
-              value={assessment.notes.general}
-              onChange={(e) => update("notes", "general", e.target.value)}
-              minRows={4}
-            />
-            <Textarea
-              label={t("adaptationNeeds")}
-              value={assessment.notes.adaptations}
-              onChange={(e) => update("notes", "adaptations", e.target.value)}
-              minRows={4}
-            />
-            <Textarea
-              label={t("referralNote")}
-              value={assessment.notes.referral}
-              onChange={(e) => update("notes", "referral", e.target.value)}
-              minRows={4}
-            />
+      <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+        <SectionCard title="Support today" subheader={`Lowest support area right now: ${nextSupportArea}.`}>
+          <Stack gap="sm">
+            <SupportCard title="Physical" body={supportSummary.physical} />
+            <SupportCard title="Mental" body={supportSummary.mental} />
+            <SupportCard title="Sport brain" body={supportSummary.sportBrain} />
           </Stack>
         </SectionCard>
-        
-        <SectionCard title={t("reportPreview")}>
-          <Stack gap="lg">
-            <ReportList title={t("strengths")} items={strengths.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
-            <ReportList title={t("developmentPriorities")} items={needs.map(([key, entry]) => `${ts(`${key}.title`)} (${entry.score})`)} emptyText={t("noData")} />
-            <Box mt="md">
-              <Text size="sm" c="dimmed">
-                {t("nextStep")}:
-              </Text>
-              <Text size="lg" mt={4} fw={700} color="ingress">
-                {computed.ski === null ? t("completeAll") : computed.ski < 3.5 ? t("stabilizing") : t("sportOrientation")}
-              </Text>
-            </Box>
-          </Stack>
+
+        <SectionCard title={t("professionalNotes")} subheader="Optional context the coach should know before training.">
+          <Textarea
+            label="Anything to share with the coach today?"
+            value={assessment.notes.general}
+            onChange={(event) => updateGeneralNote(event.currentTarget.value)}
+            minRows={8}
+            placeholder="Examples: poor sleep after travel, school exam day, knee soreness, low confidence, hard focus."
+          />
         </SectionCard>
       </SimpleGrid>
 
-      <Paper withBorder p="lg" radius="md" mt="xl">
-        <Group justify="flex-end" gap="md">
-          <Button variant="default" onClick={newAssessment} style={{ minWidth: 112, fontWeight: 600 }}>
-            {tc("new")}
-          </Button>
-          <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 150, fontWeight: 700 }}>
-            {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
-          </Button>
-        </Group>
+      <Paper
+        withBorder
+        p="md"
+        radius="xl"
+        style={{
+          position: "sticky",
+          bottom: 12,
+          zIndex: 40,
+          paddingBottom: "calc(1rem + env(safe-area-inset-bottom))"
+        }}
+      >
+        <Stack gap="sm">
+          <Group justify="space-between" align="center" wrap="nowrap">
+            <Box>
+              <Text size="sm" c="dimmed">Daily readiness</Text>
+              <Text fw={700}>{computed.completion.done}/{computed.completion.total} complete</Text>
+            </Box>
+            <Badge variant="light" color={readinessResult.mode === "full" ? "ingress" : readinessResult.mode === "moderate" ? "review" : "red"} size="lg">
+              {readinessModeLabel}
+            </Badge>
+          </Group>
+          <Group gap="md" grow>
+            <Button variant="default" onClick={newAssessment} style={{ fontWeight: 600 }}>
+              {tc("new")}
+            </Button>
+            <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ fontWeight: 700 }}>
+              {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
+            </Button>
+          </Group>
+        </Stack>
       </Paper>
     </Stack>
   );
 }
 
-function MetricCard({ label, value, target }: { label: string; value: string; target?: number }) {
+function MetricCard({ label, value }: { label: string; value: number | null }) {
   return (
-    <Paper withBorder p="md" radius="md" style={{ flex: 1 }}>
-      <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
-        {label}
-      </Text>
-      <Text size="xl" mt={4} fw={800} color="ingress">
-        {value}
-      </Text>
-      {target ? (
-        <Text size="sm" c="dimmed" mt={4}>
-          TARGET: {target.toFixed(1)}
-        </Text>
-      ) : null}
+    <Paper withBorder p="md" radius="md">
+      <Text size="sm" c="dimmed" fw={600}>{label}</Text>
+      <Text size="xl" fw={800}>{value === null ? "—" : `${value.toFixed(1)}/5`}</Text>
     </Paper>
   );
 }
 
-function ReportList({ title, items, emptyText }: { title: string; items: string[]; emptyText: string }) {
+function InfoChip({ label, value }: { label: string; value: string }) {
   return (
-    <Box>
-      <Text size="md" fw={700} mb="xs">
-        {title}
-      </Text>
-      {items.length ? (
-        <Stack gap={4} component="ul" style={{ listStyle: "none", padding: 0, margin: 0 }}>
-          {items.map((item, idx) => (
-            <Text key={`${idx}-${item}`} component="li" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
-              <Box component="span" c="ingress" mt="xs" style={{ display: "inline-block", alignSelf: "flex-start" }}>•</Box>
-              {item}
-            </Text>
-          ))}
-        </Stack>
-      ) : (
-        <Text size="sm" c="dimmed" fs="italic">
-          {emptyText}
-        </Text>
-      )}
-    </Box>
+    <Paper withBorder p="md" radius="md">
+      <Text size="sm" c="dimmed" fw={600}>{label}</Text>
+      <Text size="sm" fw={700}>{value}</Text>
+    </Paper>
+  );
+}
+
+function SupportCard({ title, body }: { title: string; body: string }) {
+  return (
+    <Paper withBorder p="md" radius="md">
+      <Text fw={700}>{title}</Text>
+      <Text size="sm" c="dimmed" mt={4}>{body}</Text>
+    </Paper>
   );
 }

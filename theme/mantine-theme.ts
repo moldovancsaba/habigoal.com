@@ -1,8 +1,13 @@
 import { createTheme, rgba, type MantineTheme, type MantineThemeOverride } from "@mantine/core";
 import { getSemanticTone, getThemeFoundation, type ThemeMode } from "@/lib/semantic-theme";
+import { SEMANTIC_TONES, type SemanticTone } from "@/theme/tokens";
 import { APP_FONT_FAMILY_LTR, APP_FONT_FAMILY_RTL, APP_FONT_SIZES, APP_FONT_WEIGHTS } from "@/theme/typography";
 
 type Direction = "ltr" | "rtl";
+
+function isSemanticTone(value: string | undefined): value is SemanticTone {
+  return typeof value === "string" && SEMANTIC_TONES.includes(value as SemanticTone);
+}
 
 export function getSurveyMantineTheme(mode: ThemeMode, direction: Direction = "ltr"): MantineThemeOverride {
   const foundation = getThemeFoundation(mode);
@@ -115,8 +120,8 @@ export function getSurveyMantineTheme(mode: ThemeMode, direction: Direction = "l
           radius: "md"
         },
         styles: (theme: MantineTheme, props: { color?: string }) => {
-          const requestedTone = props.color && props.color in theme.colors ? props.color : "ingress";
-          const selectedTone = tone(requestedTone as Parameters<typeof tone>[0]);
+          const selectedToneName = isSemanticTone(props.color) ? props.color : "ingress";
+          const selectedTone = tone(selectedToneName);
           return {
             root: {
               fontFamily,

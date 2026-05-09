@@ -7,6 +7,7 @@ import { DEFAULT_SURVEY_SETTINGS, getSettings, SurveySettings, saveSettings } fr
 import { getUsers, saveUser, User } from "@/services/user-service";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 
 export default function SettingsPage() {
@@ -275,7 +276,69 @@ export default function SettingsPage() {
               Add user
             </Button>
           </Group>
-          <Paper withBorder p={0}>
+          <Stack gap="md" hiddenFrom="sm">
+            {users
+              .filter((u) => !!u.email)
+              .map((user) => (
+                <ResponsiveDataCard key={user.email} title={user.name || user.email}>
+                  <Stack gap="sm">
+                    <TextInput
+                      label={tc("name")}
+                      value={user.name || ""}
+                      placeholder="Full name"
+                      onChange={(event) => {
+                        const name = event.currentTarget.value;
+                        setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
+                      }}
+                    />
+                    <ResponsiveDataRow label={t("email")} value={<Text fw={600}>{user.email}</Text>} />
+                    <MobileCheckboxRow
+                      label={t("canConduct")}
+                      checked={user.roles.includes("conductor")}
+                      onChange={() => void toggleRole(user, "conductor")}
+                    />
+                    <MobileCheckboxRow
+                      label={t("canObserve")}
+                      checked={user.roles.includes("observer")}
+                      onChange={() => void toggleRole(user, "observer")}
+                    />
+                    <MobileCheckboxRow
+                      label="Admin"
+                      checked={user.roles.includes("admin")}
+                      onChange={() => void toggleRole(user, "admin")}
+                    />
+                    <Group grow>
+                      <Button
+                        variant="light"
+                        onClick={async () => {
+                          const latest = users.find((u) => u.email === user.email) || user;
+                          const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
+                          const ok = await saveUser(updatedUser);
+                          setMessage(ok ? tc("success") : tc("error"));
+                        }}
+                      >
+                        {tc("save")}
+                      </Button>
+                      <Button
+                        variant="light"
+                        color="red"
+                        onClick={async () => {
+                          const { deleteUser } = await import("@/services/user-service");
+                          if (confirm(`Remove access for ${user.email}?`)) {
+                            const ok = await deleteUser(user.email);
+                            if (ok) setUsers(prev => prev.filter(u => u.email !== user.email));
+                          }
+                        }}
+                      >
+                        {tc("remove")}
+                      </Button>
+                    </Group>
+                  </Stack>
+                </ResponsiveDataCard>
+              ))}
+            {users.length === 0 ? <Text c="dimmed">{t("noUsers")}</Text> : null}
+          </Stack>
+          <Paper withBorder p={0} visibleFrom="sm">
           <Table striped highlightOnHover>
             <Table.Thead>
               <Table.Tr>
@@ -490,7 +553,29 @@ export default function SettingsPage() {
                   </Text>
                 ) : null}
               </Stack>
-              <Table>
+              <Stack gap="md" hiddenFrom="sm">
+                {(["4-6", "7-9", "10-12"] as const).flatMap((age) =>
+                  (["movement", "social", "mental", "ski"] as const).map((domain) => (
+                    <ResponsiveDataCard key={`${age}-${domain}`} title={`${age} · ${domain}`}>
+                      <Stack gap="sm">
+                        <TextInput
+                          label={t("standardsTarget")}
+                          value={String(settings.standards.versions[settings.standards.activeVersion][age][domain].target)}
+                          disabled={currentVersionMeta().status === "published"}
+                          onChange={(e) => updateStandardValue(age, domain, "target", e.currentTarget.value)}
+                        />
+                        <TextInput
+                          label={t("standardsMin")}
+                          value={String(settings.standards.versions[settings.standards.activeVersion][age][domain].min)}
+                          disabled={currentVersionMeta().status === "published"}
+                          onChange={(e) => updateStandardValue(age, domain, "min", e.currentTarget.value)}
+                        />
+                      </Stack>
+                    </ResponsiveDataCard>
+                  ))
+                )}
+              </Stack>
+              <Table visibleFrom="sm">
                 <Table.Thead>
                   <Table.Tr>
                     <Table.Th>{t("standardsAgeGroup")}</Table.Th>
@@ -569,12 +654,29 @@ export default function SettingsPage() {
 
       <SectionCard title="Governance Metrics">
         <Stack gap="xs">
-          <Text size="sm">Deleted children: {governanceMetrics.deletedChildren}</Text>
+          <Text size="sm">Deleted athletes: {governanceMetrics.deletedChildren}</Text>
           <Text size="sm">Deleted assessments: {governanceMetrics.deletedAssessments}</Text>
           <Text size="sm">Assessments missing report consent: {governanceMetrics.missingConsentReport}</Text>
-          <Text size="sm">Assessments missing child link: {governanceMetrics.missingChildLink}</Text>
+          <Text size="sm">Assessments missing athlete link: {governanceMetrics.missingChildLink}</Text>
         </Stack>
       </SectionCard>
     </Stack>
+  );
+}
+
+function MobileCheckboxRow({
+  label,
+  checked,
+  onChange
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <Group justify="space-between" align="center">
+      <Text fw={600}>{label}</Text>
+      <Checkbox checked={checked} onChange={onChange} aria-label={label} />
+    </Group>
   );
 }

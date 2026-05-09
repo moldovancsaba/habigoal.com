@@ -119,7 +119,7 @@ export default function RecordsPage() {
                           </Text>
                         </Box>
                         <Badge color="ingress" variant="filled" size="lg">
-                          SKI: {formatScore(record.computed.ski)}
+                          {t("sportReadiness")}: {formatScore(record.computed.ski)}
                         </Badge>
                       </Group>
                     </Box>

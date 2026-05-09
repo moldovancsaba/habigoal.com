@@ -60,5 +60,5 @@ Media upload is blocked in the UI until video/photo consent is checked.
 - They appear in deleted views and can be restored.
 4. Verify localized chart outcome sentences appear on:
 - `/dashboard`
-- `/dashboard/children/[id]`
+- `/dashboard/athletes/[id]`
 - `/dashboard/records/[id]`

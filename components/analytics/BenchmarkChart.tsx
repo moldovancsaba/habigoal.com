@@ -45,7 +45,7 @@ export function BenchmarkChart({
               dy={8}
             />
             <YAxis
-              domain={[0, 6]}
+              domain={[0, 5]}
               tick={{ fontSize: 10, fill: ANALYTICS_CONFIG.colors.text, fontFamily: ANALYTICS_CONFIG.fontFamily }}
               axisLine={false}
               tickLine={false}

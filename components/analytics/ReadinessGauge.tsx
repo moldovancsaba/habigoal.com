@@ -3,16 +3,17 @@
 import { Box, Paper, Text, useMantineTheme, Group } from "@mantine/core";
 
 interface ReadinessGaugeProps {
-  value: number; // 0-6
+  value: number;
+  max?: number;
   title?: string;
   subtitle?: string;
 }
 
-export function ReadinessGauge({ value, title, subtitle }: ReadinessGaugeProps) {
+export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGaugeProps) {
   const theme = useMantineTheme();
   
   // Normalized value for SVG (0 to 1)
-  const normalizedValue = Math.min(Math.max(value / 6, 0), 1);
+  const normalizedValue = Math.min(Math.max(value / max, 0), 1);
   
   // Gauge parameters
   const size = 180;
@@ -23,8 +24,9 @@ export function ReadinessGauge({ value, title, subtitle }: ReadinessGaugeProps) 
 
   // Determine color based on readiness
   const getColor = () => {
-    if (value < 3) return theme.colors.red[6];
-    if (value < 4) return theme.colors.yellow[6];
+    const ratio = max > 0 ? value / max : 0;
+    if (ratio < 0.5) return theme.colors.red[6];
+    if (ratio < 0.75) return theme.colors.yellow[6];
     return theme.colors.ingress[6];
   };
 
@@ -81,7 +83,7 @@ export function ReadinessGauge({ value, title, subtitle }: ReadinessGaugeProps) 
 
       <Group justify="space-between" mt="xs" px="md">
         <Text size="sm" c="dimmed">0.0</Text>
-        <Text size="sm" c="dimmed">6.0</Text>
+        <Text size="sm" c="dimmed">{max.toFixed(1)}</Text>
       </Group>
     </Paper>
   );

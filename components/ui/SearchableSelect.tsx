@@ -36,6 +36,8 @@ export function SearchableSelect({ label, value, options, onChange, placeholder,
       data={data}
       value={selectValue}
       label={label}
+      size="md"
+      comboboxProps={{ withinPortal: true }}
       placeholder={placeholder || undefined}
       onSearchChange={(query) => {
         if (allowAdd) {

@@ -18,11 +18,12 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { rapidSections } from "@/lib/survey-schema";
-import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import { sectionsForMode } from "@/lib/survey-schema";
+import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
+import { hasTrackerScores } from "@/lib/assessment-compat";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { MaturityRadarChart } from "@/components/analytics/MaturityRadarChart";
 import type { AssessmentRecord } from "@/types/assessment";
@@ -31,6 +32,20 @@ import { BrandMark } from "@/components/ui/BrandMark";
 const RADAR_CHART_HEIGHT = 200;
 const RADAR_TICK_FONT_SIZE = 10;
 const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
+const LEGACY_DOMAIN_ITEMS: Record<AssessmentDomain, Array<{ key: string; title: string }>> = {
+  movement: [
+    { key: "technical_pillar", title: "technicalPillarTitle" },
+    { key: "tactical_pillar", title: "tacticalPillarTitle" },
+    { key: "physical_pillar", title: "physicalPillarTitle" }
+  ],
+  social: [
+    { key: "psychological_pillar", title: "mentalPillarTitle" }
+  ],
+  mental: [
+    { key: "cognitive_pillar", title: "cognitivePillarTitle" },
+    { key: "readiness_pillar", title: "physicalPillarTitle" }
+  ]
+};
 
 export default function RecordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -119,16 +134,16 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   }
 
   const radarData = {
-    movement: buildRadarData("rapid_movement", record, ts),
-    social: buildRadarData("rapid_social", record, ts),
-    mental: buildRadarData("rapid_mental", record, ts)
+    movement: buildDomainRadarData("movement", record, t),
+    social: buildDomainRadarData("social", record, t),
+    mental: buildDomainRadarData("mental", record, t)
   };
 
   const baseline = history.length > 0 ? history[history.length - 1] : null;
   const deltaRadarData = [
-    { subject: ts("movement"), A: record.computed.movementAverage || 0, B: baseline?.computed.movementAverage || 0, fullMark: 6 },
-    { subject: ts("social"), A: record.computed.socialAverage || 0, B: baseline?.computed.socialAverage || 0, fullMark: 6 },
-    { subject: ts("mental"), A: record.computed.mentalAverage || 0, B: baseline?.computed.mentalAverage || 0, fullMark: 6 },
+    { subject: ts("movement"), A: record.computed.movementAverage || 0, B: baseline?.computed.movementAverage || 0, fullMark: 5 },
+    { subject: ts("social"), A: record.computed.socialAverage || 0, B: baseline?.computed.socialAverage || 0, fullMark: 5 },
+    { subject: ts("mental"), A: record.computed.mentalAverage || 0, B: baseline?.computed.mentalAverage || 0, fullMark: 5 },
   ];
 
   return (
@@ -136,12 +151,12 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       <Stack gap="md" mb="lg">
         <PageHeader
           title={t("recordTitle")}
-          subtitle={
-            <Box>
-              <Text component="span">{record.session.date} · </Text>
+        subtitle={
+          <Box>
+            <Text component="span">{record.session.date} · </Text>
               <Text 
                 component={Link} 
-                href={`/dashboard/children/${record.childId}`}
+                href={`/dashboard/athletes/${record.childId}`}
                 fw={700}
                 color="ingress"
                 style={{ textDecoration: "none" }}
@@ -151,7 +166,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             </Box>
           }
           actions={
-            <Group gap="xs">
+            <Group gap="xs" wrap="wrap" className="mobile-actions-stack">
               <Button 
                 component={Link}
                 href={`/dashboard/assessment?id=${record._id}`}
@@ -216,7 +231,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             })}
           </Text>
 
-          <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
             <Metric label={ts("movement")} value={formatScore(record.computed.movementAverage)} />
             <Metric label={ts("social")} value={formatScore(record.computed.socialAverage)} />
             <Metric label={ts("mental")} value={formatScore(record.computed.mentalAverage)} />
@@ -231,16 +246,27 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           </Text>
 
           <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
-            <RecordRadarChart title={t("rapidMovementTitle")} data={radarData.movement} domain="movement" />
-            <RecordRadarChart title={t("rapidSocialTitle")} data={radarData.social} domain="social" />
-            <RecordRadarChart title={t("rapidMentalTitle")} data={radarData.mental} domain="mental" />
+            <RecordRadarChart title={ts("movement")} data={radarData.movement} domain="movement" />
+            <RecordRadarChart title={ts("social")} data={radarData.social} domain="social" />
+            <RecordRadarChart title={ts("mental")} data={radarData.mental} domain="mental" />
           </SimpleGrid>
         </Stack>
       </SectionCard>
 
       {sections.map((section) => (
-        <SectionCard key={section.key} title={ts(section.key)}>
-          <Paper withBorder radius="md" style={{ overflow: "hidden" }}>
+        <SectionCard key={section.key} title={t(section.title)}>
+          <Stack gap="md" hiddenFrom="sm">
+            {section.items.map((item) => {
+              const entry = record.scores[item.key];
+              return (
+                <ResponsiveDataCard key={item.key} title={t(item.title)}>
+                  <ResponsiveDataRow label={t("tableScore")} value={<Badge color="ingress" variant="light" size="lg">{entry?.score ?? "—"}</Badge>} />
+                  <ResponsiveDataRow label={t("tableNote")} value={<Text size="sm" c="dimmed">{entry?.note || tc("emptyValue")}</Text>} />
+                </ResponsiveDataCard>
+              );
+            })}
+          </Stack>
+          <Paper withBorder radius="md" style={{ overflow: "hidden" }} visibleFrom="sm">
             <Table striped highlightOnHover verticalSpacing="sm">
               <Table.Thead>
                 <Table.Tr>
@@ -256,13 +282,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                   const entry = record.scores[item.key];
                   return (
                     <Table.Tr key={item.key}>
-                      <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
+                      <Table.Td fw={500}>{t(item.title)}</Table.Td>
                       <Table.Td style={{ textAlign: "right" }}>
                         <Badge color="ingress" variant="light" size="lg">
                           {entry?.score ?? "—"}
                         </Badge>
                       </Table.Td>
-                      <Table.Td><Text size="sm" c="dimmed">{entry?.note || "—"}</Text></Table.Td>
+                      <Table.Td><Text size="sm" c="dimmed">{entry?.note || tc("emptyValue")}</Text></Table.Td>
                     </Table.Tr>
                   );
                 })}
@@ -278,7 +304,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             {t("noImages")}
           </Text>
         ) : (
-          <SimpleGrid cols={{ base: 2, sm: 3, md: 4, lg: 5 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, xs: 2, sm: 3, md: 4, lg: 5 }} spacing="md">
             {record.attachments.map((attachment) => {
               const isPdf = attachment.mimeType === "application/pdf" || attachment.url.toLowerCase().endsWith(".pdf");
               return (
@@ -287,13 +313,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                     <Box style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--mantine-color-gray-0)", borderRadius: "var(--mantine-radius-md)" }}>
                        <Stack align="center" gap={4}>
                          <Text style={{ fontSize: 32 }}>📄</Text>
-                         <Text size="sm" c="dimmed" style={{ textAlign: "center", paddingInline: 4 }} lineClamp={1}>{attachment.name || "PDF Report"}</Text>
+                         <Text size="sm" c="dimmed" style={{ textAlign: "center", paddingInline: 4 }} lineClamp={1}>{attachment.name || t("pdfReportFallback")}</Text>
                        </Stack>
                     </Box>
                   ) : (
                     <Image
                       src={attachment.thumbUrl || attachment.url}
-                      alt={attachment.name || "Evidence image"}
+                      alt={attachment.name || t("evidenceImageAlt")}
                       width={160}
                       height={120}
                       style={{ width: "100%", height: "auto", borderRadius: "var(--mantine-radius-md)", aspectRatio: "4/3", objectFit: "cover" }}
@@ -307,7 +333,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                     <Button 
                       component="a" 
                       href={attachment.url} 
-                      download={attachment.name || "report.pdf"}
+                      download={attachment.name || t("reportFileName")}
                       target="_blank" 
                       rel="noreferrer" 
                       variant="light"
@@ -331,7 +357,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               {t("generalObservation")}
             </Text>
             <Text size="sm" c="dimmed">
-              {record.notes.general || "—"}
+              {record.notes.general || tc("emptyValue")}
             </Text>
           </Box>
           <Box>
@@ -339,16 +365,16 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               {t("adaptationNeeds")}
             </Text>
             <Text size="sm" c="dimmed">
-              {record.notes.adaptations || "—"}
+              {record.notes.adaptations || tc("emptyValue")}
             </Text>
           </Box>
         </Stack>
       </SectionCard>
 
-      <SectionCard title={t("historyLog") || "History Log"}>
+      <SectionCard title={t("historyLog")}>
         <Stack gap="xs">
           <Text size="sm">
-            <strong>{t("recordedAt") || "Recorded at"}:</strong> {new Date(record.createdAt).toLocaleString(undefined, {
+            <strong>{t("recordedAt")}:</strong> {new Date(record.createdAt).toLocaleString(undefined, {
               hour: "2-digit",
               minute: "2-digit",
               timeZoneName: "short",
@@ -359,7 +385,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           </Text>
           {record.updateHistory?.map((timestamp, idx) => (
             <Text key={idx} size="sm">
-              <strong>{t("updatedAt") || "Updated at"}:</strong> {new Date(timestamp).toLocaleString(undefined, {
+              <strong>{t("updatedAt")}:</strong> {new Date(timestamp).toLocaleString(undefined, {
                 hour: "2-digit",
                 minute: "2-digit",
                 timeZoneName: "short",
@@ -371,7 +397,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           ))}
           {!record.updateHistory?.length && record.updatedAt !== record.createdAt && (
             <Text size="sm">
-              <strong>{t("updatedAt") || "Updated at"}:</strong> {new Date(record.updatedAt).toLocaleString(undefined, {
+              <strong>{t("updatedAt")}:</strong> {new Date(record.updatedAt).toLocaleString(undefined, {
                 hour: "2-digit",
                 minute: "2-digit",
                 timeZoneName: "short",
@@ -422,6 +448,48 @@ function RecordRadarChart({
 }) {
   const theme = useMantineTheme();
   const domainColor = getDomainMainColor(domain);
+
+  if (data.length < 3) {
+    return (
+      <Paper withBorder p="sm">
+        <Text size="sm" fw={700} mb="xs" c="dimmed" style={{ textTransform: "uppercase" }}>
+          {title}
+        </Text>
+        <Stack justify="center" gap="md" style={{ minHeight: RADAR_CHART_HEIGHT }}>
+          {data.map((point) => (
+            <Box key={point.label}>
+              <Group justify="space-between" align="flex-end" gap="sm" mb={6}>
+                <Text size="sm" fw={600} style={{ flex: 1, minWidth: 0 }}>
+                  {point.label}
+                </Text>
+                <Badge color="ingress" variant="light" size="lg">
+                  {formatScore(point.value)}
+                </Badge>
+              </Group>
+              <Box
+                style={{
+                  height: 10,
+                  borderRadius: 999,
+                  background: theme.colors.gray[2],
+                  overflow: "hidden"
+                }}
+              >
+                <Box
+                  style={{
+                    width: `${Math.max(0, Math.min(100, (point.value / 5) * 100))}%`,
+                    height: "100%",
+                    borderRadius: 999,
+                    background: domainColor
+                  }}
+                />
+              </Box>
+            </Box>
+          ))}
+        </Stack>
+      </Paper>
+    );
+  }
+
   return (
     <Paper withBorder p="sm">
       <Text size="sm" fw={700} mb="xs" c="dimmed" style={{ textTransform: "uppercase" }}>
@@ -433,11 +501,11 @@ function RecordRadarChart({
             <PolarGrid />
             <PolarAngleAxis
               dataKey="label"
-              tick={{ fontSize: RADAR_TICK_FONT_SIZE, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
+              tick={(props) => renderWrappedAngleTick(props)}
             />
             <PolarRadiusAxis
               angle={90}
-              domain={[0, 6]}
+              domain={[0, 5]}
               tickCount={4}
               tick={(props) => renderRotatedRadiusTick(props)}
               stroke={theme.colors.gray[6]}
@@ -476,15 +544,77 @@ function renderRotatedRadiusTick(props: { x?: string | number; y?: string | numb
   );
 }
 
-function buildRadarData(sectionKey: string, record: AssessmentRecord, translateSchema: (key: string) => string) {
-  const section = rapidSections.find((item) => item.key === sectionKey);
-  if (!section) return [];
+function buildDomainRadarData(
+  domain: AssessmentDomain,
+  record: AssessmentRecord,
+  translate: (key: string) => string
+) {
+  if (!hasTrackerScores(record)) {
+    return LEGACY_DOMAIN_ITEMS[domain]
+      .map((item) => {
+        const score = record.scores[item.key]?.score;
+        return {
+          label: translate(item.title),
+          value: typeof score === "number" ? score : 0
+        };
+      })
+      .filter((item) => item.value > 0);
+  }
 
-  return section.items.map((item) => {
-    const score = record.scores[item.key]?.score;
-    return {
-      label: translateSchema(`${item.key}.title`),
-      value: typeof score === "number" ? score : 0
-    };
-  });
+  const sections = sectionsForMode(record.mode).filter((section) => section.domain === domain);
+  return sections.flatMap((section) =>
+    section.items.map((item) => {
+      const score = record.scores[item.key]?.score;
+      return {
+        label: translate(item.title),
+        value: typeof score === "number" ? score : 0
+      };
+    })
+  );
+}
+
+function renderWrappedAngleTick(props: {
+  x?: string | number;
+  y?: string | number;
+  cx?: string | number;
+  cy?: string | number;
+  payload?: { value?: string };
+}) {
+  const x = Number(props.x ?? 0);
+  const y = Number(props.y ?? 0);
+  const cx = Number(props.cx ?? 0);
+  const value = props.payload?.value ?? "";
+  const words = value.split(" ");
+  const lines: string[] = [];
+
+  for (const word of words) {
+    const current = lines[lines.length - 1];
+    if (!current || `${current} ${word}`.length > 18) {
+      if (lines.length < 2) {
+        lines.push(word);
+      } else {
+        lines[1] = `${lines[1]}…`;
+        break;
+      }
+    } else {
+      lines[lines.length - 1] = `${current} ${word}`;
+    }
+  }
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="var(--mantine-color-text)"
+      fontSize={RADAR_TICK_FONT_SIZE}
+      fontFamily={CHART_FONT_FAMILY}
+      textAnchor={x < cx - 8 ? "end" : x > cx + 8 ? "start" : "middle"}
+    >
+      {lines.map((line, index) => (
+        <tspan key={`${line}-${index}`} x={x} dy={index === 0 ? 0 : 11}>
+          {line}
+        </tspan>
+      ))}
+    </text>
+  );
 }

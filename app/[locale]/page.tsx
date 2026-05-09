@@ -15,20 +15,20 @@ export default async function LandingPage({
       <Container size="xl" py={{ base: 56, md: 96 }}>
         <Stack gap={60} align="stretch">
           {error === "access_denied" && (
-            <Alert color="review" title="Access Denied" radius="md" style={{ maxWidth: 560, marginInline: "auto" }}>
+            <Alert color="review" title={t("accessDeniedTitle")} radius="md" style={{ maxWidth: 560, marginInline: "auto" }}>
               {t("accessDenied")}
             </Alert>
           )}
           <Group align="stretch" gap="xl">
             <Stack className="glass-panel surface-outline" gap="xl" p={{ base: "xl", md: "2rem" }} style={{ flex: 1, borderRadius: 28, minWidth: 0 }}>
               <Group justify="space-between" align="center">
-                <Badge color="strategy" variant="light" size="lg">Survey OS</Badge>
+                <Badge color="strategy" variant="light" size="lg">{t("badge")}</Badge>
                 <Group gap="xs">
                   <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
-                    <Text size="sm" fw={700} c="var(--text-secondary)">adaptive intake</Text>
+                    <Text size="sm" fw={700} c="var(--text-secondary)">{t("chipAdaptiveIntake")}</Text>
                   </Box>
                   <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
-                    <Text size="sm" fw={700} c="var(--text-secondary)">liquid shell</Text>
+                    <Text size="sm" fw={700} c="var(--text-secondary)">{t("chipLiquidShell")}</Text>
                   </Box>
                 </Group>
               </Group>
@@ -58,7 +58,7 @@ export default async function LandingPage({
                   {t("login")}
                 </Button>
                 <Text size="sm" c="var(--text-muted)">
-                  Secure SSO via DoneIsBetter
+                  {t("ssoNote")}
                 </Text>
               </Group>
             </Stack>
@@ -66,11 +66,11 @@ export default async function LandingPage({
             <Box className="glass-panel surface-outline" p={{ base: "xl", md: "2rem" }} style={{ width: "100%", maxWidth: 420, borderRadius: 32, position: "relative", overflow: "hidden" }}>
               <Box style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 18%, rgba(79, 70, 229, 0.48), transparent 34%), radial-gradient(circle at 58% 48%, rgba(168, 85, 247, 0.35), transparent 28%), radial-gradient(circle at 40% 78%, rgba(14, 165, 233, 0.28), transparent 32%)" }} />
               <Stack align="center" justify="center" gap="lg" style={{ position: "relative", minHeight: 460 }}>
-                <BrandMark size={164} subtitle="Survey" />
+                <BrandMark size={164} subtitle={t("brandSubtitle")} />
                 <Stack gap={6} align="center">
-                  <Text fw={800} size="xl">Survey Interface</Text>
+                  <Text fw={800} size="xl">{t("previewTitle")}</Text>
                   <Text size="sm" c="var(--text-secondary)" ta="center" maw={280}>
-                    Semantic dashboards, guided records, and calm high-contrast glass surfaces tuned for dense operational work.
+                    {t("previewSubtitle")}
                   </Text>
                 </Stack>
               </Stack>
@@ -83,10 +83,10 @@ export default async function LandingPage({
         <Container size="lg">
           <Group className="glass-panel surface-outline" justify="center" gap="xl" py="md" style={{ borderRadius: 999 }}>
             <Text component="a" href="/en/legal/gtc" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
-              Terms of Service
+              {t("termsOfService")}
             </Text>
             <Text component="a" href="/en/legal/privacy" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
-              Privacy Policy
+              {t("privacyPolicy")}
             </Text>
           </Group>
         </Container>

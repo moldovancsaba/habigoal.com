@@ -2,6 +2,12 @@
 
 Base path: Next.js App Router API under `/api/*`.
 
+There is also a standalone local helper server for development:
+
+- Start with `npm run local:server`
+- Default URL: `http://localhost:4001`
+- It mirrors the documented core read/write endpoints against the same MongoDB database for lightweight local integration testing.
+
 ## Authentication model
 
 Role checks are controlled by `SURVEY_ENFORCE_AUTH`.

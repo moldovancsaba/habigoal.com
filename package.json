@@ -3,14 +3,18 @@
   "version": "0.5.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/ensure-port-3000-free.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "local:server": "node scripts/local-server.mjs",
     "lint": "next lint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "db:setup": "node scripts/setup-database.mjs",
+    "db:seed-demo": "node scripts/seed-demo-athletes.mjs",
     "db:backfill-standards-version": "node scripts/backfill-standards-version.mjs",
+    "db:backfill-daily-tracker-history": "node scripts/backfill-daily-tracker-history.mjs",
     "db:migrate-survey-identifiers": "node scripts/migrate-survey-identifiers.mjs",
     "semantic:audit": "node scripts/semantic-audit.mjs"
   },

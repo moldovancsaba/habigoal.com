@@ -21,7 +21,7 @@ export function LongitudinalChart({
   title, 
   data, 
   color = ANALYTICS_CONFIG.colors.primary,
-  yDomain = [0, 6]
+  yDomain = [0, 5]
 }: LongitudinalChartProps) {
   const theme = useMantineTheme();
 

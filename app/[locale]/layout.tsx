@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
 import { getMessages } from "next-intl/server";
-import { Noto_Sans, Noto_Sans_Arabic } from "next/font/google";
+import { Noto_Sans, Noto_Sans_Arabic, Noto_Sans_Hebrew } from "next/font/google";
 import { ThemeRegistry } from "@/components/theme/ThemeRegistry";
 import { CookieConsentBanner } from "@/components/ui/CookieConsentBanner";
 import "@mantine/core/styles.css";
@@ -19,6 +19,12 @@ const notoSansArabic = Noto_Sans_Arabic({
   display: "swap"
 });
 
+const notoSansHebrew = Noto_Sans_Hebrew({
+  subsets: ["hebrew"],
+  variable: "--font-noto-sans-hebrew",
+  display: "swap"
+});
+
 export default async function LocaleLayout({
   children,
   params
@@ -28,14 +34,14 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
   const messages = await getMessages();
-  const direction = locale === "ar" ? "rtl" : "ltr";
+  const direction = locale === "ar" || locale === "he" ? "rtl" : "ltr";
   const cookieStore = await cookies();
   const themeCookie = cookieStore.get("survey_theme")?.value ?? cookieStore.get("kidex_theme")?.value;
   const initialMode = themeCookie === "dark" || themeCookie === "light" ? themeCookie : undefined;
 
   return (
     <html lang={locale} dir={direction}>
-      <body dir={direction} className={`${notoSans.variable} ${notoSansArabic.variable}`}>
+      <body dir={direction} className={`${notoSans.variable} ${notoSansArabic.variable} ${notoSansHebrew.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeRegistry initialMode={initialMode}>
             {children}

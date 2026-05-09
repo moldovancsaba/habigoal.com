@@ -1,12 +1,17 @@
 # Survey design system (Mantine)
 
+`DESIGN.md` at the repo root is the canonical design-system source of truth for both humans and coding agents.
+
+- [DESIGN.md](/Users/Shared/Projects/survey/DESIGN.md) defines the durable token contract and the semantic usage rules.
+- This document explains how that design system is implemented in the current codebase.
+
 The dashboard and assessment UI use **Mantine** with a single app theme and shared layout primitives. Presentation is separated from API/data logic.
 
 ## Architecture
 
 | Layer | Role |
 |--------|------|
-| `theme/mantine-theme.ts` | `getSurveyMantineTheme("light" \| "dark")` — brand colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
+| `theme/mantine-theme.ts` | `getSurveyMantineTheme("light" \| "dark")` — semantic colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
 | `components/theme/ThemeRegistry.tsx` | `MantineProvider` + color-scheme wiring using `ThemeModeContext`. |
 | `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`survey_theme`, legacy `theme`), and consent-gated cookie persistence. |
 | `components/layout/DashboardShell.tsx` | Responsive shell: Mantine `AppShell` + mobile `Drawer`, nav, `PageContainer`, shared app footer. |
@@ -22,7 +27,7 @@ Theme initialization also reads cookie-backed mode from server layout to avoid r
 2. **Typography** — use the shared typography tokens and semantic sizes (`xs/sm/md/lg/xl`); avoid arbitrary pixel/rem literals.
 3. **Forms** — controlled inputs should use Mantine fields and shared wrappers (`SearchableSelect`, etc.).
 4. **Navigation** — use `Link` / `usePathname` from `@/i18n/navigation` with Mantine components.
-5. **Global CSS** — keep `app/globals.css` minimal: resets, print helpers (`.no-print`, `.only-print`, `.dashboard-main`), and optional CSS variables.
+5. **Global CSS** — keep `app/globals.css` focused on global tokens, atmosphere, print helpers (`.no-print`, `.only-print`, `.dashboard-main`), and shared surface classes.
 6. **Accessibility** — preserve semantic labels and aria attributes on interactive controls.
 8. **Charts** — dashboard and analytics visuals use `recharts`; avoid one-off SVG chart implementations unless a library chart is impossible.
 
@@ -33,6 +38,19 @@ Theme initialization also reads cookie-backed mode from server layout to avoid r
 3. Structure content with `SectionCard` and Mantine layout components.
 4. Reuse `useTranslations` namespaces (`Dashboard`, `Assessment`, `Common`, `Schema`).
 5. Run `npm run typecheck`, `npm run lint`, and `npm run build` before merging.
+
+## Source Of Truth
+
+When updating the design system:
+
+1. Update [DESIGN.md](/Users/Shared/Projects/survey/DESIGN.md) first if the token contract or design rules change.
+2. Reflect those changes in the live implementation files:
+   - [app/globals.css](/Users/Shared/Projects/survey/app/globals.css)
+   - [theme/mantine-theme.ts](/Users/Shared/Projects/survey/theme/mantine-theme.ts)
+   - [lib/semantic-theme.ts](/Users/Shared/Projects/survey/lib/semantic-theme.ts)
+   - [theme/typography.ts](/Users/Shared/Projects/survey/theme/typography.ts)
+   - [theme/tokens.ts](/Users/Shared/Projects/survey/theme/tokens.ts)
+3. Run `npm run semantic:audit`.
 
 ## Migration notes
 

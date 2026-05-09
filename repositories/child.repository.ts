@@ -28,6 +28,9 @@ export interface ChildProfile {
     social: number;
     mental: number;
   };
+  latestReadiness?: number;
+  avgReadiness?: number;
+  assessmentCount?: number;
 }
 
 const collectionName = "children";
@@ -110,7 +113,9 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
           {
             $group: {
               _id: null,
-              avgSki: { $avg: "$computed.ski" }
+              avgSki: { $avg: "$computed.ski" },
+              avgReadiness: { $avg: "$computed.ski" },
+              assessmentCount: { $sum: 1 }
             }
           }
         ],
@@ -132,6 +137,29 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
           social: "$latestAssessment.computed.socialAverage",
           mental: "$latestAssessment.computed.mentalAverage"
         },
+        latestReadiness: {
+          $round: [
+            {
+              $min: [
+                { $ifNull: ["$latestAssessment.computed.ski", 0] },
+                5
+              ]
+            },
+            2
+          ]
+        },
+        avgReadiness: {
+          $round: [
+            {
+              $min: [
+                { $ifNull: [{ $arrayElemAt: ["$aggregateMetrics.avgReadiness", 0] }, 0] },
+                5
+              ]
+            },
+            2
+          ]
+        },
+        assessmentCount: { $ifNull: [{ $arrayElemAt: ["$aggregateMetrics.assessmentCount", 0] }, 0] },
         avgSki: { $round: [{ $ifNull: [{ $arrayElemAt: ["$aggregateMetrics.avgSki", 0] }, 0] }, 2] }
       }
     },

@@ -6,6 +6,7 @@ export interface ScoreItemDefinition {
   title: string;
   prompt: string;
   domain: AssessmentDomain;
+  inputKind?: "slider" | "check" | "choice";
 }
 
 export interface ScoreEntry {

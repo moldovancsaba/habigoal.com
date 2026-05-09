@@ -1,6 +1,7 @@
 "use client";
 
 import { Box } from "@mantine/core";
+import { APP_LAYOUT } from "@/theme/tokens";
 
 export function PageContainer({ children }: { children: React.ReactNode }) {
   return (
@@ -8,11 +9,12 @@ export function PageContainer({ children }: { children: React.ReactNode }) {
       className="surface-outline"
       style={{
         width: "100%",
-        maxWidth: 1600,
+        maxWidth: APP_LAYOUT.pageMaxWidth,
         marginInline: "auto",
         paddingTop: 24
       }}
-      px={{ base: "md", md: "lg" }}
+      px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
+      pt={{ base: APP_LAYOUT.mobileTopClearance, sm: 24 }}
     >
       {children}
     </Box>

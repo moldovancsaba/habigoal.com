@@ -44,7 +44,7 @@ export function MaturityRadarChart({
             />
             <PolarRadiusAxis
               angle={30}
-              domain={[0, 6]}
+              domain={[0, 5]}
               tick={{ fontSize: 8, fill: theme.colors.gray[6] }}
             />
             <Tooltip

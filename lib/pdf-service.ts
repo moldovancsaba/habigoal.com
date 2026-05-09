@@ -1,8 +1,9 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { AssessmentRecord } from "@/types/assessment";
+import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist } from "@/lib/athlete-iq-survey";
+import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import { formatScore } from "./utils";
-import { rapidSections } from "./survey-schema";
 
 interface JsPDFWithAutoTable extends jsPDF {
   lastAutoTable?: {
@@ -10,12 +11,43 @@ interface JsPDFWithAutoTable extends jsPDF {
   };
 }
 
-type TFunction = (key: string) => string;
+type TFunction = (key: string, values?: Record<string, string | number>) => string;
+type PillarKey = (typeof athleteIqPillars)[number]["key"];
 
-/**
- * PDF Service for Survey Reports
- * Handles generation of "Original" and "Map" report formats.
- */
+type Palette = {
+  ink: [number, number, number];
+  muted: [number, number, number];
+  line: [number, number, number];
+  panel: [number, number, number];
+  panelSoft: [number, number, number];
+  accent: [number, number, number];
+  accentSoft: [number, number, number];
+  positive: [number, number, number];
+  caution: [number, number, number];
+  danger: [number, number, number];
+  white: [number, number, number];
+};
+
+const palette: Palette = {
+  ink: [20, 32, 51],
+  muted: [92, 106, 130],
+  line: [214, 225, 240],
+  panel: [244, 248, 255],
+  panelSoft: [250, 252, 255],
+  accent: [37, 99, 235],
+  accentSoft: [232, 241, 255],
+  positive: [5, 150, 105],
+  caution: [217, 119, 6],
+  danger: [220, 38, 38],
+  white: [255, 255, 255]
+};
+
+const pillarColors: Record<PillarKey, [number, number, number]> = {
+  physical_pillar: [15, 118, 110],
+  mental_pillar: [79, 70, 229],
+  sport_brain_pillar: [124, 58, 237],
+};
+
 export const PdfService = {
   async ensureUnicodeFont(doc: jsPDF): Promise<void> {
     const fontName = "ArialUnicode";
@@ -23,6 +55,7 @@ export const PdfService = {
       doc.setFont(fontName, "normal");
       return;
     }
+
     const base64 = await fetch("/fonts/Arial.ttf")
       .then((res) => res.arrayBuffer())
       .then((buffer) => {
@@ -36,389 +69,405 @@ export const PdfService = {
         return btoa(binary);
       })
       .catch(() => "");
-    if (!base64) return;
+
+    if (!base64) {
+      return;
+    }
+
     doc.addFileToVFS("Arial.ttf", base64);
     doc.addFont("Arial.ttf", fontName, "normal");
     doc.setFont(fontName, "normal");
   },
-  /**
-   * Generates the "Original" technical assessment report.
-   */
-  async generateOriginalReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction): Promise<void> {
-    const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
-    await this.ensureUnicodeFont(doc);
-    const reportDate = new Date(record.createdAt).toLocaleDateString();
-    const reportTime = new Date(record.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    this.drawTextBrand(doc, 24, 18, 20);
-
-    // Header
-    doc.setFontSize(16);
-    doc.text(t("reportPrintTitle"), 38, 16);
-    doc.setFontSize(11);
-    doc.text(record.child.name, 38, 22);
-    
-    doc.setFontSize(10);
-    doc.text(`${tc("date")}: ${reportDate}`, 140, 14);
-    doc.text(`${t("tableTime")}: ${reportTime}`, 140, 19);
-    doc.text(`${t("conductor")}: ${record.session.conductor || "—"}`, 140, 24);
-    doc.text(`${t("observers")}: ${record.session.observers || "—"}`, 140, 29);
-
-    // Summary Table
-    autoTable(doc, {
-      startY: 34,
-      head: [[ts("movement"), ts("social"), ts("mental"), ts("ski")]],
-      body: [[
-        formatScore(record.computed.movementAverage),
-        formatScore(record.computed.socialAverage),
-        formatScore(record.computed.mentalAverage),
-        formatScore(record.computed.ski)
-      ]],
-      theme: "grid",
-      styles: { fontSize: 10, halign: "center" }
-    });
-
-    // Setup Table
-    autoTable(doc, {
-      startY: doc.lastAutoTable!.finalY + 4,
-      head: [[{ content: t("setupTitle"), colSpan: 2 }]],
-      body: [
-        [t("childName"), record.child.name],
-        [t("birthDate"), record.child.birthDate],
-        [t("mode"), record.mode],
-        [tc("date"), reportDate],
-        [t("location"), record.session.location || "—"],
-        [t("conductor"), record.session.conductor || "—"]
-      ],
-      theme: "grid",
-      styles: { fontSize: 9 },
-      columnStyles: { 0: { cellWidth: 55, fontStyle: "bold" }, 1: { cellWidth: 125 } }
-    });
-
-    // Detailed Tables
-    const sections = rapidSections; // Using rapid as default for now
-    for (const section of sections) {
-      autoTable(doc, {
-        startY: doc.lastAutoTable!.finalY + 6,
-        head: [[{ content: ts(section.key), colSpan: 3 }]],
-        body: [],
-        theme: "plain",
-        styles: { fontSize: 11, fontStyle: "bold" }
-      });
-
-      autoTable(doc, {
-        startY: doc.lastAutoTable!.finalY + 1,
-        head: [[t("tableObservation"), t("tableScore"), t("tableNote")]],
-        body: section.items.map((item) => {
-          const entry = record.scores[item.key];
-          return [ts(`${item.key}.title`), `${entry?.score ?? "—"}`, entry?.note || "—"];
-        }),
-        theme: "grid",
-        styles: { fontSize: 9 },
-        columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 24, halign: "center" }, 2: { cellWidth: 86 } }
-      });
-    }
-
-    const safeName = (record.child.name || "report").replace(/[^\w-]+/g, "_");
-    doc.save(`survey_report_${safeName}_${reportDate}.pdf`);
+  async generateOriginalReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr?: TFunction, history: AssessmentRecord[] = []): Promise<void> {
+    await this.generateModernReport(record, t, tc, ts, tr ?? t, history);
   },
 
-  /**
-   * Generates the high-fidelity 10-page "Map" professional report.
-   */
-  async generateMapReport(
-    record: AssessmentRecord, 
-    t: TFunction, 
-    tc: TFunction, 
-    ts: TFunction, 
-    tr: TFunction,
-    history: AssessmentRecord[] = []
-  ): Promise<void> {
+  async generateMapReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr: TFunction, history: AssessmentRecord[] = []): Promise<void> {
+    await this.generateModernReport(record, t, tc, ts, tr, history);
+  },
+
+  async generateModernReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr: TFunction, history: AssessmentRecord[] = []): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
     await this.ensureUnicodeFont(doc);
-    // --- PAGE 1: COVER ---
-    this.drawTextBrand(doc, 105, 74, 62, true);
+
+    const trendData = this.getSortedHistory(record, history);
+    const baseline = trendData[0] ?? record;
+    const latest = trendData[trendData.length - 1] ?? record;
+    const latestReadiness = getCompatibleReadinessState(latest);
+    const latestReadinessChecks = latestReadiness.count;
+    const readinessMode = getReadinessMode(latestReadinessChecks, latestReadiness.total);
+    const pillarRows = athleteIqPillars.map((pillar) => {
+      const current = this.getPillarScore(latest, pillar.key);
+      const starting = this.getPillarScore(baseline, pillar.key);
+      return {
+        key: pillar.key,
+        label: ts(pillar.title),
+        current,
+        baseline: starting,
+        delta: current - starting
+      };
+    });
+    const recommendation = getCoachRecommendation(
+      pillarRows.map((pillar) => ({ key: pillar.key, score: pillar.current })),
+      latestReadinessChecks
+    );
+
+    this.drawCoverPage(doc, latest, tc, tr, trendData.length, latestReadinessChecks, latestReadiness.total);
+    this.drawExecutiveSummaryPage(doc, latest, baseline, pillarRows, recommendation, readinessMode, latestReadinessChecks, latestReadiness.total, t, tc, tr);
+    this.drawPerformanceProfilePage(doc, latest, pillarRows, t, ts, tr);
+    this.drawTrendPage(doc, trendData, latest, baseline, ts, tr);
+    this.drawNotesPage(doc, latest, recommendation, t, tc, ts, tr);
+
+    const safeName = (latest.child.name || "athlete").replace(/[^\w-]+/g, "_");
+    doc.save(`${safeName}_${tr("fileStem")}.pdf`);
+  },
+
+  drawCoverPage(doc: jsPDF, record: AssessmentRecord, tc: TFunction, tr: TFunction, sessionCount: number, readinessChecks: number, readinessTotal: number) {
+    doc.setFillColor(...palette.ink);
+    doc.rect(0, 0, 210, 72, "F");
+    doc.setFillColor(...palette.accentSoft);
+    doc.roundedRect(20, 92, 170, 88, 10, 10, "F");
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(20, 92, 170, 88, 10, 10);
+
+    this.drawTextBrand(doc, 105, 38, 30, true);
+    doc.setTextColor(...palette.white);
     doc.setFont("ArialUnicode", "normal");
-    doc.setFontSize(28);
-    doc.text("Survey", 105, 130, { align: "center" });
-    doc.setFontSize(22);
-    doc.text(tr("assessmentReport").toUpperCase(), 105, 145, { align: "center" });
-    
-    doc.setFont("ArialUnicode", "normal");
+    doc.setFontSize(24);
+    doc.text("Survey", 105, 49, { align: "center" });
     doc.setFontSize(18);
-    doc.text(record.child.name, 105, 170, { align: "center" });
-    doc.setFontSize(14);
-    doc.text(`${record.session.date} · ${tr("latestAssessment")}`, 105, 180, { align: "center" });
-    
-    doc.setDrawColor(19, 165, 158); // Brand Teal
-    doc.setLineWidth(1.5);
-    doc.line(40, 200, 170, 200);
+    doc.text(tr("athletePerformanceReport"), 105, 60, { align: "center" });
 
-    // --- PAGE 2: GENERAL OBSERVATION ---
+    doc.setTextColor(...palette.ink);
+    doc.setFontSize(22);
+    doc.text(record.child.name, 28, 116);
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.muted);
+    doc.text(`${tc("date")}: ${record.session.date}`, 28, 126);
+    doc.text(`${tr("sessionCountLabel")}: ${sessionCount}`, 28, 133);
+    doc.text(`${tr("readinessChecksLabel")}: ${readinessChecks}/${readinessTotal}`, 28, 140);
+    doc.text(`${tr("locationLabel")}: ${record.session.location || tc("emptyValue")}`, 28, 147);
+
+    this.drawStatChip(doc, 28, 155, 50, 18, tr("ageGroupLabel"), record.child.ageGroup || tc("emptyValue"));
+    this.drawStatChip(doc, 83, 155, 50, 18, tr("contextLabel"), tr(`contextValue${capitalize(record.session.context)}`));
+    this.drawStatChip(doc, 138, 155, 44, 18, tr("groupSizeLabel"), record.session.groupSize || tc("emptyValue"));
+  },
+
+  drawExecutiveSummaryPage(
+    doc: JsPDFWithAutoTable,
+    latest: AssessmentRecord,
+    baseline: AssessmentRecord,
+    pillarRows: Array<{ key: PillarKey; label: string; current: number; baseline: number; delta: number }>,
+    recommendation: ReturnType<typeof getCoachRecommendation>,
+    readinessMode: string,
+    readinessChecks: number,
+    readinessTotal: number,
+    t: TFunction,
+    tc: TFunction,
+    tr: TFunction
+  ) {
     doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
-    doc.setFontSize(12);
-    doc.text(tr("professionalOpinion"), 20, 50);
-    doc.setFont("ArialUnicode", "normal");
-    doc.text(doc.splitTextToSize(record.notes.general || tr("noGeneralObservation"), 170), 20, 60);
+    this.drawPageHeader(doc, tr("executiveSummary"), latest.child.name);
 
-    // --- PAGE 3: DEVELOPMENT TRENDS ---
-    if (history.length > 1) {
-      doc.addPage();
-      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
-      doc.setFontSize(14);
-      doc.text(tr("developmentTrends").toUpperCase(), 20, 34);
-      doc.setFontSize(11);
-      doc.setFont("ArialUnicode", "normal");
-      doc.text(doc.splitTextToSize(tr("trendExplanation"), 170), 20, 50);
+    const strongest = pillarRows.slice().sort((a, b) => b.current - a.current)[0];
+    const focus = pillarRows.slice().sort((a, b) => a.current - b.current)[0];
+    const avgCurrent = this.average(pillarRows.map((pillar) => pillar.current));
+    const avgBaseline = this.average(pillarRows.map((pillar) => pillar.baseline));
 
-      const trendData = [...history].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-      
-      // Draw a simple line chart
-      const chartX = 30;
-      const chartY = 120;
-      const chartWidth = 150;
-      const chartHeight = 40;
-      
-      // Axes
-      doc.setDrawColor(200);
-      doc.line(chartX, chartY, chartX + chartWidth, chartY); // X axis
-      doc.line(chartX, chartY, chartX, chartY - chartHeight); // Y axis
-      
-      // Plot SKI Trend
-      doc.setDrawColor(19, 165, 158);
-      doc.setLineWidth(0.8);
-      
-      if (trendData.length > 1) {
-        const step = chartWidth / (trendData.length - 1);
-        for (let i = 0; i < trendData.length - 1; i++) {
-          const x1 = chartX + (i * step);
-          const y1 = chartY - ((trendData[i].computed.ski || 0) / 6 * chartHeight);
-          const x2 = chartX + ((i + 1) * step);
-          const y2 = chartY - ((trendData[i+1].computed.ski || 0) / 6 * chartHeight);
-          doc.line(x1, y1, x2, y2);
-          doc.circle(x1, y1, 0.8, "F");
-          if (i === trendData.length - 2) doc.circle(x2, y2, 0.8, "F");
-        }
+    this.drawMetricCard(doc, 20, 36, 38, 22, tr("overallAverageLabel"), formatScore(avgCurrent), palette.accent);
+    this.drawMetricCard(doc, 64, 36, 38, 22, tr("baselineAverageLabel"), formatScore(avgBaseline), palette.muted);
+    this.drawMetricCard(doc, 108, 36, 38, 22, tr("readinessModeLabel"), tr(`readinessModeValue${capitalize(readinessMode)}`), this.getModeColor(readinessMode));
+    this.drawMetricCard(doc, 152, 36, 38, 22, tr("completionLabel"), `${latest.computed.completion.done}/${latest.computed.completion.total}`, palette.positive);
+
+    this.drawNarrativePanel(
+      doc,
+      20,
+      66,
+      82,
+      44,
+      tr("strongestAreaLabel"),
+      strongest?.label ?? tc("emptyValue"),
+      tr("strongestAreaBody", {
+        score: formatScore(strongest?.current ?? null),
+        baseline: formatScore(strongest?.baseline ?? null)
+      })
+    );
+
+    this.drawNarrativePanel(
+      doc,
+      108,
+      66,
+      82,
+      44,
+      tr("priorityFocusLabel"),
+      focus?.label ?? tc("emptyValue"),
+      tr("priorityFocusBody", {
+        score: formatScore(focus?.current ?? null),
+        baseline: formatScore(focus?.baseline ?? null)
+      })
+    );
+
+    const priorities = recommendation.priorityKeys
+      .map((key) => athleteIqPillars.find((pillar) => pillar.key === key))
+      .filter(Boolean)
+      .map((pillar) => tr("coachPriorityPillar", { pillar: pillar ? t(pillar.title) : t("executionQualityFallback") }));
+
+    this.drawSectionTitle(doc, 20, 122, tr("coachDirectionTitle"));
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.ink);
+    doc.text(doc.splitTextToSize(t(`coachMode${capitalize(recommendation.mode)}`), 170), 20, 130);
+    doc.setTextColor(...palette.muted);
+    doc.text(
+      doc.splitTextToSize(
+        tr("coachDirectionBody", {
+          checks: readinessChecks,
+          total: readinessTotal,
+          priorities: priorities.join(" • ") || t("executionQualityFallback")
+        }),
+        170
+      ),
+      20,
+      142
+    );
+
+    autoTable(doc, {
+      startY: 156,
+      theme: "plain",
+      head: [[tr("pillarTablePillar"), tr("pillarTableCurrent"), tr("pillarTableBaseline"), tr("pillarTableDelta")]],
+      body: pillarRows.map((pillar) => [
+        pillar.label,
+        formatScore(pillar.current),
+        formatScore(pillar.baseline),
+        this.formatDelta(pillar.delta)
+      ]),
+      styles: {
+        font: "ArialUnicode",
+        fontSize: 10,
+        textColor: palette.ink
+      },
+      headStyles: {
+        fillColor: palette.panel,
+        textColor: palette.ink,
+        lineColor: palette.line,
+        lineWidth: 0.2
+      },
+      bodyStyles: {
+        fillColor: palette.panelSoft,
+        lineColor: palette.line,
+        lineWidth: 0.2
+      },
+      columnStyles: {
+        1: { halign: "center" },
+        2: { halign: "center" },
+        3: { halign: "center" }
       }
-      doc.setFontSize(8);
-      doc.setTextColor(100);
-      doc.text("SKI Index Evolution", chartX, chartY - chartHeight - 5);
-      doc.setTextColor(0);
+    });
+  },
 
-      autoTable(doc, {
-        startY: 130,
-        head: [[tc("date"), ts("movement"), ts("social"), ts("mental"), ts("ski")]],
-        body: trendData.map(a => [
-          a.session.date,
-          formatScore(a.computed.movementAverage),
-          formatScore(a.computed.socialAverage),
-          formatScore(a.computed.mentalAverage),
-          formatScore(a.computed.ski)
-        ]),
-        theme: "grid",
-        headStyles: { fillColor: [19, 165, 158] }
-      });
-    }
-
-    // --- PAGE 4: ANALYTICS SNAPSHOT (4 CHARTS) ---
+  drawPerformanceProfilePage(
+    doc: jsPDF,
+    record: AssessmentRecord,
+    pillarRows: Array<{ key: PillarKey; label: string; current: number; baseline: number; delta: number }>,
+    t: TFunction,
+    ts: TFunction,
+    tr: TFunction
+  ) {
     doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
-    doc.setFontSize(14);
-    doc.text("ANALYTICS SNAPSHOT", 20, 34);
-    const trendData = [...(history.length ? history : [record])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    this.drawDomainTrendLines(doc, trendData, ts);
-    this.drawReadinessZoneTimeline(doc, trendData);
-    this.drawDomainVarianceChart(doc, trendData, ts);
-    this.drawItemDeltaBars(doc, trendData, ts);
+    this.drawPageHeader(doc, tr("performanceProfileTitle"), record.child.name);
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.muted);
+    doc.text(doc.splitTextToSize(tr("performanceProfileSubtitle"), 170), 20, 36);
 
-    // --- PAGE 5: PROFILES (II-IV ON ONE PAGE) ---
-    const domains: Array<{key: string, label: string, color: [number, number, number]}> = [
-      { key: "rapid_movement", label: `II. ${ts("movement").toUpperCase()}`, color: [19, 165, 158] },
-      { key: "rapid_social", label: `III. ${ts("social").toUpperCase()}`, color: [253, 203, 88] },
-      { key: "rapid_mental", label: `IV. ${ts("mental").toUpperCase()}`, color: [61, 63, 77] }
+    let y = 52;
+    pillarRows.forEach((pillar) => {
+      this.drawPillarBand(doc, 20, y, 170, 18, pillar.label, pillar.current, pillar.baseline, pillarColors[pillar.key]);
+      y += 24;
+    });
+
+    this.drawSectionTitle(doc, 20, 198, tr("readinessChecklistTitle"));
+    doc.setFontSize(9);
+    doc.setTextColor(...palette.muted);
+    doc.text(tr("readinessChecklistSubtitle"), 20, 205);
+
+    const checklistX = [20, 110];
+    readinessChecklist.forEach((item, index) => {
+      const col = index % 2;
+      const row = Math.floor(index / 2);
+      const x = checklistX[col];
+      const yy = 214 + row * 12;
+      const score = record.scores[item.key]?.score;
+      const completed = typeof score === "number" && score >= 4;
+      doc.setFillColor(...(completed ? palette.positive : palette.panel));
+      doc.roundedRect(x, yy - 4, 6, 6, 1.5, 1.5, "F");
+      if (!completed) {
+        doc.setDrawColor(...palette.line);
+        doc.roundedRect(x, yy - 4, 6, 6, 1.5, 1.5);
+      }
+      doc.setTextColor(...palette.ink);
+      doc.text(ts(item.label), x + 10, yy);
+    });
+  },
+
+  drawTrendPage(doc: JsPDFWithAutoTable, history: AssessmentRecord[], latest: AssessmentRecord, baseline: AssessmentRecord, ts: TFunction, tr: TFunction) {
+    doc.addPage();
+    this.drawPageHeader(doc, tr("trendPageTitle"), latest.child.name);
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.muted);
+    doc.text(doc.splitTextToSize(tr("trendPageSubtitle"), 170), 20, 36);
+
+    this.drawTrendBox(
+      doc,
+      20,
+      48,
+      170,
+      34,
+      tr("overallTrendTitle"),
+      history.map((item) => ({
+        date: item.session.date,
+        value: this.average(athleteIqPillars.map((pillar) => this.getPillarScore(item, pillar.key)))
+      })),
+      palette.accent
+    );
+
+    let boxY = 92;
+    athleteIqPillars.forEach((pillar, index) => {
+      const x = index % 2 === 0 ? 20 : 108;
+      if (index % 2 === 0 && index > 0) {
+        boxY += 42;
+      }
+      this.drawTrendBox(
+        doc,
+        x,
+        boxY,
+        82,
+        30,
+        ts(pillar.title),
+        history.map((item) => ({
+          date: item.session.date,
+          value: this.getPillarScore(item, pillar.key)
+        })),
+        pillarColors[pillar.key]
+      );
+    });
+
+    autoTable(doc, {
+      startY: 182,
+      theme: "plain",
+      head: [[tr("sessionLogDate"), tr("sessionLogReadiness"), tr("sessionLogStrongest"), tr("sessionLogFocus")]],
+      body: history
+        .slice()
+        .reverse()
+        .slice(0, 8)
+        .map((assessment) => {
+          const rows = athleteIqPillars.map((pillar) => ({
+            label: ts(pillar.title),
+            score: this.getPillarScore(assessment, pillar.key)
+          }));
+          const strongest = rows.slice().sort((a, b) => b.score - a.score)[0];
+          const focus = rows.slice().sort((a, b) => a.score - b.score)[0];
+          return [
+            assessment.session.date,
+            `${this.getReadinessChecks(assessment)}/${getCompatibleReadinessState(assessment).total}`,
+            strongest?.label ?? "-",
+            focus?.label ?? "-"
+          ];
+        }),
+      styles: {
+        font: "ArialUnicode",
+        fontSize: 9,
+        textColor: palette.ink
+      },
+      headStyles: {
+        fillColor: palette.panel,
+        textColor: palette.ink,
+        lineColor: palette.line,
+        lineWidth: 0.2
+      },
+      bodyStyles: {
+        fillColor: palette.panelSoft,
+        lineColor: palette.line,
+        lineWidth: 0.2
+      }
+    });
+
+    void baseline;
+  },
+
+  drawNotesPage(
+    doc: jsPDF,
+    record: AssessmentRecord,
+    recommendation: ReturnType<typeof getCoachRecommendation>,
+    t: TFunction,
+    tc: TFunction,
+    ts: TFunction,
+    tr: TFunction
+  ) {
+    doc.addPage();
+    this.drawPageHeader(doc, tr("notesAndActionsTitle"), record.child.name);
+
+    this.drawSectionTitle(doc, 20, 34, tr("sessionContextTitle"));
+    this.drawContextGrid(
+      doc,
+      20,
+      42,
+      [
+        [t("conductor"), record.session.conductor || tc("emptyValue")],
+        [t("observers"), record.session.observers || tc("emptyValue")],
+        [tr("locationLabel"), record.session.location || tc("emptyValue")],
+        [tr("contextLabel"), tr(`contextValue${capitalize(record.session.context)}`)],
+        [t("groupSize"), record.session.groupSize || tc("emptyValue")],
+        [tr("consentReportLabel"), record.session.consentReport ? tr("booleanYes") : tr("booleanNo")]
+      ]
+    );
+
+    this.drawSectionTitle(doc, 20, 92, tr("readinessActionsTitle"));
+    const priorityLabels = recommendation.priorityKeys
+      .map((key) => athleteIqPillars.find((pillar) => pillar.key === key))
+      .filter(Boolean)
+      .map((pillar) => pillar ? t(pillar.title) : t("executionQualityFallback"));
+    const noteLines = [
+      t(`coachMode${capitalize(recommendation.mode)}`),
+      tr("priorityLine", { priorities: priorityLabels.join(", ") || t("executionQualityFallback") }),
+      tr("readinessChecksNarrative", {
+        checks: this.getReadinessChecks(record),
+        total: getCompatibleReadinessState(record).total
+      })
     ];
-
-    doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
-    doc.setFontSize(14);
-    doc.text(tr("organizationalBalance").toUpperCase(), 20, 34);
-    let profileY = 38;
-
-    for (const domain of domains) {
-      autoTable(doc, {
-        startY: profileY,
-        head: [[{ content: domain.label, colSpan: 3 }]],
-        body: [],
-        theme: "grid",
-        styles: { fontSize: 10, fontStyle: "bold" },
-        headStyles: { fillColor: domain.color, textColor: [255, 255, 255] }
-      });
-
-      const items = rapidSections.find(s => s.key === domain.key)?.items || [];
-      autoTable(doc, {
-        startY: (doc.lastAutoTable?.finalY || profileY) + 1,
-        head: [[t("tableObservation"), t("tableScore"), t("tableNote")]],
-        body: items.map(item => [
-          ts(`${item.key}.title`),
-          record.scores[item.key]?.score || "—",
-          record.scores[item.key]?.note || "—"
-        ]),
-        theme: "grid",
-        headStyles: { fillColor: domain.color }
-      });
-      profileY = (doc.lastAutoTable?.finalY || profileY) + 4;
-    }
-
-    // --- PAGE 6: SKI ---
-    doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
-    doc.setFontSize(14);
-    doc.text(`V. ${ts("ski").toUpperCase()} INDEX`, 20, 34);
-    
-    const currentSki = record.computed.ski;
-    const firstSki = history.length > 0 ? history[history.length - 1].computed.ski : null;
-
-    doc.setFontSize(32);
-    doc.setTextColor(19, 165, 158);
-    doc.text(formatScore(currentSki), 105, 80, { align: "center" });
-    
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Survey ${ts("ski").toUpperCase()}`, 105, 95, { align: "center" });
-
-    // Draw a Gauge
-    const gaugeX = 105;
-    const gaugeY = 125;
-    const gaugeRadius = 25;
-    
-    // Background arc
-    doc.setDrawColor(230);
-    doc.setLineWidth(4);
-    for (let a = 0; a <= 180; a += 5) {
-      const rad1 = (180 + a) * Math.PI / 180;
-      const rad2 = (180 + a + 5) * Math.PI / 180;
-      doc.line(
-        gaugeX + Math.cos(rad1) * gaugeRadius, gaugeY + Math.sin(rad1) * gaugeRadius,
-        gaugeX + Math.cos(rad2) * gaugeRadius, gaugeY + Math.sin(rad2) * gaugeRadius
-      );
-    }
-    
-    // Active arc
-    const val = (currentSki || 0) / 6;
-    doc.setDrawColor(19, 165, 158);
-    for (let a = 0; a <= 180 * val; a += 5) {
-      const rad1 = (180 + a) * Math.PI / 180;
-      const rad2 = (180 + a + 5) * Math.PI / 180;
-      doc.line(
-        gaugeX + Math.cos(rad1) * gaugeRadius, gaugeY + Math.sin(rad1) * gaugeRadius,
-        gaugeX + Math.cos(rad2) * gaugeRadius, gaugeY + Math.sin(rad2) * gaugeRadius
-      );
-    }
-
-    // Needle
-    const needleRad = (180 + (180 * val)) * Math.PI / 180;
-    doc.setDrawColor(0);
-    doc.setLineWidth(1);
-    doc.line(gaugeX, gaugeY, gaugeX + Math.cos(needleRad) * (gaugeRadius + 5), gaugeY + Math.sin(needleRad) * (gaugeRadius + 5));
-    doc.circle(gaugeX, gaugeY, 2, "F");
-    
-    if (firstSki !== null && history.length > 1) {
-      doc.setFontSize(11);
-      doc.text(`${tr("latestAssessment")}: ${formatScore(currentSki)}`, 105, 140, { align: "center" });
-      doc.text(`${tc("date")} (1.): ${formatScore(firstSki)}`, 105, 147, { align: "center" });
-      
-      const diff = (currentSki !== null && firstSki !== null) ? currentSki - firstSki : 0;
-      if (diff > 0) {
-        doc.setTextColor(0, 128, 0);
-        doc.text(`+${formatScore(diff)} Improvement`, 105, 155, { align: "center" });
-      }
-      doc.setTextColor(0, 0, 0);
-    }
-
     doc.setFontSize(11);
-    doc.text(doc.splitTextToSize(tr("skiExplanation"), 150), 30, 170);
+    doc.setTextColor(...palette.ink);
+    doc.text(doc.splitTextToSize(noteLines.join(" "), 170), 20, 100);
 
-    // --- PAGE 7: RECOMMENDATIONS + PRIORITIES + FINAL EVALUATION ---
-    doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
-    doc.setFontSize(12);
-    doc.setFontSize(14);
-    doc.text(tr("recommendationsTitle").toUpperCase(), 20, 34);
-    doc.setFontSize(12);
-    doc.text(tr("recommendationsIntro"), 20, 50);
-    
-    // Dynamic recommendations based on data
-    const recs = [];
-    const mvAvg = record.computed.movementAverage;
-    if (mvAvg !== null && mvAvg < 3) recs.push(t("stabilizing"));
-    if (mvAvg !== null && mvAvg >= 4) recs.push(t("sportOrientation"));
-    
-    let y = 65;
-    if (recs.length > 0) {
-      recs.forEach((rec, idx) => {
-        doc.text(`• ${rec}`, 30, y + (idx * 8));
-      });
-      y += recs.length * 8 + 8;
-    } else {
-      doc.text("• —", 30, y);
-      y += 16;
-    }
+    this.drawSectionTitle(doc, 20, 126, tr("notesBlockTitle"));
+    this.drawNarrativeBlock(doc, 20, 134, 170, 22, tr("generalObservationLabel"), record.notes.general || tr("emptyNarrative"));
+    this.drawNarrativeBlock(doc, 20, 160, 170, 22, tr("adaptationNeedsLabel"), record.notes.adaptations || tr("emptyNarrative"));
+    this.drawNarrativeBlock(doc, 20, 186, 170, 22, tr("referralNoteLabel"), record.notes.referral || tr("emptyNarrative"));
 
-    doc.setFontSize(14);
-    doc.text(tr("developmentPrioritiesTitle").toUpperCase(), 20, y);
-    doc.setDrawColor(61, 63, 77);
-    doc.setLineWidth(0.4);
-    doc.line(20, y + 3, 190, y + 3);
-    doc.setFontSize(11);
-    doc.setFont("ArialUnicode", "normal");
-    const prioritiesLines = doc.splitTextToSize(record.notes.adaptations || tr("noDevelopmentPriorities"), 170);
-    const prioritiesStartY = y + 13;
-    doc.text(prioritiesLines, 20, prioritiesStartY);
-    const prioritiesHeight = prioritiesLines.length * 5;
-    let signatureTitleY = prioritiesStartY + prioritiesHeight + 12;
+    this.drawSectionTitle(doc, 20, 220, tr("sessionSignalsTitle"));
+    const signals: Array<[string, string]> = [
+      [t("knownTraits"), record.child.knownTraits || tr("emptyNarrative")],
+      [t("parentSignals"), record.child.parentSignals || tr("emptyNarrative")]
+    ];
+    this.drawContextGrid(doc, 20, 228, signals);
 
-    // If content gets too long, move final evaluation block to a clean new page.
-    if (signatureTitleY > 175) {
-      doc.addPage();
-      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
-      signatureTitleY = 40;
-    }
-
-    doc.setFontSize(14);
-    doc.text(tr("signaturesTitle").toUpperCase(), 20, signatureTitleY);
-    doc.line(20, signatureTitleY + 3, 190, signatureTitleY + 3);
-    
-    const signatureLineY = signatureTitleY + 40;
-    doc.line(20, signatureLineY, 80, signatureLineY);
-    doc.text("Vígh Milán", 20, signatureLineY + 10);
-    doc.setFontSize(9);
-    doc.text(tr("president"), 20, signatureLineY + 15);
-
-    doc.setFontSize(12);
-    doc.line(130, signatureLineY, 190, signatureLineY);
-    doc.text(record.session.conductor || "Survey Fejlesztő", 130, signatureLineY + 10);
-    doc.setFontSize(9);
-    doc.text(tr("expert"), 130, signatureLineY + 15);
-
-    const safeName = (record.child.name || "map").replace(/[^\w-]+/g, "_");
-    doc.save(`${safeName}_Survey_Bio-Pszicho-Szocialis_Terkep.pdf`);
+    void ts;
   },
 
-  // Helpers
-  drawPageHeader(doc: jsPDF, reportTitle: string, childName: string) {
-    this.drawTextBrand(doc, 186, 18, 12, true);
+  drawPageHeader(doc: jsPDF, title: string, athleteName: string) {
+    doc.setFillColor(...palette.panel);
+    doc.rect(0, 0, 210, 28, "F");
+    this.drawTextBrand(doc, 24, 17, 11);
     doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(12);
-    doc.setTextColor(61, 63, 77);
-    doc.text(`Survey - ${reportTitle.toUpperCase()}`, 20, 16);
-    doc.setFontSize(10);
-    doc.text(childName, 20, 22);
-    doc.setDrawColor(61, 63, 77);
-    doc.setLineWidth(0.5);
-    doc.line(20, 26, 190, 26);
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(...palette.ink);
+    doc.text(`Survey · ${title}`, 36, 14);
+    doc.setFontSize(9);
+    doc.setTextColor(...palette.muted);
+    doc.text(athleteName, 36, 20);
+    doc.setDrawColor(...palette.line);
+    doc.line(20, 24, 190, 24);
   },
+
   drawTextBrand(doc: jsPDF, x: number, y: number, size: number, centered = false) {
     const braceSize = size * 0.74;
     const letterSize = size;
@@ -427,111 +476,217 @@ export const PdfService = {
 
     doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(braceSize);
-    doc.setTextColor(81, 98, 127);
+    doc.setTextColor(96, 111, 140);
     doc.text("{", baseX - letterOffset, y, centered ? { align: "center" } : undefined);
-    doc.setTextColor(16, 32, 61);
+    doc.setTextColor(...palette.ink);
     doc.setFontSize(letterSize);
     doc.text("S", x, y, centered ? { align: "center" } : undefined);
-    doc.setTextColor(81, 98, 127);
+    doc.setTextColor(96, 111, 140);
     doc.setFontSize(braceSize);
     doc.text("}", baseX + letterOffset, y, centered ? { align: "center" } : undefined);
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(...palette.ink);
   },
-  drawDomainTrendLines(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
-    const x = 20; const y = 40; const w = 80; const h = 35;
-    doc.setFontSize(10); doc.text("Domain Trend Lines", x, y - 4);
-    doc.rect(x, y, w, h);
-    doc.setDrawColor(220);
-    doc.line(x, y + h / 2, x + w, y + h / 2);
-    const domains = [
-      { key: "movementAverage", color: [19, 165, 158] as [number, number, number] },
-      { key: "socialAverage", color: [253, 203, 88] as [number, number, number] },
-      { key: "mentalAverage", color: [61, 63, 77] as [number, number, number] }
-    ];
-    domains.forEach((d) => {
-      doc.setDrawColor(...d.color);
-      const step = w / Math.max(1, data.length - 1);
-      if (data.length === 1) {
-        const v = (data[0].computed[d.key as "movementAverage"] || 0) / 6;
-        doc.circle(x + w / 2, y + h - v * h, 1, "F");
-      } else {
-        for (let i = 0; i < data.length - 1; i++) {
-          const v1 = (data[i].computed[d.key as "movementAverage"] || 0) / 6;
-          const v2 = (data[i + 1].computed[d.key as "movementAverage"] || 0) / 6;
-          doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
-          doc.circle(x + i * step, y + h - v1 * h, 0.6, "F");
-          if (i === data.length - 2) doc.circle(x + (i + 1) * step, y + h - v2 * h, 0.6, "F");
-        }
-      }
-    });
-    const last = data[data.length - 1];
-    doc.setFontSize(7);
-    doc.text(`${ts("movement")}: ${formatScore(last?.computed.movementAverage ?? null)}`, x, y + h + 5);
-    doc.text(`${ts("social")}: ${formatScore(last?.computed.socialAverage ?? null)}`, x, y + h + 9);
-    doc.text(`${ts("mental")}: ${formatScore(last?.computed.mentalAverage ?? null)}`, x, y + h + 13);
+
+  drawSectionTitle(doc: jsPDF, x: number, y: number, title: string) {
+    doc.setFont("ArialUnicode", "normal");
+    doc.setFontSize(13);
+    doc.setTextColor(...palette.ink);
+    doc.text(title, x, y);
+    doc.setDrawColor(...palette.line);
+    doc.line(x, y + 3, 190, y + 3);
   },
-  drawReadinessZoneTimeline(doc: jsPDF, data: AssessmentRecord[]) {
-    const x = 110; const y = 40; const w = 80; const h = 35;
-    doc.setFontSize(10); doc.text("Readiness Zone Timeline", x, y - 4);
-    doc.setFillColor(245, 245, 245); doc.rect(x, y, w, h, "F");
-    doc.setFillColor(230, 250, 245); doc.rect(x, y, w, h * 0.42, "F");
-    doc.rect(x, y, w, h);
-    doc.setDrawColor(19, 165, 158);
-    if (data.length === 1) {
-      const v = (data[0].computed.ski || 0) / 6;
-      doc.circle(x + w / 2, y + h - v * h, 1, "F");
-    } else {
-      for (let i = 0; i < data.length - 1; i++) {
-        const step = w / Math.max(1, data.length - 1);
-        const v1 = (data[i].computed.ski || 0) / 6;
-        const v2 = (data[i + 1].computed.ski || 0) / 6;
-        doc.line(x + i * step, y + h - v1 * h, x + (i + 1) * step, y + h - v2 * h);
+
+  drawMetricCard(doc: jsPDF, x: number, y: number, w: number, h: number, label: string, value: string, color: [number, number, number]) {
+    doc.setFillColor(...palette.panelSoft);
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(x, y, w, h, 4, 4, "FD");
+    doc.setFillColor(...color);
+    doc.roundedRect(x + 2, y + 2, 4, h - 4, 2, 2, "F");
+    doc.setTextColor(...palette.muted);
+    doc.setFontSize(8);
+    doc.text(label, x + 10, y + 8);
+    doc.setTextColor(...palette.ink);
+    doc.setFontSize(13);
+    doc.text(value, x + 10, y + 16);
+  },
+
+  drawNarrativePanel(doc: jsPDF, x: number, y: number, w: number, h: number, eyebrow: string, title: string, body: string) {
+    doc.setFillColor(...palette.panelSoft);
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(x, y, w, h, 5, 5, "FD");
+    doc.setFontSize(8);
+    doc.setTextColor(...palette.muted);
+    doc.text(eyebrow, x + 6, y + 8);
+    doc.setFontSize(12);
+    doc.setTextColor(...palette.ink);
+    doc.text(title, x + 6, y + 17);
+    doc.setFontSize(9);
+    doc.setTextColor(...palette.muted);
+    doc.text(doc.splitTextToSize(body, w - 12), x + 6, y + 26);
+  },
+
+  drawPillarBand(doc: jsPDF, x: number, y: number, w: number, h: number, label: string, current: number, baseline: number, color: [number, number, number]) {
+    doc.setFillColor(...palette.panelSoft);
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(x, y, w, h, 4, 4, "FD");
+    doc.setFontSize(10);
+    doc.setTextColor(...palette.ink);
+    doc.text(label, x + 4, y + 6);
+    doc.setTextColor(...palette.muted);
+    doc.setFontSize(8);
+    doc.text(`${formatScore(current)} / 6`, x + w - 20, y + 6);
+
+    const barX = x + 4;
+    const barY = y + 10;
+    const barW = w - 8;
+    doc.setFillColor(...palette.line);
+    doc.roundedRect(barX, barY, barW, 4.5, 2, 2, "F");
+    doc.setFillColor(...color);
+    doc.roundedRect(barX, barY, (barW * current) / 6, 4.5, 2, 2, "F");
+
+    const baselineX = barX + (barW * baseline) / 6;
+    doc.setDrawColor(...palette.ink);
+    doc.setLineWidth(0.5);
+    doc.line(baselineX, barY - 1.5, baselineX, barY + 6);
+    doc.setFontSize(7.5);
+    doc.setTextColor(...palette.muted);
+    doc.text(`${formatScore(baseline)}`, baselineX - 4, y + 17);
+  },
+
+  drawTrendBox(
+    doc: jsPDF,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    title: string,
+    points: Array<{ date: string; value: number }>,
+    color: [number, number, number]
+  ) {
+    doc.setFillColor(...palette.panelSoft);
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(x, y, w, h, 4, 4, "FD");
+    doc.setFontSize(9);
+    doc.setTextColor(...palette.ink);
+    doc.text(title, x + 4, y + 6);
+
+    const chartX = x + 4;
+    const chartY = y + 10;
+    const chartW = w - 8;
+    const chartH = h - 14;
+    doc.setDrawColor(...palette.line);
+    doc.line(chartX, chartY + chartH, chartX + chartW, chartY + chartH);
+
+    if (points.length === 0) {
+      return;
+    }
+
+    if (points.length === 1) {
+      doc.setFillColor(...color);
+      doc.circle(chartX + chartW / 2, chartY + chartH - (points[0].value / 6) * chartH, 1.1, "F");
+      return;
+    }
+
+    doc.setDrawColor(...color);
+    doc.setLineWidth(0.8);
+    const step = chartW / Math.max(1, points.length - 1);
+    for (let i = 0; i < points.length - 1; i += 1) {
+      const current = points[i];
+      const next = points[i + 1];
+      const x1 = chartX + i * step;
+      const y1 = chartY + chartH - (current.value / 6) * chartH;
+      const x2 = chartX + (i + 1) * step;
+      const y2 = chartY + chartH - (next.value / 6) * chartH;
+      doc.line(x1, y1, x2, y2);
+      doc.circle(x1, y1, 0.7, "F");
+      if (i === points.length - 2) {
+        doc.circle(x2, y2, 0.7, "F");
       }
     }
-    const last = data[data.length - 1]?.computed.ski ?? null;
-    doc.setFontSize(7);
-    doc.text(`Current SKI ${formatScore(last)} (${(last ?? 0) >= 3.5 ? "Ready" : "Developing"})`, x, y + h + 7);
   },
-  drawDomainVarianceChart(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
-    const x = 20; const y = 95; const w = 80; const h = 40;
-    doc.setFontSize(10); doc.text("Domain Variance", x, y - 4);
-    doc.rect(x, y, w, h);
-    doc.setDrawColor(220);
-    doc.line(x, y + h - 4, x + w, y + h - 4);
-    const vals = [
-      { label: ts("movement"), key: "movementAverage", color: [19, 165, 158] as [number, number, number] },
-      { label: ts("social"), key: "socialAverage", color: [253, 203, 88] as [number, number, number] },
-      { label: ts("mental"), key: "mentalAverage", color: [61, 63, 77] as [number, number, number] }
-    ];
-    vals.forEach((d, idx) => {
-      const series = data.map((r) => r.computed[d.key as "movementAverage"] || 0);
-      const avg = series.reduce((a, b) => a + b, 0) / Math.max(1, series.length);
-      const variance = series.reduce((a, v) => a + (v - avg) ** 2, 0) / Math.max(1, series.length);
-      const std = Math.sqrt(variance);
-      const barH = (std / 3) * (h - 8);
-      const bx = x + 8 + idx * 22;
-      doc.setFillColor(...d.color); doc.rect(bx, y + h - 4 - Math.max(1.5, barH), 12, Math.max(1.5, barH), "F");
-      doc.setFontSize(7); doc.text(formatScore(std), bx, y + h - Math.max(1.5, barH) - 6);
-      const label = d.label.split(" ")[0].slice(0, 8);
-      doc.text(label, bx, y + h + 3);
+
+  drawNarrativeBlock(doc: jsPDF, x: number, y: number, w: number, h: number, label: string, body: string) {
+    doc.setFillColor(...palette.panelSoft);
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(x, y, w, h, 4, 4, "FD");
+    doc.setFontSize(8);
+    doc.setTextColor(...palette.muted);
+    doc.text(label, x + 4, y + 6);
+    doc.setFontSize(10);
+    doc.setTextColor(...palette.ink);
+    doc.text(doc.splitTextToSize(body, w - 8), x + 4, y + 13);
+  },
+
+  drawContextGrid(doc: jsPDF, x: number, y: number, rows: Array<[string, string]>) {
+    autoTable(doc as JsPDFWithAutoTable, {
+      startY: y,
+      margin: { left: x, right: 20 },
+      theme: "plain",
+      body: rows,
+      styles: {
+        font: "ArialUnicode",
+        fontSize: 9,
+        textColor: palette.ink,
+        cellPadding: 2.5
+      },
+      bodyStyles: {
+        fillColor: palette.panelSoft,
+        lineColor: palette.line,
+        lineWidth: 0.2
+      },
+      columnStyles: {
+        0: { fontStyle: "bold", cellWidth: 44 },
+        1: { cellWidth: 126 }
+      }
     });
   },
-  drawItemDeltaBars(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {
-    const x = 110; const y = 95; const w = 80; const h = 40;
-    doc.setFontSize(10); doc.text("Top Gains / Regressions", x, y - 4);
-    doc.rect(x, y, w, h);
-    const first = data[0]; const last = data[data.length - 1];
-    const deltas = rapidSections.flatMap((s) => s.items.map((i) => {
-      const a = first?.scores[i.key]?.score || 0;
-      const b = last?.scores[i.key]?.score || 0;
-      return { key: i.key, title: ts(`${i.key}.title`), delta: b - a };
-    })).sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, 3);
-    deltas.forEach((d, idx) => {
-      const yy = y + 8 + idx * 10;
-      const len = Math.min(26, Math.abs(d.delta) * 8);
-      if (d.delta >= 0) { doc.setFillColor(19, 165, 158); doc.rect(x + 38, yy, len, 5, "F"); }
-      else { doc.setFillColor(200, 80, 80); doc.rect(x + 38 - len, yy, len, 5, "F"); }
-      doc.setFontSize(7); doc.text(`${d.title.slice(0, 12)} ${d.delta >= 0 ? "+" : ""}${formatScore(d.delta)}`, x + 2, yy + 4);
-    });
+
+  drawStatChip(doc: jsPDF, x: number, y: number, w: number, h: number, label: string, value: string) {
+    doc.setFillColor(...palette.white);
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(x, y, w, h, 4, 4, "FD");
+    doc.setFontSize(7.5);
+    doc.setTextColor(...palette.muted);
+    doc.text(label, x + 4, y + 6.5);
+    doc.setFontSize(10);
+    doc.setTextColor(...palette.ink);
+    doc.text(value, x + 4, y + 13.5);
+  },
+
+  getSortedHistory(record: AssessmentRecord, history: AssessmentRecord[]) {
+    const items = history.length > 0 ? history : [record];
+    return items.slice().sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  },
+
+  getPillarScore(record: AssessmentRecord, key: PillarKey) {
+    return getCompatiblePillarScore(record, key);
+  },
+
+  getReadinessChecks(record: AssessmentRecord) {
+    return getCompatibleReadinessState(record).count;
+  },
+
+  average(values: number[]) {
+    if (values.length === 0) {
+      return 0;
+    }
+    return Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(2));
+  },
+
+  formatDelta(value: number) {
+    if (!Number.isFinite(value)) {
+      return "-";
+    }
+    return `${value > 0 ? "+" : ""}${value.toFixed(2)}`;
+  },
+
+  getModeColor(mode: string): [number, number, number] {
+    if (mode === "full") return palette.positive;
+    if (mode === "moderate") return palette.caution;
+    return palette.danger;
   }
 };
+
+function capitalize(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}

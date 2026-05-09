@@ -1,32 +1,19 @@
 # Survey
 
-Survey is a conductor-facing assessment and reporting app for recording child examination data and generating structured reports.
+Survey is a mobile-first daily athlete support workspace for coaches and staff. It helps teams capture daily readiness signals from young athletes, surface mental and physical support needs, and turn check-ins into practical follow-up actions.
 
 ## Features
 
-- Rapid KRAS and Full Survey assessment modes
-- Bio-psycho-social weighted scoring with SKI calculation
-- Centralized child profiles with longitudinal history
-- **Professional Reporting**: Data-driven PDF exports with longitudinal "Bio-Psycho-Social Maps" and development trend analysis
-- **Chart Outcome Sentences**: Existing KPI and chart surfaces include localized, data-driven explanation sentences
-- **Persistent Audit Log**: Full modification history for assessments, including soft-delete and restore events
-- **Unified Updates**: Ability to re-open and update any existing assessment record directly in survey mode
-- Child management actions (search, edit, delete with history cleanup)
-- New survey from child profile pre-fills only child administration fields (identity context preserved via child UUID)
-- Evidence image upload and camera capture support
-- Report view with direct PDF download export
-- Dashboard analytics (KPI cards + line, pie, and radar charts)
-- Standards governance in Settings:
-  - standards version manager
-  - clone active version
-  - publish lock for versions
-  - impact preview before activation
-- Restore workflows:
-  - restore bin in Settings for children and assessments
-  - inline "Show Deleted" + typed restore confirmation on Children and Records pages
-- Localized legal pages (GTC and Privacy Policy) - Publicly accessible for Google Verification
-- Multilingual UI: Hungarian, English, Arabic (RTL)
-- **Internal Deep Linking**: Unified navigation between children profiles, assessment records, and trend charts
+- Mobile-first daily athlete check-in flow optimized for one-hand use
+- Nine-signal readiness model across physical readiness, mental balance, and sport brain
+- Centralized athlete profiles with longitudinal history and support trend views
+- Historical compatibility layer for legacy assessment data and backfilled tracker fields
+- Daily readiness reports and PDF export surfaces
+- Persistent audit and soft-delete workflows for records and athletes
+- Shared multilingual UI with English, Hungarian, Arabic (RTL), Spanish, German, and Hebrew (RTL)
+- Localized legal pages for public verification flows
+- Design-system driven dashboard, charts, and settings surfaces
+- Local API server for lightweight local testing
 
 ## Documentation
 
@@ -52,8 +39,19 @@ Survey is a conductor-facing assessment and reporting app for recording child ex
 cp .env.example .env.local
 npm install
 npm run db:setup
+npm run db:seed-demo
 npm run dev
 ```
+
+## Standalone Local API Server
+
+For lightweight local API testing without starting Next.js, run:
+
+```bash
+npm run local:server
+```
+
+It uses the same `MONGODB_URI`, `MONGODB_DB`, and `SURVEY_ENFORCE_AUTH` environment variables as the main app and exposes a documented subset of the API on `http://localhost:4001` by default. Override the port with `SURVEY_LOCAL_SERVER_PORT`.
 
 ## Required Environment Variables
 
@@ -65,12 +63,12 @@ IMGBB_API_KEY=
 
 ## Data and privacy notes
 
-Assessment images are uploaded through a server-side endpoint (`/api/uploads/imgbb`) and only URL metadata is stored in assessment records.
+Uploaded evidence images are sent through the server-side `imgbb` endpoint and only URL metadata is stored in records.
 
 Role-based API enforcement can be enabled via `SURVEY_ENFORCE_AUTH`; when enabled, protected endpoints validate `x-survey-role`.
 
 ## Data lifecycle and traceability
 
-- Assessments and children use soft-delete with restore support.
-- Assessment records persist `standardsVersionUsed` for reproducible historical interpretation.
-- Settings store versioned standards with active version selection.
+- Athlete and record entities use soft-delete with restore support.
+- Historical records can be normalized into the daily tracker schema with `npm run db:backfill-daily-tracker-history`.
+- Settings persist standards version metadata for reproducible interpretation of older records.

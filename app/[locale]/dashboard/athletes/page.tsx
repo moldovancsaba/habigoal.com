@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Badge, Box, Button, Checkbox, Group, Loader, Modal, MultiSelect, Paper, RangeSlider, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { Alert, Badge, Box, Button, Checkbox, Group, Loader, Modal, MultiSelect, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -43,7 +43,7 @@ export default function ChildrenListPage() {
   
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>([]);
-  const [skiRange, setSkiRange] = useState<[number, number]>([0, 100]);
+  const [readinessRange, setReadinessRange] = useState<[number, number]>([0, 5]);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ChildProfile | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
@@ -134,14 +134,14 @@ export default function ChildrenListPage() {
         return false;
       }
 
-      const ski = child.latestSki ?? 0;
-      if (ski < skiRange[0] || ski > skiRange[1]) {
+      const readiness = child.latestReadiness ?? 0;
+      if (readiness < readinessRange[0] || readiness > readinessRange[1]) {
         return false;
       }
 
       return true;
     });
-  }, [children, deletedChildren, query, selectedLocations, selectedAgeGroups, skiRange, showDeleted]);
+  }, [children, deletedChildren, query, selectedLocations, selectedAgeGroups, readinessRange, showDeleted]);
 
   async function restoreChild(child: ChildProfile) {
     if (!child._id) return;
@@ -302,7 +302,7 @@ export default function ChildrenListPage() {
           {showAdvanced && (
             <Paper withBorder p="md">
               <Stack gap="md">
-                <Group grow align="start">
+                <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
                   <MultiSelect
                     label={t("location")}
                     placeholder={tc("all")}
@@ -320,24 +320,56 @@ export default function ChildrenListPage() {
                     onChange={setSelectedAgeGroups}
                     clearable
                   />
-                </Group>
+                </SimpleGrid>
                 <Box>
-                  <Text size="sm" fw={500} mb="xs">SKI Score Range: {skiRange[0]} - {skiRange[1]}</Text>
-                  <RangeSlider
-                    min={0}
-                    max={100}
-                    step={1}
-                    value={skiRange}
-                    onChange={setSkiRange}
-                    label={null}
-                    color="ingress"
-                  />
+                  <Text size="sm" fw={500} mb="xs">{t("athleteReadinessRangeLabel", { min: readinessRange[0], max: readinessRange[1] })}</Text>
+                  <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm">
+                    {[
+                      { label: "All", value: [0, 5] as [number, number] },
+                      { label: "Support", value: [0, 2.9] as [number, number] },
+                      { label: "Watch", value: [3, 3.9] as [number, number] },
+                      { label: "Ready", value: [4, 5] as [number, number] }
+                    ].map((preset) => {
+                      const active = readinessRange[0] === preset.value[0] && readinessRange[1] === preset.value[1];
+                      return (
+                        <Button
+                          key={preset.label}
+                          variant={active ? "filled" : "default"}
+                          color="ingress"
+                          onClick={() => setReadinessRange(preset.value)}
+                          style={{ minHeight: 46, textTransform: "none", letterSpacing: 0 }}
+                        >
+                          {preset.label}
+                        </Button>
+                      );
+                    })}
+                  </SimpleGrid>
+                  <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="md" mt="sm">
+                    <Select
+                      label="Min score"
+                      value={String(readinessRange[0])}
+                      data={["0", "1", "2", "3", "4", "5"].map((value) => ({ value, label: `Min ${value}` }))}
+                      onChange={(value) => {
+                        const nextMin = Number(value ?? readinessRange[0]);
+                        setReadinessRange(([, max]) => [Math.min(nextMin, max), max]);
+                      }}
+                    />
+                    <Select
+                      label="Max score"
+                      value={String(readinessRange[1])}
+                      data={["0", "1", "2", "3", "4", "5"].map((value) => ({ value, label: `Max ${value}` }))}
+                      onChange={(value) => {
+                        const nextMax = Number(value ?? readinessRange[1]);
+                        setReadinessRange(([min]) => [min, Math.max(nextMax, min)]);
+                      }}
+                    />
+                  </SimpleGrid>
                 </Box>
                 <Group justify="flex-end">
                   <Button variant="subtle" size="sm" onClick={() => {
                     setSelectedLocations([]);
                     setSelectedAgeGroups([]);
-                    setSkiRange([0, 100]);
+                    setReadinessRange([0, 5]);
                   }}>
                     {tc("resetFilters")}
                   </Button>
@@ -358,14 +390,14 @@ export default function ChildrenListPage() {
                     withBorder 
                     p="md"
                     radius="md"
-                    onClick={() => !showDeleted && (window.location.href = `/${locale}/dashboard/children/${child._id}`)}
+                    onClick={() => !showDeleted && (window.location.href = `/${locale}/dashboard/athletes/${child._id}`)}
                     style={{ cursor: "pointer" }}
                   >
                     <Stack gap="md">
                       <Box>
                         <Text
                           component={Link}
-                          href={`/dashboard/children/${child._id}`}
+                          href={`/dashboard/athletes/${child._id}`}
                           fw={800}
                           size="lg"
                           color="ingress"
@@ -377,13 +409,16 @@ export default function ChildrenListPage() {
                         <Text size="sm" c="dimmed">
                           {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
                         </Text>
-                        {child.latestSki !== undefined && (
+                        {child.latestReadiness !== undefined && (
                           <Group gap="xs" mt={8}>
                             <Badge color="ingress" variant="filled" size="sm">
-                              LATEST SKI: {formatScore(child.latestSki)}
+                              {t("athleteLatestReadinessBadge", { value: formatScore(child.latestReadiness) })}
                             </Badge>
-                            <Badge color="ingress" variant="light" size="sm">
-                              AVG SKI: {formatScore(child.avgSki)}
+                            <Badge color="knowmore" variant="light" size="sm">
+                              {t("athleteAverageReadinessBadge", { value: formatScore(child.avgReadiness) })}
+                            </Badge>
+                            <Badge color="strategy" variant="light" size="sm">
+                              {t("athleteSessionCountBadge", { count: child.assessmentCount ?? 0 })}
                             </Badge>
                             {child.latestLocation && (
                               <Text size="sm" c="dimmed" fw={500}>
@@ -411,7 +446,7 @@ export default function ChildrenListPage() {
                             {t("downloadPdf")}
                           </Button>
                         )}
-                        {!showDeleted ? <Button component={Link} href={`/dashboard/children/${child._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
+                        {!showDeleted ? <Button component={Link} href={`/dashboard/athletes/${child._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
                           {t("viewHistory")}
                         </Button> : null}
                         {!showDeleted ? <Button variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>

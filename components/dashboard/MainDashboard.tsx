@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Box, Loader, Paper, Stack, Text, useMantineTheme } from "@mantine/core";
+import { Box, Loader, Paper, SimpleGrid, Stack, Text, useMantineTheme } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { rapidSections } from "@/lib/survey-schema";
-import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
-import { SymmetryChart } from "@/components/analytics/SymmetryChart";
+import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
+import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
+import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/athlete-iq-survey";
+import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { User } from "@/services/user-service";
 import { formatScore } from "@/lib/utils";
@@ -19,22 +20,22 @@ type DashboardData = {
   childrenCount: number;
 };
 
-const DASHBOARD_CHART_CONFIG = {
-  dayWindow: 30,
-  chartHeight: 220,
-  lineMargin: { top: 10, right: 8, left: -20, bottom: 8 },
-  tickFontSize: 12,
-  lineStrokeWidth: 2.5,
-  dotRadius: 4,
-  activeDotRadius: 5,
-  tooltipRadius: 8,
-  pieCx: "35%" as const,
-  pieCy: "50%" as const,
-  pieOuterRadius: 72,
-  pieInnerRadius: 34,
-  radarOuterRadius: 74
-} as const;
-const CHART_FONT_FAMILY = 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif';
+type PillarAveragePoint = {
+  subject: string;
+  individual: number;
+  average: number;
+};
+
+type TrendPoint = {
+  date: string;
+  value: number;
+};
+
+const PILLAR_COLORS: Record<string, string> = {
+  physical_pillar: "var(--mantine-color-tactical-6)",
+  mental_pillar: "var(--mantine-color-synthesis-6)",
+  sport_brain_pillar: "var(--mantine-color-strategy-6)"
+};
 
 function dayLabel(date: Date) {
   return new Intl.DateTimeFormat(undefined, { month: "2-digit", day: "2-digit" }).format(date);
@@ -43,7 +44,7 @@ function dayLabel(date: Date) {
 export function MainDashboard() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
-  const ts = useTranslations("Schema");
+  const ta = useTranslations("Assessment");
   const theme = useMantineTheme();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,176 +66,108 @@ export function MainDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const recordsByDay = useMemo(() => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const days = Array.from({ length: DASHBOARD_CHART_CONFIG.dayWindow }, (_, idx) => {
-      const d = new Date(now);
-      d.setDate(now.getDate() - (DASHBOARD_CHART_CONFIG.dayWindow - 1 - idx));
-      return { key: d.toISOString().slice(0, 10), label: dayLabel(d), count: 0 };
-    });
-    const indexByKey = new Map(days.map((d) => [d.key, d]));
-    for (const record of data?.assessments ?? []) {
-      const createdAt = new Date(record.createdAt);
-      const key = new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate()).toISOString().slice(0, 10);
-      const hit = indexByKey.get(key);
-      if (hit) hit.count += 1;
-    }
-    return days;
-  }, [data]);
-  
-  const dailyAverages = useMemo(() => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const days = Array.from({ length: DASHBOARD_CHART_CONFIG.dayWindow }, (_, idx) => {
-      const d = new Date(now);
-      d.setDate(now.getDate() - (DASHBOARD_CHART_CONFIG.dayWindow - 1 - idx));
-      return { 
-        key: d.toISOString().slice(0, 10), 
-        label: dayLabel(d), 
-        movement: 0, 
-        social: 0, 
-        mental: 0,
-        mSum: 0, mCount: 0,
-        sSum: 0, sCount: 0,
-        pSum: 0, pCount: 0
-      };
-    });
-    
-    const indexByKey = new Map(days.map((d) => [d.key, d]));
-    
-    for (const record of data?.assessments ?? []) {
-      const createdAt = new Date(record.createdAt);
-      const key = new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate()).toISOString().slice(0, 10);
-      const hit = indexByKey.get(key);
-      if (hit) {
-        if (record.computed.movementAverage) { hit.mSum += record.computed.movementAverage; hit.mCount++; }
-        if (record.computed.socialAverage) { hit.sSum += record.computed.socialAverage; hit.sCount++; }
-        if (record.computed.mentalAverage) { hit.pSum += record.computed.mentalAverage; hit.pCount++; }
+  const latestByAthlete = useMemo(() => {
+    const latest = new Map<string, AssessmentRecord>();
+    for (const assessment of data?.assessments ?? []) {
+      const athleteKey = assessment.childId || `${assessment.child.name}|${assessment.child.birthDate}`;
+      const current = latest.get(athleteKey);
+      if (!current || new Date(assessment.createdAt).getTime() > new Date(current.createdAt).getTime()) {
+        latest.set(athleteKey, assessment);
       }
     }
-    
-    return days.map(d => ({
-      ...d,
-      movement: d.mCount ? Number((d.mSum / d.mCount).toFixed(2)) : 0,
-      social: d.sCount ? Number((d.sSum / d.sCount).toFixed(2)) : 0,
-      mental: d.pCount ? Number((d.pSum / d.pCount).toFixed(2)) : 0
-    }));
+    return Array.from(latest.values());
   }, [data]);
 
-  const userRoleStats = useMemo(() => {
-    const users = data?.users ?? [];
-    const conductors = users.filter((u) => u.roles.includes("conductor")).length;
-    const observers = users.filter((u) => u.roles.includes("observer")).length;
+  const earliestByAthlete = useMemo(() => {
+    const first = new Map<string, AssessmentRecord>();
+    for (const assessment of data?.assessments ?? []) {
+      const athleteKey = assessment.childId || `${assessment.child.name}|${assessment.child.birthDate}`;
+      const current = first.get(athleteKey);
+      if (!current || new Date(assessment.createdAt).getTime() < new Date(current.createdAt).getTime()) {
+        first.set(athleteKey, assessment);
+      }
+    }
+    return Array.from(first.values());
+  }, [data]);
+
+  const totalSessions = data?.assessments.length ?? 0;
+  const totalAthletes = data?.childrenCount ?? 0;
+  const avgSessionsPerAthlete = totalAthletes ? (totalSessions / totalAthletes).toFixed(1) : "0.0";
+  const activeStaff = data?.users.filter((user) => user.roles.includes("conductor") || user.roles.includes("observer")).length ?? 0;
+
+  const readinessCompliance = useMemo(() => {
+    if (latestByAthlete.length === 0) return 0;
+    const aggregate = latestByAthlete.reduce(
+      (sum, assessment) => {
+        const readiness = getCompatibleReadinessState(assessment);
+        return {
+          count: sum.count + readiness.count,
+          total: sum.total + readiness.total
+        };
+      },
+      { count: 0, total: 0 }
+    );
+    return aggregate.total ? Number(((aggregate.count / aggregate.total) * 100).toFixed(0)) : 0;
+  }, [latestByAthlete]);
+
+  const sessionCompletionRate = useMemo(() => {
+    const assessments = data?.assessments ?? [];
+    if (assessments.length === 0) return 0;
+    const done = assessments.reduce((sum, assessment) => sum + assessment.computed.completion.done, 0);
+    const total = assessments.reduce((sum, assessment) => sum + assessment.computed.completion.total, 0);
+    return total ? Number(((done / total) * 100).toFixed(0)) : 0;
+  }, [data]);
+
+  const readinessDistribution = useMemo(() => {
+    const counts = { full: 0, moderate: 0, light: 0 };
+    latestByAthlete.forEach((assessment) => {
+      const readiness = getCompatibleReadinessState(assessment);
+      counts[getReadinessMode(readiness.count, readiness.total)] += 1;
+    });
     return [
-      { label: t("conductors"), count: conductors },
-      { label: t("observers"), count: observers }
-    ];
-  }, [data, t]);
+      { name: ta("readinessModeFull"), value: counts.full, color: theme.colors.ingress[6] },
+      { name: ta("readinessModeModerate"), value: counts.moderate, color: theme.colors.review[6] },
+      { name: ta("readinessModeLight"), value: counts.light, color: theme.colors.gray[5] }
+    ].filter((item) => item.value > 0);
+  }, [latestByAthlete, ta, theme.colors.gray, theme.colors.ingress, theme.colors.review]);
 
-  const avgRecordsPerChild = useMemo(() => {
-    const children = data?.childrenCount ?? 0;
-    const records = data?.assessments.length ?? 0;
-    if (children === 0) return "0.0";
-    return (records / children).toFixed(1);
-  }, [data]);
+  const sessionVolume = useMemo(() => buildSessionVolume(data?.assessments ?? []), [data]);
 
-  const assessmentVelocity = useMemo(() => {
-    if (!data?.assessments || data.assessments.length < 2) return "—";
-    
-    // Group assessments by child
-    const byChild = new Map<string, number[]>();
-    for (const a of data.assessments) {
-      if (!a.childId) continue;
-      if (!byChild.has(a.childId)) byChild.set(a.childId, []);
-      byChild.get(a.childId)!.push(new Date(a.createdAt).getTime());
-    }
-    
-    let totalDiff = 0;
-    let totalGaps = 0;
-    
-    for (const times of byChild.values()) {
-      if (times.length < 2) continue;
-      times.sort((a, b) => a - b);
-      for (let i = 1; i < times.length; i++) {
-        totalDiff += (times[i] - times[i-1]);
-        totalGaps++;
+  const pillarBenchmark = useMemo((): PillarAveragePoint[] => {
+    return athleteIqPillars.map((pillar) => ({
+      subject: ta(pillar.title),
+      individual: average(latestByAthlete.map((assessment) => getPillarScore(assessment, pillar.key))) ?? 0,
+      average: average(earliestByAthlete.map((assessment) => getPillarScore(assessment, pillar.key))) ?? 0
+    }));
+  }, [earliestByAthlete, latestByAthlete, ta]);
+
+  const pillarTrendSeries = useMemo(() => buildPillarTrendSeries(data?.assessments ?? []), [data]);
+
+  const locationReadiness = useMemo(() => {
+    const map = new Map();
+    (data?.assessments ?? []).forEach((assessment) => {
+      const location = assessment.session.location || tc("unknown");
+      if (!map.has(location)) {
+        map.set(location, { readiness: 0, sessions: 0 });
       }
-    }
-    
-    if (totalGaps === 0) return "—";
-    const avgDays = totalDiff / (1000 * 60 * 60 * 24 * totalGaps);
-    return `${avgDays.toFixed(0)} ${tc("days")}`;
+      const entry = map.get(location);
+      entry.readiness += getCompatibleReadinessState(assessment).count;
+      entry.sessions += 1;
+    });
+    return Array.from(map.entries())
+      .map(([name, entry]) => ({
+        name,
+        readiness: Number((entry.readiness / entry.sessions).toFixed(1)),
+        sessions: entry.sessions
+      }))
+      .sort((a, b) => b.readiness - a.readiness);
   }, [data, tc]);
 
-  const successRatio = useMemo(() => {
-    if (!data?.assessments) return [];
-    const latestByChild = new Map<string, { time: number; ski: number }>();
-    for (const a of data.assessments) {
-      const childKey = a.childId || `${a.child.name}|${a.child.birthDate}`;
-      if (!childKey) continue;
-      const current = latestByChild.get(childKey);
-      const time = new Date(a.createdAt).getTime();
-      if (!current || time > current.time) {
-        latestByChild.set(childKey, { time, ski: a.computed.ski || 0 });
-      }
-    }
-
-    let success = 0;
-    let other = 0;
-    for (const item of latestByChild.values()) {
-      if (item.ski >= 3.5) success++;
-      else other++;
-    }
-
-    if (success === 0 && other === 0) {
-      return [{ name: "No data", value: 1, color: theme.colors.gray[6] }];
-    }
-
-    return [
-      { name: "Ready", value: success, color: theme.colors.ingress[6] },
-      { name: "Developing", value: other, color: theme.colors.gray[4] }
-    ];
-  }, [data, theme.colors.gray, theme.colors.ingress]);
-
-  const locationPerformance = useMemo(() => {
-    if (!data?.assessments) return [];
-    const locMap = new Map<string, { sum: number, count: number }>();
-    for (const a of data.assessments) {
-      const loc = a.session.location || "Unknown";
-      if (!locMap.has(loc)) locMap.set(loc, { sum: 0, count: 0 });
-      const stats = locMap.get(loc)!;
-      if (a.computed.ski) {
-        stats.sum += a.computed.ski;
-        stats.count++;
-      }
-    }
-    
-    return Array.from(locMap.entries())
-      .map(([name, stats]) => ({
-        name,
-        value: Number((stats.sum / stats.count).toFixed(2))
-      }))
-      .sort((a, b) => b.value - a.value);
-  }, [data]);
-
-  const globalBalance = useMemo(() => {
-    if (!data?.assessments || data.assessments.length === 0) return [];
-    let m = 0, s = 0, p = 0, count = 0;
-    for (const a of data.assessments) {
-      if (a.computed.movementAverage !== null) { m += a.computed.movementAverage; count++; }
-      if (a.computed.socialAverage !== null) s += a.computed.socialAverage;
-      if (a.computed.mentalAverage !== null) p += a.computed.mentalAverage;
-    }
-    if (count === 0) return [];
-    return [
-      { domain: ts("movement"), value: Number((m / count).toFixed(2)) },
-      { domain: ts("social"), value: Number((s / count).toFixed(2)) },
-      { domain: ts("mental"), value: Number((p / count).toFixed(2)) }
-    ];
-  }, [data, ts]);
-
-  const rapidDomainSummary = useMemo(() => buildRapidDomainSummary(data?.assessments ?? [], ts), [data, ts]);
+  const organizationalPressure = useMemo(() => {
+    return [...pillarBenchmark]
+      .sort((a, b) => a.individual - b.individual)
+      .slice(0, 3);
+  }, [pillarBenchmark]);
 
   if (loading) {
     return (
@@ -246,418 +179,195 @@ export function MainDashboard() {
 
   return (
     <Stack gap="lg">
-      <PageHeader title={t("overview")} subtitle={t("overviewSubtitle")} />
+      <PageHeader title={t("overview")} subtitle={t("performanceOverviewSubtitle")} />
 
-      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <MetricCard label={t("totalUsers")} value={String(data?.users.length ?? 0)} />
-        <MetricCard label={t("totalRecords")} value={String(data?.assessments.length ?? 0)} />
-        <MetricCard label={t("assessmentVelocity")} value={assessmentVelocity} />
-      </Stack>
-      <Text size="sm" c="dimmed">{t("insightUsersRecords", { users: data?.users.length ?? 0, records: data?.assessments.length ?? 0, velocity: assessmentVelocity })}</Text>
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 5 }} spacing="md">
+        <MetricCard label={t("totalChildren")} value={String(totalAthletes)} />
+        <MetricCard label={t("totalRecords")} value={String(totalSessions)} />
+        <MetricCard label={t("avgRecordsPerChild")} value={avgSessionsPerAthlete} />
+        <MetricCard label={t("readinessAdherenceLabel")} value={`${readinessCompliance}%`} />
+        <MetricCard label={t("completionRateLabel")} value={`${sessionCompletionRate}%`} />
+      </SimpleGrid>
+      <Text size="sm" c="dimmed">
+        {t("performanceOverviewInsight", {
+          athletes: totalAthletes,
+          sessions: totalSessions,
+          average: avgSessionsPerAthlete,
+          readiness: readinessCompliance,
+          completion: sessionCompletionRate
+        })}
+      </Text>
 
-      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <MetricCard label={t("totalChildren")} value={String(data?.childrenCount ?? 0)} />
-        <MetricCard label={t("avgRecordsPerChild")} value={avgRecordsPerChild} />
-      </Stack>
-      <Text size="sm" c="dimmed">{t("insightChildrenCoverage", { children: data?.childrenCount ?? 0, avg: avgRecordsPerChild })}</Text>
-
-      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <Box style={{ flex: 1, minWidth: 320 }}>
-          <SectionCard title={t("firstTimeSuccessTitle")} subheader={t("firstTimeSuccessSubtitle")}>
-            <Box style={{ height: 220 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={successRatio}
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {successRatio.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend verticalAlign="bottom" height={36}/>
-                </PieChart>
-              </ResponsiveContainer>
-            </Box>
-            <Text size="sm" c="dimmed" mt="xs">
-              {t("insightReadinessRatio", { ready: successRatio.find((x) => x.name === "Ready")?.value ?? 0, developing: successRatio.find((x) => x.name === "Developing")?.value ?? 0 })}
-            </Text>
-          </SectionCard>
-        </Box>
-
-        <Box style={{ flex: 1, minWidth: 320 }}>
-          <SymmetryChart 
-            title={t("globalBalanceTitle")} 
-            data={globalBalance}
-          />
-          <Text size="sm" c="dimmed" mt="xs">
-              {t("insightGlobalBalance", {
-              movement: formatScore(globalBalance.find((x) => x.domain === ts("movement"))?.value ?? 0),
-              social: formatScore(globalBalance.find((x) => x.domain === ts("social"))?.value ?? 0),
-              mental: formatScore(globalBalance.find((x) => x.domain === ts("mental"))?.value ?? 0)
+      <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+        <SectionCard title={t("readinessDistributionTitle")} subheader={t("readinessDistributionSubtitle")}>
+          <Box style={{ height: 240 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={readinessDistribution} innerRadius={54} outerRadius={82} paddingAngle={4} dataKey="value">
+                  {readinessDistribution.map((entry, index) => (
+                    <Cell key={`slice-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend verticalAlign="bottom" height={36} />
+              </PieChart>
+            </ResponsiveContainer>
+          </Box>
+          <Text size="sm" c="dimmed">
+            {t("readinessDistributionInsight", {
+              full: readinessDistribution.find((item) => item.name === ta("readinessModeFull"))?.value ?? 0,
+              moderate: readinessDistribution.find((item) => item.name === ta("readinessModeModerate"))?.value ?? 0,
+              light: readinessDistribution.find((item) => item.name === ta("readinessModeLight"))?.value ?? 0
             })}
           </Text>
-        </Box>
-      </Stack>
+        </SectionCard>
 
-      <SectionCard title={t("locationPerformanceTitle")} subheader={t("locationPerformanceSubtitle")}>
-        <Box style={{ height: 240 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={locationPerformance} layout="vertical" margin={{ left: 40, right: 20 }}>
-              <XAxis type="number" domain={[0, 6]} hide />
-              <YAxis 
-                dataKey="name" 
-                type="category" 
-                tick={{ fontSize: 12, fill: "var(--mantine-color-text)" }} 
-                width={100}
-                axisLine={false}
-                tickLine={false}
-              />
-              <Tooltip
-                cursor={{ fill: "transparent" }}
-                contentStyle={{
-                  background: "var(--mantine-color-body)",
-                  border: "1px solid var(--mantine-color-default-border)",
-                  borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
-                }}
-                labelStyle={{ color: "var(--mantine-color-text)" }}
-                itemStyle={{ color: "var(--mantine-color-text)" }}
-              />
-              <Bar dataKey="value" fill="var(--mantine-color-ingress-6)" radius={[0, 4, 4, 0]} barSize={20} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-        <Text size="sm" c="dimmed">
-          {t("insightLocationPerformance", {
-            location: locationPerformance[0]?.name ?? "—",
-            value: formatScore(locationPerformance[0]?.value ?? 0)
-          })}
-        </Text>
+        <SectionCard title={t("pillarBenchmarkTitle")} subheader={t("pillarBenchmarkSubtitle")}>
+          <BenchmarkChart
+            title={t("pillarBenchmarkInnerTitle")}
+            data={pillarBenchmark}
+            labels={{
+              individual: t("currentAssessment"),
+              average: t("baselineAssessment")
+            }}
+          />
+          <Text size="sm" c="dimmed">
+            {t("pillarBenchmarkInsight", {
+              strongest: pillarBenchmark.slice().sort((a, b) => b.individual - a.individual)[0]?.subject ?? tc("emptyValue"),
+              focus: organizationalPressure[0]?.subject ?? tc("emptyValue")
+            })}
+          </Text>
+        </SectionCard>
+      </SimpleGrid>
+
+      <SectionCard title={t("sessionVolumeTitle")} subheader={t("sessionVolumeSubtitle")}>
+        <LongitudinalChart data={sessionVolume} color="var(--mantine-color-ingress-6)" yDomain={[0, Math.max(6, ...sessionVolume.map((item) => item.value), 1)]} />
       </SectionCard>
 
-      <SectionCard title={t("rapidSpiderSummaryTitle")} subheader={t("rapidSpiderSummarySubtitle")}>
-        <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          <Box style={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidMovementTitle")} data={rapidDomainSummary.movement} domain="movement" />
-          </Box>
-          <Box style={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidSocialTitle")} data={rapidDomainSummary.social} domain="social" />
-          </Box>
-          <Box style={{ flex: 1, minWidth: 0 }}>
-            <RapidRadarChart title={t("rapidMentalTitle")} data={rapidDomainSummary.mental} domain="mental" />
-          </Box>
-        </Stack>
+      <SectionCard title={t("pillarTrendTitle")} subheader={t("pillarTrendSubtitle")}>
+        <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+          {athleteIqPillars.map((pillar) => (
+            <LongitudinalChart
+              key={pillar.key}
+              title={ta(pillar.title)}
+              data={pillarTrendSeries[pillar.key] ?? []}
+              color={PILLAR_COLORS[pillar.key]}
+            />
+          ))}
+        </SimpleGrid>
       </SectionCard>
 
-      <Stack gap="md" style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <Box style={{ flex: 1, minWidth: 0, display: "flex" }}>
-          <SectionCard title={t("recordsChartTitle")} subheader={t("recordsChartSubtitle")} sx={{ width: "100%", height: "100%", mb: 0 }}>
-            <RecordsLineChart points={recordsByDay} />
-          </SectionCard>
-        </Box>
+      <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+        <SectionCard title={t("locationReadinessTitle")} subheader={t("locationReadinessSubtitle")}>
+          <Box style={{ height: 280 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={locationReadiness} layout="vertical" margin={{ left: 30, right: 16 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme.colors.gray[3]} />
+                <XAxis type="number" domain={[0, readinessChecklist.length]} hide />
+                <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 11, fill: "var(--mantine-color-text)" }} axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Bar dataKey="readiness" fill="var(--mantine-color-knowmore-6)" radius={[0, 4, 4, 0]} barSize={18} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
+          <Text size="sm" c="dimmed">
+            {t("locationReadinessInsight", {
+              location: locationReadiness[0]?.name ?? tc("unknown"),
+              readiness: locationReadiness[0]?.readiness ?? 0
+            })}
+          </Text>
+        </SectionCard>
 
-        <Box style={{ flex: 1, minWidth: 0, display: "flex" }}>
-          <SectionCard title={t("usersChartTitle")} subheader={t("usersChartSubtitle")} sx={{ width: "100%", height: "100%", mb: 0 }}>
-            <UserRolePieChart items={userRoleStats} />
-          </SectionCard>
-        </Box>
-      </Stack>
-
-      <SectionCard title={t("dailyAverageTrendsTitle")} subheader={t("dailyAverageTrendsSubtitle")}>
-        <Stack gap="lg">
-          <DailyAverageBarChart title={ts("movement")} data={dailyAverages} dataKey="movement" domain="movement" />
-          <DailyAverageBarChart title={ts("social")} data={dailyAverages} dataKey="social" domain="social" />
-          <DailyAverageBarChart title={ts("mental")} data={dailyAverages} dataKey="mental" domain="mental" />
-        </Stack>
-        <Text size="sm" c="dimmed">
-          {t("insightDailyAverages", {
-            movement: formatScore(dailyAverages[dailyAverages.length - 1]?.movement ?? 0),
-            social: formatScore(dailyAverages[dailyAverages.length - 1]?.social ?? 0),
-            mental: formatScore(dailyAverages[dailyAverages.length - 1]?.mental ?? 0)
-          })}
-        </Text>
-      </SectionCard>
-
+        <SectionCard title={t("pressureBoardTitle")} subheader={t("pressureBoardSubtitle")}>
+          <Stack gap="md">
+            {organizationalPressure.map((pillar) => (
+              <Paper key={pillar.subject} withBorder p="md" radius="md">
+                <Text size="sm" fw={700}>{pillar.subject}</Text>
+                <Text size="sm" c="dimmed" mt={4}>
+                  {t("pressureBoardItem", {
+                    current: formatScore(pillar.individual),
+                    baseline: formatScore(pillar.average)
+                  })}
+                </Text>
+              </Paper>
+            ))}
+            <Text size="sm" c="dimmed">
+              {t("pressureBoardInsight", {
+                staff: activeStaff,
+                locations: locationReadiness.length
+              })}
+            </Text>
+          </Stack>
+        </SectionCard>
+      </SimpleGrid>
     </Stack>
   );
 }
 
 function MetricCard({ label, value }: { label: string; value: string }) {
   return (
-    <Paper withBorder p="md" style={{ flex: "1 1 220px" }}>
-      <Text size="sm" c="dimmed">
-        {label}
-      </Text>
-      <Text size="xl" fw={800}>
-        {value}
-      </Text>
+    <Paper withBorder p="md" radius="md">
+      <Text size="sm" c="dimmed">{label}</Text>
+      <Text size="xl" fw={800}>{value}</Text>
     </Paper>
   );
 }
 
-function RecordsLineChart({
-  points
-}: {
-  points: Array<{ key: string; label: string; count: number }>;
-}) {
-  const theme = useMantineTheme();
-  const t = useTranslations("Dashboard");
-
-  const values = points.map((p) => p.count);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const yMin = min === max ? Math.max(0, min - 1) : min;
-  const yMax = min === max ? max + 1 : max;
-
-  return (
-    <Stack gap={6}>
-      <Box style={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={points} margin={DASHBOARD_CHART_CONFIG.lineMargin}>
-            <CartesianGrid stroke={theme.colors.gray[4]} strokeDasharray="3 3" />
-            <XAxis
-              dataKey="label"
-              stroke={theme.colors.gray[5]}
-              tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-            />
-            <YAxis
-              domain={[yMin, yMax]}
-              allowDecimals={false}
-              stroke={theme.colors.gray[5]}
-              tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-              width={28}
-            />
-            <Tooltip
-              contentStyle={{
-                background: theme.colors.dark[7],
-                border: `1px solid ${theme.colors.dark[4]}`,
-                borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
-              }}
-            />
-            <Line
-              type="monotone"
-              dataKey="count"
-              stroke={theme.colors.ingress[6]}
-              strokeWidth={DASHBOARD_CHART_CONFIG.lineStrokeWidth}
-              dot={{ r: DASHBOARD_CHART_CONFIG.dotRadius, fill: theme.colors.ingress[6] }}
-              activeDot={{ r: DASHBOARD_CHART_CONFIG.activeDotRadius }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </Box>
-      <Text size="sm" c="dimmed">
-        {t("recordsChartYRange", { min: yMin, max: yMax })}
-      </Text>
-    </Stack>
-  );
+function getPillarScore(assessment: AssessmentRecord, key: string) {
+  return getCompatiblePillarScore(assessment, key as (typeof athleteIqPillars)[number]["key"]);
 }
 
-function UserRolePieChart({
-  items
-}: {
-  items: Array<{ label: string; count: number }>;
-}) {
-  const theme = useMantineTheme();
-  const chartData = items.map((item) => ({ name: item.label, value: item.count }));
-  const colors = [theme.colors.ingress[6], theme.black];
-
-  return (
-    <Box style={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Tooltip
-            contentStyle={{
-              background: theme.colors.dark[7],
-              border: `1px solid ${theme.colors.dark[4]}`,
-              borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
-            }}
-          />
-          <Legend verticalAlign="middle" align="right" layout="vertical" wrapperStyle={{ fontFamily: CHART_FONT_FAMILY, color: "var(--mantine-color-text)" }} />
-          <Pie
-            data={chartData}
-            dataKey="value"
-            nameKey="name"
-            cx={DASHBOARD_CHART_CONFIG.pieCx}
-            cy={DASHBOARD_CHART_CONFIG.pieCy}
-            outerRadius={DASHBOARD_CHART_CONFIG.pieOuterRadius}
-            innerRadius={DASHBOARD_CHART_CONFIG.pieInnerRadius}
-          >
-            {chartData.map((entry, index) => (
-              <Cell key={`slice-${entry.name}`} fill={colors[index % colors.length]} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-    </Box>
-  );
+function average(values: number[]) {
+  if (!values.length) return null;
+  return Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(2));
 }
 
-interface DailyAveragePoint {
-  label: string;
-  movement: number;
-  social: number;
-  mental: number;
+function buildSessionVolume(assessments: AssessmentRecord[]) {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const days = Array.from({ length: 30 }, (_, index) => {
+    const date = new Date(now);
+    date.setDate(now.getDate() - (29 - index));
+    return {
+      key: date.toISOString().slice(0, 10),
+      date: dayLabel(date),
+      value: 0
+    };
+  });
+  const byKey = new Map(days.map((day) => [day.key, day]));
+  assessments.forEach((assessment) => {
+    const key = new Date(assessment.createdAt).toISOString().slice(0, 10);
+    const hit = byKey.get(key);
+    if (hit) hit.value += 1;
+  });
+  return days.map(({ date, value }) => ({ date, value }));
 }
 
-function DailyAverageBarChart({
-  title,
-  data,
-  dataKey,
-  domain
-}: {
-  title: string;
-  data: DailyAveragePoint[];
-  dataKey: keyof Omit<DailyAveragePoint, "label">;
-  domain: AssessmentDomain;
-}) {
-  const theme = useMantineTheme();
-  const barColor = getDomainMainColor(domain);
+function buildPillarTrendSeries(assessments: AssessmentRecord[]): Record<string, TrendPoint[]> {
+  const buckets = Object.fromEntries(
+    athleteIqPillars.map((pillar) => [pillar.key, [] as TrendPoint[]])
+  ) as Record<string, TrendPoint[]>;
+  const groupedByDate = new Map<string, AssessmentRecord[]>();
 
-  return (
-    <Paper withBorder p="md">
-      <Stack gap="xs">
-        <Text fw={700} size="sm">{title}</Text>
-        <Box style={{ width: "100%", height: 140 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 5, right: 10, left: -30, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme.colors.gray[3]} />
-              <XAxis 
-                dataKey="label" 
-                tick={{ fontSize: 9, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis 
-                domain={[0, 6]} 
-                tick={{ fontSize: 9, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-                axisLine={false}
-                tickLine={false}
-                width={30}
-              />
-              <Tooltip 
-                cursor={{ fill: 'rgba(0,0,0,0.05)' }}
-                contentStyle={{ 
-                  borderRadius: 'var(--mantine-radius-md)',
-                  border: '1px solid var(--mantine-color-default-border)',
-                  fontFamily: CHART_FONT_FAMILY,
-                  fontSize: '12px'
-                }}
-              />
-              <Bar dataKey={dataKey} radius={[3, 3, 0, 0]} barSize={12}>
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={barColor} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
-      </Stack>
-    </Paper>
-  );
-}
+  assessments.forEach((assessment) => {
+    const key = assessment.session.date;
+    if (!groupedByDate.has(key)) groupedByDate.set(key, []);
+    const records = groupedByDate.get(key);
+    if (records) {
+      records.push(assessment);
+    }
+  });
 
-function RapidRadarChart({
-  title,
-  data,
-  domain
-}: {
-  title: string;
-  data: Array<{ label: string; value: number }>;
-  domain: AssessmentDomain;
-}) {
-  const theme = useMantineTheme();
-  const domainColor = getDomainMainColor(domain);
-
-  return (
-    <Paper withBorder p="sm">
-      <Text fw={600} mb={6}>
-        {title}
-      </Text>
-      <Box style={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <RadarChart data={data}>
-            <PolarGrid stroke={theme.colors.gray[4]} />
-            <PolarAngleAxis
-              dataKey="label"
-              tick={{ fontSize: DASHBOARD_CHART_CONFIG.tickFontSize, fill: "var(--mantine-color-text)", fontFamily: CHART_FONT_FAMILY }}
-            />
-            <PolarRadiusAxis
-              angle={90}
-              domain={[0, 6]}
-              tickCount={4}
-              tick={(props) => renderRotatedRadiusTick(props)}
-              stroke={theme.colors.gray[6]}
-            />
-            <Tooltip
-              contentStyle={{
-                background: theme.colors.dark[7],
-                border: `1px solid ${theme.colors.dark[4]}`,
-                borderRadius: DASHBOARD_CHART_CONFIG.tooltipRadius
-              }}
-            />
-            <Radar
-              dataKey="value"
-              stroke={domainColor}
-              fill={domainColor}
-              fillOpacity={0.28}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
-      </Box>
-    </Paper>
-  );
-}
-
-function renderRotatedRadiusTick(props: { x?: string | number; y?: string | number; payload?: { value?: string | number } }) {
-  const x = Number(props.x ?? 0);
-  const y = Number(props.y ?? 0);
-  const value = props.payload?.value ?? "";
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="var(--mantine-color-text)"
-      fontSize={DASHBOARD_CHART_CONFIG.tickFontSize}
-      fontFamily={CHART_FONT_FAMILY}
-      textAnchor="middle"
-      dominantBaseline="central"
-      transform={`rotate(90, ${x}, ${y})`}
-    >
-      {value}
-    </text>
-  );
-}
-
-function buildRapidDomainSummary(assessments: AssessmentRecord[], translateSchema: (key: string) => string) {
-  const rapidRecords = assessments.filter((assessment) => assessment.mode === "rapid");
-  const buildDomain = (sectionKey: "rapid_movement" | "rapid_social" | "rapid_mental") => {
-    const section = rapidSections.find((item) => item.key === sectionKey);
-    if (!section) return [];
-
-    return section.items.map((item) => {
-      let sum = 0;
-      let count = 0;
-      for (const assessment of rapidRecords) {
-        const raw = assessment.scores[item.key]?.score;
-        if (typeof raw === "number") {
-          sum += raw;
-          count += 1;
-        }
-      }
-      return {
-        label: translateSchema(`${item.key}.title`),
-        value: count ? Number((sum / count).toFixed(2)) : 0
-      };
+  Array.from(groupedByDate.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .forEach(([date, records]) => {
+      athleteIqPillars.forEach((pillar) => {
+        buckets[pillar.key].push({
+          date,
+          value: average(records.map((record) => getPillarScore(record, pillar.key))) ?? 0
+        });
+      });
     });
-  };
 
-  return {
-    movement: buildDomain("rapid_movement"),
-    social: buildDomain("rapid_social"),
-    mental: buildDomain("rapid_mental")
-  };
+  return buckets;
 }

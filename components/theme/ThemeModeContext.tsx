@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 type ThemeMode = "light" | "dark";
 const THEME_COOKIE_NAME = "survey_theme";
@@ -23,7 +23,10 @@ function writeThemeCookie(mode: ThemeMode) {
 }
 
 function readInitialMode(initialMode?: ThemeMode): ThemeMode {
-  if (initialMode) return initialMode;
+  return initialMode ?? "light";
+}
+
+function readPreferredMode(): ThemeMode {
   if (typeof window === "undefined") return "light";
   const saved =
     localStorage.getItem(THEME_COOKIE_NAME) ??
@@ -31,6 +34,21 @@ function readInitialMode(initialMode?: ThemeMode): ThemeMode {
     localStorage.getItem(LEGACY_THEME_STORAGE_KEY);
   if (saved === "light" || saved === "dark") return saved;
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function subscribeToPreferredMode(callback: () => void) {
+  if (typeof window === "undefined") return () => undefined;
+
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const handleChange = () => callback();
+
+  window.addEventListener("storage", handleChange);
+  mediaQuery.addEventListener("change", handleChange);
+
+  return () => {
+    window.removeEventListener("storage", handleChange);
+    mediaQuery.removeEventListener("change", handleChange);
+  };
 }
 
 type ThemeModeContextValue = {
@@ -47,7 +65,9 @@ export function ThemeModeProvider({
   children: React.ReactNode;
   initialMode?: ThemeMode;
 }) {
-  const [mode, setModeState] = useState<ThemeMode>(() => readInitialMode(initialMode));
+  const preferredMode = useSyncExternalStore(subscribeToPreferredMode, readPreferredMode, () => readInitialMode(initialMode));
+  const [overrideMode, setOverrideMode] = useState<ThemeMode | null>(null);
+  const mode = overrideMode ?? preferredMode;
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", mode);
@@ -58,7 +78,7 @@ export function ThemeModeProvider({
   }, [mode]);
 
   const setMode = useCallback((next: ThemeMode) => {
-    setModeState(next);
+    setOverrideMode(next);
     localStorage.setItem(THEME_COOKIE_NAME, next);
     localStorage.setItem(LEGACY_SURVEY_THEME_STORAGE_KEY, next);
     localStorage.setItem(LEGACY_THEME_STORAGE_KEY, next);

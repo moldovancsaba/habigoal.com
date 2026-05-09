@@ -36,19 +36,19 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const nav = [
     { href: "/dashboard", label: t("overview") },
     { href: "/dashboard/assessment", label: t("survey") },
-    { href: "/dashboard/children", label: t("children") },
+    { href: "/dashboard/athletes", label: t("children") },
     { href: "/dashboard/settings", label: t("settings") }
   ];
 
   const navContent = (
     <Stack h="100%" gap={0} style={{ background: "var(--sidebar-bg)" }}>
       <Box p="md" style={{ display: "flex", justifyContent: "center" }}>
-        <BrandMark size={84} subtitle="Survey" />
+        <BrandMark size={84} subtitle={t("brandName")} />
       </Box>
 
       <Stack px={sideInset} pb="sm" gap={4}>
-        <Text fw={800} c="var(--nav-company-label)">Survey</Text>
-        <Text size="sm" c="var(--nav-company-description)">Semantic assessment workspace</Text>
+        <Text fw={800} c="var(--nav-company-label)">{t("brandName")}</Text>
+        <Text size="sm" c="var(--nav-company-description)">{t("brandSubtitle")}</Text>
       </Stack>
 
       {user && (
@@ -193,9 +193,18 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           <Burger
             opened={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
-            size="sm"
+            size="md"
             hiddenFrom="md"
-            style={{ position: "fixed", top: 10, left: 10, zIndex: 300 }}
+            style={{
+              position: "fixed",
+              top: APP_LAYOUT.mobileNavInset,
+              left: APP_LAYOUT.mobileNavInset,
+              zIndex: 300,
+              borderRadius: 999,
+              boxShadow: "var(--surface-shadow-elevated)",
+              minWidth: APP_LAYOUT.mobileNavSize,
+              minHeight: APP_LAYOUT.mobileNavSize
+            }}
             color="var(--text-primary)"
             bg="var(--surface-base)"
           />
