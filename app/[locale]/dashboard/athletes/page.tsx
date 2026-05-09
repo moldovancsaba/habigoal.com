@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Group, Loader, Modal, MultiSelect, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -402,7 +402,7 @@ export default function ChildrenListPage() {
                           size="lg"
                           color="ingress"
                           style={{ textDecoration: "none" }}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e: MouseEvent<HTMLElement>) => e.stopPropagation()}
                         >
                           {child.name}
                         </Text>
