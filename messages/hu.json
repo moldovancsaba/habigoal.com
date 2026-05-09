@@ -190,7 +190,7 @@
     "showDeleted": "Töröltek mutatása",
     "showingDeleted": "Törölt elemek nézete",
     "addChild": "Sportoló hozzáadása",
-    "brandName": "Survey",
+    "brandName": "Habigoal",
     "brandSubtitle": "Napi sportolói támogatási munkatér",
     "typeDeleteToConfirm": "A megerősítéshez írd be: `delete`.",
     "restoreChild": "Sportoló visszaállítása",
@@ -650,7 +650,7 @@
     "website": "Weboldal"
   },
   "Landing": {
-    "title": "Survey Platform",
+    "title": "Habigoal Platform",
     "subtitle": "Bio-pszicho-szociális sport ökoszisztéma professzionális teljesítmény- és tehetséggondozáshoz.",
     "login": "Belépés a Vezérlőpultra",
     "feature1": "Bizonyítékokon alapuló felmérések",
@@ -658,12 +658,12 @@
     "feature3": "Automatizált szakmai jelentések",
     "accessDenied": "Hozzáférés megtagadva. Az Ön e-mail címe nem szerepel a meghívott felhasználók listáján. Kérjük, forduljon a rendszergazdához.",
     "accessDeniedTitle": "Hozzáférés megtagadva",
-    "badge": "Survey OS",
+    "badge": "{Hg} OS",
     "chipAdaptiveIntake": "adaptív beléptetés",
     "chipLiquidShell": "folyékony üveghéj",
     "ssoNote": "Biztonságos SSO a DoneIsBetter rendszeren keresztül",
-    "brandSubtitle": "Survey",
-    "previewTitle": "Survey felület",
+    "brandSubtitle": "Habigoal",
+    "previewTitle": "Habigoal felulet",
     "previewSubtitle": "Szemantikus dashboardok, vezetett rekordok és nyugodt, nagy kontrasztú üvegfelületek intenzív operatív munkához hangolva.",
     "termsOfService": "Felhasználási feltételek",
     "privacyPolicy": "Adatvédelmi tájékoztató"

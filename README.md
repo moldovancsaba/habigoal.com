@@ -1,6 +1,6 @@
-# Survey
+# Habigoal
 
-Survey is a mobile-first daily athlete support workspace for coaches and staff. It helps teams capture daily readiness signals from young athletes, surface mental and physical support needs, and turn check-ins into practical follow-up actions.
+Habigoal is a mobile-first daily athlete support workspace for coaches and staff. It helps teams capture daily readiness signals from young athletes, surface mental and physical support needs, and turn check-ins into practical follow-up actions.
 
 ## Features
 

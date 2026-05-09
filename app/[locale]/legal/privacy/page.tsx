@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           <Row label={t("website")} value={settings.company.website} />
         </Stack>
         <Text size="sm" mt="xs">
-          <strong>App:</strong> Survey v{APP_VERSION}
+          <strong>App:</strong> Habigoal v{APP_VERSION}
         </Text>
       </SectionCard>
 

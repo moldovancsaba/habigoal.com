@@ -1,6 +1,6 @@
 ---
 version: alpha
-name: Survey
+name: Habigoal
 description: Semantic liquid-glass assessment workspace for athlete evaluation, reporting, and operations.
 colors:
   app-bg-light: "#EDF3FF"
@@ -194,7 +194,7 @@ components:
 
 ## Overview
 
-Survey is an operational assessment workspace, not a marketing site. The interface should feel precise, glassy, and deliberate: high-contrast information, layered liquid surfaces, and semantic color roles that help scanning. The tone is calm control rather than exuberant decoration.
+Habigoal is an operational athlete-support workspace, not a marketing site. The interface should feel precise, glassy, and deliberate: high-contrast information, layered liquid surfaces, and semantic color roles that help scanning. The tone is calm control rather than exuberant decoration.
 
 The visual language is defined by three rules:
 
@@ -206,7 +206,7 @@ Agents should preserve the product's authored light and dark modes, the soft liq
 
 ## Colors
 
-Survey uses two token layers:
+Habigoal uses two token layers:
 
 1. A foundation layer for page background, surface, text, border, navigation, and atmospheric blobs.
 2. A semantic tone layer for product meaning.
@@ -228,7 +228,7 @@ When adding a new colored surface or action, choose the tone by meaning, not by 
 
 ## Typography
 
-Survey uses `Noto Sans` for left-to-right languages and `Noto Sans Arabic` for right-to-left rendering, with `Noto Sans` as fallback support. Typography should feel dense enough for dashboards but still editorially controlled.
+Habigoal uses `Noto Sans` for left-to-right languages and `Noto Sans Arabic` for right-to-left rendering, with `Noto Sans` as fallback support. Typography should feel dense enough for dashboards but still editorially controlled.
 
 Rules:
 
@@ -241,7 +241,7 @@ Avoid ad hoc font stacks, arbitrary sizes, or decorative type pairings that conf
 
 ## Layout
 
-Survey is built around a dashboard shell with a fixed navigation rail and glass-panel content regions. Spacing should be consistent and restrained rather than loose.
+Habigoal is built around a dashboard shell with a fixed navigation rail and glass-panel content regions. Spacing should be consistent and restrained rather than loose.
 
 Key layout rules:
 
@@ -253,7 +253,7 @@ Key layout rules:
 
 ## Elevation & Depth
 
-Depth is a defining part of the system. Survey is not flat. Surfaces use translucent fills, subtle inner highlights, soft borders, blur, and glow-backed hover states.
+Depth is a defining part of the system. Habigoal is not flat. Surfaces use translucent fills, subtle inner highlights, soft borders, blur, and glow-backed hover states.
 
 The live implementation uses:
 
@@ -279,7 +279,7 @@ The shape language is modern but controlled.
 - Glass pills and compact status chips may use `pill`.
 - The brand mark can scale beyond the default radius system, but still belongs to the same softened geometry family.
 
-Do not introduce exaggerated playful rounding. Survey should feel sharp enough for operations while still contemporary.
+Do not introduce exaggerated playful rounding. Habigoal should feel sharp enough for operations while still contemporary.
 
 ## Components
 

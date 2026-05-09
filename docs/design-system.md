@@ -1,8 +1,8 @@
-# Survey design system (Mantine)
+# Habigoal design system (Mantine)
 
 `DESIGN.md` at the repo root is the canonical design-system source of truth for both humans and coding agents.
 
-- [DESIGN.md](/Users/Shared/Projects/survey/DESIGN.md) defines the durable token contract and the semantic usage rules.
+- [DESIGN.md](/Users/Shared/Projects/habigoal/DESIGN.md) defines the durable token contract and the semantic usage rules.
 - This document explains how that design system is implemented in the current codebase.
 
 The dashboard and assessment UI use **Mantine** with a single app theme and shared layout primitives. Presentation is separated from API/data logic.
@@ -43,13 +43,13 @@ Theme initialization also reads cookie-backed mode from server layout to avoid r
 
 When updating the design system:
 
-1. Update [DESIGN.md](/Users/Shared/Projects/survey/DESIGN.md) first if the token contract or design rules change.
+1. Update [DESIGN.md](/Users/Shared/Projects/habigoal/DESIGN.md) first if the token contract or design rules change.
 2. Reflect those changes in the live implementation files:
-   - [app/globals.css](/Users/Shared/Projects/survey/app/globals.css)
-   - [theme/mantine-theme.ts](/Users/Shared/Projects/survey/theme/mantine-theme.ts)
-   - [lib/semantic-theme.ts](/Users/Shared/Projects/survey/lib/semantic-theme.ts)
-   - [theme/typography.ts](/Users/Shared/Projects/survey/theme/typography.ts)
-   - [theme/tokens.ts](/Users/Shared/Projects/survey/theme/tokens.ts)
+   - [app/globals.css](/Users/Shared/Projects/habigoal/app/globals.css)
+   - [theme/mantine-theme.ts](/Users/Shared/Projects/habigoal/theme/mantine-theme.ts)
+   - [lib/semantic-theme.ts](/Users/Shared/Projects/habigoal/lib/semantic-theme.ts)
+   - [theme/typography.ts](/Users/Shared/Projects/habigoal/theme/typography.ts)
+   - [theme/tokens.ts](/Users/Shared/Projects/habigoal/theme/tokens.ts)
 3. Run `npm run semantic:audit`.
 
 ## Migration notes

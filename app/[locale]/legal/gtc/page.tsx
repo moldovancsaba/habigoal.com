@@ -36,7 +36,7 @@ export default function GtcPage() {
       <SectionCard title={t("companyDataTitle")}>
         <CompanyData settings={settings} />
         <Text size="sm" mt="xs">
-          <strong>App:</strong> Survey v{APP_VERSION}
+          <strong>App:</strong> Habigoal v{APP_VERSION}
         </Text>
       </SectionCard>
 

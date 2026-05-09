@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "Survey",
-  title: "Survey",
-  description: "Survey is a semantic, liquid-glass assessment workspace for structured records and reporting."
+  name: "Habigoal",
+  title: "Habigoal",
+  description: "Habigoal is a mobile-first daily athlete support workspace for readiness, trends, and coach action."
 };

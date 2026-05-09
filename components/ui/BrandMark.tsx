@@ -29,8 +29,8 @@ export function BrandMark({ size = 88, subtitle, align = "center" }: BrandMarkPr
           }}
         >
           <Image
-            src="/brand/survey-mark.png"
-            alt="Survey"
+            src="/images/habigoal.png"
+            alt="Habigoal"
             width={iconSize}
             height={iconSize}
             priority={size >= 140}

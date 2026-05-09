@@ -190,7 +190,7 @@
     "showDeleted": "Mostrar eliminados",
     "showingDeleted": "Viendo eliminados",
     "addChild": "Agregar atleta",
-    "brandName": "Survey",
+    "brandName": "Habigoal",
     "brandSubtitle": "Espacio diario de apoyo al atleta",
     "typeDeleteToConfirm": "Escribe `delete` para confirmar.",
     "restoreChild": "Restaurar atleta",
@@ -650,7 +650,7 @@
     "website": "Sitio web"
   },
   "Landing": {
-    "title": "Plataforma Survey",
+    "title": "Plataforma Habigoal",
     "subtitle": "Ecosistema deportivo bio-psico-social para rendimiento profesional y gestion del talento.",
     "login": "Entrar al panel",
     "feature1": "Evaluaciones basadas en evidencia",
@@ -658,12 +658,12 @@
     "feature3": "Informes profesionales automatizados",
     "accessDenied": "Acceso denegado. Tu correo no esta en la lista autorizada. Contacta con tu administrador.",
     "accessDeniedTitle": "Acceso denegado",
-    "badge": "Survey OS",
+    "badge": "{Hg} OS",
     "chipAdaptiveIntake": "entrada adaptativa",
     "chipLiquidShell": "capa liquida",
     "ssoNote": "SSO seguro via DoneIsBetter",
-    "brandSubtitle": "Survey",
-    "previewTitle": "Interfaz Survey",
+    "brandSubtitle": "Habigoal",
+    "previewTitle": "Interfaz Habigoal",
     "previewSubtitle": "Paneles semanticos, registros guiados y superficies calmadas de alto contraste para trabajo operativo denso.",
     "termsOfService": "Terminos del servicio",
     "privacyPolicy": "Politica de privacidad"

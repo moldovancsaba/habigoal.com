@@ -190,7 +190,7 @@
     "showDeleted": "הצג שנמחקו",
     "showingDeleted": "מציג שנמחקו",
     "addChild": "הוסף ספורטאי",
-    "brandName": "Survey",
+    "brandName": "Habigoal",
     "brandSubtitle": "מרחב עבודה לתמיכה יומית בספורטאים",
     "typeDeleteToConfirm": "הקלד `delete` כדי לאשר.",
     "restoreChild": "שחזר ספורטאי",
@@ -650,7 +650,7 @@
     "website": "אתר"
   },
   "Landing": {
-    "title": "פלטפורמת Survey",
+    "title": "פלטפורמת Habigoal",
     "subtitle": "מערכת ספורט ביו-פסיכו-סוציאלית לביצועים מקצועיים ולניהול כישרון.",
     "login": "כניסה ללוח הבקרה",
     "feature1": "הערכות מבוססות ראיות",
@@ -658,12 +658,12 @@
     "feature3": "דיווח מקצועי אוטומטי",
     "accessDenied": "הגישה נדחתה. כתובת הדוא\"ל שלך אינה ברשימת המשתמשים המורשים. אנא פנה למנהל המערכת.",
     "accessDeniedTitle": "הגישה נדחתה",
-    "badge": "Survey OS",
+    "badge": "{Hg} OS",
     "chipAdaptiveIntake": "קליטה אדפטיבית",
     "chipLiquidShell": "מעטפת נוזלית",
     "ssoNote": "SSO מאובטח דרך DoneIsBetter",
-    "brandSubtitle": "Survey",
-    "previewTitle": "ממשק Survey",
+    "brandSubtitle": "Habigoal",
+    "previewTitle": "ממשק Habigoal",
     "previewSubtitle": "לוחות מחוונים סמנטיים, רשומות מודרכות ומשטחי זכוכית שקטים עם ניגודיות גבוהה לעבודה תפעולית צפופה.",
     "termsOfService": "תנאי שימוש",
     "privacyPolicy": "מדיניות פרטיות"

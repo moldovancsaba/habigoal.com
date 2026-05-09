@@ -48,7 +48,35 @@ const pillarColors: Record<PillarKey, [number, number, number]> = {
   sport_brain_pillar: [124, 58, 237],
 };
 
+const REPORT_MAX_SCORE = 5;
+let brandImageDataUrlPromise: Promise<string | null> | null = null;
+let brandImageDataUrl: string | null = null;
+
 export const PdfService = {
+  async ensureBrandImage(): Promise<string | null> {
+    if (!brandImageDataUrlPromise) {
+      brandImageDataUrlPromise = fetch("/images/habigoal.png")
+        .then((res) => res.arrayBuffer())
+        .then((buffer) => {
+          let binary = "";
+          const bytes = new Uint8Array(buffer);
+          const chunkSize = 0x8000;
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            const chunk = bytes.subarray(i, i + chunkSize);
+            binary += String.fromCharCode(...chunk);
+          }
+          brandImageDataUrl = `data:image/png;base64,${btoa(binary)}`;
+          return brandImageDataUrl;
+        })
+        .catch(() => {
+          brandImageDataUrl = null;
+          return null;
+        });
+    }
+
+    return brandImageDataUrlPromise;
+  },
+
   async ensureUnicodeFont(doc: jsPDF): Promise<void> {
     const fontName = "ArialUnicode";
     if (doc.getFontList()[fontName]) {
@@ -90,6 +118,7 @@ export const PdfService = {
   async generateModernReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr: TFunction, history: AssessmentRecord[] = []): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
     await this.ensureUnicodeFont(doc);
+    await this.ensureBrandImage();
 
     const trendData = this.getSortedHistory(record, history);
     const baseline = trendData[0] ?? record;
@@ -118,40 +147,66 @@ export const PdfService = {
     this.drawPerformanceProfilePage(doc, latest, pillarRows, t, ts, tr);
     this.drawTrendPage(doc, trendData, latest, baseline, ts, tr);
     this.drawNotesPage(doc, latest, recommendation, t, tc, ts, tr);
+    this.drawFooters(doc);
 
     const safeName = (latest.child.name || "athlete").replace(/[^\w-]+/g, "_");
     doc.save(`${safeName}_${tr("fileStem")}.pdf`);
   },
 
   drawCoverPage(doc: jsPDF, record: AssessmentRecord, tc: TFunction, tr: TFunction, sessionCount: number, readinessChecks: number, readinessTotal: number) {
-    doc.setFillColor(...palette.ink);
-    doc.rect(0, 0, 210, 72, "F");
-    doc.setFillColor(...palette.accentSoft);
-    doc.roundedRect(20, 92, 170, 88, 10, 10, "F");
-    doc.setDrawColor(...palette.line);
-    doc.roundedRect(20, 92, 170, 88, 10, 10);
+    const pillarRows = athleteIqPillars.map((pillar) => ({
+      label: this.getPillarDisplayLabel(pillar.key),
+      score: this.getPillarScore(record, pillar.key)
+    }));
+    const strongest = pillarRows.slice().sort((a, b) => b.score - a.score)[0];
+    const focus = pillarRows.slice().sort((a, b) => a.score - b.score)[0];
+    const average = this.average(pillarRows.map((pillar) => pillar.score));
+    const readinessMode = getReadinessMode(readinessChecks, readinessTotal);
 
-    this.drawTextBrand(doc, 105, 38, 30, true);
+    doc.setFillColor(...palette.ink);
+    doc.rect(0, 0, 210, 58, "F");
+    doc.setFillColor(...palette.accentSoft);
+    doc.roundedRect(16, 70, 178, 88, 10, 10, "F");
+    doc.setDrawColor(...palette.line);
+    doc.roundedRect(16, 70, 178, 88, 10, 10);
+
+    this.drawBrand(doc, 105, 10, 38, true);
     doc.setTextColor(...palette.white);
     doc.setFont("ArialUnicode", "normal");
-    doc.setFontSize(24);
-    doc.text("Survey", 105, 49, { align: "center" });
-    doc.setFontSize(18);
-    doc.text(tr("athletePerformanceReport"), 105, 60, { align: "center" });
+    doc.setFontSize(16);
+    doc.text(tr("athletePerformanceReport"), 105, 49, { align: "center" });
 
     doc.setTextColor(...palette.ink);
     doc.setFontSize(22);
-    doc.text(record.child.name, 28, 116);
+    doc.text(record.child.name, 24, 90);
     doc.setFontSize(11);
     doc.setTextColor(...palette.muted);
-    doc.text(`${tc("date")}: ${record.session.date}`, 28, 126);
-    doc.text(`${tr("sessionCountLabel")}: ${sessionCount}`, 28, 133);
-    doc.text(`${tr("readinessChecksLabel")}: ${readinessChecks}/${readinessTotal}`, 28, 140);
-    doc.text(`${tr("locationLabel")}: ${record.session.location || tc("emptyValue")}`, 28, 147);
+    doc.text(`${tc("date")}: ${record.session.date}`, 24, 100);
+    doc.text(`${tr("sessionCountLabel")}: ${sessionCount}`, 24, 107);
+    doc.text(`${tr("readinessChecksLabel")}: ${readinessChecks}/${readinessTotal}`, 24, 114);
+    doc.text(`${tr("locationLabel")}: ${record.session.location || tc("emptyValue")}`, 24, 121);
 
-    this.drawStatChip(doc, 28, 155, 50, 18, tr("ageGroupLabel"), record.child.ageGroup || tc("emptyValue"));
-    this.drawStatChip(doc, 83, 155, 50, 18, tr("contextLabel"), tr(`contextValue${capitalize(record.session.context)}`));
-    this.drawStatChip(doc, 138, 155, 44, 18, tr("groupSizeLabel"), record.session.groupSize || tc("emptyValue"));
+    this.drawStatChip(doc, 24, 128, 38, 18, tr("ageGroupLabel"), record.child.ageGroup || tc("emptyValue"));
+    this.drawStatChip(doc, 66, 128, 52, 18, tr("contextLabel"), tr(`contextValue${capitalize(record.session.context)}`));
+    this.drawStatChip(doc, 122, 128, 30, 18, tr("groupSizeLabel"), record.session.groupSize || tc("emptyValue"));
+    this.drawStatChip(doc, 156, 128, 32, 18, tr("overallAverageLabel"), formatScore(average));
+
+    this.drawNarrativePanel(doc, 20, 170, 54, 34, tr("strongestAreaLabel"), strongest?.label ?? tc("emptyValue"), `${formatScore(strongest?.score ?? null)} / ${REPORT_MAX_SCORE}`);
+    this.drawNarrativePanel(doc, 78, 170, 54, 34, tr("priorityFocusLabel"), focus?.label ?? tc("emptyValue"), `${formatScore(focus?.score ?? null)} / ${REPORT_MAX_SCORE}`);
+    this.drawNarrativePanel(doc, 136, 170, 54, 34, tr("readinessModeLabel"), tr(`readinessModeValue${capitalize(readinessMode)}`), tr("coachDirectionBody", {
+      checks: readinessChecks,
+      total: readinessTotal,
+      priorities: focus?.label ?? tc("emptyValue")
+    }));
+
+    this.drawSectionTitle(doc, 20, 218, tr("coachDirectionTitle"));
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.ink);
+    doc.text(doc.splitTextToSize(`{Hg} ${tr("coachDirectionBody", {
+      checks: readinessChecks,
+      total: readinessTotal,
+      priorities: focus?.label ?? tc("emptyValue")
+    })}`, 170), 20, 226);
   },
 
   drawExecutiveSummaryPage(
@@ -456,16 +511,31 @@ export const PdfService = {
   drawPageHeader(doc: jsPDF, title: string, athleteName: string) {
     doc.setFillColor(...palette.panel);
     doc.rect(0, 0, 210, 28, "F");
-    this.drawTextBrand(doc, 24, 17, 11);
+    this.drawBrand(doc, 20, 6, 18);
     doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(12);
     doc.setTextColor(...palette.ink);
-    doc.text(`Survey · ${title}`, 36, 14);
+    doc.text(`Habigoal · ${title}`, 44, 14);
     doc.setFontSize(9);
     doc.setTextColor(...palette.muted);
-    doc.text(athleteName, 36, 20);
+    doc.text(athleteName, 44, 20);
     doc.setDrawColor(...palette.line);
     doc.line(20, 24, 190, 24);
+  },
+
+  drawBrand(doc: jsPDF, x: number, y: number, size: number, centered = false) {
+    const drawFallback = () => this.drawTextBrand(doc, centered ? x : x + size / 2, y + size * 0.68, size * 0.52, true);
+    if (!brandImageDataUrl) {
+      drawFallback();
+      return;
+    }
+
+    const drawX = centered ? x - size / 2 : x;
+    try {
+      doc.addImage(brandImageDataUrl, "PNG", drawX, y, size, size);
+    } catch {
+      drawFallback();
+    }
   },
 
   drawTextBrand(doc: jsPDF, x: number, y: number, size: number, centered = false) {
@@ -480,7 +550,7 @@ export const PdfService = {
     doc.text("{", baseX - letterOffset, y, centered ? { align: "center" } : undefined);
     doc.setTextColor(...palette.ink);
     doc.setFontSize(letterSize);
-    doc.text("S", x, y, centered ? { align: "center" } : undefined);
+    doc.text("Hg", x, y, centered ? { align: "center" } : undefined);
     doc.setTextColor(96, 111, 140);
     doc.setFontSize(braceSize);
     doc.text("}", baseX + letterOffset, y, centered ? { align: "center" } : undefined);
@@ -507,7 +577,7 @@ export const PdfService = {
     doc.text(label, x + 10, y + 8);
     doc.setTextColor(...palette.ink);
     doc.setFontSize(13);
-    doc.text(value, x + 10, y + 16);
+    doc.text(doc.splitTextToSize(value, w - 14), x + 10, y + 15);
   },
 
   drawNarrativePanel(doc: jsPDF, x: number, y: number, w: number, h: number, eyebrow: string, title: string, body: string) {
@@ -534,7 +604,7 @@ export const PdfService = {
     doc.text(label, x + 4, y + 6);
     doc.setTextColor(...palette.muted);
     doc.setFontSize(8);
-    doc.text(`${formatScore(current)} / 6`, x + w - 20, y + 6);
+    doc.text(`${formatScore(current)} / ${REPORT_MAX_SCORE}`, x + w - 20, y + 6);
 
     const barX = x + 4;
     const barY = y + 10;
@@ -542,9 +612,9 @@ export const PdfService = {
     doc.setFillColor(...palette.line);
     doc.roundedRect(barX, barY, barW, 4.5, 2, 2, "F");
     doc.setFillColor(...color);
-    doc.roundedRect(barX, barY, (barW * current) / 6, 4.5, 2, 2, "F");
+    doc.roundedRect(barX, barY, (barW * current) / REPORT_MAX_SCORE, 4.5, 2, 2, "F");
 
-    const baselineX = barX + (barW * baseline) / 6;
+    const baselineX = barX + (barW * baseline) / REPORT_MAX_SCORE;
     doc.setDrawColor(...palette.ink);
     doc.setLineWidth(0.5);
     doc.line(baselineX, barY - 1.5, baselineX, barY + 6);
@@ -583,7 +653,7 @@ export const PdfService = {
 
     if (points.length === 1) {
       doc.setFillColor(...color);
-      doc.circle(chartX + chartW / 2, chartY + chartH - (points[0].value / 6) * chartH, 1.1, "F");
+      doc.circle(chartX + chartW / 2, chartY + chartH - (points[0].value / REPORT_MAX_SCORE) * chartH, 1.1, "F");
       return;
     }
 
@@ -594,9 +664,9 @@ export const PdfService = {
       const current = points[i];
       const next = points[i + 1];
       const x1 = chartX + i * step;
-      const y1 = chartY + chartH - (current.value / 6) * chartH;
+      const y1 = chartY + chartH - (current.value / REPORT_MAX_SCORE) * chartH;
       const x2 = chartX + (i + 1) * step;
-      const y2 = chartY + chartH - (next.value / 6) * chartH;
+      const y2 = chartY + chartH - (next.value / REPORT_MAX_SCORE) * chartH;
       doc.line(x1, y1, x2, y2);
       doc.circle(x1, y1, 0.7, "F");
       if (i === points.length - 2) {
@@ -650,7 +720,21 @@ export const PdfService = {
     doc.text(label, x + 4, y + 6.5);
     doc.setFontSize(10);
     doc.setTextColor(...palette.ink);
-    doc.text(value, x + 4, y + 13.5);
+    doc.text(doc.splitTextToSize(value, w - 8), x + 4, y + 13.5);
+  },
+
+  drawFooters(doc: jsPDF) {
+    const totalPages = doc.getNumberOfPages();
+    for (let page = 1; page <= totalPages; page += 1) {
+      doc.setPage(page);
+      doc.setDrawColor(...palette.line);
+      doc.line(20, 286, 190, 286);
+      doc.setFont("ArialUnicode", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...palette.muted);
+      doc.text("Habigoal", 20, 291);
+      doc.text(`${page}/${totalPages}`, 190, 291, { align: "right" });
+    }
   },
 
   getSortedHistory(record: AssessmentRecord, history: AssessmentRecord[]) {
@@ -664,6 +748,12 @@ export const PdfService = {
 
   getReadinessChecks(record: AssessmentRecord) {
     return getCompatibleReadinessState(record).count;
+  },
+
+  getPillarDisplayLabel(key: PillarKey) {
+    if (key === "physical_pillar") return "Physical readiness";
+    if (key === "mental_pillar") return "Mental balance";
+    return "Sport brain";
   },
 
   average(values: number[]) {

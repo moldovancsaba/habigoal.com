@@ -190,7 +190,7 @@
     "showDeleted": "Geloeschte anzeigen",
     "showingDeleted": "Geloeschte anzeigen",
     "addChild": "Athlet hinzufuegen",
-    "brandName": "Survey",
+    "brandName": "Habigoal",
     "brandSubtitle": "Arbeitsbereich fuer taegliche Athletenunterstuetzung",
     "typeDeleteToConfirm": "Zum Bestaetigen `delete` eingeben.",
     "restoreChild": "Athlet wiederherstellen",
@@ -650,7 +650,7 @@
     "website": "Webseite"
   },
   "Landing": {
-    "title": "Survey Plattform",
+    "title": "Habigoal Plattform",
     "subtitle": "Bio-psycho-soziales Sportoekosystem fuer professionelle Leistung und Talentmanagement.",
     "login": "Zum Dashboard anmelden",
     "feature1": "Evidenzbasierte Bewertungen",
@@ -658,12 +658,12 @@
     "feature3": "Automatisierte professionelle Berichte",
     "accessDenied": "Zugriff verweigert. Deine E-Mail steht nicht auf der Liste autorisierter Benutzer. Bitte kontaktiere den Administrator.",
     "accessDeniedTitle": "Zugriff verweigert",
-    "badge": "Survey OS",
+    "badge": "{Hg} OS",
     "chipAdaptiveIntake": "adaptive aufnahme",
     "chipLiquidShell": "liquid shell",
     "ssoNote": "Sicheres SSO ueber DoneIsBetter",
-    "brandSubtitle": "Survey",
-    "previewTitle": "Survey-Oberflaeche",
+    "brandSubtitle": "Habigoal",
+    "previewTitle": "Habigoal-Oberflaeche",
     "previewSubtitle": "Semantische Dashboards, gefuehrte Eintraege und ruhige kontrastreiche Glasflaechen fuer dichte operative Arbeit.",
     "termsOfService": "Nutzungsbedingungen",
     "privacyPolicy": "Datenschutzrichtlinie"

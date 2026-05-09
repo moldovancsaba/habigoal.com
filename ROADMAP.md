@@ -1,6 +1,6 @@
-# Survey Product Roadmap
+# Habigoal Product Roadmap
 
-Survey is evolving from a daily check-in tool into a coach operating system for young-athlete support.
+Habigoal is evolving from a daily check-in tool into a coach operating system for young-athlete support.
 
 ## Baseline
 - [x] Mobile-first daily athlete check-in

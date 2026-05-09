@@ -6,9 +6,9 @@ import { createSession } from "@/lib/session";
 export async function GET(request: Request) {
   if (process.env.NODE_ENV !== "production") {
     await createSession({
-      id: "survey-dev-user",
-      email: "dev@survey.local",
-      name: "Survey Dev",
+      id: "hg-dev-user",
+      email: "dev@habigoal.local",
+      name: "Habigoal Dev",
       role: "admin,conductor,observer"
     });
     const referer = request.headers.get("referer");
