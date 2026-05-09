@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import { env } from "@/config/env";
 
 declare global {
-  var kidexMongoClient: Promise<MongoClient> | undefined;
+  var surveyMongoClient: Promise<MongoClient> | undefined;
 }
 
 export async function getMongoClient(): Promise<MongoClient> {
@@ -10,11 +10,11 @@ export async function getMongoClient(): Promise<MongoClient> {
     throw new Error("MONGODB_URI is not configured");
   }
 
-  if (!global.kidexMongoClient) {
-    global.kidexMongoClient = new MongoClient(env.mongodbUri).connect();
+  if (!global.surveyMongoClient) {
+    global.surveyMongoClient = new MongoClient(env.mongodbUri).connect();
   }
 
-  return global.kidexMongoClient;
+  return global.surveyMongoClient;
 }
 
 export async function getDatabase() {

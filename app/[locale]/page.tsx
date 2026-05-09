@@ -1,7 +1,6 @@
-import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon, Alert } from "@mantine/core";
+import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon, Alert, Badge } from "@mantine/core";
 import { getTranslations } from "next-intl/server";
-import Image from "next/image";
-import { KIDEX_COLORS } from "@/theme/tokens";
+import { BrandMark } from "@/components/ui/BrandMark";
 
 export default async function LandingPage({
   searchParams
@@ -12,113 +11,86 @@ export default async function LandingPage({
   const { error } = await searchParams;
 
   return (
-    <Box bg={KIDEX_COLORS.brandNavy} style={{ minHeight: "100vh", color: KIDEX_COLORS.white }}>
-      <Container size="lg" py={100}>
-        <Stack gap={60} align="center" style={{ textAlign: "center" }}>
+    <Box style={{ minHeight: "100vh", color: "var(--text-primary)", position: "relative", overflow: "hidden" }}>
+      <Container size="xl" py={{ base: 56, md: 96 }}>
+        <Stack gap={60} align="stretch">
           {error === "access_denied" && (
-            <Alert color="red" title="Access Denied" radius="md" style={{ maxWidth: 500 }}>
+            <Alert color="review" title="Access Denied" radius="md" style={{ maxWidth: 560, marginInline: "auto" }}>
               {t("accessDenied")}
             </Alert>
           )}
-          {/* Logo */}
-          <Box style={{ backgroundColor: KIDEX_COLORS.white, borderRadius: "var(--mantine-radius-lg)", padding: 24, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}>
-            <Image src="/logo.jpeg" alt="KIDEX" width={180} height={180} priority />
-          </Box>
-
-          {/* Hero Text */}
-          <Stack gap="xl">
-            <Title order={1} size={64} fw={900} style={{ letterSpacing: "-2px", lineHeight: 1.1 }}>
-              {t("title")}
-            </Title>
-            <Text size="xl" c={KIDEX_COLORS.navTextMuted} maw={700} mx="auto" style={{ lineHeight: 1.6 }}>
-              {t("subtitle")}
-            </Text>
-          </Stack>
-
-          {/* Features */}
-          <Group gap="xl" justify="center">
-            {[t("feature1"), t("feature2"), t("feature3")].map((feature, i) => (
-              <Group key={i} gap="sm" wrap="nowrap">
-                <ThemeIcon color={KIDEX_COLORS.brandTeal} size={24} radius="xl">
-                  <Box style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "white" }} />
-                </ThemeIcon>
-                <Text fw={500}>{feature}</Text>
+          <Group align="stretch" gap="xl">
+            <Stack className="glass-panel surface-outline" gap="xl" p={{ base: "xl", md: "2rem" }} style={{ flex: 1, borderRadius: 28, minWidth: 0 }}>
+              <Group justify="space-between" align="center">
+                <Badge color="strategy" variant="light" size="lg">Survey OS</Badge>
+                <Group gap="xs">
+                  <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
+                    <Text size="sm" fw={700} c="var(--text-secondary)">adaptive intake</Text>
+                  </Box>
+                  <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
+                    <Text size="sm" fw={700} c="var(--text-secondary)">liquid shell</Text>
+                  </Box>
+                </Group>
               </Group>
-            ))}
-          </Group>
 
-          {/* CTA */}
-          <Stack gap="md" align="center">
-            <Button
-              component="a"
-              href="/api/auth/login"
-              size="xl"
-              radius="md"
-              bg={KIDEX_COLORS.brandTeal}
-              styles={{
-                root: {
-                  paddingInline: 40,
-                  height: 60,
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                  transition: "transform 0.2s ease",
-                  "&:hover": {
-                    backgroundColor: "#2bb5b5",
-                    transform: "translateY(-2px)"
-                  }
-                }
-              }}
-            >
-              {t("login")}
-            </Button>
-            <Text size="sm" c={KIDEX_COLORS.navTextMuted}>
-              Secure SSO via DoneIsBetter
-            </Text>
-          </Stack>
+              <Stack gap="lg">
+                <Title order={1} size={72} maw={760} style={{ lineHeight: 0.98 }}>
+                  {t("title")}
+                </Title>
+                <Text size="xl" maw={680} c="var(--text-secondary)" style={{ lineHeight: 1.65 }}>
+                  {t("subtitle")}
+                </Text>
+              </Stack>
+
+              <Group gap="md" wrap="wrap">
+                {[t("feature1"), t("feature2"), t("feature3")].map((feature, i) => (
+                  <Group key={i} gap="sm" wrap="nowrap" className="glass-pill" px="md" py="sm" style={{ borderRadius: 999 }}>
+                    <ThemeIcon color={i === 0 ? "ingress" : i === 1 ? "strategy" : "tactical"} size={28} radius="xl" variant="light">
+                      <Box style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "currentColor" }} />
+                    </ThemeIcon>
+                    <Text fw={600} c="var(--text-primary)">{feature}</Text>
+                  </Group>
+                ))}
+              </Group>
+
+              <Group gap="md" wrap="wrap">
+                <Button component="a" href="/api/auth/login" size="xl" color="ingress" style={{ minWidth: 220 }}>
+                  {t("login")}
+                </Button>
+                <Text size="sm" c="var(--text-muted)">
+                  Secure SSO via DoneIsBetter
+                </Text>
+              </Group>
+            </Stack>
+
+            <Box className="glass-panel surface-outline" p={{ base: "xl", md: "2rem" }} style={{ width: "100%", maxWidth: 420, borderRadius: 32, position: "relative", overflow: "hidden" }}>
+              <Box style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 18%, rgba(79, 70, 229, 0.48), transparent 34%), radial-gradient(circle at 58% 48%, rgba(168, 85, 247, 0.35), transparent 28%), radial-gradient(circle at 40% 78%, rgba(14, 165, 233, 0.28), transparent 32%)" }} />
+              <Stack align="center" justify="center" gap="lg" style={{ position: "relative", minHeight: 460 }}>
+                <BrandMark size={164} subtitle="Survey" />
+                <Stack gap={6} align="center">
+                  <Text fw={800} size="xl">Survey Interface</Text>
+                  <Text size="sm" c="var(--text-secondary)" ta="center" maw={280}>
+                    Semantic dashboards, guided records, and calm high-contrast glass surfaces tuned for dense operational work.
+                  </Text>
+                </Stack>
+              </Stack>
+            </Box>
+          </Group>
         </Stack>
       </Container>
-      
-      {/* Legal Footer */}
-      <Box 
-        component="footer" 
-        py="xl" 
-        style={{ 
-          borderTop: `1px solid rgba(255, 255, 255, 0.1)`,
-          textAlign: "center"
-        }}
-      >
+
+      <Box component="footer" py="xl" style={{ textAlign: "center" }}>
         <Container size="lg">
-          <Group justify="center" gap="xl">
-            <Text 
-              component="a" 
-              href="/en/legal/gtc" 
-              size="sm" 
-              c={KIDEX_COLORS.navTextMuted}
-              style={{ textDecoration: "none" }}
-            >
+          <Group className="glass-panel surface-outline" justify="center" gap="xl" py="md" style={{ borderRadius: 999 }}>
+            <Text component="a" href="/en/legal/gtc" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
               Terms of Service
             </Text>
-            <Text 
-              component="a" 
-              href="/en/legal/privacy" 
-              size="sm" 
-              c={KIDEX_COLORS.navTextMuted}
-              style={{ textDecoration: "none" }}
-            >
+            <Text component="a" href="/en/legal/privacy" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
               Privacy Policy
             </Text>
           </Group>
         </Container>
       </Box>
-
-      {/* Footer Decoration */}
-      <Box 
-        style={{ 
-          position: "relative", 
-          height: 10, 
-          background: `linear-gradient(90deg, ${KIDEX_COLORS.brandTeal}, ${KIDEX_COLORS.brandNavy})` 
-        }} 
-      />
     </Box>
   );
 }

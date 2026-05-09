@@ -1,18 +1,22 @@
-export const KIDEX_COLORS = {
-  brandNavy: "#3D3F4D",
-  brandTeal: "#13A59E",
-  brandGold: "#FDCB58",
-  white: "#ffffff",
-  navText: "#111827",
-  navBorder: "#e5e7eb",
-  navTextMuted: "rgba(255,255,255,0.88)",
-  navBorderMuted: "rgba(255,255,255,0.32)",
-  navHover: "rgba(255,255,255,0.12)",
-  domainMovement: "#3b82f6",
-  domainSocial: "#13A59E",
-  domainMental: "#f59e0b"
+export const APP_LAYOUT = {
+  drawerWidth: 292
 } as const;
 
-export const KIDEX_LAYOUT = {
-  drawerWidth: 260
+export const SEMANTIC_TONES = [
+  "ingress",
+  "synthesis",
+  "knowmore",
+  "strategy",
+  "checklist",
+  "tactical",
+  "review",
+  "neutral"
+] as const;
+
+export type SemanticTone = (typeof SEMANTIC_TONES)[number];
+
+export const DOMAIN_TONES = {
+  movement: "ingress",
+  social: "tactical",
+  mental: "strategy"
 } as const;

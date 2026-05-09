@@ -14,7 +14,7 @@ export function SparklineChart({
   data, 
   width = 80, 
   height = 30, 
-  color = "var(--mantine-color-kidex-6)" 
+  color = "var(--mantine-color-ingress-6)" 
 }: SparklineChartProps) {
   
   // Recharts expects objects

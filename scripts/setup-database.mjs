@@ -18,7 +18,7 @@ loadEnvFile(".env.local");
 loadEnvFile(".env.example");
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "kidex";
+const dbName = process.env.MONGODB_DB || "survey";
 
 if (!uri) {
   console.error("MONGODB_URI is missing. Add it to .env.local before running db:setup.");
@@ -52,7 +52,7 @@ try {
     { _id: "database-setup" },
     {
       $set: {
-        app: "kidex",
+        app: "survey",
         dbName,
         collections: ["assessments"],
         updatedAt: new Date().toISOString()

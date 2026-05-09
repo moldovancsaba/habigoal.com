@@ -1,4 +1,4 @@
-# Project Handover - KIDEX Professionalization
+# Project Handover - Survey Professionalization
 
 This document summarizes the state of the project after the first major enhancement phase and provides technical details for the next steps.
 
@@ -28,18 +28,14 @@ This document summarizes the state of the project after the first major enhancem
 - **Predictive Search**: `SearchableSelect` component implemented for Conductor and Observer fields.
 - **Service Layer**: Initial `user-service.ts` created for future RBAC integration.
 
-### 4. Gmail & Invitation System (v0.4.0)
-- **OAuth Integration**: Google OAuth flow for linking Admin Gmail accounts.
-- **Gmail API**: Real email dispatch using `gmail.send` scope.
-- **Dynamic Templates**: Customizable invitation messages stored in MongoDB with `{{link}}` placeholder support.
+### 4. Internal Linking & Legal Compliance (v0.4.0)
 - **Internal Linking**: Deep linking between Children, Records, and trend charts.
 - **Legal Compliance**: Publicly accessible `/legal` routes for Google Verification.
 
 ## Next Steps (Roadmap Focus)
 
-### 1. Google OAuth Verification
-- **IMPORTANT**: The application is currently in "Testing" mode in the Google Cloud Console. You must submit for verification to remove the "Testing" restriction for external users.
-- Ensure the Privacy Policy and GTC on `https://kidex.messmass.com/legal` remain publicly accessible.
+### 1. Legal Page Availability
+- Ensure the Privacy Policy and GTC on `https://survey.messmass.com/legal` remain publicly accessible.
 
 ### 2. Offline Capability (PWA)
 

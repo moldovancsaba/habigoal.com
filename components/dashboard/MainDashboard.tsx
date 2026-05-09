@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { rapidSections } from "@/lib/kidex-schema";
+import { rapidSections } from "@/lib/survey-schema";
 import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import { SymmetryChart } from "@/components/analytics/SymmetryChart";
 import type { AssessmentRecord } from "@/types/assessment";
@@ -192,10 +192,10 @@ export function MainDashboard() {
     }
 
     return [
-      { name: "Ready", value: success, color: theme.colors.kidex[6] },
+      { name: "Ready", value: success, color: theme.colors.ingress[6] },
       { name: "Developing", value: other, color: theme.colors.gray[4] }
     ];
-  }, [data, theme.colors.gray, theme.colors.kidex]);
+  }, [data, theme.colors.gray, theme.colors.ingress]);
 
   const locationPerformance = useMemo(() => {
     if (!data?.assessments) return [];
@@ -327,7 +327,7 @@ export function MainDashboard() {
                 labelStyle={{ color: "var(--mantine-color-text)" }}
                 itemStyle={{ color: "var(--mantine-color-text)" }}
               />
-              <Bar dataKey="value" fill="var(--mantine-color-kidex-6)" radius={[0, 4, 4, 0]} barSize={20} />
+              <Bar dataKey="value" fill="var(--mantine-color-ingress-6)" radius={[0, 4, 4, 0]} barSize={20} />
             </BarChart>
           </ResponsiveContainer>
         </Box>
@@ -441,9 +441,9 @@ function RecordsLineChart({
             <Line
               type="monotone"
               dataKey="count"
-              stroke={theme.colors.kidex[6]}
+              stroke={theme.colors.ingress[6]}
               strokeWidth={DASHBOARD_CHART_CONFIG.lineStrokeWidth}
-              dot={{ r: DASHBOARD_CHART_CONFIG.dotRadius, fill: theme.colors.kidex[6] }}
+              dot={{ r: DASHBOARD_CHART_CONFIG.dotRadius, fill: theme.colors.ingress[6] }}
               activeDot={{ r: DASHBOARD_CHART_CONFIG.activeDotRadius }}
             />
           </LineChart>
@@ -463,7 +463,7 @@ function UserRolePieChart({
 }) {
   const theme = useMantineTheme();
   const chartData = items.map((item) => ({ name: item.label, value: item.count }));
-  const colors = [theme.colors.kidex[6], theme.black];
+  const colors = [theme.colors.ingress[6], theme.black];
 
   return (
     <Box style={{ width: "100%", height: DASHBOARD_CHART_CONFIG.chartHeight }}>

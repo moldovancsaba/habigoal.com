@@ -12,17 +12,24 @@ type PageHeaderProps = {
 export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   return (
     <Flex
+      className="glass-panel surface-outline"
       gap="md"
       direction={{ base: "column", md: "row" }}
       justify="space-between"
       align={{ base: "stretch", md: "center" }}
+      px="lg"
+      py="md"
+      mb="md"
+      style={{
+        borderRadius: "var(--mantine-radius-md)"
+      }}
     >
       <Box>
         <Title order={1} size="h2" fw={800}>
           {title}
         </Title>
         {subtitle ? (
-          <Text c="dimmed" size="sm">
+          <Text c="var(--text-secondary)" size="sm">
             {subtitle}
           </Text>
         ) : null}

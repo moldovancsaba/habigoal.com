@@ -32,12 +32,12 @@ function toStyleObject(input?: Record<string, unknown>, withDefaultMargin = fals
 
 export function SectionCard({ title, subheader, action, children, className, sx, contentSx }: SectionCardProps) {
   return (
-    <Paper withBorder radius="md" className={className} style={toStyleObject(sx, true)}>
+    <Paper withBorder radius="md" className={`surface-outline ${className ?? ""}`.trim()} style={toStyleObject(sx, true)}>
       {(title || action) ? (
         <Group justify="space-between" align="flex-start" px="md" pt="md" pb={0}>
           <Stack gap={2}>
             {title ? <Text fw={600}>{title}</Text> : null}
-            {subheader ? <Text size="sm" c="dimmed">{subheader}</Text> : null}
+            {subheader ? <Text size="sm" c="var(--text-secondary)">{subheader}</Text> : null}
           </Stack>
           {action ? <Box>{action}</Box> : null}
         </Group>

@@ -1,4 +1,4 @@
-# KIDEX design system (Mantine)
+# Survey design system (Mantine)
 
 The dashboard and assessment UI use **Mantine** with a single app theme and shared layout primitives. Presentation is separated from API/data logic.
 
@@ -6,9 +6,9 @@ The dashboard and assessment UI use **Mantine** with a single app theme and shar
 
 | Layer | Role |
 |--------|------|
-| `theme/mantine-theme.ts` | `getKidexMantineTheme("light" \| "dark")` — brand colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
+| `theme/mantine-theme.ts` | `getSurveyMantineTheme("light" \| "dark")` — brand colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
 | `components/theme/ThemeRegistry.tsx` | `MantineProvider` + color-scheme wiring using `ThemeModeContext`. |
-| `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`kidex_theme`, legacy `theme`), and consent-gated cookie persistence. |
+| `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`survey_theme`, legacy `theme`), and consent-gated cookie persistence. |
 | `components/layout/DashboardShell.tsx` | Responsive shell: Mantine `AppShell` + mobile `Drawer`, nav, `PageContainer`, shared app footer. |
 | `components/ui/PageContainer.tsx` | Max-width + horizontal padding for page content. |
 | `components/ui/SectionCard.tsx` | Mantine `Paper` + optional header/action block for grouped sections. |

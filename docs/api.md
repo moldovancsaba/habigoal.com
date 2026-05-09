@@ -1,13 +1,13 @@
-# KIDEX API Reference
+# Survey API Reference
 
 Base path: Next.js App Router API under `/api/*`.
 
 ## Authentication model
 
-Role checks are controlled by `KIDEX_ENFORCE_AUTH`.
+Role checks are controlled by `SURVEY_ENFORCE_AUTH`.
 
 - When disabled: endpoints work without role headers.
-- When enabled: endpoints that require authorization validate `x-kidex-role`.
+- When enabled: endpoints that require authorization validate `x-survey-role`.
 
 Allowed roles currently used:
 - `admin`

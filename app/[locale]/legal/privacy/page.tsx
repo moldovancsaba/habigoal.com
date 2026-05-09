@@ -7,11 +7,11 @@ import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { APP_VERSION } from "@/lib/app-version";
-import { DEFAULT_KIDEX_SETTINGS, getSettings, type KidexSettings } from "@/services/settings-service";
+import { DEFAULT_SURVEY_SETTINGS, getSettings, type SurveySettings } from "@/services/settings-service";
 
 export default function PrivacyPolicyPage() {
   const t = useTranslations("Legal");
-  const [settings, setSettings] = useState<KidexSettings>(DEFAULT_KIDEX_SETTINGS);
+  const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
 
   useEffect(() => {
     void getSettings().then(setSettings).catch(() => null);
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           <Row label={t("website")} value={settings.company.website} />
         </Stack>
         <Text size="sm" mt="xs">
-          <strong>App:</strong> KIDEX v{APP_VERSION}
+          <strong>App:</strong> Survey v{APP_VERSION}
         </Text>
       </SectionCard>
 

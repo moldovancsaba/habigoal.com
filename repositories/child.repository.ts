@@ -4,7 +4,7 @@ import { toJsonId } from "@/lib/utils";
 
 export interface ChildProfile {
   _id?: string;
-  kidexId?: string;
+  surveyId?: string;
   name: string;
   birthDate: string;
   ageGroup?: "4-6" | "7-9" | "10-12" | "";
@@ -32,16 +32,29 @@ export interface ChildProfile {
 
 const collectionName = "children";
 
+function normalizeChildProfile(raw: Record<string, unknown>): ChildProfile {
+  return {
+    ...(raw as unknown as ChildProfile),
+    _id: typeof raw._id === "string" ? raw._id : undefined,
+    surveyId:
+      typeof raw.surveyId === "string"
+        ? raw.surveyId
+        : typeof raw.kidexId === "string"
+          ? raw.kidexId
+          : undefined
+  };
+}
+
 export async function listChildren() {
   const db = await getDatabase();
   const children = await db.collection(collectionName).find({ deletedAt: { $exists: false } }).sort({ name: 1 }).toArray();
-  return children.map(toJsonId);
+  return children.map((child) => normalizeChildProfile(toJsonId(child) as Record<string, unknown>));
 }
 
 export async function listDeletedChildren() {
   const db = await getDatabase();
   const children = await db.collection(collectionName).find({ deletedAt: { $exists: true } }).sort({ updatedAt: -1 }).toArray();
-  return children.map(toJsonId);
+  return children.map((child) => normalizeChildProfile(toJsonId(child) as Record<string, unknown>));
 }
 
 export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
@@ -126,13 +139,13 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
   ];
 
   const children = await db.collection(collectionName).aggregate(pipeline).toArray();
-  return children.map(toJsonId) as any;
+  return children.map((child) => normalizeChildProfile(toJsonId(child) as Record<string, unknown>));
 }
 
 export async function getChildById(id: ObjectId) {
   const db = await getDatabase();
   const child = await db.collection(collectionName).findOne({ _id: id, deletedAt: { $exists: false } });
-  return child ? toJsonId(child) : null;
+  return child ? normalizeChildProfile(toJsonId(child) as Record<string, unknown>) : null;
 }
 
 export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt" | "updatedAt">) {
@@ -150,14 +163,20 @@ export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt
   if (existing) {
     await db.collection(collectionName).updateOne(
       { _id: existing._id },
-      { $set: { ...profile, updatedAt: now } }
+      { $set: { ...profile, updatedAt: now }, $unset: { kidexId: "" } }
     );
-    return toJsonId({ ...existing, ...profile, updatedAt: now });
+    return normalizeChildProfile(toJsonId({ ...existing, ...profile, updatedAt: now }) as Record<string, unknown>);
   }
 
-  const newChild = { ...profile, kidexId: profile.kidexId || crypto.randomUUID(), name, createdAt: now, updatedAt: now };
+  const newChild = {
+    ...profile,
+    surveyId: profile.surveyId || crypto.randomUUID(),
+    name,
+    createdAt: now,
+    updatedAt: now
+  };
   const result = await db.collection(collectionName).insertOne(newChild);
-  return { ...newChild, _id: result.insertedId.toString() };
+  return normalizeChildProfile({ ...newChild, _id: result.insertedId.toString() });
 }
 
 export async function updateChildById(
@@ -168,17 +187,18 @@ export async function updateChildById(
   const now = new Date().toISOString();
   const nextProfile = {
     ...profile,
+    surveyId: profile.surveyId || crypto.randomUUID(),
     name: profile.name.trim(),
     updatedAt: now
   };
 
   const result = await db.collection(collectionName).findOneAndUpdate(
     { _id: id },
-    { $set: nextProfile },
+    { $set: nextProfile, $unset: { kidexId: "" } },
     { returnDocument: "after" }
   );
 
-  return result ? toJsonId(result) : null;
+  return result ? normalizeChildProfile(toJsonId(result) as Record<string, unknown>) : null;
 }
 
 export async function deleteChildById(id: ObjectId) {
@@ -193,7 +213,12 @@ export async function deleteChildById(id: ObjectId) {
   const jsonChild = toJsonId(child) as Record<string, unknown>;
   return {
     _id: typeof jsonChild._id === "string" ? jsonChild._id : undefined,
-    kidexId: typeof jsonChild.kidexId === "string" ? jsonChild.kidexId : "",
+    surveyId:
+      typeof jsonChild.surveyId === "string"
+        ? jsonChild.surveyId
+        : typeof jsonChild.kidexId === "string"
+          ? jsonChild.kidexId
+          : "",
     name: typeof jsonChild.name === "string" ? jsonChild.name : "",
     birthDate: typeof jsonChild.birthDate === "string" ? jsonChild.birthDate : "",
     ageGroup: (typeof jsonChild.ageGroup === "string" ? jsonChild.ageGroup : "") as ChildProfile["ageGroup"],
@@ -216,5 +241,5 @@ export async function restoreChildById(id: ObjectId) {
     { $unset: { deletedAt: "" }, $set: { updatedAt: new Date().toISOString() } },
     { returnDocument: "after" }
   );
-  return result ? toJsonId(result) : null;
+  return result ? normalizeChildProfile(toJsonId(result) as Record<string, unknown>) : null;
 }

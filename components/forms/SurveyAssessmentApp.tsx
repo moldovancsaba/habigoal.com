@@ -20,7 +20,7 @@ import {
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { sectionsForMode } from "@/lib/kidex-schema";
+import { sectionsForMode } from "@/lib/survey-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { calculateAgeGroup } from "@/lib/utils/age";
 import { getStandardForAgeGroup } from "@/lib/standards";
@@ -34,7 +34,8 @@ import { getConductors, getObservers } from "@/services/user-service";
 import type { AssessmentPayload, AssessmentRecord, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
 
-const DRAFT_STORAGE_KEY = "kidex-draft";
+const DRAFT_STORAGE_KEY = "survey-draft";
+const LEGACY_DRAFT_STORAGE_KEY = "kidex-draft";
 
 const emptyAssessment: AssessmentPayload = {
   childId: "",
@@ -86,7 +87,7 @@ function loadDraftAssessment(): AssessmentPayload {
     return cloneAssessment(emptyAssessment);
   }
 
-  const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+  const raw = localStorage.getItem(DRAFT_STORAGE_KEY) ?? localStorage.getItem(LEGACY_DRAFT_STORAGE_KEY);
   if (!raw) {
     return cloneAssessment(emptyAssessment);
   }
@@ -103,7 +104,7 @@ async function parseApiError(response: Response): Promise<string | null> {
   return body?.error || null;
 }
 
-export function KidexAssessmentApp() {
+export function SurveyAssessmentApp() {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const ts = useTranslations("Schema");
@@ -423,7 +424,7 @@ export function KidexAssessmentApp() {
             <Button variant="default" onClick={newAssessment} style={{ minWidth: 112, fontWeight: 600 }}>
               {tc("new")}
             </Button>
-            <Button color="kidex" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 112, fontWeight: 700 }}>
+            <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 112, fontWeight: 700 }}>
               {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
             </Button>
           </Group>
@@ -432,7 +433,7 @@ export function KidexAssessmentApp() {
 
       {message ? (
         <Alert
-          color={saveState === "error" ? "red" : saveState === "saved" ? "kidex" : "blue"}
+          color={saveState === "error" ? "red" : saveState === "saved" ? "ingress" : "blue"}
           withCloseButton
           onClose={() => setMessage("")}
         >
@@ -456,7 +457,7 @@ export function KidexAssessmentApp() {
                 placeholder="Select child"
                 searchable
                 value={assessment.childId || ""}
-                data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.kidexId || "-"})` })).filter((x) => x.value)}
+                data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
                 onChange={(value) => {
                   const child = children.find((c) => c._id === value);
                   if (!child || !value) return;
@@ -650,12 +651,12 @@ export function KidexAssessmentApp() {
             {capturedPreview ? (
               <>
                 <Button onClick={() => void openCamera()} variant="outline">{t("retakePhoto")}</Button>
-                <Button onClick={() => void uploadCapturedPhoto()} color="kidex" disabled={uploading}>
+                <Button onClick={() => void uploadCapturedPhoto()} color="ingress" disabled={uploading}>
                   {uploading ? t("uploading") : t("usePhoto")}
                 </Button>
               </>
             ) : (
-              <Button onClick={capturePhotoFrame} color="kidex">{t("capturePhoto")}</Button>
+              <Button onClick={capturePhotoFrame} color="ingress">{t("capturePhoto")}</Button>
             )}
           </Group>
         </Stack>
@@ -666,7 +667,7 @@ export function KidexAssessmentApp() {
         <SectionCard
           key={section.key}
           title={`${ts(section.key)} (${Math.round(section.weight * 100)}%)`}
-          action={<Badge variant="light" color="kidex" size="lg">{ts(section.domain)}</Badge>}
+          action={<Badge variant="light" color="ingress" size="lg">{ts(section.domain)}</Badge>}
         >
           <Stack gap="md">
             {section.items.map((item, itemIndex) => {
@@ -698,7 +699,7 @@ export function KidexAssessmentApp() {
                             <Button
                               key={n}
                               variant={selected ? "filled" : "default"}
-                              color={selected ? "kidex" : "gray"}
+                              color={selected ? "ingress" : "gray"}
                               onClick={() => updateScore(item.key, { score: selected ? "" : n })}
                               style={{
                                 width: 42,
@@ -761,7 +762,7 @@ export function KidexAssessmentApp() {
               <Text size="sm" c="dimmed">
                 {t("nextStep")}:
               </Text>
-              <Text size="lg" mt={4} fw={700} color="kidex">
+              <Text size="lg" mt={4} fw={700} color="ingress">
                 {computed.ski === null ? t("completeAll") : computed.ski < 3.5 ? t("stabilizing") : t("sportOrientation")}
               </Text>
             </Box>
@@ -774,7 +775,7 @@ export function KidexAssessmentApp() {
           <Button variant="default" onClick={newAssessment} style={{ minWidth: 112, fontWeight: 600 }}>
             {tc("new")}
           </Button>
-          <Button color="kidex" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 150, fontWeight: 700 }}>
+          <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ minWidth: 150, fontWeight: 700 }}>
             {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
           </Button>
         </Group>
@@ -789,7 +790,7 @@ function MetricCard({ label, value, target }: { label: string; value: string; ta
       <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </Text>
-      <Text size="xl" mt={4} fw={800} color="kidex">
+      <Text size="xl" mt={4} fw={800} color="ingress">
         {value}
       </Text>
       {target ? (
@@ -811,7 +812,7 @@ function ReportList({ title, items, emptyText }: { title: string; items: string[
         <Stack gap={4} component="ul" style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {items.map((item, idx) => (
             <Text key={`${idx}-${item}`} component="li" size="sm" style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
-              <Box component="span" c="kidex" mt="xs" style={{ display: "inline-block", alignSelf: "flex-start" }}>•</Box>
+              <Box component="span" c="ingress" mt="xs" style={{ display: "inline-block", alignSelf: "flex-start" }}>•</Box>
               {item}
             </Text>
           ))}

@@ -6,13 +6,17 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useSyncExternalStore } from "react";
 
-const CONSENT_COOKIE_NAME = "kidex_cookie_consent";
-const THEME_COOKIE_NAME = "kidex_theme";
+const CONSENT_COOKIE_NAME = "survey_cookie_consent";
+const LEGACY_CONSENT_COOKIE_NAME = "kidex_cookie_consent";
+const THEME_COOKIE_NAME = "survey_theme";
+const LEGACY_THEME_COOKIE_NAME = "kidex_theme";
 const LEGACY_THEME_STORAGE_KEY = "theme";
 
 function hasConsentCookie() {
   if (typeof document === "undefined") return false;
-  return document.cookie.split("; ").some((cookie) => cookie.startsWith(`${CONSENT_COOKIE_NAME}=accepted`));
+  return document.cookie.split("; ").some((cookie) =>
+    cookie.startsWith(`${CONSENT_COOKIE_NAME}=accepted`) || cookie.startsWith(`${LEGACY_CONSENT_COOKIE_NAME}=accepted`)
+  );
 }
 
 export function CookieConsentBanner() {
@@ -28,11 +32,13 @@ export function CookieConsentBanner() {
     document.cookie = `${CONSENT_COOKIE_NAME}=accepted; path=/; max-age=31536000; samesite=lax`;
     const themeValue =
       localStorage.getItem(THEME_COOKIE_NAME) ??
+      localStorage.getItem(LEGACY_THEME_COOKIE_NAME) ??
       localStorage.getItem(LEGACY_THEME_STORAGE_KEY) ??
       document.documentElement.getAttribute("data-theme") ??
       "light";
     if (themeValue === "light" || themeValue === "dark") {
       document.cookie = `${THEME_COOKIE_NAME}=${themeValue}; path=/; max-age=31536000; samesite=lax`;
+      document.cookie = `${LEGACY_THEME_COOKIE_NAME}=${themeValue}; path=/; max-age=31536000; samesite=lax`;
     }
     setDismissed(true);
   }
@@ -43,6 +49,7 @@ export function CookieConsentBanner() {
     <Paper
       shadow="md"
       withBorder
+      className="glass-panel surface-outline"
       style={{
         position: "fixed",
         left: 16,
@@ -60,7 +67,7 @@ export function CookieConsentBanner() {
           {t("cookieConsentMessage")}{" "}
           <Link href="/dashboard/legal/privacy">{t("cookiePolicyLink")}</Link>
         </Text>
-        <Button color="kidex" onClick={acceptCookies}>
+        <Button color="ingress" onClick={acceptCookies}>
           {t("cookieAccept")}
         </Button>
       </Stack>

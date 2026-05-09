@@ -25,7 +25,7 @@ export function ReadinessGauge({ value, title, subtitle }: ReadinessGaugeProps) 
   const getColor = () => {
     if (value < 3) return theme.colors.red[6];
     if (value < 4) return theme.colors.yellow[6];
-    return theme.colors.kidex[6];
+    return theme.colors.ingress[6];
   };
 
   const gaugeColor = getColor();

@@ -1,10 +1,10 @@
-# KIDEX
+# Survey
 
-KIDEX is a conductor-facing assessment and reporting app for recording child examination data and generating structured reports.
+Survey is a conductor-facing assessment and reporting app for recording child examination data and generating structured reports.
 
 ## Features
 
-- Rapid KRAS and Full KIDEX assessment modes
+- Rapid KRAS and Full Survey assessment modes
 - Bio-psycho-social weighted scoring with SKI calculation
 - Centralized child profiles with longitudinal history
 - **Professional Reporting**: Data-driven PDF exports with longitudinal "Bio-Psycho-Social Maps" and development trend analysis
@@ -26,8 +26,6 @@ KIDEX is a conductor-facing assessment and reporting app for recording child exa
   - inline "Show Deleted" + typed restore confirmation on Children and Records pages
 - Localized legal pages (GTC and Privacy Policy) - Publicly accessible for Google Verification
 - Multilingual UI: Hungarian, English, Arabic (RTL)
-- **Gmail Integration**: Send invitations directly from your linked Gmail account
-- **Custom Email Templates**: Manage localized invitation subjects and HTML bodies via Settings
 - **Internal Deep Linking**: Unified navigation between children profiles, assessment records, and trend charts
 
 ## Documentation
@@ -61,18 +59,15 @@ npm run dev
 
 ```txt
 MONGODB_URI=
-MONGODB_DB=kidex
+MONGODB_DB=survey
 IMGBB_API_KEY=
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=https://your-domain.com/api/auth/google/callback
 ```
 
 ## Data and privacy notes
 
 Assessment images are uploaded through a server-side endpoint (`/api/uploads/imgbb`) and only URL metadata is stored in assessment records.
 
-Role-based API enforcement can be enabled via `KIDEX_ENFORCE_AUTH`; when enabled, protected endpoints validate `x-kidex-role`.
+Role-based API enforcement can be enabled via `SURVEY_ENFORCE_AUTH`; when enabled, protected endpoints validate `x-survey-role`.
 
 ## Data lifecycle and traceability
 

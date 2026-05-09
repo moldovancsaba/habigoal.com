@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Box, Button, Checkbox, Divider, Group, Loader, Paper, Select, Stack, Table, Tabs, Text, Textarea, TextInput } from "@mantine/core";
+import { Alert, Box, Button, Checkbox, Group, Loader, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
-import { DEFAULT_KIDEX_SETTINGS, getSettings, KidexSettings, saveSettings } from "@/services/settings-service";
+import { DEFAULT_SURVEY_SETTINGS, getSettings, SurveySettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -14,10 +13,8 @@ export default function SettingsPage() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const tl = useTranslations("Legal");
-  const params = useParams();
-  const locale = params.locale as string;
 
-  const [settings, setSettings] = useState<KidexSettings>(DEFAULT_KIDEX_SETTINGS);
+  const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -25,7 +22,6 @@ export default function SettingsPage() {
   const [locationDraft, setLocationDraft] = useState("");
   const [userDraft, setUserDraft] = useState("");
   const [userNameDraft, setUserNameDraft] = useState("");
-  const [me, setMe] = useState<{ isGoogleLinked: boolean } | null>(null);
   const [deletedChildren, setDeletedChildren] = useState<Array<{ _id?: string; name: string; updatedAt?: string }>>([]);
   const [deletedAssessments, setDeletedAssessments] = useState<Array<{ _id?: string; child?: { name?: string }; session?: { date?: string }; updatedAt?: string }>>([]);
   const [newStandardsVersion, setNewStandardsVersion] = useState("");
@@ -37,14 +33,9 @@ export default function SettingsPage() {
   useEffect(() => {
     void (async () => {
       try {
-        const [sData, uData, meRes] = await Promise.all([
-          getSettings(), 
-          getUsers(),
-          fetch("/api/auth/me").then(r => r.json()).catch(() => null)
-        ]);
+        const [sData, uData] = await Promise.all([getSettings(), getUsers()]);
         setSettings(sData);
         setUsers(uData);
-        if (meRes?.user) setMe(meRes.user);
         const [dcRes, daRes] = await Promise.all([
           fetch("/api/children?deleted=true").then(r => r.json()).catch(() => []),
           fetch("/api/assessments?deleted=true").then(r => r.json()).catch(() => ({ assessments: [] }))
@@ -119,24 +110,10 @@ export default function SettingsPage() {
           setMessage(tc("error"));
         } else {
           setMessage(tc("success"));
-      void fetch("/api/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, locale })
-      }).then(async (res) => {
-        const data = await res.json();
-        if (data.error) {
-          setMessage(`Error: ${data.error}`);
-        } else if (data.message) {
-          setMessage(data.message);
-        } else {
-          setMessage(tc("success"));
         }
       });
     }
-  });
-}
-}
+  }
 
   function removeLocation(index: number) {
     setSettings((prev) => ({
@@ -155,25 +132,12 @@ export default function SettingsPage() {
     setLocationDraft("");
   }
 
-  function updateCompanyField(field: keyof KidexSettings["company"], value: string) {
+  function updateCompanyField(field: keyof SurveySettings["company"], value: string) {
     setSettings((prev) => ({
       ...prev,
       company: {
         ...prev.company,
         [field]: value
-      }
-    }));
-  }
-
-  function updateEmailTemplate(locale: "en" | "hu" | "ar", field: "subject" | "body", value: string) {
-    setSettings((prev) => ({
-      ...prev,
-      emailTemplates: {
-        ...prev.emailTemplates,
-        [locale]: {
-          ...prev.emailTemplates[locale],
-          [field]: value
-        }
       }
     }));
   }
@@ -285,7 +249,7 @@ export default function SettingsPage() {
       <PageHeader title={t("settings")} />
 
       {message ? (
-        <Alert color={message === tc("error") ? "red" : "kidex"} withCloseButton onClose={() => setMessage("")}>
+        <Alert color={message === tc("error") ? "red" : "ingress"} withCloseButton onClose={() => setMessage("")}>
           {message}
         </Alert>
       ) : null}
@@ -308,7 +272,7 @@ export default function SettingsPage() {
               style={{ minWidth: 280 }}
             />
             <Button variant="default" onClick={addNewUser} disabled={!userDraft.trim()}>
-              {t("inviteUser")}
+              Add user
             </Button>
           </Group>
           <Paper withBorder p={0}>
@@ -421,7 +385,7 @@ export default function SettingsPage() {
             <Button variant="default" onClick={addLocation} disabled={!locationDraft.trim()}>
               {t("addLocation")}
             </Button>
-            <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
+            <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
               {saving ? tc("saving") : tc("save")}
             </Button>
           </Group>
@@ -450,7 +414,7 @@ export default function SettingsPage() {
       <SectionCard
         title={t("legalAndCompany")}
         action={
-          <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
+          <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
             {saving ? tc("saving") : tc("save")}
           </Button>
         }
@@ -476,67 +440,6 @@ export default function SettingsPage() {
           />
           <TextInput label={tl("vatNo")} value={settings.company.vatNo} onChange={(event) => updateCompanyField("vatNo", event.target.value)} />
           <TextInput label={tl("website")} value={settings.company.website} onChange={(event) => updateCompanyField("website", event.target.value)} />
-        </Stack>
-      </SectionCard>
-
-      <SectionCard
-        title={t("emailIntegration")}
-        action={
-          <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
-            {saving ? tc("saving") : tc("save")}
-          </Button>
-        }
-      >
-        <Stack gap="md">
-          <Text size="sm" c="dimmed">
-            {t("gmailIntegrationDescription")}
-          </Text>
-          <Group>
-            {me?.isGoogleLinked ? (
-              <Alert color="teal" style={{ flex: 1 }}>
-                <Group justify="space-between">
-                  <Text fw={700}>{t("gmailLinked")}</Text>
-                  <Button variant="white" color="teal" size="sm" onClick={() => window.location.href = "/api/auth/google/login"}>
-                    {t("reconnect")}
-                  </Button>
-                </Group>
-              </Alert>
-            ) : (
-              <Button color="kidex" onClick={() => window.location.href = "/api/auth/google/login"}>
-                {t("linkGmail")}
-              </Button>
-            )}
-          </Group>
-
-          <Divider my="md" label={t("inviteTemplates")} labelPosition="center" />
-
-          <Tabs defaultValue="en" color="kidex">
-            <Tabs.List>
-              <Tabs.Tab value="en">English</Tabs.Tab>
-              <Tabs.Tab value="hu">Magyar</Tabs.Tab>
-              <Tabs.Tab value="ar">العربية</Tabs.Tab>
-            </Tabs.List>
-
-            {(["en", "hu", "ar"] as const).map((lang) => (
-              <Tabs.Panel key={lang} value={lang} pt="md">
-                <Stack gap="md">
-                  <TextInput
-                    label={t("emailSubject")}
-                    value={settings.emailTemplates[lang].subject}
-                    onChange={(e) => updateEmailTemplate(lang, "subject", e.target.value)}
-                  />
-                  <Textarea
-                    label={t("emailBody")}
-                    description={t("placeholderHint")}
-                    value={settings.emailTemplates[lang].body}
-                    onChange={(e) => updateEmailTemplate(lang, "body", e.target.value)}
-                    minRows={6}
-                    autosize
-                  />
-                </Stack>
-              </Tabs.Panel>
-            ))}
-          </Tabs>
         </Stack>
       </SectionCard>
 
@@ -623,7 +526,7 @@ export default function SettingsPage() {
               </Table>
             </Paper>
           ) : null}
-          <Button color="kidex" onClick={() => void handleSaveSettings()} disabled={saving}>
+          <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
             {saving ? tc("saving") : tc("save")}
           </Button>
         </Stack>
@@ -639,7 +542,7 @@ export default function SettingsPage() {
                   <Paper key={c._id} withBorder p="sm">
                     <Group justify="space-between">
                       <Text>{c.name}</Text>
-                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreChild(c._id)}>{t("restoreAction")}</Button>
+                      <Button size="sm" variant="light" color="ingress" onClick={() => void restoreChild(c._id)}>{t("restoreAction")}</Button>
                     </Group>
                   </Paper>
                 ))}
@@ -654,7 +557,7 @@ export default function SettingsPage() {
                   <Paper key={a._id} withBorder p="sm">
                     <Group justify="space-between">
                       <Text>{a.child?.name || t("restoreUnknownChild")} · {a.session?.date || "-"}</Text>
-                      <Button size="sm" variant="light" color="kidex" onClick={() => void restoreAssessment(a._id)}>{t("restoreAction")}</Button>
+                      <Button size="sm" variant="light" color="ingress" onClick={() => void restoreAssessment(a._id)}>{t("restoreAction")}</Button>
                     </Group>
                   </Paper>
                 ))}

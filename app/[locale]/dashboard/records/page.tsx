@@ -108,7 +108,7 @@ export default function RecordsPage() {
                             href={`/dashboard/records/${record._id}`}
                             fw={800}
                             size="lg"
-                            color="kidex"
+                            color="ingress"
                             style={{ textDecoration: "none" }}
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -118,7 +118,7 @@ export default function RecordsPage() {
                             {record.session.date} {record.session.location ? `· ${record.session.location}` : ""}
                           </Text>
                         </Box>
-                        <Badge color="kidex" variant="filled" size="lg">
+                        <Badge color="ingress" variant="filled" size="lg">
                           SKI: {formatScore(record.computed.ski)}
                         </Badge>
                       </Group>
@@ -130,12 +130,12 @@ export default function RecordsPage() {
                           <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
                             {tc("view")}
                           </Button>
-                          <Button component={Link} href={`/dashboard/assessment?id=${record._id}`} color="kidex" variant="light" size="sm" onClick={(e) => e.stopPropagation()}>
+                          <Button component={Link} href={`/dashboard/assessment?id=${record._id}`} color="ingress" variant="light" size="sm" onClick={(e) => e.stopPropagation()}>
                             {tc("update")}
                           </Button>
                         </>
                       ) : (
-                        <Button color="kidex" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }}>
+                        <Button color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }}>
                           {t("restoreAction")}
                         </Button>
                       )}
@@ -153,7 +153,7 @@ export default function RecordsPage() {
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
             <Button variant="subtle" onClick={() => setRestoreTargetId(null)}>{tc("cancel")}</Button>
-            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)}>{t("restoreAction")}</Button>
+            <Button color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)}>{t("restoreAction")}</Button>
           </Group>
         </Stack>
       </Modal>

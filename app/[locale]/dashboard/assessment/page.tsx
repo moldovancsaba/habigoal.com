@@ -1,5 +1,5 @@
-import { KidexAssessmentApp } from "@/components/forms/KidexAssessmentApp";
+import { SurveyAssessmentApp } from "@/components/forms/SurveyAssessmentApp";
 
 export default function AssessmentPage() {
-  return <KidexAssessmentApp />;
+  return <SurveyAssessmentApp />;
 }

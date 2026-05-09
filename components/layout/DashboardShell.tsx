@@ -1,7 +1,6 @@
 "use client";
 
-import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack } from "@mantine/core";
-import Image from "next/image";
+import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack, Text, Badge } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -9,13 +8,17 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { AppFooter } from "@/components/layout/AppFooter";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
-import { KIDEX_COLORS, KIDEX_LAYOUT } from "@/theme/tokens";
+import { APP_LAYOUT } from "@/theme/tokens";
+import { getNavStateCss } from "@/lib/semantic-theme";
+import { useThemeMode } from "@/components/theme/ThemeModeContext";
+import { BrandMark } from "@/components/ui/BrandMark";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const sideInset = 12;
+  const sideInset = 14;
+  const { mode } = useThemeMode();
 
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
 
@@ -38,29 +41,31 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   ];
 
   const navContent = (
-    <Stack h="100%" gap={0} bg={KIDEX_COLORS.brandNavy}>
+    <Stack h="100%" gap={0} style={{ background: "var(--sidebar-bg)" }}>
       <Box p="md" style={{ display: "flex", justifyContent: "center" }}>
-        <Box style={{ backgroundColor: KIDEX_COLORS.white, borderRadius: "var(--mantine-radius-md)", padding: 12 }}>
-          <Image src="/logo.jpeg" alt="KIDEX" width={100} height={100} priority />
-        </Box>
+        <BrandMark size={84} subtitle="Survey" />
       </Box>
-      
+
+      <Stack px={sideInset} pb="sm" gap={4}>
+        <Text fw={800} c="var(--nav-company-label)">Survey</Text>
+        <Text size="sm" c="var(--nav-company-description)">Semantic assessment workspace</Text>
+      </Stack>
+
       {user && (
         <Stack gap={0} px={sideInset} pb="md" align="center">
-          <Box 
-            p="xs" 
-            style={{ 
+          <Box
+            className="glass-panel surface-outline"
+            p="xs"
+            style={{
               width: "100%",
-              backgroundColor: "rgba(255, 255, 255, 0.05)", 
               borderRadius: "var(--mantine-radius-md)",
-              border: "1px solid rgba(255, 255, 255, 0.1)"
             }}
           >
             <Stack gap={0}>
-              <Box style={{ color: KIDEX_COLORS.white, fontWeight: 700, fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <Box style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {user.name}
               </Box>
-              <Box style={{ color: KIDEX_COLORS.navTextMuted, fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <Box style={{ color: "var(--text-secondary)", fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {user.email}
               </Box>
             </Stack>
@@ -74,7 +79,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         justify="flex-start"
         style={{
           marginInline: sideInset,
-          border: "1px solid var(--mantine-color-default-border)",
+          background: "linear-gradient(180deg, var(--surface-gradient-top), var(--surface-gradient-bottom)), var(--surface-base)",
+          border: "1px solid var(--border-primary)",
           borderRadius: "var(--mantine-radius-md)"
         }}
       >
@@ -97,27 +103,28 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               onClick={() => setMobileOpen(false)}
               styles={{
                 root: {
+                  ...getNavStateCss(mode, active ? "ingress" : "neutral", active),
                   borderRadius: "var(--mantine-radius-md)",
                   paddingInlineStart: 16,
-                  paddingInlineEnd: 16
+                  paddingInlineEnd: 16,
+                  minHeight: 46
                 },
                 body: { paddingInlineStart: 0 },
                 label: {
-                  color: KIDEX_COLORS.navTextMuted,
-                  fontWeight: 500,
+                  color: active ? "var(--nav-link-active)" : "var(--nav-link-inactive)",
+                  fontWeight: active ? 700 : 500,
                   textAlign: "left"
                 },
                 section: {
-                  color: KIDEX_COLORS.navTextMuted
+                  color: active ? "var(--nav-link-active)" : "var(--nav-link-inactive)"
                 }
               }}
-              c={KIDEX_COLORS.navTextMuted}
-              bg={active ? KIDEX_COLORS.brandTeal : "transparent"}
+              leftSection={active ? <Badge variant="light" color="ingress" circle size="sm" /> : undefined}
             />
           );
         })}
       </Stack>
-      <Divider color={KIDEX_COLORS.navBorderMuted} />
+      <Divider color="var(--surface-section-border)" />
       <Box px={sideInset} py="md">
         <NavLink
           label={t("logout")}
@@ -129,15 +136,15 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             root: {
               borderRadius: "var(--mantine-radius-md)",
               paddingInlineStart: 16,
-              paddingInlineEnd: 16
+              paddingInlineEnd: 16,
+              minHeight: 46
             },
             label: {
-              color: KIDEX_COLORS.navTextMuted,
+              color: "var(--nav-link-inactive)",
               fontWeight: 500,
               textAlign: "left"
             }
           }}
-          c={KIDEX_COLORS.navTextMuted}
         />
       </Box>
       <Box h={16} />
@@ -151,11 +158,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         onClose={() => setMobileOpen(false)}
         padding={0}
         withCloseButton={false}
-        size={KIDEX_LAYOUT.drawerWidth}
+        size={APP_LAYOUT.drawerWidth}
         hiddenFrom="md"
         styles={{
           content: {
-            backgroundColor: KIDEX_COLORS.brandNavy
+            background: "var(--sidebar-bg)"
           },
           body: {
             padding: 0
@@ -166,15 +173,15 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </Drawer>
 
       <AppShell
-        navbar={{ width: KIDEX_LAYOUT.drawerWidth, breakpoint: "md" }}
+        navbar={{ width: APP_LAYOUT.drawerWidth, breakpoint: "md" }}
         padding={0}
         styles={{
           navbar: {
             borderInlineEnd: "none",
-            backgroundColor: KIDEX_COLORS.brandNavy
+            background: "var(--sidebar-bg)"
           },
           main: {
-            backgroundColor: "var(--mantine-color-body)"
+            backgroundColor: "transparent"
           }
         }}
       >
@@ -189,8 +196,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             size="sm"
             hiddenFrom="md"
             style={{ position: "fixed", top: 10, left: 10, zIndex: 300 }}
-            color={KIDEX_COLORS.navText}
-            bg={KIDEX_COLORS.white}
+            color="var(--text-primary)"
+            bg="var(--surface-base)"
           />
           <Box className="dashboard-main" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
             <Box style={{ flex: 1 }}>

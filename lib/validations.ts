@@ -113,11 +113,6 @@ export interface SettingsPayload {
     vatNo: string;
     website: string;
   };
-  emailTemplates: {
-    en: { subject: string; body: string };
-    hu: { subject: string; body: string };
-    ar: { subject: string; body: string };
-  };
   standards: {
     activeVersion: string;
     versions: Record<string, unknown>;
@@ -140,20 +135,6 @@ export function parseSettingsPayload(input: unknown): SettingsPayload {
       shareCapital: stringValue(company.shareCapital, 120).trim(),
       vatNo: stringValue(company.vatNo, 120).trim(),
       website: stringValue(company.website, 240).trim()
-    },
-    emailTemplates: {
-      en: {
-        subject: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.en?.subject, 240).trim(),
-        body: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.en?.body, 10000).trim()
-      },
-      hu: {
-        subject: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.hu?.subject, 240).trim(),
-        body: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.hu?.body, 10000).trim()
-      },
-      ar: {
-        subject: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.ar?.subject, 240).trim(),
-        body: stringValue((data.emailTemplates as Record<string, Record<string, string>>)?.ar?.body, 10000).trim()
-      }
     },
     standards: {
       activeVersion: stringValue((data.standards as Record<string, unknown>)?.activeVersion, 120).trim() || "v1",
@@ -184,7 +165,7 @@ export function parseUserPayload(input: unknown): UserPayload {
 }
 
 export interface ChildPayload {
-  kidexId?: string;
+  surveyId?: string;
   name: string;
   birthDate: string;
   ageGroup: "4-6" | "7-9" | "10-12" | "";
@@ -200,7 +181,7 @@ export interface ChildPayload {
 export function parseChildPayload(input: unknown): ChildPayload {
   const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
   return {
-    kidexId: stringValue(data.kidexId, 120).trim() || undefined,
+    surveyId: stringValue(data.surveyId ?? data.kidexId, 120).trim() || undefined,
     name: stringValue(data.name, 240).trim(),
     birthDate: stringValue(data.birthDate, 80).trim(),
     ageGroup: (["4-6", "7-9", "10-12"].includes(stringValue(data.ageGroup, 10).trim()) ? stringValue(data.ageGroup, 10).trim() : "") as ChildPayload["ageGroup"],

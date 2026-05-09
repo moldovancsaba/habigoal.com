@@ -1,4 +1,4 @@
-# KIDEX Definition of Done (DoD)
+# Survey Definition of Done (DoD)
 
 ## 1. Build Quality
 - [ ] `npm run build` must complete without any errors.

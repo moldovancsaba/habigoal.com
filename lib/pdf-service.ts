@@ -2,7 +2,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { AssessmentRecord } from "@/types/assessment";
 import { formatScore } from "./utils";
-import { rapidSections } from "./kidex-schema";
+import { rapidSections } from "./survey-schema";
 
 interface JsPDFWithAutoTable extends jsPDF {
   lastAutoTable?: {
@@ -13,7 +13,7 @@ interface JsPDFWithAutoTable extends jsPDF {
 type TFunction = (key: string) => string;
 
 /**
- * PDF Service for Kidex Reports
+ * PDF Service for Survey Reports
  * Handles generation of "Original" and "Map" report formats.
  */
 export const PdfService = {
@@ -50,11 +50,7 @@ export const PdfService = {
     const reportDate = new Date(record.createdAt).toLocaleDateString();
     const reportTime = new Date(record.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // Logo
-    const logoDataUrl = await this.getLogoDataUrl();
-    if (logoDataUrl) {
-      doc.addImage(logoDataUrl, "JPEG", 14, 10, 20, 20);
-    }
+    this.drawTextBrand(doc, 24, 18, 20);
 
     // Header
     doc.setFontSize(16);
@@ -124,7 +120,7 @@ export const PdfService = {
     }
 
     const safeName = (record.child.name || "report").replace(/[^\w-]+/g, "_");
-    doc.save(`kidex_report_${safeName}_${reportDate}.pdf`);
+    doc.save(`survey_report_${safeName}_${reportDate}.pdf`);
   },
 
   /**
@@ -140,13 +136,11 @@ export const PdfService = {
   ): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
     await this.ensureUnicodeFont(doc);
-    const logoDataUrl = await this.getLogoDataUrl();
-
     // --- PAGE 1: COVER ---
-    if (logoDataUrl) doc.addImage(logoDataUrl, "JPEG", 70, 40, 70, 70);
+    this.drawTextBrand(doc, 105, 74, 62, true);
     doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(28);
-    doc.text("KIDEX", 105, 130, { align: "center" });
+    doc.text("Survey", 105, 130, { align: "center" });
     doc.setFontSize(22);
     doc.text(tr("assessmentReport").toUpperCase(), 105, 145, { align: "center" });
     
@@ -162,7 +156,7 @@ export const PdfService = {
 
     // --- PAGE 2: GENERAL OBSERVATION ---
     doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
     doc.setFontSize(12);
     doc.text(tr("professionalOpinion"), 20, 50);
     doc.setFont("ArialUnicode", "normal");
@@ -171,7 +165,7 @@ export const PdfService = {
     // --- PAGE 3: DEVELOPMENT TRENDS ---
     if (history.length > 1) {
       doc.addPage();
-      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
       doc.setFontSize(14);
       doc.text(tr("developmentTrends").toUpperCase(), 20, 34);
       doc.setFontSize(11);
@@ -229,7 +223,7 @@ export const PdfService = {
 
     // --- PAGE 4: ANALYTICS SNAPSHOT (4 CHARTS) ---
     doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
     doc.setFontSize(14);
     doc.text("ANALYTICS SNAPSHOT", 20, 34);
     const trendData = [...(history.length ? history : [record])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
@@ -246,7 +240,7 @@ export const PdfService = {
     ];
 
     doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
     doc.setFontSize(14);
     doc.text(tr("organizationalBalance").toUpperCase(), 20, 34);
     let profileY = 38;
@@ -278,7 +272,7 @@ export const PdfService = {
 
     // --- PAGE 6: SKI ---
     doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
     doc.setFontSize(14);
     doc.text(`V. ${ts("ski").toUpperCase()} INDEX`, 20, 34);
     
@@ -291,7 +285,7 @@ export const PdfService = {
     
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
-    doc.text(`KIDEX ${ts("ski").toUpperCase()}`, 105, 95, { align: "center" });
+    doc.text(`Survey ${ts("ski").toUpperCase()}`, 105, 95, { align: "center" });
 
     // Draw a Gauge
     const gaugeX = 105;
@@ -347,7 +341,7 @@ export const PdfService = {
 
     // --- PAGE 7: RECOMMENDATIONS + PRIORITIES + FINAL EVALUATION ---
     doc.addPage();
-    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+    this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
     doc.setFontSize(12);
     doc.setFontSize(14);
     doc.text(tr("recommendationsTitle").toUpperCase(), 20, 34);
@@ -387,7 +381,7 @@ export const PdfService = {
     // If content gets too long, move final evaluation block to a clean new page.
     if (signatureTitleY > 175) {
       doc.addPage();
-      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name, logoDataUrl);
+      this.drawPageHeader(doc, tr("assessmentReport"), record.child.name);
       signatureTitleY = 40;
     }
 
@@ -403,38 +397,44 @@ export const PdfService = {
 
     doc.setFontSize(12);
     doc.line(130, signatureLineY, 190, signatureLineY);
-    doc.text(record.session.conductor || "Kidex Fejlesztő", 130, signatureLineY + 10);
+    doc.text(record.session.conductor || "Survey Fejlesztő", 130, signatureLineY + 10);
     doc.setFontSize(9);
     doc.text(tr("expert"), 130, signatureLineY + 15);
 
     const safeName = (record.child.name || "map").replace(/[^\w-]+/g, "_");
-    doc.save(`${safeName}_Kidex_Bio-Pszicho-Szocialis_Terkep.pdf`);
+    doc.save(`${safeName}_Survey_Bio-Pszicho-Szocialis_Terkep.pdf`);
   },
 
   // Helpers
-  async getLogoDataUrl(): Promise<string> {
-    return fetch("/logo.jpeg")
-      .then((res) => res.blob())
-      .then((blob) => new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      }))
-      .catch(() => "");
-  },
-
-  drawPageHeader(doc: jsPDF, reportTitle: string, childName: string, logoUrl: string) {
-    if (logoUrl) doc.addImage(logoUrl, "JPEG", 180, 10, 15, 15);
+  drawPageHeader(doc: jsPDF, reportTitle: string, childName: string) {
+    this.drawTextBrand(doc, 186, 18, 12, true);
     doc.setFont("ArialUnicode", "normal");
     doc.setFontSize(12);
     doc.setTextColor(61, 63, 77);
-    doc.text(`KIDEX - ${reportTitle.toUpperCase()}`, 20, 16);
+    doc.text(`Survey - ${reportTitle.toUpperCase()}`, 20, 16);
     doc.setFontSize(10);
     doc.text(childName, 20, 22);
     doc.setDrawColor(61, 63, 77);
     doc.setLineWidth(0.5);
     doc.line(20, 26, 190, 26);
+    doc.setTextColor(0, 0, 0);
+  },
+  drawTextBrand(doc: jsPDF, x: number, y: number, size: number, centered = false) {
+    const braceSize = size * 0.74;
+    const letterSize = size;
+    const letterOffset = size * 0.52;
+    const baseX = centered ? x - letterOffset : x;
+
+    doc.setFont("ArialUnicode", "normal");
+    doc.setFontSize(braceSize);
+    doc.setTextColor(81, 98, 127);
+    doc.text("{", baseX - letterOffset, y, centered ? { align: "center" } : undefined);
+    doc.setTextColor(16, 32, 61);
+    doc.setFontSize(letterSize);
+    doc.text("S", x, y, centered ? { align: "center" } : undefined);
+    doc.setTextColor(81, 98, 127);
+    doc.setFontSize(braceSize);
+    doc.text("}", baseX + letterOffset, y, centered ? { align: "center" } : undefined);
     doc.setTextColor(0, 0, 0);
   },
   drawDomainTrendLines(doc: jsPDF, data: AssessmentRecord[], ts: TFunction) {

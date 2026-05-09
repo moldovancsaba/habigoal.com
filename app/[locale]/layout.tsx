@@ -30,7 +30,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   const direction = locale === "ar" ? "rtl" : "ltr";
   const cookieStore = await cookies();
-  const themeCookie = cookieStore.get("kidex_theme")?.value;
+  const themeCookie = cookieStore.get("survey_theme")?.value ?? cookieStore.get("kidex_theme")?.value;
   const initialMode = themeCookie === "dark" || themeCookie === "light" ? themeCookie : undefined;
 
   return (

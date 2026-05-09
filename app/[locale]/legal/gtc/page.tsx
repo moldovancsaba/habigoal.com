@@ -7,11 +7,11 @@ import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { APP_VERSION } from "@/lib/app-version";
-import { DEFAULT_KIDEX_SETTINGS, getSettings, type KidexSettings } from "@/services/settings-service";
+import { DEFAULT_SURVEY_SETTINGS, getSettings, type SurveySettings } from "@/services/settings-service";
 
 export default function GtcPage() {
   const t = useTranslations("Legal");
-  const [settings, setSettings] = useState<KidexSettings>(DEFAULT_KIDEX_SETTINGS);
+  const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
 
   useEffect(() => {
     void getSettings().then(setSettings).catch(() => null);
@@ -36,7 +36,7 @@ export default function GtcPage() {
       <SectionCard title={t("companyDataTitle")}>
         <CompanyData settings={settings} />
         <Text size="sm" mt="xs">
-          <strong>App:</strong> KIDEX v{APP_VERSION}
+          <strong>App:</strong> Survey v{APP_VERSION}
         </Text>
       </SectionCard>
 
@@ -47,7 +47,7 @@ export default function GtcPage() {
   );
 }
 
-function CompanyData({ settings }: { settings: KidexSettings }) {
+function CompanyData({ settings }: { settings: SurveySettings }) {
   const t = useTranslations("Legal");
   return (
     <Stack gap={6}>

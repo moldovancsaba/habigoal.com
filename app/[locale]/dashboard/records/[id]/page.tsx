@@ -18,14 +18,15 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { rapidSections } from "@/lib/kidex-schema";
+import { rapidSections } from "@/lib/survey-schema";
 import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
-import { sectionsForMode } from "@/lib/kidex-schema";
+import { sectionsForMode } from "@/lib/survey-schema";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { MaturityRadarChart } from "@/components/analytics/MaturityRadarChart";
 import type { AssessmentRecord } from "@/types/assessment";
+import { BrandMark } from "@/components/ui/BrandMark";
 
 const RADAR_CHART_HEIGHT = 200;
 const RADAR_TICK_FONT_SIZE = 10;
@@ -142,7 +143,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                 component={Link} 
                 href={`/dashboard/children/${record.childId}`}
                 fw={700}
-                color="kidex"
+                color="ingress"
                 style={{ textDecoration: "none" }}
               >
                 {record.child.name}
@@ -154,13 +155,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               <Button 
                 component={Link}
                 href={`/dashboard/assessment?id=${record._id}`}
-                color="kidex" 
+                color="ingress" 
                 variant="light"
               >
                 {tc("update")}
               </Button>
               <Button 
-                color="kidex" 
+                color="ingress" 
                 variant="outline" 
                 onClick={() => void downloadPdf()} 
                 loading={downloadingPdf}
@@ -175,7 +176,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
         <Stack gap="xl">
           <Group gap="md" align="center" justify="space-between" wrap="wrap">
             <Group gap="md">
-              <Image src="/logo.jpeg" alt="KIDEX" width={64} height={64} style={{ borderRadius: "var(--mantine-radius-md)" }} />
+              <BrandMark size={52} />
               <Box>
                 <Title order={3} fw={800}>{t("reportPrintTitle")}</Title>
                 <Text size="sm" c="dimmed">{record.child.name}</Text>
@@ -257,7 +258,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                     <Table.Tr key={item.key}>
                       <Table.Td fw={500}>{ts(`${item.key}.title`)}</Table.Td>
                       <Table.Td style={{ textAlign: "right" }}>
-                        <Badge color="kidex" variant="light" size="lg">
+                        <Badge color="ingress" variant="light" size="lg">
                           {entry?.score ?? "—"}
                         </Badge>
                       </Table.Td>
@@ -392,7 +393,7 @@ function Metric({ label, value }: { label: string; value: string }) {
       <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </Text>
-      <Text size="xl" mt={4} fw={800} color="kidex">
+      <Text size="xl" mt={4} fw={800} color="ingress">
         {value}
       </Text>
     </Paper>

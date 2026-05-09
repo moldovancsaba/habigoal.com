@@ -1,102 +1,228 @@
-import { createTheme, type MantineThemeOverride } from "@mantine/core";
-import { KIDEX_COLORS } from "@/theme/tokens";
-import { KIDEX_FONT_FAMILY_LTR, KIDEX_FONT_FAMILY_RTL, KIDEX_FONT_SIZES, KIDEX_FONT_WEIGHTS } from "@/theme/typography";
+import { createTheme, rgba, type MantineTheme, type MantineThemeOverride } from "@mantine/core";
+import { getSemanticTone, getThemeFoundation, type ThemeMode } from "@/lib/semantic-theme";
+import { APP_FONT_FAMILY_LTR, APP_FONT_FAMILY_RTL, APP_FONT_SIZES, APP_FONT_WEIGHTS } from "@/theme/typography";
 
 type Direction = "ltr" | "rtl";
 
-export function getKidexMantineTheme(mode: "light" | "dark", direction: Direction = "ltr"): MantineThemeOverride {
-  const isDark = mode === "dark";
+export function getSurveyMantineTheme(mode: ThemeMode, direction: Direction = "ltr"): MantineThemeOverride {
+  const foundation = getThemeFoundation(mode);
+  const tone = (name: Parameters<typeof getSemanticTone>[1]) => getSemanticTone(mode, name);
+  const fontFamily = direction === "rtl" ? APP_FONT_FAMILY_RTL : APP_FONT_FAMILY_LTR;
 
   return createTheme({
-    primaryColor: "kidex",
+    primaryColor: "ingress",
     defaultRadius: "md",
-    fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR,
+    fontFamily,
     fontSizes: {
-      xs: KIDEX_FONT_SIZES.xs,
-      sm: KIDEX_FONT_SIZES.sm,
-      md: KIDEX_FONT_SIZES.md,
-      lg: KIDEX_FONT_SIZES.lg,
-      xl: KIDEX_FONT_SIZES.xl
+      xs: APP_FONT_SIZES.xs,
+      sm: APP_FONT_SIZES.sm,
+      md: APP_FONT_SIZES.md,
+      lg: APP_FONT_SIZES.lg,
+      xl: APP_FONT_SIZES.xl
     },
     headings: {
-      fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR,
+      fontFamily,
+      fontWeight: String(APP_FONT_WEIGHTS.bold),
       sizes: {
-        h1: { fontSize: KIDEX_FONT_SIZES.h1, lineHeight: "1.2", fontWeight: String(KIDEX_FONT_WEIGHTS.bold) },
-        h2: { fontSize: KIDEX_FONT_SIZES.h2, lineHeight: "1.25", fontWeight: String(KIDEX_FONT_WEIGHTS.bold) },
-        h3: { fontSize: KIDEX_FONT_SIZES.h3, lineHeight: "1.3", fontWeight: String(KIDEX_FONT_WEIGHTS.semibold) }
+        h1: { fontSize: APP_FONT_SIZES.h1, lineHeight: "1.1", fontWeight: String(APP_FONT_WEIGHTS.extrabold) },
+        h2: { fontSize: APP_FONT_SIZES.h2, lineHeight: "1.2", fontWeight: String(APP_FONT_WEIGHTS.bold) },
+        h3: { fontSize: APP_FONT_SIZES.h3, lineHeight: "1.25", fontWeight: String(APP_FONT_WEIGHTS.bold) },
+        h4: { fontSize: APP_FONT_SIZES.h4, lineHeight: "1.4", fontWeight: String(APP_FONT_WEIGHTS.bold) }
       }
     },
     colors: {
-      kidex: [
-        "#edf8f7",
-        "#d2f0ee",
-        "#a6e0dc",
-        "#77d0ca",
-        "#4ac0b8",
-        KIDEX_COLORS.brandTeal,
-        "#0f8f89",
-        "#0b6e6a",
-        "#084f4c",
-        "#043232"
-      ]
+      ingress: tone("ingress").palette,
+      synthesis: tone("synthesis").palette,
+      knowmore: tone("knowmore").palette,
+      strategy: tone("strategy").palette,
+      checklist: tone("checklist").palette,
+      tactical: tone("tactical").palette,
+      review: tone("review").palette,
+      neutral: tone("neutral").palette
     },
-    black: KIDEX_COLORS.brandNavy,
-    white: KIDEX_COLORS.white,
-    primaryShade: 5,
+    black: foundation.textPrimary,
+    white: "#ffffff",
+    primaryShade: 6,
+    defaultGradient: {
+      from: "ingress.5",
+      to: "strategy.5",
+      deg: 135
+    },
     components: {
       Text: {
         defaultProps: {
-          c: isDark ? "white" : "black",
-          ff: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          c: "var(--text-primary)",
+          ff: fontFamily
         }
       },
       Title: {
         defaultProps: {
-          c: isDark ? "white" : "black",
-          ff: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          c: "var(--text-primary)",
+          ff: fontFamily
+        },
+        styles: {
+          root: {
+            letterSpacing: "-0.03em"
+          }
         }
       },
-      Input: {
+      Paper: {
+        defaultProps: {
+          radius: "md",
+          withBorder: true,
+          shadow: "md"
+        },
         styles: {
-          input: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          root: {
+            background: "linear-gradient(180deg, var(--surface-gradient-top), var(--surface-gradient-bottom)), var(--surface-base)",
+            backdropFilter: "blur(18px) saturate(1.18)",
+            WebkitBackdropFilter: "blur(18px) saturate(1.18)",
+            borderColor: "var(--border-primary)",
+            boxShadow: "var(--surface-shadow-elevated)"
+          }
+        }
+      },
+      Card: {
+        defaultProps: {
+          radius: "md",
+          withBorder: true,
+          padding: "xl",
+          shadow: "md"
+        },
+        styles: {
+          root: {
+            background: "linear-gradient(180deg, var(--surface-gradient-top), var(--surface-gradient-bottom)), var(--surface-base)",
+            backdropFilter: "blur(18px) saturate(1.18)",
+            WebkitBackdropFilter: "blur(18px) saturate(1.18)",
+            borderColor: "var(--border-primary)",
+            boxShadow: "var(--surface-shadow-elevated)"
+          }
+        }
+      },
+      Badge: {
+        defaultProps: {
+          radius: "sm"
+        },
+        styles: {
+          root: {
+            fontWeight: APP_FONT_WEIGHTS.bold,
+            letterSpacing: "0.04em"
           }
         }
       },
       Button: {
-        styles: {
-          root: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
-          }
+        defaultProps: {
+          radius: "md"
+        },
+        styles: (theme: MantineTheme, props: { color?: string }) => {
+          const requestedTone = props.color && props.color in theme.colors ? props.color : "ingress";
+          const selectedTone = tone(requestedTone as Parameters<typeof tone>[0]);
+          return {
+            root: {
+              fontFamily,
+              fontWeight: APP_FONT_WEIGHTS.bold,
+              textTransform: "uppercase",
+              letterSpacing: "0.04em",
+              boxShadow: "0 10px 24px rgba(37, 99, 235, 0.18)",
+              border: `1px solid ${selectedTone.border}`
+            }
+          };
         }
       },
       NavLink: {
+        defaultProps: {
+          variant: "subtle"
+        },
         styles: {
           root: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+            borderRadius: 10
           },
           label: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+            fontFamily,
+            fontWeight: APP_FONT_WEIGHTS.medium,
+            letterSpacing: "-0.01em"
           }
         }
       },
-      Menu: {
+      TextInput: {
         styles: {
-          item: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          input: {
+            fontFamily,
+            background: "var(--surface-elevated)",
+            borderColor: "var(--border-primary)",
+            color: "var(--text-primary)"
+          },
+          label: {
+            fontSize: APP_FONT_SIZES.sm,
+            fontWeight: APP_FONT_WEIGHTS.medium,
+            color: "var(--text-secondary)"
+          },
+          description: {
+            color: "var(--text-muted)",
+            fontStyle: "italic"
           }
         }
       },
-      Table: {
+      Select: {
         styles: {
-          table: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          input: {
+            fontFamily,
+            background: "var(--surface-elevated)",
+            borderColor: "var(--border-primary)",
+            color: "var(--text-primary)"
           },
-          th: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          label: {
+            fontSize: APP_FONT_SIZES.sm,
+            fontWeight: APP_FONT_WEIGHTS.medium,
+            color: "var(--text-secondary)"
           },
-          td: {
-            fontFamily: direction === "rtl" ? KIDEX_FONT_FAMILY_RTL : KIDEX_FONT_FAMILY_LTR
+          description: {
+            color: "var(--text-muted)",
+            fontStyle: "italic"
+          },
+          dropdown: {
+            background: "linear-gradient(180deg, var(--surface-gradient-top), var(--surface-gradient-bottom)), var(--surface-base)",
+            borderColor: "var(--border-primary)",
+            backdropFilter: "blur(18px) saturate(1.18)"
+          }
+        }
+      },
+      Textarea: {
+        styles: {
+          input: {
+            fontFamily,
+            background: "var(--surface-elevated)",
+            borderColor: "var(--border-primary)",
+            color: "var(--text-primary)"
+          },
+          label: {
+            fontSize: APP_FONT_SIZES.sm,
+            fontWeight: APP_FONT_WEIGHTS.medium,
+            color: "var(--text-secondary)"
+          },
+          description: {
+            color: "var(--text-muted)",
+            fontStyle: "italic"
+          }
+        }
+      },
+      Modal: {
+        styles: {
+          content: {
+            background: "linear-gradient(180deg, var(--surface-gradient-top), var(--surface-gradient-bottom)), var(--surface-elevated)",
+            border: "1px solid var(--border-primary)",
+            boxShadow: "0 28px 90px rgba(0, 0, 0, 0.3)",
+            backdropFilter: "blur(22px) saturate(1.18)"
+          },
+          header: {
+            background: "transparent"
+          }
+        }
+      },
+      Divider: {
+        styles: {
+          root: {
+            borderColor: rgba(foundation.textPrimary, 0.08)
           }
         }
       }

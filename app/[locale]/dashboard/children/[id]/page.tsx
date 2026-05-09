@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { rapidSections } from "@/lib/kidex-schema";
+import { rapidSections } from "@/lib/survey-schema";
 import { calculateTrend } from "@/lib/utils/trends";
 import { formatScore } from "@/lib/utils";
 import { PdfService } from "@/lib/pdf-service";
@@ -130,7 +130,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
               {tc("update")}
             </Button>
             <Button 
-              color="kidex" 
+              color="ingress" 
               onClick={() => void downloadPdf()} 
               loading={downloadingPdf}
               disabled={data.assessments.length === 0}
@@ -200,23 +200,23 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
           </Text>
           <Stack gap="md" mt="lg">
             <Paper withBorder p="md" radius="md">
-              <Text fw={700} size="sm" mb="xs" c="green">{td("strengthsTitle")}</Text>
+              <Text fw={700} size="sm" mb="xs" c="knowmore">{td("strengthsTitle")}</Text>
               <Stack gap={4}>
                 {strengths.map(s => (
                   <Group key={s.key} justify="space-between">
                     <Text size="sm">{s.label}</Text>
-                    <Badge variant="light" color="green">{s.score}</Badge>
+                    <Badge variant="light" color="knowmore">{s.score}</Badge>
                   </Group>
                 ))}
               </Stack>
             </Paper>
             <Paper withBorder p="md" radius="md">
-              <Text fw={700} size="sm" mb="xs" c="orange">{td("focusAreasTitle")}</Text>
+              <Text fw={700} size="sm" mb="xs" c="review">{td("focusAreasTitle")}</Text>
               <Stack gap={4}>
                 {focusAreas.map(s => (
                   <Group key={s.key} justify="space-between">
                     <Text size="sm">{s.label}</Text>
-                    <Badge variant="light" color="orange">{s.score}</Badge>
+                    <Badge variant="light" color="review">{s.score}</Badge>
                   </Group>
                 ))}
               </Stack>
@@ -268,7 +268,7 @@ export default function ChildHistoryPage({ params }: { params: Promise<{ id: str
                   <Table.Td>{formatScore(a.computed.socialAverage)}</Table.Td>
                   <Table.Td>{formatScore(a.computed.mentalAverage)}</Table.Td>
                   <Table.Td>
-                    <Text fw={700} color="kidex">{formatScore(a.computed.ski)}</Text>
+                    <Text fw={700} color="ingress">{formatScore(a.computed.ski)}</Text>
                   </Table.Td>
                   <Table.Td>
                     <SparklineChart data={[

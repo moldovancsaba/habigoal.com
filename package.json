@@ -1,5 +1,5 @@
 {
-  "name": "kidex",
+  "name": "survey",
   "version": "0.5.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "db:setup": "node scripts/setup-database.mjs",
-    "db:backfill-standards-version": "node scripts/backfill-standards-version.mjs"
+    "db:backfill-standards-version": "node scripts/backfill-standards-version.mjs",
+    "db:migrate-survey-identifiers": "node scripts/migrate-survey-identifiers.mjs",
+    "semantic:audit": "node scripts/semantic-audit.mjs"
   },
   "dependencies": {
     "@mantine/core": "^8.3.6",

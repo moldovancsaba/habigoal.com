@@ -277,11 +277,11 @@ export default function ChildrenListPage() {
 
   return (
     <Stack gap="md">
-      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><Button color="kidex" onClick={startCreate}>{t("addChild")}</Button></Group>} />
+      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><Button color="ingress" onClick={startCreate}>{t("addChild")}</Button></Group>} />
       <SectionCard>
         <Stack gap="md">
           {message ? (
-            <Alert color={error ? "red" : "kidex"} withCloseButton onClose={() => setMessage("")}>
+            <Alert color={error ? "red" : "ingress"} withCloseButton onClose={() => setMessage("")}>
               {message}
             </Alert>
           ) : null}
@@ -330,7 +330,7 @@ export default function ChildrenListPage() {
                     value={skiRange}
                     onChange={setSkiRange}
                     label={null}
-                    color="kidex"
+                    color="ingress"
                   />
                 </Box>
                 <Group justify="flex-end">
@@ -368,7 +368,7 @@ export default function ChildrenListPage() {
                           href={`/dashboard/children/${child._id}`}
                           fw={800}
                           size="lg"
-                          color="kidex"
+                          color="ingress"
                           style={{ textDecoration: "none" }}
                           onClick={(e) => e.stopPropagation()}
                         >
@@ -379,10 +379,10 @@ export default function ChildrenListPage() {
                         </Text>
                         {child.latestSki !== undefined && (
                           <Group gap="xs" mt={8}>
-                            <Badge color="kidex" variant="filled" size="sm">
+                            <Badge color="ingress" variant="filled" size="sm">
                               LATEST SKI: {formatScore(child.latestSki)}
                             </Badge>
-                            <Badge color="blue" variant="light" size="sm">
+                            <Badge color="ingress" variant="light" size="sm">
                               AVG SKI: {formatScore(child.avgSki)}
                             </Badge>
                             {child.latestLocation && (
@@ -394,13 +394,13 @@ export default function ChildrenListPage() {
                         )}
                       </Box>
                       <Group gap="sm">
-                        {!showDeleted ? <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="kidex" size="sm" onClick={(e) => e.stopPropagation()}>
+                        {!showDeleted ? <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="ingress" size="sm" onClick={(e) => e.stopPropagation()}>
                           {t("newSurveyForChild")}
                         </Button> : null}
                         {child.latestRecordId && (
                           <Button 
                             variant="outline" 
-                            color="kidex" 
+                            color="ingress" 
                             size="sm"
                             onClick={(e) => { 
                               e.stopPropagation(); 
@@ -419,7 +419,7 @@ export default function ChildrenListPage() {
                         </Button> : null}
                         {!showDeleted ? <Button color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }}>
                           {t("deleteChild")}
-                        </Button> : <Button color="kidex" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }}>{t("restoreAction")}</Button>}
+                        </Button> : <Button color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }}>{t("restoreAction")}</Button>}
                       </Group>
                     </Stack>
                   </Paper>
@@ -454,7 +454,7 @@ export default function ChildrenListPage() {
           <Button variant="subtle" onClick={() => setEditing(null)} disabled={saving}>
             {tc("cancel")}
           </Button>
-          <Button onClick={() => void saveEdit()} color="kidex" disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>
+          <Button onClick={() => void saveEdit()} color="ingress" disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>
             {saving ? tc("saving") : tc("save")}
           </Button>
         </Group>
@@ -472,7 +472,7 @@ export default function ChildrenListPage() {
           </Group>
           <Group justify="flex-end" mt="sm">
             <Button variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving}>{tc("cancel")}</Button>
-            <Button color="kidex" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : tc("save")}</Button>
+            <Button color="ingress" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : tc("save")}</Button>
           </Group>
         </Stack>
       </Modal>
@@ -505,7 +505,7 @@ export default function ChildrenListPage() {
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
             <Button variant="subtle" onClick={() => setRestoreTarget(null)}>{tc("cancel")}</Button>
-            <Button color="kidex" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)}>{t("restoreAction")}</Button>
+            <Button color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)}>{t("restoreAction")}</Button>
           </Group>
         </Stack>
       </Modal>

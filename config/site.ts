@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "KIDEX",
-  title: "KIDEX Assessment",
-  description: "Bio-psycho-social assessment app for KIDEX child examinations."
+  name: "Survey",
+  title: "Survey",
+  description: "Survey is a semantic, liquid-glass assessment workspace for structured records and reporting."
 };

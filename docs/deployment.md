@@ -2,7 +2,7 @@
 
 ## GitHub
 
-Repository: `https://github.com/moldovancsaba/kidex`
+Repository: `https://github.com/moldovancsaba/survey`
 
 The deployable app is the repository root.
 
@@ -10,7 +10,7 @@ The deployable app is the repository root.
 
 Create or update the Vercel project with these settings:
 
-- Git repository: `moldovancsaba/kidex`
+- Git repository: `moldovancsaba/survey`
 - Root directory: repository root
 - Framework preset: Next.js
 - Build command: `npm run build`
@@ -31,7 +31,7 @@ IMGBB_API_KEY
 1. Create a database user with read/write access.
 2. Add Vercel outbound access. For an early pilot, Atlas network access can be opened broadly; for production, restrict according to the deployment model available.
 3. Copy the driver connection string into Vercel as `MONGODB_URI`.
-4. Set `MONGODB_DB` to `kidex`.
+4. Set `MONGODB_DB` to `survey`.
 5. Redeploy the Vercel project after changing environment variables.
 
 ## ImgBB Uploads

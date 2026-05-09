@@ -28,7 +28,6 @@ describe("parseSettingsPayload", () => {
     expect(parsed.observers).toEqual([]);
     expect(parsed.locations).toEqual(["Budapest", "Debrecen"]);
     expect(parsed.company).toBeTruthy();
-    expect(parsed.emailTemplates).toBeTruthy();
     expect(parsed.standards).toBeTruthy();
   });
 });

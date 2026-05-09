@@ -10,10 +10,11 @@ export async function GET() {
   const { findUserByEmail } = await import("@/repositories/user.repository");
   const user = await findUserByEmail(session.email);
 
-  return NextResponse.json({ 
+  return NextResponse.json({
     user: {
       ...session,
-      isGoogleLinked: !!user?.googleToken
+      name: user?.name || session.name,
+      role: user?.roles?.join(",") || session.role
     }
   });
 }

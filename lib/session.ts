@@ -2,7 +2,8 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { requireServerEnv } from "@/config/env";
 
-const SESSION_COOKIE_NAME = "kidex_session";
+const SESSION_COOKIE_NAME = "survey_session";
+const LEGACY_SESSION_COOKIE_NAME = "kidex_session";
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export type SessionPayload = {
@@ -61,7 +62,7 @@ export async function createSession(user: { id: string; email: string; name: str
 
 export async function getSession() {
   const cookieStore = await cookies();
-  const session = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  const session = cookieStore.get(SESSION_COOKIE_NAME)?.value ?? cookieStore.get(LEGACY_SESSION_COOKIE_NAME)?.value;
   if (!session) return null;
   return await decrypt(session);
 }
@@ -69,4 +70,5 @@ export async function getSession() {
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
+  cookieStore.delete(LEGACY_SESSION_COOKIE_NAME);
 }

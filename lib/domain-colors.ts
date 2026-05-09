@@ -1,11 +1,12 @@
-import { KIDEX_COLORS } from "@/theme/tokens";
+import { getSemanticTone } from "@/lib/semantic-theme";
+import { DOMAIN_TONES } from "@/theme/tokens";
 
 export type AssessmentDomain = "movement" | "social" | "mental";
 
 const DOMAIN_COLORS: Record<AssessmentDomain, string> = {
-  movement: KIDEX_COLORS.domainMovement,
-  social: KIDEX_COLORS.domainSocial,
-  mental: KIDEX_COLORS.domainMental
+  movement: getSemanticTone("light", DOMAIN_TONES.movement).color,
+  social: getSemanticTone("light", DOMAIN_TONES.social).color,
+  mental: getSemanticTone("light", DOMAIN_TONES.mental).color
 };
 
 function withAlpha(hex: string, alpha: number) {

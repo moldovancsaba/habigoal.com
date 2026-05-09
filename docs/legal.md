@@ -11,14 +11,14 @@ Supported locales currently include `hu`, `en`, and `ar`.
 
 These are the current default values seeded in settings and used until modified in Dashboard Settings.
 
-- **Name:** KIDEX s.r.o.
+- **Name:** Survey s.r.o.
 - **ID-No. (IČO):** 57474869
 - **Registered:** 19.02.2026
 - **Legal form:** Limited Liability Company
 - **Address:** Želiarsky svah 29, Štúrovo, Slovakia 943 01
 - **Share capital:** EUR 5 000
 - **VAT No.:** SK2122770606
-- **Website:** https://kidex.eu
+- **Website:** https://survey.app
 
 ## App version and company profile source
 

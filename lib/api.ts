@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { env } from "@/config/env";
 
-const roleHeader = "x-kidex-role";
+const roleHeader = "x-survey-role";
 
 export function jsonError(message: string, status = 500, code?: string) {
   return NextResponse.json(
@@ -15,7 +15,7 @@ export async function readJson(request: Request): Promise<unknown | null> {
 }
 
 export function requireRole(request: Request, allowedRoles: string[]) {
-  if (!env.kidexEnforceAuth) {
+  if (!env.surveyEnforceAuth) {
     return null;
   }
 

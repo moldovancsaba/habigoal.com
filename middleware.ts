@@ -10,7 +10,7 @@ export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Skip auth check if not enforced
-  if (!env.kidexEnforceAuth) {
+  if (!env.surveyEnforceAuth) {
     return intlMiddleware(request);
   }
 
@@ -28,7 +28,7 @@ export default async function middleware(request: NextRequest) {
   if (pathname.startsWith('/api')) {
     if (isPublicRoute) return NextResponse.next();
 
-    const cookie = request.cookies.get("kidex_session")?.value;
+    const cookie = request.cookies.get("survey_session")?.value ?? request.cookies.get("kidex_session")?.value;
     const session = cookie ? await decrypt(cookie) : null;
 
     if (!session) {
@@ -36,8 +36,8 @@ export default async function middleware(request: NextRequest) {
     }
 
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-kidex-role', session.role || 'user');
-    requestHeaders.set('x-kidex-user-id', session.userId || '');
+    requestHeaders.set("x-survey-role", session.role || "user");
+    requestHeaders.set("x-survey-user-id", session.userId || "");
 
     return NextResponse.next({
       request: { headers: requestHeaders }
@@ -45,7 +45,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   // 4. Handle Page routes
-  const cookie = request.cookies.get("kidex_session")?.value;
+  const cookie = request.cookies.get("survey_session")?.value ?? request.cookies.get("kidex_session")?.value;
   const session = cookie ? await decrypt(cookie) : null;
   const isLegalPage = /\/(hu|en|ar)\/legal\//.test(pathname);
   const isLandingPage = pathname === '/' || /^\/(hu|en|ar)$/.test(pathname) || /^\/(hu|en|ar)\/$/.test(pathname);

@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "kidex";
+const dbName = process.env.MONGODB_DB || "survey";
 
 if (!uri) {
   console.error("Missing MONGODB_URI");
