@@ -85,6 +85,14 @@ type SessionBlueprintPlan = {
   athleteAdjustments: SessionAdjustment[];
 };
 
+type CoachActivitySummary = {
+  acknowledgedCount: number;
+  appliedCount: number;
+  pendingCount: number;
+  latestActions: CoachActionRecord[];
+  pendingAthletes: QueueItem[];
+};
+
 const PRIORITY_QUEUE_LIMIT = 6;
 
 export function MainDashboard() {
@@ -353,6 +361,28 @@ export function MainDashboard() {
     [queueItems, t, ta]
   );
 
+  const coachActivity = useMemo((): CoachActivitySummary => {
+    const latestActions = [...(data?.coachActions ?? [])]
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .slice(0, 6);
+
+    const acknowledgedCount = (data?.coachActions ?? []).filter((action) => action.status === "acknowledged").length;
+    const appliedCount = (data?.coachActions ?? []).filter((action) => action.status === "applied").length;
+
+    const pendingAthletes = queueItems
+      .filter((item) => item.priorityScore > 0)
+      .filter((item) => item.recommendations.length === 0 || item.recommendations.every((recommendation) => !recommendation.action))
+      .slice(0, 5);
+
+    return {
+      acknowledgedCount,
+      appliedCount,
+      pendingCount: pendingAthletes.length,
+      latestActions,
+      pendingAthletes
+    };
+  }, [data, queueItems]);
+
   async function saveCoachAction(athleteKey: string, recommendationKey: string, status: CoachActionStatus) {
     const requestKey = `${athleteKey}:${recommendationKey}:${status}`;
     setSavingActionKey(requestKey);
@@ -561,6 +591,76 @@ export function MainDashboard() {
                         <Badge color={getRecommendationBadgeColor(adjustment.tone)}>
                           {getRecommendationBadgeLabel(adjustment.tone, t)}
                         </Badge>
+                      </Group>
+                    </Box>
+                  ))
+                )}
+              </Stack>
+            </Paper>
+          </SimpleGrid>
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title={t("coachActivityTitle")} subheader={t("coachActivitySubtitle")}>
+        <Stack gap="md">
+          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+            <MetricCard label={t("coachActivityAcknowledgedLabel")} value={String(coachActivity.acknowledgedCount)} tone="yellow" />
+            <MetricCard label={t("coachActivityAppliedLabel")} value={String(coachActivity.appliedCount)} />
+            <MetricCard label={t("coachActivityPendingLabel")} value={String(coachActivity.pendingCount)} tone="red" />
+          </SimpleGrid>
+
+          <Text size="sm" c="dimmed">
+            {t("coachActivityInsight", {
+              acknowledged: coachActivity.acknowledgedCount,
+              applied: coachActivity.appliedCount,
+              pending: coachActivity.pendingCount
+            })}
+          </Text>
+
+          <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
+            <Paper withBorder p="md" radius="md">
+              <Stack gap="sm">
+                <Text fw={700}>{t("coachActivityLatestTitle")}</Text>
+                {coachActivity.latestActions.length === 0 ? (
+                  <Text size="sm" c="dimmed">{t("coachActivityLatestEmpty")}</Text>
+                ) : (
+                  coachActivity.latestActions.map((action) => (
+                    <Box key={`${action.athleteKey}-${action.recommendationKey}-${action.updatedAt}`}>
+                      <Group justify="space-between" align="flex-start" wrap="wrap">
+                        <Box style={{ flex: 1, minWidth: 0 }}>
+                          <Text fw={600}>{resolveAthleteLabel(action.athleteKey, queueItems)}</Text>
+                          <Text size="sm">{getRecommendationTitleForAction(action, queueItems, t)}</Text>
+                          <Text size="sm" c="dimmed">
+                            {t("coachActivityLatestByline", { actor: action.actorName || tc("unknown") })}
+                          </Text>
+                        </Box>
+                        <Badge variant="light" color={getActionStatusColor(action.status)}>
+                          {getActionStatusLabel(action.status, t)}
+                        </Badge>
+                      </Group>
+                    </Box>
+                  ))
+                )}
+              </Stack>
+            </Paper>
+
+            <Paper withBorder p="md" radius="md">
+              <Stack gap="sm">
+                <Text fw={700}>{t("coachActivityPendingTitle")}</Text>
+                {coachActivity.pendingAthletes.length === 0 ? (
+                  <Text size="sm" c="dimmed">{t("coachActivityPendingEmpty")}</Text>
+                ) : (
+                  coachActivity.pendingAthletes.map((item) => (
+                    <Box key={`pending-${item.athlete._id || item.athlete.name}`}>
+                      <Group justify="space-between" align="flex-start" wrap="wrap">
+                        <Box style={{ flex: 1, minWidth: 0 }}>
+                          <Text fw={600}>{item.athlete.name}</Text>
+                          <Text size="sm">{item.recommendations[0]?.title || t("coachActivityPendingFallback")}</Text>
+                          <Text size="sm" c="dimmed">
+                            {item.reasons[0] || t("coachActivityPendingFallback")}
+                          </Text>
+                        </Box>
+                        <Badge color="red">{t("coachActivityPendingBadge")}</Badge>
                       </Group>
                     </Box>
                   ))
@@ -1147,4 +1247,18 @@ function getBlueprintBadgeLabel(variant: SessionBlueprintPlan["variant"], t: Ret
     : variant === "controlled"
       ? t("sessionBlueprintControlledBadge")
       : t("sessionBlueprintStandardBadge");
+}
+
+function resolveAthleteLabel(athleteKey: string, queueItems: QueueItem[]) {
+  return queueItems.find((item) => (item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`) === athleteKey)?.athlete.name || athleteKey;
+}
+
+function getRecommendationTitleForAction(
+  action: CoachActionRecord,
+  queueItems: QueueItem[],
+  t: ReturnType<typeof useTranslations>
+) {
+  const item = queueItems.find((entry) => (entry.athlete._id || `${entry.athlete.name}|${entry.athlete.birthDate}`) === action.athleteKey);
+  const recommendation = item?.recommendations.find((entry) => entry.key === action.recommendationKey);
+  return recommendation?.title || t("coachActivityPendingFallback");
 }
