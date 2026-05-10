@@ -191,7 +191,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
         <Stack gap="xl">
           <Group gap="md" align="center" justify="space-between" wrap="wrap">
             <Group gap="md">
-              <BrandMark size={52} />
+              <BrandMark size={72} />
               <Box>
                 <Title order={3} fw={800}>{t("reportPrintTitle")}</Title>
                 <Text size="sm" c="dimmed">{record.child.name}</Text>

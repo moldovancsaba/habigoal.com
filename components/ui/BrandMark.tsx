@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Box, Text } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { Link } from "@/i18n/navigation";
 
 type BrandMarkProps = {
@@ -10,48 +10,25 @@ type BrandMarkProps = {
   align?: "left" | "center";
 };
 
-export function BrandMark({ size = 88, subtitle, align = "center" }: BrandMarkProps) {
+export function BrandMark({ size = 88, subtitle: _subtitle, align = "center" }: BrandMarkProps) {
   const iconSize = Math.round(size);
-  const subtitleAlign = align === "center" ? "center" : "left";
+  void _subtitle;
 
   return (
     <Link href="/" aria-label="Go to home" style={{ display: "inline-flex", textDecoration: "none" }}>
-      <Box style={{ display: "inline-flex", flexDirection: "column", alignItems: align === "center" ? "center" : "flex-start", gap: 6 }}>
-        <Box
-          className="glass-panel surface-outline"
-          p={Math.max(10, Math.round(size * 0.1))}
+      <Box style={{ display: "inline-flex", alignItems: align === "center" ? "center" : "flex-start", lineHeight: 1 }}>
+        <Image
+          src="/images/habigoal_logo.png"
+          alt="Habigoal"
+          width={iconSize}
+          height={iconSize}
+          priority={size >= 140}
           style={{
-            borderRadius: Math.max(18, Math.round(size * 0.22)),
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            lineHeight: 1
+            width: iconSize,
+            height: iconSize,
+            display: "block"
           }}
-        >
-          <Image
-            src="/images/habigoal_logo.png"
-            alt="Habigoal"
-            width={iconSize}
-            height={iconSize}
-            priority={size >= 140}
-            style={{
-              width: iconSize,
-              height: iconSize,
-              display: "block"
-            }}
-          />
-        </Box>
-        {subtitle ? (
-          <Text
-            size="sm"
-            fw={800}
-            c="var(--text-secondary)"
-            ta={subtitleAlign}
-            style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}
-          >
-            {subtitle}
-          </Text>
-        ) : null}
+        />
       </Box>
     </Link>
   );
