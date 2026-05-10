@@ -23,8 +23,9 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/athlete-iq-survey";
 import { sectionsForMode } from "@/lib/survey-schema";
 import { computeAssessment } from "@/lib/scoring";
-import type { AssessmentPayload, AssessmentRecord, ScoreEntry } from "@/types/assessment";
-import type { ChildProfile } from "@/repositories/child.repository";
+import type { AssessmentPayload, ScoreEntry } from "@/types/assessment";
+import type { CheckInRecord } from "@/types/check-in";
+import type { AthleteProfile } from "@/types/athlete";
 
 const DRAFT_STORAGE_KEY = "survey-draft";
 const LEGACY_DRAFT_STORAGE_KEY = "kidex-draft";
@@ -197,7 +198,7 @@ export function SurveyAssessmentApp() {
   const [recordId, setRecordId] = useState<string>("");
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
-  const [children, setChildren] = useState<ChildProfile[]>([]);
+  const [children, setChildren] = useState<AthleteProfile[]>([]);
   const initializedChildPrefill = useRef(false);
 
   const sections = sectionsForMode(assessment.mode);
@@ -237,9 +238,9 @@ export function SurveyAssessmentApp() {
   }, [domainScores]);
 
   useEffect(() => {
-    void fetch("/api/children")
+    void fetch("/api/athletes")
       .then((response) => response.json())
-      .then((data: ChildProfile[]) => setChildren(Array.isArray(data) ? data : []))
+      .then((data: AthleteProfile[]) => setChildren(Array.isArray(data) ? data : []))
       .catch(() => setChildren([]));
   }, []);
 
@@ -250,9 +251,9 @@ export function SurveyAssessmentApp() {
   useEffect(() => {
     if (!idParam) return;
     void (async () => {
-      const response = await fetch(`/api/assessments/${idParam}`).catch(() => null);
+      const response = await fetch(`/api/check-ins/${idParam}`).catch(() => null);
       if (!response?.ok) return;
-      const data = (await response.json()) as { assessment: AssessmentRecord };
+      const data = (await response.json()) as { assessment: CheckInRecord };
       setAssessment(data.assessment);
       setRecordId(data.assessment._id || "");
     })();
@@ -265,9 +266,9 @@ export function SurveyAssessmentApp() {
     initializedChildPrefill.current = true;
 
     void (async () => {
-      const response = await fetch(`/api/children/${childIdParam}`).catch(() => null);
+      const response = await fetch(`/api/athletes/${childIdParam}`).catch(() => null);
       if (!response?.ok) return;
-      const child = (await response.json()) as ChildProfile;
+      const child = (await response.json()) as AthleteProfile;
 
       setAssessment(() => ({
         ...cloneAssessment(emptyAssessment),
@@ -351,7 +352,7 @@ export function SurveyAssessmentApp() {
     setSaveState("saving");
     setMessage("");
 
-    const url = recordId ? `/api/assessments/${recordId}` : "/api/assessments";
+    const url = recordId ? `/api/check-ins/${recordId}` : "/api/check-ins";
     const response = await fetch(url, {
       method: recordId ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -368,7 +369,7 @@ export function SurveyAssessmentApp() {
       return;
     }
 
-    const data = (await response.json()) as { assessment: AssessmentRecord };
+    const data = (await response.json()) as { assessment: CheckInRecord };
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
     localStorage.removeItem(DRAFT_STORAGE_KEY);

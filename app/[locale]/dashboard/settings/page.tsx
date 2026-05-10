@@ -38,10 +38,10 @@ export default function SettingsPage() {
         setSettings(sData);
         setUsers(uData);
         const [dcRes, daRes] = await Promise.all([
-          fetch("/api/children?deleted=true").then(r => r.json()).catch(() => []),
-          fetch("/api/assessments?deleted=true").then(r => r.json()).catch(() => ({ assessments: [] }))
+          fetch("/api/athletes?deleted=true").then(r => r.json()).catch(() => []),
+          fetch("/api/check-ins?deleted=true").then(r => r.json()).catch(() => ({ assessments: [] }))
         ]);
-        const activeAssessmentsRes = await fetch("/api/assessments").then(r => r.json()).catch(() => ({ assessments: [] }));
+        const activeAssessmentsRes = await fetch("/api/check-ins").then(r => r.json()).catch(() => ({ assessments: [] }));
         setAllAssessments(Array.isArray(activeAssessmentsRes?.assessments) ? activeAssessmentsRes.assessments : []);
         setDeletedChildren(Array.isArray(dcRes) ? dcRes : []);
         setDeletedAssessments(Array.isArray(daRes?.assessments) ? daRes.assessments : []);
@@ -67,7 +67,7 @@ export default function SettingsPage() {
 
   async function restoreChild(id?: string) {
     if (!id) return;
-    const res = await fetch(`/api/children/${id}/restore`, { method: "POST" }).catch(() => null);
+    const res = await fetch(`/api/athletes/${id}/restore`, { method: "POST" }).catch(() => null);
     if (!res?.ok) return setMessage(tc("error"));
     setDeletedChildren((prev) => prev.filter((x) => x._id !== id));
     setMessage(tc("success"));
@@ -75,7 +75,7 @@ export default function SettingsPage() {
 
   async function restoreAssessment(id?: string) {
     if (!id) return;
-    const res = await fetch(`/api/assessments/${id}`, { method: "POST" }).catch(() => null);
+    const res = await fetch(`/api/check-ins/${id}`, { method: "POST" }).catch(() => null);
     if (!res?.ok) return setMessage(tc("error"));
     setDeletedAssessments((prev) => prev.filter((x) => x._id !== id));
     setMessage(tc("success"));

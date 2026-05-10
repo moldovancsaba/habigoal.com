@@ -26,7 +26,7 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { MaturityRadarChart } from "@/components/analytics/MaturityRadarChart";
-import type { AssessmentRecord } from "@/types/assessment";
+import type { CheckInRecord } from "@/types/check-in";
 import { BrandMark } from "@/components/ui/BrandMark";
 
 const RADAR_CHART_HEIGHT = 200;
@@ -58,8 +58,8 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const shouldPrint = searchParams.get("print") === "true";
   const reportFormat = searchParams.get("format") || "original";
 
-  const [record, setRecord] = useState<AssessmentRecord | null>(null);
-  const [history, setHistory] = useState<AssessmentRecord[]>([]);
+  const [record, setRecord] = useState<CheckInRecord | null>(null);
+  const [history, setHistory] = useState<CheckInRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
 
@@ -94,12 +94,12 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   };
 
   useEffect(() => {
-    fetch(`/api/assessments/${id}`)
+    fetch(`/api/check-ins/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setRecord(data.assessment);
         if (data.assessment?.childId) {
-          fetch(`/api/children/${data.assessment.childId}/history`)
+          fetch(`/api/athletes/${data.assessment.childId}/history`)
             .then(r => r.json())
             .then(hData => setHistory(hData.assessments || []));
         }
@@ -546,7 +546,7 @@ function renderRotatedRadiusTick(props: { x?: string | number; y?: string | numb
 
 function buildDomainRadarData(
   domain: AssessmentDomain,
-  record: AssessmentRecord,
+  record: CheckInRecord,
   translate: (key: string) => string
 ) {
   if (!hasTrackerScores(record)) {

@@ -10,14 +10,15 @@ import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
 import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
 import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/athlete-iq-survey";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
-import type { AssessmentRecord } from "@/types/assessment";
+import type { CheckInRecord } from "@/types/check-in";
+import type { AthleteProfile } from "@/types/athlete";
 import type { User } from "@/services/user-service";
 import { formatScore } from "@/lib/utils";
 
 type DashboardData = {
   users: User[];
-  assessments: AssessmentRecord[];
-  childrenCount: number;
+  checkIns: CheckInRecord[];
+  athleteCount: number;
 };
 
 type PillarAveragePoint = {
@@ -52,23 +53,23 @@ export function MainDashboard() {
   useEffect(() => {
     void Promise.all([
       fetch("/api/users").then((r) => r.json() as Promise<{ users: User[] }>),
-      fetch("/api/assessments").then((r) => r.json() as Promise<{ assessments: AssessmentRecord[] }>),
-      fetch("/api/children").then((r) => r.json() as Promise<Array<{ _id?: string }>>)
+      fetch("/api/check-ins").then((r) => r.json() as Promise<{ assessments: CheckInRecord[] }>),
+      fetch("/api/athletes").then((r) => r.json() as Promise<AthleteProfile[]>)
     ])
-      .then(([usersData, assessmentsData, childrenData]) => {
+      .then(([usersData, checkInsData, athletesData]) => {
         setData({
           users: usersData.users ?? [],
-          assessments: assessmentsData.assessments ?? [],
-          childrenCount: Array.isArray(childrenData) ? childrenData.length : 0
+          checkIns: checkInsData.assessments ?? [],
+          athleteCount: Array.isArray(athletesData) ? athletesData.length : 0
         });
       })
-      .catch(() => setData({ users: [], assessments: [], childrenCount: 0 }))
+      .catch(() => setData({ users: [], checkIns: [], athleteCount: 0 }))
       .finally(() => setLoading(false));
   }, []);
 
   const latestByAthlete = useMemo(() => {
-    const latest = new Map<string, AssessmentRecord>();
-    for (const assessment of data?.assessments ?? []) {
+    const latest = new Map<string, CheckInRecord>();
+    for (const assessment of data?.checkIns ?? []) {
       const athleteKey = assessment.childId || `${assessment.child.name}|${assessment.child.birthDate}`;
       const current = latest.get(athleteKey);
       if (!current || new Date(assessment.createdAt).getTime() > new Date(current.createdAt).getTime()) {
@@ -79,8 +80,8 @@ export function MainDashboard() {
   }, [data]);
 
   const earliestByAthlete = useMemo(() => {
-    const first = new Map<string, AssessmentRecord>();
-    for (const assessment of data?.assessments ?? []) {
+    const first = new Map<string, CheckInRecord>();
+    for (const assessment of data?.checkIns ?? []) {
       const athleteKey = assessment.childId || `${assessment.child.name}|${assessment.child.birthDate}`;
       const current = first.get(athleteKey);
       if (!current || new Date(assessment.createdAt).getTime() < new Date(current.createdAt).getTime()) {
@@ -90,8 +91,8 @@ export function MainDashboard() {
     return Array.from(first.values());
   }, [data]);
 
-  const totalSessions = data?.assessments.length ?? 0;
-  const totalAthletes = data?.childrenCount ?? 0;
+  const totalSessions = data?.checkIns.length ?? 0;
+  const totalAthletes = data?.athleteCount ?? 0;
   const avgSessionsPerAthlete = totalAthletes ? (totalSessions / totalAthletes).toFixed(1) : "0.0";
   const activeStaff = data?.users.filter((user) => user.roles.includes("conductor") || user.roles.includes("observer")).length ?? 0;
 
@@ -111,7 +112,7 @@ export function MainDashboard() {
   }, [latestByAthlete]);
 
   const sessionCompletionRate = useMemo(() => {
-    const assessments = data?.assessments ?? [];
+    const assessments = data?.checkIns ?? [];
     if (assessments.length === 0) return 0;
     const done = assessments.reduce((sum, assessment) => sum + assessment.computed.completion.done, 0);
     const total = assessments.reduce((sum, assessment) => sum + assessment.computed.completion.total, 0);
@@ -131,7 +132,7 @@ export function MainDashboard() {
     ].filter((item) => item.value > 0);
   }, [latestByAthlete, ta, theme.colors.knowmore, theme.colors.review, theme.colors.synthesis]);
 
-  const sessionVolume = useMemo(() => buildSessionVolume(data?.assessments ?? []), [data]);
+  const sessionVolume = useMemo(() => buildSessionVolume(data?.checkIns ?? []), [data]);
 
   const pillarBenchmark = useMemo((): PillarAveragePoint[] => {
     return athleteIqPillars.map((pillar) => ({
@@ -141,11 +142,11 @@ export function MainDashboard() {
     }));
   }, [earliestByAthlete, latestByAthlete, ta]);
 
-  const pillarTrendSeries = useMemo(() => buildPillarTrendSeries(data?.assessments ?? []), [data]);
+  const pillarTrendSeries = useMemo(() => buildPillarTrendSeries(data?.checkIns ?? []), [data]);
 
   const locationReadiness = useMemo(() => {
     const map = new Map();
-    (data?.assessments ?? []).forEach((assessment) => {
+    (data?.checkIns ?? []).forEach((assessment) => {
       const location = assessment.session.location || tc("unknown");
       if (!map.has(location)) {
         map.set(location, { readiness: 0, sessions: 0 });
@@ -313,7 +314,7 @@ function MetricCard({ label, value }: { label: string; value: string }) {
   );
 }
 
-function getPillarScore(assessment: AssessmentRecord, key: string) {
+function getPillarScore(assessment: CheckInRecord, key: string) {
   return getCompatiblePillarScore(assessment, key as (typeof athleteIqPillars)[number]["key"]);
 }
 
@@ -322,7 +323,7 @@ function average(values: number[]) {
   return Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(2));
 }
 
-function buildSessionVolume(assessments: AssessmentRecord[]) {
+function buildSessionVolume(assessments: CheckInRecord[]) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const days = Array.from({ length: 30 }, (_, index) => {
@@ -343,11 +344,11 @@ function buildSessionVolume(assessments: AssessmentRecord[]) {
   return days.map(({ date, value }) => ({ date, value }));
 }
 
-function buildPillarTrendSeries(assessments: AssessmentRecord[]): Record<string, TrendPoint[]> {
+function buildPillarTrendSeries(assessments: CheckInRecord[]): Record<string, TrendPoint[]> {
   const buckets = Object.fromEntries(
     athleteIqPillars.map((pillar) => [pillar.key, [] as TrendPoint[]])
   ) as Record<string, TrendPoint[]>;
-  const groupedByDate = new Map<string, AssessmentRecord[]>();
+  const groupedByDate = new Map<string, CheckInRecord[]>();
 
   assessments.forEach((assessment) => {
     const key = assessment.session.date;

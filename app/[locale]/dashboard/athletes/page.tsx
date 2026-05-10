@@ -8,11 +8,11 @@ import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { formatScore } from "@/lib/utils";
-import type { ChildProfile } from "@/repositories/child.repository";
+import type { AthleteProfile } from "@/types/athlete";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
 import { withDisplayNamesForReport } from "@/lib/report-user-display";
-import type { AssessmentRecord } from "@/types/assessment";
+import type { CheckInRecord } from "@/types/check-in";
 
 type BaselineDraft = {
   heightCm?: number;
@@ -44,12 +44,12 @@ export default function ChildrenListPage() {
   const tr = useTranslations("Report");
   const { locale } = useParams();
 
-  const [children, setChildren] = useState<ChildProfile[]>([]);
+  const [children, setChildren] = useState<AthleteProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
-  const [editing, setEditing] = useState<ChildProfile | null>(null);
+  const [editing, setEditing] = useState<AthleteProfile | null>(null);
   const [draftName, setDraftName] = useState("");
   const [draftBirthDate, setDraftBirthDate] = useState("");
   const [draftKnownTraits, setDraftKnownTraits] = useState("");
@@ -65,11 +65,11 @@ export default function ChildrenListPage() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [readinessRange, setReadinessRange] = useState<[number, number]>([0, 5]);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<ChildProfile | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AthleteProfile | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
-  const [deletedChildren, setDeletedChildren] = useState<ChildProfile[]>([]);
+  const [deletedChildren, setDeletedChildren] = useState<AthleteProfile[]>([]);
   const [showDeleted, setShowDeleted] = useState(false);
-  const [restoreTarget, setRestoreTarget] = useState<ChildProfile | null>(null);
+  const [restoreTarget, setRestoreTarget] = useState<AthleteProfile | null>(null);
   const [restoreConfirmText, setRestoreConfirmText] = useState("");
 
   useEffect(() => {
@@ -77,19 +77,19 @@ export default function ChildrenListPage() {
 
     void (async () => {
       const [cRes, sRes] = await Promise.all([
-        fetch("/api/children?metrics=true").catch(() => null),
+        fetch("/api/athletes?metrics=true").catch(() => null),
         fetch("/api/settings").catch(() => null)
       ]);
-      const dcRes = await fetch("/api/children?deleted=true").catch(() => null);
+      const dcRes = await fetch("/api/athletes?deleted=true").catch(() => null);
       
       if (!active) return;
 
       if (cRes?.ok) {
-        const data = (await cRes.json()) as ChildProfile[];
+        const data = (await cRes.json()) as AthleteProfile[];
         setChildren(data);
       }
       if (dcRes?.ok) {
-        const d = (await dcRes.json()) as ChildProfile[];
+        const d = (await dcRes.json()) as AthleteProfile[];
         setDeletedChildren(Array.isArray(d) ? d : []);
       }
       
@@ -111,13 +111,13 @@ export default function ChildrenListPage() {
     setDownloadingId(childId);
     try {
       const [aRes, hRes] = await Promise.all([
-        fetch(`/api/assessments/${latestRecordId}`),
-        fetch(`/api/children/${childId}/history`)
+        fetch(`/api/check-ins/${latestRecordId}`),
+        fetch(`/api/athletes/${childId}/history`)
       ]);
 
       if (!aRes.ok) throw new Error("Failed to fetch assessment");
       
-      const { assessment } = (await aRes.json()) as { assessment: AssessmentRecord };
+      const { assessment } = (await aRes.json()) as { assessment: CheckInRecord };
       const historyData = hRes.ok ? (await hRes.json()).assessments : [];
       
       const users = await getUsers();
@@ -156,9 +156,9 @@ export default function ChildrenListPage() {
     });
   }, [children, deletedChildren, query, selectedLocations, readinessRange, showDeleted]);
 
-  async function restoreChild(child: ChildProfile) {
+  async function restoreChild(child: AthleteProfile) {
     if (!child._id) return;
-    const res = await fetch(`/api/children/${child._id}/restore`, { method: "POST" }).catch(() => null);
+    const res = await fetch(`/api/athletes/${child._id}/restore`, { method: "POST" }).catch(() => null);
     if (!res?.ok) return;
     setDeletedChildren((prev) => prev.filter((x) => x._id !== child._id));
     setChildren((prev) => [...prev, child].sort((a, b) => a.name.localeCompare(b.name)));
@@ -166,7 +166,7 @@ export default function ChildrenListPage() {
     setRestoreConfirmText("");
   }
 
-  function startEdit(child: ChildProfile) {
+  function startEdit(child: AthleteProfile) {
     setEditing(child);
     setDraftName(child.name);
     setDraftBirthDate(child.birthDate);
@@ -197,7 +197,7 @@ export default function ChildrenListPage() {
     }
 
     setSaving(true);
-    const response = await fetch(`/api/children/${editing._id}`, {
+    const response = await fetch(`/api/athletes/${editing._id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -221,7 +221,7 @@ export default function ChildrenListPage() {
       return;
     }
 
-    const updated = (await response.json()) as ChildProfile;
+    const updated = (await response.json()) as AthleteProfile;
     setChildren((current) => current.map((child) => (child._id === updated._id ? updated : child)));
     setEditing(null);
     setError(false);
@@ -231,7 +231,7 @@ export default function ChildrenListPage() {
   async function createChild() {
     if (!draftName.trim() || !draftBirthDate.trim()) return;
     setSaving(true);
-    const response = await fetch("/api/children", {
+    const response = await fetch("/api/athletes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -253,16 +253,16 @@ export default function ChildrenListPage() {
       setMessage(tc("error"));
       return;
     }
-    const created = (await response.json()) as ChildProfile;
+    const created = (await response.json()) as AthleteProfile;
     setChildren((current) => [...current, created].sort((a, b) => a.name.localeCompare(b.name)));
     setCreateOpen(false);
     setError(false);
     setMessage(tc("success"));
   }
 
-  async function deleteChild(child: ChildProfile) {
+  async function deleteChild(child: AthleteProfile) {
     if (!child._id) return;
-    const response = await fetch(`/api/children/${child._id}`, { method: "DELETE" }).catch(() => null);
+    const response = await fetch(`/api/athletes/${child._id}`, { method: "DELETE" }).catch(() => null);
     if (!response?.ok) {
       setError(true);
       setMessage(tc("error"));

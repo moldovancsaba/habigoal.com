@@ -21,8 +21,19 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - [Design System](docs/design-system.md)
 - [Deployment](docs/deployment.md)
 - [Definition of Done](docs/dod.md)
+- [GitHub Project Board Bootstrap](config/gh-project-board.json)
 - [Legal and Company Info](docs/legal.md)
 - [Product Roadmap](ROADMAP.md)
+
+## GitHub Project Bootstrap
+
+Build the repository project board with:
+
+```bash
+./scripts/bootstrap-gh-project-board.sh moldovancsaba habigoal.com
+```
+
+The board definition lives in `config/gh-project-board.json`.
 
 ## Software Versions
 

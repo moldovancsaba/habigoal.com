@@ -17,12 +17,12 @@ import { SparklineChart } from "@/components/analytics/SparklineChart";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/athlete-iq-survey";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
-import type { AssessmentRecord } from "@/types/assessment";
-import type { ChildProfile } from "@/repositories/child.repository";
+import type { CheckInRecord } from "@/types/check-in";
+import type { AthleteProfile } from "@/types/athlete";
 
 type AthleteHistoryPayload = {
-  child: ChildProfile;
-  assessments: AssessmentRecord[];
+  child: AthleteProfile;
+  assessments: CheckInRecord[];
 };
 
 const PILLAR_COLORS: Record<string, string> = {
@@ -48,7 +48,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [deletingSurvey, setDeletingSurvey] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/children/${id}/history`)
+    fetch(`/api/athletes/${id}/history`)
       .then((res) => res.json())
       .then(setData)
       .finally(() => setLoading(false));
@@ -73,7 +73,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   async function deleteLatestSurvey() {
     if (!data?.assessments?.[0]?._id) return;
     setDeletingSurvey(true);
-    const response = await fetch(`/api/assessments/${data.assessments[0]._id}`, { method: "DELETE" }).catch(() => null);
+    const response = await fetch(`/api/check-ins/${data.assessments[0]._id}`, { method: "DELETE" }).catch(() => null);
     setDeletingSurvey(false);
     if (!response?.ok) return;
     setData((current) => current ? { ...current, assessments: current.assessments.slice(1) } : current);
@@ -377,7 +377,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   );
 }
 
-function getSessionProfile(record: AssessmentRecord, translate: (key: string) => string, emptyValue: string) {
+function getSessionProfile(record: CheckInRecord, translate: (key: string) => string, emptyValue: string) {
   const scoredPillars = athleteIqPillars.map((pillar) => ({
     key: pillar.key,
     label: translate(pillar.title),

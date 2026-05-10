@@ -8,15 +8,15 @@ import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { formatScore } from "@/lib/utils";
 import { SectionCard } from "@/components/ui/SectionCard";
-import type { AssessmentRecord } from "@/types/assessment";
+import type { CheckInRecord } from "@/types/check-in";
 
 export default function RecordsPage() {
   const t = useTranslations("Dashboard");
   const ta = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const { locale } = useParams();
-  const [savedRecords, setSavedRecords] = useState<AssessmentRecord[]>([]);
-  const [deletedRecords, setDeletedRecords] = useState<AssessmentRecord[]>([]);
+  const [savedRecords, setSavedRecords] = useState<CheckInRecord[]>([]);
+  const [deletedRecords, setDeletedRecords] = useState<CheckInRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [showDeleted, setShowDeleted] = useState(false);
@@ -25,16 +25,16 @@ export default function RecordsPage() {
 
   useEffect(() => {
     void (async () => {
-      const response = await fetch("/api/assessments").catch(() => null);
-      const deletedResponse = await fetch("/api/assessments?deleted=true").catch(() => null);
+      const response = await fetch("/api/check-ins").catch(() => null);
+      const deletedResponse = await fetch("/api/check-ins?deleted=true").catch(() => null);
       if (!response?.ok) {
         setLoading(false);
         return;
       }
-      const data = (await response.json()) as { assessments?: AssessmentRecord[] };
+      const data = (await response.json()) as { assessments?: CheckInRecord[] };
       setSavedRecords(data.assessments || []);
       if (deletedResponse?.ok) {
-        const deletedData = (await deletedResponse.json()) as { assessments?: AssessmentRecord[] };
+        const deletedData = (await deletedResponse.json()) as { assessments?: CheckInRecord[] };
         setDeletedRecords(deletedData.assessments || []);
       }
       setLoading(false);
@@ -54,7 +54,7 @@ export default function RecordsPage() {
 
   async function restoreAssessment(id?: string) {
     if (!id) return;
-    const res = await fetch(`/api/assessments/${id}`, { method: "POST" }).catch(() => null);
+    const res = await fetch(`/api/check-ins/${id}`, { method: "POST" }).catch(() => null);
     if (!res?.ok) return;
     const restored = deletedRecords.find((r) => r._id === id);
     if (restored) setSavedRecords((prev) => [restored, ...prev]);
