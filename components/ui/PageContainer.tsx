@@ -13,7 +13,7 @@ export function PageContainer({ children }: { children: React.ReactNode }) {
         marginInline: "auto"
       }}
       px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
-      pt={{ base: APP_LAYOUT.mobileTopClearance, sm: 24 }}
+      pt={{ base: 8, sm: 24 }}
     >
       {children}
     </Box>

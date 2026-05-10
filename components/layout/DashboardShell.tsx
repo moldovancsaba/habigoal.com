@@ -190,28 +190,32 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         </AppShell.Navbar>
 
         <AppShell.Main>
-          <Burger
-            opened={mobileOpen}
-            onClick={() => setMobileOpen((v) => !v)}
-            size="md"
-            hiddenFrom="md"
-            style={{
-              position: "fixed",
-              top: APP_LAYOUT.mobileNavInset,
-              left: APP_LAYOUT.mobileNavInset,
-              zIndex: 300,
-              borderRadius: 999,
-              boxShadow: "var(--surface-shadow-elevated)",
-              border: "1px solid var(--border-primary)",
-              minWidth: APP_LAYOUT.mobileNavSize,
-              minHeight: APP_LAYOUT.mobileNavSize,
-              backdropFilter: "blur(16px) saturate(1.1)",
-              WebkitBackdropFilter: "blur(16px) saturate(1.1)"
-            }}
-            color="var(--text-primary)"
-            bg="var(--surface-base)"
-          />
           <Box className="dashboard-main" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
+            <Box
+              hiddenFrom="md"
+              px={APP_LAYOUT.pageGutterMobile}
+              pt={APP_LAYOUT.mobileNavInset}
+              pb={8}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <Burger
+                opened={mobileOpen}
+                onClick={() => setMobileOpen((v) => !v)}
+                size="md"
+                color="var(--text-primary)"
+                bg="transparent"
+                styles={{
+                  root: {
+                    padding: 0,
+                    minWidth: APP_LAYOUT.mobileNavSize,
+                    minHeight: APP_LAYOUT.mobileNavSize,
+                    border: "none",
+                    boxShadow: "none",
+                    background: "transparent"
+                  }
+                }}
+              />
+            </Box>
             <Box style={{ flex: 1 }}>
               <PageContainer>{children}</PageContainer>
             </Box>
