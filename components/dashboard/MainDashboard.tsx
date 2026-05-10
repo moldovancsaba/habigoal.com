@@ -67,6 +67,21 @@ type Recommendation = {
   tone: "red" | "yellow" | "blue" | "green";
 };
 
+type SessionAdjustment = {
+  athlete: AthleteProfile;
+  summary: string;
+  detail: string;
+  tone: Recommendation["tone"];
+};
+
+type SessionBlueprintPlan = {
+  variant: "standard" | "controlled" | "recovery";
+  label: string;
+  summary: string;
+  steps: string[];
+  athleteAdjustments: SessionAdjustment[];
+};
+
 const PRIORITY_QUEUE_LIMIT = 6;
 
 export function MainDashboard() {
@@ -316,6 +331,11 @@ export function MainDashboard() {
     [queueItems]
   );
 
+  const sessionBlueprint = useMemo(
+    () => buildSessionBlueprint(queueItems, t),
+    [queueItems, t]
+  );
+
   if (loading) {
     return (
       <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
@@ -417,6 +437,57 @@ export function MainDashboard() {
             })}
           </SimpleGrid>
         )}
+      </SectionCard>
+
+      <SectionCard title={t("sessionBlueprintTitle")} subheader={t("sessionBlueprintSubtitle")}>
+        <Stack gap="md">
+          <Group justify="space-between" align="flex-start">
+            <Box>
+              <Text fw={700}>{sessionBlueprint.label}</Text>
+              <Text size="sm" c="dimmed">{sessionBlueprint.summary}</Text>
+            </Box>
+            <Badge color={getBlueprintBadgeColor(sessionBlueprint.variant)}>
+              {getBlueprintBadgeLabel(sessionBlueprint.variant, t)}
+            </Badge>
+          </Group>
+
+          <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
+            <Paper withBorder p="md" radius="md">
+              <Stack gap="sm">
+                <Text fw={700}>{t("sessionBlueprintStepsTitle")}</Text>
+                {sessionBlueprint.steps.map((step) => (
+                  <Text key={step} size="sm">
+                    {step}
+                  </Text>
+                ))}
+              </Stack>
+            </Paper>
+
+            <Paper withBorder p="md" radius="md">
+              <Stack gap="sm">
+                <Text fw={700}>{t("sessionBlueprintAdjustmentsTitle")}</Text>
+                {sessionBlueprint.athleteAdjustments.length === 0 ? (
+                  <Text size="sm" c="dimmed">{t("sessionBlueprintAdjustmentsEmpty")}</Text>
+                ) : (
+                  sessionBlueprint.athleteAdjustments.map((adjustment) => (
+                    <Box key={`adjustment-${adjustment.athlete._id || adjustment.athlete.name}`}>
+                      <Group justify="space-between" align="flex-start">
+                        <Box style={{ flex: 1, minWidth: 0 }}>
+                          <Text fw={600}>{adjustment.athlete.name}</Text>
+                          <Text size="sm">{adjustment.summary}</Text>
+                          <Text size="sm" c="dimmed">{adjustment.detail}</Text>
+                        </Box>
+                        <Badge color={getRecommendationBadgeColor(adjustment.tone)}>
+                          {getRecommendationBadgeLabel(adjustment.tone, t)}
+                        </Badge>
+                      </Group>
+                    </Box>
+                  ))
+                )}
+              </Stack>
+            </Paper>
+          </SimpleGrid>
+        </Stack>
       </SectionCard>
 
       <Text size="sm" c="dimmed">
@@ -848,4 +919,93 @@ function getRecommendationBadgeLabel(tone: Recommendation["tone"], t: ReturnType
       : tone === "green"
         ? t("recommendationToneOnTrack")
         : t("recommendationTonePlan");
+}
+
+function buildSessionBlueprint(queueItems: QueueItem[], t: ReturnType<typeof useTranslations>): SessionBlueprintPlan {
+  const supportCount = queueItems.filter((item) => item.supportLevel === "support").length;
+  const watchCount = queueItems.filter((item) => item.supportLevel === "watch").length;
+  const checkedInTodayCount = queueItems.filter((item) => item.checkedInToday).length;
+  const missingCount = queueItems.length - checkedInTodayCount;
+  const supportHeavy = supportCount >= Math.max(2, Math.ceil(queueItems.length * 0.25));
+  const watchHeavy = supportCount + watchCount >= Math.max(3, Math.ceil(queueItems.length * 0.4));
+
+  const variant: SessionBlueprintPlan["variant"] =
+    supportHeavy ? "recovery" :
+    watchHeavy || missingCount >= Math.max(2, Math.ceil(queueItems.length * 0.25)) ? "controlled" :
+    "standard";
+
+  const label =
+    variant === "recovery" ? t("sessionBlueprintRecoveryLabel") :
+    variant === "controlled" ? t("sessionBlueprintControlledLabel") :
+    t("sessionBlueprintStandardLabel");
+
+  const summary = t(
+    variant === "recovery"
+      ? "sessionBlueprintRecoverySummary"
+      : variant === "controlled"
+        ? "sessionBlueprintControlledSummary"
+        : "sessionBlueprintStandardSummary",
+    {
+      support: supportCount,
+      watch: watchCount,
+      missing: missingCount,
+      total: queueItems.length
+    }
+  );
+
+  const steps =
+    variant === "recovery"
+      ? [
+          t("sessionBlueprintRecoveryStep1"),
+          t("sessionBlueprintRecoveryStep2"),
+          t("sessionBlueprintRecoveryStep3"),
+          t("sessionBlueprintRecoveryStep4")
+        ]
+      : variant === "controlled"
+        ? [
+            t("sessionBlueprintControlledStep1"),
+            t("sessionBlueprintControlledStep2"),
+            t("sessionBlueprintControlledStep3"),
+            t("sessionBlueprintControlledStep4")
+          ]
+        : [
+            t("blueprintStandardStep1"),
+            t("blueprintStandardStep2"),
+            t("blueprintStandardStep3"),
+            t("blueprintStandardStep4"),
+            t("blueprintStandardStep5")
+          ];
+
+  const athleteAdjustments = queueItems
+    .filter((item) => item.supportLevel !== "ready" || !item.checkedInToday)
+    .slice(0, 5)
+    .map((item): SessionAdjustment => {
+      const primaryRecommendation = item.recommendations[0];
+
+      return {
+        athlete: item.athlete,
+        summary:
+          item.supportLevel === "support"
+            ? t("sessionAdjustmentSupportSummary")
+            : item.supportLevel === "watch"
+              ? t("sessionAdjustmentWatchSummary")
+              : t("sessionAdjustmentMissingSummary"),
+        detail: primaryRecommendation?.detail || t("sessionBlueprintAdjustmentsEmpty"),
+        tone: primaryRecommendation?.tone || (item.supportLevel === "support" ? "red" : item.supportLevel === "watch" ? "yellow" : "blue")
+      };
+    });
+
+  return { variant, label, summary, steps, athleteAdjustments };
+}
+
+function getBlueprintBadgeColor(variant: SessionBlueprintPlan["variant"]) {
+  return variant === "recovery" ? "red" : variant === "controlled" ? "yellow" : "green";
+}
+
+function getBlueprintBadgeLabel(variant: SessionBlueprintPlan["variant"], t: ReturnType<typeof useTranslations>) {
+  return variant === "recovery"
+    ? t("sessionBlueprintRecoveryBadge")
+    : variant === "controlled"
+      ? t("sessionBlueprintControlledBadge")
+      : t("sessionBlueprintStandardBadge");
 }
