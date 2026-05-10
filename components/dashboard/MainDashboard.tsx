@@ -1,52 +1,70 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Box, Loader, Paper, SimpleGrid, Stack, Text, useMantineTheme } from "@mantine/core";
+import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
-import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
-import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/athlete-iq-survey";
-import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
+import { athleteIqPillars, getReadinessMode } from "@/lib/athlete-iq-survey";
+import { getCompatiblePillarScore, getCompatibleReadinessScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
 import type { User } from "@/services/user-service";
 import { formatScore } from "@/lib/utils";
+import { DEFAULT_SURVEY_SETTINGS, type SurveySettings } from "@/services/settings-service";
 
 type DashboardData = {
   users: User[];
   checkIns: CheckInRecord[];
-  athleteCount: number;
+  athletes: AthleteProfile[];
+  settings: SurveySettings;
 };
 
-type PillarAveragePoint = {
-  subject: string;
-  individual: number;
-  average: number;
+type QueueItem = {
+  athlete: AthleteProfile;
+  latestCheckIn: CheckInRecord | null;
+  checkedInToday: boolean;
+  supportLevel: "support" | "watch" | "ready";
+  readinessScore: number;
+  readinessChecks: number;
+  readinessTotal: number;
+  priorityScore: number;
+  reasons: string[];
+  supportAreas: string[];
 };
 
-type TrendPoint = {
-  date: string;
-  value: number;
+type ActionBucket = {
+  label: string;
+  count: number;
+  color: string;
 };
 
-const PILLAR_COLORS: Record<string, string> = {
-  physical_pillar: "var(--mantine-color-tactical-6)",
-  mental_pillar: "var(--mantine-color-synthesis-6)",
-  sport_brain_pillar: "var(--mantine-color-strategy-6)"
+type LocationSummary = {
+  location: string;
+  total: number;
+  checkedInToday: number;
+  ready: number;
+  watch: number;
+  support: number;
+  priorityAthletes: string[];
 };
 
-function dayLabel(date: Date) {
-  return new Intl.DateTimeFormat(undefined, { month: "2-digit", day: "2-digit" }).format(date);
-}
+type EscalationItem = {
+  athlete: AthleteProfile;
+  title: string;
+  detail: string;
+  severity: "critical" | "warning";
+  athleteHref: string;
+  checkInHref: string;
+};
+
+const PRIORITY_QUEUE_LIMIT = 6;
 
 export function MainDashboard() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const ta = useTranslations("Assessment");
-  const theme = useMantineTheme();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -54,121 +72,220 @@ export function MainDashboard() {
     void Promise.all([
       fetch("/api/users").then((r) => r.json() as Promise<{ users: User[] }>),
       fetch("/api/check-ins").then((r) => r.json() as Promise<{ assessments: CheckInRecord[] }>),
-      fetch("/api/athletes").then((r) => r.json() as Promise<AthleteProfile[]>)
+      fetch("/api/athletes?metrics=true").then((r) => r.json() as Promise<AthleteProfile[]>),
+      fetch("/api/settings").then((r) => r.json() as Promise<SurveySettings>)
     ])
-      .then(([usersData, checkInsData, athletesData]) => {
+      .then(([usersData, checkInsData, athletesData, settingsData]) => {
         setData({
           users: usersData.users ?? [],
           checkIns: checkInsData.assessments ?? [],
-          athleteCount: Array.isArray(athletesData) ? athletesData.length : 0
+          athletes: Array.isArray(athletesData) ? athletesData : [],
+          settings: { ...DEFAULT_SURVEY_SETTINGS, ...settingsData, alerting: { ...DEFAULT_SURVEY_SETTINGS.alerting, ...(settingsData?.alerting ?? {}) } }
         });
       })
-      .catch(() => setData({ users: [], checkIns: [], athleteCount: 0 }))
+      .catch(() => setData({ users: [], checkIns: [], athletes: [], settings: DEFAULT_SURVEY_SETTINGS }))
       .finally(() => setLoading(false));
   }, []);
 
-  const latestByAthlete = useMemo(() => {
+  const latestCheckInByAthlete = useMemo(() => {
     const latest = new Map<string, CheckInRecord>();
-    for (const assessment of data?.checkIns ?? []) {
-      const athleteKey = assessment.childId || `${assessment.child.name}|${assessment.child.birthDate}`;
+
+    for (const checkIn of data?.checkIns ?? []) {
+      const athleteKey = checkIn.childId || `${checkIn.child.name}|${checkIn.child.birthDate}`;
       const current = latest.get(athleteKey);
-      if (!current || new Date(assessment.createdAt).getTime() > new Date(current.createdAt).getTime()) {
-        latest.set(athleteKey, assessment);
+      if (!current || new Date(checkIn.createdAt).getTime() > new Date(current.createdAt).getTime()) {
+        latest.set(athleteKey, checkIn);
       }
     }
-    return Array.from(latest.values());
+
+    return latest;
   }, [data]);
 
-  const earliestByAthlete = useMemo(() => {
-    const first = new Map<string, CheckInRecord>();
-    for (const assessment of data?.checkIns ?? []) {
-      const athleteKey = assessment.childId || `${assessment.child.name}|${assessment.child.birthDate}`;
-      const current = first.get(athleteKey);
-      if (!current || new Date(assessment.createdAt).getTime() < new Date(current.createdAt).getTime()) {
-        first.set(athleteKey, assessment);
-      }
-    }
-    return Array.from(first.values());
-  }, [data]);
+  const queueItems = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const watchThreshold = data?.settings.alerting.watchReadinessThreshold ?? DEFAULT_SURVEY_SETTINGS.alerting.watchReadinessThreshold;
+    const supportThreshold = data?.settings.alerting.supportReadinessThreshold ?? DEFAULT_SURVEY_SETTINGS.alerting.supportReadinessThreshold;
 
-  const totalSessions = data?.checkIns.length ?? 0;
-  const totalAthletes = data?.athleteCount ?? 0;
-  const avgSessionsPerAthlete = totalAthletes ? (totalSessions / totalAthletes).toFixed(1) : "0.0";
+    return (data?.athletes ?? [])
+      .map((athlete): QueueItem => {
+        const athleteKey = athlete._id || `${athlete.name}|${athlete.birthDate}`;
+        const latestCheckIn = latestCheckInByAthlete.get(athleteKey) ?? null;
+        const checkedInToday = latestCheckIn?.session.date === today;
+        const readinessState = latestCheckIn ? getCompatibleReadinessState(latestCheckIn) : { count: 0, total: 9, gaugeValue: 0 };
+        const readinessScore = latestCheckIn ? getCompatibleReadinessScore(latestCheckIn) : 0;
+        const readinessMode = latestCheckIn ? getReadinessMode(readinessState.count, readinessState.total) : "light";
+
+        const supportLevel =
+          readinessScore < supportThreshold ? "support" :
+          readinessScore < watchThreshold || readinessMode === "moderate" ? "watch" :
+          "ready";
+        const supportAreas = latestCheckIn ? athleteIqPillars
+          .map((pillar) => ({ title: ta(pillar.title), score: getCompatiblePillarScore(latestCheckIn, pillar.key) }))
+          .filter((pillar) => pillar.score < watchThreshold)
+          .sort((a, b) => a.score - b.score)
+          .map((pillar) => pillar.title) : [];
+
+        const reasons: string[] = [];
+        let priorityScore = 0;
+
+        if (!latestCheckIn) {
+          reasons.push(t("priorityReasonNoCheckIn"));
+          priorityScore += 8;
+        } else if (!checkedInToday) {
+          reasons.push(t("priorityReasonMissedToday"));
+          priorityScore += 6;
+        }
+
+        if (supportLevel === "support") {
+          reasons.push(t("priorityReasonSupportMode"));
+          priorityScore += 5;
+        } else if (supportLevel === "watch") {
+          reasons.push(t("priorityReasonWatchMode"));
+          priorityScore += 2;
+        }
+
+        if (latestCheckIn && latestCheckIn.computed.completion.done < latestCheckIn.computed.completion.total) {
+          reasons.push(t("priorityReasonLowCompletion"));
+          priorityScore += 1;
+        }
+
+        if (supportAreas.length > 0) {
+          reasons.push(`${t("priorityReasonSupportArea")}: ${supportAreas.slice(0, 2).join(", ")}`);
+          priorityScore += Math.min(3, supportAreas.length);
+        }
+
+        return {
+          athlete,
+          latestCheckIn,
+          checkedInToday,
+          supportLevel,
+          readinessScore,
+          readinessChecks: readinessState.count,
+          readinessTotal: readinessState.total,
+          priorityScore,
+          reasons,
+          supportAreas
+        };
+      })
+      .sort((a, b) => {
+        if (b.priorityScore !== a.priorityScore) return b.priorityScore - a.priorityScore;
+        if (a.checkedInToday !== b.checkedInToday) return Number(a.checkedInToday) - Number(b.checkedInToday);
+        return a.athlete.name.localeCompare(b.athlete.name);
+      });
+  }, [data, latestCheckInByAthlete, t, ta]);
+
+  const priorityAthletes = queueItems.filter((item) => item.priorityScore > 0).slice(0, PRIORITY_QUEUE_LIMIT);
+  const missedCheckIns = queueItems.filter((item) => !item.checkedInToday);
+  const supportFlags = queueItems.filter((item) => item.supportLevel !== "ready").slice(0, PRIORITY_QUEUE_LIMIT);
+
+  const checkedInTodayCount = queueItems.filter((item) => item.checkedInToday).length;
+  const supportNowCount = queueItems.filter((item) => item.supportLevel === "support").length;
+  const watchNowCount = queueItems.filter((item) => item.supportLevel === "watch").length;
   const activeStaff = data?.users.filter((user) => user.roles.includes("conductor") || user.roles.includes("observer")).length ?? 0;
 
-  const readinessCompliance = useMemo(() => {
-    if (latestByAthlete.length === 0) return 0;
-    const aggregate = latestByAthlete.reduce(
-      (sum, assessment) => {
-        const readiness = getCompatibleReadinessState(assessment);
-        return {
-          count: sum.count + readiness.count,
-          total: sum.total + readiness.total
-        };
-      },
-      { count: 0, total: 0 }
-    );
-    return aggregate.total ? Number(((aggregate.count / aggregate.total) * 100).toFixed(0)) : 0;
-  }, [latestByAthlete]);
+  const actionBuckets: ActionBucket[] = [
+    { label: t("actionBucketReady"), count: queueItems.filter((item) => item.supportLevel === "ready").length, color: "var(--mantine-color-ingress-6)" },
+    { label: t("actionBucketWatch"), count: watchNowCount, color: "var(--mantine-color-review-6)" },
+    { label: t("actionBucketSupport"), count: supportNowCount, color: "var(--mantine-color-red-6)" }
+  ];
 
-  const sessionCompletionRate = useMemo(() => {
-    const assessments = data?.checkIns ?? [];
-    if (assessments.length === 0) return 0;
-    const done = assessments.reduce((sum, assessment) => sum + assessment.computed.completion.done, 0);
-    const total = assessments.reduce((sum, assessment) => sum + assessment.computed.completion.total, 0);
-    return total ? Number(((done / total) * 100).toFixed(0)) : 0;
-  }, [data]);
+  const bucketQueues = useMemo(
+    () => ({
+      ready: queueItems.filter((item) => item.supportLevel === "ready").slice(0, 4),
+      watch: queueItems.filter((item) => item.supportLevel === "watch").slice(0, 4),
+      support: queueItems.filter((item) => item.supportLevel === "support").slice(0, 4)
+    }),
+    [queueItems]
+  );
 
-  const readinessDistribution = useMemo(() => {
-    const counts = { full: 0, moderate: 0, light: 0 };
-    latestByAthlete.forEach((assessment) => {
-      const readiness = getCompatibleReadinessState(assessment);
-      counts[getReadinessMode(readiness.count, readiness.total)] += 1;
-    });
-    return [
-      { name: ta("readinessModeFull"), value: counts.full, color: theme.colors.knowmore[6] },
-      { name: ta("readinessModeModerate"), value: counts.moderate, color: theme.colors.review[6] },
-      { name: ta("readinessModeLight"), value: counts.light, color: theme.colors.synthesis[7] }
-    ].filter((item) => item.value > 0);
-  }, [latestByAthlete, ta, theme.colors.knowmore, theme.colors.review, theme.colors.synthesis]);
+  const locationSummaries = useMemo(() => {
+    const byLocation = new Map<string, LocationSummary>();
 
-  const sessionVolume = useMemo(() => buildSessionVolume(data?.checkIns ?? []), [data]);
-
-  const pillarBenchmark = useMemo((): PillarAveragePoint[] => {
-    return athleteIqPillars.map((pillar) => ({
-      subject: ta(pillar.title),
-      individual: average(latestByAthlete.map((assessment) => getPillarScore(assessment, pillar.key))) ?? 0,
-      average: average(earliestByAthlete.map((assessment) => getPillarScore(assessment, pillar.key))) ?? 0
-    }));
-  }, [earliestByAthlete, latestByAthlete, ta]);
-
-  const pillarTrendSeries = useMemo(() => buildPillarTrendSeries(data?.checkIns ?? []), [data]);
-
-  const locationReadiness = useMemo(() => {
-    const map = new Map();
-    (data?.checkIns ?? []).forEach((assessment) => {
-      const location = assessment.session.location || tc("unknown");
-      if (!map.has(location)) {
-        map.set(location, { readiness: 0, sessions: 0 });
+    for (const item of queueItems) {
+      const location = item.athlete.latestLocation || item.latestCheckIn?.session.location || tc("unknown");
+      if (!byLocation.has(location)) {
+        byLocation.set(location, {
+          location,
+          total: 0,
+          checkedInToday: 0,
+          ready: 0,
+          watch: 0,
+          support: 0,
+          priorityAthletes: []
+        });
       }
-      const entry = map.get(location);
-      entry.readiness += getCompatibleReadinessState(assessment).count;
-      entry.sessions += 1;
-    });
-    return Array.from(map.entries())
-      .map(([name, entry]) => ({
-        name,
-        readiness: Number((entry.readiness / entry.sessions).toFixed(1)),
-        sessions: entry.sessions
-      }))
-      .sort((a, b) => b.readiness - a.readiness);
-  }, [data, tc]);
 
-  const organizationalPressure = useMemo(() => {
-    return [...pillarBenchmark]
-      .sort((a, b) => a.individual - b.individual)
-      .slice(0, 3);
-  }, [pillarBenchmark]);
+      const entry = byLocation.get(location);
+      if (!entry) continue;
+
+      entry.total += 1;
+      if (item.checkedInToday) entry.checkedInToday += 1;
+      entry[item.supportLevel] += 1;
+      if (item.priorityScore > 0 && entry.priorityAthletes.length < 3) {
+        entry.priorityAthletes.push(item.athlete.name);
+      }
+    }
+
+    return Array.from(byLocation.values()).sort((a, b) => {
+      if (b.support !== a.support) return b.support - a.support;
+      if (b.watch !== a.watch) return b.watch - a.watch;
+      return a.location.localeCompare(b.location);
+    });
+  }, [queueItems, tc]);
+
+  const escalationDigest = useMemo(() => {
+    const cutoffHour = data?.settings.alerting.missedCheckInCutoffHour ?? DEFAULT_SURVEY_SETTINGS.alerting.missedCheckInCutoffHour;
+    const nowHour = new Date().getHours();
+    const digestEnabled = data?.settings.alerting.dailyDigestEnabled ?? true;
+    if (!digestEnabled) {
+      return [] as EscalationItem[];
+    }
+
+    const items: EscalationItem[] = [];
+
+    for (const item of queueItems) {
+      const athleteHref = item.athlete._id ? `/dashboard/athletes/${item.athlete._id}` : "/dashboard/athletes";
+      const checkInHref = item.athlete._id ? `/dashboard/assessment?childId=${item.athlete._id}` : "/dashboard/assessment";
+
+      if (!item.checkedInToday && nowHour >= cutoffHour) {
+        items.push({
+          athlete: item.athlete,
+          title: t("escalationMissedCheckInTitle"),
+          detail: t("escalationMissedCheckInBody", { hour: cutoffHour }),
+          severity: "critical",
+          athleteHref,
+          checkInHref
+        });
+      }
+
+      if (item.supportLevel === "support") {
+        items.push({
+          athlete: item.athlete,
+          title: t("escalationSupportModeTitle"),
+          detail: t("escalationSupportModeBody", {
+            score: formatScore(item.readinessScore),
+            areas: item.supportAreas.slice(0, 2).join(", ") || tc("emptyValue")
+          }),
+          severity: "critical",
+          athleteHref,
+          checkInHref
+        });
+      } else if (item.supportLevel === "watch") {
+        items.push({
+          athlete: item.athlete,
+          title: t("escalationWatchModeTitle"),
+          detail: t("escalationWatchModeBody", {
+            score: formatScore(item.readinessScore)
+          }),
+          severity: "warning",
+          athleteHref,
+          checkInHref
+        });
+      }
+    }
+
+    return items.slice(0, 8);
+  }, [data, queueItems, t, tc]);
 
   if (loading) {
     return (
@@ -180,195 +297,336 @@ export function MainDashboard() {
 
   return (
     <Stack gap="lg">
-      <PageHeader title={t("overview")} subtitle={t("performanceOverviewSubtitle")} />
+      <PageHeader title={t("commandCenterTitle")} subtitle={t("commandCenterSubtitle")} />
 
-      <SimpleGrid cols={{ base: 1, sm: 2, lg: 5 }} spacing="md">
-        <MetricCard label={t("totalChildren")} value={String(totalAthletes)} />
-        <MetricCard label={t("totalRecords")} value={String(totalSessions)} />
-        <MetricCard label={t("avgRecordsPerChild")} value={avgSessionsPerAthlete} />
-        <MetricCard label={t("readinessAdherenceLabel")} value={`${readinessCompliance}%`} />
-        <MetricCard label={t("completionRateLabel")} value={`${sessionCompletionRate}%`} />
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+        <MetricCard label={t("totalChildren")} value={String(data?.athletes.length ?? 0)} />
+        <MetricCard label={t("todayCheckInsLabel")} value={String(checkedInTodayCount)} />
+        <MetricCard label={t("missedCheckInsLabel")} value={String(missedCheckIns.length)} tone="red" />
+        <MetricCard label={t("supportFlagsLabel")} value={String(supportNowCount + watchNowCount)} tone="yellow" />
       </SimpleGrid>
+
+      <SectionCard title={t("alertDigestTitle")} subheader={t("alertDigestSubtitle")}>
+        {escalationDigest.length === 0 ? (
+          <Text size="sm" c="dimmed">{t("alertDigestEmpty")}</Text>
+        ) : (
+          <Stack gap="sm">
+            {escalationDigest.map((alert) => (
+              <Paper key={`${alert.athlete._id || alert.athlete.name}-${alert.title}`} withBorder p="md" radius="md">
+                <Stack gap="sm">
+                  <Group justify="space-between" align="flex-start">
+                    <Box>
+                      <Text fw={700}>{alert.athlete.name}</Text>
+                      <Text size="sm" c="dimmed">{alert.title}</Text>
+                    </Box>
+                    <Badge color={alert.severity === "critical" ? "red" : "yellow"}>
+                      {alert.severity === "critical" ? t("alertSeverityCritical") : t("alertSeverityWarning")}
+                    </Badge>
+                  </Group>
+                  <Text size="sm">{alert.detail}</Text>
+                  <Group gap="sm">
+                    <Button component={Link} href={alert.athleteHref} variant="default" size="sm">
+                      {t("openAthleteAction")}
+                    </Button>
+                    <Button component={Link} href={alert.checkInHref} color="ingress" size="sm">
+                      {t("startCheckInAction")}
+                    </Button>
+                  </Group>
+                </Stack>
+              </Paper>
+            ))}
+          </Stack>
+        )}
+      </SectionCard>
+
       <Text size="sm" c="dimmed">
-        {t("performanceOverviewInsight", {
-          athletes: totalAthletes,
-          sessions: totalSessions,
-          average: avgSessionsPerAthlete,
-          readiness: readinessCompliance,
-          completion: sessionCompletionRate
+        {t("commandCenterInsight", {
+          checkedIn: checkedInTodayCount,
+          total: data?.athletes.length ?? 0,
+          missed: missedCheckIns.length,
+          support: supportNowCount,
+          watch: watchNowCount,
+          staff: activeStaff
         })}
       </Text>
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-        <SectionCard title={t("readinessDistributionTitle")} subheader={t("readinessDistributionSubtitle")}>
-          <Box style={{ height: 240 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={readinessDistribution} innerRadius={54} outerRadius={82} paddingAngle={4} dataKey="value">
-                  {readinessDistribution.map((entry, index) => (
-                    <Cell key={`slice-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend verticalAlign="bottom" height={36} />
-              </PieChart>
-            </ResponsiveContainer>
-          </Box>
-          <Text size="sm" c="dimmed">
-            {t("readinessDistributionInsight", {
-              full: readinessDistribution.find((item) => item.name === ta("readinessModeFull"))?.value ?? 0,
-              moderate: readinessDistribution.find((item) => item.name === ta("readinessModeModerate"))?.value ?? 0,
-              light: readinessDistribution.find((item) => item.name === ta("readinessModeLight"))?.value ?? 0
-            })}
-          </Text>
+        <SectionCard title={t("priorityQueueTitle")} subheader={t("priorityQueueSubtitle")}>
+          <Stack gap="sm">
+            {priorityAthletes.length === 0 ? (
+              <Text size="sm" c="dimmed">{t("priorityQueueEmpty")}</Text>
+            ) : (
+              priorityAthletes.map((item) => (
+                <QueueCard
+                  key={item.athlete._id || `${item.athlete.name}-${item.athlete.birthDate}`}
+                  item={item}
+                  t={t}
+                  tc={tc}
+                />
+              ))
+            )}
+          </Stack>
         </SectionCard>
 
-        <SectionCard title={t("pillarBenchmarkTitle")} subheader={t("pillarBenchmarkSubtitle")}>
-          <BenchmarkChart
-            title={t("pillarBenchmarkInnerTitle")}
-            data={pillarBenchmark}
-            labels={{
-              individual: t("currentAssessment"),
-              average: t("baselineAssessment")
-            }}
-          />
-          <Text size="sm" c="dimmed">
-            {t("pillarBenchmarkInsight", {
-              strongest: pillarBenchmark.slice().sort((a, b) => b.individual - a.individual)[0]?.subject ?? tc("emptyValue"),
-              focus: organizationalPressure[0]?.subject ?? tc("emptyValue")
+        <SectionCard title={t("teamActionBucketsTitle")} subheader={t("teamActionBucketsSubtitle")}>
+          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+            {actionBuckets.map((bucket) => (
+              <Paper key={bucket.label} withBorder p="md" radius="md">
+                <Text size="sm" c="dimmed">{bucket.label}</Text>
+                <Text size="xl" fw={800}>{bucket.count}</Text>
+                <Box mt="sm" h={8} style={{ borderRadius: 999, background: bucket.color, opacity: 0.85 }} />
+              </Paper>
+            ))}
+          </SimpleGrid>
+          <Text size="sm" c="dimmed" mt="md">
+            {t("teamActionBucketsInsight", {
+              ready: actionBuckets[0]?.count ?? 0,
+              watch: actionBuckets[1]?.count ?? 0,
+              support: actionBuckets[2]?.count ?? 0
             })}
           </Text>
         </SectionCard>
       </SimpleGrid>
 
-      <SectionCard title={t("sessionVolumeTitle")} subheader={t("sessionVolumeSubtitle")}>
-        <LongitudinalChart data={sessionVolume} color="var(--mantine-color-ingress-6)" yDomain={[0, Math.max(6, ...sessionVolume.map((item) => item.value), 1)]} />
-      </SectionCard>
-
-      <SectionCard title={t("pillarTrendTitle")} subheader={t("pillarTrendSubtitle")}>
-        <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-          {athleteIqPillars.map((pillar) => (
-            <LongitudinalChart
-              key={pillar.key}
-              title={ta(pillar.title)}
-              data={pillarTrendSeries[pillar.key] ?? []}
-              color={PILLAR_COLORS[pillar.key]}
-            />
-          ))}
-        </SimpleGrid>
-      </SectionCard>
-
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-        <SectionCard title={t("locationReadinessTitle")} subheader={t("locationReadinessSubtitle")}>
-          <Box style={{ height: 280 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={locationReadiness} layout="vertical" margin={{ left: 30, right: 16 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-primary)" />
-                <XAxis type="number" domain={[0, readinessChecklist.length]} hide />
-                <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 11, fill: "var(--mantine-color-text)" }} axisLine={false} tickLine={false} />
-                <Tooltip />
-                <Bar dataKey="readiness" fill="var(--mantine-color-knowmore-6)" radius={[0, 4, 4, 0]} barSize={18} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Box>
-          <Text size="sm" c="dimmed">
-            {t("locationReadinessInsight", {
-              location: locationReadiness[0]?.name ?? tc("unknown"),
-              readiness: locationReadiness[0]?.readiness ?? 0
-            })}
-          </Text>
+        <SectionCard title={t("missedQueueTitle")} subheader={t("missedQueueSubtitle")}>
+          <Stack gap="sm">
+            {missedCheckIns.length === 0 ? (
+              <Text size="sm" c="dimmed">{t("missedQueueEmpty")}</Text>
+            ) : (
+              missedCheckIns.slice(0, PRIORITY_QUEUE_LIMIT).map((item) => (
+                <QueueCard
+                  key={`missed-${item.athlete._id || `${item.athlete.name}-${item.athlete.birthDate}`}`}
+                  item={item}
+                  t={t}
+                  tc={tc}
+                  emphasizeMissing
+                />
+              ))
+            )}
+          </Stack>
         </SectionCard>
 
-        <SectionCard title={t("pressureBoardTitle")} subheader={t("pressureBoardSubtitle")}>
-          <Stack gap="md">
-            {organizationalPressure.map((pillar) => (
-              <Paper key={pillar.subject} withBorder p="md" radius="md">
-                <Text size="sm" fw={700}>{pillar.subject}</Text>
-                <Text size="sm" c="dimmed" mt={4}>
-                  {t("pressureBoardItem", {
-                    current: formatScore(pillar.individual),
-                    baseline: formatScore(pillar.average)
-                  })}
-                </Text>
-              </Paper>
-            ))}
-            <Text size="sm" c="dimmed">
-              {t("pressureBoardInsight", {
-                staff: activeStaff,
-                locations: locationReadiness.length
-              })}
-            </Text>
+        <SectionCard title={t("supportFlagsTitle")} subheader={t("supportFlagsSubtitle")}>
+          <Stack gap="sm">
+            {supportFlags.length === 0 ? (
+              <Text size="sm" c="dimmed">{t("supportFlagsEmpty")}</Text>
+            ) : (
+              supportFlags.map((item) => (
+                <QueueCard
+                  key={`support-${item.athlete._id || `${item.athlete.name}-${item.athlete.birthDate}`}`}
+                  item={item}
+                  t={t}
+                  tc={tc}
+                />
+              ))
+            )}
           </Stack>
         </SectionCard>
       </SimpleGrid>
+
+      <SectionCard title={t("teamLocationSummaryTitle")} subheader={t("teamLocationSummarySubtitle")}>
+        {locationSummaries.length === 0 ? (
+          <Text size="sm" c="dimmed">{t("teamLocationSummaryEmpty")}</Text>
+        ) : (
+          <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
+            {locationSummaries.map((summary) => (
+              <Paper key={summary.location} withBorder p="md" radius="md">
+                <Stack gap="sm">
+                  <Group justify="space-between" align="flex-start">
+                    <Box>
+                      <Text fw={700}>{summary.location}</Text>
+                      <Text size="sm" c="dimmed">
+                        {t("teamLocationSummaryCounts", {
+                          checkedIn: summary.checkedInToday,
+                          total: summary.total
+                        })}
+                      </Text>
+                    </Box>
+                    <Badge color={summary.support > 0 ? "red" : summary.watch > 0 ? "yellow" : "green"}>
+                      {summary.support > 0 ? t("actionBucketSupport") : summary.watch > 0 ? t("actionBucketWatch") : t("actionBucketReady")}
+                    </Badge>
+                  </Group>
+
+                  <SimpleGrid cols={3} spacing="xs">
+                    <MiniBucketStat label={t("actionBucketReady")} value={summary.ready} tone="green" />
+                    <MiniBucketStat label={t("actionBucketWatch")} value={summary.watch} tone="yellow" />
+                    <MiniBucketStat label={t("actionBucketSupport")} value={summary.support} tone="red" />
+                  </SimpleGrid>
+
+                  <Text size="sm" c="dimmed">
+                    {summary.priorityAthletes.length > 0
+                      ? t("teamLocationPriorityAthletes", { athletes: summary.priorityAthletes.join(", ") })
+                      : t("teamLocationPriorityAthletesEmpty")}
+                  </Text>
+                </Stack>
+              </Paper>
+            ))}
+          </SimpleGrid>
+        )}
+      </SectionCard>
+
+      <SectionCard title={t("bucketDrilldownTitle")} subheader={t("bucketDrilldownSubtitle")}>
+        <SimpleGrid cols={{ base: 1, xl: 3 }} spacing="md">
+          <BucketColumn
+            title={t("actionBucketReady")}
+            items={bucketQueues.ready}
+            badgeColor="green"
+            emptyText={t("bucketDrilldownEmptyReady")}
+            t={t}
+            tc={tc}
+          />
+          <BucketColumn
+            title={t("actionBucketWatch")}
+            items={bucketQueues.watch}
+            badgeColor="yellow"
+            emptyText={t("bucketDrilldownEmptyWatch")}
+            t={t}
+            tc={tc}
+          />
+          <BucketColumn
+            title={t("actionBucketSupport")}
+            items={bucketQueues.support}
+            badgeColor="red"
+            emptyText={t("bucketDrilldownEmptySupport")}
+            t={t}
+            tc={tc}
+          />
+        </SimpleGrid>
+      </SectionCard>
     </Stack>
   );
 }
 
-function MetricCard({ label, value }: { label: string; value: string }) {
+function MetricCard({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "red" | "yellow" }) {
+  const color = tone === "red" ? "var(--mantine-color-red-6)" : tone === "yellow" ? "var(--mantine-color-review-6)" : "var(--mantine-color-ingress-6)";
   return (
     <Paper withBorder p="md" radius="md">
       <Text size="sm" c="dimmed">{label}</Text>
       <Text size="xl" fw={800}>{value}</Text>
+      <Box mt="sm" h={6} style={{ borderRadius: 999, background: color, opacity: 0.85 }} />
     </Paper>
   );
 }
 
-function getPillarScore(assessment: CheckInRecord, key: string) {
-  return getCompatiblePillarScore(assessment, key as (typeof athleteIqPillars)[number]["key"]);
+function MiniBucketStat({ label, value, tone }: { label: string; value: number; tone: "green" | "yellow" | "red" }) {
+  return (
+    <Paper withBorder p="sm" radius="md">
+      <Text size="sm" c="dimmed">{label}</Text>
+      <Text fw={700} c={tone === "red" ? "red" : tone === "yellow" ? "yellow.7" : "green.7"}>
+        {value}
+      </Text>
+    </Paper>
+  );
 }
 
-function average(values: number[]) {
-  if (!values.length) return null;
-  return Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(2));
+function BucketColumn({
+  title,
+  items,
+  badgeColor,
+  emptyText,
+  t,
+  tc
+}: {
+  title: string;
+  items: QueueItem[];
+  badgeColor: string;
+  emptyText: string;
+  t: ReturnType<typeof useTranslations>;
+  tc: ReturnType<typeof useTranslations>;
+}) {
+  return (
+    <Paper withBorder p="md" radius="md">
+      <Stack gap="sm">
+        <Group justify="space-between" align="center">
+          <Text fw={700}>{title}</Text>
+          <Badge color={badgeColor}>{items.length}</Badge>
+        </Group>
+        {items.length === 0 ? (
+          <Text size="sm" c="dimmed">{emptyText}</Text>
+        ) : (
+          items.map((item) => (
+            <Box key={`${title}-${item.athlete._id || item.athlete.name}`}>
+              <Text fw={600}>{item.athlete.name}</Text>
+              <Text size="sm" c="dimmed">
+                {t("bucketDrilldownRow", {
+                  score: formatScore(item.readinessScore),
+                  checks: item.readinessChecks,
+                  total: item.readinessTotal
+                })}
+              </Text>
+              <Text size="sm" c="dimmed">
+                {item.athlete.latestLocation || item.latestCheckIn?.session.location || tc("unknown")}
+              </Text>
+            </Box>
+          ))
+        )}
+      </Stack>
+    </Paper>
+  );
 }
 
-function buildSessionVolume(assessments: CheckInRecord[]) {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const days = Array.from({ length: 30 }, (_, index) => {
-    const date = new Date(now);
-    date.setDate(now.getDate() - (29 - index));
-    return {
-      key: date.toISOString().slice(0, 10),
-      date: dayLabel(date),
-      value: 0
-    };
-  });
-  const byKey = new Map(days.map((day) => [day.key, day]));
-  assessments.forEach((assessment) => {
-    const key = new Date(assessment.createdAt).toISOString().slice(0, 10);
-    const hit = byKey.get(key);
-    if (hit) hit.value += 1;
-  });
-  return days.map(({ date, value }) => ({ date, value }));
-}
+function QueueCard({
+  item,
+  t,
+  tc,
+  emphasizeMissing = false
+}: {
+  item: QueueItem;
+  t: ReturnType<typeof useTranslations>;
+  tc: ReturnType<typeof useTranslations>;
+  emphasizeMissing?: boolean;
+}) {
+  const athleteHref = item.athlete._id ? `/dashboard/athletes/${item.athlete._id}` : "/dashboard/athletes";
+  const checkInHref = item.athlete._id ? `/dashboard/assessment?childId=${item.athlete._id}` : "/dashboard/assessment";
 
-function buildPillarTrendSeries(assessments: CheckInRecord[]): Record<string, TrendPoint[]> {
-  const buckets = Object.fromEntries(
-    athleteIqPillars.map((pillar) => [pillar.key, [] as TrendPoint[]])
-  ) as Record<string, TrendPoint[]>;
-  const groupedByDate = new Map<string, CheckInRecord[]>();
+  return (
+    <Paper withBorder p="md" radius="md">
+      <Stack gap="sm">
+        <Group justify="space-between" align="flex-start" wrap="wrap">
+          <Box style={{ flex: 1, minWidth: 0 }}>
+            <Text fw={700}>{item.athlete.name}</Text>
+            <Text size="sm" c="dimmed">
+              {t("lastCheckInLabel")}: {item.latestCheckIn?.session.date ?? tc("emptyValue")}
+            </Text>
+          </Box>
+          <Group gap="xs">
+            <Badge color={item.supportLevel === "support" ? "red" : item.supportLevel === "watch" ? "yellow" : "green"}>
+              {item.supportLevel === "support" ? t("actionBucketSupport") : item.supportLevel === "watch" ? t("actionBucketWatch") : t("actionBucketReady")}
+            </Badge>
+            <Badge variant="light" color={item.checkedInToday ? "ingress" : emphasizeMissing ? "red" : "gray"}>
+              {item.checkedInToday ? t("todayStatusCheckedIn") : t("todayStatusMissing")}
+            </Badge>
+          </Group>
+        </Group>
 
-  assessments.forEach((assessment) => {
-    const key = assessment.session.date;
-    if (!groupedByDate.has(key)) groupedByDate.set(key, []);
-    const records = groupedByDate.get(key);
-    if (records) {
-      records.push(assessment);
-    }
-  });
+        <Text size="sm">
+          {t("queueReadinessSummary", {
+            score: formatScore(item.readinessScore),
+            checks: item.readinessChecks,
+            total: item.readinessTotal
+          })}
+        </Text>
 
-  Array.from(groupedByDate.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .forEach(([date, records]) => {
-      athleteIqPillars.forEach((pillar) => {
-        buckets[pillar.key].push({
-          date,
-          value: average(records.map((record) => getPillarScore(record, pillar.key))) ?? 0
-        });
-      });
-    });
+        {item.reasons.length > 0 ? (
+          <Stack gap={4}>
+            {item.reasons.slice(0, 3).map((reason) => (
+              <Text key={reason} size="sm" c="dimmed">
+                {reason}
+              </Text>
+            ))}
+          </Stack>
+        ) : null}
 
-  return buckets;
+        <Group gap="sm">
+          <Button component={Link} href={athleteHref} variant="default" size="sm">
+            {t("openAthleteAction")}
+          </Button>
+          <Button component={Link} href={checkInHref} color="ingress" size="sm">
+            {t("startCheckInAction")}
+          </Button>
+        </Group>
+      </Stack>
+    </Paper>
+  );
 }

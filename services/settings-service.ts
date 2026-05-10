@@ -2,6 +2,12 @@ export interface SurveySettings {
   conductors: string[];
   observers: string[];
   locations: string[];
+  alerting: {
+    dailyDigestEnabled: boolean;
+    missedCheckInCutoffHour: number;
+    watchReadinessThreshold: number;
+    supportReadinessThreshold: number;
+  };
   company: {
     name: string;
     ico: string;
@@ -34,6 +40,12 @@ export const DEFAULT_SURVEY_SETTINGS: SurveySettings = {
   conductors: [],
   observers: [],
   locations: [],
+  alerting: {
+    dailyDigestEnabled: true,
+    missedCheckInCutoffHour: 12,
+    watchReadinessThreshold: 4,
+    supportReadinessThreshold: 3
+  },
   company: {
     name: "Habigoal",
     ico: "57474869",
@@ -79,6 +91,10 @@ function normalizeSettings(raw: Partial<SurveySettings> | null | undefined): Sur
     conductors: next.conductors ?? DEFAULT_SURVEY_SETTINGS.conductors,
     observers: next.observers ?? DEFAULT_SURVEY_SETTINGS.observers,
     locations: next.locations ?? DEFAULT_SURVEY_SETTINGS.locations,
+    alerting: {
+      ...DEFAULT_SURVEY_SETTINGS.alerting,
+      ...(next.alerting ?? {})
+    },
     company: {
       ...DEFAULT_SURVEY_SETTINGS.company,
       ...(next.company ?? {})

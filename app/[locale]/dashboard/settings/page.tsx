@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Box, Button, Checkbox, Group, Loader, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Alert, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { DEFAULT_SURVEY_SETTINGS, getSettings, SurveySettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
@@ -471,6 +471,82 @@ export default function SettingsPage() {
               ))}
             </Stack>
           )}
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title={t("alertingTitle")}>
+        <Stack gap="md">
+          <Checkbox
+            label={t("alertingDigestEnabled")}
+            checked={settings.alerting.dailyDigestEnabled}
+            onChange={(event) => setSettings((prev) => ({
+              ...prev,
+              alerting: {
+                ...prev.alerting,
+                dailyDigestEnabled: event.currentTarget.checked
+              }
+            }))}
+          />
+          <Group grow align="end" wrap="wrap">
+            <NumberInput
+              label={t("alertingCutoffHour")}
+              value={settings.alerting.missedCheckInCutoffHour}
+              min={0}
+              max={23}
+              clampBehavior="strict"
+              onChange={(value) => setSettings((prev) => ({
+                ...prev,
+                alerting: {
+                  ...prev.alerting,
+                  missedCheckInCutoffHour: typeof value === "number" ? value : prev.alerting.missedCheckInCutoffHour
+                }
+              }))}
+            />
+            <NumberInput
+              label={t("alertingWatchThreshold")}
+              value={settings.alerting.watchReadinessThreshold}
+              min={1}
+              max={5}
+              decimalScale={1}
+              step={0.1}
+              clampBehavior="strict"
+              onChange={(value) => setSettings((prev) => ({
+                ...prev,
+                alerting: {
+                  ...prev.alerting,
+                  watchReadinessThreshold: typeof value === "number" ? value : prev.alerting.watchReadinessThreshold
+                }
+              }))}
+            />
+            <NumberInput
+              label={t("alertingSupportThreshold")}
+              value={settings.alerting.supportReadinessThreshold}
+              min={1}
+              max={5}
+              decimalScale={1}
+              step={0.1}
+              clampBehavior="strict"
+              onChange={(value) => setSettings((prev) => ({
+                ...prev,
+                alerting: {
+                  ...prev.alerting,
+                  supportReadinessThreshold: typeof value === "number" ? value : prev.alerting.supportReadinessThreshold
+                }
+              }))}
+            />
+          </Group>
+          <Text size="sm" c="dimmed">
+            {t("alertingHint", {
+              hour: settings.alerting.missedCheckInCutoffHour,
+              watch: settings.alerting.watchReadinessThreshold.toFixed(1),
+              support: settings.alerting.supportReadinessThreshold.toFixed(1)
+            })}
+          </Text>
+          <Group justify="flex-end">
+            <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
+              {saving ? tc("saving") : tc("save")}
+            </Button>
+          </Group>
         </Stack>
       </SectionCard>
 

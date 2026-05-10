@@ -108,6 +108,12 @@ export interface SettingsPayload {
   conductors: string[];
   observers: string[];
   locations: string[];
+  alerting: {
+    dailyDigestEnabled: boolean;
+    missedCheckInCutoffHour: number;
+    watchReadinessThreshold: number;
+    supportReadinessThreshold: number;
+  };
   company: {
     name: string;
     ico: string;
@@ -127,10 +133,17 @@ export interface SettingsPayload {
 export function parseSettingsPayload(input: unknown): SettingsPayload {
   const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
   const company = data.company && typeof data.company === "object" ? (data.company as Record<string, unknown>) : {};
+  const alerting = data.alerting && typeof data.alerting === "object" ? (data.alerting as Record<string, unknown>) : {};
   return {
     conductors: stringArray(data.conductors, 100, 240),
     observers: stringArray(data.observers, 100, 240),
     locations: stringArray(data.locations, 100, 240),
+    alerting: {
+      dailyDigestEnabled: booleanValue(alerting.dailyDigestEnabled),
+      missedCheckInCutoffHour: numberValue(alerting.missedCheckInCutoffHour, 0, 23) ?? 12,
+      watchReadinessThreshold: numberValue(alerting.watchReadinessThreshold, 1, 5) ?? 4,
+      supportReadinessThreshold: numberValue(alerting.supportReadinessThreshold, 1, 5) ?? 3
+    },
     company: {
       name: stringValue(company.name, 240).trim(),
       ico: stringValue(company.ico, 120).trim(),
