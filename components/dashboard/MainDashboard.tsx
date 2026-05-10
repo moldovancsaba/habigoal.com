@@ -10,6 +10,7 @@ import { athleteIqPillars, getReadinessMode } from "@/lib/athlete-iq-survey";
 import { getCompatiblePillarScore, getCompatibleReadinessScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
+import type { CoachActionRecord, CoachActionStatus } from "@/types/coach-action";
 import type { User } from "@/services/user-service";
 import { formatScore } from "@/lib/utils";
 import { DEFAULT_SURVEY_SETTINGS, type SurveySettings } from "@/services/settings-service";
@@ -19,6 +20,7 @@ type DashboardData = {
   checkIns: CheckInRecord[];
   athletes: AthleteProfile[];
   settings: SurveySettings;
+  coachActions: CoachActionRecord[];
 };
 
 type QueueItem = {
@@ -65,6 +67,7 @@ type Recommendation = {
   title: string;
   detail: string;
   tone: "red" | "yellow" | "blue" | "green";
+  action?: CoachActionRecord | null;
 };
 
 type SessionAdjustment = {
@@ -90,25 +93,37 @@ export function MainDashboard() {
   const ta = useTranslations("Assessment");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [savingActionKey, setSavingActionKey] = useState<string | null>(null);
 
   useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
     void Promise.all([
       fetch("/api/users").then((r) => r.json() as Promise<{ users: User[] }>),
       fetch("/api/check-ins").then((r) => r.json() as Promise<{ assessments: CheckInRecord[] }>),
       fetch("/api/athletes?metrics=true").then((r) => r.json() as Promise<AthleteProfile[]>),
-      fetch("/api/settings").then((r) => r.json() as Promise<SurveySettings>)
+      fetch("/api/settings").then((r) => r.json() as Promise<SurveySettings>),
+      fetch(`/api/coach-actions?date=${today}`).then((r) => r.json() as Promise<{ actions: CoachActionRecord[] }>)
     ])
-      .then(([usersData, checkInsData, athletesData, settingsData]) => {
+      .then(([usersData, checkInsData, athletesData, settingsData, coachActionsData]) => {
         setData({
           users: usersData.users ?? [],
           checkIns: checkInsData.assessments ?? [],
           athletes: Array.isArray(athletesData) ? athletesData : [],
-          settings: { ...DEFAULT_SURVEY_SETTINGS, ...settingsData, alerting: { ...DEFAULT_SURVEY_SETTINGS.alerting, ...(settingsData?.alerting ?? {}) } }
+          settings: { ...DEFAULT_SURVEY_SETTINGS, ...settingsData, alerting: { ...DEFAULT_SURVEY_SETTINGS.alerting, ...(settingsData?.alerting ?? {}) } },
+          coachActions: coachActionsData.actions ?? []
         });
       })
-      .catch(() => setData({ users: [], checkIns: [], athletes: [], settings: DEFAULT_SURVEY_SETTINGS }))
+      .catch(() => setData({ users: [], checkIns: [], athletes: [], settings: DEFAULT_SURVEY_SETTINGS, coachActions: [] }))
       .finally(() => setLoading(false));
   }, []);
+
+  const coachActionMap = useMemo(() => {
+    const map = new Map<string, CoachActionRecord>();
+    for (const action of data?.coachActions ?? []) {
+      map.set(`${action.athleteKey}:${action.recommendationKey}`, action);
+    }
+    return map;
+  }, [data]);
 
   const latestCheckInByAthlete = useMemo(() => {
     const latest = new Map<string, CheckInRecord>();
@@ -178,6 +193,7 @@ export function MainDashboard() {
         }
 
         const recommendations = buildRecommendations({
+          athleteKey,
           checkedInToday,
           latestCheckIn,
           priorityScore,
@@ -186,6 +202,7 @@ export function MainDashboard() {
           readinessTotal: readinessState.total,
           supportAreas,
           supportLevel,
+          coachActionMap,
           t,
           tc
         });
@@ -209,7 +226,7 @@ export function MainDashboard() {
         if (a.checkedInToday !== b.checkedInToday) return Number(a.checkedInToday) - Number(b.checkedInToday);
         return a.athlete.name.localeCompare(b.athlete.name);
       });
-  }, [data, latestCheckInByAthlete, t, ta, tc]);
+  }, [data, latestCheckInByAthlete, t, ta, tc, coachActionMap]);
 
   const priorityAthletes = queueItems.filter((item) => item.priorityScore > 0).slice(0, PRIORITY_QUEUE_LIMIT);
   const missedCheckIns = queueItems.filter((item) => !item.checkedInToday);
@@ -336,6 +353,42 @@ export function MainDashboard() {
     [queueItems, t]
   );
 
+  async function saveCoachAction(athleteKey: string, recommendationKey: string, status: CoachActionStatus) {
+    const requestKey = `${athleteKey}:${recommendationKey}:${status}`;
+    setSavingActionKey(requestKey);
+
+    try {
+      const response = await fetch("/api/coach-actions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          athleteKey,
+          date: new Date().toISOString().slice(0, 10),
+          recommendationKey,
+          status
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save coach action");
+      }
+
+      const action = (await response.json()) as CoachActionRecord;
+      setData((current) => {
+        if (!current) return current;
+        const remaining = current.coachActions.filter((entry) => !(entry.athleteKey === action.athleteKey && entry.recommendationKey === action.recommendationKey));
+        return {
+          ...current,
+          coachActions: [action, ...remaining]
+        };
+      });
+    } finally {
+      setSavingActionKey(null);
+    }
+  }
+
   if (loading) {
     return (
       <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
@@ -413,6 +466,17 @@ export function MainDashboard() {
 
                     <Text size="sm">{primaryRecommendation.detail}</Text>
 
+                    {primaryRecommendation.action ? (
+                      <Group gap="xs">
+                        <Badge variant="light" color={getActionStatusColor(primaryRecommendation.action.status)}>
+                          {getActionStatusLabel(primaryRecommendation.action.status, t)}
+                        </Badge>
+                        <Text size="sm" c="dimmed">
+                          {t("recommendationStatusByline", { actor: primaryRecommendation.action.actorName || tc("unknown") })}
+                        </Text>
+                      </Group>
+                    ) : null}
+
                     {item.recommendations.length > 1 ? (
                       <Stack gap={4}>
                         {item.recommendations.slice(1, 3).map((recommendation) => (
@@ -424,6 +488,23 @@ export function MainDashboard() {
                     ) : null}
 
                     <Group gap="sm">
+                      <Button
+                        variant="light"
+                        size="sm"
+                        onClick={() => saveCoachAction(item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`, primaryRecommendation.key, "acknowledged")}
+                        loading={savingActionKey === `${item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`}:${primaryRecommendation.key}:acknowledged`}
+                      >
+                        {t("acknowledgeAction")}
+                      </Button>
+                      <Button
+                        variant="light"
+                        size="sm"
+                        color="green"
+                        onClick={() => saveCoachAction(item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`, primaryRecommendation.key, "applied")}
+                        loading={savingActionKey === `${item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`}:${primaryRecommendation.key}:applied`}
+                      >
+                        {t("markAppliedAction")}
+                      </Button>
                       <Button component={Link} href={athleteHref} variant="default" size="sm">
                         {t("openAthleteAction")}
                       </Button>
@@ -513,6 +594,8 @@ export function MainDashboard() {
                   item={item}
                   t={t}
                   tc={tc}
+                  onSaveCoachAction={saveCoachAction}
+                  savingActionKey={savingActionKey}
                 />
               ))
             )}
@@ -552,6 +635,8 @@ export function MainDashboard() {
                   t={t}
                   tc={tc}
                   emphasizeMissing
+                  onSaveCoachAction={saveCoachAction}
+                  savingActionKey={savingActionKey}
                 />
               ))
             )}
@@ -569,6 +654,8 @@ export function MainDashboard() {
                   item={item}
                   t={t}
                   tc={tc}
+                  onSaveCoachAction={saveCoachAction}
+                  savingActionKey={savingActionKey}
                 />
               ))
             )}
@@ -721,15 +808,20 @@ function QueueCard({
   item,
   t,
   tc,
-  emphasizeMissing = false
+  emphasizeMissing = false,
+  onSaveCoachAction,
+  savingActionKey
 }: {
   item: QueueItem;
   t: ReturnType<typeof useTranslations>;
   tc: ReturnType<typeof useTranslations>;
   emphasizeMissing?: boolean;
+  onSaveCoachAction: (athleteKey: string, recommendationKey: string, status: CoachActionStatus) => void;
+  savingActionKey: string | null;
 }) {
   const athleteHref = item.athlete._id ? `/dashboard/athletes/${item.athlete._id}` : "/dashboard/athletes";
   const checkInHref = item.athlete._id ? `/dashboard/assessment?childId=${item.athlete._id}` : "/dashboard/assessment";
+  const athleteKey = item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`;
 
   return (
     <Paper withBorder p="md" radius="md">
@@ -773,14 +865,42 @@ function QueueCard({
           <Stack gap={4}>
             <Text size="sm" fw={600}>{t("nextBestActionsInlineLabel")}</Text>
             {item.recommendations.slice(0, 2).map((recommendation) => (
-              <Text key={recommendation.key} size="sm" c="dimmed">
-                {recommendation.title}
-              </Text>
+              <Group key={recommendation.key} justify="space-between" align="center" wrap="wrap">
+                <Text size="sm" c="dimmed">
+                  {recommendation.title}
+                </Text>
+                {recommendation.action ? (
+                  <Badge variant="light" color={getActionStatusColor(recommendation.action.status)}>
+                    {getActionStatusLabel(recommendation.action.status, t)}
+                  </Badge>
+                ) : null}
+              </Group>
             ))}
           </Stack>
         ) : null}
 
         <Group gap="sm">
+          {item.recommendations[0] ? (
+            <>
+              <Button
+                variant="light"
+                size="sm"
+                onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "acknowledged")}
+                loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:acknowledged`}
+              >
+                {t("acknowledgeAction")}
+              </Button>
+              <Button
+                variant="light"
+                size="sm"
+                color="green"
+                onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "applied")}
+                loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:applied`}
+              >
+                {t("markAppliedAction")}
+              </Button>
+            </>
+          ) : null}
           <Button component={Link} href={athleteHref} variant="default" size="sm">
             {t("openAthleteAction")}
           </Button>
@@ -794,6 +914,7 @@ function QueueCard({
 }
 
 function buildRecommendations({
+  athleteKey,
   checkedInToday,
   latestCheckIn,
   priorityScore,
@@ -802,9 +923,11 @@ function buildRecommendations({
   readinessTotal,
   supportAreas,
   supportLevel,
+  coachActionMap,
   t,
   tc
 }: {
+  athleteKey: string;
   checkedInToday: boolean;
   latestCheckIn: CheckInRecord | null;
   priorityScore: number;
@@ -813,6 +936,7 @@ function buildRecommendations({
   readinessTotal: number;
   supportAreas: string[];
   supportLevel: QueueItem["supportLevel"];
+  coachActionMap: Map<string, CoachActionRecord>;
   t: ReturnType<typeof useTranslations>;
   tc: ReturnType<typeof useTranslations>;
 }) {
@@ -904,7 +1028,10 @@ function buildRecommendations({
     });
   }
 
-  return recommendations.slice(0, 3);
+  return recommendations.slice(0, 3).map((recommendation) => ({
+    ...recommendation,
+    action: coachActionMap.get(`${athleteKey}:${recommendation.key}`) || null
+  }));
 }
 
 function getRecommendationBadgeColor(tone: Recommendation["tone"]) {
@@ -919,6 +1046,14 @@ function getRecommendationBadgeLabel(tone: Recommendation["tone"], t: ReturnType
       : tone === "green"
         ? t("recommendationToneOnTrack")
         : t("recommendationTonePlan");
+}
+
+function getActionStatusColor(status: CoachActionStatus) {
+  return status === "applied" ? "green" : "blue";
+}
+
+function getActionStatusLabel(status: CoachActionStatus, t: ReturnType<typeof useTranslations>) {
+  return status === "applied" ? t("coachActionApplied") : t("coachActionAcknowledged");
 }
 
 function buildSessionBlueprint(queueItems: QueueItem[], t: ReturnType<typeof useTranslations>): SessionBlueprintPlan {
