@@ -1,7 +1,6 @@
 import type { AssessmentPayload, EvidenceAttachment, ScoreEntry } from "@/types/assessment";
 
 const modes = new Set(["rapid", "full"]);
-const ageGroups = new Set(["4-6", "7-9", "10-12"]);
 const contexts = new Set(["structured", "spontaneous", "mixed", "event"]);
 
 function stringValue(value: unknown, max = 5000): string {
@@ -10,6 +9,13 @@ function stringValue(value: unknown, max = 5000): string {
 
 function booleanValue(value: unknown): boolean {
   return typeof value === "boolean" ? value : false;
+}
+
+function numberValue(value: unknown, min?: number, max?: number): number | undefined {
+  if (typeof value !== "number" || !Number.isFinite(value)) return undefined;
+  if (typeof min === "number" && value < min) return undefined;
+  if (typeof max === "number" && value > max) return undefined;
+  return value;
 }
 
 function scoreEntry(value: unknown): ScoreEntry {
@@ -60,7 +66,6 @@ export function parseAssessmentPayload(input: unknown): AssessmentPayload {
   const notes = data.notes && typeof data.notes === "object" ? data.notes as Record<string, unknown> : {};
   const rawAttachments = Array.isArray(data.attachments) ? data.attachments : [];
   const mode = modes.has(String(data.mode)) ? data.mode as AssessmentPayload["mode"] : "rapid";
-  const ageGroup = ageGroups.has(String(child.ageGroup)) ? child.ageGroup as AssessmentPayload["child"]["ageGroup"] : "7-9";
   const context = contexts.has(String(session.context)) ? session.context as AssessmentPayload["session"]["context"] : "structured";
 
   return {
@@ -69,7 +74,7 @@ export function parseAssessmentPayload(input: unknown): AssessmentPayload {
     child: {
       name: stringValue(child.name, 240),
       birthDate: stringValue(child.birthDate, 80),
-      ageGroup,
+      ageGroup: "7-9",
       dominantHand: stringValue(child.dominantHand, 80),
       dominantEye: stringValue(child.dominantEye, 80),
       dominantFoot: stringValue(child.dominantFoot, 80),
@@ -168,7 +173,21 @@ export interface ChildPayload {
   surveyId?: string;
   name: string;
   birthDate: string;
-  ageGroup: "4-6" | "7-9" | "10-12" | "";
+  baselineProfile: {
+    heightCm?: number;
+    weightKg?: number;
+    wingspanCm?: number;
+    restingHeartRate?: number;
+    sleepTargetHours?: number;
+    cognitiveScore?: number;
+    confidenceBaseline?: number;
+    focusBaseline?: number;
+    motivationBaseline?: number;
+    stressBaseline?: number;
+    injuryNotes: string;
+    medicalNotes: string;
+    coachBaselineNotes: string;
+  };
   consentPhoto: boolean;
   consentReport: boolean;
   dominantHand: string;
@@ -184,7 +203,21 @@ export function parseChildPayload(input: unknown): ChildPayload {
     surveyId: stringValue(data.surveyId ?? data.kidexId, 120).trim() || undefined,
     name: stringValue(data.name, 240).trim(),
     birthDate: stringValue(data.birthDate, 80).trim(),
-    ageGroup: (["4-6", "7-9", "10-12"].includes(stringValue(data.ageGroup, 10).trim()) ? stringValue(data.ageGroup, 10).trim() : "") as ChildPayload["ageGroup"],
+    baselineProfile: {
+      heightCm: numberValue(data.heightCm ?? (data.baselineProfile as Record<string, unknown> | undefined)?.heightCm, 50, 260),
+      weightKg: numberValue(data.weightKg ?? (data.baselineProfile as Record<string, unknown> | undefined)?.weightKg, 15, 250),
+      wingspanCm: numberValue(data.wingspanCm ?? (data.baselineProfile as Record<string, unknown> | undefined)?.wingspanCm, 50, 300),
+      restingHeartRate: numberValue(data.restingHeartRate ?? (data.baselineProfile as Record<string, unknown> | undefined)?.restingHeartRate, 20, 220),
+      sleepTargetHours: numberValue(data.sleepTargetHours ?? (data.baselineProfile as Record<string, unknown> | undefined)?.sleepTargetHours, 4, 14),
+      cognitiveScore: numberValue(data.cognitiveScore ?? (data.baselineProfile as Record<string, unknown> | undefined)?.cognitiveScore, 40, 200),
+      confidenceBaseline: numberValue(data.confidenceBaseline ?? (data.baselineProfile as Record<string, unknown> | undefined)?.confidenceBaseline, 1, 10),
+      focusBaseline: numberValue(data.focusBaseline ?? (data.baselineProfile as Record<string, unknown> | undefined)?.focusBaseline, 1, 10),
+      motivationBaseline: numberValue(data.motivationBaseline ?? (data.baselineProfile as Record<string, unknown> | undefined)?.motivationBaseline, 1, 10),
+      stressBaseline: numberValue(data.stressBaseline ?? (data.baselineProfile as Record<string, unknown> | undefined)?.stressBaseline, 1, 10),
+      injuryNotes: stringValue(data.injuryNotes ?? (data.baselineProfile as Record<string, unknown> | undefined)?.injuryNotes),
+      medicalNotes: stringValue(data.medicalNotes ?? (data.baselineProfile as Record<string, unknown> | undefined)?.medicalNotes),
+      coachBaselineNotes: stringValue(data.coachBaselineNotes ?? (data.baselineProfile as Record<string, unknown> | undefined)?.coachBaselineNotes)
+    },
     consentPhoto: booleanValue(data.consentPhoto),
     consentReport: booleanValue(data.consentReport),
     dominantHand: stringValue(data.dominantHand, 80),

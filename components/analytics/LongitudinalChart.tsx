@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Box, Paper, Text, useMantineTheme } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
@@ -24,6 +25,7 @@ export function LongitudinalChart({
   yDomain = [0, 5]
 }: LongitudinalChartProps) {
   const theme = useMantineTheme();
+  const gradientId = useId().replace(/[:]/g, "");
 
   return (
     <Paper withBorder p="md" radius="md">
@@ -36,12 +38,12 @@ export function LongitudinalChart({
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={ANALYTICS_CONFIG.margins}>
             <defs>
-              <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={color} stopOpacity={0.3} />
                 <stop offset="95%" stopColor={color} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme.colors.gray[3]} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={ANALYTICS_CONFIG.colors.grid} />
             <XAxis
               dataKey="date"
               tick={{ fontSize: 10, fill: ANALYTICS_CONFIG.colors.text, fontFamily: ANALYTICS_CONFIG.fontFamily }}
@@ -58,12 +60,13 @@ export function LongitudinalChart({
             />
             <Tooltip
               contentStyle={{
-                background: "var(--mantine-color-body)",
-                border: "1px solid var(--mantine-color-default-border)",
+                background: "var(--surface-elevated)",
+                border: "1px solid var(--border-primary)",
                 borderRadius: ANALYTICS_CONFIG.tooltipRadius,
                 fontFamily: ANALYTICS_CONFIG.fontFamily,
                 fontSize: "12px",
-                boxShadow: theme.shadows.md
+                boxShadow: theme.shadows.md,
+                color: "var(--text-primary)"
               }}
             />
             <Area
@@ -72,8 +75,8 @@ export function LongitudinalChart({
               stroke={color}
               strokeWidth={ANALYTICS_CONFIG.lineStrokeWidth}
               fillOpacity={1}
-              fill="url(#colorValue)"
-              dot={{ r: ANALYTICS_CONFIG.dotRadius, fill: color, strokeWidth: 2, stroke: "white" }}
+              fill={`url(#${gradientId})`}
+              dot={{ r: ANALYTICS_CONFIG.dotRadius, fill: color, strokeWidth: 2, stroke: "var(--surface-elevated)" }}
               activeDot={{ r: ANALYTICS_CONFIG.activeDotRadius, strokeWidth: 0 }}
             />
           </AreaChart>

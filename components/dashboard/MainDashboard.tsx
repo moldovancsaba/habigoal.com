@@ -125,11 +125,11 @@ export function MainDashboard() {
       counts[getReadinessMode(readiness.count, readiness.total)] += 1;
     });
     return [
-      { name: ta("readinessModeFull"), value: counts.full, color: theme.colors.ingress[6] },
+      { name: ta("readinessModeFull"), value: counts.full, color: theme.colors.knowmore[6] },
       { name: ta("readinessModeModerate"), value: counts.moderate, color: theme.colors.review[6] },
-      { name: ta("readinessModeLight"), value: counts.light, color: theme.colors.gray[5] }
+      { name: ta("readinessModeLight"), value: counts.light, color: theme.colors.synthesis[7] }
     ].filter((item) => item.value > 0);
-  }, [latestByAthlete, ta, theme.colors.gray, theme.colors.ingress, theme.colors.review]);
+  }, [latestByAthlete, ta, theme.colors.knowmore, theme.colors.review, theme.colors.synthesis]);
 
   const sessionVolume = useMemo(() => buildSessionVolume(data?.assessments ?? []), [data]);
 
@@ -262,7 +262,7 @@ export function MainDashboard() {
           <Box style={{ height: 280 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={locationReadiness} layout="vertical" margin={{ left: 30, right: 16 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme.colors.gray[3]} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-primary)" />
                 <XAxis type="number" domain={[0, readinessChecklist.length]} hide />
                 <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 11, fill: "var(--mantine-color-text)" }} axisLine={false} tickLine={false} />
                 <Tooltip />

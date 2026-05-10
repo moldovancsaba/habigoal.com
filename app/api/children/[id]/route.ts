@@ -49,7 +49,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     await updateAssessmentsForChildProfile(id, {
       name: payload.name,
       birthDate: payload.birthDate,
-      ageGroup: payload.ageGroup,
       knownTraits: payload.knownTraits,
       parentSignals: payload.parentSignals,
       dominantHand: payload.dominantHand,

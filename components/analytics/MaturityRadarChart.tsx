@@ -1,7 +1,7 @@
 "use client";
 
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import { Box, Paper, Text, useMantineTheme } from "@mantine/core";
+import { Box, Paper, Text } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 
 interface RadarPoint {
@@ -25,8 +25,6 @@ export function MaturityRadarChart({
   data,
   labels = { A: "Current" }
 }: MaturityRadarChartProps) {
-  const theme = useMantineTheme();
-
   return (
     <Paper withBorder p="md" radius="md">
       {title && (
@@ -37,7 +35,7 @@ export function MaturityRadarChart({
       <Box style={{ width: "100%", height: ANALYTICS_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius={ANALYTICS_CONFIG.radarOuterRadius} data={data}>
-            <PolarGrid stroke={theme.colors.gray[4]} />
+            <PolarGrid stroke={ANALYTICS_CONFIG.colors.grid} />
             <PolarAngleAxis
               dataKey="subject"
               tick={{ fontSize: 10, fill: ANALYTICS_CONFIG.colors.text, fontFamily: ANALYTICS_CONFIG.fontFamily }}
@@ -45,15 +43,16 @@ export function MaturityRadarChart({
             <PolarRadiusAxis
               angle={30}
               domain={[0, 5]}
-              tick={{ fontSize: 8, fill: theme.colors.gray[6] }}
+              tick={{ fontSize: 8, fill: ANALYTICS_CONFIG.colors.dimmed }}
             />
             <Tooltip
               contentStyle={{
-                background: "var(--mantine-color-body)",
-                border: "1px solid var(--mantine-color-default-border)",
+                background: "var(--surface-elevated)",
+                border: "1px solid var(--border-primary)",
                 borderRadius: ANALYTICS_CONFIG.tooltipRadius,
                 fontFamily: ANALYTICS_CONFIG.fontFamily,
-                fontSize: "12px"
+                fontSize: "12px",
+                color: "var(--text-primary)"
               }}
             />
             {labels.B && (
@@ -79,9 +78,9 @@ export function MaturityRadarChart({
               <Radar
                 name={labels.B}
                 dataKey="B"
-                stroke={theme.colors.gray[6]}
-                fill={theme.colors.gray[6]}
-                fillOpacity={0.3}
+                stroke={ANALYTICS_CONFIG.colors.secondary}
+                fill={ANALYTICS_CONFIG.colors.secondary}
+                fillOpacity={0.22}
               />
             )}
           </RadarChart>

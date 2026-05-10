@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Paper, Text, useMantineTheme, Group } from "@mantine/core";
+import { Box, Paper, Text, Group } from "@mantine/core";
 
 interface ReadinessGaugeProps {
   value: number;
@@ -10,8 +10,6 @@ interface ReadinessGaugeProps {
 }
 
 export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGaugeProps) {
-  const theme = useMantineTheme();
-  
   // Normalized value for SVG (0 to 1)
   const normalizedValue = Math.min(Math.max(value / max, 0), 1);
   
@@ -25,9 +23,9 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
   // Determine color based on readiness
   const getColor = () => {
     const ratio = max > 0 ? value / max : 0;
-    if (ratio < 0.5) return theme.colors.red[6];
-    if (ratio < 0.75) return theme.colors.yellow[6];
-    return theme.colors.ingress[6];
+    if (ratio < 0.45) return "var(--status-error)";
+    if (ratio < 0.72) return "var(--accent-gold)";
+    return "var(--mantine-color-knowmore-6)";
   };
 
   const gaugeColor = getColor();
@@ -48,7 +46,7 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
             cy={10}
             r={radius}
             fill="none"
-            stroke={theme.colors.gray[2]}
+            stroke="var(--border-primary)"
             strokeWidth={strokeWidth}
             strokeDasharray={circumference}
             strokeLinecap="round"
@@ -74,7 +72,7 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
             {value.toFixed(1)}
           </Text>
           {subtitle && (
-            <Text size="sm" c="dimmed" mt={2}>
+            <Text size="sm" c="var(--text-secondary)" mt={2}>
               {subtitle}
             </Text>
           )}
@@ -82,8 +80,8 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
       </Box>
 
       <Group justify="space-between" mt="xs" px="md">
-        <Text size="sm" c="dimmed">0.0</Text>
-        <Text size="sm" c="dimmed">{max.toFixed(1)}</Text>
+        <Text size="sm" c="var(--text-secondary)">0.0</Text>
+        <Text size="sm" c="var(--text-secondary)">{max.toFixed(1)}</Text>
       </Group>
     </Paper>
   );

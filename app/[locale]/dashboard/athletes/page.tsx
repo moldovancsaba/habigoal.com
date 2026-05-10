@@ -1,19 +1,40 @@
 "use client";
 
 import { MouseEvent, useEffect, useMemo, useState } from "react";
-import { Alert, Badge, Box, Button, Checkbox, Group, Loader, Modal, MultiSelect, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { Alert, Badge, Box, Button, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { calculateAgeGroup } from "@/lib/utils/age";
 import { formatScore } from "@/lib/utils";
 import type { ChildProfile } from "@/repositories/child.repository";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
 import { withDisplayNamesForReport } from "@/lib/report-user-display";
 import type { AssessmentRecord } from "@/types/assessment";
+
+type BaselineDraft = {
+  heightCm?: number;
+  weightKg?: number;
+  wingspanCm?: number;
+  restingHeartRate?: number;
+  sleepTargetHours?: number;
+  cognitiveScore?: number;
+  confidenceBaseline?: number;
+  focusBaseline?: number;
+  motivationBaseline?: number;
+  stressBaseline?: number;
+  injuryNotes: string;
+  medicalNotes: string;
+  coachBaselineNotes: string;
+};
+
+const emptyBaselineDraft = (): BaselineDraft => ({
+  injuryNotes: "",
+  medicalNotes: "",
+  coachBaselineNotes: ""
+});
 
 export default function ChildrenListPage() {
   const t = useTranslations("Dashboard");
@@ -33,7 +54,7 @@ export default function ChildrenListPage() {
   const [draftBirthDate, setDraftBirthDate] = useState("");
   const [draftKnownTraits, setDraftKnownTraits] = useState("");
   const [draftParentSignals, setDraftParentSignals] = useState("");
-  const [draftAgeGroup, setDraftAgeGroup] = useState<"" | "4-6" | "7-9" | "10-12">("");
+  const [draftBaseline, setDraftBaseline] = useState<BaselineDraft>(emptyBaselineDraft());
   const [draftConsentPhoto, setDraftConsentPhoto] = useState(false);
   const [draftConsentReport, setDraftConsentReport] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -42,7 +63,6 @@ export default function ChildrenListPage() {
   const [locations, setLocations] = useState<string[]>([]);
   
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
-  const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>([]);
   const [readinessRange, setReadinessRange] = useState<[number, number]>([0, 5]);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ChildProfile | null>(null);
@@ -117,20 +137,13 @@ export default function ChildrenListPage() {
     
     const source = showDeleted ? deletedChildren : children;
     return source.filter((child) => {
-      const ageGroup = calculateAgeGroup(child.birthDate) || "";
-      
       const matchesQuery = !q || 
         child.name.toLowerCase().includes(q) ||
-        child.birthDate.toLowerCase().includes(q) ||
-        ageGroup.toLowerCase().includes(q);
+        child.birthDate.toLowerCase().includes(q);
       
       if (!matchesQuery) return false;
 
       if (selectedLocations.length > 0 && (!child.latestLocation || !selectedLocations.includes(child.latestLocation))) {
-        return false;
-      }
-
-      if (selectedAgeGroups.length > 0 && !selectedAgeGroups.includes(ageGroup)) {
         return false;
       }
 
@@ -141,7 +154,7 @@ export default function ChildrenListPage() {
 
       return true;
     });
-  }, [children, deletedChildren, query, selectedLocations, selectedAgeGroups, readinessRange, showDeleted]);
+  }, [children, deletedChildren, query, selectedLocations, readinessRange, showDeleted]);
 
   async function restoreChild(child: ChildProfile) {
     if (!child._id) return;
@@ -153,22 +166,16 @@ export default function ChildrenListPage() {
     setRestoreConfirmText("");
   }
 
-  const allAgeGroups = useMemo(() => {
-    const groups = new Set<string>();
-    children.forEach(c => {
-      const g = calculateAgeGroup(c.birthDate);
-      if (g) groups.add(g);
-    });
-    return Array.from(groups).sort();
-  }, [children]);
-
   function startEdit(child: ChildProfile) {
     setEditing(child);
     setDraftName(child.name);
     setDraftBirthDate(child.birthDate);
     setDraftKnownTraits(child.knownTraits || "");
     setDraftParentSignals(child.parentSignals || "");
-    setDraftAgeGroup((child.ageGroup || calculateAgeGroup(child.birthDate) || "") as "" | "4-6" | "7-9" | "10-12");
+    setDraftBaseline({
+      ...emptyBaselineDraft(),
+      ...child.baselineProfile
+    });
     setDraftConsentPhoto(Boolean(child.consentPhoto));
     setDraftConsentReport(Boolean(child.consentReport));
   }
@@ -179,7 +186,7 @@ export default function ChildrenListPage() {
     setDraftBirthDate("");
     setDraftKnownTraits("");
     setDraftParentSignals("");
-    setDraftAgeGroup("");
+    setDraftBaseline(emptyBaselineDraft());
     setDraftConsentPhoto(false);
     setDraftConsentReport(false);
   }
@@ -196,7 +203,7 @@ export default function ChildrenListPage() {
       body: JSON.stringify({
         name: draftName,
         birthDate: draftBirthDate,
-        ageGroup: draftAgeGroup || calculateAgeGroup(draftBirthDate) || "",
+        baselineProfile: draftBaseline,
         consentPhoto: draftConsentPhoto,
         consentReport: draftConsentReport,
         dominantHand: editing.dominantHand || "",
@@ -230,7 +237,7 @@ export default function ChildrenListPage() {
       body: JSON.stringify({
         name: draftName,
         birthDate: draftBirthDate,
-        ageGroup: draftAgeGroup || calculateAgeGroup(draftBirthDate) || "",
+        baselineProfile: draftBaseline,
         consentPhoto: draftConsentPhoto,
         consentReport: draftConsentReport,
         dominantHand: "",
@@ -302,7 +309,7 @@ export default function ChildrenListPage() {
           {showAdvanced && (
             <Paper withBorder p="md">
               <Stack gap="md">
-                <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+                <SimpleGrid cols={{ base: 1, md: 1 }} spacing="md">
                   <MultiSelect
                     label={t("location")}
                     placeholder={tc("all")}
@@ -311,14 +318,6 @@ export default function ChildrenListPage() {
                     onChange={setSelectedLocations}
                     clearable
                     searchable
-                  />
-                  <MultiSelect
-                    label={ta("ageGroup")}
-                    placeholder={tc("all")}
-                    data={allAgeGroups}
-                    value={selectedAgeGroups}
-                    onChange={setSelectedAgeGroups}
-                    clearable
                   />
                 </SimpleGrid>
                 <Box>
@@ -368,7 +367,6 @@ export default function ChildrenListPage() {
                 <Group justify="flex-end">
                   <Button variant="subtle" size="sm" onClick={() => {
                     setSelectedLocations([]);
-                    setSelectedAgeGroups([]);
                     setReadinessRange([0, 5]);
                   }}>
                     {tc("resetFilters")}
@@ -383,7 +381,11 @@ export default function ChildrenListPage() {
           ) : (
             <Stack gap="md">
               {filtered.map((child) => {
-                const ageGroup = calculateAgeGroup(child.birthDate) || "-";
+                const baselineFacts = [
+                  child.baselineProfile?.heightCm ? `${child.baselineProfile.heightCm} cm` : null,
+                  child.baselineProfile?.weightKg ? `${child.baselineProfile.weightKg} kg` : null,
+                  child.baselineProfile?.cognitiveScore ? `IQ ${child.baselineProfile.cognitiveScore}` : null
+                ].filter(Boolean);
                 return (
                   <Paper 
                     key={child._id} 
@@ -407,8 +409,17 @@ export default function ChildrenListPage() {
                           {child.name}
                         </Text>
                         <Text size="sm" c="dimmed">
-                          {ta("birthDate")}: {child.birthDate} · {ta("ageGroup")}: {ageGroup}
+                          {ta("birthDate")}: {child.birthDate}
                         </Text>
+                        {baselineFacts.length > 0 ? (
+                          <Group gap="xs" mt={8}>
+                            {baselineFacts.map((fact) => (
+                              <Badge key={fact} color="gray" variant="light" size="sm">
+                                {fact}
+                              </Badge>
+                            ))}
+                          </Group>
+                        ) : null}
                         {child.latestReadiness !== undefined && (
                           <Group gap="xs" mt={8}>
                             <Badge color="ingress" variant="filled" size="sm">
@@ -477,9 +488,24 @@ export default function ChildrenListPage() {
               value={draftBirthDate}
               onChange={(event) => setDraftBirthDate(event.target.value)}
             />
-            <Select label={ta("ageGroup")} value={draftAgeGroup} onChange={(v) => setDraftAgeGroup(parseAgeGroup(v))} data={[{ value: "", label: ta("ageGroupPending") }, { value: "4-6", label: "4-6" }, { value: "7-9", label: "7-9" }, { value: "10-12", label: "10-12" }]} />
             <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
             <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
+            <Divider label="Baseline profile (optional)" labelPosition="left" />
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <NumberInput label="Height (cm)" value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
+              <NumberInput label="Weight (kg)" value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
+              <NumberInput label="Wingspan (cm)" value={draftBaseline.wingspanCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, wingspanCm: typeof value === "number" ? value : undefined }))} min={50} max={300} />
+              <NumberInput label="Resting heart rate" value={draftBaseline.restingHeartRate} onChange={(value) => setDraftBaseline((current) => ({ ...current, restingHeartRate: typeof value === "number" ? value : undefined }))} min={20} max={220} />
+              <NumberInput label="Sleep target (hours)" value={draftBaseline.sleepTargetHours} onChange={(value) => setDraftBaseline((current) => ({ ...current, sleepTargetHours: typeof value === "number" ? value : undefined }))} min={4} max={14} decimalScale={1} />
+              <NumberInput label="Measured IQ / cognitive score" value={draftBaseline.cognitiveScore} onChange={(value) => setDraftBaseline((current) => ({ ...current, cognitiveScore: typeof value === "number" ? value : undefined }))} min={40} max={200} />
+              <NumberInput label="Confidence baseline (1-10)" value={draftBaseline.confidenceBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, confidenceBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+              <NumberInput label="Focus baseline (1-10)" value={draftBaseline.focusBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, focusBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+              <NumberInput label="Motivation baseline (1-10)" value={draftBaseline.motivationBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, motivationBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+              <NumberInput label="Stress baseline (1-10)" value={draftBaseline.stressBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, stressBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            </SimpleGrid>
+            <Textarea label="Injury history" value={draftBaseline.injuryNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, injuryNotes: event.target.value }))} minRows={2} />
+            <Textarea label="Medical notes" value={draftBaseline.medicalNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, medicalNotes: event.target.value }))} minRows={2} />
+            <Textarea label="Coach baseline notes" value={draftBaseline.coachBaselineNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, coachBaselineNotes: event.target.value }))} minRows={2} />
             <Group>
               <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
               <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
@@ -498,9 +524,24 @@ export default function ChildrenListPage() {
         <Stack gap="md" mt="xs">
           <TextInput label={ta("childName")} value={draftName} onChange={(event) => setDraftName(event.target.value)} />
           <TextInput label={ta("birthDate")} type="date" value={draftBirthDate} onChange={(event) => setDraftBirthDate(event.target.value)} />
-          <Select label={ta("ageGroup")} value={draftAgeGroup} onChange={(v) => setDraftAgeGroup(parseAgeGroup(v))} data={[{ value: "", label: ta("ageGroupPending") }, { value: "4-6", label: "4-6" }, { value: "7-9", label: "7-9" }, { value: "10-12", label: "10-12" }]} />
           <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
           <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
+          <Divider label="Baseline profile (optional)" labelPosition="left" />
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+            <NumberInput label="Height (cm)" value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
+            <NumberInput label="Weight (kg)" value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
+            <NumberInput label="Wingspan (cm)" value={draftBaseline.wingspanCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, wingspanCm: typeof value === "number" ? value : undefined }))} min={50} max={300} />
+            <NumberInput label="Resting heart rate" value={draftBaseline.restingHeartRate} onChange={(value) => setDraftBaseline((current) => ({ ...current, restingHeartRate: typeof value === "number" ? value : undefined }))} min={20} max={220} />
+            <NumberInput label="Sleep target (hours)" value={draftBaseline.sleepTargetHours} onChange={(value) => setDraftBaseline((current) => ({ ...current, sleepTargetHours: typeof value === "number" ? value : undefined }))} min={4} max={14} decimalScale={1} />
+            <NumberInput label="Measured IQ / cognitive score" value={draftBaseline.cognitiveScore} onChange={(value) => setDraftBaseline((current) => ({ ...current, cognitiveScore: typeof value === "number" ? value : undefined }))} min={40} max={200} />
+            <NumberInput label="Confidence baseline (1-10)" value={draftBaseline.confidenceBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, confidenceBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            <NumberInput label="Focus baseline (1-10)" value={draftBaseline.focusBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, focusBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            <NumberInput label="Motivation baseline (1-10)" value={draftBaseline.motivationBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, motivationBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            <NumberInput label="Stress baseline (1-10)" value={draftBaseline.stressBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, stressBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+          </SimpleGrid>
+          <Textarea label="Injury history" value={draftBaseline.injuryNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, injuryNotes: event.target.value }))} minRows={2} />
+          <Textarea label="Medical notes" value={draftBaseline.medicalNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, medicalNotes: event.target.value }))} minRows={2} />
+          <Textarea label="Coach baseline notes" value={draftBaseline.coachBaselineNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, coachBaselineNotes: event.target.value }))} minRows={2} />
           <Group>
             <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
             <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
@@ -547,6 +588,3 @@ export default function ChildrenListPage() {
     </Stack>
   );
 }
-  const parseAgeGroup = (value: string | null): "" | "4-6" | "7-9" | "10-12" => (
-    value === "4-6" || value === "7-9" || value === "10-12" ? value : ""
-  );

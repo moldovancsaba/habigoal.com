@@ -29,7 +29,7 @@ export function BrandMark({ size = 88, subtitle, align = "center" }: BrandMarkPr
           }}
         >
           <Image
-            src="/images/habigoal.png"
+            src="/images/habigoal_logo.png"
             alt="Habigoal"
             width={iconSize}
             height={iconSize}

@@ -7,7 +7,21 @@ export interface ChildProfile {
   surveyId?: string;
   name: string;
   birthDate: string;
-  ageGroup?: "4-6" | "7-9" | "10-12" | "";
+  baselineProfile?: {
+    heightCm?: number;
+    weightKg?: number;
+    wingspanCm?: number;
+    restingHeartRate?: number;
+    sleepTargetHours?: number;
+    cognitiveScore?: number;
+    confidenceBaseline?: number;
+    focusBaseline?: number;
+    motivationBaseline?: number;
+    stressBaseline?: number;
+    injuryNotes?: string;
+    medicalNotes?: string;
+    coachBaselineNotes?: string;
+  };
   consentPhoto?: boolean;
   consentReport?: boolean;
   dominantHand?: string;
@@ -36,9 +50,15 @@ export interface ChildProfile {
 const collectionName = "children";
 
 function normalizeChildProfile(raw: Record<string, unknown>): ChildProfile {
+  const baselineProfile =
+    raw.baselineProfile && typeof raw.baselineProfile === "object"
+      ? (raw.baselineProfile as ChildProfile["baselineProfile"])
+      : undefined;
+
   return {
     ...(raw as unknown as ChildProfile),
     _id: typeof raw._id === "string" ? raw._id : undefined,
+    baselineProfile,
     surveyId:
       typeof raw.surveyId === "string"
         ? raw.surveyId
@@ -249,7 +269,10 @@ export async function deleteChildById(id: ObjectId) {
           : "",
     name: typeof jsonChild.name === "string" ? jsonChild.name : "",
     birthDate: typeof jsonChild.birthDate === "string" ? jsonChild.birthDate : "",
-    ageGroup: (typeof jsonChild.ageGroup === "string" ? jsonChild.ageGroup : "") as ChildProfile["ageGroup"],
+    baselineProfile:
+      jsonChild.baselineProfile && typeof jsonChild.baselineProfile === "object"
+        ? (jsonChild.baselineProfile as ChildProfile["baselineProfile"])
+        : undefined,
     consentPhoto: Boolean(jsonChild.consentPhoto),
     consentReport: Boolean(jsonChild.consentReport),
     dominantHand: typeof jsonChild.dominantHand === "string" ? jsonChild.dominantHand : "",

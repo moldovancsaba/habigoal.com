@@ -23,17 +23,17 @@ function writeThemeCookie(mode: ThemeMode) {
 }
 
 function readInitialMode(initialMode?: ThemeMode): ThemeMode {
-  return initialMode ?? "light";
+  return initialMode ?? "dark";
 }
 
 function readPreferredMode(): ThemeMode {
-  if (typeof window === "undefined") return "light";
+  if (typeof window === "undefined") return "dark";
   const saved =
     localStorage.getItem(THEME_COOKIE_NAME) ??
     localStorage.getItem(LEGACY_SURVEY_THEME_STORAGE_KEY) ??
     localStorage.getItem(LEGACY_THEME_STORAGE_KEY);
   if (saved === "light" || saved === "dark") return saved;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return "dark";
 }
 
 function subscribeToPreferredMode(callback: () => void) {

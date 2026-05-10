@@ -39,202 +39,202 @@ type ThemeFoundation = {
 
 const FOUNDATIONS: Record<ThemeMode, ThemeFoundation> = {
   light: {
-    appBg: "#edf3ff",
-    sidebarBg: "#f2f7ff",
-    surfaceBase: "rgba(255, 255, 255, 0.78)",
-    surfaceElevated: "rgba(246, 250, 255, 0.88)",
-    borderPrimary: "rgba(61, 79, 130, 0.14)",
-    textPrimary: "#10203d",
-    textSecondary: "#51627f",
-    textMuted: "#7888a7",
-    overlayColor: "rgba(233, 241, 255, 0.82)",
-    surfaceGradientTop: "rgba(255, 255, 255, 0.82)",
-    surfaceGradientBottom: "rgba(255, 255, 255, 0.4)",
-    surfaceHoverTop: "rgba(255, 255, 255, 0.9)",
-    surfaceHoverBottom: "rgba(255, 255, 255, 0.56)",
-    surfaceShadowElevated: "0 18px 50px rgba(43, 79, 165, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.85)",
-    surfaceShadowFlat: "0 1px 0 rgba(255, 255, 255, 0.88) inset",
-    surfaceIconBorder: "rgba(61, 79, 130, 0.14)",
-    surfaceIconShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.8)",
-    surfaceSectionBorder: "rgba(61, 79, 130, 0.1)",
-    navCompanyLabel: "#3958d9",
-    navCompanyDescription: "#5871c6",
-    navLinkActive: "#10203d",
-    navLinkInactive: "#5d6f94"
+    appBg: "#E7EEF8",
+    sidebarBg: "#F2F6FC",
+    surfaceBase: "rgba(255, 255, 255, 0.84)",
+    surfaceElevated: "rgba(244, 248, 253, 0.94)",
+    borderPrimary: "rgba(44, 59, 87, 0.16)",
+    textPrimary: "#10203A",
+    textSecondary: "#4C5F81",
+    textMuted: "#667085",
+    overlayColor: "rgba(231, 238, 248, 0.86)",
+    surfaceGradientTop: "rgba(255, 255, 255, 0.76)",
+    surfaceGradientBottom: "rgba(255, 255, 255, 0.36)",
+    surfaceHoverTop: "rgba(255, 255, 255, 0.92)",
+    surfaceHoverBottom: "rgba(255, 255, 255, 0.52)",
+    surfaceShadowElevated: "0 18px 50px rgba(0, 63, 206, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.88)",
+    surfaceShadowFlat: "0 1px 0 rgba(255, 255, 255, 0.92) inset",
+    surfaceIconBorder: "rgba(44, 59, 87, 0.14)",
+    surfaceIconShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.82)",
+    surfaceSectionBorder: "rgba(44, 59, 87, 0.1)",
+    navCompanyLabel: "#003FCE",
+    navCompanyDescription: "#4C5F81",
+    navLinkActive: "#10203A",
+    navLinkInactive: "#526585"
   },
   dark: {
-    appBg: "#050917",
-    sidebarBg: "#081123",
-    surfaceBase: "rgba(16, 24, 45, 0.72)",
-    surfaceElevated: "rgba(21, 31, 54, 0.82)",
-    borderPrimary: "rgba(141, 171, 255, 0.16)",
-    textPrimary: "#edf4ff",
-    textSecondary: "#b3c1df",
-    textMuted: "#7f8db0",
-    overlayColor: "rgba(5, 9, 23, 0.84)",
-    surfaceGradientTop: "rgba(255, 255, 255, 0.1)",
-    surfaceGradientBottom: "rgba(255, 255, 255, 0.03)",
-    surfaceHoverTop: "rgba(255, 255, 255, 0.14)",
-    surfaceHoverBottom: "rgba(255, 255, 255, 0.05)",
-    surfaceShadowElevated: "0 22px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.12)",
-    surfaceShadowFlat: "0 1px 0 rgba(255, 255, 255, 0.08) inset",
-    surfaceIconBorder: "rgba(255, 255, 255, 0.12)",
-    surfaceIconShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.08)",
-    surfaceSectionBorder: "rgba(255, 255, 255, 0.08)",
-    navCompanyLabel: "#8db0ff",
-    navCompanyDescription: "#c5d4ff",
-    navLinkActive: "#edf4ff",
-    navLinkInactive: "#b9c7ea"
+    appBg: "#0A0F1C",
+    sidebarBg: "#111827",
+    surfaceBase: "rgba(24, 34, 53, 0.84)",
+    surfaceElevated: "rgba(31, 43, 66, 0.94)",
+    borderPrimary: "rgba(44, 59, 87, 0.96)",
+    textPrimary: "#F4F7FB",
+    textSecondary: "#A7B4CC",
+    textMuted: "#667085",
+    overlayColor: "rgba(10, 15, 28, 0.86)",
+    surfaceGradientTop: "rgba(255, 255, 255, 0.08)",
+    surfaceGradientBottom: "rgba(255, 255, 255, 0.02)",
+    surfaceHoverTop: "rgba(255, 255, 255, 0.12)",
+    surfaceHoverBottom: "rgba(255, 255, 255, 0.04)",
+    surfaceShadowElevated: "0 24px 64px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+    surfaceShadowFlat: "0 1px 0 rgba(255, 255, 255, 0.06) inset",
+    surfaceIconBorder: "rgba(44, 59, 87, 0.92)",
+    surfaceIconShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.06)",
+    surfaceSectionBorder: "rgba(44, 59, 87, 0.88)",
+    navCompanyLabel: "#F4F7FB",
+    navCompanyDescription: "#A7B4CC",
+    navLinkActive: "#F4F7FB",
+    navLinkInactive: "#A7B4CC"
   }
 };
 
 const TONES: Record<ThemeMode, Record<SemanticTone, SemanticToneScale>> = {
   light: {
     ingress: {
-      color: "#2563eb",
-      surface: "rgba(232, 241, 255, 0.82)",
-      hoverSurface: "rgba(219, 234, 254, 0.92)",
-      glow: "rgba(37, 99, 235, 0.2)",
-      border: "rgba(37, 99, 235, 0.18)",
-      rgb: "37, 99, 235",
-      palette: ["#eef4ff", "#dfeaff", "#c4d8ff", "#9fbfff", "#77a4ff", "#4f89ff", "#2563eb", "#1d4fd1", "#173fa7", "#122f7d"]
+      color: "#003FCE",
+      surface: "rgba(221, 234, 255, 0.82)",
+      hoverSurface: "rgba(209, 227, 255, 0.92)",
+      glow: "rgba(0, 63, 206, 0.16)",
+      border: "rgba(0, 63, 206, 0.18)",
+      rgb: "0, 63, 206",
+      palette: ["#eef3ff", "#dfe9ff", "#c3d7ff", "#a0c0ff", "#79a7ff", "#528dff", "#2a6eff", "#003fce", "#0033a7", "#002573"]
     },
     synthesis: {
-      color: "#4f46e5",
-      surface: "rgba(237, 233, 254, 0.82)",
-      hoverSurface: "rgba(226, 221, 255, 0.92)",
-      glow: "rgba(79, 70, 229, 0.2)",
-      border: "rgba(79, 70, 229, 0.18)",
-      rgb: "79, 70, 229",
-      palette: ["#f1efff", "#e6e2ff", "#d2ccff", "#b8b0ff", "#9b91ff", "#7f72ff", "#635bff", "#4f46e5", "#3f39b7", "#302b8a"]
+      color: "#00AEEF",
+      surface: "rgba(228, 248, 255, 0.84)",
+      hoverSurface: "rgba(213, 242, 255, 0.94)",
+      glow: "rgba(0, 174, 239, 0.18)",
+      border: "rgba(0, 174, 239, 0.18)",
+      rgb: "0, 174, 239",
+      palette: ["#edfbff", "#d6f6ff", "#b1edff", "#82e1ff", "#52d2ff", "#28c0fb", "#00aeef", "#0086c0", "#006592", "#004466"]
     },
     knowmore: {
-      color: "#0891b2",
-      surface: "rgba(227, 248, 255, 0.82)",
-      hoverSurface: "rgba(209, 243, 255, 0.92)",
-      glow: "rgba(8, 145, 178, 0.18)",
-      border: "rgba(8, 145, 178, 0.18)",
-      rgb: "8, 145, 178",
-      palette: ["#ecfbff", "#daf7ff", "#b7eefb", "#8de0f5", "#5bcde9", "#2bb9dd", "#0891b2", "#0b7390", "#0a5970", "#083e4f"]
+      color: "#00B894",
+      surface: "rgba(228, 250, 244, 0.84)",
+      hoverSurface: "rgba(212, 246, 237, 0.94)",
+      glow: "rgba(0, 184, 148, 0.16)",
+      border: "rgba(0, 184, 148, 0.18)",
+      rgb: "0, 184, 148",
+      palette: ["#effcf8", "#daf8ef", "#b7f0de", "#82e5c7", "#4fd8ae", "#20c89f", "#00b894", "#009073", "#006b56", "#00483a"]
     },
     strategy: {
-      color: "#a855f7",
-      surface: "rgba(245, 233, 255, 0.82)",
-      hoverSurface: "rgba(238, 219, 255, 0.92)",
-      glow: "rgba(168, 85, 247, 0.2)",
-      border: "rgba(168, 85, 247, 0.18)",
-      rgb: "168, 85, 247",
-      palette: ["#f9f0ff", "#f3e2ff", "#ebcbff", "#ddb0ff", "#cb8aff", "#bb68ff", "#a855f7", "#8d3ce0", "#6d2bb3", "#4d1d80"]
+      color: "#C7F036",
+      surface: "rgba(248, 253, 223, 0.88)",
+      hoverSurface: "rgba(243, 250, 202, 0.96)",
+      glow: "rgba(199, 240, 54, 0.18)",
+      border: "rgba(199, 240, 54, 0.22)",
+      rgb: "199, 240, 54",
+      palette: ["#fdffe9", "#f7ffd2", "#eefcab", "#e1f87a", "#d4f44f", "#c7f036", "#a2c728", "#7c9a1d", "#586c14", "#37440b"]
     },
     checklist: {
-      color: "#0ea5e9",
-      surface: "rgba(230, 246, 255, 0.82)",
-      hoverSurface: "rgba(214, 240, 255, 0.92)",
-      glow: "rgba(14, 165, 233, 0.2)",
-      border: "rgba(14, 165, 233, 0.18)",
-      rgb: "14, 165, 233",
-      palette: ["#eefaff", "#dbf4ff", "#b9ebff", "#91deff", "#60cbff", "#32b8ff", "#0ea5e9", "#0780b7", "#066288", "#044357"]
+      color: "#38BDF8",
+      surface: "rgba(231, 248, 255, 0.84)",
+      hoverSurface: "rgba(216, 243, 255, 0.94)",
+      glow: "rgba(56, 189, 248, 0.18)",
+      border: "rgba(56, 189, 248, 0.18)",
+      rgb: "56, 189, 248",
+      palette: ["#f0fbff", "#daf6ff", "#b7edff", "#8ce1ff", "#60d3ff", "#44c7fb", "#38bdf8", "#1596c9", "#0f7298", "#0a4d66"]
     },
     tactical: {
-      color: "#14b8a6",
-      surface: "rgba(225, 251, 248, 0.82)",
-      hoverSurface: "rgba(208, 245, 240, 0.92)",
-      glow: "rgba(20, 184, 166, 0.18)",
-      border: "rgba(20, 184, 166, 0.18)",
-      rgb: "20, 184, 166",
-      palette: ["#edfffd", "#d9fbf7", "#b5f3ea", "#87e8db", "#55d7c8", "#2bc7b6", "#14b8a6", "#129181", "#0e6f62", "#094b41"]
+      color: "#22C55E",
+      surface: "rgba(232, 251, 238, 0.84)",
+      hoverSurface: "rgba(217, 247, 226, 0.94)",
+      glow: "rgba(34, 197, 94, 0.16)",
+      border: "rgba(34, 197, 94, 0.18)",
+      rgb: "34, 197, 94",
+      palette: ["#effdf4", "#dafae5", "#b9f3cb", "#8ceba9", "#5de282", "#36d267", "#22c55e", "#18994a", "#116f37", "#0b4924"]
     },
     review: {
-      color: "#f97316",
-      surface: "rgba(255, 239, 225, 0.82)",
-      hoverSurface: "rgba(255, 227, 203, 0.92)",
-      glow: "rgba(249, 115, 22, 0.18)",
-      border: "rgba(249, 115, 22, 0.18)",
-      rgb: "249, 115, 22",
-      palette: ["#fff5ef", "#ffe8dc", "#ffd1b7", "#ffb285", "#ff8f56", "#ff7b33", "#f97316", "#dd5d08", "#b14705", "#7d3103"]
+      color: "#FFB000",
+      surface: "rgba(255, 246, 223, 0.88)",
+      hoverSurface: "rgba(255, 239, 201, 0.96)",
+      glow: "rgba(255, 176, 0, 0.2)",
+      border: "rgba(255, 176, 0, 0.22)",
+      rgb: "255, 176, 0",
+      palette: ["#fff9e8", "#fff0c9", "#ffe39c", "#ffd46b", "#ffc444", "#ffb820", "#ffb000", "#d98d00", "#a86a00", "#704500"]
     },
     neutral: {
-      color: "#64748b",
-      surface: "rgba(244, 247, 251, 0.72)",
-      hoverSurface: "rgba(237, 242, 248, 0.88)",
-      glow: "rgba(100, 116, 139, 0.12)",
-      border: "rgba(100, 116, 139, 0.14)",
-      rgb: "100, 116, 139",
-      palette: ["#f7f9fc", "#eef2f8", "#dde5ef", "#c6d1e0", "#acbbce", "#8da0ba", "#64748b", "#4e5d72", "#394658", "#232f3f"]
+      color: "#667085",
+      surface: "rgba(244, 247, 251, 0.8)",
+      hoverSurface: "rgba(235, 240, 246, 0.92)",
+      glow: "rgba(102, 112, 133, 0.1)",
+      border: "rgba(102, 112, 133, 0.14)",
+      rgb: "102, 112, 133",
+      palette: ["#fafbfc", "#f1f4f8", "#dde3ea", "#c7d0db", "#afb9c8", "#909cae", "#667085", "#4f596d", "#384152", "#232a38"]
     }
   },
   dark: {
     ingress: {
-      color: "#6aa6ff",
-      surface: "rgba(16, 36, 73, 0.78)",
-      hoverSurface: "rgba(22, 48, 96, 0.9)",
-      glow: "rgba(106, 166, 255, 0.24)",
-      border: "rgba(106, 166, 255, 0.24)",
-      rgb: "106, 166, 255",
-      palette: ["#eaf2ff", "#cfe0ff", "#afcbff", "#8ab5ff", "#6aa6ff", "#4c94ff", "#327cf7", "#2465d7", "#184dab", "#10367a"]
+      color: "#00AEEF",
+      surface: "rgba(6, 47, 86, 0.78)",
+      hoverSurface: "rgba(9, 61, 108, 0.9)",
+      glow: "rgba(0, 174, 239, 0.22)",
+      border: "rgba(0, 174, 239, 0.24)",
+      rgb: "0, 174, 239",
+      palette: ["#ecfbff", "#d5f5ff", "#acecff", "#7fe0ff", "#55d2ff", "#2cc0fb", "#00aeef", "#008bc6", "#006997", "#004566"]
     },
     synthesis: {
-      color: "#7f72ff",
-      surface: "rgba(28, 29, 86, 0.78)",
-      hoverSurface: "rgba(37, 39, 112, 0.9)",
-      glow: "rgba(127, 114, 255, 0.24)",
-      border: "rgba(127, 114, 255, 0.24)",
-      rgb: "127, 114, 255",
-      palette: ["#f1efff", "#ddd8ff", "#c2b8ff", "#a695ff", "#8d7dff", "#7f72ff", "#695ef2", "#5548d0", "#4035a3", "#2c2573"]
+      color: "#003FCE",
+      surface: "rgba(9, 24, 73, 0.82)",
+      hoverSurface: "rgba(12, 33, 96, 0.92)",
+      glow: "rgba(0, 63, 206, 0.22)",
+      border: "rgba(0, 63, 206, 0.24)",
+      rgb: "0, 63, 206",
+      palette: ["#eef3ff", "#dae4ff", "#b9ceff", "#95b6ff", "#6d9aff", "#4880ff", "#1d63f6", "#003fce", "#0032a2", "#00216d"]
     },
     knowmore: {
-      color: "#4bd7ff",
-      surface: "rgba(10, 52, 70, 0.78)",
-      hoverSurface: "rgba(16, 69, 92, 0.9)",
-      glow: "rgba(75, 215, 255, 0.22)",
-      border: "rgba(75, 215, 255, 0.24)",
-      rgb: "75, 215, 255",
-      palette: ["#ebfcff", "#d1f7ff", "#abefff", "#7fe4ff", "#58dbff", "#4bd7ff", "#1dc2eb", "#1398b8", "#0d7188", "#084a59"]
+      color: "#00B894",
+      surface: "rgba(7, 57, 50, 0.82)",
+      hoverSurface: "rgba(10, 76, 67, 0.92)",
+      glow: "rgba(0, 184, 148, 0.2)",
+      border: "rgba(0, 184, 148, 0.24)",
+      rgb: "0, 184, 148",
+      palette: ["#ebfff9", "#cffcee", "#a6f6dc", "#72ebc5", "#44dfb0", "#19cf9f", "#00b894", "#009073", "#006958", "#004539"]
     },
     strategy: {
-      color: "#d58bff",
-      surface: "rgba(51, 22, 78, 0.78)",
-      hoverSurface: "rgba(71, 31, 108, 0.9)",
-      glow: "rgba(213, 139, 255, 0.24)",
-      border: "rgba(213, 139, 255, 0.24)",
-      rgb: "213, 139, 255",
-      palette: ["#f9f0ff", "#eedbff", "#ddbaff", "#cb9bff", "#bc85ff", "#b776ff", "#a855f7", "#8d3ce0", "#6d2cb0", "#4b1d7a"]
+      color: "#C7F036",
+      surface: "rgba(70, 84, 18, 0.84)",
+      hoverSurface: "rgba(92, 111, 24, 0.94)",
+      glow: "rgba(199, 240, 54, 0.22)",
+      border: "rgba(199, 240, 54, 0.26)",
+      rgb: "199, 240, 54",
+      palette: ["#fdffe9", "#f4fdc3", "#e9f991", "#ddf563", "#d0f145", "#c7f036", "#a3c929", "#7f9c1f", "#586d15", "#35440b"]
     },
     checklist: {
-      color: "#4fd6ff",
-      surface: "rgba(13, 48, 68, 0.78)",
-      hoverSurface: "rgba(19, 66, 94, 0.9)",
-      glow: "rgba(79, 214, 255, 0.22)",
-      border: "rgba(79, 214, 255, 0.24)",
-      rgb: "79, 214, 255",
-      palette: ["#edfbff", "#d7f6ff", "#b2eeff", "#84e3ff", "#59d8ff", "#4fd6ff", "#21bde8", "#1794b5", "#106d84", "#0a4857"]
+      color: "#38BDF8",
+      surface: "rgba(11, 58, 82, 0.82)",
+      hoverSurface: "rgba(15, 77, 108, 0.92)",
+      glow: "rgba(56, 189, 248, 0.22)",
+      border: "rgba(56, 189, 248, 0.24)",
+      rgb: "56, 189, 248",
+      palette: ["#ecfbff", "#d3f5ff", "#a8ecff", "#7bdeff", "#53d0ff", "#40c7fb", "#38bdf8", "#1797c9", "#106f96", "#0a4961"]
     },
     tactical: {
-      color: "#45e3cf",
-      surface: "rgba(12, 54, 52, 0.78)",
-      hoverSurface: "rgba(17, 73, 70, 0.9)",
-      glow: "rgba(69, 227, 207, 0.22)",
-      border: "rgba(69, 227, 207, 0.24)",
-      rgb: "69, 227, 207",
-      palette: ["#eefffc", "#d6fdf6", "#abf8ec", "#7aeddc", "#56e6d4", "#45e3cf", "#1ac6b1", "#129887", "#0c6f63", "#084842"]
+      color: "#22C55E",
+      surface: "rgba(13, 58, 31, 0.82)",
+      hoverSurface: "rgba(18, 78, 41, 0.92)",
+      glow: "rgba(34, 197, 94, 0.2)",
+      border: "rgba(34, 197, 94, 0.24)",
+      rgb: "34, 197, 94",
+      palette: ["#effdf4", "#d4f9e1", "#abf0c0", "#7be59a", "#4fdc78", "#31d063", "#22c55e", "#179649", "#106c35", "#0a4621"]
     },
     review: {
-      color: "#ff9b66",
-      surface: "rgba(68, 35, 20, 0.8)",
-      hoverSurface: "rgba(93, 49, 28, 0.92)",
-      glow: "rgba(255, 155, 102, 0.22)",
-      border: "rgba(255, 155, 102, 0.24)",
-      rgb: "255, 155, 102",
-      palette: ["#fff3eb", "#ffe2d4", "#ffc5a7", "#ffaa7d", "#ff9865", "#ff8b52", "#f97316", "#d75f08", "#a94905", "#723003"]
+      color: "#FFD54A",
+      surface: "rgba(77, 58, 12, 0.84)",
+      hoverSurface: "rgba(104, 78, 18, 0.94)",
+      glow: "rgba(255, 213, 74, 0.22)",
+      border: "rgba(255, 213, 74, 0.26)",
+      rgb: "255, 213, 74",
+      palette: ["#fffbea", "#fff3c5", "#ffe89a", "#ffdc6d", "#ffd24f", "#ffd54a", "#ffb000", "#d88f00", "#a86a00", "#6d4300"]
     },
     neutral: {
-      color: "#a9b7d0",
-      surface: "rgba(19, 27, 45, 0.72)",
-      hoverSurface: "rgba(28, 38, 59, 0.88)",
-      glow: "rgba(169, 183, 208, 0.12)",
-      border: "rgba(169, 183, 208, 0.18)",
-      rgb: "169, 183, 208",
-      palette: ["#f5f8fc", "#e7edf6", "#d1dbe9", "#bac8da", "#a6b6cc", "#92a6bf", "#7d93af", "#647792", "#4b5c73", "#313f54"]
+      color: "#A7B4CC",
+      surface: "rgba(24, 34, 53, 0.82)",
+      hoverSurface: "rgba(31, 43, 66, 0.94)",
+      glow: "rgba(167, 180, 204, 0.1)",
+      border: "rgba(167, 180, 204, 0.16)",
+      rgb: "167, 180, 204",
+      palette: ["#f4f7fb", "#e1e8f1", "#c9d3e1", "#aebbd0", "#95a5c0", "#7f90ae", "#667792", "#526177", "#3c4759", "#252d3a"]
     }
   }
 };
@@ -268,7 +268,7 @@ export function getNavStateCss(mode: ThemeMode, tone: SemanticTone, active: bool
   const semanticTone = getSemanticTone(mode, tone);
   if (active) {
     return {
-      background: `linear-gradient(90deg, rgba(${semanticTone.rgb}, 0.26), rgba(${semanticTone.rgb}, 0.07))`,
+      background: `linear-gradient(90deg, rgba(${semanticTone.rgb}, 0.26), rgba(${semanticTone.rgb}, 0.08))`,
       borderLeft: `2px solid rgb(${semanticTone.rgb})`
     };
   }
@@ -285,20 +285,21 @@ export function resolveLegacyTone(input?: string | null): SemanticTone {
     brand: "ingress",
     blue: "ingress",
     indigo: "synthesis",
-    teal: "tactical",
-    green: "knowmore",
+    teal: "knowmore",
+    green: "tactical",
     knowledge: "knowmore",
-    purple: "strategy",
-    violet: "strategy",
+    purple: "synthesis",
+    violet: "synthesis",
     cyan: "checklist",
     execution: "checklist",
     orange: "review",
     amber: "review",
+    lime: "strategy",
+    yellow: "review",
     gray: "neutral",
     grey: "neutral",
     dark: "neutral",
-    red: "neutral",
-    yellow: "neutral"
+    red: "neutral"
   };
 
   return (aliases[normalized] ?? normalized) as SemanticTone;

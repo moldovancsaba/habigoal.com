@@ -55,7 +55,7 @@ let brandImageDataUrl: string | null = null;
 export const PdfService = {
   async ensureBrandImage(): Promise<string | null> {
     if (!brandImageDataUrlPromise) {
-      brandImageDataUrlPromise = fetch("/images/habigoal.png")
+      brandImageDataUrlPromise = fetch("/images/habigoal_logo.png")
         .then((res) => res.arrayBuffer())
         .then((buffer) => {
           let binary = "";
@@ -186,10 +186,10 @@ export const PdfService = {
     doc.text(`${tr("readinessChecksLabel")}: ${readinessChecks}/${readinessTotal}`, 24, 114);
     doc.text(`${tr("locationLabel")}: ${record.session.location || tc("emptyValue")}`, 24, 121);
 
-    this.drawStatChip(doc, 24, 128, 38, 18, tr("ageGroupLabel"), record.child.ageGroup || tc("emptyValue"));
-    this.drawStatChip(doc, 66, 128, 52, 18, tr("contextLabel"), tr(`contextValue${capitalize(record.session.context)}`));
-    this.drawStatChip(doc, 122, 128, 30, 18, tr("groupSizeLabel"), record.session.groupSize || tc("emptyValue"));
-    this.drawStatChip(doc, 156, 128, 32, 18, tr("overallAverageLabel"), formatScore(average));
+    this.drawStatChip(doc, 24, 128, 54, 18, tc("date"), record.child.birthDate || tc("emptyValue"));
+    this.drawStatChip(doc, 82, 128, 48, 18, tr("contextLabel"), tr(`contextValue${capitalize(record.session.context)}`));
+    this.drawStatChip(doc, 134, 128, 26, 18, tr("groupSizeLabel"), record.session.groupSize || tc("emptyValue"));
+    this.drawStatChip(doc, 164, 128, 24, 18, tr("overallAverageLabel"), formatScore(average));
 
     this.drawNarrativePanel(doc, 20, 170, 54, 34, tr("strongestAreaLabel"), strongest?.label ?? tc("emptyValue"), `${formatScore(strongest?.score ?? null)} / ${REPORT_MAX_SCORE}`);
     this.drawNarrativePanel(doc, 78, 170, 54, 34, tr("priorityFocusLabel"), focus?.label ?? tc("emptyValue"), `${formatScore(focus?.score ?? null)} / ${REPORT_MAX_SCORE}`);

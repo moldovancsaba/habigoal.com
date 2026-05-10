@@ -23,7 +23,6 @@ import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/athlete-iq-survey";
 import { sectionsForMode } from "@/lib/survey-schema";
 import { computeAssessment } from "@/lib/scoring";
-import { calculateAgeGroup } from "@/lib/utils/age";
 import type { AssessmentPayload, AssessmentRecord, ScoreEntry } from "@/types/assessment";
 import type { ChildProfile } from "@/repositories/child.repository";
 
@@ -277,7 +276,7 @@ export function SurveyAssessmentApp() {
           ...cloneAssessment(emptyAssessment).child,
           name: child.name || "",
           birthDate: child.birthDate || "",
-          ageGroup: (child.ageGroup || calculateAgeGroup(child.birthDate) || "") as AssessmentPayload["child"]["ageGroup"],
+          ageGroup: "",
           knownTraits: child.knownTraits || "",
           parentSignals: child.parentSignals || "",
           dominantHand: child.dominantHand || "",
@@ -332,7 +331,7 @@ export function SurveyAssessmentApp() {
         ...current.child,
         name: child.name || "",
         birthDate: child.birthDate || "",
-        ageGroup: (child.ageGroup || calculateAgeGroup(child.birthDate) || "") as AssessmentPayload["child"]["ageGroup"],
+        ageGroup: "",
         knownTraits: child.knownTraits || "",
         parentSignals: child.parentSignals || "",
         dominantHand: child.dominantHand || "",
@@ -440,9 +439,9 @@ export function SurveyAssessmentApp() {
           </SimpleGrid>
 
           <SimpleGrid cols={{ base: 1, md: 3 }} spacing="sm">
-            <InfoChip label="Age group" value={assessment.child.ageGroup || "Pending"} />
             <InfoChip label="Known traits" value={assessment.child.knownTraits || "No extra notes"} />
             <InfoChip label="Parent or coach signals" value={assessment.child.parentSignals || "No extra notes"} />
+            <InfoChip label="Birth date" value={assessment.child.birthDate || tc("emptyValue")} />
           </SimpleGrid>
         </Stack>
       </SectionCard>

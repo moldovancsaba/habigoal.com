@@ -1,7 +1,7 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Box, Paper, Text, useMantineTheme } from "@mantine/core";
+import { Box, Paper, Text } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 
 interface BenchmarkData {
@@ -24,8 +24,6 @@ export function BenchmarkChart({
   data,
   labels = { individual: "Individual", average: "Age Group Avg" }
 }: BenchmarkChartProps) {
-  const theme = useMantineTheme();
-
   return (
     <Paper withBorder p="md" radius="md">
       {title && (
@@ -36,7 +34,7 @@ export function BenchmarkChart({
       <Box style={{ width: "100%", height: ANALYTICS_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={ANALYTICS_CONFIG.margins} barGap={8}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme.colors.gray[3]} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={ANALYTICS_CONFIG.colors.grid} />
             <XAxis
               dataKey="subject"
               tick={{ fontSize: 10, fill: ANALYTICS_CONFIG.colors.text, fontFamily: ANALYTICS_CONFIG.fontFamily }}
@@ -52,13 +50,14 @@ export function BenchmarkChart({
               width={30}
             />
             <Tooltip
-              cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+              cursor={{ fill: "rgba(0, 174, 239, 0.08)" }}
               contentStyle={{
-                background: "var(--mantine-color-body)",
-                border: "1px solid var(--mantine-color-default-border)",
+                background: "var(--surface-elevated)",
+                border: "1px solid var(--border-primary)",
                 borderRadius: ANALYTICS_CONFIG.tooltipRadius,
                 fontFamily: ANALYTICS_CONFIG.fontFamily,
-                fontSize: "12px"
+                fontSize: "12px",
+                color: "var(--text-primary)"
               }}
             />
             <Legend 
@@ -81,7 +80,7 @@ export function BenchmarkChart({
             <Bar
               name={labels.average}
               dataKey="average"
-              fill={theme.colors.gray[5]}
+              fill={ANALYTICS_CONFIG.colors.secondary}
               radius={[4, 4, 0, 0]}
               barSize={20}
             />

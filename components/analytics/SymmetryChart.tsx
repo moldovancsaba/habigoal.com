@@ -1,7 +1,7 @@
 "use client";
 
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
-import { Box, Paper, Text, useMantineTheme } from "@mantine/core";
+import { Box, Paper, Text } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 
 interface SymmetryData {
@@ -15,8 +15,6 @@ interface SymmetryChartProps {
 }
 
 export function SymmetryChart({ title, data }: SymmetryChartProps) {
-  const theme = useMantineTheme();
-
   return (
     <Paper withBorder p="md" radius="md">
       {title && (
@@ -30,18 +28,19 @@ export function SymmetryChart({ title, data }: SymmetryChartProps) {
               and often different styling, but RadarChart in Recharts is 
               the standard way to represent these domain balances. */}
           <RadarChart cx="50%" cy="50%" outerRadius={ANALYTICS_CONFIG.radarOuterRadius} data={data}>
-            <PolarGrid stroke={theme.colors.gray[4]} />
+            <PolarGrid stroke={ANALYTICS_CONFIG.colors.grid} />
             <PolarAngleAxis
               dataKey="domain"
               tick={{ fontSize: 11, fill: ANALYTICS_CONFIG.colors.text, fontFamily: ANALYTICS_CONFIG.fontFamily, fontWeight: 600 }}
             />
             <Tooltip
               contentStyle={{
-                background: "var(--mantine-color-body)",
-                border: "1px solid var(--mantine-color-default-border)",
+                background: "var(--surface-elevated)",
+                border: "1px solid var(--border-primary)",
                 borderRadius: ANALYTICS_CONFIG.tooltipRadius,
                 fontFamily: ANALYTICS_CONFIG.fontFamily,
-                fontSize: "12px"
+                fontSize: "12px",
+                color: "var(--text-primary)"
               }}
             />
             <Radar

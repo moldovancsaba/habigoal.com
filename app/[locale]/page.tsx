@@ -70,7 +70,7 @@ export default async function LandingPage({
             </Stack>
 
             <Box className="glass-panel surface-outline" p={{ base: "xl", md: "2rem" }} style={{ width: "100%", maxWidth: 420, borderRadius: 32, position: "relative", overflow: "hidden" }}>
-              <Box style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 18%, rgba(79, 70, 229, 0.48), transparent 34%), radial-gradient(circle at 58% 48%, rgba(168, 85, 247, 0.35), transparent 28%), radial-gradient(circle at 40% 78%, rgba(14, 165, 233, 0.28), transparent 32%)" }} />
+              <Box style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 18%, rgba(0, 63, 206, 0.44), transparent 34%), radial-gradient(circle at 58% 48%, rgba(0, 174, 239, 0.32), transparent 28%), radial-gradient(circle at 40% 78%, rgba(199, 240, 54, 0.2), transparent 32%)" }} />
               <Stack align="center" justify="center" gap="lg" style={{ position: "relative", minHeight: 460 }}>
                 <BrandMark size={164} subtitle={t("brandSubtitle")} />
                 <Stack gap={6} align="center">

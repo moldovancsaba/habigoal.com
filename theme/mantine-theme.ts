@@ -49,8 +49,8 @@ export function getSurveyMantineTheme(mode: ThemeMode, direction: Direction = "l
     white: "#ffffff",
     primaryShade: 6,
     defaultGradient: {
-      from: "ingress.5",
-      to: "strategy.5",
+      from: "strategy.5",
+      to: "synthesis.7",
       deg: 135
     },
     components: {
@@ -117,19 +117,31 @@ export function getSurveyMantineTheme(mode: ThemeMode, direction: Direction = "l
       },
       Button: {
         defaultProps: {
-          radius: "md"
+          radius: "md",
+          variant: "gradient"
         },
-        styles: (theme: MantineTheme, props: { color?: string }) => {
+        styles: (theme: MantineTheme, props: { color?: string; variant?: string }) => {
           const selectedToneName = isSemanticTone(props.color) ? props.color : "ingress";
           const selectedTone = tone(selectedToneName);
+          const isGhost = props.variant === "subtle" || props.variant === "transparent" || props.variant === "default";
+          const isOutline = props.variant === "outline";
+
           return {
             root: {
               fontFamily,
               fontWeight: APP_FONT_WEIGHTS.bold,
               textTransform: "uppercase",
               letterSpacing: "0.04em",
-              boxShadow: "0 10px 24px rgba(37, 99, 235, 0.18)",
-              border: `1px solid ${selectedTone.border}`
+              border: `1px solid ${selectedTone.border}`,
+              boxShadow: isGhost
+                ? "none"
+                : "0 0 24px rgba(0, 174, 239, 0.22), 0 14px 36px rgba(0, 0, 0, 0.18)",
+              background: isGhost
+                ? "transparent"
+                : isOutline
+                  ? "linear-gradient(180deg, rgba(31, 43, 66, 0.9), rgba(24, 34, 53, 0.88))"
+                  : "var(--brand-gradient)",
+              color: isGhost ? "var(--text-primary)" : "#0A0F1C"
             }
           };
         }

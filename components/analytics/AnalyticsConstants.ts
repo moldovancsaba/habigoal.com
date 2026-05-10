@@ -11,11 +11,12 @@ export const ANALYTICS_CONFIG = {
   margins: { top: 10, right: 10, left: -20, bottom: 5 },
   colors: {
     primary: "var(--mantine-color-ingress-6)",
-    grid: "var(--mantine-color-gray-4)",
-    text: "var(--mantine-color-text)",
-    dimmed: "var(--mantine-color-gray-6)",
-    success: "#40C057",
-    warning: "#FAB005",
-    error: "#FA5252"
+    secondary: "var(--mantine-color-synthesis-7)",
+    grid: "var(--border-primary)",
+    text: "var(--text-primary)",
+    dimmed: "var(--text-secondary)",
+    success: "var(--status-success)",
+    warning: "var(--status-warning)",
+    error: "var(--status-error)"
   }
 } as const;
