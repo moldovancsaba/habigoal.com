@@ -349,8 +349,8 @@ export function MainDashboard() {
   );
 
   const sessionBlueprint = useMemo(
-    () => buildSessionBlueprint(queueItems, t),
-    [queueItems, t]
+    () => buildSessionBlueprint(queueItems, t, ta),
+    [queueItems, t, ta]
   );
 
   async function saveCoachAction(athleteKey: string, recommendationKey: string, status: CoachActionStatus) {
@@ -1056,7 +1056,11 @@ function getActionStatusLabel(status: CoachActionStatus, t: ReturnType<typeof us
   return status === "applied" ? t("coachActionApplied") : t("coachActionAcknowledged");
 }
 
-function buildSessionBlueprint(queueItems: QueueItem[], t: ReturnType<typeof useTranslations>): SessionBlueprintPlan {
+function buildSessionBlueprint(
+  queueItems: QueueItem[],
+  t: ReturnType<typeof useTranslations>,
+  ta: ReturnType<typeof useTranslations>
+): SessionBlueprintPlan {
   const supportCount = queueItems.filter((item) => item.supportLevel === "support").length;
   const watchCount = queueItems.filter((item) => item.supportLevel === "watch").length;
   const checkedInTodayCount = queueItems.filter((item) => item.checkedInToday).length;
@@ -1104,11 +1108,11 @@ function buildSessionBlueprint(queueItems: QueueItem[], t: ReturnType<typeof use
             t("sessionBlueprintControlledStep4")
           ]
         : [
-            t("blueprintStandardStep1"),
-            t("blueprintStandardStep2"),
-            t("blueprintStandardStep3"),
-            t("blueprintStandardStep4"),
-            t("blueprintStandardStep5")
+            ta("blueprintStandardStep1"),
+            ta("blueprintStandardStep2"),
+            ta("blueprintStandardStep3"),
+            ta("blueprintStandardStep4"),
+            ta("blueprintStandardStep5")
           ];
 
   const athleteAdjustments = queueItems
