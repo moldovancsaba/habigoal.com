@@ -32,6 +32,7 @@ type QueueItem = {
   priorityScore: number;
   reasons: string[];
   supportAreas: string[];
+  recommendations: Recommendation[];
 };
 
 type ActionBucket = {
@@ -57,6 +58,13 @@ type EscalationItem = {
   severity: "critical" | "warning";
   athleteHref: string;
   checkInHref: string;
+};
+
+type Recommendation = {
+  key: string;
+  title: string;
+  detail: string;
+  tone: "red" | "yellow" | "blue" | "green";
 };
 
 const PRIORITY_QUEUE_LIMIT = 6;
@@ -154,6 +162,19 @@ export function MainDashboard() {
           priorityScore += Math.min(3, supportAreas.length);
         }
 
+        const recommendations = buildRecommendations({
+          checkedInToday,
+          latestCheckIn,
+          priorityScore,
+          readinessChecks: readinessState.count,
+          readinessScore,
+          readinessTotal: readinessState.total,
+          supportAreas,
+          supportLevel,
+          t,
+          tc
+        });
+
         return {
           athlete,
           latestCheckIn,
@@ -164,7 +185,8 @@ export function MainDashboard() {
           readinessTotal: readinessState.total,
           priorityScore,
           reasons,
-          supportAreas
+          supportAreas,
+          recommendations
         };
       })
       .sort((a, b) => {
@@ -172,7 +194,7 @@ export function MainDashboard() {
         if (a.checkedInToday !== b.checkedInToday) return Number(a.checkedInToday) - Number(b.checkedInToday);
         return a.athlete.name.localeCompare(b.athlete.name);
       });
-  }, [data, latestCheckInByAthlete, t, ta]);
+  }, [data, latestCheckInByAthlete, t, ta, tc]);
 
   const priorityAthletes = queueItems.filter((item) => item.priorityScore > 0).slice(0, PRIORITY_QUEUE_LIMIT);
   const missedCheckIns = queueItems.filter((item) => !item.checkedInToday);
@@ -287,6 +309,13 @@ export function MainDashboard() {
     return items.slice(0, 8);
   }, [data, queueItems, t, tc]);
 
+  const coachRecommendations = useMemo(
+    () => queueItems
+      .filter((item) => item.recommendations.length > 0 && item.priorityScore > 0)
+      .slice(0, PRIORITY_QUEUE_LIMIT),
+    [queueItems]
+  );
+
   if (loading) {
     return (
       <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
@@ -336,6 +365,57 @@ export function MainDashboard() {
               </Paper>
             ))}
           </Stack>
+        )}
+      </SectionCard>
+
+      <SectionCard title={t("nextBestActionsTitle")} subheader={t("nextBestActionsSubtitle")}>
+        {coachRecommendations.length === 0 ? (
+          <Text size="sm" c="dimmed">{t("nextBestActionsEmpty")}</Text>
+        ) : (
+          <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
+            {coachRecommendations.map((item) => {
+              const athleteHref = item.athlete._id ? `/dashboard/athletes/${item.athlete._id}` : "/dashboard/athletes";
+              const checkInHref = item.athlete._id ? `/dashboard/assessment?childId=${item.athlete._id}` : "/dashboard/assessment";
+              const primaryRecommendation = item.recommendations[0];
+
+              return (
+                <Paper key={`recommendation-${item.athlete._id || item.athlete.name}`} withBorder p="md" radius="md">
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start">
+                      <Box>
+                        <Text fw={700}>{item.athlete.name}</Text>
+                        <Text size="sm" c="dimmed">{primaryRecommendation.title}</Text>
+                      </Box>
+                      <Badge color={getRecommendationBadgeColor(primaryRecommendation.tone)}>
+                        {getRecommendationBadgeLabel(primaryRecommendation.tone, t)}
+                      </Badge>
+                    </Group>
+
+                    <Text size="sm">{primaryRecommendation.detail}</Text>
+
+                    {item.recommendations.length > 1 ? (
+                      <Stack gap={4}>
+                        {item.recommendations.slice(1, 3).map((recommendation) => (
+                          <Text key={recommendation.key} size="sm" c="dimmed">
+                            {recommendation.title}
+                          </Text>
+                        ))}
+                      </Stack>
+                    ) : null}
+
+                    <Group gap="sm">
+                      <Button component={Link} href={athleteHref} variant="default" size="sm">
+                        {t("openAthleteAction")}
+                      </Button>
+                      <Button component={Link} href={checkInHref} color="ingress" size="sm">
+                        {t("startCheckInAction")}
+                      </Button>
+                    </Group>
+                  </Stack>
+                </Paper>
+              );
+            })}
+          </SimpleGrid>
         )}
       </SectionCard>
 
@@ -618,6 +698,17 @@ function QueueCard({
           </Stack>
         ) : null}
 
+        {item.recommendations.length > 0 ? (
+          <Stack gap={4}>
+            <Text size="sm" fw={600}>{t("nextBestActionsInlineLabel")}</Text>
+            {item.recommendations.slice(0, 2).map((recommendation) => (
+              <Text key={recommendation.key} size="sm" c="dimmed">
+                {recommendation.title}
+              </Text>
+            ))}
+          </Stack>
+        ) : null}
+
         <Group gap="sm">
           <Button component={Link} href={athleteHref} variant="default" size="sm">
             {t("openAthleteAction")}
@@ -629,4 +720,132 @@ function QueueCard({
       </Stack>
     </Paper>
   );
+}
+
+function buildRecommendations({
+  checkedInToday,
+  latestCheckIn,
+  priorityScore,
+  readinessChecks,
+  readinessScore,
+  readinessTotal,
+  supportAreas,
+  supportLevel,
+  t,
+  tc
+}: {
+  checkedInToday: boolean;
+  latestCheckIn: CheckInRecord | null;
+  priorityScore: number;
+  readinessChecks: number;
+  readinessScore: number;
+  readinessTotal: number;
+  supportAreas: string[];
+  supportLevel: QueueItem["supportLevel"];
+  t: ReturnType<typeof useTranslations>;
+  tc: ReturnType<typeof useTranslations>;
+}) {
+  const recommendations: Recommendation[] = [];
+
+  if (!latestCheckIn) {
+    recommendations.push({
+      key: "baseline-check-in",
+      title: t("recommendationBaselineTitle"),
+      detail: t("recommendationBaselineDetail"),
+      tone: "red"
+    });
+  } else if (!checkedInToday) {
+    recommendations.push({
+      key: "collect-today-check-in",
+      title: t("recommendationCollectTitle"),
+      detail: t("recommendationCollectDetail"),
+      tone: "red"
+    });
+  }
+
+  if (latestCheckIn && latestCheckIn.computed.completion.done < latestCheckIn.computed.completion.total) {
+    recommendations.push({
+      key: "complete-check-in",
+      title: t("recommendationCompletionTitle"),
+      detail: t("recommendationCompletionDetail", {
+        done: latestCheckIn.computed.completion.done,
+        total: latestCheckIn.computed.completion.total
+      }),
+      tone: "yellow"
+    });
+  }
+
+  if (supportLevel === "support") {
+    recommendations.push({
+      key: "support-conversation",
+      title: t("recommendationSupportConversationTitle"),
+      detail: t("recommendationSupportConversationDetail", {
+        area: supportAreas[0] || tc("emptyValue")
+      }),
+      tone: "red"
+    });
+    recommendations.push({
+      key: "modify-session-load",
+      title: t("recommendationModifySessionTitle"),
+      detail: t("recommendationModifySessionDetail", {
+        score: formatScore(readinessScore)
+      }),
+      tone: "red"
+    });
+  } else if (supportLevel === "watch") {
+    recommendations.push({
+      key: "pre-session-check",
+      title: t("recommendationMonitorTitle"),
+      detail: t("recommendationMonitorDetail", {
+        checks: readinessChecks,
+        total: readinessTotal
+      }),
+      tone: "yellow"
+    });
+
+    if (supportAreas.length > 0) {
+      recommendations.push({
+        key: "targeted-cue",
+        title: t("recommendationTargetedCueTitle"),
+        detail: t("recommendationTargetedCueDetail", {
+          area: supportAreas[0]
+        }),
+        tone: "blue"
+      });
+    }
+  } else if (checkedInToday) {
+    recommendations.push({
+      key: "keep-plan",
+      title: t("recommendationMaintainTitle"),
+      detail: t("recommendationMaintainDetail", {
+        score: formatScore(readinessScore)
+      }),
+      tone: "green"
+    });
+  }
+
+  if (priorityScore >= 8 && checkedInToday) {
+    recommendations.push({
+      key: "same-day-follow-up",
+      title: t("recommendationSameDayFollowUpTitle"),
+      detail: t("recommendationSameDayFollowUpDetail"),
+      tone: "blue"
+    });
+  }
+
+  return recommendations.slice(0, 3);
+}
+
+function getRecommendationBadgeColor(tone: Recommendation["tone"]) {
+  return tone === "red" ? "red" : tone === "yellow" ? "yellow" : tone === "green" ? "green" : "blue";
+}
+
+function getRecommendationBadgeLabel(tone: Recommendation["tone"], t: ReturnType<typeof useTranslations>) {
+  return tone === "red"
+    ? t("recommendationToneUrgent")
+    : tone === "yellow"
+      ? t("recommendationToneMonitor")
+      : tone === "green"
+        ? t("recommendationToneOnTrack")
+        : t("recommendationTonePlan");
 }
