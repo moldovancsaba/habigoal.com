@@ -10,8 +10,7 @@ export function PageContainer({ children }: { children: React.ReactNode }) {
       style={{
         width: "100%",
         maxWidth: APP_LAYOUT.pageMaxWidth,
-        marginInline: "auto",
-        paddingTop: 24
+        marginInline: "auto"
       }}
       px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
       pt={{ base: APP_LAYOUT.mobileTopClearance, sm: 24 }}

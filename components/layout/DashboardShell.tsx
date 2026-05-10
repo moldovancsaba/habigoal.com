@@ -43,7 +43,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const navContent = (
     <Stack h="100%" gap={0} style={{ background: "var(--sidebar-bg)" }}>
       <Box p="md" style={{ display: "flex", justifyContent: "center" }}>
-        <BrandMark size={84} subtitle={t("brandName")} />
+        <BrandMark size={108} subtitle={t("brandName")} />
       </Box>
 
       <Stack px={sideInset} pb="sm" gap={4}>
@@ -202,8 +202,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               zIndex: 300,
               borderRadius: 999,
               boxShadow: "var(--surface-shadow-elevated)",
+              border: "1px solid var(--border-primary)",
               minWidth: APP_LAYOUT.mobileNavSize,
-              minHeight: APP_LAYOUT.mobileNavSize
+              minHeight: APP_LAYOUT.mobileNavSize,
+              backdropFilter: "blur(16px) saturate(1.1)",
+              WebkitBackdropFilter: "blur(16px) saturate(1.1)"
             }}
             color="var(--text-primary)"
             bg="var(--surface-base)"

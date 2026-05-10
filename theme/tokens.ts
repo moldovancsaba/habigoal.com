@@ -1,12 +1,12 @@
 export const APP_LAYOUT = {
   drawerWidth: 292,
   pageMaxWidth: 1600,
-  pageGutterMobile: 12,
+  pageGutterMobile: 16,
   pageGutterTablet: 16,
   pageGutterDesktop: 24,
-  mobileTopClearance: 72,
-  mobileNavInset: 12,
-  mobileNavSize: 46
+  mobileTopClearance: 96,
+  mobileNavInset: 16,
+  mobileNavSize: 52
 } as const;
 
 export const SEMANTIC_TONES = [
