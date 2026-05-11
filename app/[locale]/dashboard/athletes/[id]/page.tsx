@@ -87,14 +87,22 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     setDeleteConfirmText("");
   }
 
-  const reversedAssessments = useMemo(() => data?.assessments.slice().reverse() ?? [], [data]);
-  const latest = reversedAssessments[reversedAssessments.length - 1] ?? null;
-  const effectiveCustomStartDate = customStartDate || reversedAssessments[0]?.session.date || "";
-  const effectiveCustomEndDate = customEndDate || reversedAssessments[reversedAssessments.length - 1]?.session.date || "";
+  const chronologicalAssessments = useMemo(
+    () =>
+      (data?.assessments ?? []).slice().sort((a, b) => {
+        const sessionDelta = new Date(a.session.date).getTime() - new Date(b.session.date).getTime();
+        if (sessionDelta !== 0) return sessionDelta;
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }),
+    [data]
+  );
+  const latest = chronologicalAssessments[chronologicalAssessments.length - 1] ?? null;
+  const effectiveCustomStartDate = customStartDate || chronologicalAssessments[0]?.session.date || "";
+  const effectiveCustomEndDate = customEndDate || chronologicalAssessments[chronologicalAssessments.length - 1]?.session.date || "";
 
   const filteredAssessments = useMemo(
-    () => filterAssessmentsByWindow(reversedAssessments, trendWindow, effectiveCustomStartDate, effectiveCustomEndDate),
-    [effectiveCustomEndDate, effectiveCustomStartDate, reversedAssessments, trendWindow]
+    () => filterAssessmentsByWindow(chronologicalAssessments, trendWindow, effectiveCustomStartDate, effectiveCustomEndDate),
+    [chronologicalAssessments, effectiveCustomEndDate, effectiveCustomStartDate, trendWindow]
   );
 
   const latestFiltered = filteredAssessments[filteredAssessments.length - 1] ?? null;
@@ -159,6 +167,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const latestReadinessChecks = latestReadinessState.count;
   const latestReadinessTotal = latestReadinessState.total;
   const latestReadinessMode = getReadinessMode(latestReadinessChecks, latestReadinessTotal);
+  const athleteOperatingScore = latest ? getAthleteOperatingScore(latest) : 0;
+  const athleteMomentum = useMemo(() => getAthleteMomentum(chronologicalAssessments), [chronologicalAssessments]);
+  const athleteOperatingActions = latest ? getAthleteOperatingActions(latest, focusPillar, athleteMomentum, t, td) : [];
 
   if (loading) {
     return (
@@ -207,6 +218,56 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         </SectionCard>
       ) : (
         <>
+          <SectionCard
+            title={td("athleteDailyOperatingTitle")}
+            subheader={td("athleteDailyOperatingSubtitle")}
+            action={
+              <Group gap="sm" wrap="wrap">
+                <Badge color={getReadinessModeBadgeColor(latestReadinessMode)} size="lg">
+                  {td("athleteDailyOperatingModeBadge", { mode: t(`readinessMode${capitalize(latestReadinessMode)}`) })}
+                </Badge>
+                <Badge variant="light" color={getMomentumBadgeColor(athleteMomentum.state)}>
+                  {td(`athleteMomentum${capitalize(athleteMomentum.state)}`)}
+                </Badge>
+              </Group>
+            }
+          >
+            <Stack gap="md">
+              <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                <HistoryMetricCard label={td("athleteDailyOperatingScoreLabel")} value={String(athleteOperatingScore)} accent="ingress" />
+                <HistoryMetricCard label={td("athleteDailyReadinessModeLabel")} value={t(`readinessMode${capitalize(latestReadinessMode)}`)} accent="knowmore" />
+                <HistoryMetricCard label={td("athleteDailyMomentumLabel")} value={td(`athleteMomentum${capitalize(athleteMomentum.state)}`)} accent="strategy" />
+                <HistoryMetricCard label={td("athleteDailyFocusLabel")} value={focusPillar} accent="review" />
+              </SimpleGrid>
+
+              <Paper withBorder p="md" radius="md">
+                <Stack gap="xs">
+                  <Text fw={700}>{td("athleteDailySummaryTitle")}</Text>
+                  <Text c="dimmed">
+                    {td("athleteDailySummaryBody", {
+                      readiness: latestReadinessState.gaugeValue.toFixed(1),
+                      checks: latestReadinessChecks,
+                      total: latestReadinessTotal,
+                      strongest: strongestPillar,
+                      focus: focusPillar
+                    })}
+                  </Text>
+                </Stack>
+              </Paper>
+
+              <SimpleGrid cols={{ base: 1, lg: 3 }} spacing="md">
+                {athleteOperatingActions.map((action, index) => (
+                  <Paper key={`${action.title}-${index}`} withBorder p="md" radius="md">
+                    <Stack gap={6}>
+                      <Text fw={700}>{action.title}</Text>
+                      <Text size="sm" c="dimmed">{action.body}</Text>
+                    </Stack>
+                  </Paper>
+                ))}
+              </SimpleGrid>
+            </Stack>
+          </SectionCard>
+
           <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
             <HistoryMetricCard label={td("athleteSessionsLabel")} value={String(data.assessments.length)} accent="ingress" />
             <HistoryMetricCard
@@ -604,6 +665,98 @@ function getTrendWindowSummary(window: TrendWindow, customStartDate: string, cus
 function toUtcDate(value: string) {
   const date = new Date(`${value}T00:00:00.000Z`);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getAthleteOperatingScore(record: CheckInRecord) {
+  const readiness = getCompatibleReadinessState(record).gaugeValue * 20;
+  const overall = (record.computed.ski ?? 0) * 20;
+  return Math.round(readiness * 0.55 + overall * 0.45);
+}
+
+function getAthleteMomentum(assessments: CheckInRecord[]) {
+  if (assessments.length < 2) {
+    return { state: "steady" as const, delta: 0 };
+  }
+
+  const latestWindow = assessments.slice(-3);
+  const previousSource = assessments.slice(0, -3);
+  const previousWindow = previousSource.slice(-3);
+  const latestAverage = averageScore(latestWindow.map((assessment) => assessment.computed.ski ?? getCompatibleReadinessState(assessment).gaugeValue));
+  const previousAverage = averageScore((previousWindow.length ? previousWindow : previousSource).map((assessment) => assessment.computed.ski ?? getCompatibleReadinessState(assessment).gaugeValue));
+  const delta = Number((latestAverage - previousAverage).toFixed(2));
+
+  if (delta >= 0.35) return { state: "rising" as const, delta };
+  if (delta <= -0.35) return { state: "falling" as const, delta };
+  return { state: "steady" as const, delta };
+}
+
+function getAthleteOperatingActions(
+  record: CheckInRecord,
+  focusPillar: string,
+  momentum: { state: "rising" | "steady" | "falling"; delta: number },
+  translateAssessment: (key: string) => string,
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string
+) {
+  const readiness = getCompatibleReadinessState(record);
+  const mode = getReadinessMode(readiness.count, readiness.total);
+
+  const actions = [
+    {
+      title: translateDashboard(`athleteDailyActionModeTitle${capitalize(mode)}`),
+      body: translateDashboard(`athleteDailyActionModeBody${capitalize(mode)}`)
+    },
+    {
+      title: translateDashboard("athleteDailyActionFocusTitle"),
+      body: translateDashboard("athleteDailyActionFocusBody", { focus: focusPillar })
+    }
+  ];
+
+  if (momentum.state === "rising") {
+    actions.push({
+      title: translateDashboard("athleteDailyActionMomentumTitleRising"),
+      body: translateDashboard("athleteDailyActionMomentumBodyRising", { delta: Math.abs(momentum.delta).toFixed(2) })
+    });
+  } else if (momentum.state === "falling") {
+    actions.push({
+      title: translateDashboard("athleteDailyActionMomentumTitleFalling"),
+      body: translateDashboard("athleteDailyActionMomentumBodyFalling", { delta: Math.abs(momentum.delta).toFixed(2) })
+    });
+  } else {
+    actions.push({
+      title: translateDashboard("athleteDailyActionMomentumTitleSteady"),
+      body: translateDashboard("athleteDailyActionMomentumBodySteady")
+    });
+  }
+
+  if (readiness.count < readiness.total) {
+    actions[0] = {
+      title: translateDashboard("athleteDailyActionChecksTitle"),
+      body: translateDashboard("athleteDailyActionChecksBody", {
+        checks: readiness.count,
+        total: readiness.total,
+        mode: translateAssessment(`readinessMode${capitalize(mode)}`)
+      })
+    };
+  }
+
+  return actions.slice(0, 3);
+}
+
+function getReadinessModeBadgeColor(mode: string) {
+  if (mode === "full") return "green";
+  if (mode === "moderate") return "yellow";
+  return "orange";
+}
+
+function getMomentumBadgeColor(state: "rising" | "steady" | "falling") {
+  if (state === "rising") return "green";
+  if (state === "falling") return "red";
+  return "gray";
+}
+
+function averageScore(values: number[]) {
+  if (values.length === 0) return 0;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
 function DeleteSurveyModal({

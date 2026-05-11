@@ -32,6 +32,11 @@ This document summarizes the state of the project after the first major enhancem
 - **Internal Linking**: Deep linking between Children, Records, and trend charts.
 - **Legal Compliance**: Publicly accessible `/legal` routes for Google Verification.
 
+### 5. Athlete Daily Operating Layer (v0.5.x)
+- Athlete detail pages now start with a player-readable daily operating summary.
+- The athlete surface translates the latest check-in into an operating score, readiness mode, momentum, focus area, and clear next actions.
+- Athlete history now sorts chronologically before deriving latest-state summaries and time-window trends.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

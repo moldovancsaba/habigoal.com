@@ -1,34 +1,34 @@
 {
   "next_five": [
     {
-      "issue": 9,
-      "title": "Add participation and availability management",
-      "priority": "next",
-      "reason": "The coach stack now needs an explicit full-modified-limited decision layer."
+      "issue": 32,
+      "title": "Add habit adherence tracking and routine scoring",
+      "priority": "now",
+      "reason": "The athlete-facing daily dashboard needs a real behavior layer behind its operating loop."
+    },
+    {
+      "issue": 31,
+      "title": "Add athlete memory timeline and AI-style reflection insights",
+      "priority": "now",
+      "reason": "The MVP direction depends on remembered patterns and player-readable daily context, not only raw history."
+    },
+    {
+      "issue": 5,
+      "title": "Add external and internal training-load monitoring",
+      "priority": "now",
+      "reason": "Training load is a first-class operating input in the MVP direction and should inform athlete and coach surfaces."
+    },
+    {
+      "issue": 34,
+      "title": "Build weekly athlete operating reports and summaries",
+      "priority": "now",
+      "reason": "Weekly reporting is a distinct operating workflow in the MVP, not just an export add-on."
     },
     {
       "issue": 14,
       "title": "Build a session planning calendar",
       "priority": "next",
-      "reason": "Recommendations and readiness need to land in the weekly session plan."
-    },
-    {
-      "issue": 15,
-      "title": "Add secure coach-athlete messaging and support nudges",
-      "priority": "next",
-      "reason": "The product can identify action needs, but not yet execute the follow-up inside the workflow."
-    },
-    {
-      "issue": 21,
-      "title": "Add role-based permissions and privacy controls",
-      "priority": "next",
-      "reason": "The workflow surface is expanding and needs stricter role boundaries before broader rollout."
-    },
-    {
-      "issue": 22,
-      "title": "Add PDF and shareable operational reports",
-      "priority": "next",
-      "reason": "Coaches and admins still need handoff artifacts for meetings and weekly reviews."
+      "reason": "Recommendations, athlete state, and weekly summaries still need to land in a planned session surface."
     }
   ],
   "later_tracks": [

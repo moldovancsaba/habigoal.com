@@ -1,27 +1,32 @@
 {
-  "current_focus": "issue-9-participation-and-availability-management",
+  "current_focus": "issue-33-athlete-facing-daily-operating-dashboard",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
-    "participation-and-availability"
+    "athlete-daily-operating-dashboard"
   ],
   "known_risks": [
     "autonomous loops can degrade architecture quality if they are allowed to write directly to main",
     "board and memory drift if automations do not update both GitHub Project state and repository memory",
-    "trend-heavy UI changes need seeded historical data and regression checks to stay reliable"
+    "trend-heavy UI changes need seeded historical data and regression checks to stay reliable",
+    "athlete-facing work can drift back into coach-centric language if daily actions are not kept readable and actionable"
   ],
   "last_completed_tasks": [
     "issue-1-coach-command-center",
     "issue-3-reminders-and-escalation",
     "issue-7-athlete-trend-dashboards",
     "issue-8-team-readiness-summary",
+    "issue-9-participation-and-availability-management",
     "issue-17-next-best-support-actions",
-    "issue-18-session-blueprints"
+    "issue-18-session-blueprints",
+    "issue-29-standalone-typecheck-stability"
   ],
   "blocked_items": [],
   "consent_model": {
     "standing_consent_for_automation": true,
     "approval_prompts_expected": false,
+    "auto_advance_between_phases": true,
+    "planner_selected_safe_actions_preapproved": true,
     "direct_main_push_allowed": false,
     "human_merge_required": true
   }
