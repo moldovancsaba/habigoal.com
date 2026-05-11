@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { AssessmentRecord } from "@/types/assessment";
-import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist } from "@/lib/athlete-iq-survey";
+import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist, trackerQuestions } from "@/lib/athlete-iq-survey";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import { formatScore } from "./utils";
 
@@ -13,6 +13,7 @@ interface JsPDFWithAutoTable extends jsPDF {
 
 type TFunction = (key: string, values?: Record<string, string | number>) => string;
 type PillarKey = (typeof athleteIqPillars)[number]["key"];
+type TrackerLabelKey = (typeof trackerQuestions)[number]["title"];
 
 type Palette = {
   ink: [number, number, number];
@@ -46,6 +47,18 @@ const pillarColors: Record<PillarKey, [number, number, number]> = {
   physical_pillar: [15, 118, 110],
   mental_pillar: [79, 70, 229],
   sport_brain_pillar: [124, 58, 237],
+};
+
+const trackerLabelFallbacks: Record<TrackerLabelKey, string> = {
+  sleepHoursTitle: "Sleep hours",
+  sleepQualityTitle: "Sleep quality",
+  energyTitle: "Energy",
+  bodyFeelTitle: "Body feel",
+  fuelHydrationTitle: "Fuel and hydration",
+  moodTitle: "Mood",
+  stressLoadTitle: "Stress load",
+  confidenceTitle: "Confidence",
+  focusTitle: "Focus"
 };
 
 const REPORT_MAX_SCORE = 5;
@@ -131,7 +144,7 @@ export const PdfService = {
       const starting = this.getPillarScore(baseline, pillar.key);
       return {
         key: pillar.key,
-        label: ts(pillar.title),
+        label: this.resolveSchemaLabel(ts, pillar.title),
         current,
         baseline: starting,
         delta: current - starting
@@ -360,7 +373,7 @@ export const PdfService = {
         doc.roundedRect(x, yy - 4, 6, 6, 1.5, 1.5);
       }
       doc.setTextColor(...palette.ink);
-      doc.text(ts(item.label), x + 10, yy);
+      doc.text(this.resolveSchemaLabel(ts, item.label), x + 10, yy);
     });
   },
 
@@ -397,7 +410,7 @@ export const PdfService = {
         boxY,
         82,
         30,
-        ts(pillar.title),
+        this.resolveSchemaLabel(ts, pillar.title),
         history.map((item) => ({
           date: item.session.date,
           value: this.getPillarScore(item, pillar.key)
@@ -416,7 +429,7 @@ export const PdfService = {
         .slice(0, 8)
         .map((assessment) => {
           const rows = athleteIqPillars.map((pillar) => ({
-            label: ts(pillar.title),
+            label: this.resolveSchemaLabel(ts, pillar.title),
             score: this.getPillarScore(assessment, pillar.key)
           }));
           const strongest = rows.slice().sort((a, b) => b.score - a.score)[0];
@@ -754,6 +767,15 @@ export const PdfService = {
     if (key === "physical_pillar") return "Physical readiness";
     if (key === "mental_pillar") return "Mental balance";
     return "Sport brain";
+  },
+
+  resolveSchemaLabel(ts: TFunction, key: string) {
+    const normalizedKey = key.replace(/^Schema\./, "");
+    const translated = ts(normalizedKey);
+    if (translated && translated !== normalizedKey && translated !== `Schema.${normalizedKey}`) {
+      return translated;
+    }
+    return trackerLabelFallbacks[normalizedKey as TrackerLabelKey] || normalizedKey;
   },
 
   average(values: number[]) {
