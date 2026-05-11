@@ -37,6 +37,12 @@ This document summarizes the state of the project after the first major enhancem
 - Availability changes keep a small history trail on the athlete profile.
 - Daily coach views now surface participation state alongside readiness and recommendation workflows.
 
+### 6. Trend and Report Reliability Hardening
+- Athlete history pages now support 7-day, 30-day, all-history, and custom-window trend exploration.
+- The athlete trend charts were corrected to use true chronological history ordering so recent-window views anchor to the real latest check-in.
+- Report/PDF notes pages now flow from actual table height instead of fixed Y positions, preventing section overlap in longer localized layouts.
+- Showcase report narratives now localize correctly for Hungarian exports instead of leaking known seeded English fallback sentences.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability
@@ -50,6 +56,11 @@ This document summarizes the state of the project after the first major enhancem
 - Repository memory lives in `.codex/memory/` and must be kept aligned with GitHub Project state.
 - Autonomous work is branch-and-PR only; direct pushes to `main` are disallowed for unattended loops.
 - Continuous recurring loops are intended to run every 3 hours via a dedicated Codex heartbeat conversation, not GitHub Actions orchestration.
+
+## Known Follow-up Items
+
+- `npx tsc --noEmit` is not yet a stable standalone validation step because `tsconfig.json` includes `.next/types/**/*.ts` entries that are not always present in every local/build state. Tracked in GitHub issue `#29`.
+- Session planning (`#14`) remains the next planned feature work, but it should start on a clean branch after PR `#28` is merged or intentionally split because the current branch now also carries reliability fixes discovered during the automation loop.
 
 ## Deployment Notes
 - Ensure `MONGODB_URI`, `MONGODB_DB`, and `IMGBB_API_KEY` are set in the production environment.

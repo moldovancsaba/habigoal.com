@@ -7,6 +7,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - Mobile-first daily athlete check-in flow optimized for one-hand use
 - Nine-signal readiness model across physical readiness, mental balance, and sport brain
 - Centralized athlete profiles with longitudinal history and support trend views
+- Athlete trend explorer with 7-day, 30-day, all-history, and custom windows
 - Participation availability states with coach rationale and athlete history trail
 - Historical compatibility layer for legacy assessment data and backfilled tracker fields
 - Daily readiness reports and PDF export surfaces
