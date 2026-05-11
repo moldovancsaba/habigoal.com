@@ -18,7 +18,7 @@ async function objectIdFromContext(context: RouteContext) {
 }
 
 export async function GET(_request: Request, context: RouteContext) {
-  const authError = requireRole(_request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(_request, ["admin", "conductor", "observer"]);
   if (authError) return authError;
 
   const _id = await objectIdFromContext(context);
@@ -39,7 +39,7 @@ export async function GET(_request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const authError = requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "conductor"]);
   if (authError) return authError;
 
   const _id = await objectIdFromContext(context);
@@ -60,7 +60,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  const authError = requireRole(_request, ["admin", "conductor"]);
+  const authError = await requireRole(_request, ["admin", "conductor"]);
   if (authError) return authError;
 
   const _id = await objectIdFromContext(context);
@@ -77,7 +77,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
 }
 
 export async function POST(_request: Request, context: RouteContext) {
-  const authError = requireRole(_request, ["admin", "conductor"]);
+  const authError = await requireRole(_request, ["admin", "conductor"]);
   if (authError) return authError;
   const _id = await objectIdFromContext(context);
   if (!_id) {

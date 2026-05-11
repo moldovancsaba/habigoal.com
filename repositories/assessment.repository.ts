@@ -5,6 +5,31 @@ import type { AssessmentRecord } from "@/types/assessment";
 
 const collectionName = "assessments";
 
+function normalizeAssessmentRecord(record: Record<string, unknown>) {
+  const json = toJsonId(record) as Record<string, unknown> & { _id?: string };
+  return {
+    ...(json as unknown as AssessmentRecord),
+    trainingLoad: {
+      sessionType:
+        json.trainingLoad && typeof json.trainingLoad === "object" && typeof (json.trainingLoad as Record<string, unknown>).sessionType === "string"
+          ? ((json.trainingLoad as Record<string, unknown>).sessionType as string)
+          : "",
+      durationMinutes:
+        json.trainingLoad && typeof json.trainingLoad === "object" && typeof (json.trainingLoad as Record<string, unknown>).durationMinutes === "number"
+          ? ((json.trainingLoad as Record<string, unknown>).durationMinutes as number)
+          : undefined,
+      rpe:
+        json.trainingLoad && typeof json.trainingLoad === "object" && typeof (json.trainingLoad as Record<string, unknown>).rpe === "number"
+          ? ((json.trainingLoad as Record<string, unknown>).rpe as number)
+          : undefined,
+      externalLoad:
+        json.trainingLoad && typeof json.trainingLoad === "object" && typeof (json.trainingLoad as Record<string, unknown>).externalLoad === "number"
+          ? ((json.trainingLoad as Record<string, unknown>).externalLoad as number)
+          : undefined
+    }
+  };
+}
+
 export async function listAssessmentSummaries() {
   const db = await getDatabase();
   const assessments = await db
@@ -13,6 +38,7 @@ export async function listAssessmentSummaries() {
       projection: {
         child: 1,
         session: 1,
+        trainingLoad: 1,
         mode: 1,
         scores: 1,
         computed: 1,
@@ -25,7 +51,7 @@ export async function listAssessmentSummaries() {
     .limit(100)
     .toArray();
 
-  return assessments.map(toJsonId);
+  return assessments.map((assessment) => normalizeAssessmentRecord(assessment as Record<string, unknown>));
 }
 
 export async function listDeletedAssessmentSummaries() {
@@ -36,7 +62,7 @@ export async function listDeletedAssessmentSummaries() {
     .sort({ updatedAt: -1 })
     .limit(200)
     .toArray();
-  return assessments.map(toJsonId);
+  return assessments.map((assessment) => normalizeAssessmentRecord(assessment as Record<string, unknown>));
 }
 
 export async function createAssessment(record: Omit<AssessmentRecord, "_id">) {
@@ -48,7 +74,7 @@ export async function createAssessment(record: Omit<AssessmentRecord, "_id">) {
 export async function getAssessmentById(id: ObjectId) {
   const db = await getDatabase();
   const assessment = await db.collection(collectionName).findOne({ _id: id, deletedAt: { $exists: false } });
-  return assessment ? toJsonId(assessment) : null;
+  return assessment ? normalizeAssessmentRecord(assessment as Record<string, unknown>) : null;
 }
 
 export async function updateAssessmentById(id: ObjectId, update: Partial<AssessmentRecord>) {
@@ -59,7 +85,7 @@ export async function updateAssessmentById(id: ObjectId, update: Partial<Assessm
     { returnDocument: "after" }
   );
 
-  return result ? toJsonId(result) : null;
+  return result ? normalizeAssessmentRecord(result as Record<string, unknown>) : null;
 }
 
 export async function deleteAssessmentById(id: ObjectId) {
@@ -103,7 +129,7 @@ export async function listAssessmentsByChildId(childId: string) {
     }
   }
 
-  return assessments.filter((a: any) => !a.deletedAt).map(toJsonId);
+  return assessments.filter((a: any) => !a.deletedAt).map((assessment) => normalizeAssessmentRecord(assessment as Record<string, unknown>));
 }
 
 export async function updateAssessmentsForChildProfile(

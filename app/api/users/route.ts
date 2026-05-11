@@ -4,7 +4,7 @@ import { jsonError, readJson, requireRole } from "@/lib/api";
 import { parseUserPayload } from "@/lib/validations";
 
 export async function GET(request: Request) {
-  const authError = requireRole(request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(request, ["admin", "conductor", "observer"]);
   if (authError) return authError;
 
   try {
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const authError = requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "conductor"]);
   if (authError) return authError;
 
   try {
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const authError = requireRole(request, ["admin"]);
+  const authError = await requireRole(request, ["admin"]);
   if (authError) return authError;
 
   try {

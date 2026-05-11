@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const authError = requireRole(request, ["admin", "conductor", "observer"]);
+    const authError = await requireRole(request, ["admin", "conductor", "observer"]);
     if (authError) {
       return authError;
     }

@@ -50,6 +50,12 @@ export interface AssessmentPayload {
     consentPhoto: boolean;
     consentReport: boolean;
   };
+  trainingLoad: {
+    sessionType: string;
+    durationMinutes?: number;
+    rpe?: number;
+    externalLoad?: number;
+  };
   scores: Record<string, ScoreEntry>;
   notes: {
     general: string;

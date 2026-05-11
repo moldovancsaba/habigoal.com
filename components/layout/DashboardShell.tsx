@@ -37,6 +37,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     { href: "/dashboard", label: t("overview") },
     { href: "/dashboard/assessment", label: t("survey") },
     { href: "/dashboard/athletes", label: t("children") },
+    { href: "/dashboard/planning", label: t("planning") },
     { href: "/dashboard/settings", label: t("settings") }
   ];
 

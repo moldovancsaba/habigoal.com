@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { AssessmentRecord } from "@/types/assessment";
+import type { HabitRecord } from "@/types/habit-record";
 import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist } from "@/lib/athlete-iq-survey";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import { formatScore } from "./utils";
@@ -107,15 +108,15 @@ export const PdfService = {
     doc.setFont(fontName, "normal");
   },
 
-  async generateOriginalReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr?: TFunction, history: AssessmentRecord[] = []): Promise<void> {
-    await this.generateModernReport(record, t, tc, ts, tr ?? t, history);
+  async generateOriginalReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr?: TFunction, history: AssessmentRecord[] = [], habitHistory: HabitRecord[] = []): Promise<void> {
+    await this.generateModernReport(record, t, tc, ts, tr ?? t, history, habitHistory);
   },
 
-  async generateMapReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr: TFunction, history: AssessmentRecord[] = []): Promise<void> {
-    await this.generateModernReport(record, t, tc, ts, tr, history);
+  async generateMapReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr: TFunction, history: AssessmentRecord[] = [], habitHistory: HabitRecord[] = []): Promise<void> {
+    await this.generateModernReport(record, t, tc, ts, tr, history, habitHistory);
   },
 
-  async generateModernReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr: TFunction, history: AssessmentRecord[] = []): Promise<void> {
+  async generateModernReport(record: AssessmentRecord, t: TFunction, tc: TFunction, ts: TFunction, tr: TFunction, history: AssessmentRecord[] = [], habitHistory: HabitRecord[] = []): Promise<void> {
     const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
     await this.ensureUnicodeFont(doc);
     await this.ensureBrandImage();
@@ -141,9 +142,11 @@ export const PdfService = {
       pillarRows.map((pillar) => ({ key: pillar.key, score: pillar.current })),
       latestReadinessChecks
     );
+    const operatingSummary = this.getOperatingSummary(latest, trendData, habitHistory, ts, tr);
 
     this.drawCoverPage(doc, latest, tc, tr, trendData.length, latestReadinessChecks, latestReadiness.total);
     this.drawExecutiveSummaryPage(doc, latest, baseline, pillarRows, recommendation, readinessMode, latestReadinessChecks, latestReadiness.total, t, tc, tr);
+    this.drawOperatingSnapshotPage(doc, latest.child.name, operatingSummary, tc, tr);
     this.drawPerformanceProfilePage(doc, latest, pillarRows, t, ts, tr);
     this.drawTrendPage(doc, trendData, latest, baseline, ts, tr);
     this.drawNotesPage(doc, latest, recommendation, t, tc, ts, tr);
@@ -362,6 +365,81 @@ export const PdfService = {
       doc.setTextColor(...palette.ink);
       doc.text(ts(item.label), x + 10, yy);
     });
+  },
+
+  drawOperatingSnapshotPage(
+    doc: jsPDF,
+    athleteName: string,
+    operatingSummary: {
+      operatingScore: number;
+      habitScore: number | null;
+      habitStreak: number;
+      loadState: string;
+      loadRatio: number;
+      pattern: string;
+      support: string;
+      strongest: string;
+    },
+    tc: TFunction,
+    tr: TFunction
+  ) {
+    doc.addPage();
+    this.drawPageHeader(doc, tr("operatingSnapshotTitle"), athleteName);
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.muted);
+    doc.text(doc.splitTextToSize(tr("operatingSnapshotSubtitle"), 170), 20, 36);
+
+    this.drawMetricCard(doc, 20, 48, 38, 22, tr("operatingScoreLabel"), String(operatingSummary.operatingScore), palette.accent);
+    this.drawMetricCard(doc, 64, 48, 38, 22, tr("habitScoreLabel"), operatingSummary.habitScore === null ? tc("emptyValue") : String(operatingSummary.habitScore), palette.positive);
+    this.drawMetricCard(doc, 108, 48, 38, 22, tr("habitStreakLabel"), String(operatingSummary.habitStreak), palette.caution);
+    this.drawMetricCard(doc, 152, 48, 38, 22, tr("loadStateLabel"), tr(`loadStateValue${capitalize(operatingSummary.loadState)}`), this.getModeColor(operatingSummary.loadState === "heavy" ? "light" : "full"));
+
+    this.drawNarrativePanel(
+      doc,
+      20,
+      78,
+      82,
+      44,
+      tr("memoryPatternLabel"),
+      tr(`memoryPatternValue${capitalize(operatingSummary.pattern)}`),
+      tr("memoryPatternBody", {
+        strongest: operatingSummary.strongest,
+        support: operatingSummary.support
+      })
+    );
+
+    this.drawNarrativePanel(
+      doc,
+      108,
+      78,
+      82,
+      44,
+      tr("loadRatioLabel"),
+      operatingSummary.loadRatio.toFixed(2),
+      tr("loadRatioBody", {
+        ratio: operatingSummary.loadRatio.toFixed(2),
+        state: tr(`loadStateValue${capitalize(operatingSummary.loadState)}`)
+      })
+    );
+
+    this.drawSectionTitle(doc, 20, 136, tr("operatingSnapshotNarrativeTitle"));
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.ink);
+    doc.text(
+      doc.splitTextToSize(
+        tr("operatingSnapshotNarrativeBody", {
+          score: operatingSummary.operatingScore,
+          habit: operatingSummary.habitScore ?? tc("emptyValue"),
+          streak: operatingSummary.habitStreak,
+          pattern: tr(`memoryPatternValue${capitalize(operatingSummary.pattern)}`),
+          support: operatingSummary.support,
+          loadState: tr(`loadStateValue${capitalize(operatingSummary.loadState)}`)
+        }),
+        170
+      ),
+      20,
+      144
+    );
   },
 
   drawTrendPage(doc: JsPDFWithAutoTable, history: AssessmentRecord[], latest: AssessmentRecord, baseline: AssessmentRecord, ts: TFunction, tr: TFunction) {
@@ -774,6 +852,74 @@ export const PdfService = {
     if (mode === "full") return palette.positive;
     if (mode === "moderate") return palette.caution;
     return palette.danger;
+  },
+
+  getOperatingSummary(record: AssessmentRecord, history: AssessmentRecord[], habitHistory: HabitRecord[], ts: TFunction, tr: TFunction) {
+    const readiness = getCompatibleReadinessState(record).gaugeValue * 20;
+    const overall = (record.computed.ski ?? 0) * 20;
+    const operatingScore = Math.round(readiness * 0.55 + overall * 0.45);
+    const latestHabit = habitHistory.find((entry) => entry.date === record.session.date) ?? habitHistory[habitHistory.length - 1] ?? null;
+    const habitScore = latestHabit ? this.getHabitCompletion(latestHabit.statuses).score : null;
+    const habitStreak = this.getHabitStreak(habitHistory);
+
+    const loadValues = history
+      .map((entry) => this.getInternalLoad(entry))
+      .filter((value): value is number => value !== null);
+    const latestThreeAverage = loadValues.length ? this.average(loadValues.slice(-3)) : 0;
+    const previousThreeAverage = loadValues.length > 3 ? this.average(loadValues.slice(-6, -3)) : latestThreeAverage;
+    const loadRatio = previousThreeAverage > 0 ? Number((latestThreeAverage / previousThreeAverage).toFixed(2)) : 1;
+    const loadState = loadRatio >= 1.3 ? "heavy" : loadRatio <= 0.8 ? "light" : "balanced";
+
+    const recentRows = history.slice(-5).map((entry) => ({
+      strongest: athleteIqPillars
+        .map((pillar) => ({ label: ts(pillar.title), score: this.getPillarScore(entry, pillar.key) }))
+        .sort((a, b) => b.score - a.score)[0]?.label ?? tr("emptyNarrative"),
+      focus: athleteIqPillars
+        .map((pillar) => ({ label: ts(pillar.title), score: this.getPillarScore(entry, pillar.key) }))
+        .sort((a, b) => a.score - b.score)[0]?.label ?? tr("emptyNarrative")
+    }));
+    const strongest = recentRows[0]?.strongest ?? tr("emptyNarrative");
+    const support = recentRows[0]?.focus ?? tr("emptyNarrative");
+    const latestReadiness = history[history.length - 1] ? getCompatibleReadinessState(history[history.length - 1]).gaugeValue : 0;
+    const previousReadiness = history.length > 2 ? this.average(history.slice(-3, -1).map((entry) => getCompatibleReadinessState(entry).gaugeValue)) : latestReadiness;
+    const pattern = latestReadiness - previousReadiness >= 0.35 ? "rising" : previousReadiness - latestReadiness >= 0.35 ? "falling" : "steady";
+
+    return {
+      operatingScore,
+      habitScore,
+      habitStreak,
+      loadState,
+      loadRatio,
+      pattern,
+      support,
+      strongest
+    };
+  },
+
+  getHabitCompletion(statuses: Record<string, boolean>) {
+    const total = Object.keys(statuses).length;
+    const completed = Object.values(statuses).filter(Boolean).length;
+    return { completed, total, score: total ? Math.round((completed / total) * 100) : 0 };
+  },
+
+  getHabitStreak(history: HabitRecord[]) {
+    const sorted = history.slice().sort((a, b) => b.date.localeCompare(a.date));
+    let streak = 0;
+    for (const record of sorted) {
+      if (this.getHabitCompletion(record.statuses).score >= 70) {
+        streak += 1;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  },
+
+  getInternalLoad(record: AssessmentRecord) {
+    const duration = record.trainingLoad?.durationMinutes;
+    const rpe = record.trainingLoad?.rpe;
+    if (typeof duration !== "number" || typeof rpe !== "number") return null;
+    return Math.round(duration * rpe);
   }
 };
 

@@ -41,6 +41,13 @@ GitHub responsibilities:
 - provide project board visibility
 - hold pull requests for human review and merge
 
+UI operating surfaces:
+- `/dashboard` remains the coach triage and recommendation surface.
+- `/dashboard/planning` is the coach planning surface for turning live readiness and load state into a weekly session shape, with persisted weekly plans in `session_plans`.
+- `/dashboard/athletes/[id]` remains the athlete operating surface with trends, habits, memory, and reports.
+- `/athletes` is the public athlete app entry surface, and `/athletes/[id]` must stay athlete-facing rather than leaking coach-admin controls.
+- DoneIsBetter SSO is the intended authentication boundary for protected Habigoal usage, while local role authorization remains owned by the `users` collection.
+
 ## Heartbeat Chain
 
 ## Conversation Model
@@ -139,8 +146,14 @@ Every heartbeat should treat those files as part of the runtime state, not as pa
 The current product spine is:
 1. coach command center
 2. athlete trend interpretation
-3. participation decision support
-4. session planning
-5. communication and permissions
+3. athlete daily operating dashboard
+4. habit adherence and routine scoring
+5. session planning and weekly operating summaries
 
 Automation should prefer sharpening this spine before broad platform expansion.
+
+Current persistence surfaces that support this spine:
+- `assessments` for daily check-ins and computed readiness
+- `children` for athlete identity and profile
+- `coach_actions` for coach response traceability
+- `habit_records` for athlete routine completion and adherence trends

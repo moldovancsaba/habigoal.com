@@ -1,0 +1,36 @@
+[
+  {
+    "slug": "2026-05-11-athlete-operating-and-planning",
+    "title": "Athlete operating dashboard, habits, memory, load, and planning",
+    "summary": "This week Habigoal moved from basic check-in review into a fuller athlete operating system with habit tracking, memory insights, training load, and weekly planning.",
+    "publishedAt": "2026-05-11",
+    "tags": ["release", "athlete", "planning", "reporting"],
+    "sections": [
+      {
+        "title": "New",
+        "items": [
+          "Athlete detail pages now show a daily operating dashboard with readiness mode, momentum, and next priorities.",
+          "Habit adherence tracking is now persisted with completion score, streak, and category focus.",
+          "Athlete memory timelines now summarize recurring wins, constraints, and support signals.",
+          "Session planning now has a dedicated weekly planning route with location scope and coach notes."
+        ]
+      },
+      {
+        "title": "Improved",
+        "items": [
+          "Training load is now captured in check-ins through session type, duration, RPE, and optional external load.",
+          "PDF reports now include an operating snapshot built from habits, load, and recent athlete patterns.",
+          "Saved weekly plans now flow back into athlete detail pages so planned context is visible during review."
+        ]
+      },
+      {
+        "title": "Fixed",
+        "items": [
+          "Trend charts now use correct chronological ordering, so longer athlete history renders properly.",
+          "Coach alert cards no longer duplicate the same athlete when multiple alert conditions overlap.",
+          "PDF exports now resolve readiness labels correctly and avoid note-layout overlap."
+        ]
+      }
+    ]
+  }
+]

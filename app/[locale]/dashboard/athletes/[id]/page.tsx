@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState, use } from "react";
-import { Badge, Box, Button, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
@@ -16,13 +16,37 @@ import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
 import { SparklineChart } from "@/components/analytics/SparklineChart";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/athlete-iq-survey";
+import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
+import type { HabitRecord } from "@/types/habit-record";
+import type { SessionPlanRecord } from "@/types/session-plan";
 
 type AthleteHistoryPayload = {
   child: AthleteProfile;
   assessments: CheckInRecord[];
+};
+
+type HabitPayload = {
+  records: HabitRecord[];
+};
+
+type SessionPlanPayload = {
+  plans: SessionPlanRecord[];
+};
+
+type MemoryEntry = {
+  id: string;
+  date: string;
+  readiness: number;
+  habitScore: number | null;
+  strongest: string;
+  focus: string;
+  win: string;
+  struggle: string;
+  nextFocus: string;
+  signals: string[];
 };
 
 type TrendWindow = "7d" | "30d" | "all" | "custom";
@@ -36,12 +60,14 @@ const PILLAR_COLORS: Record<string, string> = {
 
 export default function AthleteHistoryPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
   const { id, locale } = use(params);
+  const pathname = usePathname();
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const td = useTranslations("Dashboard");
   const ts = useTranslations("Schema");
   const tr = useTranslations("Report");
   const emptyValue = tc("emptyValue");
+  const isAthleteApp = pathname.includes("/athletes/") && !pathname.includes("/dashboard/athletes/");
 
   const [data, setData] = useState<AthleteHistoryPayload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,17 +75,33 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deletingSurvey, setDeletingSurvey] = useState(false);
+  const [habitRecords, setHabitRecords] = useState<HabitRecord[]>([]);
+  const [sessionPlans, setSessionPlans] = useState<SessionPlanRecord[]>([]);
+  const [savingHabits, setSavingHabits] = useState(false);
   const [trendWindow, setTrendWindow] = useState<TrendWindow>("30d");
   const [trendMetric, setTrendMetric] = useState<TrendMetric>("readiness");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
+  const [todayHabitStatuses, setTodayHabitStatuses] = useState<Record<string, boolean>>(createEmptyHabitStatuses());
+  const todayDate = new Date().toISOString().slice(0, 10);
+  const currentWeekStart = useMemo(() => getMonday(new Date()).toISOString().slice(0, 10), []);
 
   useEffect(() => {
-    fetch(`/api/athletes/${id}/history`)
-      .then((res) => res.json())
-      .then(setData)
+    Promise.all([
+      fetch(`/api/athletes/${id}/history`).then((res) => res.json()),
+      fetch(`/api/athletes/${id}/habits`).then((res) => res.json()).catch(() => ({ records: [] })),
+      fetch(`/api/session-plans?weekStart=${currentWeekStart}`).then((res) => res.json()).catch(() => ({ plans: [] }))
+    ])
+      .then(([historyPayload, habitPayload, sessionPlanPayload]: [AthleteHistoryPayload, HabitPayload, SessionPlanPayload]) => {
+        setData(historyPayload);
+        const nextHabitRecords = Array.isArray(habitPayload?.records) ? habitPayload.records : [];
+        setHabitRecords(nextHabitRecords);
+        setSessionPlans(Array.isArray(sessionPlanPayload?.plans) ? sessionPlanPayload.plans : []);
+        const currentRecord = nextHabitRecords.find((record) => record.date === todayDate);
+        setTodayHabitStatuses(currentRecord ? normalizeHabitStatuses(currentRecord.statuses) : createEmptyHabitStatuses());
+      })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [currentWeekStart, id, todayDate]);
 
   async function downloadPdf() {
     if (!data || !latest) return;
@@ -68,7 +110,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     try {
       const users = await getUsers();
       const printableRecord = withDisplayNamesForReport(latest, users);
-      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, data.assessments);
+      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, data.assessments, habitRecords);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {
@@ -87,14 +129,44 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     setDeleteConfirmText("");
   }
 
-  const reversedAssessments = useMemo(() => data?.assessments.slice().reverse() ?? [], [data]);
-  const latest = reversedAssessments[reversedAssessments.length - 1] ?? null;
-  const effectiveCustomStartDate = customStartDate || reversedAssessments[0]?.session.date || "";
-  const effectiveCustomEndDate = customEndDate || reversedAssessments[reversedAssessments.length - 1]?.session.date || "";
+  async function saveTodayHabits() {
+    setSavingHabits(true);
+    try {
+      const response = await fetch(`/api/athletes/${id}/habits`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: todayDate,
+          statuses: todayHabitStatuses
+        })
+      });
+
+      if (!response.ok) return;
+      const savedRecord = (await response.json()) as HabitRecord;
+      setHabitRecords((current) =>
+        [...current.filter((record) => record.date !== savedRecord.date), savedRecord].sort((a, b) => a.date.localeCompare(b.date))
+      );
+    } finally {
+      setSavingHabits(false);
+    }
+  }
+
+  const chronologicalAssessments = useMemo(
+    () =>
+      (data?.assessments ?? []).slice().sort((a, b) => {
+        const sessionDelta = new Date(a.session.date).getTime() - new Date(b.session.date).getTime();
+        if (sessionDelta !== 0) return sessionDelta;
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }),
+    [data]
+  );
+  const latest = chronologicalAssessments[chronologicalAssessments.length - 1] ?? null;
+  const effectiveCustomStartDate = customStartDate || chronologicalAssessments[0]?.session.date || "";
+  const effectiveCustomEndDate = customEndDate || chronologicalAssessments[chronologicalAssessments.length - 1]?.session.date || "";
 
   const filteredAssessments = useMemo(
-    () => filterAssessmentsByWindow(reversedAssessments, trendWindow, effectiveCustomStartDate, effectiveCustomEndDate),
-    [effectiveCustomEndDate, effectiveCustomStartDate, reversedAssessments, trendWindow]
+    () => filterAssessmentsByWindow(chronologicalAssessments, trendWindow, effectiveCustomStartDate, effectiveCustomEndDate),
+    [chronologicalAssessments, effectiveCustomEndDate, effectiveCustomStartDate, trendWindow]
   );
 
   const latestFiltered = filteredAssessments[filteredAssessments.length - 1] ?? null;
@@ -159,6 +231,58 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const latestReadinessChecks = latestReadinessState.count;
   const latestReadinessTotal = latestReadinessState.total;
   const latestReadinessMode = getReadinessMode(latestReadinessChecks, latestReadinessTotal);
+  const athleteOperatingScore = latest ? getAthleteOperatingScore(latest) : 0;
+  const athleteMomentum = useMemo(() => getAthleteMomentum(chronologicalAssessments), [chronologicalAssessments]);
+  const athleteOperatingActions = latest ? getAthleteOperatingActions(latest, focusPillar, athleteMomentum, t, td) : [];
+  const habitHistory = useMemo(
+    () => habitRecords.slice().sort((a, b) => a.date.localeCompare(b.date)),
+    [habitRecords]
+  );
+  const latestHabitRecord = habitHistory[habitHistory.length - 1] ?? null;
+  const habitCompletion = getHabitCompletion(todayHabitStatuses);
+  const habitStreak = getHabitStreak(habitHistory);
+  const habitCategoryBreakdown = getHabitCategoryBreakdown(todayHabitStatuses);
+  const habitTrendData = useMemo(
+    () =>
+      habitHistory.slice(-7).map((record) => ({
+        date: record.date,
+        value: getHabitCompletion(record.statuses).score / 20
+      })),
+    [habitHistory]
+  );
+  const strongestHabitCategory = getStrongestHabitCategory(habitCategoryBreakdown, td);
+  const habitFocusCategory = getHabitFocusCategory(habitCategoryBreakdown, td);
+  const habitRecordByDate = useMemo(
+    () => new Map(habitHistory.map((record) => [record.date, record])),
+    [habitHistory]
+  );
+  const memoryTimeline = useMemo(
+    () => buildAthleteMemoryTimeline(chronologicalAssessments, habitRecordByDate, t, td, emptyValue),
+    [chronologicalAssessments, habitRecordByDate, t, td, emptyValue]
+  );
+  const memorySummary = useMemo(
+    () => summarizeMemoryTimeline(memoryTimeline, td, emptyValue),
+    [memoryTimeline, td, emptyValue]
+  );
+  const loadTimeline = useMemo(
+    () =>
+      chronologicalAssessments
+        .map((assessment) => ({
+          date: assessment.session.date,
+          value: getInternalLoad(assessment),
+          externalLoad: assessment.trainingLoad.externalLoad ?? null,
+          sessionType: assessment.trainingLoad.sessionType || ""
+        }))
+        .filter((entry) => entry.value !== null),
+    [chronologicalAssessments]
+  );
+  const latestLoad = loadTimeline[loadTimeline.length - 1] ?? null;
+  const latestThreeAverage = loadTimeline.length ? averageScore(loadTimeline.slice(-3).map((entry) => entry.value as number)) : 0;
+  const previousThreeAverage = loadTimeline.length > 3 ? averageScore(loadTimeline.slice(-6, -3).map((entry) => entry.value as number)) : latestThreeAverage;
+  const loadRatio = previousThreeAverage > 0 ? Number((latestThreeAverage / previousThreeAverage).toFixed(2)) : 1;
+  const loadStatus = getLoadStatus(loadRatio);
+  const athleteLocation = latest?.session.location || data?.child.latestLocation || emptyValue;
+  const relevantSessionPlan = selectRelevantSessionPlan(sessionPlans, data?.child.name || "", athleteLocation);
 
   if (loading) {
     return (
@@ -183,20 +307,32 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         subtitle={td("athleteHistorySubtitle", { date: data.child.birthDate, sessions: data.assessments.length })}
         actions={
           <Group gap="sm" wrap="wrap" className="mobile-actions-stack">
-            <Button
-              component={Link}
-              href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"}
-              variant="default"
-              disabled={data.assessments.length === 0}
-            >
-              {tc("update")}
-            </Button>
-            <Button color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>
-              {td("downloadPdf")}
-            </Button>
-            <Button color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0}>
-              {t("deleteSurveyTitle")}
-            </Button>
+            {isAthleteApp ? (
+              <Button
+                component={Link}
+                href={`/dashboard/assessment${data.child._id ? `?childId=${data.child._id}` : ""}`}
+                color="ingress"
+              >
+                {td("newSurveyForChild")}
+              </Button>
+            ) : (
+              <>
+                <Button
+                  component={Link}
+                  href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"}
+                  variant="default"
+                  disabled={data.assessments.length === 0}
+                >
+                  {tc("update")}
+                </Button>
+                <Button color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>
+                  {td("downloadPdf")}
+                </Button>
+                <Button color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0}>
+                  {t("deleteSurveyTitle")}
+                </Button>
+              </>
+            )}
           </Group>
         }
       />
@@ -207,6 +343,330 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         </SectionCard>
       ) : (
         <>
+          <SectionCard
+            title={td("athleteDailyOperatingTitle")}
+            subheader={td("athleteDailyOperatingSubtitle")}
+            action={
+              <Group gap="sm" wrap="wrap">
+                <Badge color={getReadinessModeBadgeColor(latestReadinessMode)} size="lg">
+                  {td("athleteDailyOperatingModeBadge", { mode: t(`readinessMode${capitalize(latestReadinessMode)}`) })}
+                </Badge>
+                <Badge variant="light" color={getMomentumBadgeColor(athleteMomentum.state)}>
+                  {td(`athleteMomentum${capitalize(athleteMomentum.state)}`)}
+                </Badge>
+              </Group>
+            }
+          >
+            <Stack gap="md">
+              <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                <HistoryMetricCard label={td("athleteDailyOperatingScoreLabel")} value={String(athleteOperatingScore)} accent="ingress" />
+                <HistoryMetricCard label={td("athleteDailyReadinessModeLabel")} value={t(`readinessMode${capitalize(latestReadinessMode)}`)} accent="knowmore" />
+                <HistoryMetricCard label={td("athleteDailyMomentumLabel")} value={td(`athleteMomentum${capitalize(athleteMomentum.state)}`)} accent="strategy" />
+                <HistoryMetricCard label={td("athleteDailyFocusLabel")} value={focusPillar} accent="review" />
+              </SimpleGrid>
+
+              <Paper withBorder p="md" radius="md">
+                <Stack gap="xs">
+                  <Text fw={700}>{td("athleteDailySummaryTitle")}</Text>
+                  <Text c="dimmed">
+                    {td("athleteDailySummaryBody", {
+                      readiness: latestReadinessState.gaugeValue.toFixed(1),
+                      checks: latestReadinessChecks,
+                      total: latestReadinessTotal,
+                      strongest: strongestPillar,
+                      focus: focusPillar
+                    })}
+                  </Text>
+                </Stack>
+              </Paper>
+
+              <SimpleGrid cols={{ base: 1, lg: 3 }} spacing="md">
+                {athleteOperatingActions.map((action, index) => (
+                  <Paper key={`${action.title}-${index}`} withBorder p="md" radius="md">
+                    <Stack gap={6}>
+                      <Text fw={700}>{action.title}</Text>
+                      <Text size="sm" c="dimmed">{action.body}</Text>
+                    </Stack>
+                  </Paper>
+                ))}
+              </SimpleGrid>
+            </Stack>
+          </SectionCard>
+
+          <SectionCard
+            title={td("athletePlanTitle")}
+            subheader={td("athletePlanSubtitle")}
+            action={!isAthleteApp ? (
+              <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
+                {td("planningOpenAction")}
+              </Button>
+            ) : undefined}
+          >
+            {relevantSessionPlan ? (
+              <Stack gap="md">
+                <Paper withBorder p="md" radius="md">
+                  <Stack gap="xs">
+                    <Text fw={700}>{td("athletePlanSummaryTitle")}</Text>
+                    <Text c="dimmed">
+                      {td("athletePlanSummaryBody", {
+                        scope: relevantSessionPlan.scope === "all" ? td("planningScopeAll") : relevantSessionPlan.scope,
+                        actor: relevantSessionPlan.actorName,
+                        updatedAt: relevantSessionPlan.updatedAt.slice(0, 10)
+                      })}
+                    </Text>
+                  </Stack>
+                </Paper>
+
+                <SimpleGrid cols={{ base: 1, md: 2, xl: 5 }} spacing="md">
+                  {relevantSessionPlan.days.map((day) => {
+                    const isPriorityAthlete = day.athleteNames.includes(data.child.name);
+                    return (
+                      <Paper key={day.isoDate} withBorder p="md" radius="md">
+                        <Stack gap="sm">
+                          <Group justify="space-between" align="flex-start">
+                            <Box>
+                              <Text fw={700}>{day.isoDate}</Text>
+                              <Text size="sm" c="dimmed">{td(`sessionBlueprint${capitalize(day.variant)}Label`)}</Text>
+                            </Box>
+                            <Badge color={getPlanVariantBadgeColor(day.variant)}>
+                              {td(`sessionBlueprint${capitalize(day.variant)}Badge`)}
+                            </Badge>
+                          </Group>
+
+                          <Box>
+                            <Text size="sm" fw={600}>{td("planningDayFocusLabel")}</Text>
+                            <Text size="sm" c="dimmed">{day.focus}</Text>
+                          </Box>
+
+                          <Box>
+                            <Text size="sm" fw={600}>{td("planningDayLoadLabel")}</Text>
+                            <Text size="sm" c="dimmed">{day.loadTarget}</Text>
+                          </Box>
+
+                          <Box>
+                            <Text size="sm" fw={600}>{td("planningDayCoachLabel")}</Text>
+                            <Text size="sm" c="dimmed">{day.coachNote}</Text>
+                          </Box>
+
+                          {isPriorityAthlete ? (
+                            <Badge variant="light" color="ingress">
+                              {td("athletePlanPriorityBadge")}
+                            </Badge>
+                          ) : null}
+                        </Stack>
+                      </Paper>
+                    );
+                  })}
+                </SimpleGrid>
+              </Stack>
+            ) : (
+              <Text c="dimmed">{td("athletePlanEmpty")}</Text>
+            )}
+          </SectionCard>
+
+          <SectionCard
+            title={td("athleteHabitTrackerTitle")}
+            subheader={td("athleteHabitTrackerSubtitle")}
+            action={
+              <Button color="ingress" onClick={() => void saveTodayHabits()} loading={savingHabits}>
+                {td("athleteHabitSaveAction")}
+              </Button>
+            }
+          >
+            <Stack gap="md">
+              <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                <HistoryMetricCard label={td("athleteHabitScoreLabel")} value={`${habitCompletion.score}`} accent="ingress" />
+                <HistoryMetricCard label={td("athleteHabitCompletedLabel")} value={`${habitCompletion.completed}/${habitCompletion.total}`} accent="strategy" />
+                <HistoryMetricCard label={td("athleteHabitStreakLabel")} value={`${habitStreak}`} accent="knowmore" />
+                <HistoryMetricCard label={td("athleteHabitFocusLabel")} value={habitFocusCategory} accent="review" />
+              </SimpleGrid>
+
+              <Paper withBorder p="md" radius="md">
+                <Stack gap="xs">
+                  <Text fw={700}>{td("athleteHabitSummaryTitle")}</Text>
+                  <Text c="dimmed">
+                    {td("athleteHabitSummaryBody", {
+                      score: habitCompletion.score,
+                      streak: habitStreak,
+                      strongest: strongestHabitCategory,
+                      focus: habitFocusCategory
+                    })}
+                  </Text>
+                </Stack>
+              </Paper>
+
+              <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+                <Stack gap="md">
+                  {(["training", "learning", "recovery", "wellness"] as HabitCategory[]).map((category) => (
+                    <Paper key={category} withBorder p="md" radius="md">
+                      <Stack gap="sm">
+                        <Group justify="space-between" align="flex-start">
+                          <div>
+                            <Text fw={700}>{td(`athleteHabitCategory${capitalize(category)}`)}</Text>
+                            <Text size="sm" c="dimmed">
+                              {td("athleteHabitCategorySummary", {
+                                completed: habitCategoryBreakdown[category].completed,
+                                total: habitCategoryBreakdown[category].total
+                              })}
+                            </Text>
+                          </div>
+                        </Group>
+                        <Stack gap={8}>
+                          {athleteHabitDefinitions
+                            .filter((habit) => habit.category === category)
+                            .map((habit) => (
+                              <Checkbox
+                                key={habit.key}
+                                checked={todayHabitStatuses[habit.key]}
+                                onChange={(event) =>
+                                  setTodayHabitStatuses((current) => ({
+                                    ...current,
+                                    [habit.key]: event.currentTarget.checked
+                                  }))
+                                }
+                                label={td(habit.titleKey)}
+                              />
+                            ))}
+                        </Stack>
+                      </Stack>
+                    </Paper>
+                  ))}
+                </Stack>
+
+                <Stack gap="md">
+                  <LongitudinalChart
+                    title={td("athleteHabitTrendTitle")}
+                    data={habitTrendData}
+                    color="var(--mantine-color-ingress-6)"
+                    yDomain={[0, 5]}
+                  />
+                  <Text size="sm" c="dimmed">
+                    {td("athleteHabitTrendInsight", {
+                      days: habitTrendData.length,
+                      latest: latestHabitRecord ? getHabitCompletion(latestHabitRecord.statuses).score : 0
+                    })}
+                  </Text>
+                </Stack>
+              </SimpleGrid>
+            </Stack>
+          </SectionCard>
+
+          <SectionCard
+            title={td("athleteMemoryTitle")}
+            subheader={td("athleteMemorySubtitle")}
+          >
+            <Stack gap="md">
+              <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                <HistoryMetricCard label={td("athleteMemoryEntriesLabel")} value={`${memoryTimeline.length}`} accent="ingress" />
+                <HistoryMetricCard label={td("athleteMemoryTrendLabel")} value={memorySummary.pattern} accent="knowmore" />
+                <HistoryMetricCard label={td("athleteMemoryConstraintLabel")} value={memorySummary.constraint} accent="review" />
+                <HistoryMetricCard label={td("athleteMemorySupportLabel")} value={memorySummary.support} accent="strategy" />
+              </SimpleGrid>
+
+              <Paper withBorder p="md" radius="md">
+                <Stack gap="xs">
+                  <Text fw={700}>{td("athleteMemorySummaryTitle")}</Text>
+                  <Text c="dimmed">
+                    {td("athleteMemorySummaryBody", {
+                      pattern: memorySummary.pattern,
+                      strongest: memorySummary.strongest,
+                      support: memorySummary.support
+                    })}
+                  </Text>
+                </Stack>
+              </Paper>
+
+              <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="lg">
+                <Paper withBorder p="md" radius="md">
+                  <Stack gap="sm">
+                    <Text fw={700}>{td("athleteMemoryPatternsTitle")}</Text>
+                    {memorySummary.signals.length === 0 ? (
+                      <Text size="sm" c="dimmed">{td("athleteMemoryEmpty")}</Text>
+                    ) : (
+                      memorySummary.signals.map((signal) => (
+                        <Text key={signal} size="sm">{signal}</Text>
+                      ))
+                    )}
+                  </Stack>
+                </Paper>
+
+                <Stack gap="md">
+                  {memoryTimeline.slice(-4).reverse().map((entry) => (
+                    <Paper key={entry.id} withBorder p="md" radius="md">
+                      <Stack gap={6}>
+                        <Group justify="space-between" align="flex-start">
+                          <Box>
+                            <Text fw={700}>{entry.date}</Text>
+                            <Text size="sm" c="dimmed">
+                              {td("athleteMemoryByline", {
+                                readiness: entry.readiness.toFixed(1),
+                                habit: entry.habitScore ?? 0
+                              })}
+                            </Text>
+                          </Box>
+                          <Badge variant="light" color="ingress">
+                            {entry.focus}
+                          </Badge>
+                        </Group>
+                        <Text size="sm">
+                          {td("athleteMemoryWinBody", { win: entry.win })}
+                        </Text>
+                        <Text size="sm" c="dimmed">
+                          {td("athleteMemoryStruggleBody", { struggle: entry.struggle })}
+                        </Text>
+                        <Text size="sm" c="dimmed">
+                          {td("athleteMemoryFocusBody", { focus: entry.nextFocus })}
+                        </Text>
+                        {entry.signals.length > 0 ? (
+                          <Stack gap={4} mt={4}>
+                            {entry.signals.map((signal) => (
+                              <Text key={`${entry.id}-${signal}`} size="sm" c="dimmed">
+                                {signal}
+                              </Text>
+                            ))}
+                          </Stack>
+                        ) : null}
+                      </Stack>
+                    </Paper>
+                  ))}
+                </Stack>
+              </SimpleGrid>
+            </Stack>
+          </SectionCard>
+
+          <SectionCard
+            title={td("athleteLoadTitle")}
+            subheader={td("athleteLoadSubtitle")}
+          >
+            {loadTimeline.length === 0 ? (
+              <Text c="dimmed">{td("athleteLoadEmpty")}</Text>
+            ) : (
+              <Stack gap="md">
+                <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                  <HistoryMetricCard label={td("athleteLoadLatestLabel")} value={latestLoad ? `${latestLoad.value}` : "-"} accent="ingress" />
+                  <HistoryMetricCard label={td("athleteLoadShortAverageLabel")} value={latestThreeAverage ? latestThreeAverage.toFixed(0) : "-"} accent="strategy" />
+                  <HistoryMetricCard label={td("athleteLoadRatioLabel")} value={loadRatio.toFixed(2)} accent={loadRatio > 1.15 ? "review" : "knowmore"} />
+                  <HistoryMetricCard label={td("athleteLoadStatusLabel")} value={td(`athleteLoadStatus${capitalize(loadStatus)}`)} accent="review" />
+                </SimpleGrid>
+
+                <LongitudinalChart
+                  title={td("athleteLoadTrendTitle")}
+                  data={loadTimeline.map((entry) => ({ date: entry.date, value: entry.value as number }))}
+                  color="var(--mantine-color-review-6)"
+                  yDomain={[0, Math.max(...loadTimeline.map((entry) => entry.value as number), 100)]}
+                />
+
+                <Text size="sm" c="dimmed">
+                  {td("athleteLoadInsight", {
+                    latest: latestLoad?.value ?? 0,
+                    ratio: loadRatio.toFixed(2),
+                    status: td(`athleteLoadStatus${capitalize(loadStatus)}`)
+                  })}
+                </Text>
+              </Stack>
+            )}
+          </SectionCard>
+
           <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
             <HistoryMetricCard label={td("athleteSessionsLabel")} value={String(data.assessments.length)} accent="ingress" />
             <HistoryMetricCard
@@ -371,7 +831,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 return (
                   <ResponsiveDataCard
                     key={assessment._id}
-                    onClick={() => window.location.href = `/${locale}/dashboard/records/${assessment._id}`}
+                    onClick={!isAthleteApp ? () => window.location.href = `/${locale}/dashboard/records/${assessment._id}` : undefined}
                     title={assessment.session.date}
                   >
                     <ResponsiveDataRow label={tc("mode")} value={t("appTitle")} />
@@ -403,8 +863,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                     return (
                       <Table.Tr
                         key={assessment._id}
-                        onClick={() => window.location.href = `/${locale}/dashboard/records/${assessment._id}`}
-                        style={{ cursor: "pointer" }}
+                        onClick={!isAthleteApp ? () => window.location.href = `/${locale}/dashboard/records/${assessment._id}` : undefined}
+                        style={{ cursor: !isAthleteApp ? "pointer" : undefined }}
                       >
                         <Table.Td>{assessment.session.date}</Table.Td>
                         <Table.Td>
@@ -489,14 +949,16 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         </>
       )}
 
-      <DeleteSurveyModal
-        opened={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        confirmValue={deleteConfirmText}
-        onConfirmValueChange={setDeleteConfirmText}
-        onDelete={() => void deleteLatestSurvey()}
-        deleting={deletingSurvey}
-      />
+      {!isAthleteApp ? (
+        <DeleteSurveyModal
+          opened={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          confirmValue={deleteConfirmText}
+          onConfirmValueChange={setDeleteConfirmText}
+          onDelete={() => void deleteLatestSurvey()}
+          deleting={deletingSurvey}
+        />
+      ) : null}
     </Stack>
   );
 }
@@ -604,6 +1066,293 @@ function getTrendWindowSummary(window: TrendWindow, customStartDate: string, cus
 function toUtcDate(value: string) {
   const date = new Date(`${value}T00:00:00.000Z`);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getAthleteOperatingScore(record: CheckInRecord) {
+  const readiness = getCompatibleReadinessState(record).gaugeValue * 20;
+  const overall = (record.computed.ski ?? 0) * 20;
+  return Math.round(readiness * 0.55 + overall * 0.45);
+}
+
+function getAthleteMomentum(assessments: CheckInRecord[]) {
+  if (assessments.length < 2) {
+    return { state: "steady" as const, delta: 0 };
+  }
+
+  const latestWindow = assessments.slice(-3);
+  const previousSource = assessments.slice(0, -3);
+  const previousWindow = previousSource.slice(-3);
+  const latestAverage = averageScore(latestWindow.map((assessment) => assessment.computed.ski ?? getCompatibleReadinessState(assessment).gaugeValue));
+  const previousAverage = averageScore((previousWindow.length ? previousWindow : previousSource).map((assessment) => assessment.computed.ski ?? getCompatibleReadinessState(assessment).gaugeValue));
+  const delta = Number((latestAverage - previousAverage).toFixed(2));
+
+  if (delta >= 0.35) return { state: "rising" as const, delta };
+  if (delta <= -0.35) return { state: "falling" as const, delta };
+  return { state: "steady" as const, delta };
+}
+
+function getAthleteOperatingActions(
+  record: CheckInRecord,
+  focusPillar: string,
+  momentum: { state: "rising" | "steady" | "falling"; delta: number },
+  translateAssessment: (key: string) => string,
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string
+) {
+  const readiness = getCompatibleReadinessState(record);
+  const mode = getReadinessMode(readiness.count, readiness.total);
+
+  const actions = [
+    {
+      title: translateDashboard(`athleteDailyActionModeTitle${capitalize(mode)}`),
+      body: translateDashboard(`athleteDailyActionModeBody${capitalize(mode)}`)
+    },
+    {
+      title: translateDashboard("athleteDailyActionFocusTitle"),
+      body: translateDashboard("athleteDailyActionFocusBody", { focus: focusPillar })
+    }
+  ];
+
+  if (momentum.state === "rising") {
+    actions.push({
+      title: translateDashboard("athleteDailyActionMomentumTitleRising"),
+      body: translateDashboard("athleteDailyActionMomentumBodyRising", { delta: Math.abs(momentum.delta).toFixed(2) })
+    });
+  } else if (momentum.state === "falling") {
+    actions.push({
+      title: translateDashboard("athleteDailyActionMomentumTitleFalling"),
+      body: translateDashboard("athleteDailyActionMomentumBodyFalling", { delta: Math.abs(momentum.delta).toFixed(2) })
+    });
+  } else {
+    actions.push({
+      title: translateDashboard("athleteDailyActionMomentumTitleSteady"),
+      body: translateDashboard("athleteDailyActionMomentumBodySteady")
+    });
+  }
+
+  if (readiness.count < readiness.total) {
+    actions[0] = {
+      title: translateDashboard("athleteDailyActionChecksTitle"),
+      body: translateDashboard("athleteDailyActionChecksBody", {
+        checks: readiness.count,
+        total: readiness.total,
+        mode: translateAssessment(`readinessMode${capitalize(mode)}`)
+      })
+    };
+  }
+
+  return actions.slice(0, 3);
+}
+
+function getReadinessModeBadgeColor(mode: string) {
+  if (mode === "full") return "green";
+  if (mode === "moderate") return "yellow";
+  return "orange";
+}
+
+function getMomentumBadgeColor(state: "rising" | "steady" | "falling") {
+  if (state === "rising") return "green";
+  if (state === "falling") return "red";
+  return "gray";
+}
+
+function averageScore(values: number[]) {
+  if (values.length === 0) return 0;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function getInternalLoad(record: CheckInRecord) {
+  const duration = record.trainingLoad.durationMinutes;
+  const rpe = record.trainingLoad.rpe;
+  if (typeof duration !== "number" || typeof rpe !== "number") return null;
+  return Math.round(duration * rpe);
+}
+
+function getLoadStatus(ratio: number) {
+  if (ratio >= 1.3) return "heavy";
+  if (ratio <= 0.8) return "light";
+  return "balanced";
+}
+
+function getMonday(date: Date) {
+  const monday = new Date(date);
+  const day = monday.getDay();
+  const distance = day === 0 ? -6 : 1 - day;
+  monday.setDate(monday.getDate() + distance);
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+}
+
+function selectRelevantSessionPlan(plans: SessionPlanRecord[], athleteName: string, athleteLocation: string) {
+  const exactLocation = plans.find((plan) => plan.scope === athleteLocation);
+  if (exactLocation) return exactLocation;
+
+  const namedPlan = plans.find((plan) => plan.days.some((day) => day.athleteNames.includes(athleteName)));
+  if (namedPlan) return namedPlan;
+
+  return plans.find((plan) => plan.scope === "all") ?? null;
+}
+
+function getPlanVariantBadgeColor(variant: "standard" | "controlled" | "recovery") {
+  return variant === "recovery" ? "red" : variant === "controlled" ? "yellow" : "green";
+}
+
+function buildAthleteMemoryTimeline(
+  assessments: CheckInRecord[],
+  habitRecordByDate: Map<string, HabitRecord>,
+  translateAssessment: (key: string) => string,
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string,
+  emptyValue: string
+) {
+  return assessments.map((assessment) => {
+    const habitRecord = habitRecordByDate.get(assessment.session.date);
+    const readiness = getCompatibleReadinessState(assessment).gaugeValue;
+    const strongest = getStrongestPillar(
+      athleteIqPillars.map((pillar) => ({
+        translatedTitle: translateAssessment(pillar.title),
+        current: getCompatiblePillarScore(assessment, pillar.key)
+      })),
+      emptyValue
+    );
+    const focus = getFocusPillar(
+      athleteIqPillars.map((pillar) => ({
+        translatedTitle: translateAssessment(pillar.title),
+        current: getCompatiblePillarScore(assessment, pillar.key)
+      })),
+      emptyValue
+    );
+    const habitScore = habitRecord ? getHabitCompletion(habitRecord.statuses).score : null;
+    const generalNote = assessment.notes.general.trim();
+    const adaptationsNote = assessment.notes.adaptations.trim();
+    const referralNote = assessment.notes.referral.trim();
+
+    return {
+      id: assessment._id || assessment.session.date,
+      date: assessment.session.date,
+      readiness,
+      habitScore,
+      strongest,
+      focus,
+      win: generalNote || translateDashboard("athleteMemoryFallbackWin", { strongest }),
+      struggle: adaptationsNote || translateDashboard("athleteMemoryFallbackStruggle", { focus }),
+      nextFocus: referralNote || focus,
+      signals: buildMemorySignals({
+        readiness,
+        habitScore,
+        strongest,
+        focus,
+        translateDashboard
+      })
+    } satisfies MemoryEntry;
+  });
+}
+
+function buildMemorySignals({
+  readiness,
+  habitScore,
+  strongest,
+  focus,
+  translateDashboard
+}: {
+  readiness: number;
+  habitScore: number | null;
+  strongest: string;
+  focus: string;
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string;
+}) {
+  const signals: string[] = [];
+  if (readiness < 3) {
+    signals.push(translateDashboard("athleteMemorySignalLowReadiness"));
+  } else if (readiness >= 4) {
+    signals.push(translateDashboard("athleteMemorySignalHighReadiness"));
+  }
+
+  if (habitScore !== null && habitScore < 60) {
+    signals.push(translateDashboard("athleteMemorySignalHabitSlip"));
+  } else if (habitScore !== null && habitScore >= 80) {
+    signals.push(translateDashboard("athleteMemorySignalHabitStrong"));
+  }
+
+  signals.push(translateDashboard("athleteMemorySignalSupportArea", { focus }));
+  signals.push(translateDashboard("athleteMemorySignalStrengthArea", { strongest }));
+  return Array.from(new Set(signals)).slice(0, 4);
+}
+
+function summarizeMemoryTimeline(
+  memoryTimeline: MemoryEntry[],
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string,
+  emptyValue: string
+) {
+  if (memoryTimeline.length === 0) {
+    return {
+      pattern: emptyValue,
+      strongest: emptyValue,
+      support: emptyValue,
+      constraint: emptyValue,
+      signals: [] as string[]
+    };
+  }
+
+  const latest = memoryTimeline[memoryTimeline.length - 1];
+  const previous = memoryTimeline.slice(-3, -1);
+  const previousAverage = previous.length
+    ? averageScore(previous.map((entry) => entry.readiness))
+    : latest.readiness;
+
+  const pattern =
+    latest.readiness - previousAverage >= 0.35
+      ? translateDashboard("athleteMemoryPatternRising")
+      : previousAverage - latest.readiness >= 0.35
+        ? translateDashboard("athleteMemoryPatternFalling")
+        : translateDashboard("athleteMemoryPatternSteady");
+
+  const supportFrequency = new Map<string, number>();
+  const strongestFrequency = new Map<string, number>();
+  for (const entry of memoryTimeline.slice(-5)) {
+    supportFrequency.set(entry.focus, (supportFrequency.get(entry.focus) ?? 0) + 1);
+    strongestFrequency.set(entry.strongest, (strongestFrequency.get(entry.strongest) ?? 0) + 1);
+  }
+
+  const support = [...supportFrequency.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? emptyValue;
+  const strongest = [...strongestFrequency.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? emptyValue;
+  const constraint = latest.habitScore !== null && latest.habitScore < 60
+    ? translateDashboard("athleteMemoryConstraintHabits")
+    : latest.readiness < 3
+      ? translateDashboard("athleteMemoryConstraintReadiness")
+      : support;
+
+  return {
+    pattern,
+    strongest,
+    support,
+    constraint,
+    signals: memoryTimeline.slice(-3).flatMap((entry) => entry.signals).filter((signal, index, source) => source.indexOf(signal) === index).slice(0, 4)
+  };
+}
+
+function getStrongestHabitCategory(
+  breakdown: Record<HabitCategory, { completed: number; total: number }>,
+  translateDashboard: (key: string) => string
+) {
+  const best = (Object.entries(breakdown) as Array<[HabitCategory, { completed: number; total: number }]>)
+    .sort((a, b) => {
+      const aScore = a[1].total ? a[1].completed / a[1].total : 0;
+      const bScore = b[1].total ? b[1].completed / b[1].total : 0;
+      return bScore - aScore;
+    })[0]?.[0];
+  return best ? translateDashboard(`athleteHabitCategory${capitalize(best)}`) : "-";
+}
+
+function getHabitFocusCategory(
+  breakdown: Record<HabitCategory, { completed: number; total: number }>,
+  translateDashboard: (key: string) => string
+) {
+  const focus = (Object.entries(breakdown) as Array<[HabitCategory, { completed: number; total: number }]>)
+    .sort((a, b) => {
+      const aScore = a[1].total ? a[1].completed / a[1].total : 0;
+      const bScore = b[1].total ? b[1].completed / b[1].total : 0;
+      return aScore - bScore;
+    })[0]?.[0];
+  return focus ? translateDashboard(`athleteHabitCategory${capitalize(focus)}`) : "-";
 }
 
 function DeleteSurveyModal({

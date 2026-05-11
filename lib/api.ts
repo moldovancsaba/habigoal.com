@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "@/config/env";
+import { getSession } from "@/lib/session";
 
 const roleHeader = "x-survey-role";
 
@@ -14,16 +15,30 @@ export async function readJson(request: Request): Promise<unknown | null> {
   return request.json().catch(() => null);
 }
 
-export function requireRole(request: Request, allowedRoles: string[]) {
+function parseRoles(value: string) {
+  return value
+    .split(",")
+    .map((role) => role.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+export async function requireRole(request: Request, allowedRoles: string[]) {
   if (!env.surveyEnforceAuth) {
     return null;
   }
 
   const roleHeaderValue = request.headers.get(roleHeader)?.trim().toLowerCase() || "";
-  const userRoles = roleHeaderValue.split(",").map(r => r.trim());
+  let userRoles = parseRoles(roleHeaderValue);
 
-  if (userRoles.length === 0 || roleHeaderValue === "") {
-    return jsonError("Missing role header", 401, "AUTH_REQUIRED");
+  if (userRoles.length === 0) {
+    const session = await getSession();
+    if (session?.role) {
+      userRoles = parseRoles(session.role);
+    }
+  }
+
+  if (userRoles.length === 0) {
+    return jsonError("Authentication required", 401, "AUTH_REQUIRED");
   }
 
   const hasPermission = allowedRoles.some(role => userRoles.includes(role));

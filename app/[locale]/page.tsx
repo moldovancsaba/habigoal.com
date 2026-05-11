@@ -14,7 +14,7 @@ export default async function LandingPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Landing" });
   const { error } = await searchParams;
-  const authHref = env.surveyEnforceAuth ? "/api/auth/login" : `/${locale}/dashboard`;
+  const authHref = env.surveyEnforceAuth ? `/api/auth/login?next=/${locale}/dashboard` : `/${locale}/dashboard`;
 
   return (
     <Box style={{ minHeight: "100vh", color: "var(--text-primary)", position: "relative", overflow: "hidden" }}>
@@ -63,6 +63,12 @@ export default async function LandingPage({
                 <Button component="a" href={authHref} size="xl" color="ingress" style={{ minWidth: 220 }}>
                   {t("login")}
                 </Button>
+                <Button component="a" href={`/${locale}/athletes`} size="xl" variant="default" style={{ minWidth: 220 }}>
+                  {t("athleteApp")}
+                </Button>
+                <Button component="a" href={`/${locale}/news`} size="xl" variant="light" style={{ minWidth: 220 }}>
+                  {t("whatsNew")}
+                </Button>
                 <Text size="sm" c="var(--text-muted)">
                   {t("ssoNote")}
                 </Text>
@@ -93,6 +99,12 @@ export default async function LandingPage({
             </Text>
             <Text component="a" href={`/${locale}/legal/privacy`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
               {t("privacyPolicy")}
+            </Text>
+            <Text component="a" href={`/${locale}/news`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
+              {t("whatsNew")}
+            </Text>
+            <Text component="a" href={`/${locale}/athletes`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
+              {t("athleteApp")}
             </Text>
           </Group>
         </Container>

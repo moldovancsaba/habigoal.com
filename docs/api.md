@@ -12,8 +12,9 @@ There is also a standalone local helper server for development:
 
 Role checks are controlled by `SURVEY_ENFORCE_AUTH`.
 
-- When disabled: endpoints work without role headers.
-- When enabled: endpoints that require authorization validate `x-survey-role`.
+- When disabled: endpoints work without authentication.
+- When enabled: endpoints that require authorization validate the signed-in session roles.
+- `x-survey-role` remains available as an override path for trusted integration tests or non-browser callers.
 
 Allowed roles currently used:
 - `admin`
