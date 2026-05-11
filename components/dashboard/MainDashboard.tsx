@@ -55,8 +55,8 @@ type LocationSummary = {
 
 type EscalationItem = {
   athlete: AthleteProfile;
-  title: string;
-  detail: string;
+  titles: string[];
+  details: string[];
   severity: "critical" | "warning";
   athleteHref: string;
   checkInHref: string;
@@ -303,50 +303,58 @@ export function MainDashboard() {
       return [] as EscalationItem[];
     }
 
-    const items: EscalationItem[] = [];
+    const itemsByAthlete = new Map<string, EscalationItem>();
 
     for (const item of queueItems) {
+      const athleteKey = item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`;
       const athleteHref = item.athlete._id ? `/dashboard/athletes/${item.athlete._id}` : "/dashboard/athletes";
       const checkInHref = item.athlete._id ? `/dashboard/assessment?childId=${item.athlete._id}` : "/dashboard/assessment";
+      const existing = itemsByAthlete.get(athleteKey) ?? {
+        athlete: item.athlete,
+        titles: [],
+        details: [],
+        severity: "warning" as const,
+        athleteHref,
+        checkInHref
+      };
 
       if (!item.checkedInToday && nowHour >= cutoffHour) {
-        items.push({
-          athlete: item.athlete,
-          title: t("escalationMissedCheckInTitle"),
-          detail: t("escalationMissedCheckInBody", { hour: cutoffHour }),
-          severity: "critical",
-          athleteHref,
-          checkInHref
-        });
+        existing.titles.push(t("escalationMissedCheckInTitle"));
+        existing.details.push(t("escalationMissedCheckInBody", { hour: cutoffHour }));
+        existing.severity = "critical";
       }
 
       if (item.supportLevel === "support") {
-        items.push({
-          athlete: item.athlete,
-          title: t("escalationSupportModeTitle"),
-          detail: t("escalationSupportModeBody", {
+        existing.titles.push(t("escalationSupportModeTitle"));
+        existing.details.push(
+          t("escalationSupportModeBody", {
             score: formatScore(item.readinessScore),
             areas: item.supportAreas.slice(0, 2).join(", ") || tc("emptyValue")
-          }),
-          severity: "critical",
-          athleteHref,
-          checkInHref
-        });
+          })
+        );
+        existing.severity = "critical";
       } else if (item.supportLevel === "watch") {
-        items.push({
-          athlete: item.athlete,
-          title: t("escalationWatchModeTitle"),
-          detail: t("escalationWatchModeBody", {
+        existing.titles.push(t("escalationWatchModeTitle"));
+        existing.details.push(
+          t("escalationWatchModeBody", {
             score: formatScore(item.readinessScore)
-          }),
-          severity: "warning",
-          athleteHref,
-          checkInHref
-        });
+          })
+        );
+      }
+
+      if (existing.titles.length > 0 || existing.details.length > 0) {
+        existing.titles = Array.from(new Set(existing.titles));
+        existing.details = Array.from(new Set(existing.details));
+        itemsByAthlete.set(athleteKey, existing);
       }
     }
 
-    return items.slice(0, 8);
+    return Array.from(itemsByAthlete.values())
+      .sort((a, b) => {
+        if (a.severity !== b.severity) return a.severity === "critical" ? -1 : 1;
+        return a.athlete.name.localeCompare(b.athlete.name);
+      })
+      .slice(0, 8);
   }, [data, queueItems, t, tc]);
 
   const coachRecommendations = useMemo(
@@ -444,18 +452,22 @@ export function MainDashboard() {
         ) : (
           <Stack gap="sm">
             {escalationDigest.map((alert) => (
-              <Paper key={`${alert.athlete._id || alert.athlete.name}-${alert.title}`} withBorder p="md" radius="md">
+              <Paper key={`${alert.athlete._id || alert.athlete.name}-${alert.titles.join("|")}`} withBorder p="md" radius="md">
                 <Stack gap="sm">
                   <Group justify="space-between" align="flex-start">
                     <Box>
                       <Text fw={700}>{alert.athlete.name}</Text>
-                      <Text size="sm" c="dimmed">{alert.title}</Text>
+                      <Text size="sm" c="dimmed">{alert.titles.join(" · ")}</Text>
                     </Box>
                     <Badge color={alert.severity === "critical" ? "red" : "yellow"}>
                       {alert.severity === "critical" ? t("alertSeverityCritical") : t("alertSeverityWarning")}
                     </Badge>
                   </Group>
-                  <Text size="sm">{alert.detail}</Text>
+                  <Stack gap={4}>
+                    {alert.details.map((detail) => (
+                      <Text key={detail} size="sm">{detail}</Text>
+                    ))}
+                  </Stack>
                   <Group gap="sm">
                     <Button component={Link} href={alert.athleteHref} variant="default" size="sm">
                       {t("openAthleteAction")}

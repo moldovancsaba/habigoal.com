@@ -31,6 +31,19 @@ type HabitPayload = {
   records: HabitRecord[];
 };
 
+type MemoryEntry = {
+  id: string;
+  date: string;
+  readiness: number;
+  habitScore: number | null;
+  strongest: string;
+  focus: string;
+  win: string;
+  struggle: string;
+  nextFocus: string;
+  signals: string[];
+};
+
 type TrendWindow = "7d" | "30d" | "all" | "custom";
 type TrendMetric = "readiness" | "movement" | "social" | "mental" | "ski";
 
@@ -228,6 +241,18 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   );
   const strongestHabitCategory = getStrongestHabitCategory(habitCategoryBreakdown, td);
   const habitFocusCategory = getHabitFocusCategory(habitCategoryBreakdown, td);
+  const habitRecordByDate = useMemo(
+    () => new Map(habitHistory.map((record) => [record.date, record])),
+    [habitHistory]
+  );
+  const memoryTimeline = useMemo(
+    () => buildAthleteMemoryTimeline(chronologicalAssessments, habitRecordByDate, t, td, emptyValue),
+    [chronologicalAssessments, habitRecordByDate, t, td, emptyValue]
+  );
+  const memorySummary = useMemo(
+    () => summarizeMemoryTimeline(memoryTimeline, td, emptyValue),
+    [memoryTimeline, td, emptyValue]
+  );
 
   if (loading) {
     return (
@@ -408,6 +433,89 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                       latest: latestHabitRecord ? getHabitCompletion(latestHabitRecord.statuses).score : 0
                     })}
                   </Text>
+                </Stack>
+              </SimpleGrid>
+            </Stack>
+          </SectionCard>
+
+          <SectionCard
+            title={td("athleteMemoryTitle")}
+            subheader={td("athleteMemorySubtitle")}
+          >
+            <Stack gap="md">
+              <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                <HistoryMetricCard label={td("athleteMemoryEntriesLabel")} value={`${memoryTimeline.length}`} accent="ingress" />
+                <HistoryMetricCard label={td("athleteMemoryTrendLabel")} value={memorySummary.pattern} accent="knowmore" />
+                <HistoryMetricCard label={td("athleteMemoryConstraintLabel")} value={memorySummary.constraint} accent="review" />
+                <HistoryMetricCard label={td("athleteMemorySupportLabel")} value={memorySummary.support} accent="strategy" />
+              </SimpleGrid>
+
+              <Paper withBorder p="md" radius="md">
+                <Stack gap="xs">
+                  <Text fw={700}>{td("athleteMemorySummaryTitle")}</Text>
+                  <Text c="dimmed">
+                    {td("athleteMemorySummaryBody", {
+                      pattern: memorySummary.pattern,
+                      strongest: memorySummary.strongest,
+                      support: memorySummary.support
+                    })}
+                  </Text>
+                </Stack>
+              </Paper>
+
+              <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="lg">
+                <Paper withBorder p="md" radius="md">
+                  <Stack gap="sm">
+                    <Text fw={700}>{td("athleteMemoryPatternsTitle")}</Text>
+                    {memorySummary.signals.length === 0 ? (
+                      <Text size="sm" c="dimmed">{td("athleteMemoryEmpty")}</Text>
+                    ) : (
+                      memorySummary.signals.map((signal) => (
+                        <Text key={signal} size="sm">{signal}</Text>
+                      ))
+                    )}
+                  </Stack>
+                </Paper>
+
+                <Stack gap="md">
+                  {memoryTimeline.slice(-4).reverse().map((entry) => (
+                    <Paper key={entry.id} withBorder p="md" radius="md">
+                      <Stack gap={6}>
+                        <Group justify="space-between" align="flex-start">
+                          <Box>
+                            <Text fw={700}>{entry.date}</Text>
+                            <Text size="sm" c="dimmed">
+                              {td("athleteMemoryByline", {
+                                readiness: entry.readiness.toFixed(1),
+                                habit: entry.habitScore ?? 0
+                              })}
+                            </Text>
+                          </Box>
+                          <Badge variant="light" color="ingress">
+                            {entry.focus}
+                          </Badge>
+                        </Group>
+                        <Text size="sm">
+                          {td("athleteMemoryWinBody", { win: entry.win })}
+                        </Text>
+                        <Text size="sm" c="dimmed">
+                          {td("athleteMemoryStruggleBody", { struggle: entry.struggle })}
+                        </Text>
+                        <Text size="sm" c="dimmed">
+                          {td("athleteMemoryFocusBody", { focus: entry.nextFocus })}
+                        </Text>
+                        {entry.signals.length > 0 ? (
+                          <Stack gap={4} mt={4}>
+                            {entry.signals.map((signal) => (
+                              <Text key={`${entry.id}-${signal}`} size="sm" c="dimmed">
+                                {signal}
+                              </Text>
+                            ))}
+                          </Stack>
+                        ) : null}
+                      </Stack>
+                    </Paper>
+                  ))}
                 </Stack>
               </SimpleGrid>
             </Stack>
@@ -902,6 +1010,139 @@ function getMomentumBadgeColor(state: "rising" | "steady" | "falling") {
 function averageScore(values: number[]) {
   if (values.length === 0) return 0;
   return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function buildAthleteMemoryTimeline(
+  assessments: CheckInRecord[],
+  habitRecordByDate: Map<string, HabitRecord>,
+  translateAssessment: (key: string) => string,
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string,
+  emptyValue: string
+) {
+  return assessments.map((assessment) => {
+    const habitRecord = habitRecordByDate.get(assessment.session.date);
+    const readiness = getCompatibleReadinessState(assessment).gaugeValue;
+    const strongest = getStrongestPillar(
+      athleteIqPillars.map((pillar) => ({
+        translatedTitle: translateAssessment(pillar.title),
+        current: getCompatiblePillarScore(assessment, pillar.key)
+      })),
+      emptyValue
+    );
+    const focus = getFocusPillar(
+      athleteIqPillars.map((pillar) => ({
+        translatedTitle: translateAssessment(pillar.title),
+        current: getCompatiblePillarScore(assessment, pillar.key)
+      })),
+      emptyValue
+    );
+    const habitScore = habitRecord ? getHabitCompletion(habitRecord.statuses).score : null;
+    const generalNote = assessment.notes.general.trim();
+    const adaptationsNote = assessment.notes.adaptations.trim();
+    const referralNote = assessment.notes.referral.trim();
+
+    return {
+      id: assessment._id || assessment.session.date,
+      date: assessment.session.date,
+      readiness,
+      habitScore,
+      strongest,
+      focus,
+      win: generalNote || translateDashboard("athleteMemoryFallbackWin", { strongest }),
+      struggle: adaptationsNote || translateDashboard("athleteMemoryFallbackStruggle", { focus }),
+      nextFocus: referralNote || focus,
+      signals: buildMemorySignals({
+        readiness,
+        habitScore,
+        strongest,
+        focus,
+        translateDashboard
+      })
+    } satisfies MemoryEntry;
+  });
+}
+
+function buildMemorySignals({
+  readiness,
+  habitScore,
+  strongest,
+  focus,
+  translateDashboard
+}: {
+  readiness: number;
+  habitScore: number | null;
+  strongest: string;
+  focus: string;
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string;
+}) {
+  const signals: string[] = [];
+  if (readiness < 3) {
+    signals.push(translateDashboard("athleteMemorySignalLowReadiness"));
+  } else if (readiness >= 4) {
+    signals.push(translateDashboard("athleteMemorySignalHighReadiness"));
+  }
+
+  if (habitScore !== null && habitScore < 60) {
+    signals.push(translateDashboard("athleteMemorySignalHabitSlip"));
+  } else if (habitScore !== null && habitScore >= 80) {
+    signals.push(translateDashboard("athleteMemorySignalHabitStrong"));
+  }
+
+  signals.push(translateDashboard("athleteMemorySignalSupportArea", { focus }));
+  signals.push(translateDashboard("athleteMemorySignalStrengthArea", { strongest }));
+  return Array.from(new Set(signals)).slice(0, 4);
+}
+
+function summarizeMemoryTimeline(
+  memoryTimeline: MemoryEntry[],
+  translateDashboard: (key: string, values?: Record<string, string | number>) => string,
+  emptyValue: string
+) {
+  if (memoryTimeline.length === 0) {
+    return {
+      pattern: emptyValue,
+      strongest: emptyValue,
+      support: emptyValue,
+      constraint: emptyValue,
+      signals: [] as string[]
+    };
+  }
+
+  const latest = memoryTimeline[memoryTimeline.length - 1];
+  const previous = memoryTimeline.slice(-3, -1);
+  const previousAverage = previous.length
+    ? averageScore(previous.map((entry) => entry.readiness))
+    : latest.readiness;
+
+  const pattern =
+    latest.readiness - previousAverage >= 0.35
+      ? translateDashboard("athleteMemoryPatternRising")
+      : previousAverage - latest.readiness >= 0.35
+        ? translateDashboard("athleteMemoryPatternFalling")
+        : translateDashboard("athleteMemoryPatternSteady");
+
+  const supportFrequency = new Map<string, number>();
+  const strongestFrequency = new Map<string, number>();
+  for (const entry of memoryTimeline.slice(-5)) {
+    supportFrequency.set(entry.focus, (supportFrequency.get(entry.focus) ?? 0) + 1);
+    strongestFrequency.set(entry.strongest, (strongestFrequency.get(entry.strongest) ?? 0) + 1);
+  }
+
+  const support = [...supportFrequency.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? emptyValue;
+  const strongest = [...strongestFrequency.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? emptyValue;
+  const constraint = latest.habitScore !== null && latest.habitScore < 60
+    ? translateDashboard("athleteMemoryConstraintHabits")
+    : latest.readiness < 3
+      ? translateDashboard("athleteMemoryConstraintReadiness")
+      : support;
+
+  return {
+    pattern,
+    strongest,
+    support,
+    constraint,
+    signals: memoryTimeline.slice(-3).flatMap((entry) => entry.signals).filter((signal, index, source) => source.indexOf(signal) === index).slice(0, 4)
+  };
 }
 
 function getStrongestHabitCategory(
