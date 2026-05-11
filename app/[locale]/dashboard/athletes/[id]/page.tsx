@@ -430,6 +430,58 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             </Text>
           </SectionCard>
 
+          <SectionCard title={td("availabilityHistoryTitle")} subheader={td("availabilityHistorySubtitle")}>
+            {data.child.availability ? (
+              <Stack gap="md">
+                <Paper withBorder p="md" radius="md">
+                  <Group justify="space-between" align="flex-start" wrap="wrap">
+                    <Box>
+                      <Text fw={700}>{td(`availabilityStatus${capitalize(data.child.availability.status)}`)}</Text>
+                      <Text size="sm" c="dimmed">
+                        {td("availabilityCurrentByline", {
+                          date: data.child.availability.sessionDate,
+                          actor: data.child.availability.updatedBy || tc("unknown")
+                        })}
+                      </Text>
+                    </Box>
+                    <Badge color={getAvailabilityBadgeColor(data.child.availability.status)}>
+                      {td("availabilityCurrentBadge")}
+                    </Badge>
+                  </Group>
+                  <Text size="sm" mt="sm">
+                    {data.child.availability.rationale || td("availabilityRationaleEmpty")}
+                  </Text>
+                </Paper>
+
+                <Stack gap="sm">
+                  {(data.child.availability.history ?? []).slice().reverse().map((entry, index) => (
+                    <Paper key={`${entry.updatedAt}-${index}`} withBorder p="md" radius="md">
+                      <Group justify="space-between" align="flex-start" wrap="wrap">
+                        <Box>
+                          <Text fw={600}>{td(`availabilityStatus${capitalize(entry.status)}`)}</Text>
+                          <Text size="sm" c="dimmed">
+                            {td("availabilityHistoryByline", {
+                              date: entry.sessionDate,
+                              actor: entry.updatedBy || tc("unknown")
+                            })}
+                          </Text>
+                        </Box>
+                        <Badge variant="light" color={getAvailabilityBadgeColor(entry.status)}>
+                          {entry.sessionDate}
+                        </Badge>
+                      </Group>
+                      <Text size="sm" mt="sm">
+                        {entry.rationale || td("availabilityRationaleEmpty")}
+                      </Text>
+                    </Paper>
+                  ))}
+                </Stack>
+              </Stack>
+            ) : (
+              <Text c="dimmed">{td("availabilityHistoryEmpty")}</Text>
+            )}
+          </SectionCard>
+
           <SectionCard title={t("evidenceImages")}>
             {data.assessments.filter((assessment) => assessment.attachments.length > 0).length === 0 ? (
               <Text c="dimmed">{t("noImages")}</Text>
@@ -604,6 +656,13 @@ function getTrendWindowSummary(window: TrendWindow, customStartDate: string, cus
 function toUtcDate(value: string) {
   const date = new Date(`${value}T00:00:00.000Z`);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getAvailabilityBadgeColor(status: "full" | "modified" | "limited" | "hold") {
+  if (status === "full") return "green";
+  if (status === "modified") return "yellow";
+  if (status === "limited") return "orange";
+  return "red";
 }
 
 function DeleteSurveyModal({

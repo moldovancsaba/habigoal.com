@@ -208,10 +208,24 @@ export interface ChildPayload {
   dominantFoot: string;
   knownTraits: string;
   parentSignals: string;
+  availability?: {
+    status: "full" | "modified" | "limited" | "hold";
+    sessionDate: string;
+    rationale: string;
+    updatedBy: string;
+  };
 }
 
 export function parseChildPayload(input: unknown): ChildPayload {
   const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
+  const availability = data.availability && typeof data.availability === "object"
+    ? (data.availability as Record<string, unknown>)
+    : {};
+  const availabilityStatus = stringValue(availability.status, 40);
+  const normalizedAvailabilityStatus =
+    availabilityStatus === "full" || availabilityStatus === "modified" || availabilityStatus === "limited" || availabilityStatus === "hold"
+      ? availabilityStatus
+      : "";
   return {
     surveyId: stringValue(data.surveyId ?? data.kidexId, 120).trim() || undefined,
     name: stringValue(data.name, 240).trim(),
@@ -237,6 +251,14 @@ export function parseChildPayload(input: unknown): ChildPayload {
     dominantEye: stringValue(data.dominantEye, 80),
     dominantFoot: stringValue(data.dominantFoot, 80),
     knownTraits: stringValue(data.knownTraits),
-    parentSignals: stringValue(data.parentSignals)
+    parentSignals: stringValue(data.parentSignals),
+    availability: normalizedAvailabilityStatus
+      ? {
+          status: normalizedAvailabilityStatus,
+          sessionDate: stringValue(availability.sessionDate, 80).trim() || new Date().toISOString().slice(0, 10),
+          rationale: stringValue(availability.rationale),
+          updatedBy: stringValue(availability.updatedBy, 120).trim() || "Staff"
+        }
+      : undefined
   };
 }

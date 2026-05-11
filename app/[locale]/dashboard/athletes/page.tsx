@@ -30,6 +30,8 @@ type BaselineDraft = {
   coachBaselineNotes: string;
 };
 
+type AvailabilityDraftStatus = "full" | "modified" | "limited" | "hold";
+
 const emptyBaselineDraft = (): BaselineDraft => ({
   injuryNotes: "",
   medicalNotes: "",
@@ -57,6 +59,9 @@ export default function ChildrenListPage() {
   const [draftBaseline, setDraftBaseline] = useState<BaselineDraft>(emptyBaselineDraft());
   const [draftConsentPhoto, setDraftConsentPhoto] = useState(false);
   const [draftConsentReport, setDraftConsentReport] = useState(false);
+  const [draftAvailabilityStatus, setDraftAvailabilityStatus] = useState<AvailabilityDraftStatus>("full");
+  const [draftAvailabilityDate, setDraftAvailabilityDate] = useState("");
+  const [draftAvailabilityRationale, setDraftAvailabilityRationale] = useState("");
   const [saving, setSaving] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -196,6 +201,9 @@ export default function ChildrenListPage() {
     });
     setDraftConsentPhoto(Boolean(child.consentPhoto));
     setDraftConsentReport(Boolean(child.consentReport));
+    setDraftAvailabilityStatus(child.availability?.status || "full");
+    setDraftAvailabilityDate(child.availability?.sessionDate || new Date().toISOString().slice(0, 10));
+    setDraftAvailabilityRationale(child.availability?.rationale || "");
   }
 
   function startCreate() {
@@ -207,6 +215,9 @@ export default function ChildrenListPage() {
     setDraftBaseline(emptyBaselineDraft());
     setDraftConsentPhoto(false);
     setDraftConsentReport(false);
+    setDraftAvailabilityStatus("full");
+    setDraftAvailabilityDate(new Date().toISOString().slice(0, 10));
+    setDraftAvailabilityRationale("");
   }
 
   async function saveEdit() {
@@ -228,7 +239,13 @@ export default function ChildrenListPage() {
         dominantEye: editing.dominantEye || "",
         dominantFoot: editing.dominantFoot || "",
         knownTraits: draftKnownTraits,
-        parentSignals: draftParentSignals
+        parentSignals: draftParentSignals,
+        availability: {
+          status: draftAvailabilityStatus,
+          sessionDate: draftAvailabilityDate,
+          rationale: draftAvailabilityRationale,
+          updatedBy: "Staff"
+        }
       })
     }).catch(() => null);
     setSaving(false);
@@ -262,7 +279,13 @@ export default function ChildrenListPage() {
         dominantEye: "",
         dominantFoot: "",
         knownTraits: draftKnownTraits,
-        parentSignals: draftParentSignals
+        parentSignals: draftParentSignals,
+        availability: {
+          status: draftAvailabilityStatus,
+          sessionDate: draftAvailabilityDate,
+          rationale: draftAvailabilityRationale,
+          updatedBy: "Staff"
+        }
       })
     }).catch(() => null);
     setSaving(false);
@@ -456,6 +479,16 @@ export default function ChildrenListPage() {
                             )}
                           </Group>
                         )}
+                        {child.availability ? (
+                          <Group gap="xs" mt={8}>
+                            <Badge color={getAvailabilityBadgeColor(child.availability.status)} variant="light" size="sm">
+                              {t(`availabilityStatus${capitalizeAvailability(child.availability.status)}`)}
+                            </Badge>
+                            <Text size="sm" c="dimmed">
+                              {t("availabilityByline", { date: child.availability.sessionDate })}
+                            </Text>
+                          </Group>
+                        ) : null}
                       </Box>
                       <Group gap="sm">
                         {!showDeleted ? <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="ingress" size="sm" onClick={(e) => e.stopPropagation()}>
@@ -528,6 +561,30 @@ export default function ChildrenListPage() {
               <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
               <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
             </Group>
+            <Divider label={t("availabilitySectionTitle")} labelPosition="left" />
+            <Select
+              label={t("availabilityStatusLabel")}
+              value={draftAvailabilityStatus}
+              data={[
+                { value: "full", label: t("availabilityStatusFull") },
+                { value: "modified", label: t("availabilityStatusModified") },
+                { value: "limited", label: t("availabilityStatusLimited") },
+                { value: "hold", label: t("availabilityStatusHold") }
+              ]}
+              onChange={(value) => setDraftAvailabilityStatus((value as AvailabilityDraftStatus) || "full")}
+            />
+            <TextInput
+              label={t("availabilityDateLabel")}
+              type="date"
+              value={draftAvailabilityDate}
+              onChange={(event) => setDraftAvailabilityDate(event.currentTarget.value)}
+            />
+            <Textarea
+              label={t("availabilityRationaleLabel")}
+              value={draftAvailabilityRationale}
+              onChange={(event) => setDraftAvailabilityRationale(event.currentTarget.value)}
+              minRows={2}
+            />
           </Stack>
           <Group justify="flex-end" mt="md">
           <Button variant="subtle" onClick={() => setEditing(null)} disabled={saving}>
@@ -564,6 +621,30 @@ export default function ChildrenListPage() {
             <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
             <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
           </Group>
+          <Divider label={t("availabilitySectionTitle")} labelPosition="left" />
+          <Select
+            label={t("availabilityStatusLabel")}
+            value={draftAvailabilityStatus}
+            data={[
+              { value: "full", label: t("availabilityStatusFull") },
+              { value: "modified", label: t("availabilityStatusModified") },
+              { value: "limited", label: t("availabilityStatusLimited") },
+              { value: "hold", label: t("availabilityStatusHold") }
+            ]}
+            onChange={(value) => setDraftAvailabilityStatus((value as AvailabilityDraftStatus) || "full")}
+          />
+          <TextInput
+            label={t("availabilityDateLabel")}
+            type="date"
+            value={draftAvailabilityDate}
+            onChange={(event) => setDraftAvailabilityDate(event.currentTarget.value)}
+          />
+          <Textarea
+            label={t("availabilityRationaleLabel")}
+            value={draftAvailabilityRationale}
+            onChange={(event) => setDraftAvailabilityRationale(event.currentTarget.value)}
+            minRows={2}
+          />
           <Group justify="flex-end" mt="sm">
             <Button variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving}>{tc("cancel")}</Button>
             <Button color="ingress" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : tc("save")}</Button>
@@ -605,4 +686,15 @@ export default function ChildrenListPage() {
       </Modal>
     </Stack>
   );
+}
+
+function capitalizeAvailability(value: AvailabilityDraftStatus) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function getAvailabilityBadgeColor(status: AvailabilityDraftStatus) {
+  if (status === "full") return "green";
+  if (status === "modified") return "yellow";
+  if (status === "limited") return "orange";
+  return "red";
 }

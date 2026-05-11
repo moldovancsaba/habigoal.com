@@ -1,16 +1,10 @@
 {
   "next_five": [
     {
-      "issue": 9,
-      "title": "Add participation and availability management",
-      "priority": "next",
-      "reason": "The coach stack now needs an explicit full-modified-limited decision layer."
-    },
-    {
       "issue": 14,
       "title": "Build a session planning calendar",
       "priority": "next",
-      "reason": "Recommendations and readiness need to land in the weekly session plan."
+      "reason": "Recommendations and readiness now need to land in an actual weekly planning surface."
     },
     {
       "issue": 15,
@@ -29,6 +23,12 @@
       "title": "Add PDF and shareable operational reports",
       "priority": "next",
       "reason": "Coaches and admins still need handoff artifacts for meetings and weekly reviews."
+    },
+    {
+      "issue": 12,
+      "title": "Add growth and maturation tracking for youth athletes",
+      "priority": "next",
+      "reason": "The current coach stack is now strong enough to add a youth-specific development layer without diluting the daily workflow."
     }
   ],
   "later_tracks": [

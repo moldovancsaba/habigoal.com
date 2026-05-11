@@ -26,6 +26,8 @@ type DashboardData = {
 type QueueItem = {
   athlete: AthleteProfile;
   latestCheckIn: CheckInRecord | null;
+  availabilityStatus: "full" | "modified" | "limited" | "hold";
+  availabilityRationale: string;
   checkedInToday: boolean;
   supportLevel: "support" | "watch" | "ready";
   readinessScore: number;
@@ -156,6 +158,8 @@ export function MainDashboard() {
       .map((athlete): QueueItem => {
         const athleteKey = athlete._id || `${athlete.name}|${athlete.birthDate}`;
         const latestCheckIn = latestCheckInByAthlete.get(athleteKey) ?? null;
+        const availabilityStatus = athlete.availability?.status || "full";
+        const availabilityRationale = athlete.availability?.rationale || "";
         const checkedInToday = latestCheckIn?.session.date === today;
         const readinessState = latestCheckIn ? getCompatibleReadinessState(latestCheckIn) : { count: 0, total: 9, gaugeValue: 0 };
         const readinessScore = latestCheckIn ? getCompatibleReadinessScore(latestCheckIn) : 0;
@@ -202,6 +206,8 @@ export function MainDashboard() {
 
         const recommendations = buildRecommendations({
           athleteKey,
+          availabilityRationale,
+          availabilityStatus,
           checkedInToday,
           latestCheckIn,
           priorityScore,
@@ -218,6 +224,8 @@ export function MainDashboard() {
         return {
           athlete,
           latestCheckIn,
+          availabilityStatus,
+          availabilityRationale,
           checkedInToday,
           supportLevel,
           readinessScore,
@@ -249,6 +257,12 @@ export function MainDashboard() {
     { label: t("actionBucketReady"), count: queueItems.filter((item) => item.supportLevel === "ready").length, color: "var(--mantine-color-ingress-6)" },
     { label: t("actionBucketWatch"), count: watchNowCount, color: "var(--mantine-color-review-6)" },
     { label: t("actionBucketSupport"), count: supportNowCount, color: "var(--mantine-color-red-6)" }
+  ];
+  const availabilityBuckets: ActionBucket[] = [
+    { label: t("availabilityStatusFull"), count: queueItems.filter((item) => item.availabilityStatus === "full").length, color: "var(--mantine-color-green-6)" },
+    { label: t("availabilityStatusModified"), count: queueItems.filter((item) => item.availabilityStatus === "modified").length, color: "var(--mantine-color-yellow-6)" },
+    { label: t("availabilityStatusLimited"), count: queueItems.filter((item) => item.availabilityStatus === "limited").length, color: "var(--mantine-color-orange-6)" },
+    { label: t("availabilityStatusHold"), count: queueItems.filter((item) => item.availabilityStatus === "hold").length, color: "var(--mantine-color-red-6)" }
   ];
 
   const bucketQueues = useMemo(
@@ -437,6 +451,26 @@ export function MainDashboard() {
         <MetricCard label={t("missedCheckInsLabel")} value={String(missedCheckIns.length)} tone="red" />
         <MetricCard label={t("supportFlagsLabel")} value={String(supportNowCount + watchNowCount)} tone="yellow" />
       </SimpleGrid>
+
+      <SectionCard title={t("availabilityBoardTitle")} subheader={t("availabilityBoardSubtitle")}>
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+          {availabilityBuckets.map((bucket) => (
+            <Paper key={bucket.label} withBorder p="md" radius="md">
+              <Text size="sm" c="dimmed">{bucket.label}</Text>
+              <Text size="xl" fw={800}>{bucket.count}</Text>
+              <Box mt="sm" h={8} style={{ borderRadius: 999, background: bucket.color, opacity: 0.85 }} />
+            </Paper>
+          ))}
+        </SimpleGrid>
+        <Text size="sm" c="dimmed" mt="md">
+          {t("availabilityBoardInsight", {
+            full: availabilityBuckets[0]?.count ?? 0,
+            modified: availabilityBuckets[1]?.count ?? 0,
+            limited: availabilityBuckets[2]?.count ?? 0,
+            hold: availabilityBuckets[3]?.count ?? 0
+          })}
+        </Text>
+      </SectionCard>
 
       <SectionCard title={t("alertDigestTitle")} subheader={t("alertDigestSubtitle")}>
         {escalationDigest.length === 0 ? (
@@ -951,6 +985,15 @@ function QueueCard({
           })}
         </Text>
 
+        <Group gap="xs" wrap="wrap">
+          <Badge variant="light" color={getAvailabilityBadgeColor(item.availabilityStatus)}>
+            {t(`availabilityStatus${capitalizeAvailability(item.availabilityStatus)}`)}
+          </Badge>
+          <Text size="sm" c="dimmed">
+            {item.availabilityRationale || t("availabilityRationaleEmpty")}
+          </Text>
+        </Group>
+
         {item.reasons.length > 0 ? (
           <Stack gap={4}>
             {item.reasons.slice(0, 3).map((reason) => (
@@ -1015,6 +1058,8 @@ function QueueCard({
 
 function buildRecommendations({
   athleteKey,
+  availabilityRationale,
+  availabilityStatus,
   checkedInToday,
   latestCheckIn,
   priorityScore,
@@ -1028,6 +1073,8 @@ function buildRecommendations({
   tc
 }: {
   athleteKey: string;
+  availabilityRationale: string;
+  availabilityStatus: QueueItem["availabilityStatus"];
   checkedInToday: boolean;
   latestCheckIn: CheckInRecord | null;
   priorityScore: number;
@@ -1067,6 +1114,35 @@ function buildRecommendations({
         total: latestCheckIn.computed.completion.total
       }),
       tone: "yellow"
+    });
+  }
+
+  if (availabilityStatus === "hold") {
+    recommendations.unshift({
+      key: "hold-participation",
+      title: t("recommendationHoldParticipationTitle"),
+      detail: t("recommendationHoldParticipationDetail", {
+        rationale: availabilityRationale || tc("emptyValue")
+      }),
+      tone: "red"
+    });
+  } else if (availabilityStatus === "limited") {
+    recommendations.unshift({
+      key: "limit-participation",
+      title: t("recommendationLimitParticipationTitle"),
+      detail: t("recommendationLimitParticipationDetail", {
+        rationale: availabilityRationale || tc("emptyValue")
+      }),
+      tone: "yellow"
+    });
+  } else if (availabilityStatus === "modified") {
+    recommendations.unshift({
+      key: "modify-participation",
+      title: t("recommendationModifyParticipationTitle"),
+      detail: t("recommendationModifyParticipationDetail", {
+        rationale: availabilityRationale || tc("emptyValue")
+      }),
+      tone: "blue"
     });
   }
 
@@ -1156,6 +1232,17 @@ function getActionStatusLabel(status: CoachActionStatus, t: ReturnType<typeof us
   return status === "applied" ? t("coachActionApplied") : t("coachActionAcknowledged");
 }
 
+function getAvailabilityBadgeColor(status: QueueItem["availabilityStatus"]) {
+  if (status === "full") return "green";
+  if (status === "modified") return "yellow";
+  if (status === "limited") return "orange";
+  return "red";
+}
+
+function capitalizeAvailability(value: QueueItem["availabilityStatus"]) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 function buildSessionBlueprint(
   queueItems: QueueItem[],
   t: ReturnType<typeof useTranslations>,
@@ -1163,10 +1250,11 @@ function buildSessionBlueprint(
 ): SessionBlueprintPlan {
   const supportCount = queueItems.filter((item) => item.supportLevel === "support").length;
   const watchCount = queueItems.filter((item) => item.supportLevel === "watch").length;
+  const restrictedCount = queueItems.filter((item) => item.availabilityStatus === "limited" || item.availabilityStatus === "hold").length;
   const checkedInTodayCount = queueItems.filter((item) => item.checkedInToday).length;
   const missingCount = queueItems.length - checkedInTodayCount;
-  const supportHeavy = supportCount >= Math.max(2, Math.ceil(queueItems.length * 0.25));
-  const watchHeavy = supportCount + watchCount >= Math.max(3, Math.ceil(queueItems.length * 0.4));
+  const supportHeavy = supportCount + restrictedCount >= Math.max(2, Math.ceil(queueItems.length * 0.25));
+  const watchHeavy = supportCount + watchCount + restrictedCount >= Math.max(3, Math.ceil(queueItems.length * 0.4));
 
   const variant: SessionBlueprintPlan["variant"] =
     supportHeavy ? "recovery" :
@@ -1186,6 +1274,7 @@ function buildSessionBlueprint(
         : "sessionBlueprintStandardSummary",
     {
       support: supportCount,
+      restricted: restrictedCount,
       watch: watchCount,
       missing: missingCount,
       total: queueItems.length
@@ -1216,7 +1305,7 @@ function buildSessionBlueprint(
           ];
 
   const athleteAdjustments = queueItems
-    .filter((item) => item.supportLevel !== "ready" || !item.checkedInToday)
+    .filter((item) => item.supportLevel !== "ready" || !item.checkedInToday || item.availabilityStatus !== "full")
     .slice(0, 5)
     .map((item): SessionAdjustment => {
       const primaryRecommendation = item.recommendations[0];

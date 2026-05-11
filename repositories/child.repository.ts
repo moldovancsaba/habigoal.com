@@ -29,6 +29,20 @@ export interface ChildProfile {
   dominantFoot?: string;
   knownTraits?: string;
   parentSignals?: string;
+  availability?: {
+    status: "full" | "modified" | "limited" | "hold";
+    sessionDate: string;
+    rationale: string;
+    updatedAt?: string;
+    updatedBy: string;
+    history?: Array<{
+      status: "full" | "modified" | "limited" | "hold";
+      sessionDate: string;
+      rationale: string;
+      updatedAt: string;
+      updatedBy: string;
+    }>;
+  };
   locale?: string;
   createdAt: string;
   updatedAt: string;
@@ -54,11 +68,16 @@ function normalizeChildProfile(raw: Record<string, unknown>): ChildProfile {
     raw.baselineProfile && typeof raw.baselineProfile === "object"
       ? (raw.baselineProfile as ChildProfile["baselineProfile"])
       : undefined;
+  const availability =
+    raw.availability && typeof raw.availability === "object"
+      ? (raw.availability as ChildProfile["availability"])
+      : undefined;
 
   return {
     ...(raw as unknown as ChildProfile),
     _id: typeof raw._id === "string" ? raw._id : undefined,
     baselineProfile,
+    availability,
     surveyId:
       typeof raw.surveyId === "string"
         ? raw.surveyId
@@ -209,15 +228,18 @@ export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt
   });
 
   if (existing) {
+    const nextAvailability = buildAvailabilityForWrite(existing as Record<string, unknown>, profile.availability, now);
     await db.collection(collectionName).updateOne(
       { _id: existing._id },
-      { $set: { ...profile, updatedAt: now }, $unset: { kidexId: "" } }
+      { $set: { ...profile, availability: nextAvailability, updatedAt: now }, $unset: { kidexId: "" } }
     );
-    return normalizeChildProfile(toJsonId({ ...existing, ...profile, updatedAt: now }) as Record<string, unknown>);
+    return normalizeChildProfile(toJsonId({ ...existing, ...profile, availability: nextAvailability, updatedAt: now }) as Record<string, unknown>);
   }
 
+  const nextAvailability = buildAvailabilityForWrite({}, profile.availability, now);
   const newChild = {
     ...profile,
+    availability: nextAvailability,
     surveyId: profile.surveyId || crypto.randomUUID(),
     name,
     createdAt: now,
@@ -233,8 +255,14 @@ export async function updateChildById(
 ) {
   const db = await getDatabase();
   const now = new Date().toISOString();
+  const existing = await db.collection(collectionName).findOne({ _id: id });
+  if (!existing) {
+    return null;
+  }
+  const nextAvailability = buildAvailabilityForWrite(existing as Record<string, unknown>, profile.availability, now);
   const nextProfile = {
     ...profile,
+    availability: nextAvailability,
     surveyId: profile.surveyId || crypto.randomUUID(),
     name: profile.name.trim(),
     updatedAt: now
@@ -280,6 +308,10 @@ export async function deleteChildById(id: ObjectId) {
     dominantFoot: typeof jsonChild.dominantFoot === "string" ? jsonChild.dominantFoot : "",
     knownTraits: typeof jsonChild.knownTraits === "string" ? jsonChild.knownTraits : "",
     parentSignals: typeof jsonChild.parentSignals === "string" ? jsonChild.parentSignals : "",
+    availability:
+      jsonChild.availability && typeof jsonChild.availability === "object"
+        ? (jsonChild.availability as ChildProfile["availability"])
+        : undefined,
     createdAt: typeof jsonChild.createdAt === "string" ? jsonChild.createdAt : "",
     updatedAt: typeof jsonChild.updatedAt === "string" ? jsonChild.updatedAt : ""
   } satisfies ChildProfile;
@@ -293,4 +325,54 @@ export async function restoreChildById(id: ObjectId) {
     { returnDocument: "after" }
   );
   return result ? normalizeChildProfile(toJsonId(result) as Record<string, unknown>) : null;
+}
+
+function buildAvailabilityForWrite(
+  existingRaw: Record<string, unknown>,
+  nextAvailability: ChildProfile["availability"] | undefined,
+  now: string
+): ChildProfile["availability"] | undefined {
+  const existing =
+    existingRaw.availability && typeof existingRaw.availability === "object"
+      ? (existingRaw.availability as ChildProfile["availability"])
+      : undefined;
+
+  if (!nextAvailability?.status) {
+    return existing;
+  }
+
+  const candidate = {
+    status: nextAvailability.status,
+    sessionDate: nextAvailability.sessionDate || existing?.sessionDate || now.slice(0, 10),
+    rationale: nextAvailability.rationale || "",
+    updatedAt: now,
+    updatedBy: nextAvailability.updatedBy || "Staff",
+    history: Array.isArray(existing?.history) ? [...existing.history] : []
+  } satisfies NonNullable<ChildProfile["availability"]>;
+
+  const changed =
+    !existing ||
+    existing.status !== candidate.status ||
+    existing.sessionDate !== candidate.sessionDate ||
+    (existing.rationale || "") !== candidate.rationale;
+
+  if (!changed) {
+    return {
+      ...existing,
+      updatedAt: existing.updatedAt || now,
+      updatedBy: existing.updatedBy || candidate.updatedBy,
+      history: Array.isArray(existing.history) ? existing.history : []
+    };
+  }
+
+  const historyEntry = {
+    status: candidate.status,
+    sessionDate: candidate.sessionDate,
+    rationale: candidate.rationale,
+    updatedAt: candidate.updatedAt,
+    updatedBy: candidate.updatedBy
+  };
+
+  candidate.history = [...candidate.history, historyEntry].slice(-20);
+  return candidate;
 }

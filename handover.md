@@ -32,6 +32,11 @@ This document summarizes the state of the project after the first major enhancem
 - **Internal Linking**: Deep linking between Children, Records, and trend charts.
 - **Legal Compliance**: Publicly accessible `/legal` routes for Google Verification.
 
+### 5. Coach Availability Decisions (v0.5.x)
+- Athlete profiles now persist participation availability states: `full`, `modified`, `limited`, and `hold`.
+- Availability changes keep a small history trail on the athlete profile.
+- Daily coach views now surface participation state alongside readiness and recommendation workflows.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

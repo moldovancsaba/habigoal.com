@@ -1,9 +1,10 @@
 {
-  "current_focus": "issue-9-participation-and-availability-management",
+  "current_focus": "issue-14-session-planning-calendar",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
-    "participation-and-availability"
+    "participation-and-availability",
+    "session-planning"
   ],
   "known_risks": [
     "autonomous loops can degrade architecture quality if they are allowed to write directly to main",
@@ -15,6 +16,7 @@
     "issue-3-reminders-and-escalation",
     "issue-7-athlete-trend-dashboards",
     "issue-8-team-readiness-summary",
+    "issue-9-participation-and-availability-management",
     "issue-17-next-best-support-actions",
     "issue-18-session-blueprints"
   ],
