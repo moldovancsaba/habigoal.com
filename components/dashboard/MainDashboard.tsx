@@ -564,6 +564,11 @@ export function MainDashboard() {
 
       <SectionCard title={t("sessionBlueprintTitle")} subheader={t("sessionBlueprintSubtitle")}>
         <Stack gap="md">
+          <Group justify="flex-end">
+            <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
+              {t("planningOpenAction")}
+            </Button>
+          </Group>
           <Group justify="space-between" align="flex-start">
             <Box>
               <Text fw={700}>{sessionBlueprint.label}</Text>

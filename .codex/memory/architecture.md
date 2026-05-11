@@ -41,6 +41,11 @@ GitHub responsibilities:
 - provide project board visibility
 - hold pull requests for human review and merge
 
+UI operating surfaces:
+- `/dashboard` remains the coach triage and recommendation surface.
+- `/dashboard/planning` is the coach planning surface for turning live readiness and load state into a weekly session shape.
+- `/dashboard/athletes/[id]` remains the athlete operating surface with trends, habits, memory, and reports.
+
 ## Heartbeat Chain
 
 ## Conversation Model
