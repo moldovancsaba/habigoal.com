@@ -143,10 +143,12 @@ export const PdfService = {
       latestReadinessChecks
     );
     const operatingSummary = this.getOperatingSummary(latest, trendData, habitHistory, ts, tr);
+    const weeklySummary = this.getWeeklySummary(trendData, habitHistory, ts, tr);
 
     this.drawCoverPage(doc, latest, tc, tr, trendData.length, latestReadinessChecks, latestReadiness.total);
     this.drawExecutiveSummaryPage(doc, latest, baseline, pillarRows, recommendation, readinessMode, latestReadinessChecks, latestReadiness.total, t, tc, tr);
     this.drawOperatingSnapshotPage(doc, latest.child.name, operatingSummary, tc, tr);
+    this.drawWeeklySummaryPage(doc, latest.child.name, weeklySummary, tr);
     this.drawPerformanceProfilePage(doc, latest, pillarRows, t, ts, tr);
     this.drawTrendPage(doc, trendData, latest, baseline, ts, tr);
     this.drawNotesPage(doc, latest, recommendation, t, tc, ts, tr);
@@ -440,6 +442,58 @@ export const PdfService = {
       20,
       144
     );
+  },
+
+  drawWeeklySummaryPage(
+    doc: jsPDF,
+    athleteName: string,
+    weeklySummary: {
+      sessions: number;
+      readiness: number;
+      habits: number;
+      load: number;
+      strongest: string;
+      focus: string;
+      constraint: string;
+      next: string;
+    },
+    tr: TFunction
+  ) {
+    doc.addPage();
+    this.drawPageHeader(doc, tr("weeklySummaryTitle"), athleteName);
+    doc.setFontSize(11);
+    doc.setTextColor(...palette.muted);
+    doc.text(doc.splitTextToSize(tr("weeklySummarySubtitle"), 170), 20, 36);
+
+    this.drawMetricCard(doc, 20, 48, 38, 22, tr("weeklySummarySessionsLabel"), String(weeklySummary.sessions), palette.accent);
+    this.drawMetricCard(doc, 64, 48, 38, 22, tr("weeklySummaryReadinessLabel"), weeklySummary.readiness ? weeklySummary.readiness.toFixed(1) : "-", palette.caution);
+    this.drawMetricCard(doc, 108, 48, 38, 22, tr("weeklySummaryHabitsLabel"), weeklySummary.habits ? String(weeklySummary.habits) : "-", palette.positive);
+    this.drawMetricCard(doc, 152, 48, 38, 22, tr("weeklySummaryLoadLabel"), weeklySummary.load ? String(weeklySummary.load) : "-", palette.danger);
+
+    this.drawNarrativePanel(
+      doc,
+      20,
+      78,
+      170,
+      28,
+      tr("weeklySummaryNarrativeTitle"),
+      tr("weeklySummaryNarrativeBody", {
+        sessions: weeklySummary.sessions,
+        readiness: weeklySummary.readiness.toFixed(1),
+        habits: weeklySummary.habits,
+        load: weeklySummary.load,
+        strongest: weeklySummary.strongest,
+        focus: weeklySummary.focus
+      }),
+      ""
+    );
+
+    this.drawNarrativeBlock(doc, 20, 118, 170, 26, tr("weeklySummaryStrengthTitle"), tr("weeklySummaryStrengthBody", {
+      strongest: weeklySummary.strongest,
+      readiness: weeklySummary.readiness.toFixed(1)
+    }));
+    this.drawNarrativeBlock(doc, 20, 148, 170, 26, tr("weeklySummaryConstraintTitle"), weeklySummary.constraint);
+    this.drawNarrativeBlock(doc, 20, 178, 170, 26, tr("weeklySummaryNextTitle"), weeklySummary.next);
   },
 
   drawTrendPage(doc: JsPDFWithAutoTable, history: AssessmentRecord[], latest: AssessmentRecord, baseline: AssessmentRecord, ts: TFunction, tr: TFunction) {
@@ -893,6 +947,46 @@ export const PdfService = {
       pattern,
       support,
       strongest
+    };
+  },
+
+  getWeeklySummary(history: AssessmentRecord[], habitHistory: HabitRecord[], ts: TFunction, tr: TFunction) {
+    const weeklyAssessments = history.slice(-7);
+    const weeklyHabitRecords = habitHistory.filter((record) => weeklyAssessments.some((assessment) => assessment.session.date === record.date));
+    const readiness = weeklyAssessments.length
+      ? this.average(weeklyAssessments.map((entry) => getCompatibleReadinessState(entry).gaugeValue))
+      : 0;
+    const habits = weeklyHabitRecords.length
+      ? Math.round(weeklyHabitRecords.reduce((sum, record) => sum + this.getHabitCompletion(record.statuses).score, 0) / weeklyHabitRecords.length)
+      : 0;
+    const loadValues = weeklyAssessments.map((entry) => this.getInternalLoad(entry)).filter((value): value is number => value !== null && value > 0);
+    const load = loadValues.length ? Math.round(this.average(loadValues)) : 0;
+    const weeklyRows = athleteIqPillars.map((pillar) => ({
+      label: ts(pillar.title),
+      score: weeklyAssessments.length ? this.average(weeklyAssessments.map((entry) => this.getPillarScore(entry, pillar.key))) : 0
+    }));
+    const strongest = weeklyRows.slice().sort((a, b) => b.score - a.score)[0]?.label ?? tr("emptyNarrative");
+    const focus = weeklyRows.slice().sort((a, b) => a.score - b.score)[0]?.label ?? tr("emptyNarrative");
+    const constraint = habits > 0 && habits < 70
+      ? tr("weeklySummaryConstraintHabits", { focus })
+      : readiness > 0 && readiness < 3.5
+        ? tr("weeklySummaryConstraintReadiness", { focus })
+        : tr("weeklySummaryConstraintLoad", { load });
+    const next = readiness > 0 && readiness < 3.5
+      ? tr("weeklySummaryNextRecovery", { focus })
+      : habits > 0 && habits < 70
+        ? tr("weeklySummaryNextHabits", { focus })
+        : tr("weeklySummaryNextBuild", { strongest });
+
+    return {
+      sessions: weeklyAssessments.length,
+      readiness,
+      habits,
+      load,
+      strongest,
+      focus,
+      constraint,
+      next
     };
   },
 

@@ -69,7 +69,8 @@ This document summarizes the state of the project after the first major enhancem
 ### 12. Weekly Athlete Operating Summary (v0.5.x)
 - Athlete detail pages now render a true seven-day operating summary instead of only exposing weekly-copy placeholders.
 - The weekly block summarizes session count, readiness average, habit average, load average, strongest weekly pattern, the main weekly constraint, and the next weekly action.
-- This closes the first usable slice of issue #34 on the live athlete operating surface.
+- The same weekly summary is now carried into the PDF/report flow so the export surface matches the live athlete operating review.
+- This closes the first usable slice of issue #34 on both the live athlete operating surface and the report path.
 
 ### 11. Entity Model and Team Access (v0.5.x)
 - The old `conductor / observer / admin` access shape has been replaced in the application layer by `trainer / athlete / admin`.
