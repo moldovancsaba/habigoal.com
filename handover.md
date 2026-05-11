@@ -46,6 +46,7 @@ This document summarizes the state of the project after the first major enhancem
 - Coaches now have a dedicated `/dashboard/planning` route for weekly session planning.
 - The planning page translates current readiness, support pressure, missing check-ins, and internal load into a week-shaped calendar.
 - Location filtering is built in so planning can be scoped to the full group or a specific active site.
+- Weekly plans can now be persisted through `GET/POST /api/session-plans` and stored in the `session_plans` collection.
 
 ## Next Steps (Roadmap Focus)
 

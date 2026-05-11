@@ -43,7 +43,7 @@ GitHub responsibilities:
 
 UI operating surfaces:
 - `/dashboard` remains the coach triage and recommendation surface.
-- `/dashboard/planning` is the coach planning surface for turning live readiness and load state into a weekly session shape.
+- `/dashboard/planning` is the coach planning surface for turning live readiness and load state into a weekly session shape, with persisted weekly plans in `session_plans`.
 - `/dashboard/athletes/[id]` remains the athlete operating surface with trends, habits, memory, and reports.
 
 ## Heartbeat Chain

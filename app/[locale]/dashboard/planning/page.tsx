@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Button, Group, Loader, Paper, Select, SimpleGrid, Stack, Text } from "@mantine/core";
+import { Alert, Badge, Box, Button, Group, Loader, Paper, Select, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -12,6 +12,7 @@ import { DEFAULT_SURVEY_SETTINGS, type SurveySettings } from "@/services/setting
 import type { AthleteProfile } from "@/types/athlete";
 import type { CheckInRecord } from "@/types/check-in";
 import type { User } from "@/services/user-service";
+import type { SessionPlanRecord, SessionPlanVariant } from "@/types/session-plan";
 
 type PlanningData = {
   athletes: AthleteProfile[];
@@ -31,12 +32,10 @@ type PlanningAthlete = {
   internalLoad: number;
 };
 
-type SessionBlueprintVariant = "standard" | "controlled" | "recovery";
-
 type WeekPlanDay = {
   isoDate: string;
   label: string;
-  variant: SessionBlueprintVariant;
+  variant: SessionPlanVariant;
   focus: string;
   loadTarget: string;
   coachNote: string;
@@ -51,6 +50,10 @@ export default function PlanningPage() {
   const [data, setData] = useState<PlanningData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedLocation, setSelectedLocation] = useState<string>("all");
+  const [notesByDate, setNotesByDate] = useState<Record<string, string>>({});
+  const [savedPlan, setSavedPlan] = useState<SessionPlanRecord | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saved" | "error">("idle");
 
   useEffect(() => {
     void Promise.all([
@@ -153,6 +156,7 @@ export default function PlanningPage() {
 
   const blueprintVariant = useMemo(() => buildBlueprintVariant(filteredAthletes), [filteredAthletes]);
   const weekPlan = useMemo(() => buildWeekPlan(filteredAthletes, blueprintVariant, t, locale), [filteredAthletes, blueprintVariant, t, locale]);
+  const weekStart = useMemo(() => getMonday(new Date()).toISOString().slice(0, 10), []);
 
   const supportCount = filteredAthletes.filter((item) => item.supportLevel === "support").length;
   const watchCount = filteredAthletes.filter((item) => item.supportLevel === "watch").length;
@@ -174,6 +178,77 @@ export default function PlanningPage() {
 
   const conductors = data?.settings.conductors ?? [];
   const observers = data?.settings.observers ?? [];
+  const editableDays = useMemo(
+    () => weekPlan.map((day) => {
+      const savedDay = savedPlan?.days.find((entry) => entry.isoDate === day.isoDate);
+      return {
+        ...day,
+        coachNote: notesByDate[day.isoDate] ?? savedDay?.coachNote ?? day.coachNote
+      };
+    }),
+    [notesByDate, savedPlan, weekPlan]
+  );
+
+  useEffect(() => {
+    let active = true;
+
+    void fetch(`/api/session-plans?weekStart=${weekStart}&scope=${encodeURIComponent(selectedLocation)}`)
+      .then((response) => response.ok ? response.json() as Promise<{ plan: SessionPlanRecord | null }> : Promise.resolve({ plan: null }))
+      .then((payload) => {
+        if (!active) return;
+        setSavedPlan(payload.plan ?? null);
+        setNotesByDate({});
+      })
+      .catch(() => {
+        if (!active) return;
+        setSavedPlan(null);
+        setNotesByDate({});
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [selectedLocation, weekStart]);
+
+  async function savePlan() {
+    setSaving(true);
+    setSaveState("idle");
+    try {
+      const response = await fetch("/api/session-plans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          weekStart,
+          scope: selectedLocation,
+          variant: blueprintVariant,
+          days: editableDays,
+          summary: {
+            totalAthletes: filteredAthletes.length,
+            supportAthletes: supportCount + watchCount,
+            missingCheckIns: missingCount,
+            averageLoad: Math.round(averageLoad)
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save session plan");
+      }
+
+      const plan = await response.json() as SessionPlanRecord;
+      setSavedPlan(plan);
+      setSaveState("saved");
+    } catch {
+      setSaveState("error");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function resetPlan() {
+    setNotesByDate(Object.fromEntries(weekPlan.map((day) => [day.isoDate, day.coachNote])));
+    setSaveState("idle");
+  }
 
   if (loading) {
     return (
@@ -200,6 +275,12 @@ export default function PlanningPage() {
             <Button component={Link} href="/dashboard/assessment" color="ingress">
               {t("startCheckInAction")}
             </Button>
+            <Button variant="light" onClick={resetPlan}>
+              {t("planningResetAction")}
+            </Button>
+            <Button onClick={savePlan} loading={saving}>
+              {t("planningSaveAction")}
+            </Button>
           </>
         )}
       />
@@ -215,11 +296,26 @@ export default function PlanningPage() {
         title={t("planningCalendarTitle")}
         subheader={t("planningCalendarSubtitle", { variant: getBlueprintLabel(blueprintVariant, t).toLowerCase() })}
       >
+        {saveState === "saved" ? (
+          <Alert color="green" mb="md">
+            {t("planningSavedBanner", { actor: savedPlan?.actorName || t("brandName") })}
+          </Alert>
+        ) : null}
+        {saveState === "error" ? (
+          <Alert color="red" mb="md">
+            {t("planningSaveError")}
+          </Alert>
+        ) : null}
+        {savedPlan ? (
+          <Text size="sm" c="dimmed" mb="md">
+            {t("planningSavedMeta", { actor: savedPlan.actorName, updatedAt: savedPlan.updatedAt.slice(0, 10) })}
+          </Text>
+        ) : null}
         {filteredAthletes.length === 0 ? (
           <Text size="sm" c="dimmed">{t("planningEmpty")}</Text>
         ) : (
           <SimpleGrid cols={{ base: 1, md: 2, xl: 5 }} spacing="md">
-            {weekPlan.map((day) => (
+            {editableDays.map((day) => (
               <Paper key={day.isoDate} withBorder radius="md" p="md">
                 <Stack gap="sm">
                   <Group justify="space-between" align="flex-start">
@@ -244,7 +340,15 @@ export default function PlanningPage() {
 
                   <Box>
                     <Text size="sm" tt="uppercase" c="dimmed">{t("planningDayCoachLabel")}</Text>
-                    <Text size="sm">{day.coachNote}</Text>
+                    <Textarea
+                      value={day.coachNote}
+                      onChange={(event) => {
+                        const value = event.currentTarget.value;
+                        setNotesByDate((current) => ({ ...current, [day.isoDate]: value }));
+                        setSaveState("idle");
+                      }}
+                      minRows={4}
+                    />
                   </Box>
 
                   <Box>
@@ -336,7 +440,7 @@ function MetricCard({ label, value, tone = "blue" }: { label: string; value: str
   );
 }
 
-function buildBlueprintVariant(athletes: PlanningAthlete[]): SessionBlueprintVariant {
+function buildBlueprintVariant(athletes: PlanningAthlete[]): SessionPlanVariant {
   const supportCount = athletes.filter((item) => item.supportLevel === "support").length;
   const watchCount = athletes.filter((item) => item.supportLevel === "watch").length;
   const checkedInTodayCount = athletes.filter((item) => item.checkedInToday).length;
@@ -351,7 +455,7 @@ function buildBlueprintVariant(athletes: PlanningAthlete[]): SessionBlueprintVar
 
 function buildWeekPlan(
   athletes: PlanningAthlete[],
-  baseVariant: SessionBlueprintVariant,
+  baseVariant: SessionPlanVariant,
   t: ReturnType<typeof useTranslations>,
   locale: string
 ): WeekPlanDay[] {
@@ -379,7 +483,7 @@ function buildWeekPlan(
   });
 }
 
-function getWeekModes(baseVariant: SessionBlueprintVariant): SessionBlueprintVariant[] {
+function getWeekModes(baseVariant: SessionPlanVariant): SessionPlanVariant[] {
   if (baseVariant === "recovery") {
     return ["recovery", "recovery", "controlled", "controlled", "recovery"];
   }
@@ -391,7 +495,7 @@ function getWeekModes(baseVariant: SessionBlueprintVariant): SessionBlueprintVar
   return ["controlled", "standard", "standard", "standard", "recovery"];
 }
 
-function getLoadTargetLabel(variant: SessionBlueprintVariant, t: ReturnType<typeof useTranslations>) {
+function getLoadTargetLabel(variant: SessionPlanVariant, t: ReturnType<typeof useTranslations>) {
   return variant === "recovery"
     ? t("planningLoadRecovery")
     : variant === "controlled"
@@ -399,7 +503,7 @@ function getLoadTargetLabel(variant: SessionBlueprintVariant, t: ReturnType<type
       : t("planningLoadStandard");
 }
 
-function getCoachNoteLabel(variant: SessionBlueprintVariant, t: ReturnType<typeof useTranslations>) {
+function getCoachNoteLabel(variant: SessionPlanVariant, t: ReturnType<typeof useTranslations>) {
   return variant === "recovery"
     ? t("planningCoachRecovery")
     : variant === "controlled"
@@ -407,7 +511,7 @@ function getCoachNoteLabel(variant: SessionBlueprintVariant, t: ReturnType<typeo
       : t("planningCoachStandard");
 }
 
-function getBlueprintLabel(variant: SessionBlueprintVariant, t: ReturnType<typeof useTranslations>) {
+function getBlueprintLabel(variant: SessionPlanVariant, t: ReturnType<typeof useTranslations>) {
   return variant === "recovery"
     ? t("sessionBlueprintRecoveryLabel")
     : variant === "controlled"
@@ -415,7 +519,7 @@ function getBlueprintLabel(variant: SessionBlueprintVariant, t: ReturnType<typeo
       : t("sessionBlueprintStandardLabel");
 }
 
-function getBlueprintBadgeLabel(variant: SessionBlueprintVariant, t: ReturnType<typeof useTranslations>) {
+function getBlueprintBadgeLabel(variant: SessionPlanVariant, t: ReturnType<typeof useTranslations>) {
   return variant === "recovery"
     ? t("sessionBlueprintRecoveryBadge")
     : variant === "controlled"
@@ -423,7 +527,7 @@ function getBlueprintBadgeLabel(variant: SessionBlueprintVariant, t: ReturnType<
       : t("sessionBlueprintStandardBadge");
 }
 
-function getBlueprintBadgeColor(variant: SessionBlueprintVariant) {
+function getBlueprintBadgeColor(variant: SessionPlanVariant) {
   return variant === "recovery" ? "red" : variant === "controlled" ? "yellow" : "green";
 }
 
