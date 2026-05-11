@@ -9,5 +9,5 @@ export default async function AthletesAppPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <AthletesAppHome locale={locale} />;
+  return <AthletesAppHome />;
 }

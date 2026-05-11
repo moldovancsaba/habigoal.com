@@ -10,7 +10,7 @@ import type { AthleteProfile } from "@/types/athlete";
 
 type AthleteListItem = AthleteProfile;
 
-export function AthletesAppHome({ locale }: { locale: string }) {
+export function AthletesAppHome() {
   const t = useTranslations("AthletesApp");
   const [athletes, setAthletes] = useState<AthleteListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ export function AthletesAppHome({ locale }: { locale: string }) {
               <Link href="/" style={{ textDecoration: "none" }}>
                 <Button variant="default">{t("backHome")}</Button>
               </Link>
-              <Link href={`/${locale}/news`} style={{ textDecoration: "none" }}>
+              <Link href="/news" style={{ textDecoration: "none" }}>
                 <Button variant="light">{t("whatsNew")}</Button>
               </Link>
             </Group>
@@ -108,7 +108,7 @@ export function AthletesAppHome({ locale }: { locale: string }) {
           ) : (
             <SimpleGrid cols={{ base: 1, md: 2, xl: 3 }} spacing="md">
               {filteredAthletes.map((athlete) => (
-                <AthletePreviewCard key={athlete._id ?? `${athlete.name}-${athlete.birthDate}`} athlete={athlete} locale={locale} />
+                <AthletePreviewCard key={athlete._id ?? `${athlete.name}-${athlete.birthDate}`} athlete={athlete} />
               ))}
             </SimpleGrid>
           )}
@@ -134,7 +134,7 @@ function SummaryCard({ label, value, hint }: { label: string; value: string; hin
   );
 }
 
-function AthletePreviewCard({ athlete, locale }: { athlete: AthleteListItem; locale: string }) {
+function AthletePreviewCard({ athlete }: { athlete: AthleteListItem }) {
   const t = useTranslations("AthletesApp");
   const readiness = athlete.latestReadiness ?? 0;
   const readinessLabel = getReadinessLabel(readiness, t);
@@ -175,11 +175,11 @@ function AthletePreviewCard({ athlete, locale }: { athlete: AthleteListItem; loc
 
         <Group mt="auto" gap="sm">
           {athlete._id ? (
-            <Link href={`/${locale}/athletes/${athlete._id}`} style={{ textDecoration: "none", width: "100%" }}>
+            <Link href={`/athletes/${athlete._id}`} style={{ textDecoration: "none", width: "100%" }}>
               <Button variant="light" fullWidth>{t("openProfile")}</Button>
             </Link>
           ) : null}
-          <Link href={`/${locale}/dashboard/assessment${athlete._id ? `?childId=${athlete._id}` : ""}`} style={{ textDecoration: "none", width: "100%" }}>
+          <Link href={`/dashboard/assessment${athlete._id ? `?childId=${athlete._id}` : ""}`} style={{ textDecoration: "none", width: "100%" }}>
             <Button color="ingress" fullWidth>{t("startCheckIn")}</Button>
           </Link>
         </Group>
