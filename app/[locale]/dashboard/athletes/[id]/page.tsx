@@ -87,14 +87,22 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     setDeleteConfirmText("");
   }
 
-  const reversedAssessments = useMemo(() => data?.assessments.slice().reverse() ?? [], [data]);
-  const latest = reversedAssessments[reversedAssessments.length - 1] ?? null;
-  const effectiveCustomStartDate = customStartDate || reversedAssessments[0]?.session.date || "";
-  const effectiveCustomEndDate = customEndDate || reversedAssessments[reversedAssessments.length - 1]?.session.date || "";
+  const chronologicalAssessments = useMemo(
+    () =>
+      (data?.assessments ?? []).slice().sort((a, b) => {
+        const dateDelta = new Date(a.session.date).getTime() - new Date(b.session.date).getTime();
+        if (dateDelta !== 0) return dateDelta;
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }),
+    [data]
+  );
+  const latest = chronologicalAssessments[chronologicalAssessments.length - 1] ?? null;
+  const effectiveCustomStartDate = customStartDate || chronologicalAssessments[0]?.session.date || "";
+  const effectiveCustomEndDate = customEndDate || chronologicalAssessments[chronologicalAssessments.length - 1]?.session.date || "";
 
   const filteredAssessments = useMemo(
-    () => filterAssessmentsByWindow(reversedAssessments, trendWindow, effectiveCustomStartDate, effectiveCustomEndDate),
-    [effectiveCustomEndDate, effectiveCustomStartDate, reversedAssessments, trendWindow]
+    () => filterAssessmentsByWindow(chronologicalAssessments, trendWindow, effectiveCustomStartDate, effectiveCustomEndDate),
+    [chronologicalAssessments, effectiveCustomEndDate, effectiveCustomStartDate, trendWindow]
   );
 
   const latestFiltered = filteredAssessments[filteredAssessments.length - 1] ?? null;
