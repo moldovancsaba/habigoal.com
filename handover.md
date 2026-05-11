@@ -47,6 +47,7 @@ This document summarizes the state of the project after the first major enhancem
 - The planning page translates current readiness, support pressure, missing check-ins, and internal load into a week-shaped calendar.
 - Location filtering is built in so planning can be scoped to the full group or a specific active site.
 - Weekly plans can now be persisted through `GET/POST /api/session-plans` and stored in the `session_plans` collection.
+- Athlete detail pages now reflect the current saved weekly plan when a matching scope or athlete-specific plan exists.
 
 ## Next Steps (Roadmap Focus)
 

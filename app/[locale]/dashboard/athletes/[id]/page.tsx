@@ -21,6 +21,7 @@ import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/ass
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
 import type { HabitRecord } from "@/types/habit-record";
+import type { SessionPlanRecord } from "@/types/session-plan";
 
 type AthleteHistoryPayload = {
   child: AthleteProfile;
@@ -29,6 +30,10 @@ type AthleteHistoryPayload = {
 
 type HabitPayload = {
   records: HabitRecord[];
+};
+
+type SessionPlanPayload = {
+  plans: SessionPlanRecord[];
 };
 
 type MemoryEntry = {
@@ -69,6 +74,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deletingSurvey, setDeletingSurvey] = useState(false);
   const [habitRecords, setHabitRecords] = useState<HabitRecord[]>([]);
+  const [sessionPlans, setSessionPlans] = useState<SessionPlanRecord[]>([]);
   const [savingHabits, setSavingHabits] = useState(false);
   const [trendWindow, setTrendWindow] = useState<TrendWindow>("30d");
   const [trendMetric, setTrendMetric] = useState<TrendMetric>("readiness");
@@ -76,21 +82,24 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [customEndDate, setCustomEndDate] = useState("");
   const [todayHabitStatuses, setTodayHabitStatuses] = useState<Record<string, boolean>>(createEmptyHabitStatuses());
   const todayDate = new Date().toISOString().slice(0, 10);
+  const currentWeekStart = useMemo(() => getMonday(new Date()).toISOString().slice(0, 10), []);
 
   useEffect(() => {
     Promise.all([
       fetch(`/api/athletes/${id}/history`).then((res) => res.json()),
-      fetch(`/api/athletes/${id}/habits`).then((res) => res.json()).catch(() => ({ records: [] }))
+      fetch(`/api/athletes/${id}/habits`).then((res) => res.json()).catch(() => ({ records: [] })),
+      fetch(`/api/session-plans?weekStart=${currentWeekStart}`).then((res) => res.json()).catch(() => ({ plans: [] }))
     ])
-      .then(([historyPayload, habitPayload]: [AthleteHistoryPayload, HabitPayload]) => {
+      .then(([historyPayload, habitPayload, sessionPlanPayload]: [AthleteHistoryPayload, HabitPayload, SessionPlanPayload]) => {
         setData(historyPayload);
         const nextHabitRecords = Array.isArray(habitPayload?.records) ? habitPayload.records : [];
         setHabitRecords(nextHabitRecords);
+        setSessionPlans(Array.isArray(sessionPlanPayload?.plans) ? sessionPlanPayload.plans : []);
         const currentRecord = nextHabitRecords.find((record) => record.date === todayDate);
         setTodayHabitStatuses(currentRecord ? normalizeHabitStatuses(currentRecord.statuses) : createEmptyHabitStatuses());
       })
       .finally(() => setLoading(false));
-  }, [id, todayDate]);
+  }, [currentWeekStart, id, todayDate]);
 
   async function downloadPdf() {
     if (!data || !latest) return;
@@ -270,6 +279,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const previousThreeAverage = loadTimeline.length > 3 ? averageScore(loadTimeline.slice(-6, -3).map((entry) => entry.value as number)) : latestThreeAverage;
   const loadRatio = previousThreeAverage > 0 ? Number((latestThreeAverage / previousThreeAverage).toFixed(2)) : 1;
   const loadStatus = getLoadStatus(loadRatio);
+  const athleteLocation = latest?.session.location || data?.child.latestLocation || emptyValue;
+  const relevantSessionPlan = selectRelevantSessionPlan(sessionPlans, data?.child.name || "", athleteLocation);
 
   if (loading) {
     return (
@@ -366,6 +377,77 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 ))}
               </SimpleGrid>
             </Stack>
+          </SectionCard>
+
+          <SectionCard
+            title={td("athletePlanTitle")}
+            subheader={td("athletePlanSubtitle")}
+            action={
+              <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
+                {td("planningOpenAction")}
+              </Button>
+            }
+          >
+            {relevantSessionPlan ? (
+              <Stack gap="md">
+                <Paper withBorder p="md" radius="md">
+                  <Stack gap="xs">
+                    <Text fw={700}>{td("athletePlanSummaryTitle")}</Text>
+                    <Text c="dimmed">
+                      {td("athletePlanSummaryBody", {
+                        scope: relevantSessionPlan.scope === "all" ? td("planningScopeAll") : relevantSessionPlan.scope,
+                        actor: relevantSessionPlan.actorName,
+                        updatedAt: relevantSessionPlan.updatedAt.slice(0, 10)
+                      })}
+                    </Text>
+                  </Stack>
+                </Paper>
+
+                <SimpleGrid cols={{ base: 1, md: 2, xl: 5 }} spacing="md">
+                  {relevantSessionPlan.days.map((day) => {
+                    const isPriorityAthlete = day.athleteNames.includes(data.child.name);
+                    return (
+                      <Paper key={day.isoDate} withBorder p="md" radius="md">
+                        <Stack gap="sm">
+                          <Group justify="space-between" align="flex-start">
+                            <Box>
+                              <Text fw={700}>{day.isoDate}</Text>
+                              <Text size="sm" c="dimmed">{td(`sessionBlueprint${capitalize(day.variant)}Label`)}</Text>
+                            </Box>
+                            <Badge color={getPlanVariantBadgeColor(day.variant)}>
+                              {td(`sessionBlueprint${capitalize(day.variant)}Badge`)}
+                            </Badge>
+                          </Group>
+
+                          <Box>
+                            <Text size="sm" fw={600}>{td("planningDayFocusLabel")}</Text>
+                            <Text size="sm" c="dimmed">{day.focus}</Text>
+                          </Box>
+
+                          <Box>
+                            <Text size="sm" fw={600}>{td("planningDayLoadLabel")}</Text>
+                            <Text size="sm" c="dimmed">{day.loadTarget}</Text>
+                          </Box>
+
+                          <Box>
+                            <Text size="sm" fw={600}>{td("planningDayCoachLabel")}</Text>
+                            <Text size="sm" c="dimmed">{day.coachNote}</Text>
+                          </Box>
+
+                          {isPriorityAthlete ? (
+                            <Badge variant="light" color="ingress">
+                              {td("athletePlanPriorityBadge")}
+                            </Badge>
+                          ) : null}
+                        </Stack>
+                      </Paper>
+                    );
+                  })}
+                </SimpleGrid>
+              </Stack>
+            ) : (
+              <Text c="dimmed">{td("athletePlanEmpty")}</Text>
+            )}
           </SectionCard>
 
           <SectionCard
@@ -1073,6 +1155,29 @@ function getLoadStatus(ratio: number) {
   if (ratio >= 1.3) return "heavy";
   if (ratio <= 0.8) return "light";
   return "balanced";
+}
+
+function getMonday(date: Date) {
+  const monday = new Date(date);
+  const day = monday.getDay();
+  const distance = day === 0 ? -6 : 1 - day;
+  monday.setDate(monday.getDate() + distance);
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+}
+
+function selectRelevantSessionPlan(plans: SessionPlanRecord[], athleteName: string, athleteLocation: string) {
+  const exactLocation = plans.find((plan) => plan.scope === athleteLocation);
+  if (exactLocation) return exactLocation;
+
+  const namedPlan = plans.find((plan) => plan.days.some((day) => day.athleteNames.includes(athleteName)));
+  if (namedPlan) return namedPlan;
+
+  return plans.find((plan) => plan.scope === "all") ?? null;
+}
+
+function getPlanVariantBadgeColor(variant: "standard" | "controlled" | "recovery") {
+  return variant === "recovery" ? "red" : variant === "controlled" ? "yellow" : "green";
 }
 
 function buildAthleteMemoryTimeline(

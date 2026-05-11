@@ -46,6 +46,12 @@ export async function getSessionPlan(weekStart: string, scope: string): Promise<
   return plan ? normalizeRecord(plan as Record<string, unknown>) : null;
 }
 
+export async function listSessionPlansByWeekStart(weekStart: string): Promise<SessionPlanRecord[]> {
+  const db = await getDatabase();
+  const plans = await db.collection(collectionName).find({ weekStart }).sort({ updatedAt: -1 }).toArray();
+  return plans.map((plan) => normalizeRecord(plan as Record<string, unknown>));
+}
+
 export async function upsertSessionPlan(input: {
   weekStart: string;
   scope: string;

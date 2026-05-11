@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { env } from "@/config/env";
 import { jsonError, readJson, requireRole } from "@/lib/api";
-import { getSessionPlan, upsertSessionPlan } from "@/repositories/session-plans.repository";
+import { getSessionPlan, listSessionPlansByWeekStart, upsertSessionPlan } from "@/repositories/session-plans.repository";
 import type { SessionPlanDay, SessionPlanVariant } from "@/types/session-plan";
 
 function stringValue(value: unknown, max = 240) {
@@ -59,14 +59,19 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const weekStart = stringValue(searchParams.get("weekStart"), 80);
-    const scope = stringValue(searchParams.get("scope"), 240) || "all";
+    const scope = stringValue(searchParams.get("scope"), 240);
 
     if (!weekStart) {
       return jsonError("Missing weekStart", 400, "INVALID_QUERY");
     }
 
+    if (!scope) {
+      const plans = await listSessionPlansByWeekStart(weekStart);
+      return NextResponse.json({ plans });
+    }
+
     const plan = await getSessionPlan(weekStart, scope);
-    return NextResponse.json({ plan });
+    return NextResponse.json({ plan, plans: plan ? [plan] : [] });
   } catch (error) {
     return jsonError((error as Error).message);
   }
