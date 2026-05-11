@@ -917,6 +917,11 @@
     "generalObservationLabel": "Általános megfigyelés",
     "adaptationNeedsLabel": "Adaptációs igények",
     "referralNoteLabel": "Továbbküldhető megjegyzés",
+    "showcaseGeneralFullLoad": "Jól kezelte a teljes terhelést, és a késői akciókban is stabil maradt.",
+    "showcaseGeneralControlledPacing": "Tudatosabban kontrollált tempóblokkra volt szükség, mielőtt a minőség stabilizálódott.",
+    "showcaseAdaptationsDemanding": "A következő foglalkozás maradhat kihívó, de a technikai tisztaságot tartsd meg.",
+    "showcaseAdaptationsConstraints": "Adj világosabb kereteket, és csökkentsd a káoszt, amikor alacsonyabban indul a készenlét.",
+    "showcaseReferralNone": "Ebben a bemutató rekordban nincs rögzített továbbküldési kockázat.",
     "emptyNarrative": "Nincs rögzített megjegyzés.",
     "sessionSignalsTitle": "Sportolói jelzések"
   }

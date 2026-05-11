@@ -917,6 +917,11 @@
     "generalObservationLabel": "General observation",
     "adaptationNeedsLabel": "Adaptation needs",
     "referralNoteLabel": "Referral-safe note",
+    "showcaseGeneralFullLoad": "Handled the full session load with good consistency in late actions.",
+    "showcaseGeneralControlledPacing": "Needed a more controlled pacing block before quality stabilized.",
+    "showcaseAdaptationsDemanding": "Keep the next session demanding but maintain technical clarity.",
+    "showcaseAdaptationsConstraints": "Use clearer constraints and reduce chaos when readiness starts lower.",
+    "showcaseReferralNone": "No referral concern recorded in this showcase record.",
     "emptyNarrative": "No note recorded.",
     "sessionSignalsTitle": "Athlete signals"
   }

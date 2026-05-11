@@ -45,11 +45,11 @@ const allQuestionKeys = [
 ];
 
 const athletes = [
-  athlete("Nora Bálint", "2015-04-18", "10-12", "right", "right", "right", "Explosive first steps and strong intent in finishing moments.", "Responds well to simple cues and keeps improving when sleep is stable."),
-  athlete("Leo Markovic", "2016-09-07", "7-9", "left", "left", "right", "Creative passer who can lose sharpness when the session becomes chaotic.", "Calmer pacing and early touches improve confidence quickly."),
-  athlete("Sara El Amrani", "2014-11-02", "10-12", "right", "left", "right", "Very coachable and consistent in technical repetition blocks.", "Shows clear readiness dips after school-heavy days."),
-  athlete("Máté Horváth", "2017-02-13", "7-9", "right", "right", "left", "Dynamic mover with good balance and improving decision speed.", "Needs reminders on hydration and recovery routines."),
-  athlete("Yara Petrescu", "2018-06-25", "7-9", "left", "right", "left", "Strong confidence in duels and quick recovery after mistakes.", "Benefits from explicit session goals and positive reinforcement.")
+  athlete("Nora Bálint", "2015-04-18", "10-12", "right", "right", "right", "Explosive first steps and strong intent in finishing moments.", "Responds well to simple cues and keeps improving when sleep is stable.", "en"),
+  athlete("Leo Markovic", "2016-09-07", "7-9", "left", "left", "right", "Creative passer who can lose sharpness when the session becomes chaotic.", "Calmer pacing and early touches improve confidence quickly.", "hu"),
+  athlete("Sara El Amrani", "2014-11-02", "10-12", "right", "left", "right", "Very coachable and consistent in technical repetition blocks.", "Shows clear readiness dips after school-heavy days.", "en"),
+  athlete("Máté Horváth", "2017-02-13", "7-9", "right", "right", "left", "Dynamic mover with good balance and improving decision speed.", "Needs reminders on hydration and recovery routines.", "hu"),
+  athlete("Yara Petrescu", "2018-06-25", "7-9", "left", "right", "left", "Strong confidence in duels and quick recovery after mistakes.", "Benefits from explicit session goals and positive reinforcement.", "en")
 ];
 
 const conductors = [
@@ -104,7 +104,7 @@ try {
       dominantFoot: profile.dominantFoot,
       knownTraits: profile.knownTraits,
       parentSignals: profile.parentSignals,
-      locale: athleteIndex % 2 === 0 ? "en" : "hu",
+      locale: profile.locale,
       createdAt: createdAt.toISOString(),
       updatedAt: now.toISOString(),
       generatedBy: "showcase-seed-v1"
@@ -145,7 +145,7 @@ try {
           consentReport: true
         },
         scores,
-        notes: buildNotes(base, sessionIndex, readinessChecks),
+        notes: buildNotes(base, sessionIndex, readinessChecks, profile.locale),
         attachments: [],
         standardsVersionUsed: "v1",
         computed,
@@ -170,8 +170,8 @@ try {
   await client.close();
 }
 
-function athlete(name, birthDate, ageGroup, dominantHand, dominantEye, dominantFoot, knownTraits, parentSignals) {
-  return { name, birthDate, ageGroup, dominantHand, dominantEye, dominantFoot, knownTraits, parentSignals };
+function athlete(name, birthDate, ageGroup, dominantHand, dominantEye, dominantFoot, knownTraits, parentSignals, locale) {
+  return { name, birthDate, ageGroup, dominantHand, dominantEye, dominantFoot, knownTraits, parentSignals, locale };
 }
 
 function baseProfileForAthlete(index) {
@@ -239,19 +239,34 @@ function buildScores(base, sessionIndex, readinessChecks) {
   return scores;
 }
 
-function buildNotes(base, sessionIndex, readinessChecks) {
+function buildNotes(base, sessionIndex, readinessChecks, locale) {
   const fullMode = readinessChecks >= 6;
+  const copy = locale === "hu"
+    ? {
+        generalFull: "Jól kezelte a teljes terhelést, és a késői akciókban is stabil maradt.",
+        generalLight: "Tudatosabban kontrollált tempóblokkra volt szükség, mielőtt a minőség stabilizálódott.",
+        adaptationsFull: "A következő foglalkozás maradhat kihívó, de a technikai tisztaságot tartsd meg.",
+        adaptationsLight: "Adj világosabb kereteket, és csökkentsd a káoszt, amikor alacsonyabban indul a készenlét.",
+        referral: "Ebben a bemutató rekordban nincs rögzített továbbküldési kockázat."
+      }
+    : {
+        generalFull: "Handled the full session load with good consistency in late actions.",
+        generalLight: "Needed a more controlled pacing block before quality stabilized.",
+        adaptationsFull: "Keep the next session demanding but maintain technical clarity.",
+        adaptationsLight: "Use clearer constraints and reduce chaos when readiness starts lower.",
+        referral: "No referral concern recorded in this showcase record."
+      };
   return {
     general: fullMode
-      ? "Handled the full session load with good consistency in late actions."
-      : "Needed a more controlled pacing block before quality stabilized.",
+      ? copy.generalFull
+      : copy.generalLight,
     movement: `Physical readiness trending around ${roundedScore(base.physical + sessionIndex * 0.12)}.`,
     social: `Mental balance and coachability stayed ${sessionIndex % 2 === 0 ? "stable" : "responsive"} across the block.`,
     mental: "Focus and timing improved once the athlete settled into repeated constraints.",
     adaptations: fullMode
-      ? "Keep the next session demanding but maintain technical clarity."
-      : "Use clearer constraints and reduce chaos when readiness starts lower.",
-    referral: "No referral concern recorded in this showcase record."
+      ? copy.adaptationsFull
+      : copy.adaptationsLight,
+    referral: copy.referral
   };
 }
 

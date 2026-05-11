@@ -14,6 +14,12 @@ interface JsPDFWithAutoTable extends jsPDF {
 type TFunction = (key: string, values?: Record<string, string | number>) => string;
 type PillarKey = (typeof athleteIqPillars)[number]["key"];
 type TrackerLabelKey = (typeof trackerQuestions)[number]["title"];
+type ShowcaseNarrativeKey =
+  | "showcaseGeneralFullLoad"
+  | "showcaseGeneralControlledPacing"
+  | "showcaseAdaptationsDemanding"
+  | "showcaseAdaptationsConstraints"
+  | "showcaseReferralNone";
 
 type Palette = {
   ink: [number, number, number];
@@ -59,6 +65,14 @@ const trackerLabelFallbacks: Record<TrackerLabelKey, string> = {
   stressLoadTitle: "Stress load",
   confidenceTitle: "Confidence",
   focusTitle: "Focus"
+};
+
+const showcaseNarrativeFallbacks: Record<ShowcaseNarrativeKey, string> = {
+  showcaseGeneralFullLoad: "Handled the full session load with good consistency in late actions.",
+  showcaseGeneralControlledPacing: "Needed a more controlled pacing block before quality stabilized.",
+  showcaseAdaptationsDemanding: "Keep the next session demanding but maintain technical clarity.",
+  showcaseAdaptationsConstraints: "Use clearer constraints and reduce chaos when readiness starts lower.",
+  showcaseReferralNone: "No referral concern recorded in this showcase record."
 };
 
 const REPORT_MAX_SCORE = 5;
@@ -489,7 +503,9 @@ export const PdfService = {
       ]
     );
 
-    this.drawSectionTitle(doc, 20, 92, tr("readinessActionsTitle"));
+    const contextBottomY = Math.max((doc as JsPDFWithAutoTable).lastAutoTable?.finalY ?? 42, 42);
+    const readinessActionsY = contextBottomY + 12;
+    this.drawSectionTitle(doc, 20, readinessActionsY, tr("readinessActionsTitle"));
     const priorityLabels = recommendation.priorityKeys
       .map((key) => athleteIqPillars.find((pillar) => pillar.key === key))
       .filter(Boolean)
@@ -504,19 +520,44 @@ export const PdfService = {
     ];
     doc.setFontSize(11);
     doc.setTextColor(...palette.ink);
-    doc.text(doc.splitTextToSize(noteLines.join(" "), 170), 20, 100);
+    const readinessNarrativeY = readinessActionsY + 8;
+    const readinessNarrativeLines = doc.splitTextToSize(noteLines.join(" "), 170);
+    doc.text(readinessNarrativeLines, 20, readinessNarrativeY);
 
-    this.drawSectionTitle(doc, 20, 126, tr("notesBlockTitle"));
-    this.drawNarrativeBlock(doc, 20, 134, 170, 22, tr("generalObservationLabel"), record.notes.general || tr("emptyNarrative"));
-    this.drawNarrativeBlock(doc, 20, 160, 170, 22, tr("adaptationNeedsLabel"), record.notes.adaptations || tr("emptyNarrative"));
-    this.drawNarrativeBlock(doc, 20, 186, 170, 22, tr("referralNoteLabel"), record.notes.referral || tr("emptyNarrative"));
+    const notesTitleY = readinessNarrativeY + readinessNarrativeLines.length * 4.8 + 10;
+    this.drawSectionTitle(doc, 20, notesTitleY, tr("notesBlockTitle"));
+    const generalBottomY = this.drawNarrativeBlock(
+      doc,
+      20,
+      notesTitleY + 8,
+      170,
+      tr("generalObservationLabel"),
+      this.localizeShowcaseNarrative(record.notes.general || tr("emptyNarrative"), tr)
+    );
+    const adaptationsBottomY = this.drawNarrativeBlock(
+      doc,
+      20,
+      generalBottomY + 6,
+      170,
+      tr("adaptationNeedsLabel"),
+      this.localizeShowcaseNarrative(record.notes.adaptations || tr("emptyNarrative"), tr)
+    );
+    const referralBottomY = this.drawNarrativeBlock(
+      doc,
+      20,
+      adaptationsBottomY + 6,
+      170,
+      tr("referralNoteLabel"),
+      this.localizeShowcaseNarrative(record.notes.referral || tr("emptyNarrative"), tr)
+    );
 
-    this.drawSectionTitle(doc, 20, 220, tr("sessionSignalsTitle"));
+    const signalsTitleY = referralBottomY + 12;
+    this.drawSectionTitle(doc, 20, signalsTitleY, tr("sessionSignalsTitle"));
     const signals: Array<[string, string]> = [
       [t("knownTraits"), record.child.knownTraits || tr("emptyNarrative")],
       [t("parentSignals"), record.child.parentSignals || tr("emptyNarrative")]
     ];
-    this.drawContextGrid(doc, 20, 228, signals);
+    this.drawContextGrid(doc, 20, signalsTitleY + 8, signals);
 
     void ts;
   },
@@ -688,7 +729,10 @@ export const PdfService = {
     }
   },
 
-  drawNarrativeBlock(doc: jsPDF, x: number, y: number, w: number, h: number, label: string, body: string) {
+  drawNarrativeBlock(doc: jsPDF, x: number, y: number, w: number, label: string, body: string) {
+    const bodyLines = doc.splitTextToSize(body, w - 8);
+    const textHeight = Math.max(12, bodyLines.length * 5);
+    const h = Math.max(22, 10 + textHeight);
     doc.setFillColor(...palette.panelSoft);
     doc.setDrawColor(...palette.line);
     doc.roundedRect(x, y, w, h, 4, 4, "FD");
@@ -697,7 +741,8 @@ export const PdfService = {
     doc.text(label, x + 4, y + 6);
     doc.setFontSize(10);
     doc.setTextColor(...palette.ink);
-    doc.text(doc.splitTextToSize(body, w - 8), x + 4, y + 13);
+    doc.text(bodyLines, x + 4, y + 13);
+    return y + h;
   },
 
   drawContextGrid(doc: jsPDF, x: number, y: number, rows: Array<[string, string]>) {
@@ -718,7 +763,7 @@ export const PdfService = {
         lineWidth: 0.2
       },
       columnStyles: {
-        0: { fontStyle: "bold", cellWidth: 44 },
+        0: { cellWidth: 44 },
         1: { cellWidth: 126 }
       }
     });
@@ -776,6 +821,19 @@ export const PdfService = {
       return translated;
     }
     return trackerLabelFallbacks[normalizedKey as TrackerLabelKey] || normalizedKey;
+  },
+
+  localizeShowcaseNarrative(value: string, tr: TFunction) {
+    const showcaseNarrativeMap: Record<string, ShowcaseNarrativeKey> = {
+      [showcaseNarrativeFallbacks.showcaseGeneralFullLoad]: "showcaseGeneralFullLoad",
+      [showcaseNarrativeFallbacks.showcaseGeneralControlledPacing]: "showcaseGeneralControlledPacing",
+      [showcaseNarrativeFallbacks.showcaseAdaptationsDemanding]: "showcaseAdaptationsDemanding",
+      [showcaseNarrativeFallbacks.showcaseAdaptationsConstraints]: "showcaseAdaptationsConstraints",
+      [showcaseNarrativeFallbacks.showcaseReferralNone]: "showcaseReferralNone"
+    };
+
+    const key = showcaseNarrativeMap[value];
+    return key ? tr(key) : value;
   },
 
   average(values: number[]) {
