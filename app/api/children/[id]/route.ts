@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { jsonError, readJson, requireRole } from "@/lib/api";
+import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { parseChildPayload } from "@/lib/validations";
 import { deleteAssessmentsForChild, updateAssessmentsForChildProfile } from "@/repositories/assessment.repository";
 import { deleteChildById, getChildById, updateChildById } from "@/repositories/child.repository";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = await requireRole(_request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(_request, ["admin", "trainer", "athlete"]);
   if (authError) return authError;
 
   try {
@@ -19,6 +20,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (!child) {
       return jsonError("Child not found", 404, "NOT_FOUND");
     }
+    const authUser = await getAuthUser();
+    if (authUser && !(await canAccessAthlete(authUser, id))) {
+      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+    }
 
     return NextResponse.json(child);
   } catch (error) {
@@ -27,13 +32,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = await requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
 
   try {
     const { id } = await params;
     if (!ObjectId.isValid(id)) {
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
+    }
+    const authUser = await getAuthUser();
+    if (authUser && !(await canAccessAthlete(authUser, id))) {
+      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 
     const payload = parseChildPayload(await readJson(request));
@@ -65,13 +74,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = await requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
 
   try {
     const { id } = await params;
     if (!ObjectId.isValid(id)) {
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
+    }
+    const authUser = await getAuthUser();
+    if (authUser && !(await canAccessAthlete(authUser, id))) {
+      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 
     const child = await deleteChildById(new ObjectId(id));

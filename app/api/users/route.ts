@@ -5,7 +5,7 @@ import { parseUserPayload } from "@/lib/validations";
 import { getSession } from "@/lib/session";
 
 export async function GET(request: Request) {
-  const authError = await requireRole(request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
 
   try {

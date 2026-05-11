@@ -171,21 +171,33 @@ export function parseSettingsPayload(input: unknown): SettingsPayload {
 export interface UserPayload {
   name?: string;
   email: string;
-  roles: ("admin" | "conductor" | "observer")[];
+  roles: ("admin" | "trainer" | "athlete")[];
+  athleteId?: string;
+  teamIds?: string[];
 }
 
 export function parseUserPayload(input: unknown): UserPayload {
   const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
   const roleValues = Array.isArray(data.roles) ? data.roles : [];
-  const allowedRoleSet = new Set(["admin", "conductor", "observer"]);
+  const roleAliases: Record<string, "admin" | "trainer" | "athlete"> = {
+    admin: "admin",
+    trainer: "trainer",
+    athlete: "athlete",
+    conductor: "trainer",
+    observer: "athlete"
+  };
   const roles = roleValues
-    .map((role) => String(role).toLowerCase())
-    .filter((role): role is "admin" | "conductor" | "observer" => allowedRoleSet.has(role));
+    .map((role) => roleAliases[String(role).toLowerCase()])
+    .filter((role): role is "admin" | "trainer" | "athlete" => Boolean(role));
+  const teamIds = stringArray(data.teamIds, 100, 120);
+  const athleteId = stringValue(data.athleteId, 120).trim() || undefined;
 
   return {
     name: data.name ? stringValue(data.name, 240).trim() : undefined,
     email: stringValue(data.email, 240).trim().toLowerCase(),
-    roles: Array.from(new Set(roles))
+    roles: Array.from(new Set(roles)).slice(0, 1),
+    athleteId,
+    teamIds
   };
 }
 

@@ -66,6 +66,13 @@ This document summarizes the state of the project after the first major enhancem
 - Successful SSO logins update `lastLoginAt` in the `users` collection, which feeds admin visibility in Settings.
 - The Settings > User Rights screen now shows approved-user counts, access state, last login, search, and UI guards around protected admin accounts.
 
+### 11. Entity Model and Team Access (v0.5.x)
+- The old `conductor / observer / admin` access shape has been replaced in the application layer by `trainer / athlete / admin`.
+- Legacy stored roles still normalize safely on read so old accounts continue working during migration.
+- Athlete accounts can now be linked to a single athlete profile and are scoped to their own athlete data in the athlete app, athlete history, habits, and check-in creation.
+- Trainer accounts are now the primary coach-facing entity and are scoped through team membership rather than broad observer-style access.
+- A first-pass `teams` collection and `/api/teams` endpoint now exist so admins can create teams and attach trainers plus athletes from Settings.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

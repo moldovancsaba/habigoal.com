@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { env } from "@/config/env";
+import { getPrimaryRole, normalizeRoles } from "@/lib/access";
 
 export async function GET() {
   if (!env.surveyEnforceAuth) {
@@ -9,7 +10,9 @@ export async function GET() {
         userId: "hg-open-mode",
         email: "dev@habigoal.local",
         name: "Habigoal Dev",
-        role: "admin,conductor,observer"
+        role: "admin,trainer,athlete",
+        primaryRole: "admin",
+        teamIds: []
       }
     });
   }
@@ -26,7 +29,10 @@ export async function GET() {
     user: {
       ...session,
       name: user?.name || session.name,
-      role: user?.roles?.join(",") || session.role
+      role: user?.roles?.join(",") || session.role,
+      primaryRole: getPrimaryRole(user?.roles || normalizeRoles(session.role.split(","))),
+      athleteId: user?.athleteId,
+      teamIds: user?.teamIds || []
     }
   });
 }

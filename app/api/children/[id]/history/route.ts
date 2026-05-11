@@ -3,13 +3,14 @@ import { getChildById } from "@/repositories/child.repository";
 import { listAssessmentsByChildId } from "@/repositories/assessment.repository";
 import { ObjectId } from "mongodb";
 import { jsonError, requireRole } from "@/lib/api";
+import { canAccessAthlete, getAuthUser } from "@/lib/access";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const authError = await requireRole(request, ["admin", "conductor", "observer"]);
+    const authError = await requireRole(request, ["admin", "trainer", "athlete"]);
     if (authError) {
       return authError;
     }
@@ -19,6 +20,10 @@ export async function GET(
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
     const childId = new ObjectId(id);
+    const authUser = await getAuthUser();
+    if (authUser && !(await canAccessAthlete(authUser, id))) {
+      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+    }
     const child = await getChildById(childId);
     if (!child) {
       return jsonError("Child not found", 404, "NOT_FOUND");

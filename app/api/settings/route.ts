@@ -5,7 +5,7 @@ import { parseSettingsPayload } from "@/lib/validations";
 import { DEFAULT_SURVEY_SETTINGS } from "@/services/settings-service";
 
 export async function GET(request: Request) {
-  const authError = await requireRole(request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
 
   try {

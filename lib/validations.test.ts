@@ -5,13 +5,17 @@ describe("parseUserPayload", () => {
   it("keeps valid roles and normalizes values", () => {
     const parsed = parseUserPayload({
       name: "  Alex  ",
+      athleteId: "abc123",
+      teamIds: [" team-a ", "", "team-b"],
       roles: ["CONDUCTOR", "observer", "invalid"]
     });
 
     expect(parsed).toEqual({
       name: "Alex",
       email: "",
-      roles: ["conductor", "observer"]
+      athleteId: "abc123",
+      teamIds: ["team-a", "team-b"],
+      roles: ["trainer"]
     });
   });
 });

@@ -9,6 +9,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
+import type { AthleteProfile } from "@/types/athlete";
+import type { Team } from "@/types/team";
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -18,6 +20,8 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<{ email: string; role: string } | null>(null);
+  const [athletes, setAthletes] = useState<AthleteProfile[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -32,18 +36,27 @@ export default function SettingsPage() {
   const [allAssessments, setAllAssessments] = useState<Array<{ childId?: string; child: { name: string; birthDate: string }; session?: { consentReport?: boolean }; computed: { ski: number | null } }>>([]);
   const [governanceMetrics, setGovernanceMetrics] = useState<{ deletedChildren: number; deletedAssessments: number; missingConsentReport: number; missingChildLink: number }>({ deletedChildren: 0, deletedAssessments: 0, missingConsentReport: 0, missingChildLink: 0 });
   const [userSearch, setUserSearch] = useState("");
+  const [teamNameDraft, setTeamNameDraft] = useState("");
+  const [teamTrainerDraft, setTeamTrainerDraft] = useState("");
+  const [teamAthleteDraft, setTeamAthleteDraft] = useState("");
+  const [teamTrainerEmails, setTeamTrainerEmails] = useState<string[]>([]);
+  const [teamAthleteIds, setTeamAthleteIds] = useState<string[]>([]);
 
   useEffect(() => {
     void (async () => {
       try {
-        const [sData, uData, authRes] = await Promise.all([
+        const [sData, uData, authRes, athleteRes, teamRes] = await Promise.all([
           getSettings(),
           getUsers(),
-          fetch("/api/auth/me").then((r) => r.json()).catch(() => null)
+          fetch("/api/auth/me").then((r) => r.json()).catch(() => null),
+          fetch("/api/athletes?metrics=true").then((r) => r.json()).catch(() => []),
+          fetch("/api/teams").then((r) => r.json()).catch(() => ({ teams: [] }))
         ]);
         setSettings(sData);
         setUsers(uData);
         setCurrentUser(authRes?.user ? { email: authRes.user.email, role: authRes.user.role } : null);
+        setAthletes(Array.isArray(athleteRes) ? athleteRes : []);
+        setTeams(Array.isArray(teamRes?.teams) ? teamRes.teams : []);
         const [dcRes, daRes] = await Promise.all([
           fetch("/api/athletes?deleted=true").then(r => r.json()).catch(() => []),
           fetch("/api/check-ins?deleted=true").then(r => r.json()).catch(() => ({ assessments: [] }))
@@ -88,17 +101,9 @@ export default function SettingsPage() {
     setMessage(tc("success"));
   }
 
-  async function toggleRole(user: User, role: "admin" | "conductor" | "observer") {
-    const nextRoles = user.roles.includes(role) ? user.roles.filter((r) => r !== role) : [...user.roles, role];
-    if (nextRoles.length === 0) {
-      setMessage("A user must keep at least one role.");
-      return;
-    }
-
-    const updatedUser = { ...user, roles: nextRoles };
-
+  async function saveManagedUser(updatedUser: User) {
     const previousUsers = users;
-    setUsers((prev) => prev.map((u) => (u.email === user.email ? updatedUser : u)));
+    setUsers((prev) => prev.map((u) => (u.email === updatedUser.email ? updatedUser : u)));
 
     const ok = await saveUser(updatedUser);
     if (!ok) {
@@ -109,10 +114,25 @@ export default function SettingsPage() {
     setMessage(tc("success"));
   }
 
+  async function setUserRole(user: User, role: "admin" | "trainer" | "athlete") {
+    await saveManagedUser({
+      ...user,
+      roles: [role],
+      athleteId: role === "athlete" ? user.athleteId : undefined
+    });
+  }
+
+  async function setUserAthlete(user: User, athleteId?: string) {
+    await saveManagedUser({
+      ...user,
+      athleteId: athleteId || undefined
+    });
+  }
+
   function addNewUser() {
     const email = userDraft.trim().toLowerCase();
     if (email) {
-      const newUser: User = { email, name: userNameDraft.trim() || undefined, roles: ["observer"] };
+      const newUser: User = { email, name: userNameDraft.trim() || undefined, roles: ["athlete"], teamIds: [] };
       setUsers((prev) => [...prev, newUser]);
       setUserDraft("");
       setUserNameDraft("");
@@ -249,8 +269,8 @@ export default function SettingsPage() {
   }
 
   const adminCount = users.filter((user) => user.roles.includes("admin")).length;
-  const conductorCount = users.filter((user) => user.roles.includes("conductor")).length;
-  const observerCount = users.filter((user) => user.roles.includes("observer")).length;
+  const trainerCount = users.filter((user) => user.roles.includes("trainer")).length;
+  const athleteCount = users.filter((user) => user.roles.includes("athlete")).length;
   const canManageUsers = currentUser?.role?.split(",").map((role) => role.trim().toLowerCase()).includes("admin") ?? false;
   const query = userSearch.trim().toLowerCase();
   const filteredUsers = users
@@ -271,6 +291,59 @@ export default function SettingsPage() {
     const isLastAdmin = user.roles.includes("admin") && adminCount <= 1;
     const isCurrentAdmin = currentUser?.email?.toLowerCase() === user.email.toLowerCase() && user.roles.includes("admin");
     return isLastAdmin || isCurrentAdmin;
+  }
+
+  function addTeamTrainerDraft() {
+    const email = teamTrainerDraft.trim().toLowerCase();
+    if (!email) return;
+    setTeamTrainerEmails((prev) => prev.includes(email) ? prev : [...prev, email]);
+    setTeamTrainerDraft("");
+  }
+
+  function addTeamAthleteDraft() {
+    const athleteId = teamAthleteDraft.trim();
+    if (!athleteId) return;
+    setTeamAthleteIds((prev) => prev.includes(athleteId) ? prev : [...prev, athleteId]);
+    setTeamAthleteDraft("");
+  }
+
+  async function saveTeam() {
+    const response = await fetch("/api/teams", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: teamNameDraft,
+        trainerEmails: teamTrainerEmails,
+        athleteIds: teamAthleteIds
+      })
+    }).catch(() => null);
+
+    if (!response?.ok) {
+      setMessage(tc("error"));
+      return;
+    }
+
+    const data = await response.json().catch(() => null);
+    if (data?.team) {
+      setTeams((prev) => [...prev, data.team]);
+      setTeamNameDraft("");
+      setTeamTrainerDraft("");
+      setTeamAthleteDraft("");
+      setTeamTrainerEmails([]);
+      setTeamAthleteIds([]);
+    }
+    setMessage(tc("success"));
+  }
+
+  async function deleteTeam(id?: string) {
+    if (!id) return;
+    const response = await fetch(`/api/teams?id=${encodeURIComponent(id)}`, { method: "DELETE" }).catch(() => null);
+    if (!response?.ok) {
+      setMessage(tc("error"));
+      return;
+    }
+    setTeams((prev) => prev.filter((team) => team._id !== id));
+    setMessage(tc("success"));
   }
 
   if (loading) {
@@ -300,8 +373,8 @@ export default function SettingsPage() {
           ) : null}
           <Group gap="xs" wrap="wrap">
             <Badge variant="light" color="ingress">Admins: {adminCount}</Badge>
-            <Badge variant="light" color="blue">Conductors: {conductorCount}</Badge>
-            <Badge variant="light" color="violet">Observers: {observerCount}</Badge>
+            <Badge variant="light" color="blue">Trainers: {trainerCount}</Badge>
+            <Badge variant="light" color="violet">Athletes: {athleteCount}</Badge>
             <Badge variant="light" color="gray">Approved users: {users.length}</Badge>
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
@@ -357,24 +430,26 @@ export default function SettingsPage() {
                       value={<Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>{user.lastLoginAt ? "Active" : "Pending"}</Badge>}
                     />
                     <ResponsiveDataRow label="Last login" value={<Text>{formatLastSeen(user.lastLoginAt)}</Text>} />
-                    <MobileCheckboxRow
-                      label={t("canConduct")}
-                      checked={user.roles.includes("conductor")}
+                    <Select
+                      label="Entity"
+                      value={user.roles[0] || "athlete"}
                       disabled={!canManageUsers}
-                      onChange={() => void toggleRole(user, "conductor")}
+                      data={[
+                        { value: "athlete", label: "Athlete" },
+                        { value: "trainer", label: "Trainer" },
+                        { value: "admin", label: "Admin" }
+                      ]}
+                      onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
                     />
-                    <MobileCheckboxRow
-                      label={t("canObserve")}
-                      checked={user.roles.includes("observer")}
-                      disabled={!canManageUsers}
-                      onChange={() => void toggleRole(user, "observer")}
-                    />
-                    <MobileCheckboxRow
-                      label="Admin"
-                      checked={user.roles.includes("admin")}
-                      disabled={!canManageUsers || isProtectedAdmin(user)}
-                      onChange={() => void toggleRole(user, "admin")}
-                    />
+                    {user.roles.includes("athlete") ? (
+                      <Select
+                        searchable
+                        label="Linked athlete"
+                        value={user.athleteId || null}
+                        data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
+                        onChange={(value) => void setUserAthlete(user, value || undefined)}
+                      />
+                    ) : null}
                     <Group grow>
                       <Button
                         variant="light"
@@ -421,9 +496,7 @@ export default function SettingsPage() {
                 <Table.Th>{t("email")}</Table.Th>
                 <Table.Th>Access</Table.Th>
                 <Table.Th>Last login</Table.Th>
-                <Table.Th style={{ textAlign: "center" }}>{t("canConduct")}</Table.Th>
-                <Table.Th style={{ textAlign: "center" }}>{t("canObserve")}</Table.Th>
-                <Table.Th style={{ textAlign: "center" }}>Admin</Table.Th>
+                <Table.Th colSpan={3}>Entity and athlete link</Table.Th>
                 <Table.Th style={{ textAlign: "right" }}>{tc("actions")}</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -452,29 +525,27 @@ export default function SettingsPage() {
                   <Table.Td>
                     <Text size="sm">{formatLastSeen(user.lastLoginAt)}</Text>
                   </Table.Td>
-                  <Table.Td style={{ textAlign: "center" }}>
-                    <Checkbox
-                      checked={user.roles.includes("conductor")}
-                      disabled={!canManageUsers}
-                      onChange={() => void toggleRole(user, "conductor")}
-                      aria-label={`${user.email} conductor`}
-                    />
-                  </Table.Td>
-                  <Table.Td style={{ textAlign: "center" }}>
-                    <Checkbox
-                      checked={user.roles.includes("observer")}
-                      disabled={!canManageUsers}
-                      onChange={() => void toggleRole(user, "observer")}
-                      aria-label={`${user.email} observer`}
-                    />
-                  </Table.Td>
-                  <Table.Td style={{ textAlign: "center" }}>
-                    <Checkbox
-                      checked={user.roles.includes("admin")}
-                      disabled={!canManageUsers || isProtectedAdmin(user)}
-                      onChange={() => void toggleRole(user, "admin")}
-                      aria-label={`${user.email} admin`}
-                    />
+                  <Table.Td colSpan={3}>
+                    <Group grow align="start">
+                      <Select
+                        value={user.roles[0] || "athlete"}
+                        disabled={!canManageUsers}
+                        data={[
+                          { value: "athlete", label: "Athlete" },
+                          { value: "trainer", label: "Trainer" },
+                          { value: "admin", label: "Admin" }
+                        ]}
+                        onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
+                      />
+                      {user.roles.includes("athlete") ? (
+                        <Select
+                          searchable
+                          value={user.athleteId || null}
+                          data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
+                          onChange={(value) => void setUserAthlete(user, value || undefined)}
+                        />
+                      ) : <Text size="sm" c="dimmed">No athlete link needed</Text>}
+                    </Group>
                   </Table.Td>
                   <Table.Td style={{ textAlign: "right" }}>
                     <Button
@@ -524,6 +595,81 @@ export default function SettingsPage() {
             </Table.Tbody>
           </Table>
           </Paper>
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="Teams">
+        <Stack gap="md">
+          {!canManageUsers ? (
+            <Alert color="yellow">
+              Only admins can create teams and assign trainers or athletes.
+            </Alert>
+          ) : null}
+          <Group gap="xs" align="end" wrap="wrap">
+            <TextInput
+              label="Team name"
+              placeholder="U13 Blue"
+              value={teamNameDraft}
+              onChange={(event) => setTeamNameDraft(event.currentTarget.value)}
+              style={{ minWidth: 220 }}
+              disabled={!canManageUsers}
+            />
+            <Box style={{ minWidth: 240 }}>
+              <Select
+                searchable
+                label="Add trainer"
+                value={teamTrainerDraft || null}
+                data={users.filter((user) => user.roles.includes("trainer") || user.roles.includes("admin")).map((user) => ({ value: user.email, label: user.name || user.email }))}
+                onChange={(value) => setTeamTrainerDraft(value || "")}
+              />
+            </Box>
+            <Button variant="default" onClick={addTeamTrainerDraft} disabled={!canManageUsers || !teamTrainerDraft}>
+              Add trainer
+            </Button>
+          </Group>
+          <Group gap="xs" align="end" wrap="wrap">
+            <Box style={{ minWidth: 240 }}>
+              <Select
+                searchable
+                label="Add athlete"
+                value={teamAthleteDraft || null}
+                data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
+                onChange={(value) => setTeamAthleteDraft(value || "")}
+              />
+            </Box>
+            <Button variant="default" onClick={addTeamAthleteDraft} disabled={!canManageUsers || !teamAthleteDraft}>
+              Add athlete
+            </Button>
+            <Button color="ingress" onClick={() => void saveTeam()} disabled={!canManageUsers || !teamNameDraft.trim()}>
+              Save team
+            </Button>
+          </Group>
+          <Group gap="xs" wrap="wrap">
+            {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color="blue">{email}</Badge>)}
+            {teamAthleteIds.map((athleteId) => {
+              const athlete = athletes.find((entry) => entry._id === athleteId);
+              return <Badge key={athleteId} variant="light" color="violet">{athlete?.name || athleteId}</Badge>;
+            })}
+          </Group>
+          <Stack gap="sm">
+            {teams.map((team) => (
+              <Paper key={team._id || team.name} withBorder p="sm">
+                <Group justify="space-between" align="start" wrap="wrap">
+                  <Stack gap={4}>
+                    <Text fw={700}>{team.name}</Text>
+                    <Text size="sm" c="dimmed">Trainers: {team.trainerEmails.join(", ") || "None assigned"}</Text>
+                    <Text size="sm" c="dimmed">
+                      Athletes: {team.athleteIds.map((athleteId) => athletes.find((entry) => entry._id === athleteId)?.name || athleteId).join(", ") || "None assigned"}
+                    </Text>
+                  </Stack>
+                  <Button variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)}>
+                    {tc("remove")}
+                  </Button>
+                </Group>
+              </Paper>
+            ))}
+            {teams.length === 0 ? <Text c="dimmed">No teams created yet.</Text> : null}
+          </Stack>
         </Stack>
       </SectionCard>
 
@@ -831,24 +977,5 @@ export default function SettingsPage() {
         </Stack>
       </SectionCard>
     </Stack>
-  );
-}
-
-function MobileCheckboxRow({
-  label,
-  checked,
-  onChange,
-  disabled = false
-}: {
-  label: string;
-  checked: boolean;
-  onChange: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <Group justify="space-between" align="center">
-      <Text fw={600}>{label}</Text>
-      <Checkbox checked={checked} onChange={onChange} aria-label={label} disabled={disabled} />
-    </Group>
   );
 }

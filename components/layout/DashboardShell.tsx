@@ -20,7 +20,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const sideInset = 14;
   const { mode } = useThemeMode();
 
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string; primaryRole?: string } | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -33,12 +33,15 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       .catch(() => {});
   }, []);
 
+  const primaryRole = user?.primaryRole || "trainer";
   const nav = [
-    { href: "/dashboard", label: t("overview") },
-    { href: "/dashboard/assessment", label: t("survey") },
-    { href: "/dashboard/athletes", label: t("children") },
-    { href: "/dashboard/planning", label: t("planning") },
-    { href: "/dashboard/settings", label: t("settings") }
+    ...(primaryRole === "admin" || primaryRole === "trainer" ? [
+      { href: "/dashboard", label: t("overview") },
+      { href: "/dashboard/assessment", label: t("survey") },
+      { href: "/dashboard/athletes", label: t("children") },
+      { href: "/dashboard/planning", label: t("planning") }
+    ] : []),
+    ...(primaryRole === "admin" ? [{ href: "/dashboard/settings", label: t("settings") }] : [])
   ];
 
   const navContent = (

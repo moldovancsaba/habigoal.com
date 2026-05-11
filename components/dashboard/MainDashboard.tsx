@@ -243,7 +243,7 @@ export function MainDashboard() {
   const checkedInTodayCount = queueItems.filter((item) => item.checkedInToday).length;
   const supportNowCount = queueItems.filter((item) => item.supportLevel === "support").length;
   const watchNowCount = queueItems.filter((item) => item.supportLevel === "watch").length;
-  const activeStaff = data?.users.filter((user) => user.roles.includes("conductor") || user.roles.includes("observer")).length ?? 0;
+  const activeStaff = data?.users.filter((user) => user.roles.includes("trainer") || user.roles.includes("admin")).length ?? 0;
 
   const actionBuckets: ActionBucket[] = [
     { label: t("actionBucketReady"), count: queueItems.filter((item) => item.supportLevel === "ready").length, color: "var(--mantine-color-ingress-6)" },

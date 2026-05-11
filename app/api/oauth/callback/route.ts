@@ -4,6 +4,7 @@ import { createSession } from "@/lib/session";
 import { cookies } from "next/headers";
 import { findUserByEmail, listAllUsers, markUserLogin, upsertUser } from "@/repositories/user.repository";
 import { getDatabase } from "@/lib/mongodb";
+import { getPrimaryRole } from "@/lib/access";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -34,7 +35,9 @@ export async function GET(request: NextRequest) {
         await upsertUser({
           email: ssoUser.email,
           name: ssoUser.name,
-          roles: doc.roles || ["observer"]
+          roles: doc.roles || ["athlete"],
+          athleteId: typeof doc.athleteId === "string" ? doc.athleteId : undefined,
+          teamIds: Array.isArray(doc.teamIds) ? doc.teamIds : []
         });
         localUser = await findUserByEmail(ssoUser.email);
       }
@@ -47,7 +50,7 @@ export async function GET(request: NextRequest) {
       await upsertUser({
         email: ssoUser.email,
         name: ssoUser.name,
-        roles: ["admin", "conductor"]
+        roles: ["admin"]
       });
       localUser = await findUserByEmail(ssoUser.email);
     }
@@ -74,7 +77,7 @@ export async function GET(request: NextRequest) {
       id: ssoUser.id,
       email: ssoUser.email,
       name: ssoUser.name,
-      role: localUser.roles.join(",") || "observer",
+      role: localUser.roles.join(",") || "athlete",
       accessToken: tokens.access_token
     });
 
@@ -83,7 +86,15 @@ export async function GET(request: NextRequest) {
     cookieStore.delete("oauth_return_to");
 
     // Redirect back to the requested in-app path.
-    return NextResponse.redirect(new URL(returnTo || "/", request.url));
+    const locale = returnTo?.match(/^\/(hu|en|ar|es|de|he)(\/|$)/)?.[1] || "en";
+    const primaryRole = getPrimaryRole(localUser.roles);
+    const redirectPath = primaryRole === "athlete"
+      ? `/${locale}/athletes/${localUser.athleteId || ""}`.replace(/\/$/, "")
+      : primaryRole === "admin"
+        ? `/${locale}/dashboard/settings`
+        : `/${locale}/dashboard`;
+
+    return NextResponse.redirect(new URL(returnTo?.includes("/dashboard/assessment") ? returnTo : (returnTo?.includes("/news") || returnTo?.includes("/legal") ? returnTo : redirectPath), request.url));
   } catch (error) {
     console.error("Auth callback error:", error);
     return NextResponse.json({ error: "Authentication failed" }, { status: 500 });

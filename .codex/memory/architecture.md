@@ -48,6 +48,7 @@ UI operating surfaces:
 - `/athletes` is the public athlete app entry surface, and `/athletes/[id]` must stay athlete-facing rather than leaking coach-admin controls.
 - DoneIsBetter SSO is the intended authentication boundary for protected Habigoal usage, while local role authorization remains owned by the `users` collection.
 - User-rights changes are admin-owned operations; the system must not allow self-removal of the active admin or deletion/demotion of the final admin account.
+- The active entity model is `athlete`, `trainer`, and `admin`; athlete access is self-scoped, trainer access is team-scoped, and admin access owns settings plus team management.
 
 ## Heartbeat Chain
 

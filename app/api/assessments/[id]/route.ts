@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import {
   getAssessment,
   parseObjectId,
@@ -18,7 +19,7 @@ async function objectIdFromContext(context: RouteContext) {
 }
 
 export async function GET(_request: Request, context: RouteContext) {
-  const authError = await requireRole(_request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(_request, ["admin", "trainer", "athlete"]);
   if (authError) return authError;
 
   const _id = await objectIdFromContext(context);
@@ -31,6 +32,10 @@ export async function GET(_request: Request, context: RouteContext) {
     if (!assessment) {
       return jsonError("Assessment not found", 404, "NOT_FOUND");
     }
+    const authUser = await getAuthUser();
+    if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
+      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+    }
 
     return NextResponse.json({ assessment });
   } catch (error) {
@@ -39,7 +44,7 @@ export async function GET(_request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const authError = await requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
 
   const _id = await objectIdFromContext(context);
@@ -48,6 +53,13 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   try {
+    const existing = await getAssessment(_id);
+    if (existing) {
+      const authUser = await getAuthUser();
+      if (authUser && (!existing.childId || !(await canAccessAthlete(authUser, existing.childId)))) {
+        return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+      }
+    }
     const assessment = await updateAssessmentFromPayload(_id, await readJson(request));
     if (!assessment) {
       return jsonError("Assessment not found", 404, "NOT_FOUND");
@@ -60,7 +72,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  const authError = await requireRole(_request, ["admin", "conductor"]);
+  const authError = await requireRole(_request, ["admin", "trainer"]);
   if (authError) return authError;
 
   const _id = await objectIdFromContext(context);
@@ -69,6 +81,13 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   try {
+    const assessment = await getAssessment(_id);
+    if (assessment) {
+      const authUser = await getAuthUser();
+      if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
+        return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+      }
+    }
     await removeAssessment(_id);
     return NextResponse.json({ ok: true });
   } catch (error) {
@@ -77,13 +96,20 @@ export async function DELETE(_request: Request, context: RouteContext) {
 }
 
 export async function POST(_request: Request, context: RouteContext) {
-  const authError = await requireRole(_request, ["admin", "conductor"]);
+  const authError = await requireRole(_request, ["admin", "trainer"]);
   if (authError) return authError;
   const _id = await objectIdFromContext(context);
   if (!_id) {
     return jsonError("Invalid assessment id", 400, "VALIDATION_ERROR");
   }
   try {
+    const assessment = await getAssessment(_id);
+    if (assessment) {
+      const authUser = await getAuthUser();
+      if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
+        return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+      }
+    }
     await restoreAssessment(_id);
     return NextResponse.json({ ok: true });
   } catch (error) {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { env } from "@/config/env";
 import { getSession } from "@/lib/session";
+import { normalizeRoles } from "@/lib/access";
 
 const roleHeader = "x-survey-role";
 
@@ -16,10 +17,10 @@ export async function readJson(request: Request): Promise<unknown | null> {
 }
 
 function parseRoles(value: string) {
-  return value
+  return normalizeRoles(value
     .split(",")
     .map((role) => role.trim().toLowerCase())
-    .filter(Boolean);
+    .filter(Boolean));
 }
 
 export async function requireRole(request: Request, allowedRoles: string[]) {
@@ -41,7 +42,8 @@ export async function requireRole(request: Request, allowedRoles: string[]) {
     return jsonError("Authentication required", 401, "AUTH_REQUIRED");
   }
 
-  const hasPermission = allowedRoles.some(role => userRoles.includes(role));
+  const normalizedAllowedRoles = normalizeRoles(allowedRoles);
+  const hasPermission = normalizedAllowedRoles.some(role => userRoles.includes(role));
   if (!hasPermission) {
     return jsonError("Insufficient permissions", 403, "FORBIDDEN");
   }

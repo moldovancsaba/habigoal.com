@@ -1,5 +1,6 @@
 import { getDatabase } from "@/lib/mongodb";
 import type { User } from "@/services/user-service";
+import { normalizeRoles } from "@/lib/access";
 
 const collectionName = "users";
 
@@ -8,7 +9,9 @@ function mapUser(doc: any): User {
     id: doc._id.toString(),
     name: doc.name,
     email: doc.email,
-    roles: doc.roles || [],
+    roles: normalizeRoles(doc.roles || []),
+    athleteId: doc.athleteId,
+    teamIds: doc.teamIds || [],
     lastLoginAt: doc.lastLoginAt,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt
@@ -39,6 +42,7 @@ export async function listUsersByRole(role: "admin" | "conductor" | "observer"):
 export async function upsertUser(user: Omit<User, "id">) {
   const db = await getDatabase();
   const normalizedEmail = user.email.toLowerCase().trim();
+  const normalizedRoles = normalizeRoles(user.roles || []);
   const now = new Date().toISOString();
   const result = await db.collection(collectionName).updateOne(
     { email: normalizedEmail },
@@ -46,6 +50,8 @@ export async function upsertUser(user: Omit<User, "id">) {
       $set: {
         ...user,
         email: normalizedEmail,
+        roles: normalizedRoles,
+        teamIds: user.teamIds || [],
         updatedAt: now
       },
       $setOnInsert: {

@@ -2,18 +2,23 @@ import { NextResponse } from "next/server";
 import { listChildren, listChildrenWithMetrics, listDeletedChildren, upsertChild } from "@/repositories/child.repository";
 import { syncChildrenFromAssessments } from "@/lib/sync-children";
 import { jsonError, readJson, requireRole } from "@/lib/api";
+import { getAuthUser, resolveAccessibleAthleteIds } from "@/lib/access";
 import { parseChildPayload } from "@/lib/validations";
 
 export async function GET(request: Request) {
-  const authError = await requireRole(request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(request, ["admin", "trainer", "athlete"]);
   if (authError) return authError;
 
   try {
     const { searchParams } = new URL(request.url);
     const includeMetrics = searchParams.get("metrics") === "true";
     const includeDeleted = searchParams.get("deleted") === "true";
+    const authUser = await getAuthUser();
 
     if (includeDeleted) {
+      if (authUser?.primaryRole === "athlete") {
+        return NextResponse.json([]);
+      }
       return NextResponse.json(await listDeletedChildren());
     }
 
@@ -23,14 +28,19 @@ export async function GET(request: Request) {
       await syncChildrenFromAssessments();
       children = includeMetrics ? await listChildrenWithMetrics() : await listChildren();
     }
-    return NextResponse.json(children);
+    if (!authUser) {
+      return NextResponse.json(children);
+    }
+
+    const allowedIds = await resolveAccessibleAthleteIds(authUser);
+    return NextResponse.json(allowedIds === null ? children : children.filter((child) => child._id && allowedIds.includes(child._id)));
   } catch (error) {
     return jsonError((error as Error).message);
   }
 }
 
 export async function POST(request: Request) {
-  const authError = await requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
 
   try {

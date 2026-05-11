@@ -2,7 +2,9 @@ export interface User {
   id?: string;
   name?: string;
   email: string;
-  roles: ("admin" | "conductor" | "observer")[];
+  roles: ("admin" | "trainer" | "athlete")[];
+  athleteId?: string;
+  teamIds?: string[];
   lastLoginAt?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -30,12 +32,12 @@ export async function saveUser(user: User): Promise<boolean> {
 
 export async function getConductors(): Promise<User[]> {
   const users = await getUsers();
-  return users.filter(u => u.roles.includes("conductor"));
+  return users.filter(u => u.roles.includes("trainer"));
 }
 
 export async function getObservers(): Promise<User[]> {
   const users = await getUsers();
-  return users.filter(u => u.roles.includes("observer"));
+  return users.filter(u => u.roles.includes("athlete"));
 }
 
 export async function deleteUser(email: string): Promise<boolean> {
