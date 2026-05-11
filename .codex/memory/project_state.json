@@ -1,10 +1,11 @@
 {
-  "current_focus": "issue-32-habit-adherence-tracking-and-routine-scoring",
+  "current_focus": "issue-34-weekly-athlete-operating-reports-and-summaries",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
     "athlete-daily-operating-dashboard",
-    "habit-adherence-and-routine-scoring"
+    "habit-adherence-and-routine-scoring",
+    "weekly-athlete-operating-reports"
   ],
   "known_risks": [
     "autonomous loops can degrade architecture quality if they are allowed to write directly to main",
@@ -21,7 +22,8 @@
     "issue-17-next-best-support-actions",
     "issue-18-session-blueprints",
     "issue-29-standalone-typecheck-stability",
-    "issue-33-athlete-facing-daily-operating-dashboard"
+    "issue-33-athlete-facing-daily-operating-dashboard",
+    "issue-14-session-planning-calendar"
   ],
   "blocked_items": [],
   "consent_model": {
