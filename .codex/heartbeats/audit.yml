@@ -1,0 +1,33 @@
+name: audit
+managed_by: codex_automation
+schedule:
+  cadence: every_3_hours
+  offset: 0m
+agent: audit
+workspace:
+  write: true
+memory:
+  - .codex/memory/project_state.json
+  - .codex/memory/backlog.json
+  - .codex/memory/architecture.md
+tools:
+  - github
+  - filesystem
+  - terminal
+constraints:
+  - never_delete_production_files
+  - never_force_push
+  - never_merge_without_tests
+  - never_push_directly_to_main
+prompt: |
+  Audit the Habigoal codebase.
+  Responsibilities:
+  - identify bugs
+  - detect dead code
+  - detect architecture drift
+  - detect outdated dependencies and stale docs
+  - identify missing tests
+  Then:
+  - create or update GitHub issues
+  - update the GitHub Project board
+  - update repository memory when risks or blockers changed

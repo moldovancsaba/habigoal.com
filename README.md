@@ -24,6 +24,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - [GitHub Project Board Bootstrap](config/gh-project-board.json)
 - [Legal and Company Info](docs/legal.md)
 - [Product Roadmap](ROADMAP.md)
+- [Codex Automation Architecture](.codex/memory/architecture.md)
 
 ## GitHub Project Bootstrap
 
@@ -34,6 +35,28 @@ Build the repository project board with:
 ```
 
 The board definition lives in `config/gh-project-board.json`.
+
+## Codex Automation Control Plane
+
+The repository includes a Codex-first automation control plane under `.codex/`.
+
+Structure:
+
+```txt
+.codex/
+  agents/
+  heartbeats/
+  memory/
+  policies/
+```
+
+Design rules:
+- GitHub is source control, issue tracking, PR review, and project state.
+- Codex is the orchestrator, planner, executor, and documentation maintainer.
+- Autonomous loops do not push directly to `main`.
+- Continuous automation runs use branch + PR delivery with human merge approval.
+
+The committed heartbeat specs are repository-local operating contracts. The live recurring loop should be registered as a thread-bound Codex heartbeat so audit, planning, implementation, and docs all run in the same dedicated conversation.
 
 ## Software Versions
 

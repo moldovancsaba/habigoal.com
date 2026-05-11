@@ -1,0 +1,28 @@
+name: planner
+managed_by: codex_automation
+schedule:
+  cadence: every_3_hours
+  offset: 30m
+agent: planner
+workspace:
+  write: true
+memory:
+  - .codex/memory/project_state.json
+  - .codex/memory/backlog.json
+  - .codex/memory/architecture.md
+tools:
+  - github
+constraints:
+  - never_push_directly_to_main
+prompt: |
+  Review the GitHub Project board and repository memory.
+  Select the 5 highest impact next tasks.
+  Prioritize:
+  - delivery velocity
+  - architecture stability
+  - UX quality
+  - maintainability
+  - reliability
+  Then update:
+  - GitHub Project priorities
+  - repository memory state

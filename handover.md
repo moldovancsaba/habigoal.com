@@ -39,6 +39,13 @@ This document summarizes the state of the project after the first major enhancem
 
 ### 2. Offline Capability (PWA)
 
+### 3. Codex Automation Runtime
+- The repository now carries a Codex-first control plane in `.codex/`.
+- Agent roles are separated into `audit`, `planner`, `implementer`, and `docs`.
+- Repository memory lives in `.codex/memory/` and must be kept aligned with GitHub Project state.
+- Autonomous work is branch-and-PR only; direct pushes to `main` are disallowed for unattended loops.
+- Continuous recurring loops are intended to run every 3 hours via a dedicated Codex heartbeat conversation, not GitHub Actions orchestration.
+
 ## Deployment Notes
 - Ensure `MONGODB_URI`, `MONGODB_DB`, and `IMGBB_API_KEY` are set in the production environment.
 - Deployment is configured for Vercel.

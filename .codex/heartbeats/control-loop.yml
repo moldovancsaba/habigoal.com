@@ -1,0 +1,45 @@
+name: dedicated-control-loop
+managed_by: codex_automation
+kind: heartbeat
+thread_scope: dedicated_single_conversation
+schedule:
+  cadence: every_3_hours
+agent_chain:
+  - audit
+  - planner
+  - implementer
+  - docs
+memory:
+  - .codex/memory/project_state.json
+  - .codex/memory/backlog.json
+  - .codex/memory/architecture.md
+tools:
+  - github
+  - filesystem
+  - terminal
+constraints:
+  - never_force_push
+  - never_push_directly_to_main
+  - never_merge_without_tests
+  - stay_in_same_dedicated_thread
+prompt: |
+  Run the Habigoal dedicated control loop inside this same chat conversation.
+  Execute these phases in order:
+  1. audit
+  2. planner
+  3. implementer
+  4. docs
+
+  Read and follow:
+  - .codex/agents/*.md
+  - .codex/memory/project_state.json
+  - .codex/memory/backlog.json
+  - .codex/memory/architecture.md
+  - .codex/policies/*.md
+
+  Core rules:
+  - do not ask for approval during normal loop execution
+  - keep all work in this dedicated conversation
+  - use branch-and-PR delivery only
+  - never push directly to main
+  - never merge failing code

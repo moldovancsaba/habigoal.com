@@ -1,0 +1,29 @@
+name: docs
+managed_by: codex_automation
+schedule:
+  cadence: every_3_hours
+  offset: 120m
+agent: docs
+workspace:
+  write: true
+memory:
+  - .codex/memory/project_state.json
+  - .codex/memory/architecture.md
+tools:
+  - github
+  - filesystem
+  - terminal
+constraints:
+  - never_force_push
+  - never_push_directly_to_main
+prompt: |
+  Update:
+  - README.md
+  - handover.md
+  - architecture documentation
+  - onboarding and release notes
+  Then:
+  - validate build
+  - commit documentation changes on a branch
+  - push the branch
+  - open or update a pull request

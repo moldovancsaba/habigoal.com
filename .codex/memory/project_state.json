@@ -1,0 +1,28 @@
+{
+  "current_focus": "issue-9-participation-and-availability-management",
+  "active_epics": [
+    "coach-command-center",
+    "athlete-trend-views",
+    "participation-and-availability"
+  ],
+  "known_risks": [
+    "autonomous loops can degrade architecture quality if they are allowed to write directly to main",
+    "board and memory drift if automations do not update both GitHub Project state and repository memory",
+    "trend-heavy UI changes need seeded historical data and regression checks to stay reliable"
+  ],
+  "last_completed_tasks": [
+    "issue-1-coach-command-center",
+    "issue-3-reminders-and-escalation",
+    "issue-7-athlete-trend-dashboards",
+    "issue-8-team-readiness-summary",
+    "issue-17-next-best-support-actions",
+    "issue-18-session-blueprints"
+  ],
+  "blocked_items": [],
+  "consent_model": {
+    "standing_consent_for_automation": true,
+    "approval_prompts_expected": false,
+    "direct_main_push_allowed": false,
+    "human_merge_required": true
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, use } from "react";
-import { Box, Button, Group, Loader, Modal, Paper, SimpleGrid, Stack, Table, Text, TextInput, Badge } from "@mantine/core";
+import { Badge, Box, Button, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -25,6 +25,9 @@ type AthleteHistoryPayload = {
   assessments: CheckInRecord[];
 };
 
+type TrendWindow = "7d" | "30d" | "all" | "custom";
+type TrendMetric = "readiness" | "movement" | "social" | "mental" | "ski";
+
 const PILLAR_COLORS: Record<string, string> = {
   physical_pillar: "var(--mantine-color-tactical-6)",
   mental_pillar: "var(--mantine-color-synthesis-6)",
@@ -46,6 +49,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deletingSurvey, setDeletingSurvey] = useState(false);
+  const [trendWindow, setTrendWindow] = useState<TrendWindow>("30d");
+  const [trendMetric, setTrendMetric] = useState<TrendMetric>("readiness");
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
 
   useEffect(() => {
     fetch(`/api/athletes/${id}/history`)
@@ -55,13 +62,12 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   }, [id]);
 
   async function downloadPdf() {
-    if (!data || data.assessments.length === 0) return;
+    if (!data || !latest) return;
 
     setDownloadingPdf(true);
     try {
-      const latestRecord = data.assessments[0];
       const users = await getUsers();
-      const printableRecord = withDisplayNamesForReport(latestRecord, users);
+      const printableRecord = withDisplayNamesForReport(latest, users);
       await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, data.assessments);
     } catch (error) {
       console.error("PDF generation failed:", error);
@@ -71,43 +77,71 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   }
 
   async function deleteLatestSurvey() {
-    if (!data?.assessments?.[0]?._id) return;
+    if (!latest?._id) return;
     setDeletingSurvey(true);
-    const response = await fetch(`/api/check-ins/${data.assessments[0]._id}`, { method: "DELETE" }).catch(() => null);
+    const response = await fetch(`/api/check-ins/${latest._id}`, { method: "DELETE" }).catch(() => null);
     setDeletingSurvey(false);
     if (!response?.ok) return;
-    setData((current) => current ? { ...current, assessments: current.assessments.slice(1) } : current);
+    setData((current) => current ? { ...current, assessments: current.assessments.slice(0, -1) } : current);
     setDeleteModalOpen(false);
     setDeleteConfirmText("");
   }
 
   const reversedAssessments = useMemo(() => data?.assessments.slice().reverse() ?? [], [data]);
-  const latest = data?.assessments[0] ?? null;
-  const baseline = data?.assessments.length ? data.assessments[data.assessments.length - 1] : null;
+  const latest = reversedAssessments[reversedAssessments.length - 1] ?? null;
+  const effectiveCustomStartDate = customStartDate || reversedAssessments[0]?.session.date || "";
+  const effectiveCustomEndDate = customEndDate || reversedAssessments[reversedAssessments.length - 1]?.session.date || "";
+
+  const filteredAssessments = useMemo(
+    () => filterAssessmentsByWindow(reversedAssessments, trendWindow, effectiveCustomStartDate, effectiveCustomEndDate),
+    [effectiveCustomEndDate, effectiveCustomStartDate, reversedAssessments, trendWindow]
+  );
+
+  const latestFiltered = filteredAssessments[filteredAssessments.length - 1] ?? null;
+  const baselineFiltered = filteredAssessments[0] ?? null;
 
   const pillarSeries = useMemo(
     () =>
       athleteIqPillars.map((pillar) => ({
         ...pillar,
         translatedTitle: t(pillar.title),
-        current: latest ? getCompatiblePillarScore(latest, pillar.key) : 0,
-        baseline: baseline ? getCompatiblePillarScore(baseline, pillar.key) : 0,
-        trend: reversedAssessments.map((assessment) => ({
+        current: latestFiltered ? getCompatiblePillarScore(latestFiltered, pillar.key) : 0,
+        baseline: baselineFiltered ? getCompatiblePillarScore(baselineFiltered, pillar.key) : 0,
+        trend: filteredAssessments.map((assessment) => ({
           date: assessment.session.date,
           value: getCompatiblePillarScore(assessment, pillar.key)
         }))
       })),
-    [baseline, latest, reversedAssessments, t]
+    [baselineFiltered, filteredAssessments, latestFiltered, t]
   );
 
   const readinessTimeline = useMemo(
     () =>
-      reversedAssessments.map((assessment) => ({
+      filteredAssessments.map((assessment) => ({
         date: assessment.session.date,
-        value: getCompatibleReadinessState(assessment).count
+        value: getCompatibleReadinessState(assessment).gaugeValue
       })),
-    [reversedAssessments]
+    [filteredAssessments]
   );
+
+  const trendMetricLabel = td(`athleteTrendMetric${capitalize(trendMetric)}`);
+  const trendSeries = useMemo(
+    () =>
+      filteredAssessments.map((assessment) => ({
+        date: assessment.session.date,
+        value: getTrendMetricValue(assessment, trendMetric)
+      })),
+    [filteredAssessments, trendMetric]
+  );
+  const trendLatestValue = trendSeries[trendSeries.length - 1]?.value ?? null;
+  const trendBaselineValue = trendSeries[0]?.value ?? null;
+  const trendAverageValue = trendSeries.length
+    ? Number((trendSeries.reduce((sum, point) => sum + point.value, 0) / trendSeries.length).toFixed(2))
+    : null;
+  const trendChangeValue = trendLatestValue !== null && trendBaselineValue !== null
+    ? Number((trendLatestValue - trendBaselineValue).toFixed(2))
+    : null;
+  const trendWindowSummary = getTrendWindowSummary(trendWindow, effectiveCustomStartDate, effectiveCustomEndDate, td);
 
   const benchmarkData = useMemo(
     () =>
@@ -151,7 +185,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           <Group gap="sm" wrap="wrap" className="mobile-actions-stack">
             <Button
               component={Link}
-              href={data.assessments[0]?._id ? `/dashboard/assessment?id=${data.assessments[0]._id}` : "/dashboard/assessment"}
+              href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"}
               variant="default"
               disabled={data.assessments.length === 0}
             >
@@ -184,6 +218,93 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             <HistoryMetricCard label={td("athleteFocusPillarLabel")} value={focusPillar} accent="review" />
           </SimpleGrid>
 
+          <SectionCard title={td("athleteTrendExplorerTitle")} subheader={td("athleteTrendExplorerSubtitle")}>
+            <Stack gap="md">
+              <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
+                <Stack gap="xs">
+                  <Text size="sm" fw={600}>{td("athleteTrendWindowLabel")}</Text>
+                  <SegmentedControl
+                    value={trendWindow}
+                    onChange={(value) => setTrendWindow(value as TrendWindow)}
+                    data={[
+                      { label: td("athleteTrendWindow7d"), value: "7d" },
+                      { label: td("athleteTrendWindow30d"), value: "30d" },
+                      { label: td("athleteTrendWindowAll"), value: "all" },
+                      { label: td("athleteTrendWindowCustom"), value: "custom" }
+                    ]}
+                    fullWidth
+                  />
+                </Stack>
+
+                <Stack gap="xs">
+                  <Text size="sm" fw={600}>{td("athleteTrendMetricLabel")}</Text>
+                  <SegmentedControl
+                    value={trendMetric}
+                    onChange={(value) => setTrendMetric(value as TrendMetric)}
+                    data={[
+                      { label: td("athleteTrendMetricReadiness"), value: "readiness" },
+                      { label: td("athleteTrendMetricMovement"), value: "movement" },
+                      { label: td("athleteTrendMetricSocial"), value: "social" },
+                      { label: td("athleteTrendMetricMental"), value: "mental" },
+                      { label: td("athleteTrendMetricSki"), value: "ski" }
+                    ]}
+                    fullWidth
+                  />
+                </Stack>
+              </SimpleGrid>
+
+              {trendWindow === "custom" ? (
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                  <TextInput
+                    type="date"
+                    label={td("athleteTrendStartDateLabel")}
+                    value={effectiveCustomStartDate}
+                    onChange={(event) => setCustomStartDate(event.currentTarget.value)}
+                  />
+                  <TextInput
+                    type="date"
+                    label={td("athleteTrendEndDateLabel")}
+                    value={effectiveCustomEndDate}
+                    onChange={(event) => setCustomEndDate(event.currentTarget.value)}
+                  />
+                </SimpleGrid>
+              ) : null}
+
+              {trendSeries.length === 0 ? (
+                <Text c="dimmed">{td("athleteTrendNoData")}</Text>
+              ) : (
+                <>
+                  <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                    <HistoryMetricCard label={td("athleteTrendSessionsLabel")} value={String(filteredAssessments.length)} accent="ingress" />
+                    <HistoryMetricCard label={td("athleteTrendAverageLabel")} value={formatTrendValue(trendAverageValue)} accent="strategy" />
+                    <HistoryMetricCard label={td("athleteTrendLatestLabel")} value={formatTrendValue(trendLatestValue)} accent="knowmore" />
+                    <HistoryMetricCard
+                      label={td("athleteTrendChangeLabel")}
+                      value={formatTrendDelta(trendChangeValue)}
+                      accent={trendChangeValue !== null && trendChangeValue >= 0 ? "ingress" : "review"}
+                    />
+                  </SimpleGrid>
+
+                  <LongitudinalChart
+                    title={td("athleteTrendChartTitle", { metric: trendMetricLabel })}
+                    data={trendSeries}
+                    color={getTrendMetricColor(trendMetric)}
+                    yDomain={[0, 5]}
+                  />
+
+                  <Text size="sm" c="dimmed">
+                    {td("athleteTrendInsight", {
+                      range: trendWindowSummary,
+                      metric: trendMetricLabel,
+                      latest: formatTrendValue(trendLatestValue),
+                      average: formatTrendValue(trendAverageValue)
+                    })}
+                  </Text>
+                </>
+              )}
+            </Stack>
+          </SectionCard>
+
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
             <SectionCard title={td("athleteSessionProfileTitle")} subheader={td("athleteSessionProfileSubtitle")}>
               <BenchmarkChart
@@ -214,7 +335,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   title={td("athleteReadinessTimelineTitle")}
                   data={readinessTimeline}
                   color="var(--mantine-color-knowmore-6)"
-                  yDomain={[0, Math.max(latestReadinessTotal, 1)]}
+                  yDomain={[0, 5]}
                 />
               </SimpleGrid>
               <Text size="sm" c="dimmed" mt="xs">
@@ -227,7 +348,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             </SectionCard>
           </SimpleGrid>
 
-          <SectionCard title={td("athletePillarEvolutionTitle")} subheader={td("athletePillarEvolutionSubtitle")}>
+          <SectionCard
+            title={td("athletePillarEvolutionTitle")}
+            subheader={td("athletePillarEvolutionSubtitle", { range: trendWindowSummary })}
+          >
             <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
               {pillarSeries.map((pillar) => (
                 <LongitudinalChart
@@ -404,6 +528,82 @@ function getFocusPillar(pillars: Array<{ translatedTitle: string; current: numbe
 
 function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function filterAssessmentsByWindow(
+  assessments: CheckInRecord[],
+  window: TrendWindow,
+  customStartDate: string,
+  customEndDate: string
+) {
+  if (assessments.length === 0) return [];
+
+  const latestDate = toUtcDate(assessments[assessments.length - 1].session.date);
+  if (!latestDate) return assessments;
+
+  if (window === "all") return assessments;
+
+  if (window === "custom") {
+    const start = customStartDate ? toUtcDate(customStartDate) : null;
+    const end = customEndDate ? toUtcDate(customEndDate) : null;
+    return assessments.filter((assessment) => {
+      const date = toUtcDate(assessment.session.date);
+      if (!date) return false;
+      if (start && date < start) return false;
+      if (end && date > end) return false;
+      return true;
+    });
+  }
+
+  const days = window === "7d" ? 7 : 30;
+  const startBoundary = new Date(latestDate);
+  startBoundary.setUTCDate(startBoundary.getUTCDate() - (days - 1));
+
+  return assessments.filter((assessment) => {
+    const date = toUtcDate(assessment.session.date);
+    return Boolean(date && date >= startBoundary && date <= latestDate);
+  });
+}
+
+function getTrendMetricValue(assessment: CheckInRecord, metric: TrendMetric) {
+  if (metric === "readiness") return getCompatibleReadinessState(assessment).gaugeValue;
+  if (metric === "movement") return assessment.computed.movementAverage ?? 0;
+  if (metric === "social") return assessment.computed.socialAverage ?? 0;
+  if (metric === "mental") return assessment.computed.mentalAverage ?? 0;
+  return assessment.computed.ski ?? 0;
+}
+
+function getTrendMetricColor(metric: TrendMetric) {
+  if (metric === "readiness") return "var(--mantine-color-knowmore-6)";
+  if (metric === "movement") return "var(--mantine-color-tactical-6)";
+  if (metric === "social") return "var(--mantine-color-synthesis-6)";
+  if (metric === "mental") return "var(--mantine-color-strategy-6)";
+  return "var(--mantine-color-ingress-6)";
+}
+
+function formatTrendValue(value: number | null) {
+  return value === null ? "-" : value.toFixed(2);
+}
+
+function formatTrendDelta(value: number | null) {
+  if (value === null) return "-";
+  return `${value >= 0 ? "+" : ""}${value.toFixed(2)}`;
+}
+
+function getTrendWindowSummary(window: TrendWindow, customStartDate: string, customEndDate: string, translate: (key: string) => string) {
+  if (window === "7d") return translate("athleteTrendWindow7d");
+  if (window === "30d") return translate("athleteTrendWindow30d");
+  if (window === "all") return translate("athleteTrendWindowAll");
+  if (!customStartDate && !customEndDate) return translate("athleteTrendWindowCustom");
+  if (customStartDate && customEndDate) {
+    return `${customStartDate} - ${customEndDate}`;
+  }
+  return customStartDate || customEndDate || translate("athleteTrendWindowCustom");
+}
+
+function toUtcDate(value: string) {
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function DeleteSurveyModal({
