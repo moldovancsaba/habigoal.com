@@ -46,6 +46,10 @@ This document summarizes the state of the project after the first major enhancem
 - Autonomous work is branch-and-PR only; direct pushes to `main` are disallowed for unattended loops.
 - Continuous recurring loops are intended to run every 3 hours via a dedicated Codex heartbeat conversation, not GitHub Actions orchestration.
 
+### 4. Validation Reliability
+- `npm run typecheck` now runs `next typegen` before `tsc --noEmit --incremental false`.
+- This keeps standalone type checks reliable when Next.js route types have not been generated yet in the current workspace state and avoids stale TypeScript incremental state across branch changes.
+
 ## Deployment Notes
 - Ensure `MONGODB_URI`, `MONGODB_DB`, and `IMGBB_API_KEY` are set in the production environment.
 - Deployment is configured for Vercel.

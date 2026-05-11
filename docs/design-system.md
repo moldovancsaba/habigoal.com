@@ -37,7 +37,7 @@ Theme initialization also reads cookie-backed mode from server layout to avoid r
 2. Use `PageContainer` implicitly via `DashboardShell` (already wraps `children`).
 3. Structure content with `SectionCard` and Mantine layout components.
 4. Reuse `useTranslations` namespaces (`Dashboard`, `Assessment`, `Common`, `Schema`).
-5. Run `npm run typecheck`, `npm run lint`, and `npm run build` before merging.
+5. Run `npm run typecheck`, `npm run lint`, and `npm run build` before merging. `npm run typecheck` now generates fresh Next.js route types first and disables incremental TypeScript state so standalone checks stay reliable outside a prior build.
 
 ## Source Of Truth
 
