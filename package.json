@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "local:server": "node scripts/local-server.mjs",
+    "db:ping": "node scripts/ping-database.mjs",
     "lint": "next lint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",

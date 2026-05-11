@@ -21,6 +21,7 @@ Environment variables:
 ```txt
 MONGODB_URI
 MONGODB_DB
+MONGODB_APP_NAME
 IMGBB_API_KEY
 ```
 
@@ -32,7 +33,20 @@ IMGBB_API_KEY
 2. Add Vercel outbound access. For an early pilot, Atlas network access can be opened broadly; for production, restrict according to the deployment model available.
 3. Copy the driver connection string into Vercel as `MONGODB_URI`.
 4. Set `MONGODB_DB` to `survey`.
-5. Redeploy the Vercel project after changing environment variables.
+5. Set `MONGODB_APP_NAME` to something environment-specific such as `habigoal-production`.
+6. Redeploy the Vercel project after changing environment variables.
+
+## Connection Verification
+
+- Local CLI check: `npm run db:ping`
+- Runtime health check: `GET /api/health`
+
+`/api/health` now reports:
+
+- whether MongoDB is configured
+- whether the database is reachable
+- which database name the app is targeting
+- which MongoDB app name the client is using
 
 ## ImgBB Uploads
 

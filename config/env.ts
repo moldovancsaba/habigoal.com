@@ -1,6 +1,7 @@
 export const env = {
   mongodbUri: process.env.MONGODB_URI,
   mongodbDb: process.env.MONGODB_DB || "survey",
+  mongodbAppName: process.env.MONGODB_APP_NAME || "habigoal-app",
   imgbbApiKey: process.env.IMGBB_API_KEY,
   // Auth is currently bypassed across environments until the SSO flow is reintroduced safely.
   surveyEnforceAuth: false,

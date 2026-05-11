@@ -49,6 +49,7 @@ The board definition lives in `config/gh-project-board.json`.
 ```bash
 cp .env.example .env.local
 npm install
+npm run db:ping
 npm run db:setup
 npm run db:seed-demo
 npm run dev
@@ -69,8 +70,19 @@ It uses the same `MONGODB_URI`, `MONGODB_DB`, and `SURVEY_ENFORCE_AUTH` environm
 ```txt
 MONGODB_URI=
 MONGODB_DB=survey
+MONGODB_APP_NAME=habigoal-local
 IMGBB_API_KEY=
 ```
+
+## MongoDB Atlas Setup
+
+1. Paste your Atlas driver connection string into `.env.local` as `MONGODB_URI`.
+2. Set `MONGODB_DB` to the application database name you created in Atlas.
+3. Optionally set `MONGODB_APP_NAME` to distinguish local, preview, and production clients in Atlas metrics.
+4. Run `npm run db:ping` to verify the app can reach Atlas before starting Next.js.
+5. Run `npm run db:setup` if you want the database indexes and base collections prepared.
+
+The runtime health endpoint `/api/health` now reports whether MongoDB is both configured and reachable.
 
 ## Data and privacy notes
 
