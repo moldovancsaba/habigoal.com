@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, use } from "react";
 import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
@@ -60,12 +60,14 @@ const PILLAR_COLORS: Record<string, string> = {
 
 export default function AthleteHistoryPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
   const { id, locale } = use(params);
+  const pathname = usePathname();
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const td = useTranslations("Dashboard");
   const ts = useTranslations("Schema");
   const tr = useTranslations("Report");
   const emptyValue = tc("emptyValue");
+  const isAthleteApp = pathname.includes("/athletes/") && !pathname.includes("/dashboard/athletes/");
 
   const [data, setData] = useState<AthleteHistoryPayload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -305,20 +307,32 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         subtitle={td("athleteHistorySubtitle", { date: data.child.birthDate, sessions: data.assessments.length })}
         actions={
           <Group gap="sm" wrap="wrap" className="mobile-actions-stack">
-            <Button
-              component={Link}
-              href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"}
-              variant="default"
-              disabled={data.assessments.length === 0}
-            >
-              {tc("update")}
-            </Button>
-            <Button color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>
-              {td("downloadPdf")}
-            </Button>
-            <Button color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0}>
-              {t("deleteSurveyTitle")}
-            </Button>
+            {isAthleteApp ? (
+              <Button
+                component={Link}
+                href={`/dashboard/assessment${data.child._id ? `?childId=${data.child._id}` : ""}`}
+                color="ingress"
+              >
+                {td("newSurveyForChild")}
+              </Button>
+            ) : (
+              <>
+                <Button
+                  component={Link}
+                  href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"}
+                  variant="default"
+                  disabled={data.assessments.length === 0}
+                >
+                  {tc("update")}
+                </Button>
+                <Button color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>
+                  {td("downloadPdf")}
+                </Button>
+                <Button color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0}>
+                  {t("deleteSurveyTitle")}
+                </Button>
+              </>
+            )}
           </Group>
         }
       />
@@ -382,11 +396,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           <SectionCard
             title={td("athletePlanTitle")}
             subheader={td("athletePlanSubtitle")}
-            action={
+            action={!isAthleteApp ? (
               <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
                 {td("planningOpenAction")}
               </Button>
-            }
+            ) : undefined}
           >
             {relevantSessionPlan ? (
               <Stack gap="md">
@@ -817,7 +831,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 return (
                   <ResponsiveDataCard
                     key={assessment._id}
-                    onClick={() => window.location.href = `/${locale}/dashboard/records/${assessment._id}`}
+                    onClick={!isAthleteApp ? () => window.location.href = `/${locale}/dashboard/records/${assessment._id}` : undefined}
                     title={assessment.session.date}
                   >
                     <ResponsiveDataRow label={tc("mode")} value={t("appTitle")} />
@@ -849,8 +863,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                     return (
                       <Table.Tr
                         key={assessment._id}
-                        onClick={() => window.location.href = `/${locale}/dashboard/records/${assessment._id}`}
-                        style={{ cursor: "pointer" }}
+                        onClick={!isAthleteApp ? () => window.location.href = `/${locale}/dashboard/records/${assessment._id}` : undefined}
+                        style={{ cursor: !isAthleteApp ? "pointer" : undefined }}
                       >
                         <Table.Td>{assessment.session.date}</Table.Td>
                         <Table.Td>
@@ -935,14 +949,16 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         </>
       )}
 
-      <DeleteSurveyModal
-        opened={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        confirmValue={deleteConfirmText}
-        onConfirmValueChange={setDeleteConfirmText}
-        onDelete={() => void deleteLatestSurvey()}
-        deleting={deletingSurvey}
-      />
+      {!isAthleteApp ? (
+        <DeleteSurveyModal
+          opened={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          confirmValue={deleteConfirmText}
+          onConfirmValueChange={setDeleteConfirmText}
+          onDelete={() => void deleteLatestSurvey()}
+          deleting={deletingSurvey}
+        />
+      ) : null}
     </Stack>
   );
 }

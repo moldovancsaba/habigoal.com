@@ -53,6 +53,12 @@ This document summarizes the state of the project after the first major enhancem
 - A public `/news` surface now exists for weekly release notes and “What’s New” updates.
 - News posts are backed by structured content in `content/news/posts.json`, which makes automation-safe weekly publishing straightforward.
 
+### 9. Public Athlete App and SSO Re-enable Prep (v0.5.x)
+- A public athlete app now exists at `/[locale]/athletes` with a live athlete directory and athlete-facing entrypoint behavior.
+- The public athlete detail route reuses the data-rich athlete page but now suppresses coach-only controls such as delete, PDF export, and planning actions.
+- DoneIsBetter SSO has been prepared for re-enable through environment-driven auth enforcement, request-aware callback redirects, and session-cookie based API authorization.
+- Production SSO setup instructions now live in `docs/sso-setup.md`.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability
@@ -69,6 +75,7 @@ This document summarizes the state of the project after the first major enhancem
 
 ## Deployment Notes
 - Ensure `MONGODB_URI`, `MONGODB_DB`, and `IMGBB_API_KEY` are set in the production environment.
+- For SSO-enabled production, also set `APP_URL`, `SSO_CLIENT_ID`, `SSO_CLIENT_SECRET`, `SSO_BASE_URL`, `SSO_REDIRECT_URI`, `AUTH_SECRET`, and `SURVEY_ENFORCE_AUTH`.
 - Deployment is configured for Vercel.
 
 ---
