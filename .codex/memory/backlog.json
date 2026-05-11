@@ -1,12 +1,6 @@
 {
   "next_five": [
     {
-      "issue": 32,
-      "title": "Add habit adherence tracking and routine scoring",
-      "priority": "now",
-      "reason": "The athlete-facing daily dashboard needs a real behavior layer behind its operating loop."
-    },
-    {
       "issue": 31,
       "title": "Add athlete memory timeline and AI-style reflection insights",
       "priority": "now",
@@ -27,8 +21,14 @@
     {
       "issue": 14,
       "title": "Build a session planning calendar",
-      "priority": "next",
+      "priority": "now",
       "reason": "Recommendations, athlete state, and weekly summaries still need to land in a planned session surface."
+    },
+    {
+      "issue": 22,
+      "title": "Add PDF and shareable operational reports",
+      "priority": "next",
+      "reason": "The athlete and coach operating layers are becoming coherent enough to support richer shareable summaries."
     }
   ],
   "later_tracks": [

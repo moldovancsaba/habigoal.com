@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, use } from "react";
-import { Badge, Box, Button, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -16,13 +16,19 @@ import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
 import { SparklineChart } from "@/components/analytics/SparklineChart";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/athlete-iq-survey";
+import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
+import type { HabitRecord } from "@/types/habit-record";
 
 type AthleteHistoryPayload = {
   child: AthleteProfile;
   assessments: CheckInRecord[];
+};
+
+type HabitPayload = {
+  records: HabitRecord[];
 };
 
 type TrendWindow = "7d" | "30d" | "all" | "custom";
@@ -49,17 +55,29 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deletingSurvey, setDeletingSurvey] = useState(false);
+  const [habitRecords, setHabitRecords] = useState<HabitRecord[]>([]);
+  const [savingHabits, setSavingHabits] = useState(false);
   const [trendWindow, setTrendWindow] = useState<TrendWindow>("30d");
   const [trendMetric, setTrendMetric] = useState<TrendMetric>("readiness");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
+  const [todayHabitStatuses, setTodayHabitStatuses] = useState<Record<string, boolean>>(createEmptyHabitStatuses());
+  const todayDate = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
-    fetch(`/api/athletes/${id}/history`)
-      .then((res) => res.json())
-      .then(setData)
+    Promise.all([
+      fetch(`/api/athletes/${id}/history`).then((res) => res.json()),
+      fetch(`/api/athletes/${id}/habits`).then((res) => res.json()).catch(() => ({ records: [] }))
+    ])
+      .then(([historyPayload, habitPayload]: [AthleteHistoryPayload, HabitPayload]) => {
+        setData(historyPayload);
+        const nextHabitRecords = Array.isArray(habitPayload?.records) ? habitPayload.records : [];
+        setHabitRecords(nextHabitRecords);
+        const currentRecord = nextHabitRecords.find((record) => record.date === todayDate);
+        setTodayHabitStatuses(currentRecord ? normalizeHabitStatuses(currentRecord.statuses) : createEmptyHabitStatuses());
+      })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, todayDate]);
 
   async function downloadPdf() {
     if (!data || !latest) return;
@@ -85,6 +103,28 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     setData((current) => current ? { ...current, assessments: current.assessments.slice(0, -1) } : current);
     setDeleteModalOpen(false);
     setDeleteConfirmText("");
+  }
+
+  async function saveTodayHabits() {
+    setSavingHabits(true);
+    try {
+      const response = await fetch(`/api/athletes/${id}/habits`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: todayDate,
+          statuses: todayHabitStatuses
+        })
+      });
+
+      if (!response.ok) return;
+      const savedRecord = (await response.json()) as HabitRecord;
+      setHabitRecords((current) =>
+        [...current.filter((record) => record.date !== savedRecord.date), savedRecord].sort((a, b) => a.date.localeCompare(b.date))
+      );
+    } finally {
+      setSavingHabits(false);
+    }
   }
 
   const chronologicalAssessments = useMemo(
@@ -170,6 +210,24 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const athleteOperatingScore = latest ? getAthleteOperatingScore(latest) : 0;
   const athleteMomentum = useMemo(() => getAthleteMomentum(chronologicalAssessments), [chronologicalAssessments]);
   const athleteOperatingActions = latest ? getAthleteOperatingActions(latest, focusPillar, athleteMomentum, t, td) : [];
+  const habitHistory = useMemo(
+    () => habitRecords.slice().sort((a, b) => a.date.localeCompare(b.date)),
+    [habitRecords]
+  );
+  const latestHabitRecord = habitHistory[habitHistory.length - 1] ?? null;
+  const habitCompletion = getHabitCompletion(todayHabitStatuses);
+  const habitStreak = getHabitStreak(habitHistory);
+  const habitCategoryBreakdown = getHabitCategoryBreakdown(todayHabitStatuses);
+  const habitTrendData = useMemo(
+    () =>
+      habitHistory.slice(-7).map((record) => ({
+        date: record.date,
+        value: getHabitCompletion(record.statuses).score / 20
+      })),
+    [habitHistory]
+  );
+  const strongestHabitCategory = getStrongestHabitCategory(habitCategoryBreakdown, td);
+  const habitFocusCategory = getHabitFocusCategory(habitCategoryBreakdown, td);
 
   if (loading) {
     return (
@@ -264,6 +322,93 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                     </Stack>
                   </Paper>
                 ))}
+              </SimpleGrid>
+            </Stack>
+          </SectionCard>
+
+          <SectionCard
+            title={td("athleteHabitTrackerTitle")}
+            subheader={td("athleteHabitTrackerSubtitle")}
+            action={
+              <Button color="ingress" onClick={() => void saveTodayHabits()} loading={savingHabits}>
+                {td("athleteHabitSaveAction")}
+              </Button>
+            }
+          >
+            <Stack gap="md">
+              <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                <HistoryMetricCard label={td("athleteHabitScoreLabel")} value={`${habitCompletion.score}`} accent="ingress" />
+                <HistoryMetricCard label={td("athleteHabitCompletedLabel")} value={`${habitCompletion.completed}/${habitCompletion.total}`} accent="strategy" />
+                <HistoryMetricCard label={td("athleteHabitStreakLabel")} value={`${habitStreak}`} accent="knowmore" />
+                <HistoryMetricCard label={td("athleteHabitFocusLabel")} value={habitFocusCategory} accent="review" />
+              </SimpleGrid>
+
+              <Paper withBorder p="md" radius="md">
+                <Stack gap="xs">
+                  <Text fw={700}>{td("athleteHabitSummaryTitle")}</Text>
+                  <Text c="dimmed">
+                    {td("athleteHabitSummaryBody", {
+                      score: habitCompletion.score,
+                      streak: habitStreak,
+                      strongest: strongestHabitCategory,
+                      focus: habitFocusCategory
+                    })}
+                  </Text>
+                </Stack>
+              </Paper>
+
+              <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+                <Stack gap="md">
+                  {(["training", "learning", "recovery", "wellness"] as HabitCategory[]).map((category) => (
+                    <Paper key={category} withBorder p="md" radius="md">
+                      <Stack gap="sm">
+                        <Group justify="space-between" align="flex-start">
+                          <div>
+                            <Text fw={700}>{td(`athleteHabitCategory${capitalize(category)}`)}</Text>
+                            <Text size="sm" c="dimmed">
+                              {td("athleteHabitCategorySummary", {
+                                completed: habitCategoryBreakdown[category].completed,
+                                total: habitCategoryBreakdown[category].total
+                              })}
+                            </Text>
+                          </div>
+                        </Group>
+                        <Stack gap={8}>
+                          {athleteHabitDefinitions
+                            .filter((habit) => habit.category === category)
+                            .map((habit) => (
+                              <Checkbox
+                                key={habit.key}
+                                checked={todayHabitStatuses[habit.key]}
+                                onChange={(event) =>
+                                  setTodayHabitStatuses((current) => ({
+                                    ...current,
+                                    [habit.key]: event.currentTarget.checked
+                                  }))
+                                }
+                                label={td(habit.titleKey)}
+                              />
+                            ))}
+                        </Stack>
+                      </Stack>
+                    </Paper>
+                  ))}
+                </Stack>
+
+                <Stack gap="md">
+                  <LongitudinalChart
+                    title={td("athleteHabitTrendTitle")}
+                    data={habitTrendData}
+                    color="var(--mantine-color-ingress-6)"
+                    yDomain={[0, 5]}
+                  />
+                  <Text size="sm" c="dimmed">
+                    {td("athleteHabitTrendInsight", {
+                      days: habitTrendData.length,
+                      latest: latestHabitRecord ? getHabitCompletion(latestHabitRecord.statuses).score : 0
+                    })}
+                  </Text>
+                </Stack>
               </SimpleGrid>
             </Stack>
           </SectionCard>
@@ -757,6 +902,32 @@ function getMomentumBadgeColor(state: "rising" | "steady" | "falling") {
 function averageScore(values: number[]) {
   if (values.length === 0) return 0;
   return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function getStrongestHabitCategory(
+  breakdown: Record<HabitCategory, { completed: number; total: number }>,
+  translateDashboard: (key: string) => string
+) {
+  const best = (Object.entries(breakdown) as Array<[HabitCategory, { completed: number; total: number }]>)
+    .sort((a, b) => {
+      const aScore = a[1].total ? a[1].completed / a[1].total : 0;
+      const bScore = b[1].total ? b[1].completed / b[1].total : 0;
+      return bScore - aScore;
+    })[0]?.[0];
+  return best ? translateDashboard(`athleteHabitCategory${capitalize(best)}`) : "-";
+}
+
+function getHabitFocusCategory(
+  breakdown: Record<HabitCategory, { completed: number; total: number }>,
+  translateDashboard: (key: string) => string
+) {
+  const focus = (Object.entries(breakdown) as Array<[HabitCategory, { completed: number; total: number }]>)
+    .sort((a, b) => {
+      const aScore = a[1].total ? a[1].completed / a[1].total : 0;
+      const bScore = b[1].total ? b[1].completed / b[1].total : 0;
+      return aScore - bScore;
+    })[0]?.[0];
+  return focus ? translateDashboard(`athleteHabitCategory${capitalize(focus)}`) : "-";
 }
 
 function DeleteSurveyModal({

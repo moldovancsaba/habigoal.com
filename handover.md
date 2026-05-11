@@ -37,6 +37,11 @@ This document summarizes the state of the project after the first major enhancem
 - The athlete surface translates the latest check-in into an operating score, readiness mode, momentum, focus area, and clear next actions.
 - Athlete history now sorts chronologically before deriving latest-state summaries and time-window trends.
 
+### 6. Habit Adherence Layer (v0.5.x)
+- Athlete detail pages now include a persisted daily habit tracker.
+- Habit records are stored separately in `habit_records` and exposed through `GET/POST /api/athletes/:id/habits`.
+- The athlete surface now shows habit score, completion count, streak, category focus, and a short adherence trend alongside the daily operating view.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability
