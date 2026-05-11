@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { exchangeCodeForToken, getUserInfo } from "@/services/auth-service";
 import { createSession } from "@/lib/session";
 import { cookies } from "next/headers";
-import { findUserByEmail, listAllUsers, upsertUser } from "@/repositories/user.repository";
+import { findUserByEmail, listAllUsers, markUserLogin, upsertUser } from "@/repositories/user.repository";
 import { getDatabase } from "@/lib/mongodb";
 
 export async function GET(request: NextRequest) {
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         await upsertUser({
           email: ssoUser.email,
           name: ssoUser.name,
-          roles: doc.roles || ["user"]
+          roles: doc.roles || ["observer"]
         });
         localUser = await findUserByEmail(ssoUser.email);
       }
@@ -63,12 +63,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
+    await markUserLogin(ssoUser.email, ssoUser.name);
+    localUser = await findUserByEmail(ssoUser.email);
+    if (!localUser) {
+      return NextResponse.json({ error: "Local user provisioning failed" }, { status: 500 });
+    }
+
     // Create session using SSO info but merging local roles
     await createSession({
       id: ssoUser.id,
       email: ssoUser.email,
       name: ssoUser.name,
-      role: localUser.roles.join(",") || "user",
+      role: localUser.roles.join(",") || "observer",
       accessToken: tokens.access_token
     });
 

@@ -11,6 +11,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - Persisted athlete habit tracker with daily routine scoring, streaks, and adherence trend visibility
 - Dedicated session planning route at `/dashboard/planning` with a weekly calendar shaped by readiness, support pressure, location scope, and internal load, plus persisted weekly coach plans reflected on athlete detail pages
 - Public `/news` release-notes surface backed by structured post content for weekly “What’s New” updates
+- Admin-owned user access management with approved-email gating, last-login visibility, and protections against removing the final admin account
 - Historical compatibility layer for legacy assessment data and backfilled tracker fields
 - Daily readiness reports and PDF export surfaces
 - Persistent audit and soft-delete workflows for records and athletes
@@ -139,6 +140,7 @@ The app now supports:
 - environment-driven auth enforcement via `SURVEY_ENFORCE_AUTH`
 - request-aware redirect handling back into the correct locale/path after login
 - session-cookie based role checks on protected API routes
+- local approved-user gating where only admins can grant roles or remove access, and successful SSO logins update last-seen activity in the `users` collection
 
 Production SSO client setup instructions are documented in [docs/sso-setup.md](docs/sso-setup.md).
 

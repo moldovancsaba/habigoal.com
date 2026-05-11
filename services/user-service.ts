@@ -3,6 +3,9 @@ export interface User {
   name?: string;
   email: string;
   roles: ("admin" | "conductor" | "observer")[];
+  lastLoginAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export async function getUsers(): Promise<User[]> {
@@ -36,7 +39,7 @@ export async function getObservers(): Promise<User[]> {
 }
 
 export async function deleteUser(email: string): Promise<boolean> {
-  const response = await fetch(`/api/users?email=\${encodeURIComponent(email)}`, {
+  const response = await fetch(`/api/users?email=${encodeURIComponent(email)}`, {
     method: "DELETE"
   }).catch(() => null);
   

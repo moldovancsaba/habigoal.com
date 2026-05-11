@@ -47,6 +47,7 @@ UI operating surfaces:
 - `/dashboard/athletes/[id]` remains the athlete operating surface with trends, habits, memory, and reports.
 - `/athletes` is the public athlete app entry surface, and `/athletes/[id]` must stay athlete-facing rather than leaking coach-admin controls.
 - DoneIsBetter SSO is the intended authentication boundary for protected Habigoal usage, while local role authorization remains owned by the `users` collection.
+- User-rights changes are admin-owned operations; the system must not allow self-removal of the active admin or deletion/demotion of the final admin account.
 
 ## Heartbeat Chain
 

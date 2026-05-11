@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { DEFAULT_SURVEY_SETTINGS, getSettings, SurveySettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
@@ -17,6 +17,7 @@ export default function SettingsPage() {
 
   const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<{ email: string; role: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -30,13 +31,19 @@ export default function SettingsPage() {
   const [impactPreview, setImpactPreview] = useState<{ readyToDeveloping: number; developingToReady: number; total: number } | null>(null);
   const [allAssessments, setAllAssessments] = useState<Array<{ childId?: string; child: { name: string; birthDate: string }; session?: { consentReport?: boolean }; computed: { ski: number | null } }>>([]);
   const [governanceMetrics, setGovernanceMetrics] = useState<{ deletedChildren: number; deletedAssessments: number; missingConsentReport: number; missingChildLink: number }>({ deletedChildren: 0, deletedAssessments: 0, missingConsentReport: 0, missingChildLink: 0 });
+  const [userSearch, setUserSearch] = useState("");
 
   useEffect(() => {
     void (async () => {
       try {
-        const [sData, uData] = await Promise.all([getSettings(), getUsers()]);
+        const [sData, uData, authRes] = await Promise.all([
+          getSettings(),
+          getUsers(),
+          fetch("/api/auth/me").then((r) => r.json()).catch(() => null)
+        ]);
         setSettings(sData);
         setUsers(uData);
+        setCurrentUser(authRes?.user ? { email: authRes.user.email, role: authRes.user.role } : null);
         const [dcRes, daRes] = await Promise.all([
           fetch("/api/athletes?deleted=true").then(r => r.json()).catch(() => []),
           fetch("/api/check-ins?deleted=true").then(r => r.json()).catch(() => ({ assessments: [] }))
@@ -83,6 +90,10 @@ export default function SettingsPage() {
 
   async function toggleRole(user: User, role: "admin" | "conductor" | "observer") {
     const nextRoles = user.roles.includes(role) ? user.roles.filter((r) => r !== role) : [...user.roles, role];
+    if (nextRoles.length === 0) {
+      setMessage("A user must keep at least one role.");
+      return;
+    }
 
     const updatedUser = { ...user, roles: nextRoles };
 
@@ -101,7 +112,7 @@ export default function SettingsPage() {
   function addNewUser() {
     const email = userDraft.trim().toLowerCase();
     if (email) {
-      const newUser: User = { email, name: userNameDraft.trim() || undefined, roles: [] };
+      const newUser: User = { email, name: userNameDraft.trim() || undefined, roles: ["observer"] };
       setUsers((prev) => [...prev, newUser]);
       setUserDraft("");
       setUserNameDraft("");
@@ -237,6 +248,31 @@ export default function SettingsPage() {
     }));
   }
 
+  const adminCount = users.filter((user) => user.roles.includes("admin")).length;
+  const conductorCount = users.filter((user) => user.roles.includes("conductor")).length;
+  const observerCount = users.filter((user) => user.roles.includes("observer")).length;
+  const canManageUsers = currentUser?.role?.split(",").map((role) => role.trim().toLowerCase()).includes("admin") ?? false;
+  const query = userSearch.trim().toLowerCase();
+  const filteredUsers = users
+    .filter((u) => !!u.email)
+    .filter((user) => {
+      if (!query) return true;
+      return [user.name || "", user.email, user.roles.join(" ")].some((value) => value.toLowerCase().includes(query));
+    });
+
+  function formatLastSeen(value?: string) {
+    if (!value) return "Pending first login";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Pending first login";
+    return date.toLocaleString();
+  }
+
+  function isProtectedAdmin(user: User) {
+    const isLastAdmin = user.roles.includes("admin") && adminCount <= 1;
+    const isCurrentAdmin = currentUser?.email?.toLowerCase() === user.email.toLowerCase() && user.roles.includes("admin");
+    return isLastAdmin || isCurrentAdmin;
+  }
+
   if (loading) {
     return (
       <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
@@ -257,6 +293,17 @@ export default function SettingsPage() {
 
       <SectionCard title={t("userRights")}>
         <Stack gap="md">
+          {!canManageUsers ? (
+            <Alert color="yellow">
+              Only admins can approve users, assign roles, or remove access.
+            </Alert>
+          ) : null}
+          <Group gap="xs" wrap="wrap">
+            <Badge variant="light" color="ingress">Admins: {adminCount}</Badge>
+            <Badge variant="light" color="blue">Conductors: {conductorCount}</Badge>
+            <Badge variant="light" color="violet">Observers: {observerCount}</Badge>
+            <Badge variant="light" color="gray">Approved users: {users.length}</Badge>
+          </Group>
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
               label={tc("name")}
@@ -264,21 +311,34 @@ export default function SettingsPage() {
               value={userNameDraft}
               onChange={(event) => setUserNameDraft(event.target.value)}
               style={{ minWidth: 220 }}
+              disabled={!canManageUsers}
             />
+            <TextInput
+              label="Search users"
+              placeholder="Name, email, or role"
+              value={userSearch}
+              onChange={(event) => setUserSearch(event.target.value)}
+              style={{ minWidth: 220 }}
+            />
+          </Group>
+          <Group gap="xs" align="end" wrap="wrap">
             <TextInput
               label={t("email")}
               placeholder="user@example.com"
               value={userDraft}
               onChange={(event) => setUserDraft(event.target.value)}
               style={{ minWidth: 280 }}
+              disabled={!canManageUsers}
             />
-            <Button variant="default" onClick={addNewUser} disabled={!userDraft.trim()}>
+            <Button variant="default" onClick={addNewUser} disabled={!canManageUsers || !userDraft.trim()}>
               Add user
             </Button>
           </Group>
+          <Text size="sm" c="dimmed">
+            New users are approved locally first. SSO access only works after the email exists here with at least one role.
+          </Text>
           <Stack gap="md" hiddenFrom="sm">
-            {users
-              .filter((u) => !!u.email)
+            {filteredUsers
               .map((user) => (
                 <ResponsiveDataCard key={user.email} title={user.name || user.email}>
                   <Stack gap="sm">
@@ -292,24 +352,33 @@ export default function SettingsPage() {
                       }}
                     />
                     <ResponsiveDataRow label={t("email")} value={<Text fw={600}>{user.email}</Text>} />
+                    <ResponsiveDataRow
+                      label="Access status"
+                      value={<Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>{user.lastLoginAt ? "Active" : "Pending"}</Badge>}
+                    />
+                    <ResponsiveDataRow label="Last login" value={<Text>{formatLastSeen(user.lastLoginAt)}</Text>} />
                     <MobileCheckboxRow
                       label={t("canConduct")}
                       checked={user.roles.includes("conductor")}
+                      disabled={!canManageUsers}
                       onChange={() => void toggleRole(user, "conductor")}
                     />
                     <MobileCheckboxRow
                       label={t("canObserve")}
                       checked={user.roles.includes("observer")}
+                      disabled={!canManageUsers}
                       onChange={() => void toggleRole(user, "observer")}
                     />
                     <MobileCheckboxRow
                       label="Admin"
                       checked={user.roles.includes("admin")}
+                      disabled={!canManageUsers || isProtectedAdmin(user)}
                       onChange={() => void toggleRole(user, "admin")}
                     />
                     <Group grow>
                       <Button
                         variant="light"
+                        disabled={!canManageUsers}
                         onClick={async () => {
                           const latest = users.find((u) => u.email === user.email) || user;
                           const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
@@ -322,11 +391,17 @@ export default function SettingsPage() {
                       <Button
                         variant="light"
                         color="red"
+                        disabled={!canManageUsers || isProtectedAdmin(user)}
                         onClick={async () => {
                           const { deleteUser } = await import("@/services/user-service");
                           if (confirm(`Remove access for ${user.email}?`)) {
                             const ok = await deleteUser(user.email);
-                            if (ok) setUsers(prev => prev.filter(u => u.email !== user.email));
+                            if (ok) {
+                              setUsers(prev => prev.filter(u => u.email !== user.email));
+                              setMessage(tc("success"));
+                            } else {
+                              setMessage(tc("error"));
+                            }
                           }
                         }}
                       >
@@ -336,7 +411,7 @@ export default function SettingsPage() {
                   </Stack>
                 </ResponsiveDataCard>
               ))}
-            {users.length === 0 ? <Text c="dimmed">{t("noUsers")}</Text> : null}
+            {filteredUsers.length === 0 ? <Text c="dimmed">{t("noUsers")}</Text> : null}
           </Stack>
           <Paper withBorder p={0} visibleFrom="sm">
           <Table striped highlightOnHover>
@@ -344,6 +419,8 @@ export default function SettingsPage() {
               <Table.Tr>
                 <Table.Th>{tc("name")}</Table.Th>
                 <Table.Th>{t("email")}</Table.Th>
+                <Table.Th>Access</Table.Th>
+                <Table.Th>Last login</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>{t("canConduct")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>{t("canObserve")}</Table.Th>
                 <Table.Th style={{ textAlign: "center" }}>Admin</Table.Th>
@@ -351,8 +428,7 @@ export default function SettingsPage() {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {users
-                .filter(u => !!u.email)
+              {filteredUsers
                 .map((user) => (
                 <Table.Tr key={user.email}>
                   <Table.Td>
@@ -368,9 +444,18 @@ export default function SettingsPage() {
                   <Table.Td>
                     <Text fw={600}>{user.email}</Text>
                   </Table.Td>
+                  <Table.Td>
+                    <Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>
+                      {user.lastLoginAt ? "Active" : "Pending"}
+                    </Badge>
+                  </Table.Td>
+                  <Table.Td>
+                    <Text size="sm">{formatLastSeen(user.lastLoginAt)}</Text>
+                  </Table.Td>
                   <Table.Td style={{ textAlign: "center" }}>
                     <Checkbox
                       checked={user.roles.includes("conductor")}
+                      disabled={!canManageUsers}
                       onChange={() => void toggleRole(user, "conductor")}
                       aria-label={`${user.email} conductor`}
                     />
@@ -378,6 +463,7 @@ export default function SettingsPage() {
                   <Table.Td style={{ textAlign: "center" }}>
                     <Checkbox
                       checked={user.roles.includes("observer")}
+                      disabled={!canManageUsers}
                       onChange={() => void toggleRole(user, "observer")}
                       aria-label={`${user.email} observer`}
                     />
@@ -385,6 +471,7 @@ export default function SettingsPage() {
                   <Table.Td style={{ textAlign: "center" }}>
                     <Checkbox
                       checked={user.roles.includes("admin")}
+                      disabled={!canManageUsers || isProtectedAdmin(user)}
                       onChange={() => void toggleRole(user, "admin")}
                       aria-label={`${user.email} admin`}
                     />
@@ -393,6 +480,7 @@ export default function SettingsPage() {
                     <Button
                       variant="light"
                       size="sm"
+                      disabled={!canManageUsers}
                       onClick={async () => {
                         const latest = users.find((u) => u.email === user.email) || user;
                         const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
@@ -407,11 +495,17 @@ export default function SettingsPage() {
                       variant="light" 
                       color="red" 
                       size="sm" 
+                      disabled={!canManageUsers || isProtectedAdmin(user)}
                       onClick={async () => {
                         const { deleteUser } = await import("@/services/user-service");
                         if (confirm(`Remove access for ${user.email}?`)) {
                           const ok = await deleteUser(user.email);
-                          if (ok) setUsers(prev => prev.filter(u => u.email !== user.email));
+                          if (ok) {
+                            setUsers(prev => prev.filter(u => u.email !== user.email));
+                            setMessage(tc("success"));
+                          } else {
+                            setMessage(tc("error"));
+                          }
                         }
                       }}
                     >
@@ -420,9 +514,9 @@ export default function SettingsPage() {
                   </Table.Td>
                 </Table.Tr>
               ))}
-              {users.length === 0 ? (
+              {filteredUsers.length === 0 ? (
                 <Table.Tr>
-                  <Table.Td colSpan={6}>
+                  <Table.Td colSpan={8}>
                     <Text c="dimmed">{t("noUsers")}</Text>
                   </Table.Td>
                 </Table.Tr>
@@ -743,16 +837,18 @@ export default function SettingsPage() {
 function MobileCheckboxRow({
   label,
   checked,
-  onChange
+  onChange,
+  disabled = false
 }: {
   label: string;
   checked: boolean;
   onChange: () => void;
+  disabled?: boolean;
 }) {
   return (
     <Group justify="space-between" align="center">
       <Text fw={600}>{label}</Text>
-      <Checkbox checked={checked} onChange={onChange} aria-label={label} />
+      <Checkbox checked={checked} onChange={onChange} aria-label={label} disabled={disabled} />
     </Group>
   );
 }

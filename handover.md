@@ -59,6 +59,13 @@ This document summarizes the state of the project after the first major enhancem
 - DoneIsBetter SSO has been prepared for re-enable through environment-driven auth enforcement, request-aware callback redirects, and session-cookie based API authorization.
 - Production SSO setup instructions now live in `docs/sso-setup.md`.
 
+### 10. User Rights Hardening (v0.5.x)
+- User access management is now effectively admin-owned rather than conductor-owned.
+- `POST /api/users` now requires an admin session and rejects zero-role users.
+- `DELETE /api/users` now blocks self-removal and removal of the last remaining admin.
+- Successful SSO logins update `lastLoginAt` in the `users` collection, which feeds admin visibility in Settings.
+- The Settings > User Rights screen now shows approved-user counts, access state, last login, search, and UI guards around protected admin accounts.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability
