@@ -22,6 +22,8 @@
   "consent_model": {
     "standing_consent_for_automation": true,
     "approval_prompts_expected": false,
+    "auto_advance_between_phases": true,
+    "planner_selected_safe_actions_preapproved": true,
     "direct_main_push_allowed": false,
     "human_merge_required": true
   }

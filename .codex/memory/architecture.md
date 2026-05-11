@@ -109,6 +109,8 @@ That consent does not allow:
 
 The intended approval model is:
 - no interactive approval prompts during normal automation runs in the dedicated thread
+- no manual ping required between audit, planner, implementer, and docs phases inside one run
+- planner-selected safe actions are considered pre-approved for execution in the same run
 - branch and pull-request based delivery
 - human merge approval on GitHub
 

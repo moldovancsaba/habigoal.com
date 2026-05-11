@@ -40,6 +40,9 @@ prompt: |
   Core rules:
   - do not ask for approval during normal loop execution
   - keep all work in this dedicated conversation
+  - complete all four phases in the same run before stopping
+  - automatically continue from planner output into implementer work when the selected action is safe and within policy
+  - treat planner-selected safe actions as pre-approved for execution unless they conflict with repository safety rules
   - use branch-and-PR delivery only
   - never push directly to main
   - never merge failing code
