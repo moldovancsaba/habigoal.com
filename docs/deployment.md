@@ -27,6 +27,8 @@ IMGBB_API_KEY
 
 `IMGBB_API_KEY` has already been added to Vercel. `MONGODB_URI` must point to the MongoDB Atlas cluster and include credentials for a database user with read/write access.
 
+For local development, store the same values in `.env` or `.env.local`. The repository now treats `.env` as the default local file for Atlas credentials.
+
 ## MongoDB Atlas Checklist
 
 1. Create a database user with read/write access.

@@ -47,7 +47,7 @@ The board definition lives in `config/gh-project-board.json`.
 ## Local Development
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 npm install
 npm run db:ping
 npm run db:setup
@@ -76,7 +76,7 @@ IMGBB_API_KEY=
 
 ## MongoDB Atlas Setup
 
-1. Paste your Atlas driver connection string into `.env.local` as `MONGODB_URI`.
+1. Paste your Atlas driver connection string into `.env` as `MONGODB_URI`.
 2. Set `MONGODB_DB` to the application database name you created in Atlas.
 3. Optionally set `MONGODB_APP_NAME` to distinguish local, preview, and production clients in Atlas metrics.
 4. Run `npm run db:ping` to verify the app can reach Atlas before starting Next.js.

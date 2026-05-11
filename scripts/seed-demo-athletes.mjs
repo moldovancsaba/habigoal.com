@@ -15,6 +15,7 @@ function loadEnvFile(path) {
   }
 }
 
+loadEnvFile(".env");
 loadEnvFile(".env.local");
 loadEnvFile(".env.example");
 
@@ -22,7 +23,7 @@ const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || "survey";
 
 if (!uri) {
-  console.error("MONGODB_URI is missing. Add it to .env.local before running db:seed-demo.");
+  console.error("MONGODB_URI is missing. Add it to .env or .env.local before running db:seed-demo.");
   process.exit(1);
 }
 

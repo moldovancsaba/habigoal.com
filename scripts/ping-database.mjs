@@ -19,6 +19,7 @@ function loadEnvFile(path) {
   }
 }
 
+loadEnvFile(".env");
 loadEnvFile(".env.local");
 loadEnvFile(".env.example");
 
@@ -27,7 +28,7 @@ const dbName = process.env.MONGODB_DB || "survey";
 const appName = process.env.MONGODB_APP_NAME || "habigoal-cli";
 
 if (!uri) {
-  console.error("MONGODB_URI is missing. Add your Atlas connection string to .env.local first.");
+  console.error("MONGODB_URI is missing. Add your Atlas connection string to .env or .env.local first.");
   process.exit(1);
 }
 

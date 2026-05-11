@@ -15,6 +15,7 @@ function loadEnvFile(path) {
   }
 }
 
+loadEnvFile(".env");
 loadEnvFile(".env.local");
 loadEnvFile(".env.example");
 
@@ -24,7 +25,7 @@ const mongodbDb = process.env.MONGODB_DB || "survey";
 const enforceAuth = process.env.SURVEY_ENFORCE_AUTH === "true" || process.env.KIDEX_ENFORCE_AUTH === "true";
 
 if (!mongodbUri) {
-  console.error("MONGODB_URI is missing. Add it to .env.local before starting the local server.");
+  console.error("MONGODB_URI is missing. Add it to .env or .env.local before starting the local server.");
   process.exit(1);
 }
 
