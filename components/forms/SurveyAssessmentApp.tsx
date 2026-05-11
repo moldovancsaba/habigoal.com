@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Group,
+  NumberInput,
   Paper,
   Progress,
   Select,
@@ -52,6 +53,12 @@ const emptyAssessment: AssessmentPayload = {
     context: "structured",
     consentPhoto: false,
     consentReport: false
+  },
+  trainingLoad: {
+    sessionType: "",
+    durationMinutes: undefined,
+    rpe: undefined,
+    externalLoad: undefined
   },
   scores: {},
   notes: {
@@ -321,6 +328,20 @@ export function SurveyAssessmentApp() {
     setSaveState("idle");
   }
 
+  function updateTrainingLoad<K extends keyof AssessmentPayload["trainingLoad"]>(
+    key: K,
+    value: AssessmentPayload["trainingLoad"][K]
+  ) {
+    setAssessment((current) => ({
+      ...current,
+      trainingLoad: {
+        ...current.trainingLoad,
+        [key]: value
+      }
+    }));
+    setSaveState("idle");
+  }
+
   function selectChild(value: string | null) {
     const child = children.find((entry) => entry._id === value);
     if (!child || !value) return;
@@ -445,6 +466,45 @@ export function SurveyAssessmentApp() {
             <InfoChip label="Birth date" value={assessment.child.birthDate || tc("emptyValue")} />
           </SimpleGrid>
         </Stack>
+      </SectionCard>
+
+      <SectionCard title="Training load" subheader="Capture session demand so readiness can be interpreted against actual work.">
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+          <Select
+            label="Session type"
+            value={assessment.trainingLoad.sessionType}
+            data={[
+              { value: "team", label: "Team training" },
+              { value: "match", label: "Match" },
+              { value: "gym", label: "Gym" },
+              { value: "recovery", label: "Recovery" },
+              { value: "individual", label: "Individual extras" }
+            ]}
+            onChange={(value) => updateTrainingLoad("sessionType", value || "")}
+          />
+          <NumberInput
+            label="Duration (min)"
+            value={assessment.trainingLoad.durationMinutes}
+            onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
+            min={0}
+            max={360}
+          />
+          <NumberInput
+            label="RPE (1-10)"
+            value={assessment.trainingLoad.rpe}
+            onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
+            min={1}
+            max={10}
+          />
+          <NumberInput
+            label="External load"
+            description="Optional meters / arbitrary units"
+            value={assessment.trainingLoad.externalLoad}
+            onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
+            min={0}
+            max={50000}
+          />
+        </SimpleGrid>
       </SectionCard>
 
       <Paper withBorder p={{ base: "md", sm: "lg" }} radius="lg">

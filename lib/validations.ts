@@ -62,6 +62,7 @@ export function parseAssessmentPayload(input: unknown): AssessmentPayload {
   const data = input && typeof input === "object" ? input as Record<string, unknown> : {};
   const child = data.child && typeof data.child === "object" ? data.child as Record<string, unknown> : {};
   const session = data.session && typeof data.session === "object" ? data.session as Record<string, unknown> : {};
+  const trainingLoad = data.trainingLoad && typeof data.trainingLoad === "object" ? data.trainingLoad as Record<string, unknown> : {};
   const scores = data.scores && typeof data.scores === "object" ? data.scores as Record<string, unknown> : {};
   const notes = data.notes && typeof data.notes === "object" ? data.notes as Record<string, unknown> : {};
   const rawAttachments = Array.isArray(data.attachments) ? data.attachments : [];
@@ -90,6 +91,12 @@ export function parseAssessmentPayload(input: unknown): AssessmentPayload {
       context,
       consentPhoto: booleanValue(session.consentPhoto),
       consentReport: booleanValue(session.consentReport)
+    },
+    trainingLoad: {
+      sessionType: stringValue(trainingLoad.sessionType, 120),
+      durationMinutes: numberValue(trainingLoad.durationMinutes, 0, 360),
+      rpe: numberValue(trainingLoad.rpe, 1, 10),
+      externalLoad: numberValue(trainingLoad.externalLoad, 0, 50000)
     },
     scores: Object.fromEntries(Object.entries(scores).map(([key, value]) => [key, scoreEntry(value)])),
     notes: {

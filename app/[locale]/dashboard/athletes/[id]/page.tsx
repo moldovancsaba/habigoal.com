@@ -253,6 +253,23 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     () => summarizeMemoryTimeline(memoryTimeline, td, emptyValue),
     [memoryTimeline, td, emptyValue]
   );
+  const loadTimeline = useMemo(
+    () =>
+      chronologicalAssessments
+        .map((assessment) => ({
+          date: assessment.session.date,
+          value: getInternalLoad(assessment),
+          externalLoad: assessment.trainingLoad.externalLoad ?? null,
+          sessionType: assessment.trainingLoad.sessionType || ""
+        }))
+        .filter((entry) => entry.value !== null),
+    [chronologicalAssessments]
+  );
+  const latestLoad = loadTimeline[loadTimeline.length - 1] ?? null;
+  const latestThreeAverage = loadTimeline.length ? averageScore(loadTimeline.slice(-3).map((entry) => entry.value as number)) : 0;
+  const previousThreeAverage = loadTimeline.length > 3 ? averageScore(loadTimeline.slice(-6, -3).map((entry) => entry.value as number)) : latestThreeAverage;
+  const loadRatio = previousThreeAverage > 0 ? Number((latestThreeAverage / previousThreeAverage).toFixed(2)) : 1;
+  const loadStatus = getLoadStatus(loadRatio);
 
   if (loading) {
     return (
@@ -519,6 +536,39 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 </Stack>
               </SimpleGrid>
             </Stack>
+          </SectionCard>
+
+          <SectionCard
+            title={td("athleteLoadTitle")}
+            subheader={td("athleteLoadSubtitle")}
+          >
+            {loadTimeline.length === 0 ? (
+              <Text c="dimmed">{td("athleteLoadEmpty")}</Text>
+            ) : (
+              <Stack gap="md">
+                <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                  <HistoryMetricCard label={td("athleteLoadLatestLabel")} value={latestLoad ? `${latestLoad.value}` : "-"} accent="ingress" />
+                  <HistoryMetricCard label={td("athleteLoadShortAverageLabel")} value={latestThreeAverage ? latestThreeAverage.toFixed(0) : "-"} accent="strategy" />
+                  <HistoryMetricCard label={td("athleteLoadRatioLabel")} value={loadRatio.toFixed(2)} accent={loadRatio > 1.15 ? "review" : "knowmore"} />
+                  <HistoryMetricCard label={td("athleteLoadStatusLabel")} value={td(`athleteLoadStatus${capitalize(loadStatus)}`)} accent="review" />
+                </SimpleGrid>
+
+                <LongitudinalChart
+                  title={td("athleteLoadTrendTitle")}
+                  data={loadTimeline.map((entry) => ({ date: entry.date, value: entry.value as number }))}
+                  color="var(--mantine-color-review-6)"
+                  yDomain={[0, Math.max(...loadTimeline.map((entry) => entry.value as number), 100)]}
+                />
+
+                <Text size="sm" c="dimmed">
+                  {td("athleteLoadInsight", {
+                    latest: latestLoad?.value ?? 0,
+                    ratio: loadRatio.toFixed(2),
+                    status: td(`athleteLoadStatus${capitalize(loadStatus)}`)
+                  })}
+                </Text>
+              </Stack>
+            )}
           </SectionCard>
 
           <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
@@ -1010,6 +1060,19 @@ function getMomentumBadgeColor(state: "rising" | "steady" | "falling") {
 function averageScore(values: number[]) {
   if (values.length === 0) return 0;
   return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function getInternalLoad(record: CheckInRecord) {
+  const duration = record.trainingLoad.durationMinutes;
+  const rpe = record.trainingLoad.rpe;
+  if (typeof duration !== "number" || typeof rpe !== "number") return null;
+  return Math.round(duration * rpe);
+}
+
+function getLoadStatus(ratio: number) {
+  if (ratio >= 1.3) return "heavy";
+  if (ratio <= 0.8) return "light";
+  return "balanced";
 }
 
 function buildAthleteMemoryTimeline(
