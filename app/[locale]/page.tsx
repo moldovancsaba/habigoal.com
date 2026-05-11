@@ -1,4 +1,4 @@
-import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon, Alert, Badge } from "@mantine/core";
+import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon, Alert, Badge, SimpleGrid } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { env } from "@/config/env";
@@ -25,11 +25,11 @@ export default async function LandingPage({
               {t("accessDenied")}
             </Alert>
           )}
-          <Group align="stretch" gap="xl">
+          <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="xl" verticalSpacing="xl">
             <Stack className="glass-panel surface-outline" gap="xl" p={{ base: "xl", md: "2rem" }} style={{ flex: 1, borderRadius: 28, minWidth: 0 }}>
-              <Group justify="space-between" align="center">
+              <Group justify="space-between" align="center" wrap="wrap">
                 <Badge color="strategy" variant="light" size="lg">{t("badge", {brand: "{Hg}"})}</Badge>
-                <Group gap="xs">
+                <Group gap="xs" wrap="wrap">
                   <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
                     <Text size="sm" fw={700} c="var(--text-secondary)">{t("chipAdaptiveIntake")}</Text>
                   </Box>
@@ -40,10 +40,10 @@ export default async function LandingPage({
               </Group>
 
               <Stack gap="lg">
-                <Title order={1} size={72} maw={760} style={{ lineHeight: 0.98 }}>
+                <Title order={1} fz={{ base: 42, md: 56, xl: 72 }} maw={760} style={{ lineHeight: 0.98 }}>
                   {t("title")}
                 </Title>
-                <Text size="xl" maw={680} c="var(--text-secondary)" style={{ lineHeight: 1.65 }}>
+                <Text fz={{ base: "lg", md: "xl" }} maw={680} c="var(--text-secondary)" style={{ lineHeight: 1.65 }}>
                   {t("subtitle")}
                 </Text>
               </Stack>
@@ -60,13 +60,13 @@ export default async function LandingPage({
               </Group>
 
               <Group gap="md" wrap="wrap">
-                <Button component="a" href={authHref} size="xl" color="ingress" style={{ minWidth: 220 }}>
+                <Button component="a" href={authHref} size="xl" color="ingress" style={{ minWidth: 220, flex: "1 1 220px" }}>
                   {t("login")}
                 </Button>
-                <Button component="a" href={`/${locale}/athletes`} size="xl" variant="default" style={{ minWidth: 220 }}>
+                <Button component="a" href={`/${locale}/athletes`} size="xl" variant="default" style={{ minWidth: 220, flex: "1 1 220px" }}>
                   {t("athleteApp")}
                 </Button>
-                <Button component="a" href={`/${locale}/news`} size="xl" variant="light" style={{ minWidth: 220 }}>
+                <Button component="a" href={`/${locale}/news`} size="xl" variant="light" style={{ minWidth: 220, flex: "1 1 220px" }}>
                   {t("whatsNew")}
                 </Button>
                 <Text size="sm" c="var(--text-muted)">
@@ -75,10 +75,10 @@ export default async function LandingPage({
               </Group>
             </Stack>
 
-            <Box className="glass-panel surface-outline" p={{ base: "xl", md: "2rem" }} style={{ width: "100%", maxWidth: 420, borderRadius: 32, position: "relative", overflow: "hidden" }}>
+            <Box className="glass-panel surface-outline" p={{ base: "xl", md: "2rem" }} style={{ width: "100%", maxWidth: 420, justifySelf: "center", borderRadius: 32, position: "relative", overflow: "hidden" }}>
               <Box style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 18%, rgba(0, 63, 206, 0.44), transparent 34%), radial-gradient(circle at 58% 48%, rgba(0, 174, 239, 0.32), transparent 28%), radial-gradient(circle at 40% 78%, rgba(199, 240, 54, 0.2), transparent 32%)" }} />
               <Stack align="center" justify="center" gap="lg" style={{ position: "relative", minHeight: 460 }}>
-                <BrandMark size={216} subtitle={t("brandSubtitle")} />
+                <BrandMark size={180} subtitle={t("brandSubtitle")} />
                 <Stack gap={6} align="center">
                   <Text fw={800} size="xl">{t("previewTitle")}</Text>
                   <Text size="sm" c="var(--text-secondary)" ta="center" maw={280}>
@@ -87,13 +87,13 @@ export default async function LandingPage({
                 </Stack>
               </Stack>
             </Box>
-          </Group>
+          </SimpleGrid>
         </Stack>
       </Container>
 
       <Box component="footer" py="xl" style={{ textAlign: "center" }}>
         <Container size="lg">
-          <Group className="glass-panel surface-outline" justify="center" gap="xl" py="md" style={{ borderRadius: 999 }}>
+          <Group className="glass-panel surface-outline" justify="center" gap="xl" py="md" wrap="wrap" style={{ borderRadius: 32 }}>
             <Text component="a" href={`/${locale}/legal/gtc`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
               {t("termsOfService")}
             </Text>
