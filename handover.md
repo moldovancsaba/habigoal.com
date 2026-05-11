@@ -66,6 +66,11 @@ This document summarizes the state of the project after the first major enhancem
 - Successful SSO logins update `lastLoginAt` in the `users` collection, which feeds admin visibility in Settings.
 - The Settings > User Rights screen now shows approved-user counts, access state, last login, search, and UI guards around protected admin accounts.
 
+### 12. Weekly Athlete Operating Summary (v0.5.x)
+- Athlete detail pages now render a true seven-day operating summary instead of only exposing weekly-copy placeholders.
+- The weekly block summarizes session count, readiness average, habit average, load average, strongest weekly pattern, the main weekly constraint, and the next weekly action.
+- This closes the first usable slice of issue #34 on the live athlete operating surface.
+
 ### 11. Entity Model and Team Access (v0.5.x)
 - The old `conductor / observer / admin` access shape has been replaced in the application layer by `trainer / athlete / admin`.
 - Legacy stored roles still normalize safely on read so old accounts continue working during migration.

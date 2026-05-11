@@ -281,6 +281,44 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const previousThreeAverage = loadTimeline.length > 3 ? averageScore(loadTimeline.slice(-6, -3).map((entry) => entry.value as number)) : latestThreeAverage;
   const loadRatio = previousThreeAverage > 0 ? Number((latestThreeAverage / previousThreeAverage).toFixed(2)) : 1;
   const loadStatus = getLoadStatus(loadRatio);
+  const weeklyAssessments = useMemo(() => chronologicalAssessments.slice(-7), [chronologicalAssessments]);
+  const weeklyHabitRecords = useMemo(
+    () => habitHistory.filter((record) => weeklyAssessments.some((assessment) => assessment.session.date === record.date)),
+    [habitHistory, weeklyAssessments]
+  );
+  const weeklyReadinessAverage = weeklyAssessments.length
+    ? Number((weeklyAssessments.reduce((sum, assessment) => sum + getCompatibleReadinessState(assessment).gaugeValue, 0) / weeklyAssessments.length).toFixed(2))
+    : 0;
+  const weeklyHabitAverage = weeklyHabitRecords.length
+    ? Number((weeklyHabitRecords.reduce((sum, record) => sum + getHabitCompletion(record.statuses).score, 0) / weeklyHabitRecords.length).toFixed(0))
+    : 0;
+  const weeklyLoadEntries = weeklyAssessments
+    .map((assessment) => getInternalLoad(assessment))
+    .filter((value): value is number => typeof value === "number" && value > 0);
+  const weeklyLoadAverage = weeklyLoadEntries.length
+    ? Number((weeklyLoadEntries.reduce((sum, value) => sum + value, 0) / weeklyLoadEntries.length).toFixed(0))
+    : 0;
+  const weeklyPillarSeries = athleteIqPillars.map((pillar) => ({
+    key: pillar.key,
+    translatedTitle: t(pillar.title),
+    current: weeklyAssessments.length
+      ? Number((weeklyAssessments.reduce((sum, assessment) => sum + getCompatiblePillarScore(assessment, pillar.key), 0) / weeklyAssessments.length).toFixed(2))
+      : 0,
+    baseline: 0,
+    trend: []
+  }));
+  const weeklyStrongestPillar = getStrongestPillar(weeklyPillarSeries, emptyValue);
+  const weeklyFocusPillar = getFocusPillar(weeklyPillarSeries, emptyValue);
+  const weeklyConstraintBody = weeklyHabitAverage > 0 && weeklyHabitAverage < 70
+    ? td("athleteWeeklySummaryConstraintHabits", { focus: weeklyFocusPillar })
+    : weeklyReadinessAverage > 0 && weeklyReadinessAverage < 3.5
+      ? td("athleteWeeklySummaryConstraintReadiness", { focus: weeklyFocusPillar })
+      : td("athleteWeeklySummaryConstraintLoad", { load: weeklyLoadAverage });
+  const weeklyNextBody = weeklyReadinessAverage > 0 && weeklyReadinessAverage < 3.5
+    ? td("athleteWeeklySummaryNextRecovery", { focus: weeklyFocusPillar })
+    : weeklyHabitAverage > 0 && weeklyHabitAverage < 70
+      ? td("athleteWeeklySummaryNextHabits", { focus: weeklyFocusPillar })
+      : td("athleteWeeklySummaryNextBuild", { strongest: weeklyStrongestPillar });
   const athleteLocation = latest?.session.location || data?.child.latestLocation || emptyValue;
   const relevantSessionPlan = selectRelevantSessionPlan(sessionPlans, data?.child.name || "", athleteLocation);
 
@@ -461,6 +499,66 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               </Stack>
             ) : (
               <Text c="dimmed">{td("athletePlanEmpty")}</Text>
+            )}
+          </SectionCard>
+
+          <SectionCard
+            title={td("athleteWeeklySummaryTitle")}
+            subheader={td("athleteWeeklySummarySubtitle")}
+          >
+            {weeklyAssessments.length === 0 ? (
+              <Text c="dimmed">{t("noHistory")}</Text>
+            ) : (
+              <Stack gap="md">
+                <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+                  <HistoryMetricCard label={td("athleteWeeklySummarySessionsLabel")} value={`${weeklyAssessments.length}`} accent="ingress" />
+                  <HistoryMetricCard label={td("athleteWeeklySummaryReadinessLabel")} value={weeklyReadinessAverage ? weeklyReadinessAverage.toFixed(1) : "-"} accent="knowmore" />
+                  <HistoryMetricCard label={td("athleteWeeklySummaryHabitsLabel")} value={weeklyHabitAverage ? `${weeklyHabitAverage}` : "-"} accent="strategy" />
+                  <HistoryMetricCard label={td("athleteWeeklySummaryLoadLabel")} value={weeklyLoadAverage ? `${weeklyLoadAverage}` : "-"} accent="review" />
+                </SimpleGrid>
+
+                <Paper withBorder p="md" radius="md">
+                  <Stack gap="xs">
+                    <Text fw={700}>{td("athleteWeeklySummaryNarrativeTitle")}</Text>
+                    <Text c="dimmed">
+                      {td("athleteWeeklySummaryNarrativeBody", {
+                        sessions: weeklyAssessments.length,
+                        readiness: weeklyReadinessAverage.toFixed(1),
+                        habits: weeklyHabitAverage || 0,
+                        load: weeklyLoadAverage || 0,
+                        strongest: weeklyStrongestPillar,
+                        focus: weeklyFocusPillar
+                      })}
+                    </Text>
+                  </Stack>
+                </Paper>
+
+                <SimpleGrid cols={{ base: 1, lg: 3 }} spacing="md">
+                  <Paper withBorder p="md" radius="md">
+                    <Stack gap="xs">
+                      <Text fw={700}>{td("athleteWeeklySummaryStrengthTitle")}</Text>
+                      <Text c="dimmed">
+                        {td("athleteWeeklySummaryStrengthBody", {
+                          strongest: weeklyStrongestPillar,
+                          readiness: weeklyReadinessAverage.toFixed(1)
+                        })}
+                      </Text>
+                    </Stack>
+                  </Paper>
+                  <Paper withBorder p="md" radius="md">
+                    <Stack gap="xs">
+                      <Text fw={700}>{td("athleteWeeklySummaryConstraintTitle")}</Text>
+                      <Text c="dimmed">{weeklyConstraintBody}</Text>
+                    </Stack>
+                  </Paper>
+                  <Paper withBorder p="md" radius="md">
+                    <Stack gap="xs">
+                      <Text fw={700}>{td("athleteWeeklySummaryNextTitle")}</Text>
+                      <Text c="dimmed">{weeklyNextBody}</Text>
+                    </Stack>
+                  </Paper>
+                </SimpleGrid>
+              </Stack>
             )}
           </SectionCard>
 
