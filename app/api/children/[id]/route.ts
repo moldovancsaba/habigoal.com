@@ -6,7 +6,7 @@ import { deleteAssessmentsForChild, updateAssessmentsForChildProfile } from "@/r
 import { deleteChildById, getChildById, updateChildById } from "@/repositories/child.repository";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = requireRole(_request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(_request, ["admin", "conductor", "observer"]);
   if (authError) return authError;
 
   try {
@@ -27,7 +27,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "conductor"]);
   if (authError) return authError;
 
   try {
@@ -65,7 +65,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "conductor"]);
   if (authError) return authError;
 
   try {

@@ -14,7 +14,7 @@ export default async function LandingPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Landing" });
   const { error } = await searchParams;
-  const authHref = env.surveyEnforceAuth ? "/api/auth/login" : `/${locale}/dashboard`;
+  const authHref = env.surveyEnforceAuth ? `/api/auth/login?next=/${locale}/dashboard` : `/${locale}/dashboard`;
 
   return (
     <Box style={{ minHeight: "100vh", color: "var(--text-primary)", position: "relative", overflow: "hidden" }}>

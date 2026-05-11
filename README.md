@@ -29,6 +29,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - [Legal and Company Info](docs/legal.md)
 - [Product Roadmap](ROADMAP.md)
 - [Codex Automation Architecture](.codex/memory/architecture.md)
+- [SSO Setup](docs/sso-setup.md)
 
 ## GitHub Project Bootstrap
 
@@ -99,6 +100,14 @@ MONGODB_URI=
 MONGODB_DB=survey
 MONGODB_APP_NAME=habigoal-local
 IMGBB_API_KEY=
+APP_URL=
+SSO_CLIENT_ID=
+SSO_CLIENT_SECRET=
+SSO_BASE_URL=https://sso.doneisbetter.com
+SSO_REDIRECT_URI=
+SSO_LOGOUT_URL=
+AUTH_SECRET=
+SURVEY_ENFORCE_AUTH=false
 ```
 
 ## MongoDB Atlas Setup
@@ -115,7 +124,23 @@ The runtime health endpoint `/api/health` now reports whether MongoDB is both co
 
 Uploaded evidence images are sent through the server-side `imgbb` endpoint and only URL metadata is stored in records.
 
-Role-based API enforcement can be enabled via `SURVEY_ENFORCE_AUTH`; when enabled, protected endpoints validate `x-survey-role`.
+Role-based API enforcement can be enabled via `SURVEY_ENFORCE_AUTH`; when enabled, protected endpoints validate the signed-in session role set, with `x-survey-role` remaining available as an explicit override path for trusted integrations and test harnesses.
+
+## SSO
+
+Habigoal supports DoneIsBetter SSO via:
+
+- `/api/auth/login`
+- `/api/oauth/callback`
+- `/api/auth/logout`
+
+The app now supports:
+
+- environment-driven auth enforcement via `SURVEY_ENFORCE_AUTH`
+- request-aware redirect handling back into the correct locale/path after login
+- session-cookie based role checks on protected API routes
+
+Production SSO client setup instructions are documented in [docs/sso-setup.md](docs/sso-setup.md).
 
 ## Data lifecycle and traceability
 

@@ -4,7 +4,7 @@ import { jsonError, requireRole } from "@/lib/api";
 import { restoreChildById } from "@/repositories/child.repository";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "conductor"]);
   if (authError) return authError;
 
   try {

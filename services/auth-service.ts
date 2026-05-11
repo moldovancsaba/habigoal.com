@@ -7,10 +7,26 @@ export type SSOUser = {
   role?: string;
 };
 
-export function getAuthorizationUrl(state: string) {
+export function resolveAppBaseUrl(request?: Request) {
+  if (env.appBaseUrl) {
+    return env.appBaseUrl.replace(/\/$/, "");
+  }
+
+  if (request) {
+    return new URL(request.url).origin;
+  }
+
+  throw new Error("APP_URL is not configured");
+}
+
+export function resolveRedirectUri(request?: Request) {
+  return env.ssoRedirectUri || `${resolveAppBaseUrl(request)}/api/oauth/callback`;
+}
+
+export function getAuthorizationUrl(state: string, request?: Request) {
   const baseUrl = env.ssoBaseUrl;
   const clientId = requireServerEnv("ssoClientId");
-  const redirectUri = env.ssoRedirectUri;
+  const redirectUri = resolveRedirectUri(request);
 
   const url = new URL(`${baseUrl}/api/oauth/authorize`);
   url.searchParams.set("client_id", clientId);
@@ -36,11 +52,11 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout 
   }
 }
 
-export async function exchangeCodeForToken(code: string) {
+export async function exchangeCodeForToken(code: string, request?: Request) {
   const baseUrl = env.ssoBaseUrl;
   const clientId = requireServerEnv("ssoClientId");
   const clientSecret = requireServerEnv("ssoClientSecret");
-  const redirectUri = env.ssoRedirectUri;
+  const redirectUri = resolveRedirectUri(request);
 
   try {
     const response = await fetchWithTimeout(`${baseUrl}/api/oauth/token`, {

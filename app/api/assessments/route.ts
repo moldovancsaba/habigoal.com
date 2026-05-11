@@ -3,7 +3,7 @@ import { createAssessmentFromPayload, listAssessments, listDeletedAssessments } 
 import { jsonError, readJson, requireRole } from "@/lib/api";
 
 export async function GET(request: Request) {
-  const authError = requireRole(request, ["admin", "conductor", "observer"]);
+  const authError = await requireRole(request, ["admin", "conductor", "observer"]);
   if (authError) return authError;
 
   try {
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const authError = requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "conductor"]);
   if (authError) return authError;
 
   try {

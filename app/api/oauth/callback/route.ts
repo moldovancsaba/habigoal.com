@@ -12,13 +12,14 @@ export async function GET(request: NextRequest) {
 
   const cookieStore = await cookies();
   const savedState = cookieStore.get("oauth_state")?.value;
+  const returnTo = cookieStore.get("oauth_return_to")?.value;
 
   if (!code || !state || state !== savedState) {
     return NextResponse.json({ error: "Invalid state or code" }, { status: 400 });
   }
 
   try {
-    const tokens = await exchangeCodeForToken(code);
+    const tokens = await exchangeCodeForToken(code, request);
     const ssoUser = await getUserInfo(tokens.access_token);
 
     // Check if the user's email is in our local approved list
@@ -54,8 +55,11 @@ export async function GET(request: NextRequest) {
     if (!localUser) {
       console.warn(`Login denied for non-whitelisted email: ${ssoUser.email}`);
       // Redirect to landing page with an error parameter
-      const loginUrl = new URL("/", request.url);
+      const fallbackPath = returnTo?.match(/^\/(hu|en|ar|es|de|he)(\/|$)/)?.[0] || "/";
+      const loginUrl = new URL(fallbackPath, request.url);
       loginUrl.searchParams.set("error", "access_denied");
+      cookieStore.delete("oauth_state");
+      cookieStore.delete("oauth_return_to");
       return NextResponse.redirect(loginUrl);
     }
 
@@ -70,9 +74,10 @@ export async function GET(request: NextRequest) {
 
     // Clean up state cookie
     cookieStore.delete("oauth_state");
+    cookieStore.delete("oauth_return_to");
 
-    // Redirect to dashboard
-    return NextResponse.redirect(new URL("/", request.url));
+    // Redirect back to the requested in-app path.
+    return NextResponse.redirect(new URL(returnTo || "/", request.url));
   } catch (error) {
     console.error("Auth callback error:", error);
     return NextResponse.json({ error: "Authentication failed" }, { status: 500 });
