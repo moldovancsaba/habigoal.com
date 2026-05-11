@@ -952,8 +952,16 @@
     "brandSubtitle": "Habigoal",
     "previewTitle": "واجهة Habigoal",
     "previewSubtitle": "لوحات معلومات دلالية، سجلات موجهة، وأسقف زجاجية هادئة عالية التباين مهيأة للعمل التشغيلي الكثيف.",
+    "whatsNew": "ما الجديد",
     "termsOfService": "شروط الخدمة",
     "privacyPolicy": "سياسة الخصوصية"
+  },
+  "News": {
+    "badge": "أخبار Habigoal",
+    "title": "ما الجديد في Habigoal",
+    "subtitle": "ملاحظات إصدار أسبوعية وتحديثات منتج مبنية على العمل الحقيقي في المستودع حتى ترى الفرق ما الذي تغير في التطبيق.",
+    "readPost": "قراءة المنشور",
+    "backToNews": "العودة إلى الأخبار"
   },
   "Report": {
     "professionalOpinion": "الرأي المهني:",

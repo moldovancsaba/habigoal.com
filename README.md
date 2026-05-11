@@ -10,6 +10,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - Athlete-facing daily operating summary on the athlete detail page with readable state, momentum, and next-action guidance
 - Persisted athlete habit tracker with daily routine scoring, streaks, and adherence trend visibility
 - Dedicated session planning route at `/dashboard/planning` with a weekly calendar shaped by readiness, support pressure, location scope, and internal load, plus persisted weekly coach plans reflected on athlete detail pages
+- Public `/news` release-notes surface backed by structured post content for weekly “What’s New” updates
 - Historical compatibility layer for legacy assessment data and backfilled tracker fields
 - Daily readiness reports and PDF export surfaces
 - Persistent audit and soft-delete workflows for records and athletes

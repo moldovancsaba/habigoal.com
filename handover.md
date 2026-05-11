@@ -49,6 +49,10 @@ This document summarizes the state of the project after the first major enhancem
 - Weekly plans can now be persisted through `GET/POST /api/session-plans` and stored in the `session_plans` collection.
 - Athlete detail pages now reflect the current saved weekly plan when a matching scope or athlete-specific plan exists.
 
+### 8. Release Notes Surface (v0.5.x)
+- A public `/news` surface now exists for weekly release notes and “What’s New” updates.
+- News posts are backed by structured content in `content/news/posts.json`, which makes automation-safe weekly publishing straightforward.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

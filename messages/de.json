@@ -957,8 +957,16 @@
     "brandSubtitle": "Habigoal",
     "previewTitle": "Habigoal-Oberflaeche",
     "previewSubtitle": "Semantische Dashboards, gefuehrte Eintraege und ruhige kontrastreiche Glasflaechen fuer dichte operative Arbeit.",
+    "whatsNew": "Neuigkeiten",
     "termsOfService": "Nutzungsbedingungen",
     "privacyPolicy": "Datenschutzrichtlinie"
+  },
+  "News": {
+    "badge": "Habigoal News",
+    "title": "Was ist neu in Habigoal",
+    "subtitle": "Woechentliche Release Notes und Produktupdates aus realer Repository-Arbeit, damit Teams sehen, was sich in der App geaendert hat.",
+    "readPost": "Beitrag lesen",
+    "backToNews": "Zurueck zu den News"
   },
   "Report": {
     "professionalOpinion": "Professional opinion:",

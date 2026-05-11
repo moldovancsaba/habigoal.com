@@ -957,8 +957,16 @@
     "brandSubtitle": "Habigoal",
     "previewTitle": "Habigoal felulet",
     "previewSubtitle": "Szemantikus dashboardok, vezetett rekordok és nyugodt, nagy kontrasztú üvegfelületek intenzív operatív munkához hangolva.",
+    "whatsNew": "Újdonságok",
     "termsOfService": "Felhasználási feltételek",
     "privacyPolicy": "Adatvédelmi tájékoztató"
+  },
+  "News": {
+    "badge": "Habigoal Hírek",
+    "title": "Mi újság a Habigoalban",
+    "subtitle": "Heti release note-ok és termékfrissítések valós repository-munka alapján, hogy a csapatok lássák, mi változott az alkalmazásban.",
+    "readPost": "Bejegyzés megnyitása",
+    "backToNews": "Vissza a hírekhez"
   },
   "Report": {
     "professionalOpinion": "Szakértői vélemény:",

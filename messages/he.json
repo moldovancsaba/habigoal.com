@@ -957,8 +957,16 @@
     "brandSubtitle": "Habigoal",
     "previewTitle": "ממשק Habigoal",
     "previewSubtitle": "לוחות מחוונים סמנטיים, רשומות מודרכות ומשטחי זכוכית שקטים עם ניגודיות גבוהה לעבודה תפעולית צפופה.",
+    "whatsNew": "מה חדש",
     "termsOfService": "תנאי שימוש",
     "privacyPolicy": "מדיניות פרטיות"
+  },
+  "News": {
+    "badge": "חדשות Habigoal",
+    "title": "מה חדש ב-Habigoal",
+    "subtitle": "עדכוני מוצר והערות שחרור שבועיות המבוססים על עבודת הריפו האמיתית כדי שצוותים יראו מה השתנה באפליקציה.",
+    "readPost": "קרא פוסט",
+    "backToNews": "חזרה לחדשות"
   },
   "Report": {
     "professionalOpinion": "Professional opinion:",

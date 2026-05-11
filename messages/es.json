@@ -957,8 +957,16 @@
     "brandSubtitle": "Habigoal",
     "previewTitle": "Interfaz Habigoal",
     "previewSubtitle": "Paneles semanticos, registros guiados y superficies calmadas de alto contraste para trabajo operativo denso.",
+    "whatsNew": "Novedades",
     "termsOfService": "Terminos del servicio",
     "privacyPolicy": "Politica de privacidad"
+  },
+  "News": {
+    "badge": "Noticias Habigoal",
+    "title": "Que hay de nuevo en Habigoal",
+    "subtitle": "Notas de version semanales y actualizaciones del producto generadas a partir del trabajo real del repositorio.",
+    "readPost": "Leer publicacion",
+    "backToNews": "Volver a noticias"
   },
   "Report": {
     "professionalOpinion": "Professional opinion:",

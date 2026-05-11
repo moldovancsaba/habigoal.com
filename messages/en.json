@@ -957,8 +957,16 @@
     "brandSubtitle": "Habigoal",
     "previewTitle": "Habigoal Interface",
     "previewSubtitle": "Semantic dashboards, guided records, and calm high-contrast glass surfaces tuned for dense operational work.",
+    "whatsNew": "What's New",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy"
+  },
+  "News": {
+    "badge": "Habigoal News",
+    "title": "What’s New in Habigoal",
+    "subtitle": "Weekly release notes and product updates generated from real repository work so coaches and teams can see what changed in the app.",
+    "readPost": "Read post",
+    "backToNews": "Back to news"
   },
   "Report": {
     "professionalOpinion": "Professional opinion:",

@@ -63,6 +63,9 @@ export default async function LandingPage({
                 <Button component="a" href={authHref} size="xl" color="ingress" style={{ minWidth: 220 }}>
                   {t("login")}
                 </Button>
+                <Button component="a" href={`/${locale}/news`} size="xl" variant="light" style={{ minWidth: 220 }}>
+                  {t("whatsNew")}
+                </Button>
                 <Text size="sm" c="var(--text-muted)">
                   {t("ssoNote")}
                 </Text>
@@ -93,6 +96,9 @@ export default async function LandingPage({
             </Text>
             <Text component="a" href={`/${locale}/legal/privacy`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
               {t("privacyPolicy")}
+            </Text>
+            <Text component="a" href={`/${locale}/news`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
+              {t("whatsNew")}
             </Text>
           </Group>
         </Container>
