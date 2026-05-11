@@ -23,9 +23,9 @@ export default async function NewsPostPage({
       <Container size="md" py={{ base: 40, md: 72 }}>
         <Stack gap="xl">
           <Stack gap="md">
-            <Text component={Link} href="/news" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
-              {t("backToNews")}
-            </Text>
+            <Link href="/news" style={{ textDecoration: "none" }}>
+              <Text c="var(--text-secondary)">{t("backToNews")}</Text>
+            </Link>
             <Text size="sm" c="dimmed">{post.publishedAt}</Text>
             <Title order={1}>{post.title}</Title>
             <Text size="lg" c="var(--text-secondary)">{post.summary}</Text>

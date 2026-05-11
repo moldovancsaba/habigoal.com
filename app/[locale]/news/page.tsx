@@ -47,9 +47,11 @@ export default async function NewsIndexPage({
 
                   <Text c="var(--text-secondary)">{post.summary}</Text>
 
-                  <Button component={Link} href={`/news/${post.slug}`} variant="light" w="fit-content">
-                    {t("readPost")}
-                  </Button>
+                  <Link href={`/news/${post.slug}`} style={{ textDecoration: "none" }}>
+                    <Button variant="light" w="fit-content">
+                      {t("readPost")}
+                    </Button>
+                  </Link>
                 </Stack>
               </Paper>
             ))}
