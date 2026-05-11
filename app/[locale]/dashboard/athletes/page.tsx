@@ -76,35 +76,53 @@ export default function ChildrenListPage() {
     let active = true;
 
     void (async () => {
-      const [cRes, sRes] = await Promise.all([
-        fetch("/api/athletes?metrics=true").catch(() => null),
-        fetch("/api/settings").catch(() => null)
-      ]);
-      const dcRes = await fetch("/api/athletes?deleted=true").catch(() => null);
-      
-      if (!active) return;
+      try {
+        const [cRes, sRes] = await Promise.all([
+          fetch("/api/athletes?metrics=true").catch(() => null),
+          fetch("/api/settings").catch(() => null)
+        ]);
+        const dcRes = await fetch("/api/athletes?deleted=true").catch(() => null);
 
-      if (cRes?.ok) {
-        const data = (await cRes.json()) as AthleteProfile[];
-        setChildren(data);
+        if (!active) return;
+
+        if (!cRes?.ok || !dcRes?.ok || !sRes?.ok) {
+          setError(true);
+          setMessage(tc("error"));
+          setChildren([]);
+          setDeletedChildren([]);
+          setLocations([]);
+          return;
+        }
+
+        const [childrenData, deletedData, settingsData] = await Promise.all([
+          cRes.json() as Promise<AthleteProfile[]>,
+          dcRes.json() as Promise<AthleteProfile[]>,
+          sRes.json() as Promise<{ locations?: string[] }>
+        ]);
+
+        setChildren(Array.isArray(childrenData) ? childrenData : []);
+        setDeletedChildren(Array.isArray(deletedData) ? deletedData : []);
+        setLocations(Array.isArray(settingsData.locations) ? settingsData.locations : []);
+        setError(false);
+        setMessage("");
+      } catch {
+        if (!active) return;
+        setError(true);
+        setMessage(tc("error"));
+        setChildren([]);
+        setDeletedChildren([]);
+        setLocations([]);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
       }
-      if (dcRes?.ok) {
-        const d = (await dcRes.json()) as AthleteProfile[];
-        setDeletedChildren(Array.isArray(d) ? d : []);
-      }
-      
-      if (sRes?.ok) {
-        const data = await sRes.json();
-        setLocations(data.locations || []);
-      }
-      
-      setLoading(false);
     })();
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [tc]);
 
   const downloadLatestMap = async (childId?: string, latestRecordId?: string) => {
     if (!childId || !latestRecordId) return;

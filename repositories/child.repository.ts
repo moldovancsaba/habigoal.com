@@ -87,7 +87,7 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
     {
       $lookup: {
         from: "assessments",
-        let: { childId: { $toString: "$_id" } },
+        let: { childId: { $toString: "$_id" }, childName: "$name", childBirthDate: "$birthDate" },
         pipeline: [
           { 
             $match: { 
@@ -96,8 +96,8 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
                   { $eq: ["$childId", "$$childId"] },
                   { 
                     $and: [
-                      { $eq: ["$child.name", "$name"] },
-                      { $eq: ["$child.birthDate", "$birthDate"] }
+                      { $eq: ["$child.name", "$$childName"] },
+                      { $eq: ["$child.birthDate", "$$childBirthDate"] }
                     ]
                   }
                 ] 
@@ -113,7 +113,7 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
     {
       $lookup: {
         from: "assessments",
-        let: { childId: { $toString: "$_id" } },
+        let: { childId: { $toString: "$_id" }, childName: "$name", childBirthDate: "$birthDate" },
         pipeline: [
           {
             $match: {
@@ -122,8 +122,8 @@ export async function listChildrenWithMetrics(): Promise<ChildProfile[]> {
                   { $eq: ["$childId", "$$childId"] },
                   {
                     $and: [
-                      { $eq: ["$child.name", "$name"] },
-                      { $eq: ["$child.birthDate", "$birthDate"] }
+                      { $eq: ["$child.name", "$$childName"] },
+                      { $eq: ["$child.birthDate", "$$childBirthDate"] }
                     ]
                   }
                 ]
