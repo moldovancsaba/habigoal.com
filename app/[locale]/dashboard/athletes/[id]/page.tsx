@@ -99,7 +99,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     try {
       const users = await getUsers();
       const printableRecord = withDisplayNamesForReport(latest, users);
-      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, data.assessments);
+      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, data.assessments, habitRecords);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {
