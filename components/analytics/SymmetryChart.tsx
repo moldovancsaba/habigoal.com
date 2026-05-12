@@ -44,7 +44,7 @@ export function SymmetryChart({ title, data }: SymmetryChartProps) {
               }}
             />
             <Radar
-              name="Score"
+              name=""
               dataKey="value"
               stroke={ANALYTICS_CONFIG.colors.primary}
               fill={ANALYTICS_CONFIG.colors.primary}

@@ -15,7 +15,7 @@ interface MaturityRadarChartProps {
   title?: string;
   data: RadarPoint[];
   labels?: {
-    A: string;
+    A?: string;
     B?: string;
   };
 }
@@ -23,7 +23,7 @@ interface MaturityRadarChartProps {
 export function MaturityRadarChart({ 
   title, 
   data,
-  labels = { A: "Current" }
+  labels
 }: MaturityRadarChartProps) {
   return (
     <Paper withBorder p="md" radius="md">
@@ -55,7 +55,7 @@ export function MaturityRadarChart({
                 color: "var(--text-primary)"
               }}
             />
-            {labels.B && (
+            {labels?.B && (
               <Legend 
                 verticalAlign="bottom" 
                 align="center" 
@@ -68,13 +68,13 @@ export function MaturityRadarChart({
               />
             )}
             <Radar
-              name={labels.A}
+              name={labels?.A ?? ""}
               dataKey="A"
               stroke={ANALYTICS_CONFIG.colors.primary}
               fill={ANALYTICS_CONFIG.colors.primary}
               fillOpacity={0.6}
             />
-            {labels.B && (
+            {labels?.B && (
               <Radar
                 name={labels.B}
                 dataKey="B"

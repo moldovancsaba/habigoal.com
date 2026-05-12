@@ -299,9 +299,9 @@ export default function SettingsPage() {
     });
 
   function formatLastSeen(value?: string) {
-    if (!value) return "Pending first login";
+    if (!value) return t("pendingFirstLogin");
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "Pending first login";
+    if (Number.isNaN(date.getTime())) return t("pendingFirstLogin");
     return date.toLocaleString();
   }
 
@@ -391,27 +391,27 @@ export default function SettingsPage() {
         <Stack gap="md">
           {!canManageUsers ? (
             <Alert color="yellow">
-              Only admins can approve users, assign roles, or remove access.
+              {t("userRightsAdminOnly")}
             </Alert>
           ) : null}
           <Group gap="xs" wrap="wrap">
-            <Badge variant="light" color="ingress">Admins: {adminCount}</Badge>
-            <Badge variant="light" color="blue">Trainers: {trainerCount}</Badge>
-            <Badge variant="light" color="violet">Athletes: {athleteCount}</Badge>
-            <Badge variant="light" color="gray">Approved users: {users.length}</Badge>
+            <Badge variant="light" color="ingress">{t("userCountAdmins", { count: adminCount })}</Badge>
+            <Badge variant="light" color="blue">{t("userCountTrainers", { count: trainerCount })}</Badge>
+            <Badge variant="light" color="violet">{t("userCountAthletes", { count: athleteCount })}</Badge>
+            <Badge variant="light" color="gray">{t("userCountApproved", { count: users.length })}</Badge>
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
               label={tc("name")}
-              placeholder="Full name"
+              placeholder={t("fullNamePlaceholder")}
               value={userNameDraft}
               onChange={(event) => setUserNameDraft(event.target.value)}
               style={{ minWidth: 220 }}
               disabled={!canManageUsers}
             />
             <TextInput
-              label="Search users"
-              placeholder="Name, email, or role"
+              label={t("searchUsersLabel")}
+              placeholder={t("searchUsersPlaceholder")}
               value={userSearch}
               onChange={(event) => setUserSearch(event.target.value)}
               style={{ minWidth: 220 }}
@@ -420,18 +420,18 @@ export default function SettingsPage() {
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
               label={t("email")}
-              placeholder="user@example.com"
+              placeholder={t("userEmailPlaceholder")}
               value={userDraft}
               onChange={(event) => setUserDraft(event.target.value)}
               style={{ minWidth: 280 }}
               disabled={!canManageUsers}
             />
             <Button variant="default" onClick={addNewUser} disabled={!canManageUsers || !userDraft.trim()}>
-              Add user
+              {t("addUser")}
             </Button>
           </Group>
           <Text size="sm" c="dimmed">
-            New users are approved locally first. SSO access only works after the email exists here with at least one role.
+            {t("userApprovalHint")}
           </Text>
           <Stack gap="md" hiddenFrom="sm">
             {filteredUsers
@@ -441,7 +441,7 @@ export default function SettingsPage() {
                     <TextInput
                       label={tc("name")}
                       value={user.name || ""}
-                      placeholder="Full name"
+                      placeholder={t("fullNamePlaceholder")}
                       onChange={(event) => {
                         const name = event.currentTarget.value;
                         setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
@@ -449,25 +449,25 @@ export default function SettingsPage() {
                     />
                     <ResponsiveDataRow label={t("email")} value={<Text fw={600}>{user.email}</Text>} />
                     <ResponsiveDataRow
-                      label="Access status"
-                      value={<Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>{user.lastLoginAt ? "Active" : "Pending"}</Badge>}
+                      label={t("accessStatusLabel")}
+                      value={<Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>{user.lastLoginAt ? t("accessStatusActive") : t("accessStatusPending")}</Badge>}
                     />
-                    <ResponsiveDataRow label="Last login" value={<Text>{formatLastSeen(user.lastLoginAt)}</Text>} />
+                    <ResponsiveDataRow label={t("lastLoginLabel")} value={<Text>{formatLastSeen(user.lastLoginAt)}</Text>} />
                     <Select
-                      label="Entity"
+                      label={t("entityLabel")}
                       value={user.roles[0] || "athlete"}
                       disabled={!canManageUsers}
                       data={[
-                        { value: "athlete", label: "Athlete" },
-                        { value: "trainer", label: "Trainer" },
-                        { value: "admin", label: "Admin" }
+                        { value: "athlete", label: t("entityAthlete") },
+                        { value: "trainer", label: t("entityTrainer") },
+                        { value: "admin", label: t("entityAdmin") }
                       ]}
                       onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
                     />
                     {user.roles.includes("athlete") ? (
                       <Select
                         searchable
-                        label="Linked athlete"
+                        label={t("linkedAthleteLabel")}
                         value={user.athleteId || null}
                         data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
                         onChange={(value) => void setUserAthlete(user, value || undefined)}
@@ -492,7 +492,7 @@ export default function SettingsPage() {
                         disabled={!canManageUsers || isProtectedAdmin(user)}
                         onClick={async () => {
                           const { deleteUser } = await import("@/services/user-service");
-                          if (confirm(`Remove access for ${user.email}?`)) {
+                          if (confirm(t("removeUserConfirm", { email: user.email }))) {
                             const ok = await deleteUser(user.email);
                             if (ok) {
                               setUsers(prev => prev.filter(u => u.email !== user.email));
@@ -517,9 +517,9 @@ export default function SettingsPage() {
               <Table.Tr>
                 <Table.Th>{tc("name")}</Table.Th>
                 <Table.Th>{t("email")}</Table.Th>
-                <Table.Th>Access</Table.Th>
-                <Table.Th>Last login</Table.Th>
-                <Table.Th colSpan={3}>Entity and athlete link</Table.Th>
+                <Table.Th>{t("accessColumn")}</Table.Th>
+                <Table.Th>{t("lastLoginLabel")}</Table.Th>
+                <Table.Th colSpan={3}>{t("entityAndAthleteLinkColumn")}</Table.Th>
                 <Table.Th style={{ textAlign: "right" }}>{tc("actions")}</Table.Th>
               </Table.Tr>
             </Table.Thead>
@@ -530,7 +530,7 @@ export default function SettingsPage() {
                   <Table.Td>
                     <TextInput
                       value={user.name || ""}
-                      placeholder="Full name"
+                      placeholder={t("fullNamePlaceholder")}
                       onChange={(event) => {
                         const name = event.currentTarget.value;
                         setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
@@ -542,7 +542,7 @@ export default function SettingsPage() {
                   </Table.Td>
                   <Table.Td>
                     <Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>
-                      {user.lastLoginAt ? "Active" : "Pending"}
+                      {user.lastLoginAt ? t("accessStatusActive") : t("accessStatusPending")}
                     </Badge>
                   </Table.Td>
                   <Table.Td>
@@ -554,9 +554,9 @@ export default function SettingsPage() {
                         value={user.roles[0] || "athlete"}
                         disabled={!canManageUsers}
                         data={[
-                          { value: "athlete", label: "Athlete" },
-                          { value: "trainer", label: "Trainer" },
-                          { value: "admin", label: "Admin" }
+                          { value: "athlete", label: t("entityAthlete") },
+                          { value: "trainer", label: t("entityTrainer") },
+                          { value: "admin", label: t("entityAdmin") }
                         ]}
                         onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
                       />
@@ -567,7 +567,7 @@ export default function SettingsPage() {
                           data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
                           onChange={(value) => void setUserAthlete(user, value || undefined)}
                         />
-                      ) : <Text size="sm" c="dimmed">No athlete link needed</Text>}
+                      ) : <Text size="sm" c="dimmed">{t("noAthleteLinkNeeded")}</Text>}
                     </Group>
                   </Table.Td>
                   <Table.Td style={{ textAlign: "right" }}>
@@ -592,7 +592,7 @@ export default function SettingsPage() {
                       disabled={!canManageUsers || isProtectedAdmin(user)}
                       onClick={async () => {
                         const { deleteUser } = await import("@/services/user-service");
-                        if (confirm(`Remove access for ${user.email}?`)) {
+                        if (confirm(t("removeUserConfirm", { email: user.email }))) {
                           const ok = await deleteUser(user.email);
                           if (ok) {
                             setUsers(prev => prev.filter(u => u.email !== user.email));
@@ -621,17 +621,17 @@ export default function SettingsPage() {
         </Stack>
       </SectionCard>
 
-      <SectionCard title="Teams">
+      <SectionCard title={t("teamsTitle")}>
         <Stack gap="md">
           {!canManageUsers ? (
             <Alert color="yellow">
-              Only admins can create teams and assign trainers or athletes.
+              {t("teamsAdminOnly")}
             </Alert>
           ) : null}
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
-              label="Team name"
-              placeholder="U13 Blue"
+              label={t("teamNameLabel")}
+              placeholder={t("teamNamePlaceholder")}
               value={teamNameDraft}
               onChange={(event) => setTeamNameDraft(event.currentTarget.value)}
               style={{ minWidth: 220 }}
@@ -640,31 +640,31 @@ export default function SettingsPage() {
             <Box style={{ minWidth: 240 }}>
               <Select
                 searchable
-                label="Add trainer"
+                label={t("addTrainerLabel")}
                 value={teamTrainerDraft || null}
                 data={users.filter((user) => user.roles.includes("trainer") || user.roles.includes("admin")).map((user) => ({ value: user.email, label: user.name || user.email }))}
                 onChange={(value) => setTeamTrainerDraft(value || "")}
               />
             </Box>
             <Button variant="default" onClick={addTeamTrainerDraft} disabled={!canManageUsers || !teamTrainerDraft}>
-              Add trainer
+              {t("addTrainer")}
             </Button>
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
             <Box style={{ minWidth: 240 }}>
               <Select
                 searchable
-                label="Add athlete"
+                label={t("addAthleteLabel")}
                 value={teamAthleteDraft || null}
                 data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
                 onChange={(value) => setTeamAthleteDraft(value || "")}
               />
             </Box>
             <Button variant="default" onClick={addTeamAthleteDraft} disabled={!canManageUsers || !teamAthleteDraft}>
-              Add athlete
+              {t("addAthleteAction")}
             </Button>
             <Button color="ingress" onClick={() => void saveTeam()} disabled={!canManageUsers || !teamNameDraft.trim()}>
-              Save team
+              {t("saveTeam")}
             </Button>
           </Group>
           <Group gap="xs" wrap="wrap">
@@ -680,9 +680,11 @@ export default function SettingsPage() {
                 <Group justify="space-between" align="start" wrap="wrap">
                   <Stack gap={4}>
                     <Text fw={700}>{team.name}</Text>
-                    <Text size="sm" c="dimmed">Trainers: {team.trainerEmails.join(", ") || "None assigned"}</Text>
+                    <Text size="sm" c="dimmed">{t("teamTrainersSummary", { trainers: team.trainerEmails.join(", ") || t("teamNoneAssigned") })}</Text>
                     <Text size="sm" c="dimmed">
-                      Athletes: {team.athleteIds.map((athleteId) => athletes.find((entry) => entry._id === athleteId)?.name || athleteId).join(", ") || "None assigned"}
+                      {t("teamAthletesSummary", {
+                        athletes: team.athleteIds.map((athleteId) => athletes.find((entry) => entry._id === athleteId)?.name || athleteId).join(", ") || t("teamNoneAssigned")
+                      })}
                     </Text>
                   </Stack>
                   <Button variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)}>
@@ -691,7 +693,7 @@ export default function SettingsPage() {
                 </Group>
               </Paper>
             ))}
-            {teams.length === 0 ? <Text c="dimmed">No teams created yet.</Text> : null}
+            {teams.length === 0 ? <Text c="dimmed">{t("noTeamsYet")}</Text> : null}
           </Stack>
         </Stack>
       </SectionCard>
@@ -845,7 +847,7 @@ export default function SettingsPage() {
         </Stack>
       </SectionCard>
 
-      <SectionCard title="Standards Version Manager">
+      <SectionCard title={t("standardsVersionManagerTitle")}>
         <Stack gap="md">
           <Select
             label={t("standardsActiveVersion")}
@@ -868,7 +870,7 @@ export default function SettingsPage() {
             <Paper withBorder p="sm">
               <Stack gap="sm" mb="sm">
                 <TextInput
-                  label="Version notes"
+                  label={t("standardsVersionNotes")}
                   value={versionNotesDraft || currentVersionMeta().notes || ""}
                   onChange={(e) => {
                     const v = e.currentTarget.value;
@@ -882,13 +884,17 @@ export default function SettingsPage() {
                     onClick={() => setCurrentVersionMeta({ status: "published" })}
                     disabled={currentVersionMeta().status === "published" || !(versionNotesDraft || currentVersionMeta().notes)}
                   >
-                    Publish version
+                    {t("standardsPublishVersion")}
                   </Button>
-                  <Button variant="light" onClick={computeImpactPreview}>Preview Impact</Button>
+                  <Button variant="light" onClick={computeImpactPreview}>{t("standardsPreviewImpact")}</Button>
                 </Group>
                 {impactPreview ? (
                   <Text size="sm" c="dimmed">
-                    Impact preview ({impactPreview.total} records): {impactPreview.developingToReady} Developing→Ready, {impactPreview.readyToDeveloping} Ready→Developing.
+                    {t("standardsImpactPreview", {
+                      total: impactPreview.total,
+                      developingToReady: impactPreview.developingToReady,
+                      readyToDeveloping: impactPreview.readyToDeveloping
+                    })}
                   </Text>
                 ) : null}
               </Stack>
