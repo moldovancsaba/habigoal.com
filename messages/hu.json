@@ -1013,6 +1013,116 @@
     },
     "release": {
       "badge": "Mi változott"
+    },
+    "modules": {
+      "athlete-first-login": {
+        "steps": {
+          "athlete-home": {
+            "title": "Üdv a sportolói munkatéren",
+            "body": "Ez a saját napi felületed a check-inekhez, szokásokhoz, trendekhez és heti összefoglalókhoz."
+          }
+        }
+      },
+      "athlete-first-checkin": {
+        "steps": {
+          "open-checkin": {
+            "title": "Nyisd meg a napi check-int",
+            "body": "Indítsd el a készenléti check-int a saját sportolói profilodról."
+          },
+          "save-checkin": {
+            "title": "Mentsd el az első check-int",
+            "body": "Tölts ki és ments el egy napi check-int, hogy elindulhassanak a trendjeid és összefoglalóid."
+          }
+        }
+      },
+      "athlete-habit-tracker": {
+        "steps": {
+          "open-habits": {
+            "title": "Nyisd meg a szokáskövetőt",
+            "body": "Nézd át az edzéshez, tanuláshoz, regenerációhoz és jólléthez kapcsolódó napi rutinblokkokat."
+          },
+          "save-habits": {
+            "title": "Mentsd el az első szokásfrissítést",
+            "body": "Rögzíts egy napi szokásfrissítést, hogy a Habigoal elkezdhesse építeni a rutintrendjeidet."
+          }
+        }
+      },
+      "trainer-dashboard-intro": {
+        "steps": {
+          "trainer-dashboard": {
+            "title": "Tréneri dashboard",
+            "body": "Ezen a nézeten értékelheted a sportolói készenlétet, azonosíthatod a támogatási nyomást, és továbbléphetsz a sportolói részletekhez vagy a tervezéshez."
+          }
+        }
+      },
+      "trainer-athlete-management": {
+        "steps": {
+          "open-athlete-roster": {
+            "title": "Nyisd meg a sportolói névsort",
+            "body": "Használd a sportolókezelő nézetet a csapat áttekintésére, a figyelmi területek szűrésére és annak kiválasztására, ki igényel utánkövetést."
+          },
+          "open-athlete-detail": {
+            "title": "Nyiss meg egy sportolói adatlapot",
+            "body": "Nézz át egy sportolót teljes részletességgel, hogy az áttekintésből trendekbe, szokásokba, memóriába és heti kontextusba léphess."
+          }
+        }
+      },
+      "trainer-planning-week": {
+        "steps": {
+          "open-planning": {
+            "title": "Nyisd meg a heti tervezőt",
+            "body": "Tekintsd át a heti foglalkozási szerkezetet, hogy az aktuális készenlét, a hiányzó check-inek és a terhelési nyomás közvetlenül hasson a tervezésre."
+          },
+          "save-planning": {
+            "title": "Ments el egy heti tervet",
+            "body": "Ments el egy heti tervet edzői megjegyzésekkel, hogy a csapatnak tartós operatív terve legyen."
+          }
+        }
+      },
+      "admin-user-rights": {
+        "steps": {
+          "open-settings": {
+            "title": "Admin beállítási munkatér",
+            "body": "Itt kezelheted a jogosultságokat, csapatokat, sportolói hozzárendeléseket és governance beállításokat."
+          },
+          "approve-user": {
+            "title": "Hagyj jóvá egy felhasználót",
+            "body": "Adj hozzá vagy frissíts egy felhasználót, hogy a hozzáférés-vezérlés a helyi szerepkörmodellhez legyen kötve az SSO belépés előtt."
+          }
+        }
+      },
+      "admin-team-setup": {
+        "steps": {
+          "open-team-setup": {
+            "title": "Nyisd meg a csapatbeállítást",
+            "body": "Használd a csapatkezelő részt arra, hogy a trénereket és sportolókat ugyanahhoz az operatív csoporthoz kapcsold."
+          },
+          "create-team": {
+            "title": "Hozd létre az első csapatot",
+            "body": "Ments el egy csapatot trénerekkel és sportolókkal, hogy a tréneri kör és a sportolói tulajdonlás egyértelmű legyen a platformon."
+          }
+        }
+      },
+      "admin-governance-review": {
+        "steps": {
+          "open-governance": {
+            "title": "Ellenőrizd a governance-ot és a standardokat",
+            "body": "Nézd át a governance metrikákat, a visszaállítási eszközöket és a standardbeállításokat, hogy a platform megbízható maradjon a felhasználók növekedésével is."
+          },
+          "save-governance": {
+            "title": "Ments el egy admin konfigurációs módosítást",
+            "body": "Rögzíts egy beállítás- vagy standardmódosítást, hogy igazold az admin beállítási folyamat végétől végéig működését."
+          }
+        }
+      },
+      "news-whats-new": {
+        "steps": {
+          "news-surface": {
+            "title": "Mi új a Habigoalban",
+            "body": "A heti újdonságok felületen követheted a szállított termékváltozásokat és az újonnan elérhető munkafolyamatokat."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {

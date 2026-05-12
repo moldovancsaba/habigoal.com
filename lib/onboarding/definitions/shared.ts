@@ -11,9 +11,7 @@ export const sharedOnboardingModules: OnboardingModuleDefinition[] = [
     dismissible: true,
     steps: [
       {
-        id: "news-surface",
-        title: "What’s new in Habigoal",
-        body: "Use the weekly news surface to catch up on shipped product changes and newly available workflows."
+        id: "news-surface"
       }
     ]
   }

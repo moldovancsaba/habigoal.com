@@ -1013,6 +1013,116 @@
     },
     "release": {
       "badge": "What's new"
+    },
+    "modules": {
+      "athlete-first-login": {
+        "steps": {
+          "athlete-home": {
+            "title": "Welcome to your athlete workspace",
+            "body": "This space is your personal daily operating view for check-ins, habits, trends, and weekly summaries."
+          }
+        }
+      },
+      "athlete-first-checkin": {
+        "steps": {
+          "open-checkin": {
+            "title": "Open the daily check-in",
+            "body": "Start your readiness check-in from your athlete profile."
+          },
+          "save-checkin": {
+            "title": "Save your first check-in",
+            "body": "Complete and save one daily check-in so your trends and summaries can begin."
+          }
+        }
+      },
+      "athlete-habit-tracker": {
+        "steps": {
+          "open-habits": {
+            "title": "Open your habit tracker",
+            "body": "Review the daily routine blocks for training, learning, recovery, and wellness."
+          },
+          "save-habits": {
+            "title": "Save your first habit update",
+            "body": "Log one daily habit update so Habigoal can start building your routine trend."
+          }
+        }
+      },
+      "trainer-dashboard-intro": {
+        "steps": {
+          "trainer-dashboard": {
+            "title": "Trainer dashboard",
+            "body": "Use this view to triage athlete readiness, identify support pressure, and move into athlete detail or planning."
+          }
+        }
+      },
+      "trainer-athlete-management": {
+        "steps": {
+          "open-athlete-roster": {
+            "title": "Open your athlete roster",
+            "body": "Use the athlete management view to scan your team, filter attention areas, and pick who needs follow-up."
+          },
+          "open-athlete-detail": {
+            "title": "Open one athlete detail page",
+            "body": "Review one athlete in full so you can move from triage into trends, habits, memory, and weekly context."
+          }
+        }
+      },
+      "trainer-planning-week": {
+        "steps": {
+          "open-planning": {
+            "title": "Open the weekly planning board",
+            "body": "Review the weekly session shape so live readiness, missed check-ins, and load pressure feed directly into coach planning."
+          },
+          "save-planning": {
+            "title": "Save one weekly plan",
+            "body": "Save one weekly plan with coach notes so your team has a persisted operational plan to work from."
+          }
+        }
+      },
+      "admin-user-rights": {
+        "steps": {
+          "open-settings": {
+            "title": "Admin setup workspace",
+            "body": "Manage user rights, teams, athlete assignments, and governance settings here."
+          },
+          "approve-user": {
+            "title": "Approve one user",
+            "body": "Add or update one user so access control is anchored to the local role model before SSO entry."
+          }
+        }
+      },
+      "admin-team-setup": {
+        "steps": {
+          "open-team-setup": {
+            "title": "Open team setup",
+            "body": "Use the team management section to connect trainers and athletes to the same operational group."
+          },
+          "create-team": {
+            "title": "Create your first team",
+            "body": "Save one team with trainers and athletes so trainer scope and athlete ownership are defined in the platform."
+          }
+        }
+      },
+      "admin-governance-review": {
+        "steps": {
+          "open-governance": {
+            "title": "Review governance and standards",
+            "body": "Check governance metrics, restore tools, and standards configuration so the platform stays trustworthy as more users join."
+          },
+          "save-governance": {
+            "title": "Save one admin configuration change",
+            "body": "Persist one settings or standards change to confirm the admin setup flow is working end to end."
+          }
+        }
+      },
+      "news-whats-new": {
+        "steps": {
+          "news-surface": {
+            "title": "What’s new in Habigoal",
+            "body": "Use the weekly news surface to catch up on shipped product changes and newly available workflows."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {

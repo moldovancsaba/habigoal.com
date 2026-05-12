@@ -4,8 +4,8 @@ export type OnboardingModuleType = "intro" | "tour" | "checklist" | "hint" | "re
 
 export type OnboardingStep = {
   id: string;
-  title: string;
-  body: string;
+  title?: string;
+  body?: string;
   selector?: string;
   placement?: "top" | "right" | "bottom" | "left" | "center";
   route?: string;

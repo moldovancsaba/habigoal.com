@@ -15,9 +15,7 @@ export const athleteOnboardingModules: OnboardingModuleDefinition[] = [
     },
     steps: [
       {
-        id: "athlete-home",
-        title: "Welcome to your athlete workspace",
-        body: "This space is your personal daily operating view for check-ins, habits, trends, and weekly summaries."
+        id: "athlete-home"
       }
     ]
   },
@@ -36,14 +34,10 @@ export const athleteOnboardingModules: OnboardingModuleDefinition[] = [
     },
     steps: [
       {
-        id: "open-checkin",
-        title: "Open the daily check-in",
-        body: "Start your readiness check-in from your athlete profile."
+        id: "open-checkin"
       },
       {
-        id: "save-checkin",
-        title: "Save your first check-in",
-        body: "Complete and save one daily check-in so your trends and summaries can begin."
+        id: "save-checkin"
       }
     ]
   },
@@ -63,14 +57,10 @@ export const athleteOnboardingModules: OnboardingModuleDefinition[] = [
     },
     steps: [
       {
-        id: "open-habits",
-        title: "Open your habit tracker",
-        body: "Review the daily routine blocks for training, learning, recovery, and wellness."
+        id: "open-habits"
       },
       {
-        id: "save-habits",
-        title: "Save your first habit update",
-        body: "Log one daily habit update so Habigoal can start building your routine trend."
+        id: "save-habits"
       }
     ]
   }

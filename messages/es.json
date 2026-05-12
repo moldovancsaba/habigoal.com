@@ -1012,6 +1012,116 @@
     },
     "release": {
       "badge": "Novedades"
+    },
+    "modules": {
+      "athlete-first-login": {
+        "steps": {
+          "athlete-home": {
+            "title": "Bienvenido a tu espacio de atleta",
+            "body": "Este es tu espacio diario personal para check-ins, hábitos, tendencias y resúmenes semanales."
+          }
+        }
+      },
+      "athlete-first-checkin": {
+        "steps": {
+          "open-checkin": {
+            "title": "Abre el check-in diario",
+            "body": "Inicia tu check-in de preparación desde tu perfil de atleta."
+          },
+          "save-checkin": {
+            "title": "Guarda tu primer check-in",
+            "body": "Completa y guarda un check-in diario para que puedan empezar tus tendencias y resúmenes."
+          }
+        }
+      },
+      "athlete-habit-tracker": {
+        "steps": {
+          "open-habits": {
+            "title": "Abre tu seguimiento de hábitos",
+            "body": "Revisa los bloques diarios de rutina para entrenamiento, aprendizaje, recuperación y bienestar."
+          },
+          "save-habits": {
+            "title": "Guarda tu primera actualización de hábitos",
+            "body": "Registra una actualización diaria de hábitos para que Habigoal empiece a construir tu tendencia de rutina."
+          }
+        }
+      },
+      "trainer-dashboard-intro": {
+        "steps": {
+          "trainer-dashboard": {
+            "title": "Panel del entrenador",
+            "body": "Usa esta vista para priorizar la preparación del atleta, detectar presión de apoyo y pasar al detalle del atleta o a la planificación."
+          }
+        }
+      },
+      "trainer-athlete-management": {
+        "steps": {
+          "open-athlete-roster": {
+            "title": "Abre tu lista de atletas",
+            "body": "Usa la vista de gestión de atletas para revisar tu equipo, filtrar áreas de atención y decidir quién necesita seguimiento."
+          },
+          "open-athlete-detail": {
+            "title": "Abre una ficha de atleta",
+            "body": "Revisa a un atleta en profundidad para pasar del triaje a tendencias, hábitos, memoria y contexto semanal."
+          }
+        }
+      },
+      "trainer-planning-week": {
+        "steps": {
+          "open-planning": {
+            "title": "Abre la planificación semanal",
+            "body": "Revisa la forma de la semana para que la preparación en vivo, los check-ins perdidos y la carga influyan directamente en la planificación."
+          },
+          "save-planning": {
+            "title": "Guarda un plan semanal",
+            "body": "Guarda un plan semanal con notas del entrenador para que tu equipo tenga un plan operativo persistente."
+          }
+        }
+      },
+      "admin-user-rights": {
+        "steps": {
+          "open-settings": {
+            "title": "Espacio de configuración del administrador",
+            "body": "Gestiona aquí permisos de usuario, equipos, asignaciones de atletas y ajustes de gobernanza."
+          },
+          "approve-user": {
+            "title": "Aprueba un usuario",
+            "body": "Añade o actualiza un usuario para que el control de acceso quede anclado al modelo local de roles antes del acceso por SSO."
+          }
+        }
+      },
+      "admin-team-setup": {
+        "steps": {
+          "open-team-setup": {
+            "title": "Abre la configuración de equipos",
+            "body": "Usa la sección de equipos para conectar entrenadores y atletas dentro del mismo grupo operativo."
+          },
+          "create-team": {
+            "title": "Crea tu primer equipo",
+            "body": "Guarda un equipo con entrenadores y atletas para definir el alcance del entrenador y la titularidad del atleta en la plataforma."
+          }
+        }
+      },
+      "admin-governance-review": {
+        "steps": {
+          "open-governance": {
+            "title": "Revisa gobernanza y estándares",
+            "body": "Comprueba métricas de gobernanza, herramientas de restauración y configuración de estándares para que la plataforma siga siendo confiable a medida que crecen los usuarios."
+          },
+          "save-governance": {
+            "title": "Guarda un cambio de configuración de administrador",
+            "body": "Guarda un cambio de ajustes o estándares para confirmar que el flujo de configuración del administrador funciona de punta a punta."
+          }
+        }
+      },
+      "news-whats-new": {
+        "steps": {
+          "news-surface": {
+            "title": "Qué hay de nuevo en Habigoal",
+            "body": "Usa la superficie semanal de novedades para ponerte al día con los cambios del producto y los nuevos flujos disponibles."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {

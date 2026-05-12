@@ -14,9 +14,7 @@ export const trainerOnboardingModules: OnboardingModuleDefinition[] = [
     },
     steps: [
       {
-        id: "trainer-dashboard",
-        title: "Trainer dashboard",
-        body: "Use this view to triage athlete readiness, identify support pressure, and move into athlete detail or planning."
+        id: "trainer-dashboard"
       }
     ]
   },
@@ -36,14 +34,10 @@ export const trainerOnboardingModules: OnboardingModuleDefinition[] = [
     },
     steps: [
       {
-        id: "open-athlete-roster",
-        title: "Open your athlete roster",
-        body: "Use the athlete management view to scan your team, filter attention areas, and pick who needs follow-up."
+        id: "open-athlete-roster"
       },
       {
-        id: "open-athlete-detail",
-        title: "Open one athlete detail page",
-        body: "Review one athlete in full so you can move from triage into trends, habits, memory, and weekly context."
+        id: "open-athlete-detail"
       }
     ]
   },
@@ -63,14 +57,10 @@ export const trainerOnboardingModules: OnboardingModuleDefinition[] = [
     },
     steps: [
       {
-        id: "open-planning",
-        title: "Open the weekly planning board",
-        body: "Review the weekly session shape so live readiness, missed check-ins, and load pressure feed directly into coach planning."
+        id: "open-planning"
       },
       {
-        id: "save-planning",
-        title: "Save one weekly plan",
-        body: "Save one weekly plan with coach notes so your team has a persisted operational plan to work from."
+        id: "save-planning"
       }
     ]
   }

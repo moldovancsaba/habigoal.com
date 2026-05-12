@@ -1012,6 +1012,116 @@
     },
     "release": {
       "badge": "Neu in Habigoal"
+    },
+    "modules": {
+      "athlete-first-login": {
+        "steps": {
+          "athlete-home": {
+            "title": "Willkommen in deinem Athletenbereich",
+            "body": "Dies ist dein persönlicher täglicher Arbeitsbereich für Check-ins, Gewohnheiten, Trends und Wochenzusammenfassungen."
+          }
+        }
+      },
+      "athlete-first-checkin": {
+        "steps": {
+          "open-checkin": {
+            "title": "Öffne den täglichen Check-in",
+            "body": "Starte deinen Bereitschafts-Check-in direkt aus deinem Athletenprofil."
+          },
+          "save-checkin": {
+            "title": "Speichere deinen ersten Check-in",
+            "body": "Fülle einen täglichen Check-in aus und speichere ihn, damit deine Trends und Zusammenfassungen beginnen können."
+          }
+        }
+      },
+      "athlete-habit-tracker": {
+        "steps": {
+          "open-habits": {
+            "title": "Öffne deinen Gewohnheitentracker",
+            "body": "Prüfe die täglichen Routinen für Training, Lernen, Regeneration und Wohlbefinden."
+          },
+          "save-habits": {
+            "title": "Speichere dein erstes Gewohnheits-Update",
+            "body": "Erfasse ein tägliches Gewohnheits-Update, damit Habigoal deinen Routinen-Trend aufbauen kann."
+          }
+        }
+      },
+      "trainer-dashboard-intro": {
+        "steps": {
+          "trainer-dashboard": {
+            "title": "Trainer-Dashboard",
+            "body": "Nutze diese Ansicht, um die Bereitschaft der Athleten zu priorisieren, Unterstützungsdruck zu erkennen und in Athletendetails oder Planung zu wechseln."
+          }
+        }
+      },
+      "trainer-athlete-management": {
+        "steps": {
+          "open-athlete-roster": {
+            "title": "Öffne deinen Athletenkader",
+            "body": "Nutze die Athletenverwaltung, um dein Team zu überblicken, Aufmerksamkeitsbereiche zu filtern und zu entscheiden, wer Nachverfolgung braucht."
+          },
+          "open-athlete-detail": {
+            "title": "Öffne eine Athletendetailseite",
+            "body": "Prüfe einen Athleten vollständig, um von der Triage zu Trends, Gewohnheiten, Erinnerung und Wochenkontext zu wechseln."
+          }
+        }
+      },
+      "trainer-planning-week": {
+        "steps": {
+          "open-planning": {
+            "title": "Öffne die Wochenplanung",
+            "body": "Prüfe die Wochenstruktur, damit Live-Bereitschaft, fehlende Check-ins und Belastungsdruck direkt in die Trainerplanung einfließen."
+          },
+          "save-planning": {
+            "title": "Speichere einen Wochenplan",
+            "body": "Speichere einen Wochenplan mit Trainernotizen, damit dein Team einen dauerhaften operativen Plan hat."
+          }
+        }
+      },
+      "admin-user-rights": {
+        "steps": {
+          "open-settings": {
+            "title": "Admin-Einrichtungsbereich",
+            "body": "Verwalte hier Benutzerrechte, Teams, Athletenzuweisungen und Governance-Einstellungen."
+          },
+          "approve-user": {
+            "title": "Genehmige einen Benutzer",
+            "body": "Füge einen Benutzer hinzu oder aktualisiere ihn, damit die Zugriffskontrolle vor dem SSO-Einstieg am lokalen Rollenmodell verankert ist."
+          }
+        }
+      },
+      "admin-team-setup": {
+        "steps": {
+          "open-team-setup": {
+            "title": "Öffne die Teamverwaltung",
+            "body": "Nutze den Team-Bereich, um Trainer und Athleten derselben operativen Gruppe zuzuordnen."
+          },
+          "create-team": {
+            "title": "Erstelle dein erstes Team",
+            "body": "Speichere ein Team mit Trainern und Athleten, damit Trainerbereich und Athletenzuordnung in der Plattform definiert sind."
+          }
+        }
+      },
+      "admin-governance-review": {
+        "steps": {
+          "open-governance": {
+            "title": "Prüfe Governance und Standards",
+            "body": "Kontrolliere Governance-Metriken, Wiederherstellungswerkzeuge und Standardkonfigurationen, damit die Plattform auch mit mehr Nutzern vertrauenswürdig bleibt."
+          },
+          "save-governance": {
+            "title": "Speichere eine Admin-Konfigurationsänderung",
+            "body": "Speichere eine Einstellungs- oder Standardänderung, um den Admin-Einrichtungsfluss Ende-zu-Ende zu bestätigen."
+          }
+        }
+      },
+      "news-whats-new": {
+        "steps": {
+          "news-surface": {
+            "title": "Neu in Habigoal",
+            "body": "Nutze die wöchentliche News-Fläche, um dich über ausgelieferte Produktänderungen und neue verfügbare Workflows zu informieren."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {
