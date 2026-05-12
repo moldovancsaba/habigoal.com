@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Alert, Badge, Box, Button, Group, Loader, Paper, Select, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { OnboardingPanel } from "@/components/onboarding/OnboardingPanel";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMode } from "@/lib/athlete-iq-survey";
@@ -238,6 +239,11 @@ export default function PlanningPage() {
       const plan = await response.json() as SessionPlanRecord;
       setSavedPlan(plan);
       setSaveState("saved");
+      await fetch("/api/onboarding/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "trainer.plan_saved" })
+      }).catch(() => null);
     } catch {
       setSaveState("error");
     } finally {
@@ -284,6 +290,8 @@ export default function PlanningPage() {
           </>
         )}
       />
+
+      <OnboardingPanel isEmptyState={filteredAthletes.length === 0} />
 
       <SimpleGrid cols={{ base: 1, sm: 2, xl: 4 }} spacing="md">
         <MetricCard label={t("planningTotalAthletesLabel")} value={String(filteredAthletes.length)} />

@@ -37,6 +37,20 @@ export async function POST(request: Request) {
       );
     }
 
+    if (event === "trainer.athlete_opened") {
+      patches.push(
+        { action: "checklist-step", moduleId: "trainer-athlete-management", stepId: "open-athlete-detail" } as const,
+        { action: "complete", moduleId: "trainer-athlete-management" } as const
+      );
+    }
+
+    if (event === "trainer.plan_saved") {
+      patches.push(
+        { action: "checklist-step", moduleId: "trainer-planning-week", stepId: "save-planning" } as const,
+        { action: "complete", moduleId: "trainer-planning-week" } as const
+      );
+    }
+
     if (patches.length > 0) {
       let current = (await getOnboardingStateByEmail(authUser.email)) ?? createDefaultOnboardingState(authUser.email);
       for (const patch of patches) {

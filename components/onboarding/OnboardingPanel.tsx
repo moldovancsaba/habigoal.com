@@ -82,11 +82,27 @@ export function OnboardingPanel({
       !pathname.includes("/dashboard/athletes/") &&
       !state.checklistProgress[nextModule.id]?.includes("open-habits");
 
-    if (!shouldMarkOpenCheckin && !shouldMarkOpenHabits) {
+    const shouldMarkOpenAthleteRoster =
+      nextModule.id === "trainer-athlete-management" &&
+      pathname.includes("/dashboard/athletes") &&
+      !pathname.includes("/dashboard/athletes/") &&
+      !state.checklistProgress[nextModule.id]?.includes("open-athlete-roster");
+
+    const shouldMarkOpenPlanning =
+      nextModule.id === "trainer-planning-week" &&
+      pathname.includes("/dashboard/planning") &&
+      !state.checklistProgress[nextModule.id]?.includes("open-planning");
+
+    if (!shouldMarkOpenCheckin && !shouldMarkOpenHabits && !shouldMarkOpenAthleteRoster && !shouldMarkOpenPlanning) {
       return;
     }
 
-    const stepId = shouldMarkOpenCheckin ? "open-checkin" : "open-habits";
+    const stepId =
+      shouldMarkOpenCheckin ? "open-checkin" :
+      shouldMarkOpenHabits ? "open-habits" :
+      shouldMarkOpenAthleteRoster ? "open-athlete-roster" :
+      "open-planning";
+
     void postStatePatch({
       action: "checklist-step",
       moduleId: nextModule.id,

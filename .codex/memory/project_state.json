@@ -1,5 +1,5 @@
 {
-  "current_focus": "issue-49-athlete-onboarding-modules",
+  "current_focus": "issue-48-trainer-onboarding-modules",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
@@ -7,7 +7,8 @@
     "habit-adherence-and-routine-scoring",
     "weekly-athlete-operating-reports",
     "modular-onboarding",
-    "athlete-onboarding"
+    "athlete-onboarding",
+    "trainer-onboarding"
   ],
   "known_risks": [
     "autonomous loops can degrade architecture quality if they are allowed to write directly to main",

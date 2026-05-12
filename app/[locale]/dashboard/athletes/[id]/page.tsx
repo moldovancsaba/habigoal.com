@@ -104,6 +104,25 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
       .finally(() => setLoading(false));
   }, [currentWeekStart, id, todayDate]);
 
+  useEffect(() => {
+    if (isAthleteApp) return;
+
+    void fetch("/api/auth/me")
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload) => {
+        if (payload?.user?.primaryRole !== "trainer") {
+          return;
+        }
+
+        return fetch("/api/onboarding/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ event: "trainer.athlete_opened" })
+        }).catch(() => null);
+      })
+      .catch(() => null);
+  }, [isAthleteApp]);
+
   async function downloadPdf() {
     if (!data || !latest) return;
 
@@ -345,12 +364,12 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
       {data.assessments.length === 0 ? (
         <SectionCard title={td("athleteHistoryEmptyTitle")} subheader={td("athleteHistoryEmptySubtitle")}>
-          {isAthleteApp ? <OnboardingPanel isEmptyState /> : null}
+          <OnboardingPanel isEmptyState />
           <Text c="dimmed">{t("noHistory")}</Text>
         </SectionCard>
       ) : (
         <>
-          {isAthleteApp ? <OnboardingPanel /> : null}
+          <OnboardingPanel />
           <SectionCard
             title={td("athleteDailyOperatingTitle")}
             subheader={td("athleteDailyOperatingSubtitle")}

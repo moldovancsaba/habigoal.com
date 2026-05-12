@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { OnboardingPanel } from "@/components/onboarding/OnboardingPanel";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMode } from "@/lib/athlete-iq-survey";
@@ -438,6 +439,8 @@ export function MainDashboard() {
   return (
     <Stack gap="lg">
       <PageHeader title={t("commandCenterTitle")} subtitle={t("commandCenterSubtitle")} />
+
+      <OnboardingPanel />
 
       <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
         <MetricCard label={t("totalChildren")} value={String(data?.athletes.length ?? 0)} />

@@ -87,6 +87,7 @@ This document summarizes the state of the project after the first major enhancem
 - `GET/POST /api/onboarding/state` and `POST /api/onboarding/events` are in place as the first API layer for future role-aware onboarding delivery.
 - A reusable onboarding checklist card and provider now exist as the first UI primitives for future athlete, trainer, admin, and release-note onboarding flows.
 - Athlete onboarding is now active in the product: the athlete profile and athlete check-in flow can render the first-login intro, first-check-in checklist, and habit tracker checklist, with onboarding completion updated from real check-in and habit-save events.
+- Trainer onboarding is now active in the product: the coach dashboard, athlete roster/detail flow, and weekly planning surface can render trainer-first onboarding modules, with completion updated from real athlete-detail opens and weekly plan saves.
 
 ## Next Steps (Roadmap Focus)
 

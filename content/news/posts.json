@@ -1,5 +1,32 @@
 [
   {
+    "slug": "2026-05-12-trainer-onboarding",
+    "title": {
+      "en": "Trainer onboarding is now live across dashboard, athlete management, and planning"
+    },
+    "summary": {
+      "en": "This update adds the first trainer onboarding flow to Habigoal so coaches are guided through dashboard triage, athlete detail review, and weekly plan saving from real working surfaces."
+    },
+    "publishedAt": "2026-05-12",
+    "tags": [
+      "release"
+    ],
+    "sections": [
+      {
+        "title": {
+          "en": "New"
+        },
+        "items": {
+          "en": [
+            "Trainer onboarding modules now exist for the coach dashboard, athlete roster and athlete detail review, and the weekly planning board.",
+            "Onboarding progress now advances from real trainer behavior: opening an athlete detail page and saving a weekly plan both complete trainer checklists.",
+            "The onboarding panel now appears on dashboard, athlete management, athlete detail, and planning surfaces so coach guidance stays attached to the actual workflow."
+          ]
+        }
+      }
+    ]
+  },
+  {
     "slug": "2026-05-11-athlete-operating-and-planning",
     "title": {
       "en": "Athlete operating dashboard, habits, memory, load, and planning",
@@ -18,7 +45,12 @@
       "he": "השבוע Habigoal עבר מסקירת צ'ק-אין בסיסית למערכת תפעול מלאה יותר לספורטאי, עם מעקב הרגלים, תובנות זיכרון, עומס אימון ותכנון שבועי."
     },
     "publishedAt": "2026-05-11",
-    "tags": ["release", "athlete", "planning", "reporting"],
+    "tags": [
+      "release",
+      "athlete",
+      "planning",
+      "reporting"
+    ],
     "sections": [
       {
         "title": {

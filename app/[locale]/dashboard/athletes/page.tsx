@@ -5,6 +5,7 @@ import { Alert, Badge, Box, Button, Checkbox, Divider, Group, Loader, Modal, Mul
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { OnboardingPanel } from "@/components/onboarding/OnboardingPanel";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { formatScore } from "@/lib/utils";
@@ -303,6 +304,7 @@ export default function ChildrenListPage() {
   return (
     <Stack gap="md">
       <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><Button color="ingress" onClick={startCreate}>{t("addChild")}</Button></Group>} />
+      <OnboardingPanel isEmptyState={filtered.length === 0} />
       <SectionCard>
         <Stack gap="md">
           {message ? (
