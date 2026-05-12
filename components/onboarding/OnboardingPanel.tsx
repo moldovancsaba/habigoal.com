@@ -93,7 +93,22 @@ export function OnboardingPanel({
       pathname.includes("/dashboard/planning") &&
       !state.checklistProgress[nextModule.id]?.includes("open-planning");
 
-    if (!shouldMarkOpenCheckin && !shouldMarkOpenHabits && !shouldMarkOpenAthleteRoster && !shouldMarkOpenPlanning) {
+    const shouldMarkOpenAdminSettings =
+      nextModule.id === "admin-user-rights" &&
+      pathname.includes("/dashboard/settings") &&
+      !state.checklistProgress[nextModule.id]?.includes("open-settings");
+
+    const shouldMarkOpenTeamSetup =
+      nextModule.id === "admin-team-setup" &&
+      pathname.includes("/dashboard/settings") &&
+      !state.checklistProgress[nextModule.id]?.includes("open-team-setup");
+
+    const shouldMarkOpenGovernance =
+      nextModule.id === "admin-governance-review" &&
+      pathname.includes("/dashboard/settings") &&
+      !state.checklistProgress[nextModule.id]?.includes("open-governance");
+
+    if (!shouldMarkOpenCheckin && !shouldMarkOpenHabits && !shouldMarkOpenAthleteRoster && !shouldMarkOpenPlanning && !shouldMarkOpenAdminSettings && !shouldMarkOpenTeamSetup && !shouldMarkOpenGovernance) {
       return;
     }
 
@@ -101,7 +116,10 @@ export function OnboardingPanel({
       shouldMarkOpenCheckin ? "open-checkin" :
       shouldMarkOpenHabits ? "open-habits" :
       shouldMarkOpenAthleteRoster ? "open-athlete-roster" :
-      "open-planning";
+      shouldMarkOpenPlanning ? "open-planning" :
+      shouldMarkOpenAdminSettings ? "open-settings" :
+      shouldMarkOpenTeamSetup ? "open-team-setup" :
+      "open-governance";
 
     void postStatePatch({
       action: "checklist-step",

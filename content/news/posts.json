@@ -1,5 +1,32 @@
 [
   {
+    "slug": "2026-05-12-admin-onboarding",
+    "title": {
+      "en": "Admin onboarding is now live for user rights, teams, and governance"
+    },
+    "summary": {
+      "en": "This update adds the first admin onboarding flow to Habigoal so settings, team setup, and governance work now guide administrators through the real setup path."
+    },
+    "publishedAt": "2026-05-12",
+    "tags": [
+      "release"
+    ],
+    "sections": [
+      {
+        "title": {
+          "en": "New"
+        },
+        "items": {
+          "en": [
+            "Admin onboarding now appears on the settings surface and guides administrators through user-rights setup, team creation, and governance review.",
+            "Onboarding progress advances from real admin actions: approving users, creating a team, and saving admin configuration changes now complete the matching modules.",
+            "The onboarding runtime now covers all three role families in the product: athlete, trainer, and admin."
+          ]
+        }
+      }
+    ]
+  },
+  {
     "slug": "2026-05-12-trainer-onboarding",
     "title": {
       "en": "Trainer onboarding is now live across dashboard, athlete management, and planning"

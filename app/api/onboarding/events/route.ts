@@ -51,6 +51,27 @@ export async function POST(request: Request) {
       );
     }
 
+    if (event === "admin.user_saved") {
+      patches.push(
+        { action: "checklist-step", moduleId: "admin-user-rights", stepId: "approve-user" } as const,
+        { action: "complete", moduleId: "admin-user-rights" } as const
+      );
+    }
+
+    if (event === "admin.team_saved") {
+      patches.push(
+        { action: "checklist-step", moduleId: "admin-team-setup", stepId: "create-team" } as const,
+        { action: "complete", moduleId: "admin-team-setup" } as const
+      );
+    }
+
+    if (event === "admin.settings_saved") {
+      patches.push(
+        { action: "checklist-step", moduleId: "admin-governance-review", stepId: "save-governance" } as const,
+        { action: "complete", moduleId: "admin-governance-review" } as const
+      );
+    }
+
     if (patches.length > 0) {
       let current = (await getOnboardingStateByEmail(authUser.email)) ?? createDefaultOnboardingState(authUser.email);
       for (const patch of patches) {

@@ -5,6 +5,7 @@ import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper,
 import { useTranslations } from "next-intl";
 import { DEFAULT_SURVEY_SETTINGS, getSettings, SurveySettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
+import { OnboardingPanel } from "@/components/onboarding/OnboardingPanel";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
@@ -78,10 +79,21 @@ export default function SettingsPage() {
     })();
   }, []);
 
+  async function emitOnboardingEvent(event: string) {
+    await fetch("/api/onboarding/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event })
+    }).catch(() => null);
+  }
+
   async function handleSaveSettings() {
     setSaving(true);
     const ok = await saveSettings(settings);
     setMessage(ok ? tc("success") : tc("error"));
+    if (ok && canManageUsers) {
+      await emitOnboardingEvent("admin.settings_saved");
+    }
     setSaving(false);
   }
 
@@ -110,6 +122,9 @@ export default function SettingsPage() {
       setUsers(previousUsers);
       setMessage(tc("error"));
       return;
+    }
+    if (canManageUsers) {
+      await emitOnboardingEvent("admin.user_saved");
     }
     setMessage(tc("success"));
   }
@@ -141,6 +156,9 @@ export default function SettingsPage() {
           setUsers((prev) => prev.filter((u) => u.email !== email));
           setMessage(tc("error"));
         } else {
+          if (canManageUsers) {
+            void emitOnboardingEvent("admin.user_saved");
+          }
           setMessage(tc("success"));
         }
       });
@@ -331,6 +349,9 @@ export default function SettingsPage() {
       setTeamAthleteDraft("");
       setTeamTrainerEmails([]);
       setTeamAthleteIds([]);
+      if (canManageUsers) {
+        await emitOnboardingEvent("admin.team_saved");
+      }
     }
     setMessage(tc("success"));
   }
@@ -357,6 +378,8 @@ export default function SettingsPage() {
   return (
     <Stack gap="lg">
       <PageHeader title={t("settings")} />
+
+      <OnboardingPanel isEmptyState={teams.length === 0 && users.length === 0} />
 
       {message ? (
         <Alert color={message === tc("error") ? "red" : "ingress"} withCloseButton onClose={() => setMessage("")}>
