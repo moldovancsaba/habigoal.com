@@ -73,6 +73,11 @@ This document summarizes the state of the project after the first major enhancem
 - Trainer accounts are now the primary coach-facing entity and are scoped through team membership rather than broad observer-style access.
 - A first-pass `teams` collection and `/api/teams` endpoint now exist so admins can create teams and attach trainers plus athletes from Settings.
 
+### 12. Team Hierarchy Metadata (v0.5.x)
+- Team records now support club, unit, season, notes, and archived state.
+- The Settings > Teams workflow now supports editing existing teams instead of only create/delete.
+- Trainer assignment is synchronized back into `users.teamIds` from actual team saves and deletes so team-scoped access stays aligned with roster ownership.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

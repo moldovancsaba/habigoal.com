@@ -13,6 +13,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - Public `/news` release-notes surface backed by structured post content for weekly “What’s New” updates
 - Admin-owned user access management with approved-email gating, last-login visibility, and protections against removing the final admin account
 - Single-entity access model for `athlete`, `trainer`, and `admin`, with athlete-to-user linkage and basic team management
+- Editable team management with club, unit, season, notes, archive state, and synchronized trainer-team membership
 - Historical compatibility layer for legacy assessment data and backfilled tracker fields
 - Daily readiness reports and PDF export surfaces
 - Persistent audit and soft-delete workflows for records and athletes

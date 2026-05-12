@@ -49,6 +49,7 @@ UI operating surfaces:
 - DoneIsBetter SSO is the intended authentication boundary for protected Habigoal usage, while local role authorization remains owned by the `users` collection.
 - User-rights changes are admin-owned operations; the system must not allow self-removal of the active admin or deletion/demotion of the final admin account.
 - The active entity model is `athlete`, `trainer`, and `admin`; athlete access is self-scoped, trainer access is team-scoped, and admin access owns settings plus team management.
+- Team ownership should be derived from the `teams` collection and synchronized back into trainer user records so roster hierarchy and access control do not drift apart.
 
 ## Heartbeat Chain
 

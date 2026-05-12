@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput, Textarea } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { DEFAULT_SURVEY_SETTINGS, getSettings, SurveySettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
@@ -37,10 +37,16 @@ export default function SettingsPage() {
   const [governanceMetrics, setGovernanceMetrics] = useState<{ deletedChildren: number; deletedAssessments: number; missingConsentReport: number; missingChildLink: number }>({ deletedChildren: 0, deletedAssessments: 0, missingConsentReport: 0, missingChildLink: 0 });
   const [userSearch, setUserSearch] = useState("");
   const [teamNameDraft, setTeamNameDraft] = useState("");
+  const [teamClubDraft, setTeamClubDraft] = useState("");
+  const [teamUnitDraft, setTeamUnitDraft] = useState("");
+  const [teamSeasonDraft, setTeamSeasonDraft] = useState("");
+  const [teamNotesDraft, setTeamNotesDraft] = useState("");
+  const [teamArchivedDraft, setTeamArchivedDraft] = useState(false);
   const [teamTrainerDraft, setTeamTrainerDraft] = useState("");
   const [teamAthleteDraft, setTeamAthleteDraft] = useState("");
   const [teamTrainerEmails, setTeamTrainerEmails] = useState<string[]>([]);
   const [teamAthleteIds, setTeamAthleteIds] = useState<string[]>([]);
+  const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
@@ -312,9 +318,15 @@ export default function SettingsPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        _id: editingTeamId || undefined,
         name: teamNameDraft,
+        clubName: teamClubDraft,
+        unitName: teamUnitDraft,
+        seasonLabel: teamSeasonDraft,
         trainerEmails: teamTrainerEmails,
-        athleteIds: teamAthleteIds
+        athleteIds: teamAthleteIds,
+        notes: teamNotesDraft,
+        archived: teamArchivedDraft
       })
     }).catch(() => null);
 
@@ -325,8 +337,19 @@ export default function SettingsPage() {
 
     const data = await response.json().catch(() => null);
     if (data?.team) {
-      setTeams((prev) => [...prev, data.team]);
+      setTeams((prev) => {
+        const exists = prev.some((team) => team._id === data.team._id);
+        return exists
+          ? prev.map((team) => (team._id === data.team._id ? data.team : team))
+          : [...prev, data.team];
+      });
+      setEditingTeamId(null);
       setTeamNameDraft("");
+      setTeamClubDraft("");
+      setTeamUnitDraft("");
+      setTeamSeasonDraft("");
+      setTeamNotesDraft("");
+      setTeamArchivedDraft(false);
       setTeamTrainerDraft("");
       setTeamAthleteDraft("");
       setTeamTrainerEmails([]);
@@ -343,7 +366,38 @@ export default function SettingsPage() {
       return;
     }
     setTeams((prev) => prev.filter((team) => team._id !== id));
+    if (editingTeamId === id) {
+      clearTeamDraft();
+    }
     setMessage(tc("success"));
+  }
+
+  function clearTeamDraft() {
+    setEditingTeamId(null);
+    setTeamNameDraft("");
+    setTeamClubDraft("");
+    setTeamUnitDraft("");
+    setTeamSeasonDraft("");
+    setTeamNotesDraft("");
+    setTeamArchivedDraft(false);
+    setTeamTrainerDraft("");
+    setTeamAthleteDraft("");
+    setTeamTrainerEmails([]);
+    setTeamAthleteIds([]);
+  }
+
+  function startEditingTeam(team: Team) {
+    setEditingTeamId(team._id || null);
+    setTeamNameDraft(team.name);
+    setTeamClubDraft(team.clubName || "");
+    setTeamUnitDraft(team.unitName || "");
+    setTeamSeasonDraft(team.seasonLabel || "");
+    setTeamNotesDraft(team.notes || "");
+    setTeamArchivedDraft(Boolean(team.archived));
+    setTeamTrainerDraft("");
+    setTeamAthleteDraft("");
+    setTeamTrainerEmails(team.trainerEmails);
+    setTeamAthleteIds(team.athleteIds);
   }
 
   if (loading) {
@@ -614,6 +668,30 @@ export default function SettingsPage() {
               style={{ minWidth: 220 }}
               disabled={!canManageUsers}
             />
+            <TextInput
+              label="Club"
+              placeholder="Habigoal Academy"
+              value={teamClubDraft}
+              onChange={(event) => setTeamClubDraft(event.currentTarget.value)}
+              style={{ minWidth: 220 }}
+              disabled={!canManageUsers}
+            />
+            <TextInput
+              label="Unit"
+              placeholder="North Campus"
+              value={teamUnitDraft}
+              onChange={(event) => setTeamUnitDraft(event.currentTarget.value)}
+              style={{ minWidth: 220 }}
+              disabled={!canManageUsers}
+            />
+            <TextInput
+              label="Season"
+              placeholder="2026 Spring"
+              value={teamSeasonDraft}
+              onChange={(event) => setTeamSeasonDraft(event.currentTarget.value)}
+              style={{ minWidth: 180 }}
+              disabled={!canManageUsers}
+            />
             <Box style={{ minWidth: 240 }}>
               <Select
                 searchable
@@ -641,9 +719,28 @@ export default function SettingsPage() {
               Add athlete
             </Button>
             <Button color="ingress" onClick={() => void saveTeam()} disabled={!canManageUsers || !teamNameDraft.trim()}>
-              Save team
+              {editingTeamId ? "Update team" : "Save team"}
             </Button>
+            {editingTeamId ? (
+              <Button variant="light" onClick={clearTeamDraft} disabled={!canManageUsers}>
+                Cancel edit
+              </Button>
+            ) : null}
           </Group>
+          <Textarea
+            label="Notes"
+            placeholder="Season focus, roster notes, or context"
+            value={teamNotesDraft}
+            onChange={(event) => setTeamNotesDraft(event.currentTarget.value)}
+            minRows={2}
+            disabled={!canManageUsers}
+          />
+          <Checkbox
+            label="Archive this team"
+            checked={teamArchivedDraft}
+            onChange={(event) => setTeamArchivedDraft(event.currentTarget.checked)}
+            disabled={!canManageUsers}
+          />
           <Group gap="xs" wrap="wrap">
             {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color="blue">{email}</Badge>)}
             {teamAthleteIds.map((athleteId) => {
@@ -656,15 +753,30 @@ export default function SettingsPage() {
               <Paper key={team._id || team.name} withBorder p="sm">
                 <Group justify="space-between" align="start" wrap="wrap">
                   <Stack gap={4}>
-                    <Text fw={700}>{team.name}</Text>
+                    <Group gap="xs" wrap="wrap">
+                      <Text fw={700}>{team.name}</Text>
+                      {team.archived ? <Badge color="gray" variant="light">Archived</Badge> : null}
+                      {team.seasonLabel ? <Badge color="ingress" variant="light">{team.seasonLabel}</Badge> : null}
+                    </Group>
+                    {team.clubName || team.unitName ? (
+                      <Text size="sm" c="dimmed">
+                        {[team.clubName, team.unitName].filter(Boolean).join(" / ")}
+                      </Text>
+                    ) : null}
                     <Text size="sm" c="dimmed">Trainers: {team.trainerEmails.join(", ") || "None assigned"}</Text>
                     <Text size="sm" c="dimmed">
                       Athletes: {team.athleteIds.map((athleteId) => athletes.find((entry) => entry._id === athleteId)?.name || athleteId).join(", ") || "None assigned"}
                     </Text>
+                    {team.notes ? <Text size="sm">{team.notes}</Text> : null}
                   </Stack>
-                  <Button variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)}>
-                    {tc("remove")}
-                  </Button>
+                  <Group gap="xs">
+                    <Button variant="light" size="sm" disabled={!canManageUsers} onClick={() => startEditingTeam(team)}>
+                      Edit
+                    </Button>
+                    <Button variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)}>
+                      {tc("remove")}
+                    </Button>
+                  </Group>
                 </Group>
               </Paper>
             ))}

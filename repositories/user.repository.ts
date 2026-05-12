@@ -63,6 +63,31 @@ export async function upsertUser(user: Omit<User, "id">) {
   return result;
 }
 
+export async function syncTrainerTeamIds(teamId: string, trainerEmails: string[]) {
+  const db = await getDatabase();
+  const normalizedEmails = Array.from(new Set(trainerEmails.map((email) => email.toLowerCase().trim()).filter(Boolean)));
+
+  await db.collection(collectionName).updateMany(
+    { teamIds: teamId },
+    { $pull: { teamIds: teamId }, $set: { updatedAt: new Date().toISOString() } } as any
+  );
+
+  if (normalizedEmails.length > 0) {
+    await db.collection(collectionName).updateMany(
+      { email: { $in: normalizedEmails } },
+      { $addToSet: { teamIds: teamId }, $set: { updatedAt: new Date().toISOString() } }
+    );
+  }
+}
+
+export async function removeTeamIdFromUsers(teamId: string) {
+  const db = await getDatabase();
+  await db.collection(collectionName).updateMany(
+    { teamIds: teamId },
+    { $pull: { teamIds: teamId }, $set: { updatedAt: new Date().toISOString() } } as any
+  );
+}
+
 export async function deleteUserByEmail(email: string) {
   const db = await getDatabase();
   await db.collection(collectionName).deleteOne({ email: email.toLowerCase().trim() });

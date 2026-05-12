@@ -7,6 +7,10 @@ function stringArray(value: unknown) {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string").map((item) => item.trim()).filter(Boolean) : [];
 }
 
+function stringValue(value: unknown, max = 240) {
+  return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
 export async function GET(request: Request) {
   const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
@@ -34,8 +38,13 @@ export async function POST(request: Request) {
     const team = await upsertTeam({
       _id: typeof body?._id === "string" ? body._id : undefined,
       name,
+      clubName: stringValue(body?.clubName) || undefined,
+      unitName: stringValue(body?.unitName) || undefined,
+      seasonLabel: stringValue(body?.seasonLabel, 120) || undefined,
       trainerEmails: stringArray(body?.trainerEmails),
-      athleteIds: stringArray(body?.athleteIds)
+      athleteIds: stringArray(body?.athleteIds),
+      notes: stringValue(body?.notes, 2000) || undefined,
+      archived: body?.archived === true
     });
 
     return NextResponse.json({ team });

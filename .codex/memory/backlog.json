@@ -1,6 +1,12 @@
 {
   "next_five": [
     {
+      "issue": 39,
+      "title": "Build club and team hierarchy management",
+      "priority": "now",
+      "reason": "The athlete, trainer, and admin model needs richer team metadata and synchronized trainer ownership to stay operationally coherent."
+    },
+    {
       "issue": 31,
       "title": "Add athlete memory timeline and AI-style reflection insights",
       "priority": "now",
