@@ -34,12 +34,21 @@ export type NewsPost = {
 
 const rawNewsPosts = (posts as RawNewsPost[]).slice().sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
+function hasLocalizedText(value: LocalizedText | undefined, locale: string): boolean {
+  return Boolean(value && typeof value[locale] === "string" && value[locale].trim().length > 0);
+}
+
+function hasLocalizedItems(value: LocalizedItems | undefined, locale: string): boolean {
+  const items = value?.[locale];
+  return Array.isArray(items) && items.length > 0 && items.every((item) => typeof item === "string" && item.trim().length > 0);
+}
+
 function getLocalizedText(value: LocalizedText, locale: string): string {
-  return value[locale] ?? value.en ?? Object.values(value)[0] ?? "";
+  return value[locale] ?? "";
 }
 
 function getLocalizedItems(value: LocalizedItems, locale: string): string[] {
-  return value[locale] ?? value.en ?? Object.values(value)[0] ?? [];
+  return value[locale] ?? [];
 }
 
 function formatPublishedDate(publishedAt: string, locale: string): string {
@@ -55,7 +64,17 @@ function formatPublishedDate(publishedAt: string, locale: string): string {
   }).format(parsed);
 }
 
-function localizePost(post: RawNewsPost, locale: string): NewsPost {
+function postSupportsLocale(post: RawNewsPost, locale: string): boolean {
+  return hasLocalizedText(post.title, locale)
+    && hasLocalizedText(post.summary, locale)
+    && post.sections.every((section) => hasLocalizedText(section.title, locale) && hasLocalizedItems(section.items, locale));
+}
+
+function localizePost(post: RawNewsPost, locale: string): NewsPost | null {
+  if (!postSupportsLocale(post, locale)) {
+    return null;
+  }
+
   return {
     slug: post.slug,
     title: getLocalizedText(post.title, locale),
@@ -71,7 +90,7 @@ function localizePost(post: RawNewsPost, locale: string): NewsPost {
 }
 
 export function listNewsPosts(locale: string): NewsPost[] {
-  return rawNewsPosts.map((post) => localizePost(post, locale));
+  return rawNewsPosts.map((post) => localizePost(post, locale)).filter((post): post is NewsPost => post !== null);
 }
 
 export function getNewsPostBySlug(slug: string, locale: string): NewsPost | null {

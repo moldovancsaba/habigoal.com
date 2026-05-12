@@ -78,8 +78,8 @@
     "conductors": "Conductors",
     "observers": "Observers",
     "legalAndCompany": "Legal, version and company information",
-    "gtc": "General Terms and Conditions",
-    "privacyPolicy": "Privacy Policy",
+    "gtc": "תנאים והגבלות כלליים",
+    "privacyPolicy": "מדיניות פרטיות",
     "appVersion": "App version",
     "company": "Company",
     "searchChildren": "Search athletes",
@@ -358,7 +358,7 @@
     "standardsDomain": "Domain",
     "standardsTarget": "Target",
     "standardsMin": "Min",
-    "restoreBinTitle": "Restore Bin",
+    "restoreBinTitle": "סל שחזור",
     "restoreDeletedChildren": "ספורטאים שנמחקו",
     "restoreNoDeletedChildren": "אין ספורטאים שנמחקו.",
     "restoreDeletedAssessments": "צק-אינים שנמחקו",
@@ -367,6 +367,11 @@
     "restoreAction": "שחזר",
     "showDeleted": "הצג שנמחקו",
     "showingDeleted": "מציג שנמחקו",
+    "governanceMetricsTitle": "מדדי ממשל",
+    "governanceDeletedAthletes": "ספורטאים שנמחקו: {count}",
+    "governanceDeletedAssessments": "צ׳ק-אינים שנמחקו: {count}",
+    "governanceMissingConsentReport": "צ׳ק-אינים ללא הסכמת דוח: {count}",
+    "governanceMissingAthleteLink": "צ׳ק-אינים ללא קישור לספורטאי: {count}",
     "addChild": "הוסף ספורטאי",
     "alertingTitle": "Alerting and escalation",
     "alertingDigestEnabled": "Enable daily coach escalation digest",
@@ -989,6 +994,21 @@
       "athlete": "ספורטאי",
       "planning": "תכנון",
       "reporting": "דיווח"
+    }
+  },
+  "Onboarding": {
+    "defaults": {
+      "moduleTitle": "Getting started",
+      "moduleBody": "This surface has a short onboarding introduction.",
+      "checklistTitle": "Onboarding checklist",
+      "checklistBody": "Follow these steps to get started."
+    },
+    "status": {
+      "done": "Done",
+      "next": "Next"
+    },
+    "actions": {
+      "dismiss": "Dismiss"
     }
   },
   "AthletesApp": {

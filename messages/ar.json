@@ -366,6 +366,11 @@
     "restoreAction": "استعادة",
     "showDeleted": "عرض المحذوف",
     "showingDeleted": "عرض العناصر المحذوفة",
+    "governanceMetricsTitle": "مؤشرات الحوكمة",
+    "governanceDeletedAthletes": "الرياضيون المحذوفون: {count}",
+    "governanceDeletedAssessments": "التقييمات المحذوفة: {count}",
+    "governanceMissingConsentReport": "تقييمات بدون موافقة التقرير: {count}",
+    "governanceMissingAthleteLink": "تقييمات بدون ربط رياضي: {count}",
     "addChild": "إضافة رياضي",
     "alertingTitle": "Alerting and escalation",
     "alertingDigestEnabled": "Enable daily coach escalation digest",
@@ -984,6 +989,21 @@
       "athlete": "لاعب",
       "planning": "تخطيط",
       "reporting": "تقارير"
+    }
+  },
+  "Onboarding": {
+    "defaults": {
+      "moduleTitle": "Getting started",
+      "moduleBody": "This surface has a short onboarding introduction.",
+      "checklistTitle": "Onboarding checklist",
+      "checklistBody": "Follow these steps to get started."
+    },
+    "status": {
+      "done": "Done",
+      "next": "Next"
+    },
+    "actions": {
+      "dismiss": "Dismiss"
     }
   },
   "AthletesApp": {

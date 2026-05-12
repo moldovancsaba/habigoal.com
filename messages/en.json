@@ -367,6 +367,11 @@
     "restoreAction": "Restore",
     "showDeleted": "Show Deleted",
     "showingDeleted": "Showing Deleted",
+    "governanceMetricsTitle": "Governance Metrics",
+    "governanceDeletedAthletes": "Deleted athletes: {count}",
+    "governanceDeletedAssessments": "Deleted assessments: {count}",
+    "governanceMissingConsentReport": "Assessments missing report consent: {count}",
+    "governanceMissingAthleteLink": "Assessments missing athlete link: {count}",
     "addChild": "Add athlete",
     "alertingTitle": "Alerting and escalation",
     "alertingDigestEnabled": "Enable daily coach escalation digest",
@@ -961,7 +966,7 @@
   },
   "Landing": {
     "title": "Habigoal Platform",
-    "subtitle": "Bio-Psycho-Social Sport Ecosystem for professional performance and talent management.",
+    "subtitle": "Daily athlete support workspace for coaches, athletes, and teams.",
     "login": "Login to Dashboard",
     "trainerApp": "Trainer App",
     "feature1": "Evidence-based assessments",
@@ -990,6 +995,21 @@
       "athlete": "Athlete",
       "planning": "Planning",
       "reporting": "Reporting"
+    }
+  },
+  "Onboarding": {
+    "defaults": {
+      "moduleTitle": "Getting started",
+      "moduleBody": "This surface has a short onboarding introduction.",
+      "checklistTitle": "Onboarding checklist",
+      "checklistBody": "Follow these steps to get started."
+    },
+    "status": {
+      "done": "Done",
+      "next": "Next"
+    },
+    "actions": {
+      "dismiss": "Dismiss"
     }
   },
   "AthletesApp": {

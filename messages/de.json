@@ -78,8 +78,8 @@
     "conductors": "Conductors",
     "observers": "Observers",
     "legalAndCompany": "Legal, version and company information",
-    "gtc": "General Terms and Conditions",
-    "privacyPolicy": "Privacy Policy",
+    "gtc": "Allgemeine Geschäftsbedingungen",
+    "privacyPolicy": "Datenschutzerklärung",
     "appVersion": "App version",
     "company": "Company",
     "searchChildren": "Search athletes",
@@ -358,7 +358,7 @@
     "standardsDomain": "Domain",
     "standardsTarget": "Target",
     "standardsMin": "Min",
-    "restoreBinTitle": "Restore Bin",
+    "restoreBinTitle": "Wiederherstellungsbereich",
     "restoreDeletedChildren": "Geloeschte Athleten",
     "restoreNoDeletedChildren": "Keine geloeschten Athleten.",
     "restoreDeletedAssessments": "Geloeschte Check-ins",
@@ -367,6 +367,11 @@
     "restoreAction": "Wiederherstellen",
     "showDeleted": "Geloeschte anzeigen",
     "showingDeleted": "Geloeschte anzeigen",
+    "governanceMetricsTitle": "Governance-Metriken",
+    "governanceDeletedAthletes": "Gelöschte Athleten: {count}",
+    "governanceDeletedAssessments": "Gelöschte Check-ins: {count}",
+    "governanceMissingConsentReport": "Check-ins ohne Berichtsfreigabe: {count}",
+    "governanceMissingAthleteLink": "Check-ins ohne Athletenverknüpfung: {count}",
     "addChild": "Athlet hinzufuegen",
     "alertingTitle": "Alerting and escalation",
     "alertingDigestEnabled": "Enable daily coach escalation digest",
@@ -989,6 +994,21 @@
       "athlete": "Athlet",
       "planning": "Planung",
       "reporting": "Berichte"
+    }
+  },
+  "Onboarding": {
+    "defaults": {
+      "moduleTitle": "Getting started",
+      "moduleBody": "This surface has a short onboarding introduction.",
+      "checklistTitle": "Onboarding checklist",
+      "checklistBody": "Follow these steps to get started."
+    },
+    "status": {
+      "done": "Done",
+      "next": "Next"
+    },
+    "actions": {
+      "dismiss": "Dismiss"
     }
   },
   "AthletesApp": {

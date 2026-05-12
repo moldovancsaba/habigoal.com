@@ -39,7 +39,7 @@
   },
   "Dashboard": {
     "title": "Panel",
-    "logout": "Cerrar sesion",
+    "logout": "Cerrar sesión",
     "setup": "Configuracion",
     "survey": "Registro diario",
     "scoring": "Puntuacion",
@@ -78,8 +78,8 @@
     "conductors": "Conductors",
     "observers": "Observers",
     "legalAndCompany": "Legal, version and company information",
-    "gtc": "General Terms and Conditions",
-    "privacyPolicy": "Privacy Policy",
+    "gtc": "Términos y condiciones generales",
+    "privacyPolicy": "Política de privacidad",
     "appVersion": "App version",
     "company": "Company",
     "searchChildren": "Search athletes",
@@ -358,7 +358,7 @@
     "standardsDomain": "Domain",
     "standardsTarget": "Target",
     "standardsMin": "Min",
-    "restoreBinTitle": "Restore Bin",
+    "restoreBinTitle": "Papelera de restauración",
     "restoreDeletedChildren": "Atletas eliminados",
     "restoreNoDeletedChildren": "No hay atletas eliminados.",
     "restoreDeletedAssessments": "Registros eliminados",
@@ -367,6 +367,11 @@
     "restoreAction": "Restaurar",
     "showDeleted": "Mostrar eliminados",
     "showingDeleted": "Viendo eliminados",
+    "governanceMetricsTitle": "Métricas de gobernanza",
+    "governanceDeletedAthletes": "Atletas eliminados: {count}",
+    "governanceDeletedAssessments": "Registros eliminados: {count}",
+    "governanceMissingConsentReport": "Registros sin consentimiento de informe: {count}",
+    "governanceMissingAthleteLink": "Registros sin vínculo de atleta: {count}",
     "addChild": "Agregar atleta",
     "alertingTitle": "Alerting and escalation",
     "alertingDigestEnabled": "Enable daily coach escalation digest",
@@ -989,6 +994,21 @@
       "athlete": "Atleta",
       "planning": "Planificacion",
       "reporting": "Informes"
+    }
+  },
+  "Onboarding": {
+    "defaults": {
+      "moduleTitle": "Getting started",
+      "moduleBody": "This surface has a short onboarding introduction.",
+      "checklistTitle": "Onboarding checklist",
+      "checklistBody": "Follow these steps to get started."
+    },
+    "status": {
+      "done": "Done",
+      "next": "Next"
+    },
+    "actions": {
+      "dismiss": "Dismiss"
     }
   },
   "AthletesApp": {
