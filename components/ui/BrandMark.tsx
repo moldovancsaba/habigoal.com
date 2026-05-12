@@ -8,14 +8,15 @@ type BrandMarkProps = {
   size?: number;
   subtitle?: string;
   align?: "left" | "center";
+  href?: string;
 };
 
-export function BrandMark({ size = 88, subtitle: _subtitle, align = "center" }: BrandMarkProps) {
+export function BrandMark({ size = 88, subtitle: _subtitle, align = "center", href = "/" }: BrandMarkProps) {
   const iconSize = Math.round(size);
   void _subtitle;
 
   return (
-    <Link href="/" aria-label="Go to home" style={{ display: "inline-flex", textDecoration: "none" }}>
+    <Link href={href} aria-label="Go to home" style={{ display: "inline-flex", textDecoration: "none" }}>
       <Box style={{ display: "inline-flex", alignItems: align === "center" ? "center" : "flex-start", lineHeight: 1 }}>
         <Image
           src="/images/habigoal_logo.png"

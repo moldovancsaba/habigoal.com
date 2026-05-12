@@ -45,11 +45,27 @@ export default async function LandingPage({
                   <Button component="a" href={`/${locale}/athletes`} size="xl" color="ingress" styles={{ label: { fontSize: "1.1rem", fontWeight: 800 } }} style={{ minHeight: 72 }}>
                     {t("athleteApp")}
                   </Button>
-                  <Button component="a" href={authHref} size="xl" variant="default" styles={{ label: { fontSize: "1.1rem", fontWeight: 800 } }} style={{ minHeight: 72 }}>
+                  <Button
+                    component="a"
+                    href={authHref}
+                    size="xl"
+                    styles={{ label: { fontSize: "1.1rem", fontWeight: 800, color: "#08111f" } }}
+                    style={{
+                      minHeight: 72,
+                      background: "linear-gradient(135deg, rgba(0, 85, 255, 0.96) 0%, rgba(22, 188, 214, 0.94) 52%, rgba(197, 247, 46, 0.92) 100%)",
+                      border: "1px solid rgba(111, 225, 255, 0.45)"
+                    }}
+                  >
                     {t("trainerApp")}
                   </Button>
                 </SimpleGrid>
-                <Button component="a" href={`/${locale}/news`} size="lg" color="ingress" variant="light" styles={{ label: { fontSize: "1rem", fontWeight: 800 } }}>
+                <Button
+                  component="a"
+                  href={`/${locale}/news`}
+                  size="lg"
+                  variant="default"
+                  styles={{ label: { fontSize: "1rem", fontWeight: 800 } }}
+                >
                   {t("whatsNew")}
                 </Button>
                 <Text size="sm" c="var(--text-muted)">

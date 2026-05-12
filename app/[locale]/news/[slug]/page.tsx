@@ -24,7 +24,7 @@ export default async function NewsPostPage({
       <Container size="md" py={{ base: 40, md: 72 }}>
         <Stack gap="xl">
           <Box>
-            <BrandMark size={84} align="left" />
+            <BrandMark size={84} align="left" href="/dashboard" />
           </Box>
 
           <Stack gap="md">
