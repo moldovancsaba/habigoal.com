@@ -500,6 +500,7 @@ export function SurveyAssessmentApp() {
             onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
             min={0}
             max={360}
+            hideControls
           />
           <NumberInput
             label="RPE (1-10)"
@@ -507,6 +508,7 @@ export function SurveyAssessmentApp() {
             onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
             min={1}
             max={10}
+            hideControls
           />
           <NumberInput
             label="External load"
@@ -515,6 +517,7 @@ export function SurveyAssessmentApp() {
             onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
             min={0}
             max={50000}
+            hideControls
           />
         </SimpleGrid>
       </SectionCard>
