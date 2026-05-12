@@ -1,6 +1,12 @@
 {
   "next_five": [
     {
+      "issue": 21,
+      "title": "Add role-based permissions and privacy controls",
+      "priority": "now",
+      "reason": "The role migration to athlete, trainer, and admin needs route-level UI gating and privacy enforcement to stay coherent and safe."
+    },
+    {
       "issue": 31,
       "title": "Add athlete memory timeline and AI-style reflection insights",
       "priority": "now",
