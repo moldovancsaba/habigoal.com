@@ -46,5 +46,32 @@ export const athleteOnboardingModules: OnboardingModuleDefinition[] = [
         body: "Complete and save one daily check-in so your trends and summaries can begin."
       }
     ]
+  },
+  {
+    id: "athlete-habit-tracker",
+    role: "athlete",
+    type: "checklist",
+    version: "1",
+    priority: 85,
+    routePatterns: ["/athletes/[id]"],
+    prerequisites: ["athlete-first-checkin"],
+    completionEvent: "athlete.habit_saved",
+    dismissible: true,
+    conditions: {
+      requiresAuth: true,
+      requiresLinkedAthlete: true
+    },
+    steps: [
+      {
+        id: "open-habits",
+        title: "Open your habit tracker",
+        body: "Review the daily routine blocks for training, learning, recovery, and wellness."
+      },
+      {
+        id: "save-habits",
+        title: "Save your first habit update",
+        body: "Log one daily habit update so Habigoal can start building your routine trend."
+      }
+    ]
   }
 ];

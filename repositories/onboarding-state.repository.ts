@@ -1,4 +1,5 @@
 import { getDatabase } from "@/lib/mongodb";
+import { createDefaultOnboardingState } from "@/lib/onboarding/default-state";
 import { toJsonId } from "@/lib/utils";
 import type { OnboardingChecklistProgress, OnboardingStateRecord } from "@/types/onboarding";
 
@@ -30,17 +31,6 @@ function normalizeState(doc: Record<string, unknown>): OnboardingStateRecord {
     checklistProgress: normalizeChecklistProgress(json.checklistProgress),
     lastSuggestedModule: typeof json.lastSuggestedModule === "string" ? json.lastSuggestedModule : undefined,
     updatedAt: typeof json.updatedAt === "string" ? json.updatedAt : new Date().toISOString()
-  };
-}
-
-export function createDefaultOnboardingState(userEmail: string): OnboardingStateRecord {
-  return {
-    userEmail,
-    completedModules: [],
-    dismissedModules: [],
-    seenReleaseVersions: [],
-    checklistProgress: {},
-    updatedAt: new Date().toISOString()
   };
 }
 

@@ -1,7 +1,7 @@
 import { onboardingDefinitions } from "@/lib/onboarding/registry";
 import {
   createDefaultOnboardingState
-} from "@/repositories/onboarding-state.repository";
+} from "@/lib/onboarding/default-state";
 import type { OnboardingEngineInput, OnboardingModuleDefinition, OnboardingStatePatch, OnboardingStateRecord } from "@/types/onboarding";
 
 function normalizePathname(pathname: string) {
@@ -29,6 +29,10 @@ function moduleAllowed(definition: OnboardingModuleDefinition, input: Onboarding
   }
 
   if (input.state.completedModules.includes(definition.id) || input.state.dismissedModules.includes(definition.id)) {
+    return false;
+  }
+
+  if (definition.prerequisites?.some((prerequisite) => !input.state.completedModules.includes(prerequisite))) {
     return false;
   }
 

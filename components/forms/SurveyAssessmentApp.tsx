@@ -19,6 +19,7 @@ import {
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { OnboardingPanel } from "@/components/onboarding/OnboardingPanel";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/athlete-iq-survey";
@@ -103,6 +104,14 @@ function loadDraftAssessment(): AssessmentPayload {
 async function parseApiError(response: Response): Promise<string | null> {
   const body = (await response.json().catch(() => null)) as { error?: string } | null;
   return body?.error || null;
+}
+
+async function emitOnboardingEvent(event: string) {
+  await fetch("/api/onboarding/events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ event })
+  }).catch(() => null);
 }
 
 function getQuestionOptions(questionKey: string): ChoiceOption[] {
@@ -395,6 +404,7 @@ export function SurveyAssessmentApp() {
     setSaveState("saved");
     localStorage.removeItem(DRAFT_STORAGE_KEY);
     setMessage(t("saved"));
+    await emitOnboardingEvent("athlete.checkin_saved");
   }
 
   function newAssessment() {
@@ -440,6 +450,8 @@ export function SurveyAssessmentApp() {
           {message}
         </Alert>
       ) : null}
+
+      <OnboardingPanel />
 
       <SectionCard title={t("setupTitle")} subheader="Keep this daily check-in under 2 minutes.">
         <Stack gap="md">

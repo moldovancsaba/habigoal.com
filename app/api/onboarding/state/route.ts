@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/access";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { applyOnboardingStatePatch } from "@/lib/onboarding/engine";
+import { createDefaultOnboardingState } from "@/lib/onboarding/default-state";
 import {
-  createDefaultOnboardingState,
   getOnboardingStateByEmail,
   upsertOnboardingState
 } from "@/repositories/onboarding-state.repository";

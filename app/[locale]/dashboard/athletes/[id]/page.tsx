@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, use } from "react";
 import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { OnboardingPanel } from "@/components/onboarding/OnboardingPanel";
 import { Link, usePathname } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -146,6 +147,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
       setHabitRecords((current) =>
         [...current.filter((record) => record.date !== savedRecord.date), savedRecord].sort((a, b) => a.date.localeCompare(b.date))
       );
+      await fetch("/api/onboarding/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "athlete.habit_saved" })
+      }).catch(() => null);
     } finally {
       setSavingHabits(false);
     }
@@ -339,10 +345,12 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
       {data.assessments.length === 0 ? (
         <SectionCard title={td("athleteHistoryEmptyTitle")} subheader={td("athleteHistoryEmptySubtitle")}>
+          {isAthleteApp ? <OnboardingPanel isEmptyState /> : null}
           <Text c="dimmed">{t("noHistory")}</Text>
         </SectionCard>
       ) : (
         <>
+          {isAthleteApp ? <OnboardingPanel /> : null}
           <SectionCard
             title={td("athleteDailyOperatingTitle")}
             subheader={td("athleteDailyOperatingSubtitle")}
