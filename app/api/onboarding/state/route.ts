@@ -3,11 +3,12 @@ import { getAuthUser } from "@/lib/access";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { applyOnboardingStatePatch } from "@/lib/onboarding/engine";
 import { createDefaultOnboardingState } from "@/lib/onboarding/default-state";
+import { getLatestUnseenNewsPost } from "@/lib/news";
 import {
   getOnboardingStateByEmail,
   upsertOnboardingState
 } from "@/repositories/onboarding-state.repository";
-import type { OnboardingStatePatch } from "@/types/onboarding";
+import type { OnboardingReleasePrompt, OnboardingStatePatch } from "@/types/onboarding";
 
 function isOnboardingStatePatch(value: unknown): value is OnboardingStatePatch {
   if (!value || typeof value !== "object") return false;
@@ -26,7 +27,19 @@ export async function GET(request: Request) {
     }
 
     const state = (await getOnboardingStateByEmail(authUser.email)) ?? createDefaultOnboardingState(authUser.email);
-    return NextResponse.json({ state });
+    const locale = new URL(request.url).searchParams.get("locale") || "en";
+    const latestNews = getLatestUnseenNewsPost(locale, state.seenReleaseVersions);
+    const releasePrompt: OnboardingReleasePrompt | null = latestNews ? {
+      version: latestNews.slug,
+      slug: latestNews.slug,
+      title: latestNews.title,
+      summary: latestNews.summary,
+      publishedAt: latestNews.publishedAt,
+      publishedLabel: latestNews.publishedLabel,
+      href: `/${locale}/news/${latestNews.slug}`
+    } : null;
+
+    return NextResponse.json({ state, releasePrompt });
   } catch (error) {
     return jsonError((error as Error).message);
   }

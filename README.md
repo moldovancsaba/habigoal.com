@@ -15,6 +15,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - Athlete onboarding modules for first login, first check-in, and habit-tracker adoption wired into the athlete profile and athlete check-in surfaces
 - Trainer onboarding modules for dashboard entry, athlete management, and weekly planning wired into the coach dashboard, athlete detail, and planning surfaces
 - Admin onboarding modules for user-rights approval, team setup, and governance review wired into the settings surface with completion tied to real admin actions
+- Weekly release prompts now reuse the structured news system so unseen product updates can surface inside the app as onboarding-style “what changed” guidance
 - Admin-owned user access management with approved-email gating, last-login visibility, and protections against removing the final admin account
 - Single-entity access model for `athlete`, `trainer`, and `admin`, with athlete-to-user linkage and basic team management
 - Route-level UI gating so athletes stay in athlete-facing surfaces and trainers cannot reach admin-only settings routes by URL

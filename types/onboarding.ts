@@ -45,6 +45,16 @@ export type OnboardingStateRecord = {
   updatedAt: string;
 };
 
+export type OnboardingReleasePrompt = {
+  version: string;
+  slug: string;
+  title: string;
+  summary: string;
+  publishedAt: string;
+  publishedLabel: string;
+  href: string;
+};
+
 export type OnboardingStatePatch =
   | { action: "complete"; moduleId: string }
   | { action: "dismiss"; moduleId: string }

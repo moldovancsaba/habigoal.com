@@ -993,17 +993,20 @@
   },
   "Onboarding": {
     "defaults": {
-      "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
-      "checklistTitle": "Onboarding checklist",
-      "checklistBody": "Follow these steps to get started."
+      "moduleTitle": "البدء",
+      "moduleBody": "تتضمن هذه الواجهة مقدمة قصيرة للتوجيه.",
+      "checklistTitle": "قائمة بدء الاستخدام",
+      "checklistBody": "اتبع هذه الخطوات للبدء."
     },
     "status": {
-      "done": "Done",
-      "next": "Next"
+      "done": "تم",
+      "next": "التالي"
     },
     "actions": {
-      "dismiss": "Dismiss"
+      "dismiss": "إغلاق"
+    },
+    "release": {
+      "badge": "ما الجديد"
     }
   },
   "AthletesApp": {

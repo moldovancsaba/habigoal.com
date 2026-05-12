@@ -998,17 +998,20 @@
   },
   "Onboarding": {
     "defaults": {
-      "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
-      "checklistTitle": "Onboarding checklist",
-      "checklistBody": "Follow these steps to get started."
+      "moduleTitle": "Erste Schritte",
+      "moduleBody": "Diese Oberfläche enthält eine kurze Einführung.",
+      "checklistTitle": "Onboarding-Checkliste",
+      "checklistBody": "Folge diesen Schritten für den Einstieg."
     },
     "status": {
-      "done": "Done",
-      "next": "Next"
+      "done": "Erledigt",
+      "next": "Als Nächstes"
     },
     "actions": {
-      "dismiss": "Dismiss"
+      "dismiss": "Schließen"
+    },
+    "release": {
+      "badge": "Neu in Habigoal"
     }
   },
   "AthletesApp": {

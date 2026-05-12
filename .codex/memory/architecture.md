@@ -47,6 +47,7 @@ UI operating surfaces:
 - `/dashboard/athletes/[id]` remains the athlete operating surface with trends, habits, memory, and reports.
 - The onboarding layer must now work across coach surfaces too: `/dashboard`, `/dashboard/athletes`, `/dashboard/athletes/[id]`, and `/dashboard/planning` should support trainer-first onboarding modules tied to real actions rather than static tours.
 - The onboarding layer must also work across admin surfaces: `/dashboard/settings` should support admin-first onboarding modules tied to real settings, user-rights, and team-management actions rather than passive copy only.
+- Weekly release communication should be dual-surface: public `/news` posts remain the durable release log, while protected app routes can surface the latest unseen localized post as a dismissible onboarding-style release prompt.
 - `/athletes` is the public athlete app entry surface, and `/athletes/[id]` must stay athlete-facing rather than leaking coach-admin controls.
 - When authentication is enforced, `/athletes` must redirect signed-in athletes to their own profile and redirect trainer/admin users back into dashboard athlete management rather than behaving like a shared athlete selector.
 - Role-aware route gating must exist in the shell layer as well as in APIs: athletes should not browse coach-admin dashboard routes, and trainers should not reach admin settings routes by URL.

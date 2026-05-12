@@ -998,17 +998,20 @@
   },
   "Onboarding": {
     "defaults": {
-      "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
-      "checklistTitle": "Onboarding checklist",
-      "checklistBody": "Follow these steps to get started."
+      "moduleTitle": "Primeros pasos",
+      "moduleBody": "Esta pantalla incluye una breve introducción guiada.",
+      "checklistTitle": "Lista de incorporación",
+      "checklistBody": "Sigue estos pasos para comenzar."
     },
     "status": {
-      "done": "Done",
-      "next": "Next"
+      "done": "Hecho",
+      "next": "Siguiente"
     },
     "actions": {
-      "dismiss": "Dismiss"
+      "dismiss": "Cerrar"
+    },
+    "release": {
+      "badge": "Novedades"
     }
   },
   "AthletesApp": {

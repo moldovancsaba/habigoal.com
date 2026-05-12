@@ -97,3 +97,19 @@ export function getNewsPostBySlug(slug: string, locale: string): NewsPost | null
   const post = rawNewsPosts.find((entry) => entry.slug === slug);
   return post ? localizePost(post, locale) : null;
 }
+
+export function getLatestUnseenNewsPost(locale: string, seenVersions: string[]): NewsPost | null {
+  const seen = new Set(seenVersions);
+  for (const post of rawNewsPosts) {
+    if (seen.has(post.slug)) {
+      continue;
+    }
+
+    const localized = localizePost(post, locale);
+    if (localized) {
+      return localized;
+    }
+  }
+
+  return null;
+}

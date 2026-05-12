@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLocale } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { getNextOnboardingModule } from "@/lib/onboarding/engine";
 import { OnboardingChecklistCard } from "@/components/onboarding/OnboardingChecklistCard";
 import { OnboardingModuleCard } from "@/components/onboarding/OnboardingModuleCard";
-import type { OnboardingModuleDefinition, OnboardingRole, OnboardingStatePatch, OnboardingStateRecord } from "@/types/onboarding";
+import { OnboardingReleaseCard } from "@/components/onboarding/OnboardingReleaseCard";
+import type { OnboardingModuleDefinition, OnboardingReleasePrompt, OnboardingRole, OnboardingStatePatch, OnboardingStateRecord } from "@/types/onboarding";
 
 type AuthMeUser = {
   email: string;
@@ -16,6 +18,7 @@ type AuthMeUser = {
 
 type OnboardingStatePayload = {
   state: OnboardingStateRecord;
+  releasePrompt?: OnboardingReleasePrompt | null;
 };
 
 async function postStatePatch(patch: OnboardingStatePatch) {
@@ -39,21 +42,24 @@ export function OnboardingPanel({
   isEmptyState?: boolean;
 }) {
   const pathname = usePathname();
+  const locale = useLocale();
   const [authUser, setAuthUser] = useState<AuthMeUser | null>(null);
   const [state, setState] = useState<OnboardingStateRecord | null>(null);
+  const [releasePrompt, setReleasePrompt] = useState<OnboardingReleasePrompt | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       fetch("/api/auth/me").then((response) => response.json()).catch(() => null),
-      fetch("/api/onboarding/state").then((response) => response.json()).catch(() => null)
+      fetch(`/api/onboarding/state?locale=${encodeURIComponent(locale)}`).then((response) => response.json()).catch(() => null)
     ])
       .then(([authPayload, statePayload]) => {
         setAuthUser(authPayload?.user ?? null);
         setState(statePayload?.state ?? null);
+        setReleasePrompt(statePayload?.releasePrompt ?? null);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [locale]);
 
   const nextModule = useMemo<OnboardingModuleDefinition | null>(() => {
     if (!authUser?.primaryRole || !state) return null;
@@ -131,7 +137,9 @@ export function OnboardingPanel({
   }, [nextModule, pathname, state]);
 
   if (loading || !nextModule || !state) {
-    return null;
+    if (loading || !state || !releasePrompt) {
+      return null;
+    }
   }
 
   async function dismissModule(moduleId: string) {
@@ -140,6 +148,25 @@ export function OnboardingPanel({
       moduleId
     });
     if (nextState) setState(nextState);
+  }
+
+  async function markReleaseSeen(version: string) {
+    const nextState = await postStatePatch({
+      action: "seen-release",
+      version
+    });
+    if (nextState) {
+      setState(nextState);
+      setReleasePrompt(null);
+    }
+  }
+
+  if (!nextModule && releasePrompt) {
+    return <OnboardingReleaseCard prompt={releasePrompt} onSeen={markReleaseSeen} />;
+  }
+
+  if (!nextModule || !state) {
+    return null;
   }
 
   return nextModule.type === "checklist" ? (

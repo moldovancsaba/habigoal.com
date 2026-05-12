@@ -1010,6 +1010,9 @@
     },
     "actions": {
       "dismiss": "Dismiss"
+    },
+    "release": {
+      "badge": "What's new"
     }
   },
   "AthletesApp": {

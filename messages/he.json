@@ -998,17 +998,20 @@
   },
   "Onboarding": {
     "defaults": {
-      "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
-      "checklistTitle": "Onboarding checklist",
-      "checklistBody": "Follow these steps to get started."
+      "moduleTitle": "מתחילים",
+      "moduleBody": "המסך הזה כולל היכרות קצרה להתחלה.",
+      "checklistTitle": "רשימת התחלה",
+      "checklistBody": "בצע את השלבים האלה כדי להתחיל."
     },
     "status": {
-      "done": "Done",
-      "next": "Next"
+      "done": "הושלם",
+      "next": "הבא"
     },
     "actions": {
-      "dismiss": "Dismiss"
+      "dismiss": "סגור"
+    },
+    "release": {
+      "badge": "מה חדש"
     }
   },
   "AthletesApp": {

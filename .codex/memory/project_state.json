@@ -1,5 +1,5 @@
 {
-  "current_focus": "issue-51-admin-onboarding-modules",
+  "current_focus": "issue-52-news-to-onboarding-release-prompts",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
@@ -9,7 +9,8 @@
     "modular-onboarding",
     "athlete-onboarding",
     "trainer-onboarding",
-    "admin-onboarding"
+    "admin-onboarding",
+    "release-prompts"
   ],
   "known_risks": [
     "autonomous loops can degrade architecture quality if they are allowed to write directly to main",

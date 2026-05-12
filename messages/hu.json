@@ -999,17 +999,20 @@
   },
   "Onboarding": {
     "defaults": {
-      "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
-      "checklistTitle": "Onboarding checklist",
-      "checklistBody": "Follow these steps to get started."
+      "moduleTitle": "Első lépések",
+      "moduleBody": "Ez a felület rövid bevezető segítséget ad.",
+      "checklistTitle": "Bevezető ellenőrzőlista",
+      "checklistBody": "Kövesd ezeket a lépéseket az induláshoz."
     },
     "status": {
-      "done": "Done",
-      "next": "Next"
+      "done": "Kész",
+      "next": "Következő"
     },
     "actions": {
-      "dismiss": "Dismiss"
+      "dismiss": "Bezárás"
+    },
+    "release": {
+      "badge": "Mi változott"
     }
   },
   "AthletesApp": {
