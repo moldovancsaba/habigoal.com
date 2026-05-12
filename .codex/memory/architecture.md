@@ -167,6 +167,12 @@ Current persistence surfaces that support this spine:
 - `habit_records` for athlete routine completion and adherence trends
 - `onboarding_state` for per-user onboarding progress, dismissals, release visibility, and checklist completion
 
+Centralized form system rules:
+- field ids, labels, placeholders, help text, and section order should move into shared form definitions rather than staying page-owned
+- the shared renderer should become the default path for athlete, trainer, and admin forms
+- visibility rules should stay role-aware and context-aware in one place so access behavior does not drift across pages
+- live form migration should happen incrementally, starting with `daily_checkin`, then athlete profile forms, then admin/team forms
+
 Onboarding system rules:
 - onboarding must be modular rather than one long tour
 - onboarding modules must be role-aware, route-aware, and permission-aware

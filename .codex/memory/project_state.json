@@ -1,5 +1,5 @@
 {
-  "current_focus": "issue-52-onboarding-i18n-hardening",
+  "current_focus": "issue-55-centralized-form-foundation",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
@@ -10,7 +10,8 @@
     "athlete-onboarding",
     "trainer-onboarding",
     "admin-onboarding",
-    "release-prompts"
+    "release-prompts",
+    "centralized-form-system"
   ],
   "known_risks": [
     "autonomous loops can degrade architecture quality if they are allowed to write directly to main",
@@ -30,7 +31,8 @@
     "issue-33-athlete-facing-daily-operating-dashboard",
     "issue-14-session-planning-calendar",
     "issue-34-weekly-athlete-operating-reports",
-    "issue-21-route-level-permissions-and-privacy-controls"
+    "issue-21-route-level-permissions-and-privacy-controls",
+    "issue-52-onboarding-release-prompts"
   ],
   "blocked_items": [],
   "consent_model": {

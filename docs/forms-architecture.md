@@ -108,6 +108,11 @@ Build the central foundation:
 - renderer shell
 - validation adapter contract
 
+Status:
+- implemented on branch `sentinel-squad/issue-48-onboarding-foundation`
+- current code includes typed form definitions, a reusable renderer shell, shared state helpers, and centralized visibility helpers
+- live page migration is still pending and should start with `daily_checkin`
+
 ### Phase 2
 
 Centralize shared infrastructure:

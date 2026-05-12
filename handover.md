@@ -92,6 +92,13 @@ This document summarizes the state of the project after the first major enhancem
 - Weekly news posts are now connected to onboarding state: unseen localized release notes can surface back inside protected app routes as dismissible “what changed” prompts instead of living only on `/news`.
 - Onboarding module copy is now sourced from locale message catalogs instead of inline English definitions, so role modules and release guidance follow the same fail-closed i18n path as the rest of the app.
 
+### 14. Centralized Form Foundation (v0.5.x)
+- A central form-system foundation now exists in `types/form-system.ts`, `lib/forms/*`, and `components/forms/FormRenderer.tsx`.
+- The repository now has typed form definitions for the first migration targets: `daily_checkin`, `athlete_baseline_profile`, `user_access`, and `team_setup`.
+- Shared state helpers now support nested object and array paths, which is required for a schema-driven form layer to update values like `roles.0` safely.
+- Visibility rules are now centralized so role-aware field gating can move out of page-local conditionals.
+- This slice is infrastructure only: it does not yet replace the live page-owned forms, but it establishes the reusable contract needed for the next migration issues.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

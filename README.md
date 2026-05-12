@@ -17,6 +17,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - Admin onboarding modules for user-rights approval, team setup, and governance review wired into the settings surface with completion tied to real admin actions
 - Weekly release prompts now reuse the structured news system so unseen product updates can surface inside the app as onboarding-style “what changed” guidance
 - Onboarding module copy is now locale-driven from the message catalogs instead of embedded in TypeScript definitions, so onboarding follows the same i18n rules as the rest of the app
+- Centralized form-system foundation now exists with typed form definitions, shared state helpers, visibility rules, a form registry, and a reusable renderer shell for future migration away from page-owned forms
 - Admin-owned user access management with approved-email gating, last-login visibility, and protections against removing the final admin account
 - Single-entity access model for `athlete`, `trainer`, and `admin`, with athlete-to-user linkage and basic team management
 - Route-level UI gating so athletes stay in athlete-facing surfaces and trainers cannot reach admin-only settings routes by URL
@@ -34,6 +35,7 @@ Habigoal is a mobile-first daily athlete support workspace for coaches and staff
 - [Design System](docs/design-system.md)
 - [Deployment](docs/deployment.md)
 - [Definition of Done](docs/dod.md)
+- [Forms Architecture](docs/forms-architecture.md)
 - [GitHub Project Board Bootstrap](config/gh-project-board.json)
 - [Legal and Company Info](docs/legal.md)
 - [Onboarding Architecture](docs/onboarding-architecture.md)
