@@ -1,4 +1,4 @@
-import { Button, Container, Title, Text, Stack, Group, Box, ThemeIcon, Alert, Badge, SimpleGrid } from "@mantine/core";
+import { Button, Container, Title, Text, Stack, Group, Box, Alert, Badge, SimpleGrid } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { env } from "@/config/env";
@@ -48,31 +48,22 @@ export default async function LandingPage({
                 </Text>
               </Stack>
 
-              <Group gap="md" wrap="wrap">
-                {[t("feature1"), t("feature2"), t("feature3")].map((feature, i) => (
-                  <Group key={i} gap="sm" wrap="nowrap" className="glass-pill" px="md" py="sm" style={{ borderRadius: 999 }}>
-                    <ThemeIcon color={i === 0 ? "ingress" : i === 1 ? "strategy" : "tactical"} size={28} radius="xl" variant="light">
-                      <Box style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "currentColor" }} />
-                    </ThemeIcon>
-                    <Text fw={600} c="var(--text-primary)">{feature}</Text>
-                  </Group>
-                ))}
-              </Group>
-
-              <Group gap="md" wrap="wrap">
-                <Button component="a" href={authHref} size="xl" color="ingress" style={{ minWidth: 220, flex: "1 1 220px" }}>
-                  {t("login")}
-                </Button>
-                <Button component="a" href={`/${locale}/athletes`} size="xl" variant="default" style={{ minWidth: 220, flex: "1 1 220px" }}>
-                  {t("athleteApp")}
-                </Button>
-                <Button component="a" href={`/${locale}/news`} size="xl" variant="light" style={{ minWidth: 220, flex: "1 1 220px" }}>
+              <Stack gap="md">
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                  <Button component="a" href={`/${locale}/athletes`} size="xl" color="ingress" styles={{ label: { fontSize: "1.1rem", fontWeight: 800 } }} style={{ minHeight: 72 }}>
+                    {t("athleteApp")}
+                  </Button>
+                  <Button component="a" href={authHref} size="xl" variant="default" styles={{ label: { fontSize: "1.1rem", fontWeight: 800 } }} style={{ minHeight: 72 }}>
+                    {t("trainerApp")}
+                  </Button>
+                </SimpleGrid>
+                <Button component="a" href={`/${locale}/news`} size="lg" color="ingress" variant="light" styles={{ label: { fontSize: "1rem", fontWeight: 800 } }}>
                   {t("whatsNew")}
                 </Button>
                 <Text size="sm" c="var(--text-muted)">
                   {t("ssoNote")}
                 </Text>
-              </Group>
+              </Stack>
             </Stack>
 
             <Box className="glass-panel surface-outline" p={{ base: "xl", md: "2rem" }} style={{ width: "100%", maxWidth: 420, justifySelf: "center", borderRadius: 32, position: "relative", overflow: "hidden" }}>

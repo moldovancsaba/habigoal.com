@@ -961,8 +961,9 @@
   },
   "Landing": {
     "title": "Habigoal Platform",
-    "subtitle": "Bio-pszicho-szociális sport ökoszisztéma professzionális teljesítmény- és tehetséggondozáshoz.",
+    "subtitle": "Napi sportolói támogatási munkatér edzőknek, sportolóknak és csapatoknak.",
     "login": "Belépés a Vezérlőpultra",
+    "trainerApp": "Tréner app",
     "feature1": "Bizonyítékokon alapuló felmérések",
     "feature2": "Longitudinális trendelemzés",
     "feature3": "Automatizált szakmai jelentések",
