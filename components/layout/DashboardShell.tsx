@@ -3,7 +3,7 @@
 import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack, Text, Badge } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { AppFooter } from "@/components/layout/AppFooter";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
@@ -16,11 +16,13 @@ import { BrandMark } from "@/components/ui/BrandMark";
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const sideInset = 14;
   const { mode } = useThemeMode();
 
-  const [user, setUser] = useState<{ name: string; email: string; primaryRole?: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string; primaryRole?: string; athleteId?: string } | null>(null);
+  const [authResolved, setAuthResolved] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -30,10 +32,35 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           setUser(data.user);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setAuthResolved(true));
   }, []);
 
+  useEffect(() => {
+    if (!authResolved || !user) return;
+
+    const locale = pathname.match(/^\/(hu|en|ar|es|de|he)(\/|$)/)?.[1] || "en";
+    const athleteHome = user.athleteId ? `/${locale}/athletes/${user.athleteId}` : `/${locale}/athletes`;
+    const trainerHome = `/${locale}/dashboard`;
+
+    if (user.primaryRole === "athlete" && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/assessment`)) {
+      router.replace(athleteHome);
+      return;
+    }
+
+    if (user.primaryRole === "trainer" && pathname.startsWith(`/${locale}/dashboard/settings`)) {
+      router.replace(trainerHome);
+    }
+  }, [authResolved, pathname, router, user]);
+
   const primaryRole = user?.primaryRole || "trainer";
+  const locale = pathname.match(/^\/(hu|en|ar|es|de|he)(\/|$)/)?.[1] || "en";
+  const routeBlocked =
+    !!user &&
+    (
+      (user.primaryRole === "athlete" && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/assessment`)) ||
+      (user.primaryRole === "trainer" && pathname.startsWith(`/${locale}/dashboard/settings`))
+    );
   const nav = [
     ...(primaryRole === "admin" || primaryRole === "trainer" ? [
       { href: "/dashboard", label: t("overview") },
@@ -157,6 +184,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   return (
     <>
+      {routeBlocked ? null : (
       <Drawer
         opened={mobileOpen}
         onClose={() => setMobileOpen(false)}
@@ -175,9 +203,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       >
         {navContent}
       </Drawer>
+      )}
 
       <AppShell
-        navbar={{ width: APP_LAYOUT.drawerWidth, breakpoint: "md" }}
+        navbar={routeBlocked ? undefined : { width: APP_LAYOUT.drawerWidth, breakpoint: "md" }}
         padding={0}
         styles={{
           navbar: {
@@ -189,37 +218,41 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           }
         }}
       >
-        <AppShell.Navbar visibleFrom="md" p={0}>
-          {navContent}
-        </AppShell.Navbar>
+        {!routeBlocked ? (
+          <AppShell.Navbar visibleFrom="md" p={0}>
+            {navContent}
+          </AppShell.Navbar>
+        ) : null}
 
         <AppShell.Main>
           <Box className="dashboard-main" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
-            <Box
-              hiddenFrom="md"
-              px={APP_LAYOUT.pageGutterMobile}
-              pt={APP_LAYOUT.mobileNavInset}
-              pb={8}
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <Burger
-                opened={mobileOpen}
-                onClick={() => setMobileOpen((v) => !v)}
-                size="md"
-                color="var(--text-primary)"
-                bg="transparent"
-                styles={{
-                  root: {
-                    padding: 0,
-                    minWidth: APP_LAYOUT.mobileNavSize,
-                    minHeight: APP_LAYOUT.mobileNavSize,
-                    border: "none",
-                    boxShadow: "none",
-                    background: "transparent"
-                  }
-                }}
-              />
-            </Box>
+            {!routeBlocked ? (
+              <Box
+                hiddenFrom="md"
+                px={APP_LAYOUT.pageGutterMobile}
+                pt={APP_LAYOUT.mobileNavInset}
+                pb={8}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <Burger
+                  opened={mobileOpen}
+                  onClick={() => setMobileOpen((v) => !v)}
+                  size="md"
+                  color="var(--text-primary)"
+                  bg="transparent"
+                  styles={{
+                    root: {
+                      padding: 0,
+                      minWidth: APP_LAYOUT.mobileNavSize,
+                      minHeight: APP_LAYOUT.mobileNavSize,
+                      border: "none",
+                      boxShadow: "none",
+                      background: "transparent"
+                    }
+                  }}
+                />
+              </Box>
+            ) : null}
             <Box style={{ flex: 1 }}>
               <PageContainer>{children}</PageContainer>
             </Box>

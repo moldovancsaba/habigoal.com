@@ -1,5 +1,5 @@
 {
-  "current_focus": "issue-34-weekly-athlete-operating-reports-and-summaries",
+  "current_focus": "issue-21-route-level-permissions-and-privacy-controls",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
@@ -23,7 +23,8 @@
     "issue-18-session-blueprints",
     "issue-29-standalone-typecheck-stability",
     "issue-33-athlete-facing-daily-operating-dashboard",
-    "issue-14-session-planning-calendar"
+    "issue-14-session-planning-calendar",
+    "issue-34-weekly-athlete-operating-reports"
   ],
   "blocked_items": [],
   "consent_model": {

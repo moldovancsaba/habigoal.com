@@ -73,6 +73,12 @@ This document summarizes the state of the project after the first major enhancem
 - Trainer accounts are now the primary coach-facing entity and are scoped through team membership rather than broad observer-style access.
 - A first-pass `teams` collection and `/api/teams` endpoint now exist so admins can create teams and attach trainers plus athletes from Settings.
 
+### 12. Route-Level Permission Gating (v0.5.x)
+- Dashboard shell routing now enforces the access model in the UI layer as well as the API layer.
+- Athlete users are redirected away from coach-admin dashboard routes and kept inside athlete-facing surfaces, while still being allowed into the check-in flow.
+- Trainer users are redirected away from `/dashboard/settings`, which remains an admin-only route.
+- The dashboard navigation chrome is suppressed on blocked routes so role leakage does not happen through stale sidebar state.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability
