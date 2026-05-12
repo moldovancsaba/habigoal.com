@@ -41,8 +41,11 @@ export type FormFieldDefinition = {
   path: string;
   type: FormFieldType;
   labelRef: FormTranslationRef;
+  label?: string;
   descriptionRef?: FormTranslationRef;
+  description?: string;
   placeholderRef?: FormTranslationRef;
+  placeholder?: string;
   options?: FormFieldOption[];
   validation?: FormFieldValidation;
   visibility?: FormVisibilityRule;
@@ -51,7 +54,9 @@ export type FormFieldDefinition = {
 export type FormSectionDefinition = {
   id: string;
   titleRef: FormTranslationRef;
+  title?: string;
   descriptionRef?: FormTranslationRef;
+  description?: string;
   fields: FormFieldDefinition[];
 };
 

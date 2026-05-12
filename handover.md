@@ -99,6 +99,11 @@ This document summarizes the state of the project after the first major enhancem
 - Visibility rules are now centralized so role-aware field gating can move out of page-local conditionals.
 - This slice is infrastructure only: it does not yet replace the live page-owned forms, but it establishes the reusable contract needed for the next migration issues.
 
+### 15. First Live Centralized Form Rollout (v0.5.x)
+- The daily check-in page has started consuming the centralized form system in production code.
+- The training-load block now renders through the shared `FormRenderer` using the `daily_checkin` central form definition instead of keeping that section page-owned.
+- The migration is intentionally incremental so athlete and trainer workflows remain stable while the rest of the check-in surface moves over section by section.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

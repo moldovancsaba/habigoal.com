@@ -1,5 +1,34 @@
 [
   {
+    "slug": "2026-05-12-centralized-form-rollout",
+    "title": {
+      "en": "Centralized forms are now live in the daily check-in rollout"
+    },
+    "summary": {
+      "en": "Habigoal now has the first production rollout of its centralized form system, starting with the training-load section inside the daily check-in flow."
+    },
+    "publishedAt": "2026-05-12",
+    "tags": [
+      "release",
+      "platform",
+      "forms"
+    ],
+    "sections": [
+      {
+        "title": {
+          "en": "New"
+        },
+        "items": {
+          "en": [
+            "A reusable FormRenderer, central form registry, shared visibility rules, and nested form state helpers now exist as the core of the new Habigoal form system.",
+            "The daily check-in training-load block is the first live production section to move onto the centralized form layer.",
+            "This lays the groundwork for moving athlete, trainer, and admin forms out of page-owned implementations and into one consistent system."
+          ]
+        }
+      }
+    ]
+  },
+  {
     "slug": "2026-05-12-admin-onboarding",
     "title": {
       "en": "Admin onboarding is now live for user rights, teams, and governance"

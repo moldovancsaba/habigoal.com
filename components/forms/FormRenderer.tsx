@@ -38,9 +38,13 @@ function FormField({
   resolveText: (fieldRef: FormFieldDefinition["labelRef"] | undefined, fallback: string) => string;
   resolveOption: (option: NonNullable<FormFieldDefinition["options"]>[number]) => string;
 }) {
-  const label = resolveText(field.labelRef, humanizeId(field.id));
-  const description = field.descriptionRef ? resolveText(field.descriptionRef, "") : undefined;
-  const placeholder = field.placeholderRef ? resolveText(field.placeholderRef, "") : undefined;
+  const label = resolveText(field.labelRef, field.label ?? humanizeId(field.id));
+  const description = field.descriptionRef
+    ? resolveText(field.descriptionRef, field.description ?? "")
+    : field.description;
+  const placeholder = field.placeholderRef
+    ? resolveText(field.placeholderRef, field.placeholder ?? "")
+    : field.placeholder;
   const selectionData =
     field.type === "rating" && !field.options?.length
       ? [1, 2, 3, 4, 5].map((score) => ({ value: String(score), label: String(score) }))
@@ -155,10 +159,10 @@ export function FormRenderer<TValues>({ definition, values, onChange, context }:
           return null;
         }
 
-        const sectionTitle = resolveFormText(t, messages, section.titleRef, humanizeId(section.id));
+        const sectionTitle = resolveFormText(t, messages, section.titleRef, section.title ?? humanizeId(section.id));
         const sectionDescription = section.descriptionRef
-          ? resolveFormText(t, messages, section.descriptionRef, "")
-          : "";
+          ? resolveFormText(t, messages, section.descriptionRef, section.description ?? "")
+          : (section.description ?? "");
 
         return (
           <Stack key={section.id} gap="sm">

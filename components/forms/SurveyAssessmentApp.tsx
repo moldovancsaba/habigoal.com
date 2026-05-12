@@ -20,17 +20,22 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { OnboardingPanel } from "@/components/onboarding/OnboardingPanel";
+import { FormRenderer } from "@/components/forms/FormRenderer";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/athlete-iq-survey";
+import { getFormDefinition } from "@/lib/forms/registry";
+import { setFormValue } from "@/lib/forms/state";
 import { sectionsForMode } from "@/lib/survey-schema";
 import { computeAssessment } from "@/lib/scoring";
 import type { AssessmentPayload, ScoreEntry } from "@/types/assessment";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
+import type { FormDefinition } from "@/types/form-system";
 
 const DRAFT_STORAGE_KEY = "survey-draft";
 const LEGACY_DRAFT_STORAGE_KEY = "kidex-draft";
+const trainingLoadDefinition = getFormDefinition("daily_checkin");
 
 const emptyAssessment: AssessmentPayload = {
   childId: "",
@@ -351,6 +356,11 @@ export function SurveyAssessmentApp() {
     setSaveState("idle");
   }
 
+  function updateField(path: string, value: string | number | boolean | string[] | null | undefined) {
+    setAssessment((current) => setFormValue(current, path, value));
+    setSaveState("idle");
+  }
+
   function selectChild(value: string | null) {
     const child = children.find((entry) => entry._id === value);
     if (!child || !value) return;
@@ -428,6 +438,13 @@ export function SurveyAssessmentApp() {
     setMessage("");
   }
 
+  const trainingLoadSectionDefinition: FormDefinition | null = trainingLoadDefinition
+    ? {
+        ...trainingLoadDefinition,
+        sections: trainingLoadDefinition.sections.filter((section) => section.id === "training_load")
+      }
+    : null;
+
   return (
     <Stack gap="lg" pb={96}>
       <PageHeader
@@ -481,45 +498,54 @@ export function SurveyAssessmentApp() {
       </SectionCard>
 
       <SectionCard title="Training load" subheader="Capture session demand so readiness can be interpreted against actual work.">
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-          <Select
-            label="Session type"
-            value={assessment.trainingLoad.sessionType}
-            data={[
-              { value: "team", label: "Team training" },
-              { value: "match", label: "Match" },
-              { value: "gym", label: "Gym" },
-              { value: "recovery", label: "Recovery" },
-              { value: "individual", label: "Individual extras" }
-            ]}
-            onChange={(value) => updateTrainingLoad("sessionType", value || "")}
+        {trainingLoadSectionDefinition ? (
+          <FormRenderer
+            definition={trainingLoadSectionDefinition}
+            values={assessment}
+            onChange={updateField}
+            context={{ role: "athlete" }}
           />
-          <NumberInput
-            label="Duration (min)"
-            value={assessment.trainingLoad.durationMinutes}
-            onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
-            min={0}
-            max={360}
-            hideControls
-          />
-          <NumberInput
-            label="RPE (1-10)"
-            value={assessment.trainingLoad.rpe}
-            onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
-            min={1}
-            max={10}
-            hideControls
-          />
-          <NumberInput
-            label="External load"
-            description="Optional meters / arbitrary units"
-            value={assessment.trainingLoad.externalLoad}
-            onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
-            min={0}
-            max={50000}
-            hideControls
-          />
-        </SimpleGrid>
+        ) : (
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+            <Select
+              label="Session type"
+              value={assessment.trainingLoad.sessionType}
+              data={[
+                { value: "team", label: "Team training" },
+                { value: "match", label: "Match" },
+                { value: "gym", label: "Gym" },
+                { value: "recovery", label: "Recovery" },
+                { value: "individual", label: "Individual extras" }
+              ]}
+              onChange={(value) => updateTrainingLoad("sessionType", value || "")}
+            />
+            <NumberInput
+              label="Duration (min)"
+              value={assessment.trainingLoad.durationMinutes}
+              onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
+              min={0}
+              max={360}
+              hideControls
+            />
+            <NumberInput
+              label="RPE (1-10)"
+              value={assessment.trainingLoad.rpe}
+              onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
+              min={1}
+              max={10}
+              hideControls
+            />
+            <NumberInput
+              label="External load"
+              description="Optional meters / arbitrary units"
+              value={assessment.trainingLoad.externalLoad}
+              onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
+              min={0}
+              max={50000}
+              hideControls
+            />
+          </SimpleGrid>
+        )}
       </SectionCard>
 
       <Paper withBorder p={{ base: "md", sm: "lg" }} radius="lg">

@@ -111,7 +111,8 @@ Build the central foundation:
 Status:
 - implemented on branch `sentinel-squad/issue-48-onboarding-foundation`
 - current code includes typed form definitions, a reusable renderer shell, shared state helpers, and centralized visibility helpers
-- live page migration is still pending and should start with `daily_checkin`
+- live page migration has started with the `daily_checkin` training-load block
+- the next migration step is the remaining daily check-in sections so the page stops owning most of its field rendering logic
 
 ### Phase 2
 

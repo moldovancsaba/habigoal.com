@@ -131,33 +131,47 @@ export const dailyCheckinFormDefinition: FormDefinition = {
     {
       id: "training_load",
       titleRef: { namespace: "FormSystem", key: "forms.dailyCheckin.sections.trainingLoad.title" },
+      title: "Training load",
+      description: "Capture session demand so readiness can be interpreted against actual work.",
       fields: [
         {
-          id: "training_load_session_type",
+          id: "session_type",
           path: "trainingLoad.sessionType",
-          type: "text",
-          labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.sessionType.label" }
+          type: "select",
+          labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.sessionType.label" },
+          label: "Session type",
+          options: [
+            { value: "team", label: "Team training" },
+            { value: "match", label: "Match" },
+            { value: "gym", label: "Gym" },
+            { value: "recovery", label: "Recovery" },
+            { value: "individual", label: "Individual extras" }
+          ]
         },
         {
-          id: "training_load_duration",
+          id: "duration_minutes",
           path: "trainingLoad.durationMinutes",
           type: "number",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.durationMinutes.label" },
+          label: "Duration (min)",
           validation: { min: 0, max: 360 }
         },
         {
-          id: "training_load_rpe",
+          id: "rpe",
           path: "trainingLoad.rpe",
           type: "number",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.rpe.label" },
+          label: "RPE (1-10)",
           validation: { min: 1, max: 10 }
         },
         {
-          id: "training_load_external",
+          id: "external_load",
           path: "trainingLoad.externalLoad",
           type: "number",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.externalLoad.label" },
           descriptionRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.externalLoad.description" },
+          label: "External load",
+          description: "Optional meters / arbitrary units",
           validation: { min: 0, max: 50000 }
         }
       ]
