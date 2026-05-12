@@ -80,6 +80,13 @@ This document summarizes the state of the project after the first major enhancem
 - The dashboard navigation chrome is suppressed on blocked routes so role leakage does not happen through stale sidebar state.
 - The athlete app entry route at `/[locale]/athletes` now redirects signed-in athletes to their own profile and sends trainer/admin users back to dashboard athlete management, so it does not remain a shared selector surface under authenticated use.
 
+### 13. Onboarding Foundation (v0.5.x)
+- A modular onboarding architecture now exists in `docs/onboarding-architecture.md`.
+- Typed onboarding definitions, state records, and engine helpers now exist in `types/onboarding.ts` and `lib/onboarding/*`.
+- A dedicated `onboarding_state` persistence surface now exists for per-user onboarding progress.
+- `GET/POST /api/onboarding/state` and `POST /api/onboarding/events` are in place as the first API layer for future role-aware onboarding delivery.
+- A reusable onboarding checklist card and provider now exist as the first UI primitives for future athlete, trainer, admin, and release-note onboarding flows.
+
 ## Next Steps (Roadmap Focus)
 
 ### 1. Legal Page Availability

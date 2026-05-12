@@ -161,3 +161,9 @@ Current persistence surfaces that support this spine:
 - `children` for athlete identity and profile
 - `coach_actions` for coach response traceability
 - `habit_records` for athlete routine completion and adherence trends
+- `onboarding_state` for per-user onboarding progress, dismissals, release visibility, and checklist completion
+
+Onboarding system rules:
+- onboarding must be modular rather than one long tour
+- onboarding modules must be role-aware, route-aware, and permission-aware
+- onboarding release prompts should align with weekly news posts rather than drift into a separate release channel
