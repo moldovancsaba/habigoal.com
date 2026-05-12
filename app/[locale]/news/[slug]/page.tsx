@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getNewsPostBySlug } from "@/lib/news";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { NewsSeenTracker } from "@/components/news/NewsSeenTracker";
 
 export default async function NewsPostPage({
   params
@@ -21,6 +22,7 @@ export default async function NewsPostPage({
 
   return (
     <Box style={{ minHeight: "100vh", color: "var(--text-primary)" }}>
+      <NewsSeenTracker version={post.slug} />
       <Container size="md" py={{ base: 40, md: 72 }}>
         <Stack gap="xl">
           <Box>
