@@ -547,41 +547,44 @@ export default function SettingsPage() {
                       ) : <Text size="sm" c="dimmed">No athlete link needed</Text>}
                     </Group>
                   </Table.Td>
-                  <Table.Td style={{ textAlign: "right" }}>
-                    <Button
-                      variant="light"
-                      size="sm"
-                      disabled={!canManageUsers}
-                      onClick={async () => {
-                        const latest = users.find((u) => u.email === user.email) || user;
-                        const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
-                        const ok = await saveUser(updatedUser);
-                        setMessage(ok ? tc("success") : tc("error"));
-                      }}
-                      mr="xs"
-                    >
-                      {tc("save")}
-                    </Button>
-                    <Button 
-                      variant="light" 
-                      color="red" 
-                      size="sm" 
-                      disabled={!canManageUsers || isProtectedAdmin(user)}
-                      onClick={async () => {
-                        const { deleteUser } = await import("@/services/user-service");
-                        if (confirm(`Remove access for ${user.email}?`)) {
-                          const ok = await deleteUser(user.email);
-                          if (ok) {
-                            setUsers(prev => prev.filter(u => u.email !== user.email));
-                            setMessage(tc("success"));
-                          } else {
-                            setMessage(tc("error"));
+                  <Table.Td style={{ minWidth: 180 }}>
+                    <Stack gap="xs" align="stretch">
+                      <Button
+                        variant="light"
+                        size="sm"
+                        fullWidth
+                        disabled={!canManageUsers}
+                        onClick={async () => {
+                          const latest = users.find((u) => u.email === user.email) || user;
+                          const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
+                          const ok = await saveUser(updatedUser);
+                          setMessage(ok ? tc("success") : tc("error"));
+                        }}
+                      >
+                        {tc("save")}
+                      </Button>
+                      <Button
+                        variant="light"
+                        color="red"
+                        size="sm"
+                        fullWidth
+                        disabled={!canManageUsers || isProtectedAdmin(user)}
+                        onClick={async () => {
+                          const { deleteUser } = await import("@/services/user-service");
+                          if (confirm(`Remove access for ${user.email}?`)) {
+                            const ok = await deleteUser(user.email);
+                            if (ok) {
+                              setUsers(prev => prev.filter(u => u.email !== user.email));
+                              setMessage(tc("success"));
+                            } else {
+                              setMessage(tc("error"));
+                            }
                           }
-                        }
-                      }}
-                    >
-                      {tc("remove")}
-                    </Button>
+                        }}
+                      >
+                        {tc("remove")}
+                      </Button>
+                    </Stack>
                   </Table.Td>
                 </Table.Tr>
               ))}
