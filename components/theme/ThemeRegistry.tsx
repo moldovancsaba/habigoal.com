@@ -9,7 +9,7 @@ import { ThemeModeProvider, useThemeMode } from "./ThemeModeContext";
 function ThemedTree({ children }: { children: React.ReactNode }) {
   const { mode } = useThemeMode();
   const locale = useLocale();
-  const direction: "ltr" | "rtl" = locale === "ar" ? "rtl" : "ltr";
+  const direction: "ltr" | "rtl" = locale === "ar" || locale === "he" ? "rtl" : "ltr";
   const mantineTheme = useMemo(() => getSurveyMantineTheme(mode, direction), [mode, direction]);
 
   return (

@@ -969,8 +969,6 @@
     "accessDenied": "Zugriff verweigert. Deine E-Mail steht nicht auf der Liste autorisierter Benutzer. Bitte kontaktiere den Administrator.",
     "accessDeniedTitle": "Zugriff verweigert",
     "badge": "{brand} OS",
-    "chipAdaptiveIntake": "adaptive aufnahme",
-    "chipLiquidShell": "liquid shell",
     "ssoNote": "Sicheres SSO ueber DoneIsBetter",
     "brandSubtitle": "Habigoal",
     "previewTitle": "Habigoal-Oberflaeche",
@@ -985,7 +983,13 @@
     "title": "Was ist neu in Habigoal",
     "subtitle": "Woechentliche Release Notes und Produktupdates aus realer Repository-Arbeit, damit Teams sehen, was sich in der App geaendert hat.",
     "readPost": "Beitrag lesen",
-    "backToNews": "Zurueck zu den News"
+    "backToNews": "Zurueck zu den News",
+    "tags": {
+      "release": "Release",
+      "athlete": "Athlet",
+      "planning": "Planung",
+      "reporting": "Berichte"
+    }
   },
   "AthletesApp": {
     "title": "Athlete App",

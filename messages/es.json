@@ -969,8 +969,6 @@
     "accessDenied": "Acceso denegado. Tu correo no esta en la lista autorizada. Contacta con tu administrador.",
     "accessDeniedTitle": "Acceso denegado",
     "badge": "{brand} OS",
-    "chipAdaptiveIntake": "entrada adaptativa",
-    "chipLiquidShell": "capa liquida",
     "ssoNote": "SSO seguro via DoneIsBetter",
     "brandSubtitle": "Habigoal",
     "previewTitle": "Interfaz Habigoal",
@@ -985,7 +983,13 @@
     "title": "Que hay de nuevo en Habigoal",
     "subtitle": "Notas de version semanales y actualizaciones del producto generadas a partir del trabajo real del repositorio.",
     "readPost": "Leer publicacion",
-    "backToNews": "Volver a noticias"
+    "backToNews": "Volver a noticias",
+    "tags": {
+      "release": "Lanzamiento",
+      "athlete": "Atleta",
+      "planning": "Planificacion",
+      "reporting": "Informes"
+    }
   },
   "AthletesApp": {
     "title": "Athlete App",

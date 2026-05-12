@@ -2,6 +2,7 @@ import { Badge, Box, Button, Container, Group, Paper, Stack, Text, Title } from 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listNewsPosts } from "@/lib/news";
+import { BrandMark } from "@/components/ui/BrandMark";
 
 export default async function NewsIndexPage({
   params
@@ -11,12 +12,16 @@ export default async function NewsIndexPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "News" });
-  const posts = listNewsPosts();
+  const posts = listNewsPosts(locale);
 
   return (
     <Box style={{ minHeight: "100vh", color: "var(--text-primary)" }}>
       <Container size="lg" py={{ base: 40, md: 72 }}>
         <Stack gap="xl">
+          <Box>
+            <BrandMark size={84} align="left" />
+          </Box>
+
           <Stack gap="sm">
             <Badge color="ingress" variant="light" size="lg" w="fit-content">
               {t("badge")}
@@ -33,13 +38,13 @@ export default async function NewsIndexPage({
                 <Stack gap="md">
                   <Group justify="space-between" align="flex-start">
                     <Stack gap={4}>
-                      <Text size="sm" c="dimmed">{post.publishedAt}</Text>
+                      <Text size="sm" c="dimmed">{post.publishedLabel}</Text>
                       <Title order={2}>{post.title}</Title>
                     </Stack>
                     <Group gap="xs">
                       {post.tags.map((tag) => (
                         <Badge key={tag} variant="light" color="strategy">
-                          {tag}
+                          {t(`tags.${tag}`)}
                         </Badge>
                       ))}
                     </Group>

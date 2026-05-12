@@ -964,8 +964,6 @@
     "accessDenied": "تم رفض الوصول. بريدك الإلكتروني ليس مدرجاً في قائمة المستخدمين المدعوين. يرجى الاتصال بالمسؤول.",
     "accessDeniedTitle": "تم رفض الوصول",
     "badge": "{brand} OS",
-    "chipAdaptiveIntake": "استقبال تكيفي",
-    "chipLiquidShell": "غلاف زجاجي سائل",
     "ssoNote": "دخول موحد آمن عبر DoneIsBetter",
     "brandSubtitle": "Habigoal",
     "previewTitle": "واجهة Habigoal",
@@ -980,7 +978,13 @@
     "title": "ما الجديد في Habigoal",
     "subtitle": "ملاحظات إصدار أسبوعية وتحديثات منتج مبنية على العمل الحقيقي في المستودع حتى ترى الفرق ما الذي تغير في التطبيق.",
     "readPost": "قراءة المنشور",
-    "backToNews": "العودة إلى الأخبار"
+    "backToNews": "العودة إلى الأخبار",
+    "tags": {
+      "release": "إصدار",
+      "athlete": "لاعب",
+      "planning": "تخطيط",
+      "reporting": "تقارير"
+    }
   },
   "AthletesApp": {
     "title": "تطبيق الرياضي",

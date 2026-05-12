@@ -1,35 +1,156 @@
 [
   {
     "slug": "2026-05-11-athlete-operating-and-planning",
-    "title": "Athlete operating dashboard, habits, memory, load, and planning",
-    "summary": "This week Habigoal moved from basic check-in review into a fuller athlete operating system with habit tracking, memory insights, training load, and weekly planning.",
+    "title": {
+      "en": "Athlete operating dashboard, habits, memory, load, and planning",
+      "hu": "Sportolói működési vezérlőpult, szokások, emlékezeti minták, terhelés és tervezés",
+      "de": "Athleten-Dashboard für Alltag, Gewohnheiten, Muster, Belastung und Planung",
+      "es": "Panel operativo del atleta, hábitos, memoria, carga y planificación",
+      "ar": "لوحة تشغيل اللاعب والعادات والذاكرة والحمل والتخطيط",
+      "he": "לוח התפעול של הספורטאי, הרגלים, זיכרון, עומס ותכנון"
+    },
+    "summary": {
+      "en": "This week Habigoal moved from basic check-in review into a fuller athlete operating system with habit tracking, memory insights, training load, and weekly planning.",
+      "hu": "Ezen a héten a Habigoal az alap check-in áttekintésből egy teljesebb sportolói működési rendszerré lépett elő, szokáskövetéssel, emlékezeti mintákkal, terhelési adatokkal és heti tervezéssel.",
+      "de": "Diese Woche hat sich Habigoal von einer einfachen Check-in-Ansicht zu einem umfassenderen Betriebssystem für Athleten mit Gewohnheitstracking, Erinnerungssignalen, Trainingsbelastung und Wochenplanung weiterentwickelt.",
+      "es": "Esta semana Habigoal pasó de una revisión básica de check-ins a un sistema operativo más completo para el atleta, con seguimiento de hábitos, memoria contextual, carga de entrenamiento y planificación semanal.",
+      "ar": "هذا الأسبوع انتقل Habigoal من مراجعة أساسية لتسجيلات الدخول إلى نظام تشغيل رياضي أكثر اكتمالاً مع تتبع العادات ورؤى الذاكرة وحمل التدريب والتخطيط الأسبوعي.",
+      "he": "השבוע Habigoal עבר מסקירת צ'ק-אין בסיסית למערכת תפעול מלאה יותר לספורטאי, עם מעקב הרגלים, תובנות זיכרון, עומס אימון ותכנון שבועי."
+    },
     "publishedAt": "2026-05-11",
     "tags": ["release", "athlete", "planning", "reporting"],
     "sections": [
       {
-        "title": "New",
-        "items": [
-          "Athlete detail pages now show a daily operating dashboard with readiness mode, momentum, and next priorities.",
-          "Habit adherence tracking is now persisted with completion score, streak, and category focus.",
-          "Athlete memory timelines now summarize recurring wins, constraints, and support signals.",
-          "Session planning now has a dedicated weekly planning route with location scope and coach notes."
-        ]
+        "title": {
+          "en": "New",
+          "hu": "Új",
+          "de": "Neu",
+          "es": "Nuevo",
+          "ar": "جديد",
+          "he": "חדש"
+        },
+        "items": {
+          "en": [
+            "Athlete detail pages now show a daily operating dashboard with readiness mode, momentum, and next priorities.",
+            "Habit adherence tracking is now persisted with completion score, streak, and category focus.",
+            "Athlete memory timelines now summarize recurring wins, constraints, and support signals.",
+            "Session planning now has a dedicated weekly planning route with location scope and coach notes."
+          ],
+          "hu": [
+            "A sportolói adatlapok most napi működési vezérlőpultot mutatnak készenléti móddal, lendülettel és következő prioritásokkal.",
+            "A szokásteljesítés követése most már mentve marad teljesítési pontszámmal, sorozattal és kategóriafókusszal együtt.",
+            "A sportolói emlékezeti idősávok most már összefoglalják a visszatérő sikereket, korlátokat és támogatási jeleket.",
+            "Az edzéstervezés most külön heti tervezési nézetet kapott helyszín szerinti hatókörrel és edzői jegyzetekkel."
+          ],
+          "de": [
+            "Die Athleten-Detailseiten zeigen jetzt ein tägliches Betriebs-Dashboard mit Bereitschaftsmodus, Dynamik und nächsten Prioritäten.",
+            "Die Nachverfolgung der Gewohnheitstreue wird jetzt mit Erfüllungswert, Serie und Kategoriefokus gespeichert.",
+            "Die Athleten-Erinnerungszeitleisten fassen jetzt wiederkehrende Erfolge, Einschränkungen und Unterstützungssignale zusammen.",
+            "Die Trainingsplanung hat jetzt eine eigene Wochenplanungsansicht mit Standortbezug und Trainernotizen."
+          ],
+          "es": [
+            "Las páginas de detalle del atleta ahora muestran un panel operativo diario con modo de disposición, impulso y próximas prioridades.",
+            "El seguimiento de adherencia a hábitos ahora se guarda con puntuación de cumplimiento, racha y foco por categoría.",
+            "Las líneas de memoria del atleta ahora resumen logros recurrentes, limitaciones y señales de apoyo.",
+            "La planificación de sesiones ahora tiene una vista semanal dedicada con alcance por ubicación y notas del entrenador."
+          ],
+          "ar": [
+            "تعرض صفحات تفاصيل اللاعب الآن لوحة تشغيل يومية تتضمن وضع الجاهزية والزخم والأولويات التالية.",
+            "يتم الآن حفظ تتبع الالتزام بالعادات مع درجة الإكمال وسلسلة الاستمرارية وتركيز الفئة.",
+            "تلخص جداول ذاكرة اللاعب الآن النجاحات المتكررة والقيود وإشارات الدعم.",
+            "أصبح لتخطيط الحصص الآن مسار أسبوعي مخصص مع نطاق حسب الموقع وملاحظات المدرب."
+          ],
+          "he": [
+            "עמודי פרטי הספורטאי מציגים כעת לוח תפעול יומי עם מצב מוכנות, מומנטום והעדיפויות הבאות.",
+            "מעקב ההתמדה בהרגלים נשמר כעת עם ציון השלמה, רצף ומיקוד לפי קטגוריה.",
+            "צירי הזיכרון של הספורטאי מסכמים כעת הצלחות חוזרות, מגבלות ואותות תמיכה.",
+            "לתכנון האימונים יש כעת מסלול שבועי ייעודי עם היקף לפי מיקום והערות מאמן."
+          ]
+        }
       },
       {
-        "title": "Improved",
-        "items": [
-          "Training load is now captured in check-ins through session type, duration, RPE, and optional external load.",
-          "PDF reports now include an operating snapshot built from habits, load, and recent athlete patterns.",
-          "Saved weekly plans now flow back into athlete detail pages so planned context is visible during review."
-        ]
+        "title": {
+          "en": "Improved",
+          "hu": "Fejlesztve",
+          "de": "Verbessert",
+          "es": "Mejorado",
+          "ar": "محسّن",
+          "he": "שופר"
+        },
+        "items": {
+          "en": [
+            "Training load is now captured in check-ins through session type, duration, RPE, and optional external load.",
+            "PDF reports now include an operating snapshot built from habits, load, and recent athlete patterns.",
+            "Saved weekly plans now flow back into athlete detail pages so planned context is visible during review."
+          ],
+          "hu": [
+            "A terhelés most már a check-inekben is rögzíthető edzéstípus, időtartam, RPE és opcionális külső terhelés alapján.",
+            "A PDF-jelentések most már tartalmaznak egy működési pillanatképet, amely a szokásokból, a terhelésből és a közelmúltbeli sportolói mintákból épül fel.",
+            "A mentett heti tervek most visszakerülnek a sportolói adatlapokra is, így az előre tervezett kontextus az áttekintés közben is látható."
+          ],
+          "de": [
+            "Die Trainingsbelastung wird jetzt in Check-ins über Einheitstyp, Dauer, RPE und optionale externe Belastung erfasst.",
+            "PDF-Berichte enthalten jetzt eine Betriebsübersicht aus Gewohnheiten, Belastung und aktuellen Athletenmustern.",
+            "Gespeicherte Wochenpläne fließen jetzt zurück in die Athleten-Detailseiten, damit der geplante Kontext bei der Durchsicht sichtbar ist."
+          ],
+          "es": [
+            "La carga de entrenamiento ahora se captura en los check-ins mediante tipo de sesión, duración, RPE y carga externa opcional.",
+            "Los informes PDF ahora incluyen una instantánea operativa construida a partir de hábitos, carga y patrones recientes del atleta.",
+            "Los planes semanales guardados ahora vuelven a las páginas de detalle del atleta para que el contexto planificado sea visible durante la revisión."
+          ],
+          "ar": [
+            "يتم الآن تسجيل حمل التدريب داخل تسجيلات الدخول من خلال نوع الحصة والمدة وRPE والحمل الخارجي الاختياري.",
+            "تتضمن تقارير PDF الآن لقطة تشغيلية مبنية على العادات والحمل وأنماط اللاعب الأخيرة.",
+            "تعود الخطط الأسبوعية المحفوظة الآن إلى صفحات تفاصيل اللاعب بحيث يظهر السياق المخطط أثناء المراجعة."
+          ],
+          "he": [
+            "עומס האימון נלכד כעת בצ'ק-אינים באמצעות סוג האימון, משך, RPE ועומס חיצוני אופציונלי.",
+            "דוחות ה-PDF כוללים כעת תמונת מצב תפעולית המבוססת על הרגלים, עומס ודפוסים עדכניים של הספורטאי.",
+            "תוכניות שבועיות שנשמרו חוזרות כעת לעמודי פרטי הספורטאי כך שהקשר מתוכנן יישאר גלוי בזמן הסקירה."
+          ]
+        }
       },
       {
-        "title": "Fixed",
-        "items": [
-          "Trend charts now use correct chronological ordering, so longer athlete history renders properly.",
-          "Coach alert cards no longer duplicate the same athlete when multiple alert conditions overlap.",
-          "PDF exports now resolve readiness labels correctly and avoid note-layout overlap."
-        ]
+        "title": {
+          "en": "Fixed",
+          "hu": "Javítva",
+          "de": "Behoben",
+          "es": "Corregido",
+          "ar": "تم الإصلاح",
+          "he": "תוקן"
+        },
+        "items": {
+          "en": [
+            "Trend charts now use correct chronological ordering, so longer athlete history renders properly.",
+            "Coach alert cards no longer duplicate the same athlete when multiple alert conditions overlap.",
+            "PDF exports now resolve readiness labels correctly and avoid note-layout overlap."
+          ],
+          "hu": [
+            "A trendgrafikonok most már helyes időrendi sorrendet használnak, így a hosszabb sportolói előzmények is jól jelennek meg.",
+            "Az edzői riasztáskártyák már nem duplikálják ugyanazt a sportolót, ha több riasztási feltétel egyszerre teljesül.",
+            "A PDF-exportok most már helyesen oldják fel a készenléti címkéket, és elkerülik a jegyzetblokkok átfedését."
+          ],
+          "de": [
+            "Trenddiagramme verwenden jetzt die korrekte chronologische Reihenfolge, sodass längere Athletenhistorien richtig dargestellt werden.",
+            "Trainerhinweise duplizieren denselben Athleten nicht mehr, wenn mehrere Alarmbedingungen gleichzeitig greifen.",
+            "PDF-Exporte lösen Bereitschaftslabels jetzt korrekt auf und vermeiden Überlappungen im Notizlayout."
+          ],
+          "es": [
+            "Los gráficos de tendencia ahora usan el orden cronológico correcto, por lo que los historiales más largos del atleta se muestran bien.",
+            "Las tarjetas de alerta del entrenador ya no duplican al mismo atleta cuando coinciden varias condiciones de alerta.",
+            "Las exportaciones PDF ahora resuelven correctamente las etiquetas de disposición y evitan solapamientos en las notas."
+          ],
+          "ar": [
+            "تستخدم مخططات الاتجاه الآن ترتيباً زمنياً صحيحاً، لذلك يتم عرض السجل الأطول للاعب بشكل سليم.",
+            "لم تعد بطاقات تنبيه المدرب تكرر اللاعب نفسه عندما تتداخل عدة شروط تنبيه.",
+            "أصبحت صادرات PDF الآن تعرض تسميات الجاهزية بشكل صحيح وتتجنب تداخل تخطيط الملاحظات."
+          ],
+          "he": [
+            "גרפי המגמה משתמשים כעת בסדר כרונולוגי נכון, כך שהיסטוריה ארוכה יותר של הספורטאי מוצגת כראוי.",
+            "כרטיסי ההתראה למאמן כבר אינם משכפלים את אותו ספורטאי כאשר כמה תנאי התראה חופפים.",
+            "ייצואי PDF מציגים כעת את תוויות המוכנות נכון ונמנעים מחפיפת פריסת ההערות."
+          ]
+        }
       }
     ]
   }

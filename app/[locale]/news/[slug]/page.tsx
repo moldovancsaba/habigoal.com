@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getNewsPostBySlug } from "@/lib/news";
+import { BrandMark } from "@/components/ui/BrandMark";
 
 export default async function NewsPostPage({
   params
@@ -12,7 +13,7 @@ export default async function NewsPostPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "News" });
-  const post = getNewsPostBySlug(slug);
+  const post = getNewsPostBySlug(slug, locale);
 
   if (!post) {
     notFound();
@@ -22,17 +23,21 @@ export default async function NewsPostPage({
     <Box style={{ minHeight: "100vh", color: "var(--text-primary)" }}>
       <Container size="md" py={{ base: 40, md: 72 }}>
         <Stack gap="xl">
+          <Box>
+            <BrandMark size={84} align="left" />
+          </Box>
+
           <Stack gap="md">
             <Link href="/news" style={{ textDecoration: "none" }}>
               <Text c="var(--text-secondary)">{t("backToNews")}</Text>
             </Link>
-            <Text size="sm" c="dimmed">{post.publishedAt}</Text>
+            <Text size="sm" c="dimmed">{post.publishedLabel}</Text>
             <Title order={1}>{post.title}</Title>
             <Text size="lg" c="var(--text-secondary)">{post.summary}</Text>
             <Group gap="xs">
               {post.tags.map((tag) => (
                 <Badge key={tag} variant="light" color="strategy">
-                  {tag}
+                  {t(`tags.${tag}`)}
                 </Badge>
               ))}
             </Group>

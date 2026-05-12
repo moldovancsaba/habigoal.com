@@ -969,8 +969,6 @@
     "accessDenied": "הגישה נדחתה. כתובת הדוא\"ל שלך אינה ברשימת המשתמשים המורשים. אנא פנה למנהל המערכת.",
     "accessDeniedTitle": "הגישה נדחתה",
     "badge": "{brand} OS",
-    "chipAdaptiveIntake": "קליטה אדפטיבית",
-    "chipLiquidShell": "מעטפת נוזלית",
     "ssoNote": "SSO מאובטח דרך DoneIsBetter",
     "brandSubtitle": "Habigoal",
     "previewTitle": "ממשק Habigoal",
@@ -985,7 +983,13 @@
     "title": "מה חדש ב-Habigoal",
     "subtitle": "עדכוני מוצר והערות שחרור שבועיות המבוססים על עבודת הריפו האמיתית כדי שצוותים יראו מה השתנה באפליקציה.",
     "readPost": "קרא פוסט",
-    "backToNews": "חזרה לחדשות"
+    "backToNews": "חזרה לחדשות",
+    "tags": {
+      "release": "גרסה",
+      "athlete": "ספורטאי",
+      "planning": "תכנון",
+      "reporting": "דיווח"
+    }
   },
   "AthletesApp": {
     "title": "אפליקציית ספורטאים",

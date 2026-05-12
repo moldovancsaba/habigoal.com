@@ -1,4 +1,4 @@
-import { Button, Container, Title, Text, Stack, Group, Box, Alert, Badge, SimpleGrid } from "@mantine/core";
+import { Button, Container, Title, Text, Stack, Group, Box, Alert, SimpleGrid } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { env } from "@/config/env";
@@ -25,18 +25,10 @@ export default async function LandingPage({
               {t("accessDenied")}
             </Alert>
           )}
-          <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="xl" verticalSpacing="xl">
-            <Stack className="glass-panel surface-outline" gap="xl" p={{ base: "xl", md: "2rem" }} style={{ flex: 1, borderRadius: 28, minWidth: 0 }}>
-              <Group justify="space-between" align="center" wrap="wrap">
-                <Badge color="strategy" variant="light" size="lg">{t("badge", {brand: "{Hg}"})}</Badge>
-                <Group gap="xs" wrap="wrap">
-                  <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
-                    <Text size="sm" fw={700} c="var(--text-secondary)">{t("chipAdaptiveIntake")}</Text>
-                  </Box>
-                  <Box className="glass-pill" px="md" py={8} style={{ borderRadius: 999 }}>
-                    <Text size="sm" fw={700} c="var(--text-secondary)">{t("chipLiquidShell")}</Text>
-                  </Box>
-                </Group>
+          <Box maw={1080} mx="auto">
+            <Stack className="glass-panel surface-outline" gap="xl" p={{ base: "xl", md: "2rem" }} style={{ borderRadius: 28, minWidth: 0 }}>
+              <Group justify="flex-start" align="center">
+                <BrandMark size={76} align="left" />
               </Group>
 
               <Stack gap="lg">
@@ -65,20 +57,7 @@ export default async function LandingPage({
                 </Text>
               </Stack>
             </Stack>
-
-            <Box className="glass-panel surface-outline" p={{ base: "xl", md: "2rem" }} style={{ width: "100%", maxWidth: 420, justifySelf: "center", borderRadius: 32, position: "relative", overflow: "hidden" }}>
-              <Box style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 18%, rgba(0, 63, 206, 0.44), transparent 34%), radial-gradient(circle at 58% 48%, rgba(0, 174, 239, 0.32), transparent 28%), radial-gradient(circle at 40% 78%, rgba(199, 240, 54, 0.2), transparent 32%)" }} />
-              <Stack align="center" justify="center" gap="lg" style={{ position: "relative", minHeight: 460 }}>
-                <BrandMark size={180} subtitle={t("brandSubtitle")} />
-                <Stack gap={6} align="center">
-                  <Text fw={800} size="xl">{t("previewTitle")}</Text>
-                  <Text size="sm" c="var(--text-secondary)" ta="center" maw={280}>
-                    {t("previewSubtitle")}
-                  </Text>
-                </Stack>
-              </Stack>
-            </Box>
-          </SimpleGrid>
+          </Box>
         </Stack>
       </Container>
 

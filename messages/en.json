@@ -970,8 +970,6 @@
     "accessDenied": "Access denied. Your email is not on the authorized user list. Please contact your administrator.",
     "accessDeniedTitle": "Access Denied",
     "badge": "{brand} OS",
-    "chipAdaptiveIntake": "adaptive intake",
-    "chipLiquidShell": "liquid shell",
     "ssoNote": "Secure SSO via DoneIsBetter",
     "brandSubtitle": "Habigoal",
     "previewTitle": "Habigoal Interface",
@@ -986,7 +984,13 @@
     "title": "What’s New in Habigoal",
     "subtitle": "Weekly release notes and product updates generated from real repository work so coaches and teams can see what changed in the app.",
     "readPost": "Read post",
-    "backToNews": "Back to news"
+    "backToNews": "Back to news",
+    "tags": {
+      "release": "Release",
+      "athlete": "Athlete",
+      "planning": "Planning",
+      "reporting": "Reporting"
+    }
   },
   "AthletesApp": {
     "title": "Athlete App",
