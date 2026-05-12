@@ -46,6 +46,7 @@ UI operating surfaces:
 - `/dashboard/planning` is the coach planning surface for turning live readiness and load state into a weekly session shape, with persisted weekly plans in `session_plans`.
 - `/dashboard/athletes/[id]` remains the athlete operating surface with trends, habits, memory, and reports.
 - `/athletes` is the public athlete app entry surface, and `/athletes/[id]` must stay athlete-facing rather than leaking coach-admin controls.
+- When authentication is enforced, `/athletes` must redirect signed-in athletes to their own profile and redirect trainer/admin users back into dashboard athlete management rather than behaving like a shared athlete selector.
 - Role-aware route gating must exist in the shell layer as well as in APIs: athletes should not browse coach-admin dashboard routes, and trainers should not reach admin settings routes by URL.
 - DoneIsBetter SSO is the intended authentication boundary for protected Habigoal usage, while local role authorization remains owned by the `users` collection.
 - User-rights changes are admin-owned operations; the system must not allow self-removal of the active admin or deletion/demotion of the final admin account.
