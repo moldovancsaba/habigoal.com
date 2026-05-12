@@ -79,6 +79,7 @@ This document summarizes the state of the project after the first major enhancem
 - Trainer users are redirected away from `/dashboard/settings`, which remains an admin-only route.
 - The dashboard navigation chrome is suppressed on blocked routes so role leakage does not happen through stale sidebar state.
 - The athlete app entry route at `/[locale]/athletes` now redirects signed-in athletes to their own profile and sends trainer/admin users back to dashboard athlete management, so it does not remain a shared selector surface under authenticated use.
+- The athlete check-in form now locks signed-in athlete users to their own linked athlete profile instead of exposing a selectable athlete dropdown.
 
 ## Next Steps (Roadmap Focus)
 

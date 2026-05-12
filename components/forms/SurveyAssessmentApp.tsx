@@ -206,6 +206,7 @@ export function SurveyAssessmentApp() {
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
   const [children, setChildren] = useState<AthleteProfile[]>([]);
+  const [authUser, setAuthUser] = useState<{ primaryRole?: string; athleteId?: string } | null>(null);
   const initializedChildPrefill = useRef(false);
 
   const sections = sectionsForMode(assessment.mode);
@@ -245,6 +246,13 @@ export function SurveyAssessmentApp() {
   }, [domainScores]);
 
   useEffect(() => {
+    void fetch("/api/auth/me")
+      .then((response) => response.json())
+      .then((data) => setAuthUser(data?.user ?? null))
+      .catch(() => setAuthUser(null));
+  }, []);
+
+  useEffect(() => {
     void fetch("/api/athletes")
       .then((response) => response.json())
       .then((data: AthleteProfile[]) => setChildren(Array.isArray(data) ? data : []))
@@ -270,6 +278,7 @@ export function SurveyAssessmentApp() {
     if (!childIdParam) return;
     if (recordId) return;
     if (initializedChildPrefill.current) return;
+    if (authUser?.primaryRole === "athlete" && authUser.athleteId && childIdParam !== authUser.athleteId) return;
     initializedChildPrefill.current = true;
 
     void (async () => {
@@ -293,7 +302,44 @@ export function SurveyAssessmentApp() {
         }
       }));
     })();
-  }, [childIdParam, recordId]);
+  }, [authUser?.athleteId, authUser?.primaryRole, childIdParam, recordId]);
+
+  useEffect(() => {
+    if (authUser?.primaryRole !== "athlete" || !authUser.athleteId || recordId) return;
+
+    void (async () => {
+      const response = await fetch(`/api/athletes/${authUser.athleteId}`).catch(() => null);
+      if (!response?.ok) return;
+      const athlete = (await response.json()) as AthleteProfile;
+
+      setAssessment((current) => {
+        if (current.childId === authUser.athleteId && current.child.name) {
+          return current;
+        }
+
+        return {
+          ...current,
+          childId: authUser.athleteId!,
+          child: {
+            ...current.child,
+            name: athlete.name || "",
+            birthDate: athlete.birthDate || "",
+            ageGroup: "",
+            knownTraits: athlete.knownTraits || "",
+            parentSignals: athlete.parentSignals || "",
+            dominantHand: athlete.dominantHand || "",
+            dominantEye: athlete.dominantEye || "",
+            dominantFoot: athlete.dominantFoot || ""
+          },
+          session: {
+            ...current.session,
+            consentPhoto: Boolean(athlete.consentPhoto),
+            consentReport: Boolean(athlete.consentReport)
+          }
+        };
+      });
+    })();
+  }, [authUser?.athleteId, authUser?.primaryRole, recordId]);
 
   function updateScore(key: string, score: number) {
     setAssessment((current) => ({
@@ -418,6 +464,12 @@ export function SurveyAssessmentApp() {
     setMessage("");
   }
 
+  const isAthleteSelfCheckIn = authUser?.primaryRole === "athlete";
+  const selectedAthleteLabel =
+    assessment.child.name && assessment.childId
+      ? `${assessment.child.name}${children.find((child) => child._id === assessment.childId)?.surveyId ? ` (${children.find((child) => child._id === assessment.childId)?.surveyId})` : ""}`
+      : tc("emptyValue");
+
   return (
     <Stack gap="lg" pb={96}>
       <PageHeader
@@ -444,14 +496,22 @@ export function SurveyAssessmentApp() {
       <SectionCard title={t("setupTitle")} subheader="Keep this daily check-in under 2 minutes.">
         <Stack gap="md">
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            <Select
-              label={t("childName")}
-              placeholder={t("selectAthlete")}
-              searchable
-              value={assessment.childId || ""}
-              data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
-              onChange={selectChild}
-            />
+            {isAthleteSelfCheckIn ? (
+              <TextInput
+                label={t("childName")}
+                value={selectedAthleteLabel}
+                readOnly
+              />
+            ) : (
+              <Select
+                label={t("childName")}
+                placeholder={t("selectAthlete")}
+                searchable
+                value={assessment.childId || ""}
+                data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
+                onChange={selectChild}
+              />
+            )}
             <TextInput
               label={tc("date")}
               value={assessment.session.date}
