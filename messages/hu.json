@@ -367,6 +367,11 @@
     "restoreAction": "Visszaállítás",
     "showDeleted": "Töröltek mutatása",
     "showingDeleted": "Törölt elemek nézete",
+    "governanceMetricsTitle": "Irányítási mutatók",
+    "governanceDeletedAthletes": "Törölt sportolók: {count}",
+    "governanceDeletedAssessments": "Törölt felmérések: {count}",
+    "governanceMissingConsentReport": "Riporthozzájárulás nélküli felmérések: {count}",
+    "governanceMissingAthleteLink": "Sportolói kapcsolódás nélküli felmérések: {count}",
     "addChild": "Sportoló hozzáadása",
     "alertingTitle": "Riasztások és eszkaláció",
     "alertingDigestEnabled": "Napi edzői eszkalációs összefoglaló engedélyezése",
@@ -990,6 +995,21 @@
       "athlete": "Sportoló",
       "planning": "Tervezés",
       "reporting": "Jelentések"
+    }
+  },
+  "Onboarding": {
+    "defaults": {
+      "moduleTitle": "Getting started",
+      "moduleBody": "This surface has a short onboarding introduction.",
+      "checklistTitle": "Onboarding checklist",
+      "checklistBody": "Follow these steps to get started."
+    },
+    "status": {
+      "done": "Done",
+      "next": "Next"
+    },
+    "actions": {
+      "dismiss": "Dismiss"
     }
   },
   "AthletesApp": {

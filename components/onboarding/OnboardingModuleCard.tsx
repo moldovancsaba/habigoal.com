@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Button, Group, Paper, Stack, Text } from "@mantine/core";
+import { useTranslations } from "next-intl";
 import type { OnboardingModuleDefinition } from "@/types/onboarding";
 
 export function OnboardingModuleCard({
@@ -10,13 +11,15 @@ export function OnboardingModuleCard({
   module: OnboardingModuleDefinition;
   onDismiss?: (moduleId: string) => void;
 }) {
+  const t = useTranslations("Onboarding");
+
   return (
     <Paper withBorder p="md" radius="md">
       <Stack gap="sm">
         <Box>
-          <Text fw={700}>{module.steps[0]?.title || "Getting started"}</Text>
+          <Text fw={700}>{module.steps[0]?.title || t("defaults.moduleTitle")}</Text>
           <Text size="sm" c="dimmed">
-            {module.steps[0]?.body || "This surface has a short onboarding introduction."}
+            {module.steps[0]?.body || t("defaults.moduleBody")}
           </Text>
         </Box>
 
@@ -34,7 +37,7 @@ export function OnboardingModuleCard({
         {module.dismissible && onDismiss ? (
           <Group justify="flex-end">
             <Button variant="default" size="sm" onClick={() => onDismiss(module.id)}>
-              Dismiss
+              {t("actions.dismiss")}
             </Button>
           </Group>
         ) : null}

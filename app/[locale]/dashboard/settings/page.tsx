@@ -968,12 +968,12 @@ export default function SettingsPage() {
         </Stack>
       </SectionCard>
 
-      <SectionCard title="Governance Metrics">
+      <SectionCard title={t("governanceMetricsTitle")}>
         <Stack gap="xs">
-          <Text size="sm">Deleted athletes: {governanceMetrics.deletedChildren}</Text>
-          <Text size="sm">Deleted assessments: {governanceMetrics.deletedAssessments}</Text>
-          <Text size="sm">Assessments missing report consent: {governanceMetrics.missingConsentReport}</Text>
-          <Text size="sm">Assessments missing athlete link: {governanceMetrics.missingChildLink}</Text>
+          <Text size="sm">{t("governanceDeletedAthletes", { count: governanceMetrics.deletedChildren })}</Text>
+          <Text size="sm">{t("governanceDeletedAssessments", { count: governanceMetrics.deletedAssessments })}</Text>
+          <Text size="sm">{t("governanceMissingConsentReport", { count: governanceMetrics.missingConsentReport })}</Text>
+          <Text size="sm">{t("governanceMissingAthleteLink", { count: governanceMetrics.missingChildLink })}</Text>
         </Stack>
       </SectionCard>
     </Stack>
