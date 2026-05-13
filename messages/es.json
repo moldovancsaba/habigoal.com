@@ -561,6 +561,8 @@
     "saveError": "Save failed. Please check your connection.",
     "appSubtitle": "Seguimiento diario de bienestar en 2 minutos para atletas jovenes",
     "appTitle": "Registro diario del atleta",
+    "dailyReadinessTitle": "Preparacion diaria",
+    "dailyReadinessSubtitle": "Captura las senales diarias que determinan como deberia entrenar hoy el atleta.",
     "setupTitle": "Registro de hoy",
     "childName": "Nombre del atleta",
     "birthDate": "Birth date",

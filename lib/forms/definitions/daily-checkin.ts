@@ -1,12 +1,55 @@
 import { trackerQuestions } from "../../athlete-iq-survey";
 import type { FormDefinition, FormFieldDefinition } from "../../../types/form-system";
 
+const ratingOptionsByQuestion: Record<string, { value: string; label: string }[]> = {
+  sleep_hours: [
+    { value: "1", label: "<8h" },
+    { value: "2", label: "8h" },
+    { value: "3", label: "9h" },
+    { value: "4", label: "10h" },
+    { value: "5", label: "10h+" }
+  ],
+  sleep_quality: ["Very poor", "Poor", "Okay", "Good", "Great"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  })),
+  energy_level: ["Flat", "Low", "Okay", "Ready", "Flying"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  })),
+  body_feel: ["Pain", "Sore", "Stiff", "Good", "Fresh"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  })),
+  fuel_hydration: ["Missed", "Low", "Okay", "Good", "Locked in"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  })),
+  mood_state: ["Heavy", "Low", "Okay", "Good", "Positive"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  })),
+  stress_load: ["Overloaded", "Tense", "Manageable", "Calm", "Light"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  })),
+  confidence_level: ["Unsure", "Hesitant", "Okay", "Confident", "Very confident"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  })),
+  focus_level: ["Scattered", "Distracted", "Okay", "Focused", "Sharp"].map((label, index) => ({
+    value: String(index + 1),
+    label
+  }))
+};
+
 const questionFields: FormFieldDefinition[] = trackerQuestions.map((question) => ({
   id: question.key,
   path: `scores.${question.key}.score`,
   type: "rating",
   labelRef: { namespace: "Schema", key: question.title },
   descriptionRef: { namespace: "Schema", key: question.prompt },
+  options: ratingOptionsByQuestion[question.key] ?? [1, 2, 3, 4, 5].map((score) => ({ value: String(score), label: String(score) })),
   validation: { min: 1, max: 5 }
 }));
 
@@ -184,6 +227,8 @@ export const dailyCheckinFormDefinition: FormDefinition = {
     {
       id: "readiness_scores",
       titleRef: { namespace: "FormSystem", key: "forms.dailyCheckin.sections.readinessScores.title" },
+      title: "Daily readiness",
+      description: "Track the daily signals that shape how the athlete should train today.",
       fields: questionFields
     },
     {

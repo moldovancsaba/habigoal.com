@@ -561,6 +561,8 @@
     "saveError": "Save failed. Please check your connection.",
     "appSubtitle": "2-Minuten-Tracker fuer taegliches Wohlbefinden junger Athleten",
     "appTitle": "Taeglicher Athleten-Check-in",
+    "dailyReadinessTitle": "Taegliche Bereitschaft",
+    "dailyReadinessSubtitle": "Erfasse die taeglichen Signale, die bestimmen, wie der Athlet heute trainieren sollte.",
     "setupTitle": "Heutiger Check-in",
     "childName": "Name des Athleten",
     "birthDate": "Birth date",

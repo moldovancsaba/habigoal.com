@@ -561,6 +561,8 @@
     "saveError": "Save failed. Please check your connection.",
     "appSubtitle": "מעקב יומי של 2 דקות לרווחת ספורטאים צעירים",
     "appTitle": "צק-אין יומי לספורטאי",
+    "dailyReadinessTitle": "מוכנות יומית",
+    "dailyReadinessSubtitle": "תיעוד האותות היומיים שקובעים איך הספורטאי צריך להתאמן היום.",
     "setupTitle": "הצק-אין של היום",
     "childName": "שם הספורטאי",
     "birthDate": "Birth date",

@@ -80,11 +80,6 @@ const emptyAssessment: AssessmentPayload = {
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
-type ChoiceOption = {
-  value: number;
-  label: string;
-};
-
 function cloneAssessment(source: AssessmentPayload): AssessmentPayload {
   return JSON.parse(JSON.stringify(source)) as AssessmentPayload;
 }
@@ -117,39 +112,6 @@ async function emitOnboardingEvent(event: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ event })
   }).catch(() => null);
-}
-
-function getQuestionOptions(questionKey: string): ChoiceOption[] {
-  const fivePoint = [1, 2, 3, 4, 5];
-
-  switch (questionKey) {
-    case "sleep_hours":
-      return [
-        { value: 1, label: "<8h" },
-        { value: 2, label: "8h" },
-        { value: 3, label: "9h" },
-        { value: 4, label: "10h" },
-        { value: 5, label: "10h+" }
-      ];
-    case "sleep_quality":
-      return ["Very poor", "Poor", "Okay", "Good", "Great"].map((label, index) => ({ value: fivePoint[index], label }));
-    case "energy_level":
-      return ["Flat", "Low", "Okay", "Ready", "Flying"].map((label, index) => ({ value: fivePoint[index], label }));
-    case "body_feel":
-      return ["Pain", "Sore", "Stiff", "Good", "Fresh"].map((label, index) => ({ value: fivePoint[index], label }));
-    case "fuel_hydration":
-      return ["Missed", "Low", "Okay", "Good", "Locked in"].map((label, index) => ({ value: fivePoint[index], label }));
-    case "mood_state":
-      return ["Heavy", "Low", "Okay", "Good", "Positive"].map((label, index) => ({ value: fivePoint[index], label }));
-    case "stress_load":
-      return ["Overloaded", "Tense", "Manageable", "Calm", "Light"].map((label, index) => ({ value: fivePoint[index], label }));
-    case "confidence_level":
-      return ["Unsure", "Hesitant", "Okay", "Confident", "Very confident"].map((label, index) => ({ value: fivePoint[index], label }));
-    case "focus_level":
-      return ["Scattered", "Distracted", "Okay", "Focused", "Sharp"].map((label, index) => ({ value: fivePoint[index], label }));
-    default:
-      return ["1", "2", "3", "4", "5"].map((label, index) => ({ value: fivePoint[index], label }));
-  }
 }
 
 function getScore(entry?: ScoreEntry) {
@@ -309,17 +271,6 @@ export function SurveyAssessmentApp() {
     })();
   }, [childIdParam, recordId]);
 
-  function updateScore(key: string, score: number) {
-    setAssessment((current) => ({
-      ...current,
-      scores: {
-        ...current.scores,
-        [key]: { ...(current.scores[key] || { score: "", note: "" }), score }
-      }
-    }));
-    setSaveState("idle");
-  }
-
   function updateField(path: string, value: string | number | boolean | string[] | null | undefined) {
     if (path === "childId" && typeof value === "string") {
       selectChild(value);
@@ -442,6 +393,31 @@ export function SurveyAssessmentApp() {
     ? {
         ...dailyCheckinDefinition,
         sections: dailyCheckinDefinition.sections.filter((section) => section.id === "support_notes")
+      }
+    : null;
+
+  const readinessSectionDefinition: FormDefinition | null = dailyCheckinDefinition
+    ? {
+        ...dailyCheckinDefinition,
+        sections: sections
+          .map((section) => {
+            const pillar = athleteIqPillars.find((entry) => entry.key === section.key);
+            const readinessSection = dailyCheckinDefinition.sections.find((entry) => entry.id === "readiness_scores");
+
+            if (!readinessSection) {
+              return null;
+            }
+
+            return {
+              id: `readiness_${section.key}`,
+              titleRef: { namespace: "Assessment", key: section.title },
+              title: t(section.title),
+              descriptionRef: pillar ? { namespace: "Assessment", key: pillar.prompt } : undefined,
+              description: pillar ? t(pillar.prompt) : undefined,
+              fields: readinessSection.fields.filter((field) => section.items.some((item) => item.key === field.id))
+            };
+          })
+          .filter((section) => section !== null && section.fields.length > 0) as FormDefinition["sections"]
       }
     : null;
 
@@ -585,53 +561,16 @@ export function SurveyAssessmentApp() {
         <MetricCard label="Sport brain" value={domainScores.sportBrain} />
       </SimpleGrid>
 
-      {sections.map((section) => (
-        <SectionCard
-          key={section.key}
-          title={t(section.title)}
-          subheader={t(athleteIqPillars.find((pillar) => pillar.key === section.key)?.prompt || section.title)}
-        >
-          <Stack gap="md">
-            {section.items.map((item) => {
-              const currentScore = getScore(assessment.scores[item.key]);
-              const options = getQuestionOptions(item.key);
-
-              return (
-                <Paper key={item.key} withBorder p={{ base: "md", sm: "lg" }} radius="lg">
-                  <Stack gap="sm">
-                    <Group justify="space-between" align="flex-start">
-                      <Box style={{ flex: 1, minWidth: 0 }}>
-                        <Text size="md" fw={700}>{t(item.title)}</Text>
-                        <Text size="sm" c="dimmed">{t(item.prompt)}</Text>
-                      </Box>
-                      <Badge variant="light" color="ingress" size="lg">
-                        {currentScore === null ? "Not set" : `${currentScore}/5`}
-                      </Badge>
-                    </Group>
-
-                    <SimpleGrid cols={{ base: 2, sm: 5 }} spacing="xs">
-                      {options.map((option) => {
-                        const active = currentScore === option.value;
-                        return (
-                          <Button
-                            key={`${item.key}-${option.value}`}
-                            variant={active ? "filled" : "default"}
-                            color="ingress"
-                            onClick={() => updateScore(item.key, option.value)}
-                            style={{ minHeight: 52, whiteSpace: "normal", textTransform: "none", letterSpacing: 0 }}
-                          >
-                            {option.label}
-                          </Button>
-                        );
-                      })}
-                    </SimpleGrid>
-                  </Stack>
-                </Paper>
-              );
-            })}
-          </Stack>
-        </SectionCard>
-      ))}
+      <SectionCard title={t("dailyReadinessTitle")} subheader={t("dailyReadinessSubtitle")}>
+        {readinessSectionDefinition ? (
+          <FormRenderer
+            definition={readinessSectionDefinition}
+            values={assessment}
+            onChange={updateField}
+            context={{ role: "athlete" }}
+          />
+        ) : null}
+      </SectionCard>
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
         <SectionCard title="Support today" subheader={`Lowest support area right now: ${nextSupportArea}.`}>
