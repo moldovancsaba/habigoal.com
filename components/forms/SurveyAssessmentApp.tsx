@@ -320,17 +320,6 @@ export function SurveyAssessmentApp() {
     setSaveState("idle");
   }
 
-  function updateGeneralNote(value: string) {
-    setAssessment((current) => ({
-      ...current,
-      notes: {
-        ...current.notes,
-        general: value
-      }
-    }));
-    setSaveState("idle");
-  }
-
   function updateField(path: string, value: string | number | boolean | string[] | null | undefined) {
     if (path === "childId" && typeof value === "string") {
       selectChild(value);
@@ -446,6 +435,13 @@ export function SurveyAssessmentApp() {
     ? {
         ...dailyCheckinDefinition,
         sections: dailyCheckinDefinition.sections.filter((section) => section.id === "training_load")
+      }
+    : null;
+
+  const supportNotesSectionDefinition: FormDefinition | null = dailyCheckinDefinition
+    ? {
+        ...dailyCheckinDefinition,
+        sections: dailyCheckinDefinition.sections.filter((section) => section.id === "support_notes")
       }
     : null;
 
@@ -647,13 +643,22 @@ export function SurveyAssessmentApp() {
         </SectionCard>
 
         <SectionCard title={t("professionalNotes")} subheader="Optional context the coach should know before training.">
-          <Textarea
-            label="Anything to share with the coach today?"
-            value={assessment.notes.general}
-            onChange={(event) => updateGeneralNote(event.currentTarget.value)}
-            minRows={8}
-            placeholder="Examples: poor sleep after travel, school exam day, knee soreness, low confidence, hard focus."
-          />
+          {supportNotesSectionDefinition ? (
+            <FormRenderer
+              definition={supportNotesSectionDefinition}
+              values={assessment}
+              onChange={updateField}
+              context={{ role: "athlete" }}
+            />
+          ) : (
+            <Textarea
+              label="Anything to share with the coach today?"
+              value={assessment.notes.general}
+              onChange={(event) => updateField("notes.general", event.currentTarget.value)}
+              minRows={8}
+              placeholder="Examples: poor sleep after travel, school exam day, knee soreness, low confidence, hard focus."
+            />
+          )}
         </SectionCard>
       </SimpleGrid>
 

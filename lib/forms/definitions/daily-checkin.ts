@@ -189,12 +189,16 @@ export const dailyCheckinFormDefinition: FormDefinition = {
     {
       id: "support_notes",
       titleRef: { namespace: "FormSystem", key: "forms.dailyCheckin.sections.supportNotes.title" },
+      title: "Coach notes",
+      description: "Optional context the coach should know before training.",
       fields: [
         {
           id: "notes_general",
           path: "notes.general",
           type: "textarea",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.generalNote.label" },
+          label: "Anything to share with the coach today?",
+          placeholder: "Examples: poor sleep after travel, school exam day, knee soreness, low confidence, hard focus.",
           validation: { maxLength: 5000 }
         },
         {
@@ -202,6 +206,7 @@ export const dailyCheckinFormDefinition: FormDefinition = {
           path: "notes.movement",
           type: "textarea",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.movementNote.label" },
+          label: "Physical notes",
           validation: { maxLength: 5000 }
         },
         {
@@ -209,6 +214,7 @@ export const dailyCheckinFormDefinition: FormDefinition = {
           path: "notes.social",
           type: "textarea",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.socialNote.label" },
+          label: "Mental balance notes",
           validation: { maxLength: 5000 }
         },
         {
@@ -216,6 +222,7 @@ export const dailyCheckinFormDefinition: FormDefinition = {
           path: "notes.mental",
           type: "textarea",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.mentalNote.label" },
+          label: "Sport brain notes",
           validation: { maxLength: 5000 }
         },
         {
@@ -223,6 +230,7 @@ export const dailyCheckinFormDefinition: FormDefinition = {
           path: "notes.adaptations",
           type: "textarea",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.adaptations.label" },
+          label: "Adaptations",
           validation: { maxLength: 5000 }
         },
         {
@@ -230,6 +238,7 @@ export const dailyCheckinFormDefinition: FormDefinition = {
           path: "notes.referral",
           type: "textarea",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.referral.label" },
+          label: "Referral",
           validation: { maxLength: 5000 }
         }
       ]
