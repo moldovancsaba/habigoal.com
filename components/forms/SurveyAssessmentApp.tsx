@@ -35,7 +35,7 @@ import type { FormDefinition } from "@/types/form-system";
 
 const DRAFT_STORAGE_KEY = "survey-draft";
 const LEGACY_DRAFT_STORAGE_KEY = "kidex-draft";
-const trainingLoadDefinition = getFormDefinition("daily_checkin");
+const dailyCheckinDefinition = getFormDefinition("daily_checkin");
 
 const emptyAssessment: AssessmentPayload = {
   childId: "",
@@ -331,32 +331,12 @@ export function SurveyAssessmentApp() {
     setSaveState("idle");
   }
 
-  function updateDate(value: string | null) {
-    setAssessment((current) => ({
-      ...current,
-      session: {
-        ...current.session,
-        date: value || current.session.date
-      }
-    }));
-    setSaveState("idle");
-  }
-
-  function updateTrainingLoad<K extends keyof AssessmentPayload["trainingLoad"]>(
-    key: K,
-    value: AssessmentPayload["trainingLoad"][K]
-  ) {
-    setAssessment((current) => ({
-      ...current,
-      trainingLoad: {
-        ...current.trainingLoad,
-        [key]: value
-      }
-    }));
-    setSaveState("idle");
-  }
-
   function updateField(path: string, value: string | number | boolean | string[] | null | undefined) {
+    if (path === "childId" && typeof value === "string") {
+      selectChild(value);
+      return;
+    }
+
     setAssessment((current) => setFormValue(current, path, value));
     setSaveState("idle");
   }
@@ -438,10 +418,34 @@ export function SurveyAssessmentApp() {
     setMessage("");
   }
 
-  const trainingLoadSectionDefinition: FormDefinition | null = trainingLoadDefinition
+  const setupSectionDefinition: FormDefinition | null = dailyCheckinDefinition
     ? {
-        ...trainingLoadDefinition,
-        sections: trainingLoadDefinition.sections.filter((section) => section.id === "training_load")
+        ...dailyCheckinDefinition,
+        sections: dailyCheckinDefinition.sections
+          .filter((section) => section.id === "athlete_identity")
+          .map((section) => ({
+            ...section,
+            fields: section.fields.map((field) =>
+              field.id === "childId"
+                ? {
+                    ...field,
+                    options: children
+                      .map((child) => ({
+                        value: child._id || "",
+                        label: `${child.name} (${child.surveyId || "-"})`
+                      }))
+                      .filter((option) => option.value)
+                  }
+                : field
+            )
+          }))
+      }
+    : null;
+
+  const trainingLoadSectionDefinition: FormDefinition | null = dailyCheckinDefinition
+    ? {
+        ...dailyCheckinDefinition,
+        sections: dailyCheckinDefinition.sections.filter((section) => section.id === "training_load")
       }
     : null;
 
@@ -472,22 +476,31 @@ export function SurveyAssessmentApp() {
 
       <SectionCard title={t("setupTitle")} subheader="Keep this daily check-in under 2 minutes.">
         <Stack gap="md">
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            <Select
-              label={t("childName")}
-              placeholder={t("selectAthlete")}
-              searchable
-              value={assessment.childId || ""}
-              data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
-              onChange={selectChild}
+          {setupSectionDefinition ? (
+            <FormRenderer
+              definition={setupSectionDefinition}
+              values={assessment}
+              onChange={updateField}
+              context={{ role: "athlete" }}
             />
-            <TextInput
-              label={tc("date")}
-              value={assessment.session.date}
-              type="date"
-              onChange={(event) => updateDate(event.currentTarget.value)}
-            />
-          </SimpleGrid>
+          ) : (
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <Select
+                label={t("childName")}
+                placeholder={t("selectAthlete")}
+                searchable
+                value={assessment.childId || ""}
+                data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
+                onChange={selectChild}
+              />
+              <TextInput
+                label={tc("date")}
+                value={assessment.session.date}
+                type="date"
+                onChange={(event) => updateField("session.date", event.currentTarget.value)}
+              />
+            </SimpleGrid>
+          )}
 
           <SimpleGrid cols={{ base: 1, md: 3 }} spacing="sm">
             <InfoChip label="Known traits" value={assessment.child.knownTraits || "No extra notes"} />
@@ -517,12 +530,12 @@ export function SurveyAssessmentApp() {
                 { value: "recovery", label: "Recovery" },
                 { value: "individual", label: "Individual extras" }
               ]}
-              onChange={(value) => updateTrainingLoad("sessionType", value || "")}
+              onChange={(value) => updateField("trainingLoad.sessionType", value || "")}
             />
             <NumberInput
               label="Duration (min)"
               value={assessment.trainingLoad.durationMinutes}
-              onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
+              onChange={(value) => updateField("trainingLoad.durationMinutes", typeof value === "number" ? value : undefined)}
               min={0}
               max={360}
               hideControls
@@ -530,7 +543,7 @@ export function SurveyAssessmentApp() {
             <NumberInput
               label="RPE (1-10)"
               value={assessment.trainingLoad.rpe}
-              onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
+              onChange={(value) => updateField("trainingLoad.rpe", typeof value === "number" ? value : undefined)}
               min={1}
               max={10}
               hideControls
@@ -539,7 +552,7 @@ export function SurveyAssessmentApp() {
               label="External load"
               description="Optional meters / arbitrary units"
               value={assessment.trainingLoad.externalLoad}
-              onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
+              onChange={(value) => updateField("trainingLoad.externalLoad", typeof value === "number" ? value : undefined)}
               min={0}
               max={50000}
               hideControls

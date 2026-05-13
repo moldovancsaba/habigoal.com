@@ -19,6 +19,8 @@ export const dailyCheckinFormDefinition: FormDefinition = {
     {
       id: "athlete_identity",
       titleRef: { namespace: "FormSystem", key: "forms.dailyCheckin.sections.athleteIdentity.title" },
+      title: "Athlete setup",
+      description: "Keep this daily check-in under 2 minutes.",
       fields: [
         {
           id: "childId",
@@ -26,6 +28,8 @@ export const dailyCheckinFormDefinition: FormDefinition = {
           type: "select",
           labelRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.childId.label" },
           placeholderRef: { namespace: "FormSystem", key: "forms.dailyCheckin.fields.childId.placeholder" },
+          label: "Athlete",
+          placeholder: "Select athlete",
           validation: { required: true }
         },
         {
@@ -71,6 +75,7 @@ export const dailyCheckinFormDefinition: FormDefinition = {
           path: "session.date",
           type: "date",
           labelRef: { namespace: "Common", key: "date" },
+          label: "Date",
           validation: { required: true }
         },
         {
