@@ -112,7 +112,7 @@ export async function getSettings(): Promise<SurveySettings> {
     return normalizeSettings((await response.json()) as Partial<SurveySettings>);
   }
   
-  // Fallback to local storage or empty settings
+  // Keep the legacy browser keys so older local workspaces do not lose settings.
   const local = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
   if (local) return normalizeSettings(JSON.parse(local) as Partial<SurveySettings>);
   

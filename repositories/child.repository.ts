@@ -202,7 +202,7 @@ export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt
   
   const name = profile.name.trim();
   
-  // Try to find existing child by name and birthDate to avoid duplicates
+  // Match an existing athlete by name and birth date to prevent duplicate profiles.
   const existing = await db.collection(collectionName).findOne({ 
     name: name, 
     birthDate: profile.birthDate 

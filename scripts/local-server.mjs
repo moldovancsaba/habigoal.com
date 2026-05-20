@@ -21,7 +21,7 @@ loadEnvFile(".env.example");
 
 const port = Number(process.env.SURVEY_LOCAL_SERVER_PORT || process.env.PORT || 4001);
 const mongodbUri = process.env.MONGODB_URI;
-const mongodbDb = process.env.MONGODB_DB || "survey";
+const mongodbDb = process.env.MONGODB_DB || "habigoal";
 const enforceAuth = process.env.SURVEY_ENFORCE_AUTH === "true" || process.env.KIDEX_ENFORCE_AUTH === "true";
 
 if (!mongodbUri) {
@@ -71,6 +71,7 @@ function requireRole(req, allowedRoles) {
   const roles = String(Array.isArray(header) ? header.join(",") : header || "")
     .split(",")
     .map((entry) => entry.trim().toLowerCase())
+    .map((role) => ({ conductor: "trainer", observer: "athlete" })[role] || role)
     .filter(Boolean);
   if (roles.length === 0) {
     return { status: 401, body: { error: "Missing x-survey-role header", code: "AUTH_REQUIRED" } };
@@ -175,7 +176,8 @@ function parseUserPayload(input) {
     new Set(
       roleValues
         .map((role) => String(role).trim().toLowerCase())
-        .filter((role) => ["admin", "conductor", "observer"].includes(role))
+        .map((role) => ({ conductor: "trainer", observer: "athlete" })[role] || role)
+        .filter((role) => ["admin", "trainer", "athlete"].includes(role))
     )
   );
   return {
@@ -187,7 +189,7 @@ function parseUserPayload(input) {
 
 async function handleChildren(req, res, pathname) {
   if (req.method === "GET" && pathname === "/api/children") {
-    const guard = requireRole(req, ["admin", "conductor", "observer"]);
+    const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
     const deleted = new URL(req.url, `http://localhost:${port}`).searchParams.get("deleted") === "true";
     const docs = await db.collection("children").find({ deletedAt: deleted ? { $exists: true } : { $exists: false } }).sort({ name: 1 }).toArray();
@@ -195,7 +197,7 @@ async function handleChildren(req, res, pathname) {
   }
 
   if (req.method === "POST" && pathname === "/api/children") {
-    const guard = requireRole(req, ["admin", "conductor"]);
+    const guard = requireRole(req, ["admin", "trainer"]);
     if (guard) return json(res, guard.status, guard.body);
     const body = parseChildPayload(await readBody(req));
     if (!body.name || !body.birthDate) return json(res, 400, { error: "name and birthDate are required", code: "VALIDATION_ERROR" });
@@ -212,7 +214,7 @@ async function handleChildren(req, res, pathname) {
 
   const childIdMatch = pathname.match(/^\/api\/children\/([^/]+)$/);
   if (req.method === "GET" && childIdMatch) {
-    const guard = requireRole(req, ["admin", "conductor", "observer"]);
+    const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
     if (!ObjectId.isValid(childIdMatch[1])) return json(res, 400, { error: "Invalid child id", code: "VALIDATION_ERROR" });
     const doc = await db.collection("children").findOne({ _id: new ObjectId(childIdMatch[1]), deletedAt: { $exists: false } });
@@ -221,7 +223,7 @@ async function handleChildren(req, res, pathname) {
 
   const historyMatch = pathname.match(/^\/api\/children\/([^/]+)\/history$/);
   if (req.method === "GET" && historyMatch) {
-    const guard = requireRole(req, ["admin", "conductor", "observer"]);
+    const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
     if (!ObjectId.isValid(historyMatch[1])) return json(res, 400, { error: "Invalid child id", code: "VALIDATION_ERROR" });
     const child = await db.collection("children").findOne({ _id: new ObjectId(historyMatch[1]), deletedAt: { $exists: false } });
@@ -241,7 +243,7 @@ async function handleChildren(req, res, pathname) {
 
 async function handleAssessments(req, res, pathname) {
   if (req.method === "GET" && pathname === "/api/assessments") {
-    const guard = requireRole(req, ["admin", "conductor", "observer"]);
+    const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
     const deleted = new URL(req.url, `http://localhost:${port}`).searchParams.get("deleted") === "true";
     const docs = await db.collection("assessments").find(
@@ -251,7 +253,7 @@ async function handleAssessments(req, res, pathname) {
   }
 
   if (req.method === "POST" && pathname === "/api/assessments") {
-    const guard = requireRole(req, ["admin", "conductor"]);
+    const guard = requireRole(req, ["admin", "trainer"]);
     if (guard) return json(res, guard.status, guard.body);
     const body = parseAssessmentPayload(await readBody(req));
     if (!body.child?.name || !body.child?.birthDate || !body.session?.date) {
@@ -265,7 +267,7 @@ async function handleAssessments(req, res, pathname) {
 
   const assessmentIdMatch = pathname.match(/^\/api\/assessments\/([^/]+)$/);
   if (req.method === "GET" && assessmentIdMatch) {
-    const guard = requireRole(req, ["admin", "conductor", "observer"]);
+    const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
     if (!ObjectId.isValid(assessmentIdMatch[1])) return json(res, 400, { error: "Invalid assessment id", code: "VALIDATION_ERROR" });
     const doc = await db.collection("assessments").findOne({ _id: new ObjectId(assessmentIdMatch[1]), deletedAt: { $exists: false } });
@@ -278,7 +280,7 @@ async function handleAssessments(req, res, pathname) {
 async function handleSettings(req, res, pathname) {
   if (pathname !== "/api/settings") return false;
   if (req.method === "GET") {
-    const guard = requireRole(req, ["admin", "conductor", "observer"]);
+    const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
     const doc = await db.collection("settings").findOne({ _id: "global_settings" });
     if (!doc) return json(res, 200, {});
@@ -300,7 +302,7 @@ async function handleSettings(req, res, pathname) {
 async function handleUsers(req, res, pathname) {
   if (pathname !== "/api/users") return false;
   if (req.method === "GET") {
-    const guard = requireRole(req, ["admin", "conductor", "observer"]);
+    const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
     const email = new URL(req.url, `http://localhost:${port}`).searchParams.get("email");
     const filter = email ? { email: email.toLowerCase().trim() } : {};
@@ -339,7 +341,7 @@ const server = createServer(async (req, res) => {
     if (pathname === "/" || pathname === "/api") {
       return json(res, 200, {
         ok: true,
-        app: "survey-local-server",
+        app: "habigoal-local-server",
         database: mongodbDb,
         endpoints: [
           "GET /api/health",
@@ -384,7 +386,7 @@ const server = createServer(async (req, res) => {
 server.listen(port, () => {
   console.log(JSON.stringify({
     ok: true,
-    server: "survey-local-server",
+    server: "habigoal-local-server",
     url: `http://localhost:${port}`,
     database: mongodbDb,
     authEnforced: enforceAuth

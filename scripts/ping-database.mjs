@@ -24,7 +24,7 @@ loadEnvFile(".env.local");
 loadEnvFile(".env.example");
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "survey";
+const dbName = process.env.MONGODB_DB || "habigoal";
 const appName = process.env.MONGODB_APP_NAME || "habigoal-cli";
 
 if (!uri) {

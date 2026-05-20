@@ -21,7 +21,7 @@ loadEnvFile(".env.example");
 const args = new Set(process.argv.slice(2));
 const dryRun = !args.has("--write");
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "survey";
+const dbName = process.env.MONGODB_DB || "habigoal";
 
 if (!uri) {
   console.error("MONGODB_URI is missing. Add it to .env or .env.local before running the daily tracker backfill.");

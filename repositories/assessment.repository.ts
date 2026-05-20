@@ -113,8 +113,7 @@ export async function listAssessmentsByChildId(childId: string) {
     .sort({ createdAt: 1 })
     .toArray();
 
-  // Backward compatibility: older records may not have childId set,
-  // but they can still be linked by immutable identity fields.
+  // Older check-ins can be missing childId, so link them by stable athlete identity.
   if (assessments.length === 0 && objectId) {
     const child = await db.collection("children").findOne({ _id: objectId });
     if (child?.name && child?.birthDate) {

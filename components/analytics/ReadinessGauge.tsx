@@ -10,17 +10,17 @@ interface ReadinessGaugeProps {
 }
 
 export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGaugeProps) {
-  // Normalized value for SVG (0 to 1)
+  // Normalize the score into the SVG stroke range.
   const normalizedValue = Math.min(Math.max(value / max, 0), 1);
   
-  // Gauge parameters
+  // Semicircle gauge geometry.
   const size = 180;
   const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * Math.PI; // Semicircle
   const offset = circumference - normalizedValue * circumference;
 
-  // Determine color based on readiness
+  // Color thresholds mirror the app readiness bands.
   const getColor = () => {
     const ratio = max > 0 ? value / max : 0;
     if (ratio < 0.45) return "var(--status-error)";
@@ -40,7 +40,7 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
       
       <Box style={{ position: "relative", width: size, height: size / 2 + 20, margin: "0 auto" }}>
         <svg width={size} height={size / 2 + 10} style={{ transform: "rotate(180deg)" }}>
-          {/* Background Track */}
+          {/* Background track */}
           <circle
             cx={size / 2}
             cy={10}
@@ -51,7 +51,7 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
             strokeDasharray={circumference}
             strokeLinecap="round"
           />
-          {/* Active Value Path */}
+          {/* Active value path */}
           <circle
             cx={size / 2}
             cy={10}
@@ -66,7 +66,7 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
           />
         </svg>
         
-        {/* Value Display */}
+        {/* Value display */}
         <Box style={{ position: "absolute", bottom: 10, left: 0, right: 0 }}>
           <Text size="xl" fw={800} style={{ lineHeight: 1 }}>
             {value.toFixed(1)}

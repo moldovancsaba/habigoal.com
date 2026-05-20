@@ -52,7 +52,7 @@ const athletes = [
   athlete("Yara Petrescu", "2018-06-25", "7-9", "left", "right", "left", "Strong confidence in duels and quick recovery after mistakes.", "Benefits from explicit session goals and positive reinforcement.")
 ];
 
-const conductors = [
+const trainers = [
   "dev@habigoal.local",
   "coach.one@habigoal.com",
   "coach.two@habigoal.com"
@@ -137,8 +137,8 @@ try {
         session: {
           date: sessionDate.toISOString().slice(0, 10),
           location: locations[(athleteIndex + sessionIndex) % locations.length],
-          conductor: conductors[(athleteIndex + sessionIndex) % conductors.length],
-          observers: "observer@habigoal.com",
+          conductor: trainers[(athleteIndex + sessionIndex) % trainers.length],
+          observers: "athlete@habigoal.com",
           groupSize: sessionIndex % 2 === 0 ? "6-8" : "4-6",
           context: sessionIndex % 4 === 0 ? "event" : sessionIndex % 2 === 0 ? "structured" : "mixed",
           consentPhoto: true,

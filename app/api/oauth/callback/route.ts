@@ -23,10 +23,10 @@ export async function GET(request: NextRequest) {
     const tokens = await exchangeCodeForToken(code, request);
     const ssoUser = await getUserInfo(tokens.access_token);
 
-    // Check if the user's email is in our local approved list
+    // Authorize SSO identities through the local Habigoal user allow-list.
     let localUser = await findUserByEmail(ssoUser.email);
     
-    // Migration Fallback: If not found by email, try to find by name (for existing users)
+    // Migration fallback: attach pre-email local users to their SSO email.
     if (!localUser && ssoUser.name) {
       const db = await getDatabase();
       const doc = await db.collection("users").findOne({ name: ssoUser.name, email: { $exists: false } });
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Bootstrap: If no users exist AT ALL in the system, make the first one an admin
+    // Bootstrap the first approved SSO user as the initial admin.
     const allUsers = await listAllUsers();
     if (allUsers.length === 0) {
       console.info(`Bootstrapping first user as admin: ${ssoUser.email}`);
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     
     if (!localUser) {
       console.warn(`Login denied for non-whitelisted email: ${ssoUser.email}`);
-      // Redirect to landing page with an error parameter
+      // Return denied users to a public page with an error marker.
       const fallbackPath = returnTo?.match(/^\/(hu|en|ar|es|de|he)(\/|$)/)?.[0] || "/";
       const loginUrl = new URL(fallbackPath, request.url);
       loginUrl.searchParams.set("error", "access_denied");
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Local user provisioning failed" }, { status: 500 });
     }
 
-    // Create session using SSO info but merging local roles
+    // Create the local session from SSO identity plus local Habigoal roles.
     await createSession({
       id: ssoUser.id,
       email: ssoUser.email,
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
       accessToken: tokens.access_token
     });
 
-    // Clean up state cookie
+    // Remove one-time OAuth state cookies after session creation.
     cookieStore.delete("oauth_state");
     cookieStore.delete("oauth_return_to");
 

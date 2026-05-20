@@ -5,7 +5,7 @@ import { jsonError, requireRole } from "@/lib/api";
 const maxSize = 32 * 1024 * 1024;
 
 export async function POST(request: Request) {
-  const authError = await requireRole(request, ["admin", "conductor"]);
+  const authError = await requireRole(request, ["admin", "trainer"]);
   if (authError) return authError;
 
   const apiKey = env.imgbbApiKey;

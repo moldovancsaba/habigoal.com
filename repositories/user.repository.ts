@@ -30,7 +30,7 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   return doc ? mapUser(doc) : null;
 }
 
-export async function listUsersByRole(role: "admin" | "conductor" | "observer"): Promise<User[]> {
+export async function listUsersByRole(role: "admin" | "trainer" | "athlete"): Promise<User[]> {
   const db = await getDatabase();
   const users = await db.collection(collectionName)
     .find({ roles: role })

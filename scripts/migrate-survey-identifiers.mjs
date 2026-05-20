@@ -23,7 +23,7 @@ const dryRun = !args.has("--write");
 const allowKidexDb = args.has("--allow-kidex-db");
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "survey";
+const dbName = process.env.MONGODB_DB || "habigoal";
 
 if (!uri) {
   console.error("MONGODB_URI is missing. Add it to .env or .env.local before running the identifier migration.");
@@ -107,7 +107,7 @@ try {
     { _id: "database-setup" },
     {
       $set: {
-        app: "survey",
+        app: "habigoal",
         updatedAt: now
       }
     },
@@ -118,7 +118,7 @@ try {
     ...summary,
     modifiedChildren: updateResult.modifiedCount,
     matchedChildren: updateResult.matchedCount,
-    systemAppAfter: "survey"
+    systemAppAfter: "habigoal"
   }, null, 2));
 } finally {
   await client.close();

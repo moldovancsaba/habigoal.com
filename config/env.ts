@@ -19,7 +19,7 @@ const appBaseUrl = readAppBaseUrl();
 
 export const env = {
   mongodbUri: process.env.MONGODB_URI,
-  mongodbDb: process.env.MONGODB_DB || "survey",
+  mongodbDb: process.env.MONGODB_DB || "habigoal",
   mongodbAppName: process.env.MONGODB_APP_NAME || "habigoal-app",
   imgbbApiKey: process.env.IMGBB_API_KEY,
   appBaseUrl,

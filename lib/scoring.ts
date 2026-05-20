@@ -4,7 +4,7 @@ import type { AssessmentPayload, AssessmentRecord } from "@/types/assessment";
 export function computeAssessment(payload: AssessmentPayload): AssessmentRecord["computed"] {
   const sections = sectionsForMode(payload.mode);
   
-  // Calculate averages by domain
+  // Calculate readiness averages by support domain.
   const domainValues: Record<string, number[]> = {
     movement: [],
     social: [],
@@ -32,7 +32,7 @@ export function computeAssessment(payload: AssessmentPayload): AssessmentRecord[
     return typeof score === "number" && score >= 1 && score <= 6;
   }).length;
 
-  // SKI is a weighted average of the section averages
+  // The readiness score is the weighted average of section-level scores.
   const skiAverages = Object.fromEntries(
     sections.map(section => {
       const values = section.items

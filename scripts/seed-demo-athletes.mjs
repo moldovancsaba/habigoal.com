@@ -20,7 +20,7 @@ loadEnvFile(".env.local");
 loadEnvFile(".env.example");
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "survey";
+const dbName = process.env.MONGODB_DB || "habigoal";
 
 if (!uri) {
   console.error("MONGODB_URI is missing. Add it to .env or .env.local before running db:seed-demo.");
@@ -59,16 +59,16 @@ const athletes = [
   athlete("Lina Varga", "2014-05-31", "10-12", "right", "right", "left", "Well-rounded profile with high compliance and steady leadership.", "Trainer identifies psychological resilience as a major strength.")
 ];
 
-const conductors = [
-  { name: "Milan Vig", email: "milan@survey.app", roles: ["admin", "conductor"] },
-  { name: "Sara Kovacs", email: "sara@survey.app", roles: ["conductor"] },
-  { name: "Rashid Omar", email: "rashid@survey.app", roles: ["conductor"] }
+const trainers = [
+  { name: "Milan Vig", email: "milan@habigoal.local", roles: ["admin", "trainer"] },
+  { name: "Sara Kovacs", email: "sara@habigoal.local", roles: ["trainer"] },
+  { name: "Rashid Omar", email: "rashid@habigoal.local", roles: ["trainer"] }
 ];
 
-const observers = [
-  { name: "Julia Horvath", email: "julia@survey.app", roles: ["observer"] },
-  { name: "Noah Salem", email: "noah@survey.app", roles: ["observer"] },
-  { name: "Petra Nagy", email: "petra@survey.app", roles: ["observer"] }
+const athleteUsers = [
+  { name: "Julia Horvath", email: "julia@habigoal.local", roles: ["athlete"] },
+  { name: "Noah Salem", email: "noah@habigoal.local", roles: ["athlete"] },
+  { name: "Petra Nagy", email: "petra@habigoal.local", roles: ["athlete"] }
 ];
 
 const locations = [
@@ -84,7 +84,7 @@ try {
   const db = client.db(dbName);
 
   await db.collection("users").bulkWrite(
-    [...conductors, ...observers].map((user) => ({
+    [...trainers, ...athleteUsers].map((user) => ({
       updateOne: {
         filter: { email: user.email.toLowerCase() },
         update: { $set: { ...user, email: user.email.toLowerCase() } },
@@ -99,18 +99,18 @@ try {
     { _id: "global_settings" },
     {
       $set: {
-        conductors: conductors.map((entry) => entry.email),
-        observers: observers.map((entry) => entry.email),
+        conductors: trainers.map((entry) => entry.email),
+        observers: athleteUsers.map((entry) => entry.email),
         locations,
         company: existingSettings?.company || {
-          name: "Survey",
+          name: "Habigoal",
           ico: "57474869",
           registered: "19.02.2026",
           legalForm: "Limited Liability Company",
           address: "Zeliarsky svah 29, Sturovo, Slovakia 943 01",
           shareCapital: "EUR 5 000",
           vatNo: "SK2122770606",
-          website: "https://survey.app"
+          website: "https://habigoal.com"
         },
         standards: existingSettings?.standards || {
           activeVersion: "v1",
@@ -169,8 +169,8 @@ try {
       const readinessChecks = readinessCountForSession(base.readinessChecks, sessionIndex);
       const scores = buildScores(base, sessionIndex, readinessChecks);
       const computed = computeAssessment(scores);
-      const conductor = conductors[(athleteIndex + sessionIndex) % conductors.length].email;
-      const observerEmail = observers[(athleteIndex + sessionIndex) % observers.length].email;
+      const conductor = trainers[(athleteIndex + sessionIndex) % trainers.length].email;
+      const observerEmail = athleteUsers[(athleteIndex + sessionIndex) % athleteUsers.length].email;
       const location = locations[(athleteIndex + sessionIndex) % locations.length];
       insertedAssessments.push({
         _id: new ObjectId(),
@@ -217,8 +217,8 @@ try {
     database: dbName,
     athletesInserted: insertedChildren.length,
     assessmentsInserted: insertedAssessments.length,
-    conductors: conductors.length,
-    observers: observers.length,
+    trainers: trainers.length,
+    athleteUsers: athleteUsers.length,
     locations: locations.length
   }, null, 2));
 } finally {
