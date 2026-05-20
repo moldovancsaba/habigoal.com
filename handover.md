@@ -154,6 +154,118 @@ Canonical docs:
 - Team invitations are still admin-managed records, not outbound email invites.
 - GitHub Project state can drift from merged work if branches are merged manually without issue/board updates.
 
+## GitHub Project Board Operations
+
+GitHub Project 14 is the operational planning board for Habigoal:
+
+- URL: `https://github.com/users/moldovancsaba/projects/14`
+- Repository: `moldovancsaba/habigoal.com`
+- Preferred tool: GitHub CLI from this workspace
+
+Use the project board as the live execution layer and use `ROADMAP.md`, `docs/architecture.md`, and this handover as the source-of-truth comparison inputs.
+
+### Board Update Workflow
+
+1. Read local state first:
+
+```bash
+git status --short
+sed -n '1,260p' ROADMAP.md
+sed -n '1,260p' docs/architecture.md
+sed -n '1,260p' handover.md
+```
+
+2. Read GitHub issue state with REST first, because it is less likely to hit the GraphQL project limit:
+
+```bash
+gh api repos/moldovancsaba/habigoal.com/issues?state=open\&per_page=100 \
+  --jq '.[] | {number,title,labels:[.labels[].name],updated_at,html_url}'
+```
+
+3. Compare open issues against the current active themes:
+
+- `priority:now`: i18n reliability, centralized forms foundation, athlete-only experience, route/access correctness, critical reporting/news reliability.
+- `priority:next`: team invitations, admin/trainer membership UX, release-note automation, report/i18n hardening, form migrations.
+- `priority:later`: match center, testing library, finance/admin operations, resources, device integrations, large expansion themes.
+
+4. Create missing issues with the same quality structure:
+
+```markdown
+## Objective
+Clear one-sentence outcome.
+
+## Context
+Why this exists, based on code/docs/product state.
+
+## Scope
+- Concrete work item
+- Concrete work item
+
+## Acceptance Criteria
+- Verifiable outcome
+- Verifiable outcome
+```
+
+5. Use existing label conventions:
+
+- area labels: `area:athletes`, `area:coaches`, `area:analytics`, `area:reporting`, `area:platform`
+- priority labels: `priority:now`, `priority:next`, `priority:later`
+- track labels: `track:command-center`, `track:daily-flow`, `track:guidance`, `track:weekly-ops`, `track:expansion`
+- type labels: `feature`, `bug`, `documentation`
+
+6. Patch issue labels with REST when GraphQL is exhausted:
+
+```bash
+gh api -X PATCH repos/moldovancsaba/habigoal.com/issues/ISSUE_NUMBER \
+  -f labels[]='feature' \
+  -f labels[]='area:platform' \
+  -f labels[]='priority:now' \
+  -f labels[]='track:guidance'
+```
+
+7. Close issues only when `main` and the documentation agree that the work is shipped:
+
+```bash
+gh api -X POST repos/moldovancsaba/habigoal.com/issues/ISSUE_NUMBER/comments \
+  -f body='Closed during project reconciliation. Main contains the shipped behavior and validation passed.'
+
+gh api -X PATCH repos/moldovancsaba/habigoal.com/issues/ISSUE_NUMBER \
+  -f state=closed \
+  -f state_reason=completed
+```
+
+### Project 14 Sync
+
+Project item and field updates use GitHub GraphQL. Check the limit before running board sync:
+
+```bash
+gh api rate_limit --jq '{graphql:.resources.graphql}'
+```
+
+If GraphQL is available, add issues to Project 14 and update project fields:
+
+```bash
+gh project item-add 14 --owner moldovancsaba --url https://github.com/moldovancsaba/habigoal.com/issues/ISSUE_NUMBER
+gh project field-list 14 --owner moldovancsaba --format json
+gh project item-list 14 --owner moldovancsaba --limit 500 --format json
+```
+
+Do not delete custom project fields during reconciliation. The existing `scripts/sync-gh-project-14.sh` can add manifest issues and set basic status, but it currently deletes non-default fields; do not run it unless that destructive behavior is removed or explicitly desired.
+
+If GraphQL is exhausted, create/update issues with REST immediately, then schedule or resume the same thread after the reset time shown by `gh api rate_limit`.
+
+### Recent Reconciliation Notes
+
+On 2026-05-20, the board was compared against code and documentation. Issues `#62` to `#66` were created for the missing active roadmap gaps:
+
+- i18n audit gates
+- trainer/athlete invitation workflow
+- athlete-only check-in shell and task UX
+- weekly GitHub-based release-note news posts
+- legacy compatibility retirement plan
+
+Issue `#29` was closed because typecheck validation is stable on `main`.
+
 ## Validation
 
 Run before merging meaningful changes:
