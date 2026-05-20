@@ -1,4 +1,4 @@
-import { sectionsForMode } from "@/lib/survey-schema";
+import { sectionsForMode } from "@/lib/readiness-schema";
 import type { AssessmentPayload, AssessmentRecord } from "@/types/assessment";
 
 export function computeAssessment(payload: AssessmentPayload): AssessmentRecord["computed"] {

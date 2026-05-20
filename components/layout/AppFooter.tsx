@@ -5,11 +5,11 @@ import { Box, Divider, Group, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { APP_VERSION } from "@/lib/app-version";
-import { DEFAULT_SURVEY_SETTINGS, getSettings, type SurveySettings } from "@/services/settings-service";
+import { DEFAULT_HABIGOAL_SETTINGS, getSettings, type HabigoalSettings } from "@/services/settings-service";
 
 export function AppFooter() {
   const t = useTranslations("Dashboard");
-  const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
+  const [settings, setSettings] = useState<HabigoalSettings>(DEFAULT_HABIGOAL_SETTINGS);
 
   useEffect(() => {
     void getSettings().then(setSettings).catch(() => null);

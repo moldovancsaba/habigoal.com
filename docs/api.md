@@ -6,7 +6,7 @@ The API is implemented with Next.js App Router route handlers. Product-facing en
 
 ## Authentication And Authorization
 
-Auth enforcement is controlled by `SURVEY_ENFORCE_AUTH`.
+Auth enforcement is controlled by `HABIGOAL_ENFORCE_AUTH`.
 
 - `false`: development open mode; requests run as the local dev admin/trainer/athlete user.
 - `true`: protected routes require a signed SSO session cookie and local user authorization.

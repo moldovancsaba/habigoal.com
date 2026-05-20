@@ -1,4 +1,4 @@
-import { athleteIqPillars, trackerQuestions } from "@/lib/athlete-iq-survey";
+import { athleteIqPillars, trackerQuestions } from "@/lib/readiness-model";
 import type { AssessmentDomain, AssessmentMode, ScoreItemDefinition } from "@/types/assessment";
 
 export interface ScoreSection {

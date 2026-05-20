@@ -12,7 +12,7 @@ export default async function AthletesAppPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  if (env.surveyEnforceAuth) {
+  if (env.habigoalEnforceAuth) {
     const authUser = await getAuthUser();
 
     if (authUser?.primaryRole === "athlete") {

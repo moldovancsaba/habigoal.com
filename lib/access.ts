@@ -39,7 +39,7 @@ export type AuthUser = {
 };
 
 export async function getAuthUser(): Promise<AuthUser | null> {
-  if (!env.surveyEnforceAuth) {
+  if (!env.habigoalEnforceAuth) {
     return {
       email: "dev@habigoal.local",
       name: "Habigoal Dev",

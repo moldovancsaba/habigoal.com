@@ -3,7 +3,8 @@ import { env } from "@/config/env";
 import { getSession } from "@/lib/session";
 import { normalizeRoles } from "@/lib/access";
 
-const roleHeader = "x-survey-role";
+const ROLE_HEADER = "x-habigoal-role";
+const LEGACY_ROLE_HEADER = "x-survey-role";
 
 export function jsonError(message: string, status = 500, code?: string) {
   return NextResponse.json(
@@ -24,11 +25,14 @@ function parseRoles(value: string) {
 }
 
 export async function requireRole(request: Request, allowedRoles: string[]) {
-  if (!env.surveyEnforceAuth) {
+  if (!env.habigoalEnforceAuth) {
     return null;
   }
 
-  const roleHeaderValue = request.headers.get(roleHeader)?.trim().toLowerCase() || "";
+  const roleHeaderValue =
+    request.headers.get(ROLE_HEADER)?.trim().toLowerCase() ||
+    request.headers.get(LEGACY_ROLE_HEADER)?.trim().toLowerCase() ||
+    "";
   let userRoles = parseRoles(roleHeaderValue);
 
   if (userRoles.length === 0) {

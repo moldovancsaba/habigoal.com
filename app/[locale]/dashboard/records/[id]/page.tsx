@@ -18,7 +18,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { sectionsForMode } from "@/lib/survey-schema";
+import { sectionsForMode } from "@/lib/readiness-schema";
 import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
 import { hasTrackerScores } from "@/lib/assessment-compat";
 import { formatScore } from "@/lib/utils";

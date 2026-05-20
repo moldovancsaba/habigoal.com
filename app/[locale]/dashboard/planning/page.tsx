@@ -6,9 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { athleteIqPillars, getReadinessMode } from "@/lib/athlete-iq-survey";
+import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
 import { getCompatiblePillarScore, getCompatibleReadinessScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
-import { DEFAULT_SURVEY_SETTINGS, type SurveySettings } from "@/services/settings-service";
+import { DEFAULT_HABIGOAL_SETTINGS, type HabigoalSettings } from "@/services/settings-service";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CheckInRecord } from "@/types/check-in";
 import type { User } from "@/services/user-service";
@@ -17,7 +17,7 @@ import type { SessionPlanRecord, SessionPlanVariant } from "@/types/session-plan
 type PlanningData = {
   athletes: AthleteProfile[];
   checkIns: CheckInRecord[];
-  settings: SurveySettings;
+  settings: HabigoalSettings;
   users: User[];
 };
 
@@ -59,7 +59,7 @@ export default function PlanningPage() {
     void Promise.all([
       fetch("/api/athletes?metrics=true").then((r) => r.json() as Promise<AthleteProfile[]>),
       fetch("/api/check-ins").then((r) => r.json() as Promise<{ assessments: CheckInRecord[] }>),
-      fetch("/api/settings").then((r) => r.json() as Promise<SurveySettings>),
+      fetch("/api/settings").then((r) => r.json() as Promise<HabigoalSettings>),
       fetch("/api/users").then((r) => r.json() as Promise<{ users: User[] }>)
     ])
       .then(([athletes, checkIns, settings, users]) => {
@@ -67,10 +67,10 @@ export default function PlanningPage() {
           athletes: Array.isArray(athletes) ? athletes : [],
           checkIns: checkIns.assessments ?? [],
           settings: {
-            ...DEFAULT_SURVEY_SETTINGS,
+            ...DEFAULT_HABIGOAL_SETTINGS,
             ...settings,
             alerting: {
-              ...DEFAULT_SURVEY_SETTINGS.alerting,
+              ...DEFAULT_HABIGOAL_SETTINGS.alerting,
               ...(settings?.alerting ?? {})
             }
           },
@@ -81,7 +81,7 @@ export default function PlanningPage() {
         setData({
           athletes: [],
           checkIns: [],
-          settings: DEFAULT_SURVEY_SETTINGS,
+          settings: DEFAULT_HABIGOAL_SETTINGS,
           users: []
         });
       })
@@ -104,8 +104,8 @@ export default function PlanningPage() {
 
   const planningAthletes = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
-    const watchThreshold = data?.settings.alerting.watchReadinessThreshold ?? DEFAULT_SURVEY_SETTINGS.alerting.watchReadinessThreshold;
-    const supportThreshold = data?.settings.alerting.supportReadinessThreshold ?? DEFAULT_SURVEY_SETTINGS.alerting.supportReadinessThreshold;
+    const watchThreshold = data?.settings.alerting.watchReadinessThreshold ?? DEFAULT_HABIGOAL_SETTINGS.alerting.watchReadinessThreshold;
+    const supportThreshold = data?.settings.alerting.supportReadinessThreshold ?? DEFAULT_HABIGOAL_SETTINGS.alerting.supportReadinessThreshold;
 
     return (data?.athletes ?? []).map((athlete): PlanningAthlete => {
       const athleteKey = athlete._id || `${athlete.name}|${athlete.birthDate}`;

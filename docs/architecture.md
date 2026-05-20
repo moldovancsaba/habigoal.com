@@ -76,7 +76,7 @@ Important rules:
 - admin access is organization-wide
 - legacy `conductor` and `observer` normalize for migration compatibility
 
-Middleware in `middleware.ts` protects page routes when `SURVEY_ENFORCE_AUTH=true`. API route handlers enforce roles with `requireRole`.
+Middleware in `middleware.ts` protects page routes when `HABIGOAL_ENFORCE_AUTH=true`. API route handlers enforce roles with `requireRole`.
 
 ### Authentication
 
@@ -84,7 +84,7 @@ DoneIsBetter SSO is the identity provider.
 
 Local authorization is stored in MongoDB `users`.
 
-Session state is stored in the signed `survey_session` cookie. `AUTH_SECRET` is required for production session verification.
+Session state is stored in the signed `habigoal_session` cookie. `AUTH_SECRET` is required for production session verification.
 
 ### Data Model
 

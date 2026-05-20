@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   const locale = referer?.match(/\/(hu|en|ar|es|de|he)(\/|$)/)?.[1] || "en";
   const next = sanitizeReturnTo(request.nextUrl.searchParams.get("next"), locale);
 
-  if (!env.surveyEnforceAuth) {
+  if (!env.habigoalEnforceAuth) {
     return NextResponse.redirect(new URL(next, request.url));
   }
 

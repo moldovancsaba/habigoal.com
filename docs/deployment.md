@@ -31,7 +31,7 @@ SSO_BASE_URL
 SSO_REDIRECT_URI
 SSO_LOGOUT_URL
 AUTH_SECRET
-SURVEY_ENFORCE_AUTH
+HABIGOAL_ENFORCE_AUTH
 ```
 
 Production values should follow this shape:
@@ -42,7 +42,7 @@ MONGODB_APP_NAME=habigoal
 APP_URL=https://habigoal.com
 SSO_BASE_URL=https://sso.doneisbetter.com
 SSO_REDIRECT_URI=https://habigoal.com/api/oauth/callback
-SURVEY_ENFORCE_AUTH=true
+HABIGOAL_ENFORCE_AUTH=true
 ```
 
 `SSO_LOGOUT_URL` is optional and should stay empty unless DoneIsBetter provides a logout endpoint.
@@ -60,13 +60,13 @@ npm run dev
 Open-mode local development:
 
 ```txt
-SURVEY_ENFORCE_AUTH=false
+HABIGOAL_ENFORCE_AUTH=false
 ```
 
 SSO-like local testing:
 
 ```txt
-SURVEY_ENFORCE_AUTH=true
+HABIGOAL_ENFORCE_AUTH=true
 APP_URL=http://localhost:3000
 SSO_REDIRECT_URI=http://localhost:3000/api/oauth/callback
 AUTH_SECRET=<long random secret>
@@ -128,7 +128,7 @@ Stored attachment metadata includes:
 ## SSO Deployment Checklist
 
 1. Configure the DoneIsBetter client with `https://habigoal.com/api/oauth/callback`.
-2. Add `SSO_CLIENT_ID`, `SSO_CLIENT_SECRET`, `SSO_BASE_URL`, `SSO_REDIRECT_URI`, `AUTH_SECRET`, and `SURVEY_ENFORCE_AUTH=true` in Vercel.
+2. Add `SSO_CLIENT_ID`, `SSO_CLIENT_SECRET`, `SSO_BASE_URL`, `SSO_REDIRECT_URI`, `AUTH_SECRET`, and `HABIGOAL_ENFORCE_AUTH=true` in Vercel.
 3. Ensure at least one local admin user exists or intentionally rely on first-login bootstrap.
 4. Redeploy.
 5. Test `/api/auth/login`, `/api/oauth/callback`, `/api/auth/me`, and `/api/auth/logout`.
@@ -143,7 +143,7 @@ Full setup is documented in [SSO Setup](sso-setup.md).
    - `/en/news`
    - `/en/legal/gtc`
    - `/en/legal/privacy`
-3. Protected pages redirect to SSO when logged out and `SURVEY_ENFORCE_AUTH=true`.
+3. Protected pages redirect to SSO when logged out and `HABIGOAL_ENFORCE_AUTH=true`.
 4. Athlete login routes to the linked athlete profile.
 5. Trainer login routes to `/dashboard`.
 6. Admin login routes to `/dashboard/settings`.

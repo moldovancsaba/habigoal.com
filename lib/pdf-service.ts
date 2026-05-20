@@ -2,7 +2,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { HabitRecord } from "@/types/habit-record";
-import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist } from "@/lib/athlete-iq-survey";
+import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist } from "@/lib/readiness-model";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import { formatScore } from "./utils";
 

@@ -6,16 +6,17 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useSyncExternalStore } from "react";
 
-const CONSENT_COOKIE_NAME = "survey_cookie_consent";
-const LEGACY_CONSENT_COOKIE_NAME = "kidex_cookie_consent";
-const THEME_COOKIE_NAME = "survey_theme";
-const LEGACY_THEME_COOKIE_NAME = "kidex_theme";
+const CONSENT_COOKIE_NAME = "habigoal_cookie_consent";
+const LEGACY_CONSENT_COOKIE_NAMES = ["survey_cookie_consent", "kidex_cookie_consent"];
+const THEME_COOKIE_NAME = "habigoal_theme";
+const LEGACY_THEME_COOKIE_NAMES = ["survey_theme", "kidex_theme"];
 const LEGACY_THEME_STORAGE_KEY = "theme";
 
 function hasConsentCookie() {
   if (typeof document === "undefined") return false;
   return document.cookie.split("; ").some((cookie) =>
-    cookie.startsWith(`${CONSENT_COOKIE_NAME}=accepted`) || cookie.startsWith(`${LEGACY_CONSENT_COOKIE_NAME}=accepted`)
+    cookie.startsWith(`${CONSENT_COOKIE_NAME}=accepted`) ||
+    LEGACY_CONSENT_COOKIE_NAMES.some((name) => cookie.startsWith(`${name}=accepted`))
   );
 }
 
@@ -32,13 +33,15 @@ export function CookieConsentBanner() {
     document.cookie = `${CONSENT_COOKIE_NAME}=accepted; path=/; max-age=31536000; samesite=lax`;
     const themeValue =
       localStorage.getItem(THEME_COOKIE_NAME) ??
-      localStorage.getItem(LEGACY_THEME_COOKIE_NAME) ??
+      LEGACY_THEME_COOKIE_NAMES.map((key) => localStorage.getItem(key)).find(Boolean) ??
       localStorage.getItem(LEGACY_THEME_STORAGE_KEY) ??
       document.documentElement.getAttribute("data-theme") ??
       "light";
     if (themeValue === "light" || themeValue === "dark") {
       document.cookie = `${THEME_COOKIE_NAME}=${themeValue}; path=/; max-age=31536000; samesite=lax`;
-      document.cookie = `${LEGACY_THEME_COOKIE_NAME}=${themeValue}; path=/; max-age=31536000; samesite=lax`;
+      LEGACY_THEME_COOKIE_NAMES.forEach((name) => {
+        document.cookie = `${name}=; path=/; max-age=0; samesite=lax`;
+      });
     }
     setDismissed(true);
   }

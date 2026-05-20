@@ -6,20 +6,20 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { athleteIqPillars, getReadinessMode } from "@/lib/athlete-iq-survey";
+import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
 import { getCompatiblePillarScore, getCompatibleReadinessScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord, CoachActionStatus } from "@/types/coach-action";
 import type { User } from "@/services/user-service";
 import { formatScore } from "@/lib/utils";
-import { DEFAULT_SURVEY_SETTINGS, type SurveySettings } from "@/services/settings-service";
+import { DEFAULT_HABIGOAL_SETTINGS, type HabigoalSettings } from "@/services/settings-service";
 
 type DashboardData = {
   users: User[];
   checkIns: CheckInRecord[];
   athletes: AthleteProfile[];
-  settings: SurveySettings;
+  settings: HabigoalSettings;
   coachActions: CoachActionRecord[];
 };
 
@@ -109,7 +109,7 @@ export function MainDashboard() {
       fetch("/api/users").then((r) => r.json() as Promise<{ users: User[] }>),
       fetch("/api/check-ins").then((r) => r.json() as Promise<{ assessments: CheckInRecord[] }>),
       fetch("/api/athletes?metrics=true").then((r) => r.json() as Promise<AthleteProfile[]>),
-      fetch("/api/settings").then((r) => r.json() as Promise<SurveySettings>),
+      fetch("/api/settings").then((r) => r.json() as Promise<HabigoalSettings>),
       fetch(`/api/coach-actions?date=${today}`).then((r) => r.json() as Promise<{ actions: CoachActionRecord[] }>)
     ])
       .then(([usersData, checkInsData, athletesData, settingsData, coachActionsData]) => {
@@ -117,11 +117,11 @@ export function MainDashboard() {
           users: usersData.users ?? [],
           checkIns: checkInsData.assessments ?? [],
           athletes: Array.isArray(athletesData) ? athletesData : [],
-          settings: { ...DEFAULT_SURVEY_SETTINGS, ...settingsData, alerting: { ...DEFAULT_SURVEY_SETTINGS.alerting, ...(settingsData?.alerting ?? {}) } },
+          settings: { ...DEFAULT_HABIGOAL_SETTINGS, ...settingsData, alerting: { ...DEFAULT_HABIGOAL_SETTINGS.alerting, ...(settingsData?.alerting ?? {}) } },
           coachActions: coachActionsData.actions ?? []
         });
       })
-      .catch(() => setData({ users: [], checkIns: [], athletes: [], settings: DEFAULT_SURVEY_SETTINGS, coachActions: [] }))
+      .catch(() => setData({ users: [], checkIns: [], athletes: [], settings: DEFAULT_HABIGOAL_SETTINGS, coachActions: [] }))
       .finally(() => setLoading(false));
   }, []);
 
@@ -149,8 +149,8 @@ export function MainDashboard() {
 
   const queueItems = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
-    const watchThreshold = data?.settings.alerting.watchReadinessThreshold ?? DEFAULT_SURVEY_SETTINGS.alerting.watchReadinessThreshold;
-    const supportThreshold = data?.settings.alerting.supportReadinessThreshold ?? DEFAULT_SURVEY_SETTINGS.alerting.supportReadinessThreshold;
+    const watchThreshold = data?.settings.alerting.watchReadinessThreshold ?? DEFAULT_HABIGOAL_SETTINGS.alerting.watchReadinessThreshold;
+    const supportThreshold = data?.settings.alerting.supportReadinessThreshold ?? DEFAULT_HABIGOAL_SETTINGS.alerting.supportReadinessThreshold;
 
     return (data?.athletes ?? [])
       .map((athlete): QueueItem => {
@@ -296,7 +296,7 @@ export function MainDashboard() {
   }, [queueItems, tc]);
 
   const escalationDigest = useMemo(() => {
-    const cutoffHour = data?.settings.alerting.missedCheckInCutoffHour ?? DEFAULT_SURVEY_SETTINGS.alerting.missedCheckInCutoffHour;
+    const cutoffHour = data?.settings.alerting.missedCheckInCutoffHour ?? DEFAULT_HABIGOAL_SETTINGS.alerting.missedCheckInCutoffHour;
     const nowHour = new Date().getHours();
     const digestEnabled = data?.settings.alerting.dailyDigestEnabled ?? true;
     if (!digestEnabled) {

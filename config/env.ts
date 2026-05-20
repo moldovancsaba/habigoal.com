@@ -23,7 +23,7 @@ export const env = {
   mongodbAppName: process.env.MONGODB_APP_NAME || "habigoal-app",
   imgbbApiKey: process.env.IMGBB_API_KEY,
   appBaseUrl,
-  surveyEnforceAuth: readBooleanEnv(process.env.SURVEY_ENFORCE_AUTH, false),
+  habigoalEnforceAuth: readBooleanEnv(process.env.HABIGOAL_ENFORCE_AUTH ?? process.env.SURVEY_ENFORCE_AUTH, false),
   ssoClientId: process.env.SSO_Client_ID || process.env.SSO_CLIENT_ID,
   ssoClientSecret: process.env.SSO_Client_Secret || process.env.SSO_CLIENT_SECRET,
   ssoBaseUrl: process.env.SSO_BASE_URL || "https://sso.doneisbetter.com",

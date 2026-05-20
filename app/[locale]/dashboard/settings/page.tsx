@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { DEFAULT_SURVEY_SETTINGS, getSettings, SurveySettings, saveSettings } from "@/services/settings-service";
+import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
@@ -17,7 +17,7 @@ export default function SettingsPage() {
   const tc = useTranslations("Common");
   const tl = useTranslations("Legal");
 
-  const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
+  const [settings, setSettings] = useState<HabigoalSettings>(DEFAULT_HABIGOAL_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<{ email: string; role: string } | null>(null);
   const [athletes, setAthletes] = useState<AthleteProfile[]>([]);
@@ -164,7 +164,7 @@ export default function SettingsPage() {
     setLocationDraft("");
   }
 
-  function updateCompanyField(field: keyof SurveySettings["company"], value: string) {
+  function updateCompanyField(field: keyof HabigoalSettings["company"], value: string) {
     setSettings((prev) => ({
       ...prev,
       company: {

@@ -90,10 +90,10 @@ SSO_BASE_URL=https://sso.doneisbetter.com
 SSO_REDIRECT_URI=https://habigoal.com/api/oauth/callback
 SSO_LOGOUT_URL=
 AUTH_SECRET=
-SURVEY_ENFORCE_AUTH=true
+HABIGOAL_ENFORCE_AUTH=true
 ```
 
-`SURVEY_ENFORCE_AUTH=false` is useful for local open-mode development. Production should run with `SURVEY_ENFORCE_AUTH=true`.
+`HABIGOAL_ENFORCE_AUTH=false` is useful for local open-mode development. Production should run with `HABIGOAL_ENFORCE_AUTH=true`.
 
 ## Validation Commands
 
@@ -126,7 +126,7 @@ SSO identifies the person. Habigoal authorizes the person through the local `use
 - Trainers land in the trainer dashboard and manage athletes through team membership.
 - Admins land in settings and manage users, teams, global settings, restore workflows, and governance views.
 
-Middleware protects personal-data pages when `SURVEY_ENFORCE_AUTH=true`. Public pages are limited to the landing page, news, and legal pages.
+Middleware protects personal-data pages when `HABIGOAL_ENFORCE_AUTH=true`. Public pages are limited to the landing page, news, and legal pages.
 
 ## Codex Automation
 

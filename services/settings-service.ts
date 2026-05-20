@@ -1,4 +1,4 @@
-export interface SurveySettings {
+export interface HabigoalSettings {
   conductors: string[];
   observers: string[];
   locations: string[];
@@ -34,9 +34,9 @@ export interface SurveySettings {
   };
 }
 
-const STORAGE_KEY = "survey-settings-local";
-const LEGACY_STORAGE_KEY = "kidex-settings-local";
-export const DEFAULT_SURVEY_SETTINGS: SurveySettings = {
+const STORAGE_KEY = "habigoal-settings-local";
+const LEGACY_STORAGE_KEYS = ["survey-settings-local", "kidex-settings-local"];
+export const DEFAULT_HABIGOAL_SETTINGS: HabigoalSettings = {
   conductors: [],
   observers: [],
   locations: [],
@@ -84,44 +84,43 @@ export const DEFAULT_SURVEY_SETTINGS: SurveySettings = {
   }
 };
 
-function normalizeSettings(raw: Partial<SurveySettings> | null | undefined): SurveySettings {
+function normalizeSettings(raw: Partial<HabigoalSettings> | null | undefined): HabigoalSettings {
   const next = raw ?? {};
   return {
-    ...DEFAULT_SURVEY_SETTINGS,
-    conductors: next.conductors ?? DEFAULT_SURVEY_SETTINGS.conductors,
-    observers: next.observers ?? DEFAULT_SURVEY_SETTINGS.observers,
-    locations: next.locations ?? DEFAULT_SURVEY_SETTINGS.locations,
+    ...DEFAULT_HABIGOAL_SETTINGS,
+    conductors: next.conductors ?? DEFAULT_HABIGOAL_SETTINGS.conductors,
+    observers: next.observers ?? DEFAULT_HABIGOAL_SETTINGS.observers,
+    locations: next.locations ?? DEFAULT_HABIGOAL_SETTINGS.locations,
     alerting: {
-      ...DEFAULT_SURVEY_SETTINGS.alerting,
+      ...DEFAULT_HABIGOAL_SETTINGS.alerting,
       ...(next.alerting ?? {})
     },
     company: {
-      ...DEFAULT_SURVEY_SETTINGS.company,
+      ...DEFAULT_HABIGOAL_SETTINGS.company,
       ...(next.company ?? {})
     },
     standards: {
-      ...DEFAULT_SURVEY_SETTINGS.standards,
+      ...DEFAULT_HABIGOAL_SETTINGS.standards,
       ...(next.standards ?? {})
     }
   };
 }
 
-export async function getSettings(): Promise<SurveySettings> {
+export async function getSettings(): Promise<HabigoalSettings> {
   const response = await fetch("/api/settings").catch(() => null);
   if (response?.ok) {
-    return normalizeSettings((await response.json()) as Partial<SurveySettings>);
+    return normalizeSettings((await response.json()) as Partial<HabigoalSettings>);
   }
   
   // Keep the legacy browser keys so older local workspaces do not lose settings.
-  const local = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
-  if (local) return normalizeSettings(JSON.parse(local) as Partial<SurveySettings>);
+  const local = localStorage.getItem(STORAGE_KEY) ?? LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
+  if (local) return normalizeSettings(JSON.parse(local) as Partial<HabigoalSettings>);
   
-  return DEFAULT_SURVEY_SETTINGS;
+  return DEFAULT_HABIGOAL_SETTINGS;
 }
 
-export async function saveSettings(settings: SurveySettings): Promise<boolean> {
+export async function saveSettings(settings: HabigoalSettings): Promise<boolean> {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-  localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(settings));
   
   const response = await fetch("/api/settings", {
     method: "POST",

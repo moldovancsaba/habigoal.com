@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const SESSION_COOKIE_NAME = "survey_session";
-const LEGACY_SESSION_COOKIE_NAME = "kidex_session";
+const SESSION_COOKIE_NAME = "habigoal_session";
+const LEGACY_SESSION_COOKIE_NAMES = ["survey_session", "kidex_session"];
 const localePattern = /^\/(hu|en|ar|es|de|he)(\/|$)/;
 
 type SessionPayload = {
@@ -76,7 +76,7 @@ function parseRoles(value: string | undefined) {
 async function readSession(request: NextRequest): Promise<SessionPayload | null> {
   const token =
     request.cookies.get(SESSION_COOKIE_NAME)?.value ||
-    request.cookies.get(LEGACY_SESSION_COOKIE_NAME)?.value;
+    LEGACY_SESSION_COOKIE_NAMES.map((name) => request.cookies.get(name)?.value).find(Boolean);
 
   if (!token) return null;
 
@@ -97,7 +97,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (process.env.SURVEY_ENFORCE_AUTH !== "true") {
+  if ((process.env.HABIGOAL_ENFORCE_AUTH ?? process.env.SURVEY_ENFORCE_AUTH) !== "true") {
     return NextResponse.next();
   }
 

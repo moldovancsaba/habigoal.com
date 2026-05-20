@@ -19,7 +19,7 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 ## Access Control
 
 - Public pages are limited to landing, news, and legal routes.
-- Personal-data routes require OAuth-backed session when `SURVEY_ENFORCE_AUTH=true`.
+- Personal-data routes require OAuth-backed session when `HABIGOAL_ENFORCE_AUTH=true`.
 - Athlete users can access only their linked athlete profile and own tasks.
 - Trainer users access athletes through team membership.
 - Admin-only settings and user/team management remain blocked from trainers and athletes.

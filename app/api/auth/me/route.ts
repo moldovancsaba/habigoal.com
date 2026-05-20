@@ -4,7 +4,7 @@ import { env } from "@/config/env";
 import { getPrimaryRole, normalizeRoles } from "@/lib/access";
 
 export async function GET() {
-  if (!env.surveyEnforceAuth) {
+  if (!env.habigoalEnforceAuth) {
     return NextResponse.json({
       user: {
         userId: "hg-open-mode",

@@ -1,5 +1,5 @@
-import { readinessChecklist, trackerQuestions, type AthleteIqPillarKey } from "@/lib/athlete-iq-survey";
-import { sectionsForMode } from "@/lib/survey-schema";
+import { readinessChecklist, trackerQuestions, type AthleteIqPillarKey } from "@/lib/readiness-model";
+import { sectionsForMode } from "@/lib/readiness-schema";
 import type { AssessmentRecord } from "@/types/assessment";
 
 const legacyReadinessKeys = [

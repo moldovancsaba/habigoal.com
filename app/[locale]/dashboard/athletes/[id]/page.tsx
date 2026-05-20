@@ -15,7 +15,7 @@ import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
 import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
 import { SparklineChart } from "@/components/analytics/SparklineChart";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
-import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/athlete-iq-survey";
+import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/readiness-model";
 import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";

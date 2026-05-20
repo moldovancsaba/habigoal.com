@@ -1,5 +1,5 @@
-import { SurveyAssessmentApp } from "@/components/forms/SurveyAssessmentApp";
+import { AthleteCheckInApp } from "@/components/forms/AthleteCheckInApp";
 
 export default function AssessmentPage() {
-  return <SurveyAssessmentApp />;
+  return <AthleteCheckInApp />;
 }

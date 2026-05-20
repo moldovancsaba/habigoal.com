@@ -14,7 +14,7 @@ Supported locales:
 - `ar`
 - `he`
 
-Legal pages must remain public even when `SURVEY_ENFORCE_AUTH=true`.
+Legal pages must remain public even when `HABIGOAL_ENFORCE_AUTH=true`.
 
 ## Company Profile Source
 

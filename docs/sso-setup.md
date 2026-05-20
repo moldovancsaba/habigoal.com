@@ -39,10 +39,10 @@ SSO_BASE_URL=https://sso.doneisbetter.com
 SSO_REDIRECT_URI=https://habigoal.com/api/oauth/callback
 SSO_LOGOUT_URL=
 AUTH_SECRET=<long random secret>
-SURVEY_ENFORCE_AUTH=true
+HABIGOAL_ENFORCE_AUTH=true
 ```
 
-`AUTH_SECRET` signs the local `survey_session` cookie. Treat it as production secret material.
+`AUTH_SECRET` signs the local `habigoal_session` cookie. Treat it as production secret material.
 
 ## Runtime Flow
 
@@ -104,7 +104,7 @@ Trainer users are scoped by team membership:
 ## Validation Checklist
 
 1. Confirm production env vars are set in Vercel.
-2. Confirm `SURVEY_ENFORCE_AUTH=true`.
+2. Confirm `HABIGOAL_ENFORCE_AUTH=true`.
 3. Confirm at least one admin exists in `users`.
 4. Open `https://habigoal.com/en/dashboard`.
 5. Complete SSO.

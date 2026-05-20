@@ -13,7 +13,7 @@ The landing page, athlete app, trainer dashboard, settings, planning, records, n
 |--------|------|
 | `theme/mantine-theme.ts` | `getSurveyMantineTheme("light" \| "dark")` — semantic colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
 | `components/theme/ThemeRegistry.tsx` | `MantineProvider` + color-scheme wiring using `ThemeModeContext`. |
-| `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`survey_theme`, legacy `theme`), and consent-gated cookie persistence. |
+| `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`habigoal_theme`, legacy `theme`), and consent-gated cookie persistence. |
 | `components/layout/DashboardShell.tsx` | Responsive protected-app shell: Mantine `AppShell` + mobile `Drawer`, role-aware nav, `PageContainer`, shared app footer. |
 | `components/ui/PageContainer.tsx` | Max-width + horizontal padding for page content. |
 | `components/ui/SectionCard.tsx` | Mantine `Paper` + optional header/action block for grouped sections. |

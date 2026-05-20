@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SURVEY_SETTINGS } from "../services/settings-service";
+import { DEFAULT_HABIGOAL_SETTINGS } from "../services/settings-service";
 import { parseAssessmentPayload } from "../lib/validations";
 
 describe("standards governance defaults", () => {
   it("has active standards version and metadata", () => {
-    expect(DEFAULT_SURVEY_SETTINGS.standards.activeVersion).toBeTruthy();
-    const active = DEFAULT_SURVEY_SETTINGS.standards.activeVersion;
-    expect(DEFAULT_SURVEY_SETTINGS.standards.versions[active]).toBeTruthy();
-    expect(DEFAULT_SURVEY_SETTINGS.standards.versions[active].meta?.status).toBe("published");
+    expect(DEFAULT_HABIGOAL_SETTINGS.standards.activeVersion).toBeTruthy();
+    const active = DEFAULT_HABIGOAL_SETTINGS.standards.activeVersion;
+    expect(DEFAULT_HABIGOAL_SETTINGS.standards.versions[active]).toBeTruthy();
+    expect(DEFAULT_HABIGOAL_SETTINGS.standards.versions[active].meta?.status).toBe("published");
   });
 });
 

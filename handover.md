@@ -117,7 +117,7 @@ Production SSO uses DoneIsBetter:
 - login starts at `/api/auth/login`
 - callback completes at `/api/oauth/callback`
 - logout uses `/api/auth/logout`
-- session state is stored in the signed `survey_session` cookie
+- session state is stored in the signed `habigoal_session` cookie
 
 Local authorization remains in the `users` collection. If no users exist, the first successful SSO login bootstraps as `admin`; after that, emails must be approved locally.
 

@@ -7,11 +7,11 @@ import { Link } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { APP_VERSION } from "@/lib/app-version";
-import { DEFAULT_SURVEY_SETTINGS, getSettings, type SurveySettings } from "@/services/settings-service";
+import { DEFAULT_HABIGOAL_SETTINGS, getSettings, type HabigoalSettings } from "@/services/settings-service";
 
 export default function GtcPage() {
   const t = useTranslations("Legal");
-  const [settings, setSettings] = useState<SurveySettings>(DEFAULT_SURVEY_SETTINGS);
+  const [settings, setSettings] = useState<HabigoalSettings>(DEFAULT_HABIGOAL_SETTINGS);
 
   useEffect(() => {
     void getSettings().then(setSettings).catch(() => null);
@@ -47,7 +47,7 @@ export default function GtcPage() {
   );
 }
 
-function CompanyData({ settings }: { settings: SurveySettings }) {
+function CompanyData({ settings }: { settings: HabigoalSettings }) {
   const t = useTranslations("Legal");
   return (
     <Stack gap={6}>

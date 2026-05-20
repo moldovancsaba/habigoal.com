@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   await deleteSession();
 
-  if (env.surveyEnforceAuth && env.ssoLogoutUrl) {
+  if (env.habigoalEnforceAuth && env.ssoLogoutUrl) {
     const logoutUrl = new URL(env.ssoLogoutUrl);
     logoutUrl.searchParams.set("redirect_uri", new URL("/", request.url).toString());
     return NextResponse.redirect(logoutUrl);

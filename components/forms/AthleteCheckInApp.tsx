@@ -21,15 +21,15 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
-import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/athlete-iq-survey";
-import { sectionsForMode } from "@/lib/survey-schema";
+import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
+import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
 import type { AssessmentPayload, ScoreEntry } from "@/types/assessment";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
 
-const DRAFT_STORAGE_KEY = "survey-draft";
-const LEGACY_DRAFT_STORAGE_KEY = "kidex-draft";
+const DRAFT_STORAGE_KEY = "habigoal-assessment-draft";
+const LEGACY_DRAFT_STORAGE_KEYS = ["survey-draft", "kidex-draft"];
 
 const emptyAssessment: AssessmentPayload = {
   childId: "",
@@ -88,7 +88,7 @@ function loadDraftAssessment(): AssessmentPayload {
     return cloneAssessment(emptyAssessment);
   }
 
-  const raw = localStorage.getItem(DRAFT_STORAGE_KEY) ?? localStorage.getItem(LEGACY_DRAFT_STORAGE_KEY);
+  const raw = localStorage.getItem(DRAFT_STORAGE_KEY) ?? LEGACY_DRAFT_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
   if (!raw) {
     return cloneAssessment(emptyAssessment);
   }
@@ -194,7 +194,7 @@ function buildSupportSummary(assessment: AssessmentPayload) {
   return { physical, mental, sportBrain };
 }
 
-export function SurveyAssessmentApp() {
+export function AthleteCheckInApp() {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const searchParams = useSearchParams();
@@ -394,6 +394,7 @@ export function SurveyAssessmentApp() {
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
     localStorage.removeItem(DRAFT_STORAGE_KEY);
+    LEGACY_DRAFT_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     setMessage(t("saved"));
   }
 

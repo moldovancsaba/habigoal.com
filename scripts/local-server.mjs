@@ -19,10 +19,13 @@ loadEnvFile(".env");
 loadEnvFile(".env.local");
 loadEnvFile(".env.example");
 
-const port = Number(process.env.SURVEY_LOCAL_SERVER_PORT || process.env.PORT || 4001);
+const port = Number(process.env.HABIGOAL_LOCAL_SERVER_PORT || process.env.SURVEY_LOCAL_SERVER_PORT || process.env.PORT || 4001);
 const mongodbUri = process.env.MONGODB_URI;
 const mongodbDb = process.env.MONGODB_DB || "habigoal";
-const enforceAuth = process.env.SURVEY_ENFORCE_AUTH === "true" || process.env.KIDEX_ENFORCE_AUTH === "true";
+const enforceAuth =
+  process.env.HABIGOAL_ENFORCE_AUTH === "true" ||
+  process.env.SURVEY_ENFORCE_AUTH === "true" ||
+  process.env.KIDEX_ENFORCE_AUTH === "true";
 
 if (!mongodbUri) {
   console.error("MONGODB_URI is missing. Add it to .env or .env.local before starting the local server.");
@@ -41,7 +44,7 @@ function json(res, status, payload) {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type, x-survey-role",
+    "Access-Control-Allow-Headers": "Content-Type, x-habigoal-role, x-survey-role",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS"
   });
   res.end(JSON.stringify(payload, null, 2));
@@ -67,14 +70,14 @@ async function readBody(req) {
 
 function requireRole(req, allowedRoles) {
   if (!enforceAuth) return null;
-  const header = req.headers["x-survey-role"];
+  const header = req.headers["x-habigoal-role"] ?? req.headers["x-survey-role"];
   const roles = String(Array.isArray(header) ? header.join(",") : header || "")
     .split(",")
     .map((entry) => entry.trim().toLowerCase())
     .map((role) => ({ conductor: "trainer", observer: "athlete" })[role] || role)
     .filter(Boolean);
   if (roles.length === 0) {
-    return { status: 401, body: { error: "Missing x-survey-role header", code: "AUTH_REQUIRED" } };
+    return { status: 401, body: { error: "Missing x-habigoal-role header", code: "AUTH_REQUIRED" } };
   }
   if (!roles.some((role) => allowedRoles.includes(role))) {
     return { status: 403, body: { error: "Insufficient role", code: "FORBIDDEN" } };
@@ -216,18 +219,18 @@ async function handleChildren(req, res, pathname) {
   if (req.method === "GET" && childIdMatch) {
     const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
-    if (!ObjectId.isValid(childIdMatch[1])) return json(res, 400, { error: "Invalid child id", code: "VALIDATION_ERROR" });
+    if (!ObjectId.isValid(childIdMatch[1])) return json(res, 400, { error: "Invalid athlete id", code: "VALIDATION_ERROR" });
     const doc = await db.collection("children").findOne({ _id: new ObjectId(childIdMatch[1]), deletedAt: { $exists: false } });
-    return doc ? json(res, 200, toJsonId(doc)) : json(res, 404, { error: "Child not found", code: "NOT_FOUND" });
+    return doc ? json(res, 200, toJsonId(doc)) : json(res, 404, { error: "Athlete not found", code: "NOT_FOUND" });
   }
 
   const historyMatch = pathname.match(/^\/api\/children\/([^/]+)\/history$/);
   if (req.method === "GET" && historyMatch) {
     const guard = requireRole(req, ["admin", "trainer", "athlete"]);
     if (guard) return json(res, guard.status, guard.body);
-    if (!ObjectId.isValid(historyMatch[1])) return json(res, 400, { error: "Invalid child id", code: "VALIDATION_ERROR" });
+    if (!ObjectId.isValid(historyMatch[1])) return json(res, 400, { error: "Invalid athlete id", code: "VALIDATION_ERROR" });
     const child = await db.collection("children").findOne({ _id: new ObjectId(historyMatch[1]), deletedAt: { $exists: false } });
-    if (!child) return json(res, 404, { error: "Child not found", code: "NOT_FOUND" });
+    if (!child) return json(res, 404, { error: "Athlete not found", code: "NOT_FOUND" });
     const assessments = await db.collection("assessments").find({
       deletedAt: { $exists: false },
       $or: [
@@ -257,7 +260,7 @@ async function handleAssessments(req, res, pathname) {
     if (guard) return json(res, guard.status, guard.body);
     const body = parseAssessmentPayload(await readBody(req));
     if (!body.child?.name || !body.child?.birthDate || !body.session?.date) {
-      return json(res, 400, { error: "child.name, child.birthDate and session.date are required", code: "VALIDATION_ERROR" });
+      return json(res, 400, { error: "athlete name, athlete birth date and session date are required", code: "VALIDATION_ERROR" });
     }
     const now = new Date().toISOString();
     const doc = { ...body, createdAt: now, updatedAt: now, updateHistory: [] };

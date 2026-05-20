@@ -13,7 +13,7 @@ function statusValue(value: unknown): CoachActionStatus | null {
 }
 
 async function resolveActor() {
-  if (!env.surveyEnforceAuth) {
+  if (!env.habigoalEnforceAuth) {
     return {
       actorName: "Habigoal Dev",
       actorEmail: "dev@habigoal.local"
