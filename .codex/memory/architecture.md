@@ -46,11 +46,14 @@ UI operating surfaces:
 - `/dashboard/planning` is the coach planning surface for turning live readiness and load state into a weekly session shape, with persisted weekly plans in `session_plans`.
 - `/dashboard/athletes/[id]` remains the athlete operating surface with trends, habits, memory, and reports.
 - `/athletes` is the public athlete app entry surface, and `/athletes/[id]` must stay athlete-facing rather than leaking coach-admin controls.
+- `/news` is the public release-note surface. Posts must render only in locales where exact localized content exists.
+- `/dashboard/settings` is the admin operations surface for users, teams, restore/governance, company/legal profile, standards, and alerting settings.
 - When authentication is enforced, `/athletes` must redirect signed-in athletes to their own profile and redirect trainer/admin users back into dashboard athlete management rather than behaving like a shared athlete selector.
 - Role-aware route gating must exist in the shell layer as well as in APIs: athletes should not browse coach-admin dashboard routes, and trainers should not reach admin settings routes by URL.
 - DoneIsBetter SSO is the intended authentication boundary for protected Habigoal usage, while local role authorization remains owned by the `users` collection.
 - User-rights changes are admin-owned operations; the system must not allow self-removal of the active admin or deletion/demotion of the final admin account.
 - The active entity model is `athlete`, `trainer`, and `admin`; athlete access is self-scoped, trainer access is team-scoped, and admin access owns settings plus team management.
+- Product-facing language must avoid legacy `child`, `assessment`, `conductor`, and `observer` wording except when documenting compatibility layers.
 
 ## Heartbeat Chain
 
@@ -161,3 +164,12 @@ Current persistence surfaces that support this spine:
 - `children` for athlete identity and profile
 - `coach_actions` for coach response traceability
 - `habit_records` for athlete routine completion and adherence trends
+- `session_plans` for weekly trainer planning
+- `teams` for trainer and athlete membership scoping
+- `users` for local SSO authorization and role assignment
+- `settings` for company/legal profile, standards, alerting, and governance data
+
+Current platform reliability focus:
+- i18n must be treated as a product-quality gate, not a polish task.
+- public news content is locale-specific and must fail closed when a locale is missing.
+- central form definitions are the intended direction for new form work, but the full centralized form rollout is still feature-branch work until merged.

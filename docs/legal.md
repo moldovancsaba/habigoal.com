@@ -1,32 +1,48 @@
-# Legal and Company Information
+# Legal And Company Information
 
-This app includes localized legal pages available under the dashboard:
+Habigoal exposes public legal pages outside the protected dashboard:
 
-- `/{locale}/dashboard/legal/gtc`
-- `/{locale}/dashboard/legal/privacy`
+- `/{locale}/legal/gtc`
+- `/{locale}/legal/privacy`
 
-Supported locales currently include `hu`, `en`, and `ar`.
+Supported locales:
 
-## Default company profile
+- `en`
+- `hu`
+- `es`
+- `de`
+- `ar`
+- `he`
 
-These are the current default values seeded in settings and used until modified in Dashboard Settings.
+Legal pages must remain public even when `SURVEY_ENFORCE_AUTH=true`.
 
-- **Name:** Survey s.r.o.
-- **ID-No. (IČO):** 57474869
-- **Registered:** 19.02.2026
-- **Legal form:** Limited Liability Company
-- **Address:** Želiarsky svah 29, Štúrovo, Slovakia 943 01
-- **Share capital:** EUR 5 000
-- **VAT No.:** SK2122770606
-- **Website:** https://survey.app
+## Company Profile Source
 
-## App version and company profile source
+Company and legal profile data is managed in Dashboard Settings and persisted through `/api/settings`.
 
-The app version is developer-managed in `lib/app-version.ts`.
-The company profile is managed from Dashboard Settings and persisted in global settings (`/api/settings`).
+The profile is displayed in:
 
-They are displayed in:
+- dashboard footer
+- public legal pages
+- generated reports where applicable
 
-- Dashboard footer
-- GTC page
-- Privacy Policy page
+## Version Source
+
+The app version is developer-managed in `lib/app-version.ts` and should remain aligned with `package.json` when release versioning changes.
+
+Current app version: `0.5.0`
+
+## Current Production Identity
+
+The live app identity is Habigoal at:
+
+- `https://habigoal.com`
+
+Older `survey.*` and `messmass.*` references are obsolete and should not be introduced into new documentation or UI copy.
+
+## Legal Copy Requirements
+
+- Legal page text must come from the locale message catalogs or structured legal content, not inline page strings.
+- Locale-specific pages must not silently fall back to another language for legal text.
+- Footer labels must be localized in every supported locale.
+- Any change to public legal content should be validated with `npm run build` and a manual route check.

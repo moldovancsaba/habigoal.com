@@ -1,79 +1,66 @@
 # Habigoal
 
-Habigoal is a mobile-first daily athlete support workspace for coaches and staff. It helps teams capture daily readiness signals from young athletes, surface mental and physical support needs, and turn check-ins into practical follow-up actions.
+Habigoal is a daily athlete support workspace for athletes, trainers, and admins. It captures daily readiness, habits, training load, coach actions, weekly plans, and operational reports in one role-aware web app.
 
-## Features
+## Current Product Surface
 
-- Mobile-first daily athlete check-in flow optimized for one-hand use
-- Nine-signal readiness model across physical readiness, mental balance, and sport brain
-- Centralized athlete profiles with longitudinal history and support trend views
-- Athlete-facing daily operating summary on the athlete detail page with readable state, momentum, and next-action guidance
-- Persisted athlete habit tracker with daily routine scoring, streaks, and adherence trend visibility
-- Dedicated session planning route at `/dashboard/planning` with a weekly calendar shaped by readiness, support pressure, location scope, and internal load, plus persisted weekly coach plans reflected on athlete detail pages
-- Public `/news` release-notes surface backed by structured post content for weekly “What’s New” updates
-- Admin-owned user access management with approved-email gating, last-login visibility, and protections against removing the final admin account
-- Single-entity access model for `athlete`, `trainer`, and `admin`, with athlete-to-user linkage and basic team management
-- Route-level UI gating so athletes stay in athlete-facing surfaces and trainers cannot reach admin-only settings routes by URL
-- Historical compatibility layer for legacy assessment data and backfilled tracker fields
-- Daily readiness reports and PDF export surfaces
-- Persistent audit and soft-delete workflows for records and athletes
-- Shared multilingual UI with English, Hungarian, Arabic (RTL), Spanish, German, and Hebrew (RTL)
-- Localized legal pages for public verification flows
-- Design-system driven dashboard, charts, and settings surfaces
-- Local API server for lightweight local testing
+- Public landing page at `/{locale}` with app entry buttons for athletes and trainers.
+- Public news and release notes at `/{locale}/news`.
+- Public legal pages at `/{locale}/legal/gtc` and `/{locale}/legal/privacy`.
+- Athlete app at `/{locale}/athletes` and `/{locale}/athletes/[id]`.
+- Trainer dashboard at `/{locale}/dashboard`.
+- Daily check-in flow at `/{locale}/dashboard/assessment`.
+- Athlete management and athlete detail views at `/{locale}/dashboard/athletes`.
+- Check-in record list and record detail views at `/{locale}/dashboard/records`.
+- Weekly session planning at `/{locale}/dashboard/planning`.
+- Admin settings, users, teams, restore bin, and governance views at `/{locale}/dashboard/settings`.
+
+## Shipped Capabilities
+
+- Daily athlete check-in with nine readiness signals across physical readiness, mental balance, and sport brain.
+- Athlete profiles with longitudinal history, readiness trends, habits, training load, memory summaries, and weekly operating summaries.
+- Persisted habit records through the `habit_records` collection and `/api/athletes/:id/habits`.
+- Training-load capture in check-ins: session type, duration, RPE, and optional external load.
+- Coach command center with priority athletes, missed check-ins, readiness buckets, next-best-action recommendations, session blueprints, escalation digest, and coach action tracking.
+- Persisted coach action status through the `coach_actions` collection and `/api/coach-actions`.
+- Weekly session planning through `/dashboard/planning`, persisted in `session_plans`, and reflected on athlete detail pages.
+- PDF/report export surfaces for athlete and check-in records.
+- Public weekly news surface backed by `content/news/posts.json`, with locale-specific fail-closed rendering.
+- DoneIsBetter SSO integration with local user authorization.
+- Role model: `athlete`, `trainer`, and `admin`.
+- Athlete users are scoped to their linked athlete profile.
+- Trainer users are scoped through team membership.
+- Admin users manage users, teams, settings, restore workflows, and governance data.
+- Team management through the `teams` collection and `/api/teams`.
+- Soft-delete and restore workflows for athletes and check-ins.
+- Multilingual UI for `en`, `hu`, `es`, `de`, `ar`, and `he`, including RTL layout support for Arabic and Hebrew.
+- Codex automation control plane under `.codex/` for audit, planning, implementation, and documentation loops.
 
 ## Documentation
 
 - [API Reference](docs/api.md)
-- [Design System](docs/design-system.md)
+- [Architecture](docs/architecture.md)
 - [Deployment](docs/deployment.md)
+- [Design System](docs/design-system.md)
 - [Definition of Done](docs/dod.md)
-- [GitHub Project Board Bootstrap](config/gh-project-board.json)
 - [Legal and Company Info](docs/legal.md)
-- [Product Roadmap](ROADMAP.md)
-- [Codex Automation Architecture](.codex/memory/architecture.md)
 - [SSO Setup](docs/sso-setup.md)
+- [Product Roadmap](ROADMAP.md)
+- [I18n Audit](docs/i18n-audit-2026-05-12.md)
+- [Codex Automation Architecture](.codex/memory/architecture.md)
 
-## GitHub Project Bootstrap
+## Technology
 
-Build the repository project board with:
+Package ranges are defined in `package.json`; the active lockfile currently resolves to:
 
-```bash
-./scripts/bootstrap-gh-project-board.sh moldovancsaba habigoal.com
-```
-
-The board definition lives in `config/gh-project-board.json`.
-
-## Codex Automation Control Plane
-
-The repository includes a Codex-first automation control plane under `.codex/`.
-
-Structure:
-
-```txt
-.codex/
-  agents/
-  heartbeats/
-  memory/
-  policies/
-```
-
-Design rules:
-- GitHub is source control, issue tracking, PR review, and project state.
-- Codex is the orchestrator, planner, executor, and documentation maintainer.
-- Autonomous loops do not push directly to `main`.
-- Continuous automation runs use branch + PR delivery with human merge approval.
-
-The committed heartbeat specs are repository-local operating contracts. The live recurring loop should be registered as a thread-bound Codex heartbeat so audit, planning, implementation, and docs all run in the same dedicated conversation.
-
-## Software Versions
-
-- Next.js: 15.1.4
-- React: 19.0.0
-- TypeScript: 5.7.3
-- MongoDB: 6.12.0
-- Node.js: >= 22
-- App: 0.5.0
+- Next.js: `15.5.15`
+- React: `19.2.5`
+- TypeScript: `5.9.3`
+- MongoDB driver: `6.21.0`
+- next-intl: `4.9.2`
+- Mantine: `8.3.6`
+- Node.js: `22.x`
+- App version: `0.5.0`
 
 ## Local Development
 
@@ -82,73 +69,80 @@ cp .env.example .env
 npm install
 npm run db:ping
 npm run db:setup
-npm run db:seed-demo
+npm run db:seed-showcase
 npm run dev
 ```
 
-## Standalone Local API Server
-
-For lightweight local API testing without starting Next.js, run:
-
-```bash
-npm run local:server
-```
-
-It uses the same `MONGODB_URI`, `MONGODB_DB`, and `SURVEY_ENFORCE_AUTH` environment variables as the main app and exposes a documented subset of the API on `http://localhost:4001` by default. Override the port with `SURVEY_LOCAL_SERVER_PORT`.
+The default Next.js dev server runs on `http://localhost:3000`.
 
 ## Required Environment Variables
 
 ```txt
 MONGODB_URI=
-MONGODB_DB=survey
-MONGODB_APP_NAME=habigoal-local
+MONGODB_DB=habigoal
+MONGODB_APP_NAME=habigoal
 IMGBB_API_KEY=
-APP_URL=
+
+APP_URL=https://habigoal.com
 SSO_CLIENT_ID=
 SSO_CLIENT_SECRET=
 SSO_BASE_URL=https://sso.doneisbetter.com
-SSO_REDIRECT_URI=
+SSO_REDIRECT_URI=https://habigoal.com/api/oauth/callback
 SSO_LOGOUT_URL=
 AUTH_SECRET=
-SURVEY_ENFORCE_AUTH=false
+SURVEY_ENFORCE_AUTH=true
 ```
 
-## MongoDB Atlas Setup
+`SURVEY_ENFORCE_AUTH=false` is useful for local open-mode development. Production should run with `SURVEY_ENFORCE_AUTH=true`.
 
-1. Paste your Atlas driver connection string into `.env` as `MONGODB_URI`.
-2. Set `MONGODB_DB` to the application database name you created in Atlas.
-3. Optionally set `MONGODB_APP_NAME` to distinguish local, preview, and production clients in Atlas metrics.
-4. Run `npm run db:ping` to verify the app can reach Atlas before starting Next.js.
-5. Run `npm run db:setup` if you want the database indexes and base collections prepared.
+## Validation Commands
 
-The runtime health endpoint `/api/health` now reports whether MongoDB is both configured and reachable.
+```bash
+npm run lint
+npm run test
+npm run build
+npm run typecheck
+npm run db:ping
+```
 
-## Data and privacy notes
+`npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
-Uploaded evidence images are sent through the server-side `imgbb` endpoint and only URL metadata is stored in records.
+## Data Collections
 
-Role-based API enforcement can be enabled via `SURVEY_ENFORCE_AUTH`; when enabled, protected endpoints validate the signed-in session role set, with `x-survey-role` remaining available as an explicit override path for trusted integrations and test harnesses.
+- `children`: athlete profiles. Product-facing code should refer to these as athletes.
+- `assessments`: daily check-ins and legacy-compatible records.
+- `habit_records`: athlete habit adherence records.
+- `coach_actions`: trainer acknowledgements and applied recommendation records.
+- `session_plans`: persisted weekly planning records.
+- `teams`: team membership for trainers and athletes.
+- `users`: local authorization records linked to SSO identity.
+- `settings`: global settings, company/legal profile, alerting thresholds, and restore/governance state.
 
-## SSO
+## Authentication And Access
 
-Habigoal supports DoneIsBetter SSO via:
+SSO identifies the person. Habigoal authorizes the person through the local `users` collection.
 
-- `/api/auth/login`
-- `/api/oauth/callback`
-- `/api/auth/logout`
+- Athletes land in the athlete app and can access only their linked athlete profile, history, habits, and check-ins.
+- Trainers land in the trainer dashboard and manage athletes through team membership.
+- Admins land in settings and manage users, teams, global settings, restore workflows, and governance views.
 
-The app now supports:
+Middleware protects personal-data pages when `SURVEY_ENFORCE_AUTH=true`. Public pages are limited to the landing page, news, and legal pages.
 
-- environment-driven auth enforcement via `SURVEY_ENFORCE_AUTH`
-- request-aware redirect handling back into the correct locale/path after login
-- session-cookie based role checks on protected API routes
-- local approved-user gating where only admins can grant roles or remove access, and successful SSO logins update last-seen activity in the `users` collection
-- role-aware landing where athletes enter the athlete app, trainers enter the trainer dashboard, and admins land in settings with team control
+## Codex Automation
 
-Production SSO client setup instructions are documented in [docs/sso-setup.md](docs/sso-setup.md).
+The repository includes a Codex-first automation control plane under `.codex/`.
 
-## Data lifecycle and traceability
+- GitHub stores source control, issues, pull requests, and project state.
+- Codex handles audit, planning, implementation, and documentation loops.
+- Autonomous loops use branch and PR delivery.
+- Direct autonomous pushes to `main` are not part of the unattended automation policy.
 
-- Athlete and record entities use soft-delete with restore support.
-- Historical records can be normalized into the daily tracker schema with `npm run db:backfill-daily-tracker-history`.
-- Settings persist standards version metadata for reproducible interpretation of older records.
+## GitHub Project Bootstrap
+
+The repository includes scripts and config for creating or syncing a project board:
+
+```bash
+./scripts/bootstrap-gh-project-board.sh moldovancsaba habigoal.com
+```
+
+The board definition lives in `config/gh-project-board.json`.

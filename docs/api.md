@@ -1,123 +1,34 @@
-# Survey API Reference
+# Habigoal API Reference
 
-Base path: Next.js App Router API under `/api/*`.
+Base path: `/api/*`
 
-There is also a standalone local helper server for development:
+The API is implemented with Next.js App Router route handlers. Product-facing endpoints use `athletes` and `check-ins`; compatibility endpoints using `children` and `assessments` still exist because the MongoDB collections and older code paths retain those names.
 
-- Start with `npm run local:server`
-- Default URL: `http://localhost:4001`
-- It mirrors the documented core read/write endpoints against the same MongoDB database for lightweight local integration testing.
+## Authentication And Authorization
 
-## Authentication model
+Auth enforcement is controlled by `SURVEY_ENFORCE_AUTH`.
 
-Role checks are controlled by `SURVEY_ENFORCE_AUTH`.
+- `false`: development open mode; requests run as the local dev admin/trainer/athlete user.
+- `true`: protected routes require a signed SSO session cookie and local user authorization.
 
-- When disabled: endpoints work without authentication.
-- When enabled: endpoints that require authorization validate the signed-in session roles.
-- `x-survey-role` remains available as an override path for trusted integration tests or non-browser callers.
+Current roles:
 
-Allowed roles currently used:
+- `athlete`
+- `trainer`
 - `admin`
-- `conductor`
-- `observer`
 
-## Endpoints
+Legacy role aliases:
 
-### Health
+- `conductor` maps to `trainer`
+- `observer` maps to `athlete`
 
-- `GET /api/health`
-  - Returns service health diagnostics.
+Access rules:
 
-### Assessments
+- Athletes can access only their linked athlete profile, check-ins, habits, and self check-in flow.
+- Trainers can access athletes through team membership.
+- Admins can access and manage all organization data.
 
-- `GET /api/assessments`
-  - Returns summary list of assessments.
-  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
-
-- `POST /api/assessments`
-  - Creates assessment record and syncs centralized child profile.
-  - Roles: `admin`, `conductor`.
-
-- `GET /api/assessments/:id`
-  - Returns one assessment record.
-
-- `PATCH /api/assessments/:id`
-  - Updates one assessment and re-syncs child profile.
-  - Automatically appends the current modification timestamp to the `updateHistory` log.
-
-- `DELETE /api/assessments/:id`
-  - Deletes one assessment.
-
-### Children
-
-- `GET /api/children`
-  - Returns centralized child profiles.
-  - If empty, attempts a sync from historical assessments.
-  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
-
-- `POST /api/children`
-  - Creates/updates child profile by identity (`name` + `birthDate`).
-  - Roles: `admin`, `conductor`.
-
-- `GET /api/children/:id`
-  - Returns one child profile.
-  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
-
-- `PATCH /api/children/:id`
-  - Updates child profile fields.
-  - Also updates linked assessment child identity fields.
-  - Roles: `admin`, `conductor`.
-
-- `DELETE /api/children/:id`
-  - Deletes child profile and associated assessment history.
-  - Includes legacy fallback cleanup by immutable identity (`name` + `birthDate`) for records without `childId`.
-  - Roles: `admin`, `conductor`.
-
-- `GET /api/children/:id/history`
-  - Returns child profile plus linked chronological assessment history.
-  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
-
-### Users
-
-- `GET /api/users`
-  - Returns user list with roles.
-  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
-
-- `POST /api/users`
-  - Upserts user with role set (`conductor`, `observer`).
-  - Roles: `admin`.
-
-### Settings
-
-- `GET /api/settings`
-  - Returns settings document:
-    - `conductors[]`
-    - `observers[]`
-    - `locations[]`
-    - `company` profile fields (name, ID, legal form, address, VAT, etc.)
-  - Roles: `admin`, `conductor`, `observer` (when auth enforced).
-
-- `POST /api/settings`
-  - Saves settings document.
-  - Roles: `admin`.
-
-### Uploads
-
-- `POST /api/uploads/imgbb`
-  - Uploads image to ImgBB server-side.
-  - Returns attachment metadata used in assessments.
-
-## Reporting and export behavior
-
-- **Bio-Psycho-Social Map**: Data-driven PDF generation that aggregates a child's full assessment history to provide longitudinal development trends and expert recommendations.
-- **Direct PDF Download**: Export action is client-side (`jsPDF` + `jspdf-autotable`), producing professional, localized documents.
-- **Audit Trail**: Every generated report displays the original recording date and the list of update timestamps from the persistent audit log.
-
-## Validation and error response
-
-Validation is centralized in `lib/validations.ts`.
-
-Error format:
+## Error Shape
 
 ```json
 {
@@ -126,9 +37,330 @@ Error format:
 }
 ```
 
-Common error codes:
-- `VALIDATION_ERROR`
+Common codes:
+
 - `AUTH_REQUIRED`
 - `FORBIDDEN`
+- `VALIDATION_ERROR`
+- `INVALID_QUERY`
+- `INVALID_PAYLOAD`
 - `NOT_FOUND`
 - `UNKNOWN_ERROR`
+
+## Health
+
+### `GET /api/health`
+
+Returns service diagnostics:
+
+- MongoDB configured/reachable state
+- configured database name
+- configured MongoDB app name
+- ImgBB key presence
+
+## Auth
+
+### `GET /api/auth/login`
+
+Starts the DoneIsBetter SSO flow. Accepts optional `next` query parameter for return path.
+
+### `GET /api/oauth/callback`
+
+Completes the OAuth callback, validates local user authorization, creates the signed session cookie, updates `lastLoginAt`, and redirects by role.
+
+### `GET /api/auth/me`
+
+Returns the current user session plus local role, primary role, linked athlete id, and team ids.
+
+### `GET /api/auth/logout`
+
+Deletes the local session and redirects to the SSO logout URL when configured.
+
+### `POST /api/auth/logout`
+
+Deletes the local session and returns `{ "success": true }`.
+
+## Athletes
+
+Product-language aliases:
+
+- `/api/athletes`
+- `/api/athletes/:id`
+- `/api/athletes/:id/history`
+- `/api/athletes/:id/restore`
+
+Compatibility aliases:
+
+- `/api/children`
+- `/api/children/:id`
+- `/api/children/:id/history`
+- `/api/children/:id/restore`
+
+### `GET /api/athletes`
+
+Returns athlete profiles.
+
+Query parameters:
+
+- `metrics=true`: include computed metrics.
+- `deleted=true`: return soft-deleted athletes. Athletes receive an empty list for this query.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Scope:
+
+- admin: all athletes
+- trainer: team athletes
+- athlete: linked athlete only
+
+### `POST /api/athletes`
+
+Creates or upserts an athlete profile.
+
+Roles: `admin`, `trainer`
+
+### `GET /api/athletes/:id`
+
+Returns one athlete profile.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Scope: checked with `canAccessAthlete`.
+
+### `PATCH /api/athletes/:id`
+
+Updates an athlete profile and syncs linked check-in identity fields.
+
+Roles: `admin`, `trainer`
+
+### `DELETE /api/athletes/:id`
+
+Soft-deletes an athlete and associated check-in history.
+
+Roles: `admin`, `trainer`
+
+### `GET /api/athletes/:id/history`
+
+Returns an athlete profile and chronological check-in history.
+
+Roles: `admin`, `trainer`, `athlete`
+
+### `POST /api/athletes/:id/restore`
+
+Restores a soft-deleted athlete.
+
+Roles: `admin`, `trainer`
+
+## Check-Ins
+
+Product-language aliases:
+
+- `/api/check-ins`
+- `/api/check-ins/:id`
+
+Compatibility aliases:
+
+- `/api/assessments`
+- `/api/assessments/:id`
+
+### `GET /api/check-ins`
+
+Returns check-in summaries.
+
+Roles: `admin`, `trainer`
+
+Scope follows accessible athlete ids.
+
+### `POST /api/check-ins`
+
+Creates a check-in and syncs the athlete profile.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Athlete users can create only for their linked athlete.
+
+### `GET /api/check-ins/:id`
+
+Returns one check-in.
+
+Roles: `admin`, `trainer`, `athlete`
+
+### `PATCH /api/check-ins/:id`
+
+Updates one check-in and appends to `updateHistory`.
+
+Roles: `admin`, `trainer`
+
+### `DELETE /api/check-ins/:id`
+
+Soft-deletes one check-in.
+
+Roles: `admin`, `trainer`
+
+### `POST /api/check-ins/:id`
+
+Restores one soft-deleted check-in.
+
+Roles: `admin`, `trainer`
+
+## Habits
+
+### `GET /api/athletes/:id/habits`
+
+Returns persisted habit records for an athlete.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Scope: checked with `canAccessAthlete`.
+
+### `POST /api/athletes/:id/habits`
+
+Creates or updates one dated habit record for an athlete.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Scope: checked with `canAccessAthlete`.
+
+## Coach Actions
+
+### `GET /api/coach-actions`
+
+Returns coach actions for a date.
+
+Query parameters:
+
+- `date=YYYY-MM-DD`
+
+Roles: `admin`, `trainer`
+
+### `POST /api/coach-actions`
+
+Persists a recommendation action status.
+
+Payload includes:
+
+- `athleteKey`
+- `date`
+- `recommendationKey`
+- `status`: `acknowledged` or `applied`
+
+Roles: `admin`, `trainer`
+
+## Session Plans
+
+### `GET /api/session-plans`
+
+Returns persisted weekly plans.
+
+Query parameters:
+
+- `weekStart=YYYY-MM-DD` required
+- `scope=<scope>` optional
+
+If `scope` is omitted, returns all plans for that week. If `scope` is present, returns the matching plan.
+
+Roles: `admin`, `trainer`
+
+### `POST /api/session-plans`
+
+Creates or updates a weekly plan.
+
+Roles: `admin`, `trainer`
+
+## Users
+
+### `GET /api/users`
+
+Returns local authorization users.
+
+Roles: `admin`, `trainer`
+
+### `POST /api/users`
+
+Creates or updates a local authorization user.
+
+Roles: `admin`
+
+Rules:
+
+- user email is required
+- at least one role is required
+- cannot remove own admin access
+- cannot remove the final admin
+
+### `DELETE /api/users?email=<email>`
+
+Deletes a local authorization user.
+
+Roles: `admin`
+
+Rules:
+
+- cannot delete own access
+- cannot delete the final admin
+
+## Teams
+
+### `GET /api/teams`
+
+Returns teams.
+
+Roles: `admin`, `trainer`
+
+Scope:
+
+- admin: all teams
+- trainer: teams matching trainer email
+
+### `POST /api/teams`
+
+Creates or updates a team.
+
+Roles: `admin`
+
+Payload includes:
+
+- `_id` optional
+- `name`
+- `trainerEmails[]`
+- `athleteIds[]`
+
+### `DELETE /api/teams?id=<id>`
+
+Deletes a team.
+
+Roles: `admin`
+
+## Settings
+
+### `GET /api/settings`
+
+Returns global settings including company/legal profile, locations, standards metadata, alerting thresholds, and restore/governance support data.
+
+Roles: `admin`, `trainer`
+
+### `POST /api/settings`
+
+Saves global settings.
+
+Roles: `admin`
+
+## Uploads
+
+### `POST /api/uploads/imgbb`
+
+Uploads image evidence through the server-side ImgBB integration.
+
+The browser never receives `IMGBB_API_KEY`.
+
+## Local Helper Server
+
+For lightweight local API testing:
+
+```bash
+npm run local:server
+```
+
+Default URL: `http://localhost:4001`
+
+It uses the same MongoDB and auth environment variables as the Next.js app and exposes a documented subset of the core API.

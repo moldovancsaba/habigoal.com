@@ -5,7 +5,7 @@
 - [DESIGN.md](/Users/Shared/Projects/habigoal/DESIGN.md) defines the durable token contract and the semantic usage rules.
 - This document explains how that design system is implemented in the current codebase.
 
-The dashboard and assessment UI use **Mantine** with a single app theme and shared layout primitives. Presentation is separated from API/data logic.
+The landing page, athlete app, trainer dashboard, settings, planning, records, news, and legal surfaces use **Mantine** with a single app theme and shared layout primitives. Presentation is separated from API/data logic.
 
 ## Architecture
 
@@ -14,7 +14,7 @@ The dashboard and assessment UI use **Mantine** with a single app theme and shar
 | `theme/mantine-theme.ts` | `getSurveyMantineTheme("light" \| "dark")` — semantic colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
 | `components/theme/ThemeRegistry.tsx` | `MantineProvider` + color-scheme wiring using `ThemeModeContext`. |
 | `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`survey_theme`, legacy `theme`), and consent-gated cookie persistence. |
-| `components/layout/DashboardShell.tsx` | Responsive shell: Mantine `AppShell` + mobile `Drawer`, nav, `PageContainer`, shared app footer. |
+| `components/layout/DashboardShell.tsx` | Responsive protected-app shell: Mantine `AppShell` + mobile `Drawer`, role-aware nav, `PageContainer`, shared app footer. |
 | `components/ui/PageContainer.tsx` | Max-width + horizontal padding for page content. |
 | `components/ui/SectionCard.tsx` | Mantine `Paper` + optional header/action block for grouped sections. |
 
@@ -31,13 +31,20 @@ Theme initialization also reads cookie-backed mode from server layout to avoid r
 6. **Accessibility** — preserve semantic labels and aria attributes on interactive controls.
 8. **Charts** — dashboard and analytics visuals use `recharts`; avoid one-off SVG chart implementations unless a library chart is impossible.
 
-## Adding a new dashboard page
+## Adding a new protected app page
 
 1. Add a route under `app/[locale]/dashboard/...`.
 2. Use `PageContainer` implicitly via `DashboardShell` (already wraps `children`).
 3. Structure content with `SectionCard` and Mantine layout components.
-4. Reuse `useTranslations` namespaces (`Dashboard`, `Assessment`, `Common`, `Schema`).
+4. Reuse `useTranslations` namespaces (`Dashboard`, `Assessment`, `Common`, `Schema`, or a feature-specific namespace).
 5. Run `npm run typecheck`, `npm run lint`, and `npm run build` before merging.
+
+## i18n and content rules
+
+- All visible UI copy must come from `/messages` or structured localized content.
+- Public news posts must render only in locales where exact locale content exists.
+- RTL locales must be checked on compact action bars and buttons because translated action labels can be wider than English.
+- Do not add hardcoded English fallback text to shared components.
 
 ## Source Of Truth
 

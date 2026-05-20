@@ -1,80 +1,153 @@
 # Deployment
 
-## GitHub
+## Repository
 
-Repository: `https://github.com/moldovancsaba/survey`
+GitHub repository: `https://github.com/moldovancsaba/habigoal.com`
 
 The deployable app is the repository root.
 
 ## Vercel
 
-Create or update the Vercel project with these settings:
+Recommended Vercel settings:
 
-- Git repository: `moldovancsaba/survey`
 - Root directory: repository root
 - Framework preset: Next.js
-- Build command: `npm run build`
 - Install command: `npm install`
+- Build command: `npm run build`
+- Node.js: `22.x`
 
-Environment variables:
+## Production Environment Variables
 
 ```txt
 MONGODB_URI
 MONGODB_DB
 MONGODB_APP_NAME
 IMGBB_API_KEY
+
+APP_URL
+SSO_CLIENT_ID
+SSO_CLIENT_SECRET
+SSO_BASE_URL
+SSO_REDIRECT_URI
+SSO_LOGOUT_URL
+AUTH_SECRET
+SURVEY_ENFORCE_AUTH
 ```
 
-`IMGBB_API_KEY` has already been added to Vercel. `MONGODB_URI` must point to the MongoDB Atlas cluster and include credentials for a database user with read/write access.
+Production values should follow this shape:
 
-For local development, store the same values in `.env` or `.env.local`. The repository now treats `.env` as the default local file for Atlas credentials.
+```txt
+MONGODB_DB=habigoal
+MONGODB_APP_NAME=habigoal
+APP_URL=https://habigoal.com
+SSO_BASE_URL=https://sso.doneisbetter.com
+SSO_REDIRECT_URI=https://habigoal.com/api/oauth/callback
+SURVEY_ENFORCE_AUTH=true
+```
+
+`SSO_LOGOUT_URL` is optional and should stay empty unless DoneIsBetter provides a logout endpoint.
+
+## Local Environment
+
+Local development can use `.env` or `.env.local`.
+
+```bash
+cp .env.example .env
+npm run db:ping
+npm run dev
+```
+
+Open-mode local development:
+
+```txt
+SURVEY_ENFORCE_AUTH=false
+```
+
+SSO-like local testing:
+
+```txt
+SURVEY_ENFORCE_AUTH=true
+APP_URL=http://localhost:3000
+SSO_REDIRECT_URI=http://localhost:3000/api/oauth/callback
+AUTH_SECRET=<long random secret>
+```
 
 ## MongoDB Atlas Checklist
 
-1. Create a database user with read/write access.
-2. Add Vercel outbound access. For an early pilot, Atlas network access can be opened broadly; for production, restrict according to the deployment model available.
-3. Copy the driver connection string into Vercel as `MONGODB_URI`.
-4. Set `MONGODB_DB` to `survey`.
-5. Set `MONGODB_APP_NAME` to something environment-specific such as `habigoal-production`.
-6. Redeploy the Vercel project after changing environment variables.
+1. Create an Atlas database user with read/write access to the `habigoal` database.
+2. Add Vercel network access. A broad `0.0.0.0/0` rule can be used for early testing; production should use the narrowest practical Vercel egress model available.
+3. Set `MONGODB_URI`, `MONGODB_DB`, and `MONGODB_APP_NAME` in Vercel.
+4. Redeploy after changing environment variables.
+5. Verify with `GET /api/health`.
 
-## Connection Verification
+Local verification:
 
-- Local CLI check: `npm run db:ping`
-- Runtime health check: `GET /api/health`
+```bash
+npm run db:ping
+```
 
-`/api/health` now reports:
+## Database Setup And Seeds
 
-- whether MongoDB is configured
-- whether the database is reachable
-- which database name the app is targeting
-- which MongoDB app name the client is using
+Prepare indexes/base collections:
+
+```bash
+npm run db:setup
+```
+
+Optional local/demo seed commands:
+
+```bash
+npm run db:seed-demo
+npm run db:seed-showcase
+```
+
+Migration/backfill helpers:
+
+```bash
+npm run db:backfill-standards-version
+npm run db:backfill-daily-tracker-history
+npm run db:migrate-survey-identifiers
+```
 
 ## ImgBB Uploads
 
-The app sends uploads to the server-side endpoint `/api/uploads/imgbb`.
+Evidence uploads go through `/api/uploads/imgbb`.
 
-The browser never receives `IMGBB_API_KEY`.
+The server requires `IMGBB_API_KEY`; the browser never receives the key.
 
-The assessment record stores:
+Stored attachment metadata includes:
 
 - image URL
-- thumbnail URL when returned by ImgBB
+- thumbnail URL
 - delete URL when returned by ImgBB
-- file name, MIME type, size, upload time
+- file name
+- MIME type
+- size
+- upload time
 
-Media upload is blocked in the UI until video/photo consent is checked.
+## SSO Deployment Checklist
 
-## Post-deploy checks (0.5.0)
+1. Configure the DoneIsBetter client with `https://habigoal.com/api/oauth/callback`.
+2. Add `SSO_CLIENT_ID`, `SSO_CLIENT_SECRET`, `SSO_BASE_URL`, `SSO_REDIRECT_URI`, `AUTH_SECRET`, and `SURVEY_ENFORCE_AUTH=true` in Vercel.
+3. Ensure at least one local admin user exists or intentionally rely on first-login bootstrap.
+4. Redeploy.
+5. Test `/api/auth/login`, `/api/oauth/callback`, `/api/auth/me`, and `/api/auth/logout`.
 
-1. Open `/dashboard/settings` and verify:
-- Standards Version Manager renders active version and version table.
-- Restore Bin loads deleted children and assessments.
-2. Create and update one assessment, then verify `standardsVersionUsed` is present on the saved record.
-3. Soft-delete one child and one assessment, verify:
-- They disappear from default lists.
-- They appear in deleted views and can be restored.
-4. Verify localized chart outcome sentences appear on:
-- `/dashboard`
-- `/dashboard/athletes/[id]`
-- `/dashboard/records/[id]`
+Full setup is documented in [SSO Setup](sso-setup.md).
+
+## Post-Deploy Checks
+
+1. `GET /api/health` reports MongoDB configured and reachable.
+2. Public pages return `200`:
+   - `/en`
+   - `/en/news`
+   - `/en/legal/gtc`
+   - `/en/legal/privacy`
+3. Protected pages redirect to SSO when logged out and `SURVEY_ENFORCE_AUTH=true`.
+4. Athlete login routes to the linked athlete profile.
+5. Trainer login routes to `/dashboard`.
+6. Admin login routes to `/dashboard/settings`.
+7. Create a check-in and verify it appears in athlete history.
+8. Save a weekly plan and verify it appears on the matching athlete detail page.
+9. Generate a PDF/report from athlete or record detail.
+10. Verify locale-sensitive pages do not show mixed-language action labels.

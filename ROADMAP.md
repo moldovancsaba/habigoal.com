@@ -1,38 +1,99 @@
 # Habigoal Product Roadmap
 
-Habigoal is evolving from a daily check-in tool into a coach operating system for young-athlete support.
+Habigoal is evolving from a daily check-in product into a role-aware athlete operating system for athletes, trainers, and admins.
 
-## Baseline
-- [x] Mobile-first daily athlete check-in
-- [x] Physical readiness, mental balance, and sport-brain scoring
-- [x] Athlete profile history and reporting
-- [x] Legacy-data compatibility and historical backfill
-- [x] Shared multilingual UI and public legal pages
+Last updated: 2026-05-20
 
-## Phase 1: Coach Command Center
-- [ ] Today dashboard for coaches with priority athletes, missed check-ins, and new support flags
-- [ ] Team readiness summary with simple action buckets
-- [ ] Daily recommendation card that turns signals into clear next actions
+## Shipped Baseline
 
-## Phase 2: Better Daily Flow
-- [ ] Grouped check-in blocks for recovery, training readiness, mental state, sport brain, and reflection
-- [ ] Inline support nudges for athletes and coaches during the check-in
-- [ ] Stronger mobile patterns for charts, history, and summary cards
+- Daily athlete check-in with nine readiness signals.
+- Athlete profiles with history, trends, training load, habit adherence, memory summaries, and weekly operating summaries.
+- Trainer command center with priority queues, readiness buckets, alerts, recommendations, coach actions, and session blueprint guidance.
+- Weekly session planning with persisted plans and athlete-page visibility.
+- PDF/report exports for athlete and check-in review.
+- DoneIsBetter SSO preparation and local approved-user authorization.
+- Role model: `athlete`, `trainer`, `admin`.
+- Athlete self-scope, trainer team-scope, and admin organization-scope.
+- Team creation and membership assignment.
+- Public news/release-note surface with fail-closed locale behavior.
+- Public legal pages.
+- MongoDB Atlas integration, health checks, seed scripts, and migration/backfill helpers.
+- Codex automation control plane for branch-and-PR audit/planning/implementation/docs loops.
 
-## Phase 3: Guidance and Planning
-- [ ] AI support recommendation layer based on readiness patterns
-- [ ] Session blueprint suggestions such as green, modified, and recovery sessions
-- [ ] Priority support targets for each athlete instead of broad undifferentiated reporting
+## Current Active Engineering Themes
 
-## Phase 4: Weekly Operations
-- [ ] Weekly athlete review workflow
-- [ ] Weekly team pressure board for coaches
-- [ ] Parent-facing weekly summary mode with trust-building language
+### 1. i18n Reliability
 
-## Phase 5: Programs and Expansion
-- [ ] Support paths for focus, confidence, recovery, and load management
-- [ ] Club-level dashboard and group analytics
-- [ ] External integrations and offline support where operationally justified
+Goal: eliminate mixed-language UI and unsafe fallbacks.
 
----
-*Last updated: 2026-05-09*
+Next work:
+
+- clear remaining hardcoded strings in athlete management and check-in surfaces
+- make i18n audit part of regular validation
+- keep news posts locale-specific and fail-closed
+- avoid adding visible copy outside `/messages` or structured content files
+
+### 2. Centralized Forms
+
+Goal: reduce page-owned form logic and keep labels, validation, visibility, and onboarding targets consistent.
+
+Status: planned and partly developed on a feature branch, not fully shipped on `main`.
+
+Next work:
+
+- central form definitions
+- field registry and renderer
+- daily check-in migration
+- athlete profile/baseline form migration
+- admin/team form migration
+- governance rules that prevent new page-owned forms where shared definitions exist
+
+### 3. User Rights And Team Operations
+
+Goal: complete the practical admin/trainer/athlete model.
+
+Next work:
+
+- richer team editing and membership management
+- trainer-only team views
+- invitation workflow for trainers and athletes
+- clearer admin audit trail for access changes
+
+### 4. Athlete App Quality
+
+Goal: make the athlete experience self-contained rather than a dashboard reuse.
+
+Next work:
+
+- dedicated athlete-only check-in shell
+- athlete-first habit and task UX
+- clearer weekly summary and reflection views
+- stricter self-profile route handling and copy review
+
+### 5. Reporting And News
+
+Goal: make weekly app changes and athlete operations easy to share.
+
+Next work:
+
+- automated weekly news posts from GitHub activity
+- localized release-note workflow
+- richer shareable operating reports
+- report i18n regression checks
+
+## Backlog Themes
+
+- Custom questionnaire builder on top of centralized forms.
+- Testing and measurement library.
+- Training session operations center.
+- Match center with sport-specific reports and stats.
+- Health events and return-to-play workflows.
+- Parent/guardian access mode.
+- Evidence and file library.
+- Import/export connectors.
+- External benchmarking hub.
+- Finance, dues, resources, and admin operations.
+
+## Roadmap Governance
+
+GitHub Project 14 is the operational planning source for issue status and priority. This file records product direction and should be updated when shipped capabilities or active themes change.

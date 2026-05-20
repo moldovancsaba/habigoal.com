@@ -1,24 +1,35 @@
 # SSO Setup
 
-Habigoal is prepared to authenticate against `https://sso.doneisbetter.com` using OAuth/OpenID Connect-style endpoints.
+Habigoal authenticates with DoneIsBetter SSO and authorizes users through its own local `users` collection.
 
-## Client setup on `sso.doneisbetter.com`
+SSO answers: who is this person?
 
-Create a client for Habigoal with these production values:
+Habigoal answers: what can this person access?
+
+## DoneIsBetter Client
+
+Production client values:
 
 - Client name: `Habigoal`
 - Application URL: `https://habigoal.com`
 - Redirect URI: `https://habigoal.com/api/oauth/callback`
-- Requested scopes: `openid profile email`
+- Allowed scopes:
+  - `openid`
+  - `profile`
+  - `email`
+  - `offline_access` if the provider requires it for the client
 
-If the SSO admin UI supports multiple redirect URIs, also add:
+Optional local redirect URI:
 
-- Preview redirect URI: `https://habigoal.com/api/oauth/callback`
-- Local redirect URI: `http://localhost:3000/api/oauth/callback`
+- `http://localhost:3000/api/oauth/callback`
 
-If the provider exposes logout URL configuration, capture that value and put it into `SSO_LOGOUT_URL`.
+Optional alternate redirect URI, only if the provider requires front-channel callback registration:
 
-## Required app environment variables
+- `https://habigoal.com/auth/callback`
+
+The implemented app callback is `/api/oauth/callback`.
+
+## Required Environment Variables
 
 ```txt
 APP_URL=https://habigoal.com
@@ -31,29 +42,74 @@ AUTH_SECRET=<long random secret>
 SURVEY_ENFORCE_AUTH=true
 ```
 
-## Behavior
+`AUTH_SECRET` signs the local `survey_session` cookie. Treat it as production secret material.
 
-- Login starts at `/api/auth/login`
-- The app preserves the requested in-app return path through the SSO flow
-- Callback completes at `/api/oauth/callback`
-- Local roles are still controlled by Habigoal's own `users` collection
-- SSO identifies the person; Habigoal decides what they may do
+## Runtime Flow
 
-## Whitelist model
+1. User opens a protected route.
+2. Middleware redirects to `/api/auth/login?next=<requested-path>`.
+3. Login route stores `oauth_state` and `oauth_return_to` cookies.
+4. DoneIsBetter redirects back to `/api/oauth/callback`.
+5. Callback exchanges the code for a token and reads SSO user info.
+6. Habigoal checks the local `users` collection for the email.
+7. If authorized, Habigoal creates a signed local session.
+8. User is redirected by role.
 
-Habigoal only grants access when the authenticated email exists in the local `users` collection.
+## Role Redirects
+
+- `athlete`: `/{locale}/athletes/{athleteId}`
+- `trainer`: `/{locale}/dashboard`
+- `admin`: `/{locale}/dashboard/settings`
+
+Public `news` and `legal` return paths are preserved.
+
+## Local Authorization Rules
+
+Local roles:
+
+- `athlete`
+- `trainer`
+- `admin`
 
 Bootstrap behavior:
 
-- if no users exist at all, the first successful SSO user is promoted to `admin,conductor`
-- after that, only locally approved users can enter
+- If no users exist, the first successful SSO login is inserted as `admin`.
+- After users exist, unapproved SSO emails are denied and redirected with `error=access_denied`.
 
-## Validation checklist
+Admin safety rules:
 
-1. Set the production env vars in Vercel.
-2. Confirm at least one local admin user exists, or intentionally rely on the first-user bootstrap.
-3. Open `https://habigoal.com/en`.
-4. Start login.
+- users cannot be saved with zero roles
+- an admin cannot remove their own admin role
+- the final admin cannot be demoted or deleted
+
+## Athlete Linking
+
+Athlete users should have `athleteId` set in the local user record. Without it, the user can authenticate but has no usable athlete scope.
+
+When linked correctly:
+
+- `/athletes` redirects to the athlete's own profile
+- athlete APIs filter to that one profile
+- check-in creation is limited to that athlete
+- habit records are limited to that athlete
+
+## Trainer Scoping
+
+Trainer users are scoped by team membership:
+
+- teams store `trainerEmails[]`
+- teams store `athleteIds[]`
+- trainer API and UI surfaces use those team assignments for athlete access
+
+## Validation Checklist
+
+1. Confirm production env vars are set in Vercel.
+2. Confirm `SURVEY_ENFORCE_AUTH=true`.
+3. Confirm at least one admin exists in `users`.
+4. Open `https://habigoal.com/en/dashboard`.
 5. Complete SSO.
-6. Confirm redirect back to the requested Habigoal path.
-7. Confirm `/api/auth/me` returns the signed-in user.
+6. Confirm `/api/auth/me` returns the expected `primaryRole`.
+7. Confirm athlete, trainer, and admin users land on their correct surfaces.
+8. Confirm a signed-in athlete cannot open another athlete profile or trainer/admin dashboard page.
+9. Confirm a trainer cannot open `/dashboard/settings`.
+10. Confirm logout clears the local session.

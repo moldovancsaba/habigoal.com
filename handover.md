@@ -1,103 +1,172 @@
-# Project Handover - Survey Professionalization
+# Habigoal Handover
 
-This document summarizes the state of the project after the first major enhancement phase and provides technical details for the next steps.
+This document describes the current implementation state of Habigoal and the main operational boundaries for future work.
 
-## Technical Stack & Versions
+## Stack
 
-- **Framework**: [Next.js 15.1.4](https://nextjs.org/) (App Router)
-- **Library**: [React 19.0.0](https://react.dev/)
-- **Language**: [TypeScript 5.7.3](https://www.typescriptlang.org/)
-- **Internationalization**: [next-intl](https://next-intl-docs.vercel.app/)
-- **Database**: [MongoDB 6.12.0](https://www.mongodb.com/)
-- **Runtime**: Node.js >= 22
+- Framework: Next.js App Router
+- UI: Mantine with the Habigoal design system
+- Language: TypeScript
+- i18n: next-intl with locale-prefixed routes
+- Database: MongoDB Atlas through the MongoDB Node driver
+- Auth: DoneIsBetter SSO plus local authorization in `users`
+- Runtime: Node.js `22.x`
+- Deployment target: Vercel
 
-## Accomplishments
+The lockfile currently resolves the core runtime to Next.js `15.5.15`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, and Mantine `8.3.6`.
 
-### 1. Internationalization (i18n)
-- Integrated `next-intl` with full support for **Hungarian** (default) and **English**.
-- Implemented localized routing (`/hu/`, `/en/`).
-- Centralized messages in `/messages`.
+## Current Product Model
 
-### 2. Dashboard Architecture
-- Transitioned from a single-page app to a multi-page dashboard.
-- Dedicated routes for `/assessment`, `/records`, and `/settings`.
-- Shared sidebar and header in `/app/[locale]/dashboard/layout.tsx`.
+Habigoal has three active user entities:
 
-### 3. Logic & UX Enhancements
-- **Auto-Age Grouping**: Logic in `lib/utils/age.ts` automatically assigns age groups (4-6, 7-9, 10-12) based on the birthdate.
-- **Predictive Search**: `SearchableSelect` component implemented for Conductor and Observer fields.
-- **Service Layer**: Initial `user-service.ts` created for future RBAC integration.
+- `athlete`: self-service user linked to one athlete profile.
+- `trainer`: coach-facing user scoped to teams and assigned athletes.
+- `admin`: organization user with settings, users, teams, restore, and governance access.
 
-### 4. Internal Linking & Legal Compliance (v0.4.0)
-- **Internal Linking**: Deep linking between Children, Records, and trend charts.
-- **Legal Compliance**: Publicly accessible `/legal` routes for Google Verification.
+Legacy terms still exist in storage and compatibility layers:
 
-### 5. Athlete Daily Operating Layer (v0.5.x)
-- Athlete detail pages now start with a player-readable daily operating summary.
-- The athlete surface translates the latest check-in into an operating score, readiness mode, momentum, focus area, and clear next actions.
-- Athlete history now sorts chronologically before deriving latest-state summaries and time-window trends.
+- `children` collection means athlete profiles.
+- `assessments` collection means check-ins.
+- legacy `conductor` role normalizes to `trainer`.
+- legacy `observer` role normalizes to `athlete`.
 
-### 6. Habit Adherence Layer (v0.5.x)
-- Athlete detail pages now include a persisted daily habit tracker.
-- Habit records are stored separately in `habit_records` and exposed through `GET/POST /api/athletes/:id/habits`.
-- The athlete surface now shows habit score, completion count, streak, category focus, and a short adherence trend alongside the daily operating view.
+Product copy and new code should use `athlete`, `trainer`, `admin`, and `check-in`.
 
-### 7. Session Planning Layer (v0.5.x)
-- Coaches now have a dedicated `/dashboard/planning` route for weekly session planning.
-- The planning page translates current readiness, support pressure, missing check-ins, and internal load into a week-shaped calendar.
-- Location filtering is built in so planning can be scoped to the full group or a specific active site.
-- Weekly plans can now be persisted through `GET/POST /api/session-plans` and stored in the `session_plans` collection.
-- Athlete detail pages now reflect the current saved weekly plan when a matching scope or athlete-specific plan exists.
+## Application Routes
 
-### 8. Release Notes Surface (v0.5.x)
-- A public `/news` surface now exists for weekly release notes and “What’s New” updates.
-- News posts are backed by structured content in `content/news/posts.json`, which makes automation-safe weekly publishing straightforward.
+Public routes:
 
-### 9. Public Athlete App and SSO Re-enable Prep (v0.5.x)
-- A public athlete app now exists at `/[locale]/athletes` with a live athlete directory and athlete-facing entrypoint behavior.
-- The public athlete detail route reuses the data-rich athlete page but now suppresses coach-only controls such as delete, PDF export, and planning actions.
-- DoneIsBetter SSO has been prepared for re-enable through environment-driven auth enforcement, request-aware callback redirects, and session-cookie based API authorization.
-- Production SSO setup instructions now live in `docs/sso-setup.md`.
+- `/{locale}` landing page
+- `/{locale}/news`
+- `/{locale}/news/[slug]`
+- `/{locale}/legal/gtc`
+- `/{locale}/legal/privacy`
 
-### 10. User Rights Hardening (v0.5.x)
-- User access management is now effectively admin-owned rather than conductor-owned.
-- `POST /api/users` now requires an admin session and rejects zero-role users.
-- `DELETE /api/users` now blocks self-removal and removal of the last remaining admin.
-- Successful SSO logins update `lastLoginAt` in the `users` collection, which feeds admin visibility in Settings.
-- The Settings > User Rights screen now shows approved-user counts, access state, last login, search, and UI guards around protected admin accounts.
+Protected personal-data routes:
 
-### 11. Entity Model and Team Access (v0.5.x)
-- The old `conductor / observer / admin` access shape has been replaced in the application layer by `trainer / athlete / admin`.
-- Legacy stored roles still normalize safely on read so old accounts continue working during migration.
-- Athlete accounts can now be linked to a single athlete profile and are scoped to their own athlete data in the athlete app, athlete history, habits, and check-in creation.
-- Trainer accounts are now the primary coach-facing entity and are scoped through team membership rather than broad observer-style access.
-- A first-pass `teams` collection and `/api/teams` endpoint now exist so admins can create teams and attach trainers plus athletes from Settings.
+- `/{locale}/athletes`
+- `/{locale}/athletes/[id]`
+- `/{locale}/dashboard`
+- `/{locale}/dashboard/assessment`
+- `/{locale}/dashboard/athletes`
+- `/{locale}/dashboard/athletes/[id]`
+- `/{locale}/dashboard/records`
+- `/{locale}/dashboard/records/[id]`
+- `/{locale}/dashboard/planning`
+- `/{locale}/dashboard/settings`
 
-### 12. Route-Level Permission Gating (v0.5.x)
-- Dashboard shell routing now enforces the access model in the UI layer as well as the API layer.
-- Athlete users are redirected away from coach-admin dashboard routes and kept inside athlete-facing surfaces, while still being allowed into the check-in flow.
-- Trainer users are redirected away from `/dashboard/settings`, which remains an admin-only route.
-- The dashboard navigation chrome is suppressed on blocked routes so role leakage does not happen through stale sidebar state.
-- The athlete app entry route at `/[locale]/athletes` now redirects signed-in athletes to their own profile and sends trainer/admin users back to dashboard athlete management, so it does not remain a shared selector surface under authenticated use.
+When auth is enforced, athletes are redirected to their own athlete profile, trainers are kept out of admin settings, and trainers/admins are redirected away from public athlete routes into dashboard athlete management.
 
-## Next Steps (Roadmap Focus)
+## Main Features
 
-### 1. Legal Page Availability
-- Ensure the Privacy Policy and GTC on `https://survey.messmass.com/legal` remain publicly accessible.
+### Athlete App
 
-### 2. Offline Capability (PWA)
+- Athlete entry at `/{locale}/athletes`.
+- Signed-in athletes land on their own `/{locale}/athletes/[id]`.
+- Athlete detail includes daily operating state, trends, habits, training load, memory summary, weekly summary, and current weekly plan context.
+- Athlete users can perform their own check-ins and habit tracking only for their linked profile.
 
-### 3. Codex Automation Runtime
-- The repository now carries a Codex-first control plane in `.codex/`.
-- Agent roles are separated into `audit`, `planner`, `implementer`, and `docs`.
-- Repository memory lives in `.codex/memory/` and must be kept aligned with GitHub Project state.
-- Autonomous work is branch-and-PR only; direct pushes to `main` are disallowed for unattended loops.
-- Continuous recurring loops are intended to run every 3 hours via a dedicated Codex heartbeat conversation, not GitHub Actions orchestration.
+### Trainer Dashboard
 
-## Deployment Notes
-- Ensure `MONGODB_URI`, `MONGODB_DB`, and `IMGBB_API_KEY` are set in the production environment.
-- For SSO-enabled production, also set `APP_URL`, `SSO_CLIENT_ID`, `SSO_CLIENT_SECRET`, `SSO_BASE_URL`, `SSO_REDIRECT_URI`, `AUTH_SECRET`, and `SURVEY_ENFORCE_AUTH`.
-- Deployment is configured for Vercel.
+- Coach command center on `/{locale}/dashboard`.
+- Priority athlete queue, missed check-ins, support alerts, readiness buckets, next-best-action recommendations, session blueprint suggestions, and coach activity summary.
+- Coach actions persist in `coach_actions`.
 
----
-*Created by Antigravity AI*
+### Daily Check-In
+
+- Check-in flow at `/{locale}/dashboard/assessment`.
+- Stores readiness scores, notes, consent flags, session context, training load, and attachments.
+- Supports create and update flows.
+- Trainer/admin users can select athletes; athlete users are scoped to their own linked profile.
+
+### Athlete Management
+
+- Trainer/admin athlete management at `/{locale}/dashboard/athletes`.
+- Athlete profiles include identity fields, baseline fields, consent flags, soft-delete/restore behavior, metrics, and history.
+- `/api/athletes` is the product-language alias over the legacy `/api/children` implementation.
+
+### Planning
+
+- Weekly planning route at `/{locale}/dashboard/planning`.
+- Uses readiness, missing check-ins, location scope, and load state to generate weekly planning guidance.
+- Saves plans through `/api/session-plans` into `session_plans`.
+- Saved plans appear back on athlete detail pages where scope matches.
+
+### Users And Teams
+
+- Admin settings manage approved users, linked athlete accounts, team assignments, and restore/governance views.
+- `/api/users` is admin-owned for writes and protects the final admin.
+- `/api/teams` lets admins create/update/delete teams and lets trainers read their assigned teams.
+
+### News
+
+- Public news lives at `/{locale}/news`.
+- Posts are stored in `content/news/posts.json`.
+- News is fail-closed by locale: a post only renders in a locale if that exact locale content exists.
+
+### Reports
+
+- Athlete and record pages support PDF/report exports.
+- Report copy must use locale message files, not inline strings.
+- PDF generation is client-side with `jsPDF` and `jspdf-autotable`.
+
+## Authentication
+
+Production SSO uses DoneIsBetter:
+
+- login starts at `/api/auth/login`
+- callback completes at `/api/oauth/callback`
+- logout uses `/api/auth/logout`
+- session state is stored in the signed `survey_session` cookie
+
+Local authorization remains in the `users` collection. If no users exist, the first successful SSO login bootstraps as `admin`; after that, emails must be approved locally.
+
+## Data Collections
+
+- `children`: athlete profiles
+- `assessments`: check-ins
+- `habit_records`: habit records
+- `coach_actions`: trainer action trace
+- `session_plans`: weekly plans
+- `teams`: team membership
+- `users`: local authorization records
+- `settings`: global settings and legal/company data
+
+## Documentation State
+
+Canonical docs:
+
+- `README.md`: current product and setup overview
+- `docs/architecture.md`: current application architecture and data boundaries
+- `docs/api.md`: API reference
+- `docs/deployment.md`: deployment and environment setup
+- `docs/sso-setup.md`: SSO client setup
+- `docs/design-system.md`: live design-system implementation
+- `docs/dod.md`: definition of done
+- `ROADMAP.md`: current roadmap
+- `.codex/memory/architecture.md`: Codex automation architecture and operating constraints
+
+## Current Risks
+
+- Some older files and database collections still use legacy `child` and `assessment` names. Product-facing code should use aliases or facade modules.
+- i18n coverage has improved, but hardcoded strings still need regular audit before release.
+- The centralized form-system work exists on a feature branch and should not be documented as shipped on `main` until merged.
+- Team invitations are still admin-managed records, not outbound email invites.
+- GitHub Project state can drift from merged work if branches are merged manually without issue/board updates.
+
+## Validation
+
+Run before merging meaningful changes:
+
+```bash
+npm run lint
+npm run test
+npm run build
+npm run typecheck
+```
+
+For database/env validation:
+
+```bash
+npm run db:ping
+```
