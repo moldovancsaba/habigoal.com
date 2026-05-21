@@ -30,6 +30,7 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 - User-facing strings belong in `/messages` or structured localized content.
 - News/blog posts must render only in locales where that exact locale content exists.
 - Do not introduce silent fallback from one user-facing language to another.
+- `npm run i18n:audit` passes for changes that touch UI copy, message catalogs, news content, or report labels.
 - RTL locales (`ar`, `he`) must be checked for layout and action-label readability.
 - Any new feature with visible copy must update all supported locale files or explicitly remain English-only in structured content that fails closed by locale.
 

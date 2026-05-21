@@ -966,7 +966,7 @@
   },
   "Landing": {
     "title": "Habigoal Plattform",
-    "subtitle": "Bio-psycho-soziales Sportoekosystem fuer professionelle Leistung und Talentmanagement.",
+    "subtitle": "Taeglicher Unterstuetzungsarbeitsplatz fuer Trainer, Athleten und Teams.",
     "login": "Zum Dashboard anmelden",
     "feature1": "Evidenzbasierte Bewertungen",
     "feature2": "Longitudinale Trendanalyse",
@@ -978,7 +978,8 @@
     "brandSubtitle": "Habigoal",
     "previewTitle": "Habigoal-Oberflaeche",
     "previewSubtitle": "Semantische Dashboards, gefuehrte Eintraege und ruhige kontrastreiche Glasflaechen fuer dichte operative Arbeit.",
-    "athleteApp": "Athlete App",
+    "athleteApp": "Athleten-App",
+    "trainerApp": "Trainer-App",
     "whatsNew": "Neuigkeiten",
     "termsOfService": "Nutzungsbedingungen",
     "privacyPolicy": "Datenschutzrichtlinie"

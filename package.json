@@ -18,7 +18,8 @@
     "db:backfill-standards-version": "node scripts/backfill-standards-version.mjs",
     "db:backfill-daily-tracker-history": "node scripts/backfill-daily-tracker-history.mjs",
     "db:migrate-survey-identifiers": "node scripts/migrate-survey-identifiers.mjs",
-    "semantic:audit": "node scripts/semantic-audit.mjs"
+    "semantic:audit": "node scripts/semantic-audit.mjs",
+    "i18n:audit": "node scripts/i18n-audit.mjs"
   },
   "dependencies": {
     "@mantine/core": "^8.3.6",
