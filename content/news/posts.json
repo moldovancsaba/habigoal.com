@@ -1,5 +1,154 @@
 [
   {
+    "slug": "2026-05-21-quality-and-operations-update",
+    "title": {
+      "en": "Weekly quality and operations update",
+      "hu": "Heti minosegi es mukodesi frissites",
+      "de": "Woechentliches Qualitaets- und Betriebsupdate",
+      "es": "Actualizacion semanal de calidad y operaciones",
+      "ar": "تحديث أسبوعي للجودة والعمليات",
+      "he": "עדכון שבועי לאיכות ותפעול"
+    },
+    "summary": {
+      "en": "This week Habigoal tightened product language, added a repeatable localization audit, and documented the GitHub project-board workflow behind delivery.",
+      "hu": "Ezen a heten a Habigoal pontosabb termeknyelvet kapott, ismételheto lokalizacios auditot vezetett be, es dokumentalta a szallitas mogotti GitHub projekt-tabla folyamatot.",
+      "de": "Diese Woche hat Habigoal die Produktsprache geschaerft, ein wiederholbares Lokalisierungsaudit eingefuehrt und den GitHub-Projektboard-Ablauf hinter der Lieferung dokumentiert.",
+      "es": "Esta semana Habigoal ajusto el lenguaje del producto, sumo una auditoria repetible de localizacion y documento el flujo del tablero de proyecto de GitHub que sostiene la entrega.",
+      "ar": "هذا الأسبوع حسّن Habigoal لغة المنتج، وأضاف تدقيقاً قابلاً للتكرار للترجمة، ووثق سير عمل لوحة مشروع GitHub التي تدعم التسليم.",
+      "he": "השבוע Habigoal דייק את שפת המוצר, הוסיף ביקורת לוקליזציה שניתנת להרצה חוזרת, ותיעד את תהליך לוח הפרויקט ב-GitHub שתומך במסירה."
+    },
+    "publishedAt": "2026-05-21",
+    "tags": ["release", "quality", "localization", "operations"],
+    "sections": [
+      {
+        "title": {
+          "en": "New",
+          "hu": "Uj",
+          "de": "Neu",
+          "es": "Nuevo",
+          "ar": "جديد",
+          "he": "חדש"
+        },
+        "items": {
+          "en": [
+            "A localization audit command now checks every supported message catalog and localized news post for missing keys, placeholder drift, and partial translations."
+          ],
+          "hu": [
+            "Uj lokalizacios audit parancs ellenorzi az osszes tamogatott uzenetkatalogust es lokalizalt hirbejegyzest hianyzo kulcsok, eltero helyorzo hasznalat es reszleges forditasok utan."
+          ],
+          "de": [
+            "Ein neuer Lokalisierungs-Audit-Befehl prueft alle unterstuetzten Nachrichtenkataloge und lokalisierten Newsbeitraege auf fehlende Schluessel, abweichende Platzhalter und teilweise Uebersetzungen."
+          ],
+          "es": [
+            "Un nuevo comando de auditoria de localizacion revisa todos los catalogos de mensajes compatibles y las noticias localizadas para detectar claves faltantes, diferencias en marcadores y traducciones parciales."
+          ],
+          "ar": [
+            "أمر جديد لتدقيق الترجمة يفحص كل كتالوجات الرسائل المدعومة ومنشورات الأخبار المترجمة بحثاً عن المفاتيح الناقصة واختلافات العناصر النائبة والترجمات الجزئية."
+          ],
+          "he": [
+            "פקודת ביקורת לוקליזציה חדשה בודקת את כל קטלוגי ההודעות הנתמכים ואת פוסטים החדשות המתורגמים כדי לאתר מפתחות חסרים, סטייה במצייני מקום ותרגומים חלקיים."
+          ]
+        }
+      },
+      {
+        "title": {
+          "en": "Improved",
+          "hu": "Fejlesztve",
+          "de": "Verbessert",
+          "es": "Mejorado",
+          "ar": "محسّن",
+          "he": "שופר"
+        },
+        "items": {
+          "en": [
+            "Legacy survey-facing labels were replaced with Habigoal naming across the app, APIs, documentation, and environment defaults.",
+            "Product and operations documentation was refreshed so onboarding, deployment, architecture, API, legal, SSO, and delivery guidance match the current product direction."
+          ],
+          "hu": [
+            "A regi, survey-kozpontu megnevezeseket Habigoal-nevek valtottak fel az alkalmazasban, az API-kban, a dokumentacioban es a kornyezeti alapbeallitasokban.",
+            "Frissult a termek- es uzemeltetesi dokumentacio, hogy az onboarding, a deployment, az architektura, az API, a jogi, az SSO es a szallitasi utmutatok a jelenlegi termekiranyhoz igazodjanak."
+          ],
+          "de": [
+            "Alte survey-bezogene Bezeichnungen wurden in App, APIs, Dokumentation und Umgebungsstandards durch Habigoal-Namen ersetzt.",
+            "Produkt- und Betriebsdokumentation wurde aktualisiert, damit Onboarding, Deployment, Architektur, API, Rechtliches, SSO und Lieferleitfaden zur aktuellen Produktrichtung passen."
+          ],
+          "es": [
+            "Las etiquetas heredadas orientadas a surveys se reemplazaron por nombres Habigoal en la app, las APIs, la documentacion y los valores predeterminados del entorno.",
+            "La documentacion de producto y operaciones se actualizo para que onboarding, despliegue, arquitectura, API, legal, SSO y guias de entrega coincidan con la direccion actual del producto."
+          ],
+          "ar": [
+            "استبدلت التسميات القديمة المرتبطة بالاستبيانات بأسماء Habigoal داخل التطبيق وواجهات API والوثائق والإعدادات الافتراضية للبيئة.",
+            "تم تحديث وثائق المنتج والعمليات كي تتوافق إرشادات التعريف الأولي والنشر والبنية وAPI والجوانب القانونية وSSO والتسليم مع اتجاه المنتج الحالي."
+          ],
+          "he": [
+            "תוויות ישנות שהיו קשורות לסקרים הוחלפו בשמות Habigoal ברחבי האפליקציה, ה-API, התיעוד וברירות המחדל של הסביבה.",
+            "תיעוד המוצר והתפעול רוענן כך שהנחיות onboarding, פריסה, ארכיטקטורה, API, משפטיות, SSO ומסירה יתאימו לכיוון המוצר הנוכחי."
+          ]
+        }
+      },
+      {
+        "title": {
+          "en": "Fixed",
+          "hu": "Javitva",
+          "de": "Behoben",
+          "es": "Corregido",
+          "ar": "تم الإصلاح",
+          "he": "תוקן"
+        },
+        "items": {
+          "en": [
+            "Stale code comments, defaults, and legacy references were cleaned up around auth callbacks, readiness charts, data backfills, seed scripts, and local server helpers."
+          ],
+          "hu": [
+            "Elavult kodkommentek, alapbeallitasok es regi hivatkozasok lettek kitisztitva az auth callbackek, keszenleti grafikonok, adat-visszatoltesek, seed szkriptek es helyi szerver segedek korul."
+          ],
+          "de": [
+            "Veraltete Codekommentare, Standardwerte und Legacy-Verweise wurden rund um Auth-Callbacks, Bereitschaftsdiagramme, Daten-Backfills, Seed-Skripte und lokale Serverhilfen bereinigt."
+          ],
+          "es": [
+            "Se limpiaron comentarios de codigo obsoletos, valores predeterminados y referencias heredadas en callbacks de autenticacion, graficos de disposicion, backfills de datos, scripts de seed y utilidades del servidor local."
+          ],
+          "ar": [
+            "تم تنظيف تعليقات الكود القديمة والإعدادات الافتراضية والمراجع الموروثة حول callbacks المصادقة ومخططات الجاهزية وعمليات backfill للبيانات وسكربتات seed ومساعدات الخادم المحلي."
+          ],
+          "he": [
+            "נוקו הערות קוד מיושנות, ברירות מחדל והפניות ישנות סביב callbacks של אימות, תרשימי מוכנות, backfills של נתונים, סקריפטי seed ועזרי שרת מקומי."
+          ]
+        }
+      },
+      {
+        "title": {
+          "en": "Operational Notes",
+          "hu": "Mukodesi jegyzetek",
+          "de": "Betriebshinweise",
+          "es": "Notas operativas",
+          "ar": "ملاحظات تشغيلية",
+          "he": "הערות תפעוליות"
+        },
+        "items": {
+          "en": [
+            "The GitHub project-board operating flow is now documented so issue labels, priority fields, tracks, and delivery handoff steps can be maintained consistently."
+          ],
+          "hu": [
+            "A GitHub projekt-tabla mukodesi folyamata most dokumentalt, igy az issue cimkek, prioritas mezok, trackek es atadasi lepesek kovetkezetesen karbantarthatok."
+          ],
+          "de": [
+            "Der Betriebsablauf des GitHub-Projektboards ist jetzt dokumentiert, damit Issue-Labels, Prioritaetsfelder, Tracks und Uebergabeschritte konsistent gepflegt werden koennen."
+          ],
+          "es": [
+            "El flujo operativo del tablero de proyecto de GitHub ahora esta documentado para mantener de forma consistente etiquetas de issues, campos de prioridad, tracks y pasos de traspaso."
+          ],
+          "ar": [
+            "أصبح سير تشغيل لوحة مشروع GitHub موثقاً حتى يمكن الحفاظ على تسميات القضايا وحقول الأولوية والمسارات وخطوات التسليم بشكل متسق."
+          ],
+          "he": [
+            "תהליך התפעול של לוח הפרויקט ב-GitHub מתועד כעת כדי לשמור בעקביות על תוויות issues, שדות עדיפות, מסלולים ושלבי מסירה."
+          ]
+        }
+      }
+    ]
+  },
+  {
     "slug": "2026-05-11-athlete-operating-and-planning",
     "title": {
       "en": "Athlete operating dashboard, habits, memory, load, and planning",
