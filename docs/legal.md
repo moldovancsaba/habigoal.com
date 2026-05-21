@@ -45,4 +45,4 @@ Older `survey.*` and `messmass.*` references are obsolete and should not be intr
 - Legal page text must come from the locale message catalogs or structured legal content, not inline page strings.
 - Locale-specific pages must not silently fall back to another language for legal text.
 - Footer labels must be localized in every supported locale.
-- Any change to public legal content should be validated with `npm run build` and a manual route check.
+- Any change to public legal content should be validated with `npm run i18n:audit`, `npm run build`, and a manual route check.

@@ -113,7 +113,7 @@ export async function listAssessmentsByChildId(childId: string) {
     .sort({ createdAt: 1 })
     .toArray();
 
-  // Older check-ins can be missing childId, so link them by stable athlete identity.
+  // Compatibility records can be missing childId, so link them by stable athlete identity.
   if (assessments.length === 0 && objectId) {
     const child = await db.collection("children").findOne({ _id: objectId });
     if (child?.name && child?.birthDate) {

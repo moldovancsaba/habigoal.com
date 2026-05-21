@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Habigoal
-description: Semantic liquid-glass assessment workspace for athlete evaluation, reporting, and operations.
+description: Semantic liquid-glass daily athlete support workspace for readiness, habits, planning, reporting, and operations.
 colors:
   app-bg-light: "#EDF3FF"
   app-bg-dark: "#050917"
@@ -215,7 +215,7 @@ Foundation colors are mode-specific. Light mode is airy and refracted; dark mode
 
 Semantic tones:
 
-- **Ingress:** primary assessment and navigation emphasis
+- **Ingress:** primary check-in and navigation emphasis
 - **Synthesis:** clustering, interpretation, and intelligence
 - **Knowmore:** evidence, enrichment, and supporting context
 - **Strategy:** planning, summaries, and synthesized direction

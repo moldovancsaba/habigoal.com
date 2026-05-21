@@ -11,7 +11,7 @@ The landing page, athlete app, trainer dashboard, settings, planning, records, n
 
 | Layer | Role |
 |--------|------|
-| `theme/mantine-theme.ts` | `getSurveyMantineTheme("light" \| "dark")` — semantic colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
+| `theme/mantine-theme.ts` | `getHabigoalMantineTheme("light" \| "dark")` — semantic colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
 | `components/theme/ThemeRegistry.tsx` | `MantineProvider` + color-scheme wiring using `ThemeModeContext`. |
 | `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`habigoal_theme`, legacy `theme`), and consent-gated cookie persistence. |
 | `components/layout/DashboardShell.tsx` | Responsive protected-app shell: Mantine `AppShell` + mobile `Drawer`, role-aware nav, `PageContainer`, shared app footer. |
@@ -29,7 +29,7 @@ Theme initialization also reads cookie-backed mode from server layout to avoid r
 4. **Navigation** — use `Link` / `usePathname` from `@/i18n/navigation` with Mantine components.
 5. **Global CSS** — keep `app/globals.css` focused on global tokens, atmosphere, print helpers (`.no-print`, `.only-print`, `.dashboard-main`), and shared surface classes.
 6. **Accessibility** — preserve semantic labels and aria attributes on interactive controls.
-8. **Charts** — dashboard and analytics visuals use `recharts`; avoid one-off SVG chart implementations unless a library chart is impossible.
+7. **Charts** — dashboard and analytics visuals use `recharts`; avoid one-off SVG chart implementations unless a library chart is impossible.
 
 ## Adding a new protected app page
 
@@ -37,7 +37,7 @@ Theme initialization also reads cookie-backed mode from server layout to avoid r
 2. Use `PageContainer` implicitly via `DashboardShell` (already wraps `children`).
 3. Structure content with `SectionCard` and Mantine layout components.
 4. Reuse `useTranslations` namespaces (`Dashboard`, `Assessment`, `Common`, `Schema`, or a feature-specific namespace).
-5. Run `npm run typecheck`, `npm run lint`, and `npm run build` before merging.
+5. Run `npm run typecheck`, `npm run lint`, `npm run i18n:audit`, and `npm run build` before merging.
 
 ## i18n and content rules
 
@@ -57,7 +57,7 @@ When updating the design system:
    - [lib/semantic-theme.ts](/Users/Shared/Projects/habigoal/lib/semantic-theme.ts)
    - [theme/typography.ts](/Users/Shared/Projects/habigoal/theme/typography.ts)
    - [theme/tokens.ts](/Users/Shared/Projects/habigoal/theme/tokens.ts)
-3. Run `npm run semantic:audit`.
+3. Run `npm run semantic:audit` during token cleanup. The audit currently flags known generic hue props until those remaining surfaces are migrated to semantic tones.
 
 ## Migration notes
 

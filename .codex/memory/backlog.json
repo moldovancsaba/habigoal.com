@@ -1,40 +1,40 @@
 {
   "next_five": [
     {
-      "issue": 21,
-      "title": "Add role-based permissions and privacy controls",
+      "issue": 55,
+      "title": "Build centralized form-definition foundation",
       "priority": "now",
-      "reason": "The role migration to athlete, trainer, and admin needs route-level UI gating and privacy enforcement to stay coherent and safe."
+      "reason": "Centralized forms are the strongest foundation fix for i18n reliability, validation consistency, onboarding targets, and maintainability."
     },
     {
-      "issue": 31,
-      "title": "Add athlete memory timeline and AI-style reflection insights",
+      "issue": 56,
+      "title": "Build shared field registry and form renderer",
       "priority": "now",
-      "reason": "The MVP direction depends on remembered patterns and player-readable daily context, not only raw history."
+      "reason": "The renderer is required before daily check-in and admin forms can stop duplicating page-local field logic."
     },
     {
-      "issue": 5,
-      "title": "Add external and internal training-load monitoring",
+      "issue": 57,
+      "title": "Connect forms to i18n, visibility, and validation",
       "priority": "now",
-      "reason": "Training load is a first-class operating input in the MVP direction and should inform athlete and coach surfaces."
+      "reason": "This directly reduces mixed-language UI risk and makes role-aware form behavior explicit."
     },
     {
-      "issue": 34,
-      "title": "Build weekly athlete operating reports and summaries",
+      "issue": 58,
+      "title": "Migrate daily check-in to the centralized form system",
       "priority": "now",
-      "reason": "Weekly reporting is a distinct operating workflow in the MVP, not just an export add-on."
+      "reason": "Daily check-in is the highest-value form because it feeds athlete, trainer, reporting, analytics, and onboarding flows."
     },
     {
-      "issue": 14,
-      "title": "Build a session planning calendar",
+      "issue": 64,
+      "title": "Build dedicated athlete-only check-in shell and task UX",
       "priority": "now",
-      "reason": "Recommendations, athlete state, and weekly summaries still need to land in a planned session surface."
+      "reason": "Athlete self-scope and athlete-first copy remain critical usability and privacy foundations."
     },
     {
-      "issue": 22,
-      "title": "Add PDF and shareable operational reports",
+      "issue": 62,
+      "title": "Eliminate hardcoded UI copy and add repeatable i18n audit gates",
       "priority": "next",
-      "reason": "The athlete and coach operating layers are becoming coherent enough to support richer shareable summaries."
+      "reason": "The first audit gate is shipped, but remaining hardcoded form/report copy still needs cleanup."
     }
   ],
   "later_tracks": [

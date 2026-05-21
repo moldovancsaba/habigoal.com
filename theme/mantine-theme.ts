@@ -9,7 +9,7 @@ function isSemanticTone(value: string | undefined): value is SemanticTone {
   return typeof value === "string" && SEMANTIC_TONES.includes(value as SemanticTone);
 }
 
-export function getSurveyMantineTheme(mode: ThemeMode, direction: Direction = "ltr"): MantineThemeOverride {
+export function getHabigoalMantineTheme(mode: ThemeMode, direction: Direction = "ltr"): MantineThemeOverride {
   const foundation = getThemeFoundation(mode);
   const tone = (name: Parameters<typeof getSemanticTone>[1]) => getSemanticTone(mode, name);
   const fontFamily = direction === "rtl" ? APP_FONT_FAMILY_RTL : APP_FONT_FAMILY_LTR;

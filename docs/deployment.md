@@ -109,6 +109,8 @@ npm run db:backfill-daily-tracker-history
 npm run db:migrate-survey-identifiers
 ```
 
+The migration helper name still includes `survey` because it backfills old persisted identifiers into current athlete identifiers. Do not use `survey` in new product-facing docs or UI.
+
 ## ImgBB Uploads
 
 Evidence uploads go through `/api/uploads/imgbb`.
@@ -151,3 +153,17 @@ Full setup is documented in [SSO Setup](sso-setup.md).
 8. Save a weekly plan and verify it appears on the matching athlete detail page.
 9. Generate a PDF/report from athlete or record detail.
 10. Verify locale-sensitive pages do not show mixed-language action labels.
+
+## Pre-Release Validation
+
+Run the full local validation set before production release:
+
+```bash
+npm run i18n:audit
+npm run lint
+npm run test
+npm run typecheck
+npm run build
+```
+
+Use `npm run db:ping` when the change depends on live database connectivity. Use `npm run semantic:audit` as a targeted design-system cleanup check; it currently identifies known generic hue props until those surfaces are migrated.

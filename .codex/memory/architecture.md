@@ -170,6 +170,6 @@ Current persistence surfaces that support this spine:
 - `settings` for company/legal profile, standards, alerting, and governance data
 
 Current platform reliability focus:
-- i18n must be treated as a product-quality gate, not a polish task.
+- i18n must be treated as a product-quality gate, not a polish task. `npm run i18n:audit` is now the baseline automated gate.
 - public news content is locale-specific and must fail closed when a locale is missing.
 - central form definitions are the intended direction for new form work, but the full centralized form rollout is still feature-branch work until merged.

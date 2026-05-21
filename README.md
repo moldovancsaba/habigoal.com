@@ -43,6 +43,8 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Deployment](docs/deployment.md)
 - [Design System](docs/design-system.md)
 - [Definition of Done](docs/dod.md)
+- [User Guide](docs/user-guide.md)
+- [Settings Guide](docs/settings-guide.md)
 - [Legal and Company Info](docs/legal.md)
 - [SSO Setup](docs/sso-setup.md)
 - [Product Roadmap](ROADMAP.md)
@@ -100,17 +102,18 @@ HABIGOAL_ENFORCE_AUTH=true
 ```bash
 npm run lint
 npm run test
+npm run i18n:audit
 npm run build
 npm run typecheck
 npm run db:ping
 ```
 
-`npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
+`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
 ## Data Collections
 
-- `children`: athlete profiles. Product-facing code should refer to these as athletes.
-- `assessments`: daily check-ins and legacy-compatible records.
+- `children`: athlete profiles. This is a compatibility collection name; product-facing code and docs should say athlete.
+- `assessments`: daily check-ins and legacy-compatible records. This is a compatibility collection name; product-facing code and docs should say check-in.
 - `habit_records`: athlete habit adherence records.
 - `coach_actions`: trainer acknowledgements and applied recommendation records.
 - `session_plans`: persisted weekly planning records.
@@ -136,6 +139,13 @@ The repository includes a Codex-first automation control plane under `.codex/`.
 - Codex handles audit, planning, implementation, and documentation loops.
 - Autonomous loops use branch and PR delivery.
 - Direct autonomous pushes to `main` are not part of the unattended automation policy.
+
+## Documentation Maintenance Rules
+
+- Product-facing documentation uses `athlete`, `trainer`, `admin`, `team`, `check-in`, and `report`.
+- Legacy terms such as `child`, `assessment`, `conductor`, `observer`, `survey`, and `kidex` are documented only when explaining compatibility layers, migration helpers, or persisted collection names.
+- User-facing UI copy belongs in `messages/*.json` or structured localized content.
+- Public news posts must remain locale-specific and fail closed when a locale is missing.
 
 ## GitHub Project Bootstrap
 

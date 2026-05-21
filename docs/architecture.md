@@ -33,7 +33,7 @@ Compatibility endpoint names:
 - `/api/children`
 - `/api/assessments`
 
-Compatibility endpoints remain because the underlying collections and older records still use those names.
+Compatibility endpoints remain because the underlying collections and older records still use those names. New UI and API clients should prefer product-language endpoints.
 
 ### Repositories
 
@@ -41,8 +41,10 @@ Database access is isolated in `repositories/*`.
 
 Important repositories:
 
-- `child.repository.ts`: athlete profile persistence
-- `assessment.repository.ts`: check-in persistence
+- `athlete.repository.ts`: athlete-facing alias over profile persistence
+- `child.repository.ts`: compatibility athlete profile persistence for the `children` collection
+- `check-in.repository.ts`: check-in-facing alias over record persistence
+- `assessment.repository.ts`: compatibility check-in persistence for the `assessments` collection
 - `habit-records.repository.ts`: habit persistence
 - `coach-actions.repository.ts`: trainer action trace
 - `session-plans.repository.ts`: weekly planning persistence
@@ -54,7 +56,8 @@ Important repositories:
 
 Services hold cross-route application logic:
 
-- `assessment.service.ts`: check-in create/update/delete/restore behavior
+- `check-in.service.ts`: check-in-facing service alias
+- `assessment.service.ts`: compatibility check-in create/update/delete/restore behavior
 - `auth-service.ts`: DoneIsBetter OAuth calls
 - `settings-service.ts`: default settings and settings shape
 - `user-service.ts`: user-facing user model helpers
@@ -99,7 +102,9 @@ Current collections:
 - `users`: approved SSO users and local roles
 - `settings`: global app settings
 
-Product code should use athlete/check-in terminology even when a repository or collection still carries a legacy name.
+Product code should use athlete/check-in terminology even when a repository, type, payload, or collection still carries a compatibility name.
+
+Compatibility fields still present in wire or persisted records include `child`, `childId`, `surveyId`, `conductor`, and `observers`. These are not product language and should not appear in new UI copy.
 
 ## Public Content
 
@@ -117,7 +122,7 @@ Legal pages are public and must remain accessible when auth is enforced.
 
 Reports are generated client-side with `jsPDF` and `jspdf-autotable`.
 
-Report code must use localized message catalogs for user-facing labels. Mixed-language report surfaces are a known quality risk and should be checked during release validation.
+Report code must use localized message catalogs for user-facing labels. Mixed-language report surfaces are a known quality risk and should be checked with `npm run i18n:audit` plus manual RTL/report validation before release.
 
 ## Automation
 
@@ -134,6 +139,6 @@ Autonomous loops should use branch-and-PR delivery. Direct pushes to `main` are 
 
 - legacy collection names still exist
 - some feature work exists on branches and is not yet part of `main`
-- i18n coverage requires ongoing audit
+- i18n coverage requires ongoing audit with `npm run i18n:audit`
 - team invitations are not yet outbound email invitations
 - centralized forms are the intended direction, but the full rollout is not complete on `main`

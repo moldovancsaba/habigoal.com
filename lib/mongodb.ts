@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import { env } from "@/config/env";
 
 declare global {
-  var surveyMongoClient: Promise<MongoClient> | undefined;
+  var habigoalMongoClient: Promise<MongoClient> | undefined;
 }
 
 function createMongoClientPromise() {
@@ -17,7 +17,7 @@ function createMongoClientPromise() {
   })
     .connect()
     .catch((error) => {
-      global.surveyMongoClient = undefined;
+      global.habigoalMongoClient = undefined;
       throw error;
     });
 }
@@ -27,14 +27,14 @@ export async function getMongoClient(): Promise<MongoClient> {
     throw new Error("MONGODB_URI is not configured");
   }
 
-  if (!global.surveyMongoClient) {
-    global.surveyMongoClient = createMongoClientPromise();
+  if (!global.habigoalMongoClient) {
+    global.habigoalMongoClient = createMongoClientPromise();
   }
 
   try {
-    return await global.surveyMongoClient;
+    return await global.habigoalMongoClient;
   } catch (error) {
-    global.surveyMongoClient = undefined;
+    global.habigoalMongoClient = undefined;
     throw error;
   }
 }
@@ -49,7 +49,7 @@ export async function pingDatabase() {
     const db = await getDatabase();
     return await db.command({ ping: 1 });
   } catch {
-    global.surveyMongoClient = undefined;
+    global.habigoalMongoClient = undefined;
     const db = await getDatabase();
     return await db.command({ ping: 1 });
   }

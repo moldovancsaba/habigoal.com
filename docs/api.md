@@ -2,7 +2,14 @@
 
 Base path: `/api/*`
 
-The API is implemented with Next.js App Router route handlers. Product-facing endpoints use `athletes` and `check-ins`; compatibility endpoints using `children` and `assessments` still exist because the MongoDB collections and older code paths retain those names.
+The API is implemented with Next.js App Router route handlers. Product-facing endpoints use `athletes` and `check-ins`; compatibility endpoints using `children` and `assessments` still exist because the MongoDB collections and older records retain those names.
+
+Use product-language endpoints in new clients:
+
+- prefer `/api/athletes` over `/api/children`
+- prefer `/api/check-ins` over `/api/assessments`
+
+Some response payload keys still use compatibility names such as `child`, `childId`, and `assessments`. Treat those as wire-format compatibility fields until the persisted data migration is complete.
 
 ## Authentication And Authorization
 
@@ -113,6 +120,8 @@ Scope:
 - trainer: team athletes
 - athlete: linked athlete only
 
+Response: array of athlete profiles. Existing payloads may include compatibility fields such as `surveyId`; new UI should display athlete-facing labels.
+
 ### `POST /api/athletes`
 
 Creates or upserts an athlete profile.
@@ -145,6 +154,17 @@ Returns an athlete profile and chronological check-in history.
 
 Roles: `admin`, `trainer`, `athlete`
 
+Response shape:
+
+```json
+{
+  "child": { "_id": "athlete id", "name": "Athlete Name" },
+  "assessments": []
+}
+```
+
+The `child` and `assessments` keys are compatibility names. Product code should treat them as athlete and check-ins.
+
 ### `POST /api/athletes/:id/restore`
 
 Restores a soft-deleted athlete.
@@ -171,6 +191,10 @@ Roles: `admin`, `trainer`
 
 Scope follows accessible athlete ids.
 
+Query parameters:
+
+- `deleted=true`: return soft-deleted check-ins. Admin and trainer only.
+
 ### `POST /api/check-ins`
 
 Creates a check-in and syncs the athlete profile.
@@ -178,6 +202,15 @@ Creates a check-in and syncs the athlete profile.
 Roles: `admin`, `trainer`, `athlete`
 
 Athlete users can create only for their linked athlete.
+
+Payload includes compatibility fields:
+
+- `childId`: athlete id
+- `child`: athlete identity snapshot
+- `session`: date, location, context, staff metadata, consent
+- `scores`: readiness signal scores
+- `trainingLoad`: session type, duration, RPE, optional external load
+- `notes`: professional notes
 
 ### `GET /api/check-ins/:id`
 
@@ -202,6 +235,8 @@ Roles: `admin`, `trainer`
 Restores one soft-deleted check-in.
 
 Roles: `admin`, `trainer`
+
+Compatibility route note: this restore action is implemented as `POST` on the check-in id route.
 
 ## Habits
 
@@ -275,6 +310,8 @@ Returns local authorization users.
 
 Roles: `admin`, `trainer`
 
+Trainer read access exists for current dashboard support, but trainer UI must not expose admin user-management controls.
+
 ### `POST /api/users`
 
 Creates or updates a local authorization user.
@@ -287,6 +324,7 @@ Rules:
 - at least one role is required
 - cannot remove own admin access
 - cannot remove the final admin
+- athlete users should include `athleteId` before they are expected to use the athlete app
 
 ### `DELETE /api/users?email=<email>`
 
@@ -338,6 +376,8 @@ Roles: `admin`
 Returns global settings including company/legal profile, locations, standards metadata, alerting thresholds, and restore/governance support data.
 
 Roles: `admin`, `trainer`
+
+Trainer access is read-only and should not expose admin-only management UI. Admin-only write behavior remains enforced on `POST /api/settings`.
 
 ### `POST /api/settings`
 

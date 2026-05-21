@@ -140,6 +140,8 @@ Canonical docs:
 - `docs/architecture.md`: current application architecture and data boundaries
 - `docs/api.md`: API reference
 - `docs/deployment.md`: deployment and environment setup
+- `docs/user-guide.md`: role-based user guide
+- `docs/settings-guide.md`: admin/settings operations guide
 - `docs/sso-setup.md`: SSO client setup
 - `docs/design-system.md`: live design-system implementation
 - `docs/dod.md`: definition of done
@@ -149,7 +151,7 @@ Canonical docs:
 ## Current Risks
 
 - Some older files and database collections still use legacy `child` and `assessment` names. Product-facing code should use aliases or facade modules.
-- i18n coverage has improved, but hardcoded strings still need regular audit before release.
+- i18n coverage has improved and `npm run i18n:audit` is now the repeatable release gate for catalog parity, placeholders, public news localization, and known legacy copy leaks. Hardcoded strings still need cleanup as form/report surfaces are migrated.
 - The centralized form-system work exists on a feature branch and should not be documented as shipped on `main` until merged.
 - Team invitations are still admin-managed records, not outbound email invites.
 - GitHub Project state can drift from merged work if branches are merged manually without issue/board updates.
@@ -256,7 +258,9 @@ If GraphQL is exhausted, create/update issues with REST immediately, then schedu
 
 ### Recent Reconciliation Notes
 
-On 2026-05-20, the board was compared against code and documentation. Issues `#62` to `#66` were created for the missing active roadmap gaps:
+On 2026-05-20, the board was compared against code and documentation. Issues `#62` to `#66` were created for the missing active roadmap gaps.
+
+On 2026-05-21, `#62` received the first shipped audit gate in commit `30e122f`. Keep the issue open until the remaining hardcoded form/report copy cleanup is complete.
 
 - i18n audit gates
 - trainer/athlete invitation workflow
@@ -273,9 +277,12 @@ Run before merging meaningful changes:
 ```bash
 npm run lint
 npm run test
+npm run i18n:audit
 npm run build
 npm run typecheck
 ```
+
+`npm run semantic:audit` is useful during design-system cleanup, but it currently reports known generic hue props and is not yet a universal merge gate.
 
 For database/env validation:
 

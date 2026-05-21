@@ -2,7 +2,7 @@
 
 Habigoal is evolving from a daily check-in product into a role-aware athlete operating system for athletes, trainers, and admins.
 
-Last updated: 2026-05-20
+Last updated: 2026-05-21
 
 ## Shipped Baseline
 
@@ -16,6 +16,7 @@ Last updated: 2026-05-20
 - Athlete self-scope, trainer team-scope, and admin organization-scope.
 - Team creation and membership assignment.
 - Public news/release-note surface with fail-closed locale behavior.
+- Repeatable i18n audit gate for locale key parity, ICU placeholder parity, news localization completeness, and known legacy copy leaks.
 - Public legal pages.
 - MongoDB Atlas integration, health checks, seed scripts, and migration/backfill helpers.
 - Codex automation control plane for branch-and-PR audit/planning/implementation/docs loops.
@@ -29,9 +30,10 @@ Goal: eliminate mixed-language UI and unsafe fallbacks.
 Next work:
 
 - clear remaining hardcoded strings in athlete management and check-in surfaces
-- make i18n audit part of regular validation
+- keep `npm run i18n:audit` part of regular validation
 - keep news posts locale-specific and fail-closed
 - avoid adding visible copy outside `/messages` or structured content files
+- extend the audit as centralized forms and report labels are migrated
 
 ### 2. Centralized Forms
 

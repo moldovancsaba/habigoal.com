@@ -1,5 +1,5 @@
 {
-  "current_focus": "issue-21-route-level-permissions-and-privacy-controls",
+  "current_focus": "issue-62-i18n-documentation-and-compatibility-consistency",
   "active_epics": [
     "coach-command-center",
     "athlete-trend-views",
@@ -11,7 +11,8 @@
     "autonomous loops can degrade architecture quality if they are allowed to write directly to main",
     "board and memory drift if automations do not update both GitHub Project state and repository memory",
     "trend-heavy UI changes need seeded historical data and regression checks to stay reliable",
-    "athlete-facing work can drift back into coach-centric language if daily actions are not kept readable and actionable"
+    "athlete-facing work can drift back into coach-centric language if daily actions are not kept readable and actionable",
+    "semantic audit still reports generic hue props in planning, settings, and MainDashboard until those surfaces are migrated to semantic tones"
   ],
   "last_completed_tasks": [
     "issue-1-coach-command-center",
@@ -24,7 +25,8 @@
     "issue-29-standalone-typecheck-stability",
     "issue-33-athlete-facing-daily-operating-dashboard",
     "issue-14-session-planning-calendar",
-    "issue-34-weekly-athlete-operating-reports"
+    "issue-34-weekly-athlete-operating-reports",
+    "issue-62-repeatable-i18n-audit-gate"
   ],
   "blocked_items": [],
   "consent_model": {

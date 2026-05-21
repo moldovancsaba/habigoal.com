@@ -93,6 +93,8 @@ When linked correctly:
 - check-in creation is limited to that athlete
 - habit records are limited to that athlete
 
+See [User Guide](user-guide.md) and [Settings Guide](settings-guide.md) for the operational role expectations that must match this SSO behavior.
+
 ## Trainer Scoping
 
 Trainer users are scoped by team membership:
