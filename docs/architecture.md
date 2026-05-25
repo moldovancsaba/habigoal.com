@@ -62,6 +62,17 @@ Services hold cross-route application logic:
 - `settings-service.ts`: default settings and settings shape
 - `user-service.ts`: user-facing user model helpers
 
+### Scoring Contracts
+
+`lib/operating-score.ts` owns the daily athlete operating metrics contract used by athlete history APIs and future chart/report consumers. It combines persisted check-ins, daily habits, recovery signals, training load, and performance pillars into a versioned `DailyOperatingMetrics` payload.
+
+Rules:
+
+- no local/demo/offline fallback data
+- missing sources remain nullable and are exposed in `sourceCompleteness`
+- fixture parity tests in `lib/operating-score.test.ts` freeze score version behavior
+- scoring changes must update `OPERATING_SCORE_VERSION`, fixtures, API docs, and issue/project state
+
 ### Access Control
 
 The active role model is:

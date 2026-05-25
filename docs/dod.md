@@ -46,6 +46,7 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 - Avoid nested cards and unnecessary decorative surfaces.
 - Buttons and compact controls must keep text readable on mobile and RTL layouts.
 - Personal-data pages should be efficient operating surfaces, not marketing pages.
+- Scoring changes must include deterministic fixtures and must not fabricate missing athlete data through fallback logic.
 - GDS migration work must follow the [GDS Verification Matrix](gds-verification-matrix.md).
 
 ## Data And Persistence

@@ -150,7 +150,7 @@ Roles: `admin`, `trainer`
 
 ### `GET /api/athletes/:id/history`
 
-Returns an athlete profile and chronological check-in history.
+Returns an athlete profile, chronological check-in history, and daily operating metrics derived from the same persisted athlete data.
 
 Roles: `admin`, `trainer`, `athlete`
 
@@ -159,11 +159,33 @@ Response shape:
 ```json
 {
   "child": { "_id": "athlete id", "name": "Athlete Name" },
-  "assessments": []
+  "assessments": [],
+  "dailyOperatingMetrics": [
+    {
+      "athleteId": "athlete id",
+      "date": "2026-05-25",
+      "scoreVersion": "2026-05-25",
+      "athleteIqScore": 76,
+      "readinessScore": 70,
+      "habitScore": 78,
+      "recoveryScore": 77.3,
+      "trainingLoadPoints": 350,
+      "trainingLoadScore": 90,
+      "performanceScore": 66.7,
+      "readinessZone": "good",
+      "sourceCompleteness": {
+        "checkIn": true,
+        "habits": true,
+        "recovery": true,
+        "trainingLoad": true,
+        "performance": true
+      }
+    }
+  ]
 }
 ```
 
-The `child` and `assessments` keys are compatibility names. Product code should treat them as athlete and check-ins.
+The `child` and `assessments` keys are compatibility names. Product code should treat them as athlete and check-ins. `dailyOperatingMetrics` is produced by `lib/operating-score.ts`; it does not create local/demo fallback data. Missing sources remain explicit through `sourceCompleteness` and nullable component scores.
 
 ### `POST /api/athletes/:id/restore`
 

@@ -19,14 +19,9 @@ import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/re
 import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
-import type { AthleteProfile } from "@/types/athlete";
+import type { AthleteHistoryPayload } from "@/types/athlete-history";
 import type { HabitRecord } from "@/types/habit-record";
 import type { SessionPlanRecord } from "@/types/session-plan";
-
-type AthleteHistoryPayload = {
-  child: AthleteProfile;
-  assessments: CheckInRecord[];
-};
 
 type HabitPayload = {
   records: HabitRecord[];
@@ -160,7 +155,12 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
       }),
     [data]
   );
+  const dailyOperatingMetrics = useMemo(
+    () => (data?.dailyOperatingMetrics ?? []).slice().sort((a, b) => a.date.localeCompare(b.date)),
+    [data]
+  );
   const latest = chronologicalAssessments[chronologicalAssessments.length - 1] ?? null;
+  const latestOperatingMetric = dailyOperatingMetrics[dailyOperatingMetrics.length - 1] ?? null;
   const effectiveCustomStartDate = customStartDate || chronologicalAssessments[0]?.session.date || "";
   const effectiveCustomEndDate = customEndDate || chronologicalAssessments[chronologicalAssessments.length - 1]?.session.date || "";
 
@@ -231,7 +231,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const latestReadinessChecks = latestReadinessState.count;
   const latestReadinessTotal = latestReadinessState.total;
   const latestReadinessMode = getReadinessMode(latestReadinessChecks, latestReadinessTotal);
-  const athleteOperatingScore = latest ? getAthleteOperatingScore(latest) : 0;
+  const athleteOperatingScore = latestOperatingMetric?.athleteIqScore ?? (latest ? getAthleteOperatingScore(latest) : 0);
   const athleteMomentum = useMemo(() => getAthleteMomentum(chronologicalAssessments), [chronologicalAssessments]);
   const athleteOperatingActions = latest ? getAthleteOperatingActions(latest, focusPillar, athleteMomentum, t, td) : [];
   const habitHistory = useMemo(
