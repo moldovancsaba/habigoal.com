@@ -64,7 +64,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 - MongoDB driver: `6.21.0`
 - next-intl: `4.9.2`
 - Mantine: `8.3.6`
-- General Design System: latest inspected line is `2.4.3`; target package family is `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`; adoption is blocked until a stable package source and Mantine peer compatibility are resolved.
+- General Design System: latest inspected line is `2.4.4`; target package family is `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`; adoption is blocked until the packages are published to a stable registry source and Mantine peer compatibility is resolved.
 - Node.js: `22.x`
 - App version: `0.5.0`
 

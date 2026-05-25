@@ -7,8 +7,8 @@ Sources inspected:
 
 - [sovereignsquad/general-design-system](https://github.com/sovereignsquad/general-design-system)
 - `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM`
-- Latest inspected GDS commit: `787a8ce` (`chore: add authenticated package publish workflow`)
-- Latest inspected GDS version: `2.4.3`
+- Latest inspected GDS version: `2.4.4`
+- Latest inspected GDS commit: `e931c5a47832f07c1f7415db7122ed168a1f3678`
 
 ## What GDS Provides
 
@@ -39,8 +39,8 @@ Current gaps:
 - Local theme/tokens/typography files still own visual decisions.
 - Local UI primitives duplicate contracts that should come from `@gds/core` and `@gds/admin`.
 - `app/globals.css` contains product-local colors, shadows, gradients, and glass utilities.
-- GDS packages are publish-ready, but registry checks from this consumer repo currently return npm HTTP 404.
-- Local GDS package version inspected: `2.4.3`.
+- GDS packages are publish-ready and the GDS repository now includes a manual `GDS Publish` workflow, but registry checks from this consumer repo still return npm HTTP 404 for all required `@gds/*` packages.
+- Local GDS package version inspected: `2.4.4`.
 - GDS package peer dependencies currently target Mantine `^7.9.0`; Habigoal uses Mantine `8.3.6`.
 - Habigoal now includes [gds-adoption.json](/Users/Shared/Projects/habigoal/gds-adoption.json) to declare the current migration state and exceptions.
 
@@ -50,7 +50,7 @@ Do not install `@gds/*` from npm yet unless the release operator confirms public
 
 Acceptable package-source options, in priority order:
 
-1. Publish `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance` to the organization package registry with a documented consumer path.
+1. Run the GDS repository's authenticated `GDS Publish` workflow, then verify `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance` resolve from the selected organization package registry.
 2. Add the GDS repo as a workspace/submodule only if the deployment environment can reliably install private Git dependencies.
 3. Temporarily vendor built package artifacts only as a short-lived migration bridge, not as permanent product-local source.
 

@@ -4,7 +4,7 @@
 
 Habigoal currently uses Mantine with local adapters. The target is 100% General Design System consumption through `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`.
 
-Latest inspected GDS line: `2.4.3` at commit `787a8ce`.
+Latest inspected GDS line: `2.4.4` at commit `e931c5a`.
 
 ## Current Implementation
 
@@ -29,7 +29,7 @@ The intended dependency set is:
 @gds/compliance
 ```
 
-Current blocker: the GDS repo is publish-ready, but registry checks from this consumer repo currently return npm HTTP 404, and the inspected package peer range targets Mantine `^7.9.0` while Habigoal uses Mantine `8.3.6`.
+Current blocker: the GDS repo is publish-ready and has a manual publish workflow, but registry checks from this consumer repo currently return npm HTTP 404 for the required `@gds/*` packages, and the inspected package peer range targets Mantine `^7.9.0` while Habigoal uses Mantine `8.3.6`.
 
 Do not add direct imports from `@gds/*` until the package source is available in a stable way and Mantine peer compatibility is resolved.
 
