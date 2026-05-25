@@ -14,18 +14,18 @@ Sources reviewed:
 
 The Athlete IQ folders define a player operating-system model rather than only a UI prototype.
 
-High-value capabilities found:
+High-value capabilities found and reframed as improvements to existing Habigoal functions:
 
-- Composite daily scoring: readiness IQ, habit IQ, recovery IQ, training IQ, performance IQ, and aggregate athlete IQ.
-- Weighted habit categories: training, recovery, wellness, and tactical learning.
-- Training-load capture: activity flags, duration, RPE, duration x RPE load points, weekly aggregation, and load zones.
-- Daily reflection memory: win, struggle, focus tomorrow, memory timeline, and deterministic insight lines.
-- Micro-skill benchmark model: 27 skill/physical/psychological definitions, athlete scores, benchmarks, confidence, and PDA gaps.
-- Live session runner: standard/quick blueprints, drill timers, play/pause/skip/reset, RPE, and debrief notes.
-- Squad risk workflow: squad averages, weekly load, fatigue-alert count, generated coaching alerts.
-- Athlete onboarding: minimum profile setup and weekly session goal before app use.
-- Weekly report snapshots: metrics, reflections, recommendations, and exportable weekly report data.
-- Fixture-backed scoring tests that reduce silent drift between scoring implementations.
+- Improve athlete history/scoring with a unified operating metrics contract.
+- Improve habit tracking with weighted recovery and category scoring.
+- Improve check-in/planning load handling with a duration x RPE training-load ledger.
+- Improve notes, recommendations, and reports with source-linked reflection memory.
+- Improve athlete profiles and planning with micro-skill/PDA benchmarks.
+- Improve weekly planning with reusable session blueprints and debrief capture.
+- Improve the trainer dashboard with persistent source-linked risk alerts.
+- Improve athlete app first-login setup with role-native onboarding baseline.
+- Improve reports with versioned weekly snapshots and authorized structured export.
+- Improve test/governance coverage with operating-score parity fixtures.
 
 ## Habigoal Current Coverage
 
@@ -40,7 +40,16 @@ Already implemented or already planned in Habigoal:
 
 ## Important Differences
 
-The useful gaps are not the data stack. Athlete IQ uses localStorage/Supabase; Habigoal should keep MongoDB Atlas and DoneIsBetter SSO.
+The useful gaps are not the data stack. Athlete IQ uses localStorage/Supabase; Habigoal keeps MongoDB Atlas and DoneIsBetter SSO.
+
+Rejected interpretations:
+
+- No local demo mode.
+- No local persistence fallback.
+- No offline data fallback.
+- No bypass of production auth/data rules.
+- No legacy scoring compatibility requirement unless legally or operationally required.
+- No extra release checklist when the existing Definition of Done, validation commands, documentation, and Codex control plane are stronger.
 
 The useful gaps are product/domain contracts:
 
@@ -57,21 +66,24 @@ Milestone: `Athlete IQ gap import`
 
 Project 14 placement:
 
-- `Todo (NEXT)`: #78, #79, #80, #84, #87
-- `Backlog (SOONER)`: #81, #82, #83, #85, #86
+- `Todo (NEXT)`: #78, #79, #80, #84, #87, #90
+- `Backlog (SOONER)`: #81, #82, #83, #85, #86, #88, #89
 
 Issues:
 
-- #78 `Habigoal: Add Athlete IQ composite scoring engine and daily metrics contract`
-- #79 `Habigoal: Add weighted habit and recovery scoring with category breakdowns`
-- #80 `Habigoal: Add training-load ledger with duration x RPE and load zones`
-- #81 `Habigoal: Add athlete reflection memory and deterministic insight signals`
-- #82 `Habigoal: Add micro-skill benchmark library and PDA gap tracking`
-- #83 `Habigoal: Add live session runner with drill timers and debrief persistence`
-- #84 `Habigoal: Add squad readiness risk scan and persistent coaching alerts`
-- #85 `Habigoal: Add athlete onboarding baseline and weekly goal setup`
-- #86 `Habigoal: Add weekly athlete IQ report snapshots and export contract`
-- #87 `Habigoal: Add operating-score parity tests and fixture governance`
+- #78 `Analytics: Athlete history scoring - unified operating metrics contract`
+- #79 `Athlete App: Habit tracking - weighted recovery and category scoring`
+- #80 `Athlete App: Training load - duration RPE ledger and load zones`
+- #81 `Guidance: Reflections and recommendations - source-linked insight memory`
+- #82 `Performance: Athlete profile - micro-skill benchmarks and PDA gaps`
+- #83 `Planning: Session execution - blueprint library and debrief capture`
+- #84 `Trainer Dashboard: Risk scan - persistent source-linked coaching alerts`
+- #85 `Athlete App: Onboarding baseline - role-native first-login setup`
+- #86 `Reporting: Weekly summaries - versioned snapshots and authorized export`
+- #87 `Quality: Operating-score fixtures - parity tests and drift governance`
+- #88 `Platform: Privacy-safe telemetry - operational event instrumentation`
+- #89 `Forms: Interrupted request recovery - safe retry without offline fallback`
+- #90 `UX: Empty data guidance - role-aware no-data states for athlete operations`
 
 ## Recommended Sequence
 
@@ -80,10 +92,13 @@ Issues:
 3. #79 weighted habit/recovery scoring.
 4. #80 training-load ledger.
 5. #84 squad risk scan and persistent alerts.
-6. #81 reflection memory and deterministic insights.
-7. #82 micro-skill/PDA model.
-8. #83 live session runner.
-9. #85 athlete onboarding baseline.
-10. #86 weekly snapshot/export contract.
+6. #90 role-aware empty-state guidance.
+7. #81 reflection memory and deterministic insights.
+8. #82 micro-skill/PDA model.
+9. #83 live session runner.
+10. #85 athlete onboarding baseline.
+11. #86 weekly snapshot/export contract.
+12. #88 privacy-safe telemetry.
+13. #89 safe interrupted-request recovery.
 
 This sequence hardens the foundation before adding more UI surface area.
