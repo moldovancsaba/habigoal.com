@@ -66,12 +66,15 @@ Services hold cross-route application logic:
 
 `lib/operating-score.ts` owns the daily athlete operating metrics contract used by athlete history APIs and future chart/report consumers. It combines persisted check-ins, daily habits, recovery signals, training load, and performance pillars into a versioned `DailyOperatingMetrics` payload.
 
+`lib/athlete-habits.ts` owns habit definitions, normalization, category weights, and `HabitScoreSummary`. The current weighted categories are training `0.40`, recovery `0.30`, wellness `0.20`, and learning `0.10`.
+
 Rules:
 
 - no local/demo/offline fallback data
 - missing sources remain nullable and are exposed in `sourceCompleteness`
 - fixture parity tests in `lib/operating-score.test.ts` freeze score version behavior
 - scoring changes must update `OPERATING_SCORE_VERSION`, fixtures, API docs, and issue/project state
+- habit-weight changes must update `HABIT_SCORE_VERSION`, habit scorer tests, API docs, and project state
 
 ### Access Control
 

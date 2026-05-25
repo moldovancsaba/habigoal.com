@@ -16,7 +16,7 @@ import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
 import { SparklineChart } from "@/components/analytics/SparklineChart";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/readiness-model";
-import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
+import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitScoreSummary, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteHistoryPayload } from "@/types/athlete-history";
@@ -240,13 +240,14 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   );
   const latestHabitRecord = habitHistory[habitHistory.length - 1] ?? null;
   const habitCompletion = getHabitCompletion(todayHabitStatuses);
+  const habitScoreSummary = getHabitScoreSummary(todayHabitStatuses);
   const habitStreak = getHabitStreak(habitHistory);
   const habitCategoryBreakdown = getHabitCategoryBreakdown(todayHabitStatuses);
   const habitTrendData = useMemo(
     () =>
       habitHistory.slice(-7).map((record) => ({
         date: record.date,
-        value: getHabitCompletion(record.statuses).score / 20
+        value: getHabitScoreSummary(record.statuses).score / 20
       })),
     [habitHistory]
   );
@@ -475,7 +476,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           >
             <Stack gap="md">
               <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-                <HistoryMetricCard label={td("athleteHabitScoreLabel")} value={`${habitCompletion.score}`} accent="ingress" />
+                <HistoryMetricCard label={td("athleteHabitScoreLabel")} value={`${habitScoreSummary.score}`} accent="ingress" />
                 <HistoryMetricCard label={td("athleteHabitCompletedLabel")} value={`${habitCompletion.completed}/${habitCompletion.total}`} accent="strategy" />
                 <HistoryMetricCard label={td("athleteHabitStreakLabel")} value={`${habitStreak}`} accent="knowmore" />
                 <HistoryMetricCard label={td("athleteHabitFocusLabel")} value={habitFocusCategory} accent="review" />
@@ -486,7 +487,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   <Text fw={700}>{td("athleteHabitSummaryTitle")}</Text>
                   <Text c="dimmed">
                     {td("athleteHabitSummaryBody", {
-                      score: habitCompletion.score,
+                      score: habitScoreSummary.score,
                       streak: habitStreak,
                       strongest: strongestHabitCategory,
                       focus: habitFocusCategory
@@ -543,7 +544,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   <Text size="sm" c="dimmed">
                     {td("athleteHabitTrendInsight", {
                       days: habitTrendData.length,
-                      latest: latestHabitRecord ? getHabitCompletion(latestHabitRecord.statuses).score : 0
+                      latest: latestHabitRecord ? getHabitScoreSummary(latestHabitRecord.statuses).score : 0
                     })}
                   </Text>
                 </Stack>
@@ -1220,7 +1221,7 @@ function buildAthleteMemoryTimeline(
       })),
       emptyValue
     );
-    const habitScore = habitRecord ? getHabitCompletion(habitRecord.statuses).score : null;
+    const habitScore = habitRecord ? getHabitScoreSummary(habitRecord.statuses).score : null;
     const generalNote = assessment.notes.general.trim();
     const adaptationsNote = assessment.notes.adaptations.trim();
     const referralNote = assessment.notes.referral.trim();

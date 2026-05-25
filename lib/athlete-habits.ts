@@ -6,6 +6,15 @@ export type HabitDefinition = {
   category: HabitCategory;
 };
 
+export const HABIT_SCORE_VERSION = "2026-05-25";
+
+export const habitCategoryWeights: Record<HabitCategory, number> = {
+  training: 0.4,
+  recovery: 0.3,
+  wellness: 0.2,
+  learning: 0.1
+};
+
 export const athleteHabitDefinitions: HabitDefinition[] = [
   { key: "extraTouches", titleKey: "habitExtraTouches", category: "training" },
   { key: "weakFoot", titleKey: "habitWeakFoot", category: "training" },
@@ -17,6 +26,27 @@ export const athleteHabitDefinitions: HabitDefinition[] = [
   { key: "nutrition", titleKey: "habitNutrition", category: "wellness" },
   { key: "sleepBeforeMidnight", titleKey: "habitSleepBeforeMidnight", category: "wellness" }
 ];
+
+export type HabitCategoryScore = {
+  key: HabitCategory;
+  completed: number;
+  total: number;
+  weight: number;
+  contribution: number;
+};
+
+export type HabitScoreSummary = {
+  score: number;
+  categories: HabitCategoryScore[];
+  recoveryScore: number | null;
+  strongestGapKey?: string;
+  scorerVersion: string;
+};
+
+export type HabitRecordScoreSummary = HabitScoreSummary & {
+  athleteId: string;
+  date: string;
+};
 
 export function createEmptyHabitStatuses() {
   return Object.fromEntries(athleteHabitDefinitions.map((habit) => [habit.key, false])) as Record<string, boolean>;
@@ -55,6 +85,43 @@ export function getHabitCategoryBreakdown(statuses: Record<string, boolean>) {
   );
 }
 
+export function getHabitScoreSummary(statuses: Record<string, boolean>): HabitScoreSummary {
+  const normalizedStatuses = normalizeHabitStatuses(statuses);
+  const breakdown = getHabitCategoryBreakdown(normalizedStatuses);
+  const categories = (Object.keys(habitCategoryWeights) as HabitCategory[]).map((category) => {
+    const entry = breakdown[category];
+    const completionRatio = entry.total ? entry.completed / entry.total : 0;
+    return {
+      key: category,
+      completed: entry.completed,
+      total: entry.total,
+      weight: habitCategoryWeights[category],
+      contribution: roundHabitScore(completionRatio * habitCategoryWeights[category] * 100)
+    };
+  });
+  const score = roundHabitScore(categories.reduce((sum, category) => sum + category.contribution, 0));
+  const recoveryCategory = categories.find((category) => category.key === "recovery") ?? null;
+  const strongestGapKey = athleteHabitDefinitions.find((habit) => !normalizedStatuses[habit.key])?.key;
+
+  return {
+    score,
+    categories,
+    recoveryScore: recoveryCategory && recoveryCategory.weight > 0
+      ? roundHabitScore((recoveryCategory.contribution / recoveryCategory.weight))
+      : null,
+    strongestGapKey,
+    scorerVersion: HABIT_SCORE_VERSION
+  };
+}
+
+export function summarizeHabitRecords(records: Array<{ athleteId: string; date: string; statuses: Record<string, boolean> }>): HabitRecordScoreSummary[] {
+  return records.map((record) => ({
+    athleteId: record.athleteId,
+    date: record.date,
+    ...getHabitScoreSummary(record.statuses)
+  }));
+}
+
 export function getHabitStreak(records: Array<{ date: string; statuses: Record<string, boolean> }>) {
   const sorted = records
     .slice()
@@ -72,4 +139,8 @@ export function getHabitStreak(records: Array<{ date: string; statuses: Record<s
   }
 
   return streak;
+}
+
+function roundHabitScore(value: number) {
+  return Number(value.toFixed(1));
 }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
-import { normalizeHabitStatuses } from "@/lib/athlete-habits";
+import { normalizeHabitStatuses, summarizeHabitRecords } from "@/lib/athlete-habits";
 import { getChildById } from "@/repositories/child.repository";
 import { listHabitRecordsByAthleteId, upsertHabitRecord } from "@/repositories/habit-records.repository";
 
@@ -29,8 +29,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return jsonError("Athlete not found", 404, "NOT_FOUND");
     }
 
-    const records = await listHabitRecordsByAthleteId(id);
-    return NextResponse.json({ records });
+    const { searchParams } = new URL(request.url);
+    const from = stringValue(searchParams.get("from"), 10);
+    const to = stringValue(searchParams.get("to"), 10);
+    const shouldIncludeSummary = searchParams.get("summary") === "true";
+
+    const records = (await listHabitRecordsByAthleteId(id)).filter((record) => {
+      if (from && record.date < from) return false;
+      if (to && record.date > to) return false;
+      return true;
+    });
+    return NextResponse.json({
+      records,
+      ...(shouldIncludeSummary ? { summaries: summarizeHabitRecords(records) } : {})
+    });
   } catch (error) {
     return jsonError((error as Error).message);
   }

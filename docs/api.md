@@ -270,6 +270,35 @@ Roles: `admin`, `trainer`, `athlete`
 
 Scope: checked with `canAccessAthlete`.
 
+Query parameters:
+
+- `from=YYYY-MM-DD`: optional inclusive lower date bound.
+- `to=YYYY-MM-DD`: optional inclusive upper date bound.
+- `summary=true`: include versioned weighted summaries.
+
+Summary response shape:
+
+```json
+{
+  "records": [],
+  "summaries": [
+    {
+      "athleteId": "athlete id",
+      "date": "2026-05-25",
+      "score": 83.3,
+      "recoveryScore": 66.7,
+      "strongestGapKey": "mobility",
+      "scorerVersion": "2026-05-25",
+      "categories": [
+        { "key": "training", "completed": 2, "total": 2, "weight": 0.4, "contribution": 40 }
+      ]
+    }
+  ]
+}
+```
+
+Habit summaries are computed from persisted `habit_records` only. Unknown habit keys are ignored by the canonical normalizer rather than becoming an unversioned scoring path.
+
 ### `POST /api/athletes/:id/habits`
 
 Creates or updates one dated habit record for an athlete.

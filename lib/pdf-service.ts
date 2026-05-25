@@ -4,6 +4,7 @@ import type { AssessmentRecord } from "@/types/assessment";
 import type { HabitRecord } from "@/types/habit-record";
 import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist } from "@/lib/readiness-model";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
+import { getHabitScoreSummary } from "@/lib/athlete-habits";
 import { formatScore } from "./utils";
 
 interface JsPDFWithAutoTable extends jsPDF {
@@ -859,7 +860,7 @@ export const PdfService = {
     const overall = (record.computed.ski ?? 0) * 20;
     const operatingScore = Math.round(readiness * 0.55 + overall * 0.45);
     const latestHabit = habitHistory.find((entry) => entry.date === record.session.date) ?? habitHistory[habitHistory.length - 1] ?? null;
-    const habitScore = latestHabit ? this.getHabitCompletion(latestHabit.statuses).score : null;
+    const habitScore = latestHabit ? getHabitScoreSummary(latestHabit.statuses).score : null;
     const habitStreak = this.getHabitStreak(habitHistory);
 
     const loadValues = history

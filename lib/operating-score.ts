@@ -1,5 +1,5 @@
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
-import { athleteHabitDefinitions, getHabitCompletion } from "@/lib/athlete-habits";
+import { getHabitScoreSummary } from "@/lib/athlete-habits";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { HabitRecord } from "@/types/habit-record";
 import type { DailyOperatingMetrics, OperatingScoreComponent, ReadinessZone } from "@/types/operating-score";
@@ -14,7 +14,6 @@ export const OPERATING_SCORE_WEIGHTS: Record<OperatingScoreComponent, number> = 
   performance: 0.15
 };
 
-const recoveryHabitKeys = new Set(["stretching", "mobility", "recoverySession", "hydration", "nutrition", "sleepBeforeMidnight"]);
 const recoveryScoreKeys = ["sleep_quality", "body_feel", "fuel_hydration", "energy_level"] as const;
 
 export function buildDailyOperatingMetrics({
@@ -49,7 +48,7 @@ export function buildDailyOperatingMetric({
   habitRecord?: HabitRecord | null;
 }): DailyOperatingMetrics {
   const readinessScore = getReadinessScore(assessment);
-  const habitScore = habitRecord ? getHabitCompletion(habitRecord.statuses).score : null;
+  const habitScore = habitRecord ? getHabitScoreSummary(habitRecord.statuses).score : null;
   const recoveryScore = getRecoveryScore(assessment, habitRecord ?? null);
   const trainingLoadPoints = getTrainingLoadPoints(assessment);
   const trainingLoadScore = scoreTrainingLoad(trainingLoadPoints);
@@ -136,17 +135,9 @@ function getRecoveryScore(record: AssessmentRecord, habitRecord: HabitRecord | n
     .filter((score): score is number => typeof score === "number")
     .map(normalizeSixPointScore);
 
-  const habitScore = habitRecord ? getRecoveryHabitScore(habitRecord) : null;
+  const habitScore = habitRecord ? getHabitScoreSummary(habitRecord.statuses).recoveryScore : null;
   const sources = [...checkInScores, ...(habitScore === null ? [] : [habitScore])];
   return sources.length ? roundScore(sources.reduce((sum, value) => sum + value, 0) / sources.length) : null;
-}
-
-function getRecoveryHabitScore(habitRecord: HabitRecord) {
-  const recoveryHabits = athleteHabitDefinitions.filter((habit) => recoveryHabitKeys.has(habit.key));
-  if (!recoveryHabits.length) return null;
-
-  const completed = recoveryHabits.filter((habit) => habitRecord.statuses[habit.key]).length;
-  return roundScore((completed / recoveryHabits.length) * 100);
 }
 
 function getPerformanceScore(record: AssessmentRecord) {
