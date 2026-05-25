@@ -8,6 +8,8 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 - `npm run test` passes when code behavior changed.
 - `npm run build` passes.
 - `npm run typecheck` passes for shared contracts, API changes, and broad refactors.
+- `npm run semantic:audit` passes for UI/design-system cleanup work.
+- `npm run gds:audit` is reviewed for GDS migration work. It may fail only with documented external blockers until the repo is fully governed.
 - Database-sensitive changes are verified with `npm run db:ping` when environment access is relevant.
 
 ## Product Language
@@ -44,6 +46,7 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 - Avoid nested cards and unnecessary decorative surfaces.
 - Buttons and compact controls must keep text readable on mobile and RTL layouts.
 - Personal-data pages should be efficient operating surfaces, not marketing pages.
+- GDS migration work must follow the [GDS Verification Matrix](gds-verification-matrix.md).
 
 ## Data And Persistence
 

@@ -277,12 +277,16 @@ Run before merging meaningful changes:
 ```bash
 npm run lint
 npm run test
+npm run semantic:audit
+npm run gds:audit
 npm run i18n:audit
 npm run build
 npm run typecheck
 ```
 
-`npm run semantic:audit` is useful during design-system cleanup, but it currently reports known generic hue props and is not yet a universal merge gate.
+`npm run semantic:audit` now passes and should remain a UI/design-system cleanup gate. `npm run gds:audit` is the explicit 100% GDS-only readiness gate; it is expected to fail until GDS packages are installable, Mantine compatibility is resolved, runtime imports exist, and `gds-adoption.json` is governed.
+
+GDS migration and rollback checks are documented in [docs/gds-verification-matrix.md](docs/gds-verification-matrix.md).
 
 For database/env validation:
 

@@ -43,6 +43,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Deployment](docs/deployment.md)
 - [Design System](docs/design-system.md)
 - [General Design System Adoption](docs/gds-adoption.md)
+- [GDS Verification Matrix](docs/gds-verification-matrix.md)
 - [GDS Adoption Manifest](gds-adoption.json)
 - [Definition of Done](docs/dod.md)
 - [User Guide](docs/user-guide.md)

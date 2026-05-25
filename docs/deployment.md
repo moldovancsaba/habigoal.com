@@ -160,10 +160,12 @@ Run the full local validation set before production release:
 
 ```bash
 npm run i18n:audit
+npm run semantic:audit
+npm run gds:audit
 npm run lint
 npm run test
 npm run typecheck
 npm run build
 ```
 
-Use `npm run db:ping` when the change depends on live database connectivity. Use `npm run semantic:audit` as a targeted design-system cleanup check; it currently identifies known generic hue props until those surfaces are migrated.
+Use `npm run db:ping` when the change depends on live database connectivity. `npm run semantic:audit` must pass for UI/design-system cleanup work. `npm run gds:audit` is the explicit 100% GDS-only readiness gate; it is expected to fail until GDS packages are installable, Mantine compatibility is resolved, runtime imports exist, and `gds-adoption.json` is governed.
