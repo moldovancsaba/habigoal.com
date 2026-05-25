@@ -51,6 +51,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Legal and Company Info](docs/legal.md)
 - [SSO Setup](docs/sso-setup.md)
 - [Product Roadmap](ROADMAP.md)
+- [Athlete IQ Gap Analysis](docs/athlete-iq-gap-analysis-2026-05-25.md)
 - [I18n Audit](docs/i18n-audit-2026-05-12.md)
 - [Codex Automation Architecture](.codex/memory/architecture.md)
 
