@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
+import { StateBlock } from "@/components/ui/StateBlock";
 import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -16,6 +17,7 @@ import { BenchmarkChart } from "@/components/analytics/BenchmarkChart";
 import { SparklineChart } from "@/components/analytics/SparklineChart";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/readiness-model";
+import { getAthleteEmptyStateAction } from "@/lib/empty-state";
 import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitScoreSummary, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
@@ -63,6 +65,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const tr = useTranslations("Report");
   const emptyValue = tc("emptyValue");
   const isAthleteApp = pathname.includes("/athletes/") && !pathname.includes("/dashboard/athletes/");
+  const emptyStateRole = isAthleteApp ? "athlete" : "trainer";
 
   const [data, setData] = useState<AthleteHistoryPayload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -284,6 +287,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const loadStatus = getLoadStatus(loadRatio);
   const athleteLocation = latest?.session.location || data?.child.latestLocation || emptyValue;
   const relevantSessionPlan = selectRelevantSessionPlan(sessionPlans, data?.child.name || "", athleteLocation);
+  const noRecordsAction = getAthleteEmptyStateAction({
+    role: emptyStateRole,
+    reason: "no_records",
+    athleteId: data?.child._id
+  });
 
   if (loading) {
     return (
@@ -340,7 +348,15 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
       {data.assessments.length === 0 ? (
         <SectionCard title={td("athleteHistoryEmptyTitle")} subheader={td("athleteHistoryEmptySubtitle")}>
-          <Text c="dimmed">{t("noHistory")}</Text>
+          <StateBlock
+            title={td("athleteHistoryEmptyTitle")}
+            body={t("noHistory")}
+            action={noRecordsAction?.href ? (
+              <Button component={Link} href={noRecordsAction.href} color="ingress">
+                {td(noRecordsAction.labelKey)}
+              </Button>
+            ) : null}
+          />
         </SectionCard>
       ) : (
         <>
@@ -640,7 +656,15 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             subheader={td("athleteLoadSubtitle")}
           >
             {loadTimeline.length === 0 ? (
-              <Text c="dimmed">{td("athleteLoadEmpty")}</Text>
+              <StateBlock
+                title={td("athleteLoadTitle")}
+                body={td("athleteLoadEmpty")}
+                action={noRecordsAction?.href ? (
+                  <Button component={Link} href={noRecordsAction.href} color="ingress">
+                    {td(noRecordsAction.labelKey)}
+                  </Button>
+                ) : null}
+              />
             ) : (
               <Stack gap="md">
                 <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">

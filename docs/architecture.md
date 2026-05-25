@@ -70,6 +70,8 @@ Services hold cross-route application logic:
 
 `lib/athlete-habits.ts` owns habit definitions, normalization, category weights, and `HabitScoreSummary`. The current weighted categories are training `0.40`, recovery `0.30`, wellness `0.20`, and learning `0.10`.
 
+`lib/empty-state.ts` owns role-aware empty-state action resolution. UI surfaces render those actions through `components/ui/StateBlock.tsx` until the GDS runtime package blocker is removed and the component can be replaced by the canonical GDS state primitive.
+
 Rules:
 
 - no local/demo/offline fallback data
@@ -77,6 +79,7 @@ Rules:
 - fixture parity tests in `lib/operating-score.test.ts` freeze score version behavior
 - scoring changes must update `OPERATING_SCORE_VERSION`, fixtures, API docs, and issue/project state
 - habit-weight changes must update `HABIT_SCORE_VERSION`, habit scorer tests, API docs, and project state
+- empty states must explain the reason and next safe action without injecting sample data or revealing inaccessible records
 
 ### Access Control
 

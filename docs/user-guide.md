@@ -33,6 +33,8 @@ Athletes cannot:
 - open trainer dashboard pages
 - manage users, teams, settings, restore bins, or governance metrics
 
+Empty or partial athlete surfaces should explain the missing source and show the next safe action, such as starting the athlete's own daily check-in. Habigoal must not inject sample/demo data to fill an empty state.
+
 ## Trainer Experience
 
 Trainers use `/{locale}/dashboard`.

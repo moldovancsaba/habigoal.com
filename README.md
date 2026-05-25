@@ -30,6 +30,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - Role model: `athlete`, `trainer`, and `admin`.
 - Athlete users are scoped to their linked athlete profile.
 - Trainer users are scoped through team membership.
+- Empty athlete surfaces use role-aware `StateBlock` guidance and must not rely on sample/demo fallback data.
 - Admin users manage users, teams, settings, restore workflows, and governance data.
 - Team management through the `teams` collection and `/api/teams`.
 - Soft-delete and restore workflows for athletes and check-ins.
