@@ -1,65 +1,77 @@
-# Habigoal design system (Mantine)
+# Design System Adapter
 
-`DESIGN.md` at the repo root is the canonical design-system source of truth for both humans and coding agents.
+`/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM` is the single source of truth for design, UI, and UX. Project-local files describe only implementation adapter details, migration state, validation commands, and approved exceptions.
 
-- [DESIGN.md](/Users/Shared/Projects/habigoal/DESIGN.md) defines the durable token contract and the semantic usage rules.
-- This document explains how that design system is implemented in the current codebase.
+Habigoal currently uses Mantine with local adapters. The target is 100% General Design System consumption through `@gds/theme`, `@gds/core`, and `@gds/admin`.
 
-The landing page, athlete app, trainer dashboard, settings, planning, records, news, and legal surfaces use **Mantine** with a single app theme and shared layout primitives. Presentation is separated from API/data logic.
+## Current Implementation
 
-## Architecture
+| Layer | Current role | Target GDS owner |
+|--------|--------------|------------------|
+| `components/theme/ThemeRegistry.tsx` | Mantine provider, local theme mode context, locale direction | `@gds/theme` `GdsProvider` plus thin Habigoal auth/locale adapter |
+| `theme/mantine-theme.ts` | Local Mantine theme and component defaults | `@gds/theme` `gdsTheme` / `extendGdsTheme(...)` |
+| `theme/tokens.ts` and `theme/typography.ts` | Local layout, tone, and typography constants | GDS tokens and component contracts |
+| `components/layout/DashboardShell.tsx` | Protected app shell, nav, footer, role-aware layout | `@gds/admin` `AppShell` plus Habigoal nav data |
+| `components/ui/*` | Local page, card, switcher, and data-card primitives | `@gds/core` / `@gds/admin` components or thin route-aware adapters |
+| `app/globals.css` | Global atmosphere, CSS variables, print helpers, chart font handling | GDS global baseline plus approved print/chart exceptions |
 
-| Layer | Role |
-|--------|------|
-| `theme/mantine-theme.ts` | `getHabigoalMantineTheme("light" \| "dark")` — semantic colors, typography (`Noto Sans` / `Noto Sans Arabic`), radius, and component defaults. |
-| `components/theme/ThemeRegistry.tsx` | `MantineProvider` + color-scheme wiring using `ThemeModeContext`. |
-| `components/theme/ThemeModeContext.tsx` | `mode` / `setMode`, syncs `document.documentElement` `data-theme`, local storage (`habigoal_theme`, legacy `theme`), and consent-gated cookie persistence. |
-| `components/layout/DashboardShell.tsx` | Responsive protected-app shell: Mantine `AppShell` + mobile `Drawer`, role-aware nav, `PageContainer`, shared app footer. |
-| `components/ui/PageContainer.tsx` | Max-width + horizontal padding for page content. |
-| `components/ui/SectionCard.tsx` | Mantine `Paper` + optional header/action block for grouped sections. |
+## GDS Package Use
 
-`app/[locale]/layout.tsx` wraps the tree with `NextIntlClientProvider` and `ThemeRegistry`. Locale-aware routes stay under this layout so Mantine + `ThemeModeProvider` are always available where UI renders.
-Theme initialization also reads cookie-backed mode from server layout to avoid refresh mismatch.
+The intended dependency set is:
 
-## Usage rules
+```txt
+@gds/theme
+@gds/core
+@gds/admin
+```
 
-1. **Prefer Mantine primitives** — `Box`, `Stack`, `Text`, `Button`, `TextInput`, `Table`, `Alert`, `Paper`, etc., styled from the shared theme and tokens.
-2. **Typography** — use the shared typography tokens and semantic sizes (`xs/sm/md/lg/xl`); avoid arbitrary pixel/rem literals.
-3. **Forms** — controlled inputs should use Mantine fields and shared wrappers (`SearchableSelect`, etc.).
-4. **Navigation** — use `Link` / `usePathname` from `@/i18n/navigation` with Mantine components.
-5. **Global CSS** — keep `app/globals.css` focused on global tokens, atmosphere, print helpers (`.no-print`, `.only-print`, `.dashboard-main`), and shared surface classes.
-6. **Accessibility** — preserve semantic labels and aria attributes on interactive controls.
-7. **Charts** — dashboard and analytics visuals use `recharts`; avoid one-off SVG chart implementations unless a library chart is impossible.
+Current blocker: these packages are not available from the public npm registry, and the inspected package peer range targets Mantine `^7.9.0` while Habigoal uses Mantine `8.3.6`.
 
-## Adding a new protected app page
+Do not add direct imports from `@gds/*` until the package source is available in a stable way and Mantine peer compatibility is resolved.
 
-1. Add a route under `app/[locale]/dashboard/...`.
-2. Use `PageContainer` implicitly via `DashboardShell` (already wraps `children`).
-3. Structure content with `SectionCard` and Mantine layout components.
-4. Reuse `useTranslations` namespaces (`Dashboard`, `Assessment`, `Common`, `Schema`, or a feature-specific namespace).
-5. Run `npm run typecheck`, `npm run lint`, `npm run i18n:audit`, and `npm run build` before merging.
+## Allowed Local Adapters
 
-## i18n and content rules
+Local code may adapt:
 
-- All visible UI copy must come from `/messages` or structured localized content.
-- Public news posts must render only in locales where exact locale content exists.
-- RTL locales must be checked on compact action bars and buttons because translated action labels can be wider than English.
-- Do not add hardcoded English fallback text to shared components.
+- `next-intl` locale messages into GDS i18n context.
+- `@/i18n/navigation` route links into GDS shell/nav components.
+- OAuth session and Habigoal role/team state into shell actions and access summaries.
+- Product data into GDS cards, tables, forms, and state blocks.
+- Chart, PDF, public news, and provider-branded auth exception containers.
 
-## Source Of Truth
+Local code must not define a competing token system, generalized component behavior, canonical spacing scale, control semantics, or responsive rules.
 
-When updating the design system:
+## First Safe Implementation Step
 
-1. Update [DESIGN.md](/Users/Shared/Projects/habigoal/DESIGN.md) first if the token contract or design rules change.
-2. Reflect those changes in the live implementation files:
-   - [app/globals.css](/Users/Shared/Projects/habigoal/app/globals.css)
-   - [theme/mantine-theme.ts](/Users/Shared/Projects/habigoal/theme/mantine-theme.ts)
-   - [lib/semantic-theme.ts](/Users/Shared/Projects/habigoal/lib/semantic-theme.ts)
-   - [theme/typography.ts](/Users/Shared/Projects/habigoal/theme/typography.ts)
-   - [theme/tokens.ts](/Users/Shared/Projects/habigoal/theme/tokens.ts)
-3. Run `npm run semantic:audit` during token cleanup. The audit currently flags known generic hue props until those remaining surfaces are migrated to semantic tones.
+The first code PR should be intentionally small:
 
-## Migration notes
+1. Add a stable package source for `@gds/theme`, `@gds/core`, and `@gds/admin`.
+2. Confirm Mantine 8 compatibility or align both repos on the same Mantine major.
+3. Replace root provider setup with GDS provider semantics while preserving Habigoal theme mode, locale, RTL, and consent behavior.
+4. Migrate one high-value surface, preferably the public landing page or one dashboard page header/card set.
+5. Add a lockfile audit that fails duplicate Mantine majors or mixed GDS versions.
 
-- Legacy `.panel`, `.btn`, `.metrics`, `.scoreRow`, etc., were removed when pages moved to shared design-system primitives; **do not reintroduce** large bespoke CSS blocks for dashboard UI.
-- Record print view still uses `className="no-print"` / `only-print` and global `@media print` rules, but user-facing export action is PDF download from the record page.
+## Migration Sequence
+
+1. Root provider and theme.
+2. Shared buttons, page headers, state blocks, cards, and form fields.
+3. Dashboard shell, nav, tables, stats, and responsive data views.
+4. Athlete app and trainer dashboard surfaces.
+5. Settings, restore, governance, and admin CRUD surfaces.
+6. News/article shell and public pages.
+7. Delete obsolete local token/theme/component authority.
+
+## Validation
+
+Run the standard gates after every migration slice:
+
+```bash
+npm run semantic:audit
+npm run i18n:audit
+npm run lint
+npm run test
+npm run typecheck
+npm run build
+```
+
+`npm run semantic:audit` should evolve from legacy hue cleanup into a strict GDS compliance gate.

@@ -1,324 +1,76 @@
----
-version: alpha
-name: Habigoal
-description: Semantic liquid-glass daily athlete support workspace for readiness, habits, planning, reporting, and operations.
-colors:
-  app-bg-light: "#EDF3FF"
-  app-bg-dark: "#050917"
-  sidebar-bg-light: "#F2F7FF"
-  sidebar-bg-dark: "#081123"
-  surface-base-light: "#FFFFFFC7"
-  surface-base-dark: "#10182DB8"
-  surface-elevated-light: "#F6FAFFE0"
-  surface-elevated-dark: "#151F36D1"
-  border-primary-light: "#3D4F8224"
-  border-primary-dark: "#8DABFF29"
-  text-primary-light: "#10203D"
-  text-primary-dark: "#EDF4FF"
-  text-secondary-light: "#51627F"
-  text-secondary-dark: "#B3C1DF"
-  text-muted-light: "#7888A7"
-  text-muted-dark: "#7F8DB0"
-  overlay-light: "#E9F1FFD1"
-  overlay-dark: "#050917D6"
-  nav-company-label-light: "#3958D9"
-  nav-company-label-dark: "#8DB0FF"
-  nav-company-description-light: "#5871C6"
-  nav-company-description-dark: "#C5D4FF"
-  nav-link-active-light: "#10203D"
-  nav-link-active-dark: "#EDF4FF"
-  nav-link-inactive-light: "#5D6F94"
-  nav-link-inactive-dark: "#B9C7EA"
-  blob-1-light: "#4F46E547"
-  blob-1-dark: "#4F46E56B"
-  blob-2-light: "#2563EB33"
-  blob-2-dark: "#0EA5E943"
-  blob-3-light: "#A855F72E"
-  blob-3-dark: "#A855F751"
-  grid-line-light: "#3D4F820F"
-  grid-line-dark: "#8DABFF14"
-  ingress: "#2563EB"
-  ingress-dark: "#6AA6FF"
-  synthesis: "#4F46E5"
-  synthesis-dark: "#7F72FF"
-  knowmore: "#0891B2"
-  knowmore-dark: "#4BD7FF"
-  strategy: "#A855F7"
-  strategy-dark: "#D58BFF"
-  checklist: "#0EA5E9"
-  checklist-dark: "#4FD6FF"
-  tactical: "#14B8A6"
-  tactical-dark: "#45E3CF"
-  review: "#F97316"
-  review-dark: "#FF9B66"
-  neutral: "#64748B"
-  neutral-dark: "#A9B7D0"
-typography:
-  h1:
-    fontFamily: "Noto Sans"
-    fontSize: 2rem
-    fontWeight: 800
-    lineHeight: 1.1
-    letterSpacing: -0.03em
-  h2:
-    fontFamily: "Noto Sans"
-    fontSize: 1.5rem
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: -0.03em
-  h3:
-    fontFamily: "Noto Sans"
-    fontSize: 1.25rem
-    fontWeight: 700
-    lineHeight: 1.25
-    letterSpacing: -0.02em
-  h4:
-    fontFamily: "Noto Sans"
-    fontSize: 1.125rem
-    fontWeight: 700
-    lineHeight: 1.4
-    letterSpacing: -0.02em
-  body-xs:
-    fontFamily: "Noto Sans"
-    fontSize: 0.75rem
-    fontWeight: 400
-    lineHeight: 1.4
-  body-sm:
-    fontFamily: "Noto Sans"
-    fontSize: 0.875rem
-    fontWeight: 400
-    lineHeight: 1.5
-  body-md:
-    fontFamily: "Noto Sans"
-    fontSize: 1rem
-    fontWeight: 400
-    lineHeight: 1.5
-  body-lg:
-    fontFamily: "Noto Sans"
-    fontSize: 1.125rem
-    fontWeight: 500
-    lineHeight: 1.5
-  body-xl:
-    fontFamily: "Noto Sans"
-    fontSize: 1.25rem
-    fontWeight: 500
-    lineHeight: 1.5
-  label-caps:
-    fontFamily: "Noto Sans"
-    fontSize: 0.75rem
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: 0.04em
-  label-tight:
-    fontFamily: "Noto Sans"
-    fontSize: 0.875rem
-    fontWeight: 500
-    lineHeight: 1.4
-    letterSpacing: -0.01em
-rounded:
-  sm: 6px
-  md: 8px
-  lg: 10px
-  xl: 18px
-  pill: 999px
-spacing:
-  xs: 8px
-  sm: 12px
-  md: 16px
-  lg: 24px
-  xl: 32px
-  2xl: 40px
-  shell-nav-width: 292px
-components:
-  button-primary:
-    backgroundColor: "{colors.ingress}"
-    textColor: "{colors.text-primary-dark}"
-    typography: "{typography.label-caps}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.md}"
-  button-outline:
-    backgroundColor: "{colors.surface-base-light}"
-    textColor: "{colors.text-primary-light}"
-    typography: "{typography.label-caps}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.md}"
-  card-surface:
-    backgroundColor: "{colors.surface-base-light}"
-    textColor: "{colors.text-primary-light}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.lg}"
-  card-surface-elevated:
-    backgroundColor: "{colors.surface-elevated-light}"
-    textColor: "{colors.text-primary-light}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.lg}"
-  nav-item:
-    backgroundColor: "{colors.surface-base-light}"
-    textColor: "{colors.nav-link-inactive-light}"
-    typography: "{typography.label-tight}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.md}"
-  nav-item-active:
-    backgroundColor: "{colors.surface-base-light}"
-    textColor: "{colors.nav-link-active-light}"
-    typography: "{typography.label-tight}"
-    rounded: "{rounded.lg}"
-    padding: "{spacing.md}"
-  input-field:
-    backgroundColor: "{colors.surface-elevated-light}"
-    textColor: "{colors.text-primary-light}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.sm}"
-  modal-surface:
-    backgroundColor: "{colors.surface-elevated-light}"
-    textColor: "{colors.text-primary-light}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.lg}"
-  page-header:
-    backgroundColor: "{colors.surface-base-light}"
-    textColor: "{colors.text-primary-light}"
-    typography: "{typography.h2}"
-    rounded: "{rounded.md}"
-    padding: "{spacing.lg}"
-  brand-mark:
-    backgroundColor: "{colors.surface-base-light}"
-    textColor: "{colors.text-primary-light}"
-    typography: "{typography.h2}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.md}"
----
+# Habigoal Design Adapter
 
-## Overview
+Status: Migration adapter
+Last updated: 2026-05-25
 
-Habigoal is an operational athlete-support workspace, not a marketing site. The interface should feel precise, glassy, and deliberate: high-contrast information, layered liquid surfaces, and semantic color roles that help scanning. The tone is calm control rather than exuberant decoration.
+`/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM` is the single source of truth for design, UI, and UX. Project-local files describe only implementation adapter details, migration state, validation commands, and approved exceptions.
 
-The visual language is defined by three rules:
+Habigoal must not redefine component behavior, interaction patterns, token policy, responsive strategy, accessibility baseline, or canonical control semantics locally. Those decisions belong to the General Design System.
 
-1. Mantine is the only component system.
-2. Semantic intent comes before hue preference.
-3. Surfaces carry the identity more than accents do.
+## Current Position
 
-Agents should preserve the product's authored light and dark modes, the soft liquid-glass elevation model, and the disciplined use of semantic tones for structure, emphasis, and navigation.
+Habigoal is not yet 100% GDS-only.
 
-## Colors
+The application still contains local theme and UI adapter code that predates the General Design System package boundary:
 
-Habigoal uses two token layers:
+- [theme/mantine-theme.ts](/Users/Shared/Projects/habigoal/theme/mantine-theme.ts)
+- [theme/tokens.ts](/Users/Shared/Projects/habigoal/theme/tokens.ts)
+- [theme/typography.ts](/Users/Shared/Projects/habigoal/theme/typography.ts)
+- [components/theme/ThemeRegistry.tsx](/Users/Shared/Projects/habigoal/components/theme/ThemeRegistry.tsx)
+- [components/layout/DashboardShell.tsx](/Users/Shared/Projects/habigoal/components/layout/DashboardShell.tsx)
+- [components/ui](/Users/Shared/Projects/habigoal/components/ui)
+- [app/globals.css](/Users/Shared/Projects/habigoal/app/globals.css)
 
-1. A foundation layer for page background, surface, text, border, navigation, and atmospheric blobs.
-2. A semantic tone layer for product meaning.
+These files are temporary product adapters until Habigoal consumes `@gds/theme`, `@gds/core`, and `@gds/admin`.
 
-Foundation colors are mode-specific. Light mode is airy and refracted; dark mode is deep and high-contrast. Both modes should preserve the same hierarchy: strong text, translucent surfaces, restrained borders, and atmospheric gradients.
+## Required GDS Package Boundary
 
-Semantic tones:
+The target package boundary is:
 
-- **Ingress:** primary check-in and navigation emphasis
-- **Synthesis:** clustering, interpretation, and intelligence
-- **Knowmore:** evidence, enrichment, and supporting context
-- **Strategy:** planning, summaries, and synthesized direction
-- **Checklist:** structured execution and progress states
-- **Tactical:** active operations and hands-on execution
-- **Review:** warnings, decisions, deletions, and guarded actions
-- **Neutral:** structural UI and fallback content
+- `@gds/theme`: root provider, Mantine theme, direction, modals, notifications, and GDS i18n context.
+- `@gds/core`: shared product primitives such as semantic buttons, page headers, metric/progress/product cards, state blocks, article/auth/public shells, upload/media components, filters, and form fields.
+- `@gds/admin`: protected workspace primitives such as app shell, data table, responsive data view, form section, stats strip, admin page header, workspace header, and editor scaffold.
 
-When adding a new colored surface or action, choose the tone by meaning, not by aesthetic instinct.
+Habigoal-specific code may provide thin adapters only when needed for routing, `next-intl`, auth state, team/role context, or product data mapping.
 
-## Typography
+## Known Integration Blockers
 
-Habigoal uses `Noto Sans` for left-to-right languages and `Noto Sans Arabic` for right-to-left rendering, with `Noto Sans` as fallback support. Typography should feel dense enough for dashboards but still editorially controlled.
+- `@gds/*` packages are not published to the public npm registry.
+- The inspected GDS packages declare Mantine `^7.9.0` peers.
+- Habigoal currently uses Mantine `8.3.6`.
 
-Rules:
+Until those blockers are resolved, direct package adoption is unsafe because it can create duplicate Mantine contracts or peer dependency drift.
 
-- Headings are tight and heavy.
-- Body text remains straightforward and highly readable.
-- Buttons, badges, and control labels use uppercase or tightened label styles when acting as system controls.
-- Arabic rendering must switch to the RTL font stack instead of inheriting Latin defaults.
+## Migration Rules
 
-Avoid ad hoc font stacks, arbitrary sizes, or decorative type pairings that conflict with the operating-surface character of the product.
+1. Do not add new local token definitions.
+2. Do not add new local component behavior that belongs in GDS.
+3. Use existing local adapters only when touching legacy surfaces.
+4. New generalized UI primitives should be added to GDS first, then consumed by Habigoal.
+5. Product-specific copy, data mapping, access control, and route wiring stay in Habigoal.
+6. Charts, PDFs, external embeds, and provider-branded auth controls may remain exceptions, but their containers, states, spacing, and actions should follow GDS.
 
-## Layout
+## Migration Phases
 
-Habigoal is built around a dashboard shell with a fixed navigation rail and glass-panel content regions. Spacing should be consistent and restrained rather than loose.
+1. **Authority lock:** Treat GDS as the only design authority and remove local docs that redefine token/component policy.
+2. **Compatibility release:** Publish or otherwise consume Mantine 8-compatible `@gds/theme`, `@gds/core`, and `@gds/admin` packages.
+3. **Root provider migration:** Replace `ThemeRegistry` and local Mantine theme ownership with `GdsProvider` or `extendGdsTheme(...)`.
+4. **Core primitive migration:** Replace local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, action buttons, state blocks, and form wrappers with GDS primitives or thin adapters.
+5. **Protected workspace migration:** Replace local dashboard shell, nav links, stats strips, settings tables, restore views, and CRUD layouts with `@gds/admin`.
+6. **CSS/token deletion:** Remove local design tokens, raw colors, repeated spacing literals, and bespoke glass surface classes after equivalent GDS coverage exists.
+7. **Enforcement:** Expand `npm run semantic:audit` into a GDS compliance gate that fails new local token authority, raw colors, and non-GDS generalized UI primitives.
 
-Key layout rules:
+## Validation
 
-- Use the app shell navigation width of `292px`.
-- Prefer the shared spacing scale over raw numbers.
-- Group content into section cards and page headers instead of free-floating blocks.
-- Default page composition is header, section cards, then charts/tables/forms.
-- Dense information should still breathe through padding and section separation rather than oversized whitespace.
+Use these checks during migration:
 
-## Elevation & Depth
+```bash
+npm run semantic:audit
+npm run i18n:audit
+npm run lint
+npm run test
+npm run typecheck
+npm run build
+```
 
-Depth is a defining part of the system. Habigoal is not flat. Surfaces use translucent fills, subtle inner highlights, soft borders, blur, and glow-backed hover states.
-
-The live implementation uses:
-
-- layered radial atmosphere blobs in the page background
-- gradient-tinted translucent surfaces
-- elevated shadows with inset highlights
-- blurred glass panels and pills
-- tone-aware hover glows for semantic surfaces
-
-Guidance:
-
-- Cards, headers, and nav trays should feel like one family of material.
-- Hover states should intensify glow and border presence, not jump to unrelated colors.
-- Do not replace glass surfaces with opaque commodity white or flat dark panels unless a print/export surface explicitly requires it.
-- Print surfaces are the exception: they intentionally flatten to white.
-
-## Shapes
-
-The shape language is modern but controlled.
-
-- Most components use `md` radius.
-- Navigation items are slightly rounder at `lg`.
-- Glass pills and compact status chips may use `pill`.
-- The brand mark can scale beyond the default radius system, but still belongs to the same softened geometry family.
-
-Do not introduce exaggerated playful rounding. Habigoal should feel sharp enough for operations while still contemporary.
-
-## Components
-
-The theme layer owns defaults for the core family:
-
-- `Paper` and `Card` provide the glass surface baseline.
-- `Button` uses uppercase high-weight labels with semantic tone ownership.
-- `Badge` uses tight tracking and small radius.
-- `NavLink` keeps restrained rounding and semantic active states.
-- `TextInput`, `Select`, and `Textarea` share elevated input surfaces and subdued labels.
-- `Modal` uses a stronger elevated surface than cards.
-- `SectionCard`, `PageHeader`, and `BrandMark` are composition primitives built on top of the same tokens.
-
-Implementation source currently lives in:
-
-- `app/globals.css`
-- `theme/mantine-theme.ts`
-- `lib/semantic-theme.ts`
-- `theme/typography.ts`
-- `theme/tokens.ts`
-
-Agents should update those files in ways that remain consistent with this document, not by creating parallel local styling systems.
-
-## Do's and Don'ts
-
-Do:
-
-- Use semantic tones instead of raw hue names.
-- Reuse the shared Mantine theme and shared UI primitives.
-- Preserve the authored light and dark foundations.
-- Keep surfaces translucent, layered, and gradient-backed.
-- Keep visible text in locale files rather than hardcoding UI copy.
-
-Don't:
-
-- Introduce Tailwind, shadcn fragments, or a second UI system.
-- Style new features with raw `blue`, `green`, `orange`, `purple`, `cyan`, `teal`, `indigo`, or `amber` props.
-- Reintroduce legacy `kidex` palette naming or tokens.
-- Flatten the UI into plain cards without glass treatment.
-- Add isolated one-off shadows, radii, or color exceptions when the theme should own them.
-
-The semantic audit script is part of enforcement. If the code and this file diverge, update both together so `DESIGN.md` remains the durable design-system source of truth.
+Once GDS packages are installed, add a package compatibility check that verifies exactly one Mantine major version and exactly one GDS package version family are present in the lockfile.

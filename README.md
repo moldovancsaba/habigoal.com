@@ -42,6 +42,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Architecture](docs/architecture.md)
 - [Deployment](docs/deployment.md)
 - [Design System](docs/design-system.md)
+- [General Design System Adoption](docs/gds-adoption.md)
 - [Definition of Done](docs/dod.md)
 - [User Guide](docs/user-guide.md)
 - [Settings Guide](docs/settings-guide.md)
@@ -61,6 +62,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 - MongoDB driver: `6.21.0`
 - next-intl: `4.9.2`
 - Mantine: `8.3.6`
+- General Design System: target package family is `@gds/theme`, `@gds/core`, and `@gds/admin`; adoption is blocked until a stable package source and Mantine peer compatibility are resolved.
 - Node.js: `22.x`
 - App version: `0.5.0`
 
@@ -109,6 +111,8 @@ npm run db:ping
 ```
 
 `npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
+
+Design authority lives in `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM`. Habigoal-local design docs describe only adapter details, migration state, validation commands, and approved exceptions.
 
 ## Data Collections
 

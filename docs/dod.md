@@ -36,8 +36,10 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 
 ## UI Quality
 
-- Follow the Habigoal design system in `DESIGN.md` and `docs/design-system.md`.
-- Prefer existing Mantine patterns and shared components.
+- Follow `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM` as the design, UI, and UX source of truth.
+- Treat `DESIGN.md` and `docs/design-system.md` as Habigoal adapter and migration documents only.
+- Prefer existing Mantine patterns and shared components until `@gds/theme`, `@gds/core`, and `@gds/admin` are available to Habigoal.
+- Do not add new local token systems or generalized UI primitives that belong in GDS.
 - Avoid nested cards and unnecessary decorative surfaces.
 - Buttons and compact controls must keep text readable on mobile and RTL layouts.
 - Personal-data pages should be efficient operating surfaces, not marketing pages.
