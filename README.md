@@ -43,6 +43,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Deployment](docs/deployment.md)
 - [Design System](docs/design-system.md)
 - [General Design System Adoption](docs/gds-adoption.md)
+- [GDS Adoption Manifest](gds-adoption.json)
 - [Definition of Done](docs/dod.md)
 - [User Guide](docs/user-guide.md)
 - [Settings Guide](docs/settings-guide.md)
@@ -62,7 +63,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 - MongoDB driver: `6.21.0`
 - next-intl: `4.9.2`
 - Mantine: `8.3.6`
-- General Design System: target package family is `@gds/theme`, `@gds/core`, and `@gds/admin`; adoption is blocked until a stable package source and Mantine peer compatibility are resolved.
+- General Design System: latest inspected line is `2.4.3`; target package family is `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`; adoption is blocked until a stable package source and Mantine peer compatibility are resolved.
 - Node.js: `22.x`
 - App version: `0.5.0`
 
@@ -104,13 +105,14 @@ HABIGOAL_ENFORCE_AUTH=true
 ```bash
 npm run lint
 npm run test
+npm run gds:audit
 npm run i18n:audit
 npm run build
 npm run typecheck
 npm run db:ping
 ```
 
-`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
+`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run gds:audit` is the strict GDS-only readiness check; it intentionally fails until the latest GDS packages are installable, Mantine compatibility is resolved, and local adapters are migrated to active GDS contracts. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
 Design authority lives in `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM`. Habigoal-local design docs describe only adapter details, migration state, validation commands, and approved exceptions.
 

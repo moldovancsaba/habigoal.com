@@ -19,6 +19,7 @@
     "db:backfill-daily-tracker-history": "node scripts/backfill-daily-tracker-history.mjs",
     "db:migrate-survey-identifiers": "node scripts/migrate-survey-identifiers.mjs",
     "semantic:audit": "node scripts/semantic-audit.mjs",
+    "gds:audit": "node scripts/gds-audit.mjs",
     "i18n:audit": "node scripts/i18n-audit.mjs"
   },
   "dependencies": {

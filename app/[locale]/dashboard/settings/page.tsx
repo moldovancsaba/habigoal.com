@@ -373,8 +373,8 @@ export default function SettingsPage() {
           ) : null}
           <Group gap="xs" wrap="wrap">
             <Badge variant="light" color="ingress">Admins: {adminCount}</Badge>
-            <Badge variant="light" color="blue">Trainers: {trainerCount}</Badge>
-            <Badge variant="light" color="violet">Athletes: {athleteCount}</Badge>
+            <Badge variant="light" color="knowmore">Trainers: {trainerCount}</Badge>
+            <Badge variant="light" color="strategy">Athletes: {athleteCount}</Badge>
             <Badge variant="light" color="gray">Approved users: {users.length}</Badge>
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
@@ -645,10 +645,10 @@ export default function SettingsPage() {
             </Button>
           </Group>
           <Group gap="xs" wrap="wrap">
-            {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color="blue">{email}</Badge>)}
+            {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color="knowmore">{email}</Badge>)}
             {teamAthleteIds.map((athleteId) => {
               const athlete = athletes.find((entry) => entry._id === athleteId);
-              return <Badge key={athleteId} variant="light" color="violet">{athlete?.name || athleteId}</Badge>;
+              return <Badge key={athleteId} variant="light" color="strategy">{athlete?.name || athleteId}</Badge>;
             })}
           </Group>
           <Stack gap="sm">

@@ -7,14 +7,18 @@ Sources inspected:
 
 - [sovereignsquad/general-design-system](https://github.com/sovereignsquad/general-design-system)
 - `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM`
+- Latest inspected GDS commit: `787a8ce` (`chore: add authenticated package publish workflow`)
+- Latest inspected GDS version: `2.4.3`
 
 ## What GDS Provides
 
-The General Design System repo exposes three product packages:
+The General Design System repo exposes five publishable packages:
 
 - `@gds/theme`: `gdsTheme`, `extendGdsTheme(...)`, `withGdsMotion(...)`, `GdsProvider`, and GDS i18n helpers.
-- `@gds/core`: semantic buttons, page headers, product cards, metric/progress cards, state blocks, article/auth/public shells, upload/media primitives, filter drawers, form fields, locale helpers, icons, and vocabulary.
+- `@gds/core`: semantic buttons, page headers, product cards, public product cards, metric/progress cards, state blocks, article/auth/public/docs shells, public navigation/footer primitives, editorial hero, feature band, accent panel, upload/media primitives, filter drawers, form fields, simple data tables, stats sections, locale helpers, icons, and vocabulary.
 - `@gds/admin`: protected workspace shell, data table, responsive data view, form section, stats strip, semantic nav link, info card, workspace header, page header, and editor scaffold.
+- `@gds/eslint-config`: shared lint enforcement for raw design values and forbidden drift.
+- `@gds/compliance`: shared manifest and repository-level compliance validation.
 
 The repo also defines adoption governance:
 
@@ -22,6 +26,8 @@ The repo also defines adoption governance:
 - Product repos may document adapter details, migration state, validation commands, and approved exceptions only.
 - Mantine is the only foundational UI system.
 - Raw colors, local token redefinition, duplicate component behavior, and repeated hard-coded spacing are not allowed in product feature code.
+- Mature adopters should include a machine-readable `gds-adoption.json` manifest.
+- App Router consumers should use server-safe and client-safe GDS subpath imports.
 
 ## Habigoal Gap
 
@@ -33,21 +39,42 @@ Current gaps:
 - Local theme/tokens/typography files still own visual decisions.
 - Local UI primitives duplicate contracts that should come from `@gds/core` and `@gds/admin`.
 - `app/globals.css` contains product-local colors, shadows, gradients, and glass utilities.
-- GDS packages are not available through the public npm registry.
-- Local GDS package version inspected: `@gds/theme@2.3.2`.
+- GDS packages are publish-ready, but registry checks from this consumer repo currently return npm HTTP 404.
+- Local GDS package version inspected: `2.4.3`.
 - GDS package peer dependencies currently target Mantine `^7.9.0`; Habigoal uses Mantine `8.3.6`.
+- Habigoal now includes [gds-adoption.json](/Users/Shared/Projects/habigoal/gds-adoption.json) to declare the current migration state and exceptions.
 
 ## Dependency Strategy
 
-Do not install `@gds/*` from npm yet. The public registry lookup currently fails.
+Do not install `@gds/*` from npm yet unless the release operator confirms publication and peer compatibility.
 
 Acceptable package-source options, in priority order:
 
-1. Publish `@gds/theme`, `@gds/core`, and `@gds/admin` to the organization package registry with Mantine 8-compatible peer ranges.
+1. Publish `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance` to the organization package registry with a documented consumer path.
 2. Add the GDS repo as a workspace/submodule only if the deployment environment can reliably install private Git dependencies.
 3. Temporarily vendor built package artifacts only as a short-lived migration bridge, not as permanent product-local source.
 
-The preferred long-term route is published packages with aligned Mantine major versions.
+The preferred long-term route is published packages with aligned Mantine major versions. The latest GDS compatibility matrix supports Mantine `7.9.x`, React `18.2.x` / `19.x`, Next `15.x`, and Vite `8.x`; Habigoal must either align to that Mantine line or wait for a Mantine 8-compatible GDS release.
+
+## App Router Import Contract
+
+After package adoption, use server/client entrypoints deliberately:
+
+```ts
+import { gdsTheme, extendGdsTheme } from "@gds/theme/server";
+import { PageHeader, PublicShell, ArticleShell } from "@gds/core/server";
+import { WorkspaceHeader } from "@gds/admin/server";
+```
+
+```tsx
+"use client";
+
+import { GdsProvider } from "@gds/theme/client";
+import { SemanticButton, ThemeToggle } from "@gds/core/client";
+import { AppShell, ResponsiveDataView } from "@gds/admin/client";
+```
+
+Root layout should own `lang`, `dir`, and any framework script setup. A single client provider boundary should mount `GdsProvider`.
 
 ## Implementation Plan
 
@@ -62,6 +89,7 @@ The preferred long-term route is published packages with aligned Mantine major v
 - Release or consume `@gds/*` packages from a stable source.
 - Align Mantine peer dependency with Habigoal's active Mantine major.
 - Add a lockfile check that fails duplicate Mantine majors and mixed GDS versions.
+- Add `@gds/eslint-config` and `@gds/compliance` once they are published for the selected install path.
 
 ### Phase 2: Root Provider
 
@@ -91,6 +119,9 @@ The preferred long-term route is published packages with aligned Mantine major v
 - Fail local generalized component definitions outside approved adapter paths.
 - Fail imports from local theme/token files after migration cutover.
 - Fail direct Mantine primitives where a GDS primitive exists and is required.
+- Validate `gds-adoption.json` against the GDS schema.
+- Add shared GDS lint/compliance tooling once package publication is available.
+- Keep `npm run gds:audit` failing until the repo is genuinely 100% GDS-only.
 
 ## Approved Exceptions
 
@@ -113,6 +144,21 @@ Scope:
 - Add dependency compatibility guard.
 - Replace root provider with GDS provider semantics.
 - Migrate one representative public page or dashboard page section.
-- Validate with lint, test, typecheck, build, i18n audit, and semantic audit.
+- Wire `gds-adoption.json` into validation.
+- Validate with lint, test, typecheck, build, i18n audit, semantic audit, and GDS audit.
 
 This keeps risk low while proving the integration path.
+
+## Validation
+
+```bash
+npm run gds:audit
+npm run semantic:audit
+npm run i18n:audit
+npm run lint
+npm run test
+npm run typecheck
+npm run build
+```
+
+`npm run gds:audit` is expected to fail until package publication, Mantine compatibility, runtime imports, and active adapter migration are complete. Do not claim Habigoal is 100% GDS-only until it passes.

@@ -541,7 +541,7 @@ export function MainDashboard() {
                       <Button
                         variant="light"
                         size="sm"
-                        color="green"
+                        color="tactical"
                         onClick={() => saveCoachAction(item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`, primaryRecommendation.key, "applied")}
                         loading={savingActionKey === `${item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`}:${primaryRecommendation.key}:applied`}
                       >
@@ -1010,7 +1010,7 @@ function QueueCard({
               <Button
                 variant="light"
                 size="sm"
-                color="green"
+                color="tactical"
                 onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "applied")}
                 loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:applied`}
               >

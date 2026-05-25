@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "gdsVersion": "2.4.3",
+  "productArchetype": "hybrid",
+  "supportedEntryPoints": [
+    "@gds/theme/client",
+    "@gds/theme/server",
+    "@gds/core/client",
+    "@gds/core/server",
+    "@gds/admin/client",
+    "@gds/admin/server"
+  ],
+  "requiredContracts": [
+    "GdsProvider",
+    "AppShell",
+    "PageHeader",
+    "StateBlock",
+    "PublicShell",
+    "ArticleShell",
+    "AuthShell",
+    "MetricCard",
+    "ProgressCard",
+    "ProductCard",
+    "DataToolbar",
+    "ResponsiveDataView",
+    "FormField",
+    "DataTable"
+  ],
+  "localAdapters": [
+    {
+      "contract": "GdsProvider",
+      "path": "components/theme/ThemeRegistry.tsx",
+      "status": "planned"
+    },
+    {
+      "contract": "AppShell",
+      "path": "components/layout/DashboardShell.tsx",
+      "status": "planned"
+    },
+    {
+      "contract": "PageHeader",
+      "path": "components/ui/PageHeader.tsx",
+      "status": "planned"
+    },
+    {
+      "contract": "StateBlock",
+      "path": "components/ui/SectionCard.tsx",
+      "status": "planned"
+    },
+    {
+      "contract": "MetricCard",
+      "path": "components/ui/ResponsiveDataCard.tsx",
+      "status": "planned"
+    },
+    {
+      "contract": "FormField",
+      "path": "components/ui/SearchableSelect.tsx",
+      "status": "planned"
+    }
+  ],
+  "approvedExceptions": [
+    {
+      "surface": "Recharts chart internals",
+      "reason": "Chart rendering remains outside canonical GDS component ownership; GDS should own surrounding containers, states, labels, spacing, and actions.",
+      "owner": "habigoal",
+      "reviewDate": "2026-05-25"
+    },
+    {
+      "surface": "PDF generation internals",
+      "reason": "PDF output uses jsPDF layout primitives and print-specific constraints; GDS should own report action semantics and high-level content hierarchy.",
+      "owner": "habigoal",
+      "reviewDate": "2026-05-25"
+    },
+    {
+      "surface": "Public news content files",
+      "reason": "News posts are structured localized content, not reusable UI primitives; GDS should own article shell and public surface framing.",
+      "owner": "habigoal",
+      "reviewDate": "2026-05-25"
+    },
+    {
+      "surface": "Provider-branded OAuth controls",
+      "reason": "SSO provider controls may require provider-specific brand constraints while remaining framed by GDS auth shell contracts.",
+      "owner": "habigoal",
+      "reviewDate": "2026-05-25"
+    },
+    {
+      "surface": "Print-only report styles",
+      "reason": "Print media needs flattened page-safe styles that differ from screen surfaces; exceptions must stay scoped to print/export selectors.",
+      "owner": "habigoal",
+      "reviewDate": "2026-05-25"
+    }
+  ],
+  "migrationStatus": "blocked",
+  "owner": "habigoal",
+  "lastReviewedAt": "2026-05-25"
+}

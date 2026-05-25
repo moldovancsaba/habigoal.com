@@ -297,7 +297,7 @@ export default function PlanningPage() {
         subheader={t("planningCalendarSubtitle", { variant: getBlueprintLabel(blueprintVariant, t).toLowerCase() })}
       >
         {saveState === "saved" ? (
-          <Alert color="green" mb="md">
+          <Alert color="tactical" mb="md">
             {t("planningSavedBanner", { actor: savedPlan?.actorName || t("brandName") })}
           </Alert>
         ) : null}
