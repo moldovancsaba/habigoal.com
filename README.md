@@ -20,7 +20,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - Daily athlete check-in with nine readiness signals across physical readiness, mental balance, and sport brain.
 - Athlete profiles with longitudinal history, readiness trends, habits, training load, memory summaries, and weekly operating summaries.
 - Persisted habit records through the `habit_records` collection and `/api/athletes/:id/habits`, with optional weighted summaries via `summary=true`.
-- Training-load capture in check-ins: session type, duration, RPE, and optional external load.
+- Training-load capture in check-ins plus standalone `/api/athletes/:id/training-load` ledger records with weekly load zones.
 - Coach command center with priority athletes, missed check-ins, readiness buckets, next-best-action recommendations, session blueprints, escalation digest, and coach action tracking.
 - Persisted coach action status through the `coach_actions` collection and `/api/coach-actions`.
 - Weekly session planning through `/dashboard/planning`, persisted in `session_plans`, and reflected on athlete detail pages.

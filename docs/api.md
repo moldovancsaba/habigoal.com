@@ -94,6 +94,7 @@ Product-language aliases:
 - `/api/athletes`
 - `/api/athletes/:id`
 - `/api/athletes/:id/history`
+- `/api/athletes/:id/training-load`
 - `/api/athletes/:id/restore`
 
 Compatibility aliases:
@@ -306,6 +307,77 @@ Creates or updates one dated habit record for an athlete.
 Roles: `admin`, `trainer`, `athlete`
 
 Scope: checked with `canAccessAthlete`.
+
+## Training Load
+
+### `GET /api/athletes/:id/training-load`
+
+Returns standalone training-load ledger records and a weekly summary for one athlete.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Scope: checked with `canAccessAthlete`.
+
+Query parameters:
+
+- `from=YYYY-MM-DD`: optional inclusive lower date bound. Defaults to the selected week start.
+- `to=YYYY-MM-DD`: optional inclusive upper date bound. Defaults to the selected week end.
+- `weekStart=YYYY-MM-DD`: optional date inside the requested week; normalized to Monday.
+
+Response shape:
+
+```json
+{
+  "records": [
+    {
+      "athleteId": "athlete id",
+      "date": "2026-05-25",
+      "source": "trainer",
+      "activityTypes": ["technical"],
+      "durationMinutes": 75,
+      "rpe": 6,
+      "loadPoints": 450,
+      "createdBy": "trainer@example.com"
+    }
+  ],
+  "summary": {
+    "weekStart": "2026-05-25",
+    "totalPoints": 450,
+    "zone": "under",
+    "records": 1
+  }
+}
+```
+
+Weekly load zones are computed server-side from persisted ledger records: `under` <= 799, `optimal` <= 2200, `heavy` <= 3200, and `risk` above 3200. Empty weeks return `unknown`.
+
+### `POST /api/athletes/:id/training-load`
+
+Creates one standalone training-load ledger record. Load points are computed server-side as `durationMinutes * (rpe ?? 0)`.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Scope: checked with `canAccessAthlete`.
+
+Payload:
+
+```json
+{
+  "date": "2026-05-25",
+  "source": "trainer",
+  "activityTypes": ["technical", "recovery"],
+  "durationMinutes": 75,
+  "rpe": 6,
+  "note": "Post-session load"
+}
+```
+
+Validation:
+
+- `date` must be `YYYY-MM-DD`.
+- `durationMinutes` must be 1-360.
+- `rpe` may be omitted/null or must be 1-10.
+- No local/offline/demo fallback records are created.
 
 ## Coach Actions
 

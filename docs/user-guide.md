@@ -25,6 +25,7 @@ Athletes can:
 - complete their own daily check-in
 - track habits and task-like routines with weighted training, recovery, wellness, and learning contribution
 - see training load, memory summaries, and weekly context that belongs to their own profile
+- record standalone training-load entries when the workflow exposes the ledger entry point
 
 Athletes cannot:
 

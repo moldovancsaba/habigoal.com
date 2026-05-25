@@ -23,6 +23,7 @@ Product-facing endpoint names:
 - `/api/athletes`
 - `/api/check-ins`
 - `/api/coach-actions`
+- `/api/athletes/[id]/training-load`
 - `/api/session-plans`
 - `/api/teams`
 - `/api/users`
@@ -46,6 +47,7 @@ Important repositories:
 - `check-in.repository.ts`: check-in-facing alias over record persistence
 - `assessment.repository.ts`: compatibility check-in persistence for the `assessments` collection
 - `habit-records.repository.ts`: habit persistence
+- `training-load.repository.ts`: standalone training-load ledger persistence
 - `coach-actions.repository.ts`: trainer action trace
 - `session-plans.repository.ts`: weekly planning persistence
 - `team.repository.ts`: team membership
@@ -110,6 +112,7 @@ Current collections:
 - `children`: athlete profiles
 - `assessments`: check-ins
 - `habit_records`: habit state by athlete and date
+- `training_load_records`: standalone duration, RPE, source, and load-point ledger entries
 - `coach_actions`: trainer action state by athlete/date/recommendation
 - `session_plans`: weekly plans by week and scope
 - `teams`: trainer and athlete membership
