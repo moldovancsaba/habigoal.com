@@ -5,12 +5,15 @@ import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper,
 import { useTranslations } from "next-intl";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
+import { ResponsiveDataView, type DataTableColumn } from "@doneisbetter/gds-admin/client";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";
+
+type UserRow = User & Record<string, unknown>;
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -127,6 +130,26 @@ export default function SettingsPage() {
       ...user,
       athleteId: athleteId || undefined
     });
+  }
+
+  async function saveUserName(user: User) {
+    const latest = users.find((u) => u.email === user.email) || user;
+    const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
+    const ok = await saveUser(updatedUser);
+    setMessage(ok ? tc("success") : tc("error"));
+  }
+
+  async function removeUserAccess(user: User) {
+    const { deleteUser } = await import("@/services/user-service");
+    if (confirm(t("userManagementRemoveConfirm", { email: user.email }))) {
+      const ok = await deleteUser(user.email);
+      if (ok) {
+        setUsers(prev => prev.filter(u => u.email !== user.email));
+        setMessage(tc("success"));
+      } else {
+        setMessage(tc("error"));
+      }
+    }
   }
 
   function addNewUser() {
@@ -279,11 +302,102 @@ export default function SettingsPage() {
       if (!query) return true;
       return [user.name || "", user.email, user.roles.join(" ")].some((value) => value.toLowerCase().includes(query));
     });
+  const userColumns: DataTableColumn<UserRow>[] = [
+    {
+      key: "name",
+      label: tc("name"),
+      render: (user) => (
+        <TextInput
+          aria-label={tc("name")}
+          value={user.name || ""}
+          placeholder={t("userManagementFullNamePlaceholder")}
+          onChange={(event) => {
+            const name = event.currentTarget.value;
+            setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
+          }}
+        />
+      )
+    },
+    {
+      key: "email",
+      label: t("email"),
+      render: (user) => <Text fw={600}>{user.email}</Text>
+    },
+    {
+      key: "access",
+      label: t("userManagementAccess"),
+      render: (user) => (
+        <Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>
+          {user.lastLoginAt ? t("userManagementActive") : t("userManagementPending")}
+        </Badge>
+      )
+    },
+    {
+      key: "lastLogin",
+      label: t("userManagementLastLogin"),
+      render: (user) => <Text size="sm">{formatLastSeen(user.lastLoginAt)}</Text>
+    },
+    {
+      key: "link",
+      label: t("userManagementEntityAthleteLink"),
+      render: (user) => (
+        <Group gap="sm" align="center" wrap="nowrap">
+          <Select
+            aria-label={t("userManagementEntity")}
+            value={user.roles[0] || "athlete"}
+            disabled={!canManageUsers}
+            data={[
+              { value: "athlete", label: "Athlete" },
+              { value: "trainer", label: "Trainer" },
+              { value: "admin", label: "Admin" }
+            ]}
+            onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
+            w={160}
+          />
+          {user.roles.includes("athlete") ? (
+            <Select
+              searchable
+              aria-label={t("userManagementLinkedAthlete")}
+              value={user.athleteId || null}
+              data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
+              onChange={(value) => void setUserAthlete(user, value || undefined)}
+              w={220}
+            />
+          ) : <Text size="sm" c="dimmed">{t("userManagementNoAthleteLinkNeeded")}</Text>}
+        </Group>
+      )
+    },
+    {
+      key: "actions",
+      label: tc("actions"),
+      render: (user) => (
+        <Group gap="xs" justify="flex-end" wrap="nowrap">
+          <Button
+            variant="light"
+            size="sm"
+            disabled={!canManageUsers}
+            onClick={() => void saveUserName(user)}
+          >
+            {tc("save")}
+          </Button>
+          <Button
+            variant="light"
+            color="red"
+            size="sm"
+            disabled={!canManageUsers || isProtectedAdmin(user)}
+            onClick={() => void removeUserAccess(user)}
+          >
+            {tc("remove")}
+          </Button>
+        </Group>
+      )
+    }
+  ];
 
   function formatLastSeen(value?: string) {
-    if (!value) return "Pending first login";
+    if (!value) return t("userManagementPendingFirstLogin");
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "Pending first login";
+    if (Number.isNaN(date.getTime())) return t("userManagementPendingFirstLogin");
     return date.toLocaleString();
   }
 
@@ -380,15 +494,15 @@ export default function SettingsPage() {
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
               label={tc("name")}
-              placeholder="Full name"
+              placeholder={t("userManagementFullNamePlaceholder")}
               value={userNameDraft}
               onChange={(event) => setUserNameDraft(event.target.value)}
               style={{ minWidth: 220 }}
               disabled={!canManageUsers}
             />
             <TextInput
-              label="Search users"
-              placeholder="Name, email, or role"
+              label={t("userManagementSearchUsers")}
+              placeholder={t("userManagementSearchPlaceholder")}
               value={userSearch}
               onChange={(event) => setUserSearch(event.target.value)}
               style={{ minWidth: 220 }}
@@ -404,11 +518,11 @@ export default function SettingsPage() {
               disabled={!canManageUsers}
             />
             <Button variant="default" onClick={addNewUser} disabled={!canManageUsers || !userDraft.trim()}>
-              Add user
+              {t("userManagementAddUser")}
             </Button>
           </Group>
           <Text size="sm" c="dimmed">
-            New users are approved locally first. SSO access only works after the email exists here with at least one role.
+            {t("userManagementSsoHint")}
           </Text>
           <Stack gap="md" hiddenFrom="sm">
             {filteredUsers
@@ -418,7 +532,7 @@ export default function SettingsPage() {
                     <TextInput
                       label={tc("name")}
                       value={user.name || ""}
-                      placeholder="Full name"
+                      placeholder={t("userManagementFullNamePlaceholder")}
                       onChange={(event) => {
                         const name = event.currentTarget.value;
                         setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
@@ -426,12 +540,12 @@ export default function SettingsPage() {
                     />
                     <ResponsiveDataRow label={t("email")} value={<Text fw={600}>{user.email}</Text>} />
                     <ResponsiveDataRow
-                      label="Access status"
-                      value={<Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>{user.lastLoginAt ? "Active" : "Pending"}</Badge>}
+                      label={t("userManagementAccess")}
+                      value={<Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>{user.lastLoginAt ? t("userManagementActive") : t("userManagementPending")}</Badge>}
                     />
-                    <ResponsiveDataRow label="Last login" value={<Text>{formatLastSeen(user.lastLoginAt)}</Text>} />
+                    <ResponsiveDataRow label={t("userManagementLastLogin")} value={<Text>{formatLastSeen(user.lastLoginAt)}</Text>} />
                     <Select
-                      label="Entity"
+                      label={t("userManagementEntity")}
                       value={user.roles[0] || "athlete"}
                       disabled={!canManageUsers}
                       data={[
@@ -444,7 +558,7 @@ export default function SettingsPage() {
                     {user.roles.includes("athlete") ? (
                       <Select
                         searchable
-                        label="Linked athlete"
+                        label={t("userManagementLinkedAthlete")}
                         value={user.athleteId || null}
                         data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
                         onChange={(value) => void setUserAthlete(user, value || undefined)}
@@ -454,12 +568,7 @@ export default function SettingsPage() {
                       <Button
                         variant="light"
                         disabled={!canManageUsers}
-                        onClick={async () => {
-                          const latest = users.find((u) => u.email === user.email) || user;
-                          const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
-                          const ok = await saveUser(updatedUser);
-                          setMessage(ok ? tc("success") : tc("error"));
-                        }}
+                        onClick={() => void saveUserName(user)}
                       >
                         {tc("save")}
                       </Button>
@@ -467,18 +576,7 @@ export default function SettingsPage() {
                         variant="light"
                         color="red"
                         disabled={!canManageUsers || isProtectedAdmin(user)}
-                        onClick={async () => {
-                          const { deleteUser } = await import("@/services/user-service");
-                          if (confirm(`Remove access for ${user.email}?`)) {
-                            const ok = await deleteUser(user.email);
-                            if (ok) {
-                              setUsers(prev => prev.filter(u => u.email !== user.email));
-                              setMessage(tc("success"));
-                            } else {
-                              setMessage(tc("error"));
-                            }
-                          }
-                        }}
+                        onClick={() => void removeUserAccess(user)}
                       >
                         {tc("remove")}
                       </Button>
@@ -488,113 +586,19 @@ export default function SettingsPage() {
               ))}
             {filteredUsers.length === 0 ? <Text c="dimmed">{t("noUsers")}</Text> : null}
           </Stack>
-          <Paper withBorder p={0} visibleFrom="sm">
-          <Table striped highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>{tc("name")}</Table.Th>
-                <Table.Th>{t("email")}</Table.Th>
-                <Table.Th>Access</Table.Th>
-                <Table.Th>Last login</Table.Th>
-                <Table.Th colSpan={3}>Entity and athlete link</Table.Th>
-                <Table.Th style={{ textAlign: "right" }}>{tc("actions")}</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {filteredUsers
-                .map((user) => (
-                <Table.Tr key={user.email}>
-                  <Table.Td>
-                    <TextInput
-                      value={user.name || ""}
-                      placeholder="Full name"
-                      onChange={(event) => {
-                        const name = event.currentTarget.value;
-                        setUsers((prev) => prev.map((u) => (u.email === user.email ? { ...u, name } : u)));
-                      }}
-                    />
-                  </Table.Td>
-                  <Table.Td>
-                    <Text fw={600}>{user.email}</Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>
-                      {user.lastLoginAt ? "Active" : "Pending"}
-                    </Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text size="sm">{formatLastSeen(user.lastLoginAt)}</Text>
-                  </Table.Td>
-                  <Table.Td colSpan={3}>
-                    <Group grow align="start">
-                      <Select
-                        value={user.roles[0] || "athlete"}
-                        disabled={!canManageUsers}
-                        data={[
-                          { value: "athlete", label: "Athlete" },
-                          { value: "trainer", label: "Trainer" },
-                          { value: "admin", label: "Admin" }
-                        ]}
-                        onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
-                      />
-                      {user.roles.includes("athlete") ? (
-                        <Select
-                          searchable
-                          value={user.athleteId || null}
-                          data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
-                          onChange={(value) => void setUserAthlete(user, value || undefined)}
-                        />
-                      ) : <Text size="sm" c="dimmed">No athlete link needed</Text>}
-                    </Group>
-                  </Table.Td>
-                  <Table.Td style={{ textAlign: "right" }}>
-                    <Button
-                      variant="light"
-                      size="sm"
-                      disabled={!canManageUsers}
-                      onClick={async () => {
-                        const latest = users.find((u) => u.email === user.email) || user;
-                        const updatedUser = { ...latest, name: (latest.name || "").trim() || undefined };
-                        const ok = await saveUser(updatedUser);
-                        setMessage(ok ? tc("success") : tc("error"));
-                      }}
-                      mr="xs"
-                    >
-                      {tc("save")}
-                    </Button>
-                    <Button 
-                      variant="light" 
-                      color="red" 
-                      size="sm" 
-                      disabled={!canManageUsers || isProtectedAdmin(user)}
-                      onClick={async () => {
-                        const { deleteUser } = await import("@/services/user-service");
-                        if (confirm(`Remove access for ${user.email}?`)) {
-                          const ok = await deleteUser(user.email);
-                          if (ok) {
-                            setUsers(prev => prev.filter(u => u.email !== user.email));
-                            setMessage(tc("success"));
-                          } else {
-                            setMessage(tc("error"));
-                          }
-                        }
-                      }}
-                    >
-                      {tc("remove")}
-                    </Button>
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-              {filteredUsers.length === 0 ? (
-                <Table.Tr>
-                  <Table.Td colSpan={8}>
-                    <Text c="dimmed">{t("noUsers")}</Text>
-                  </Table.Td>
-                </Table.Tr>
-              ) : null}
-            </Table.Tbody>
-          </Table>
-          </Paper>
+          <Box visibleFrom="sm">
+            <ResponsiveDataView<UserRow>
+              data={filteredUsers as UserRow[]}
+              columns={userColumns}
+              renderCard={(user) => (
+                <ResponsiveDataCard key={user.email} title={user.name || user.email}>
+                  <ResponsiveDataRow label={t("email")} value={user.email} />
+                </ResponsiveDataCard>
+              )}
+              emptyTitle={t("noUsers")}
+              getRowKey={(user) => user.email}
+            />
+          </Box>
         </Stack>
       </SectionCard>
 
