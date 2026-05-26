@@ -19,6 +19,7 @@ import {
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { FormField } from "@doneisbetter/gds-core/server";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
@@ -471,41 +472,48 @@ export function AthleteCheckInApp() {
       </SectionCard>
 
       <SectionCard title={t("trainingLoadTitle")} subheader={t("trainingLoadSubtitle")}>
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-          <Select
-            label={t("sessionType")}
-            value={assessment.trainingLoad.sessionType}
-            data={[
-              { value: "team", label: t("sessionTypeTeam") },
-              { value: "match", label: t("sessionTypeMatch") },
-              { value: "gym", label: t("sessionTypeGym") },
-              { value: "recovery", label: t("sessionTypeRecovery") },
-              { value: "individual", label: t("sessionTypeIndividual") }
-            ]}
-            onChange={(value) => updateTrainingLoad("sessionType", value || "")}
-          />
-          <NumberInput
-            label={t("durationMinutes")}
-            value={assessment.trainingLoad.durationMinutes}
-            onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
-            min={0}
-            max={360}
-          />
-          <NumberInput
-            label={t("rpe")}
-            value={assessment.trainingLoad.rpe}
-            onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
-            min={1}
-            max={10}
-          />
-          <NumberInput
-            label={t("externalLoad")}
-            description={t("externalLoadDescription")}
-            value={assessment.trainingLoad.externalLoad}
-            onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
-            min={0}
-            max={50000}
-          />
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="lg" verticalSpacing="lg">
+          <FormField label={t("sessionType")}>
+            <Select
+              aria-label={t("sessionType")}
+              value={assessment.trainingLoad.sessionType}
+              data={[
+                { value: "team", label: t("sessionTypeTeam") },
+                { value: "match", label: t("sessionTypeMatch") },
+                { value: "gym", label: t("sessionTypeGym") },
+                { value: "recovery", label: t("sessionTypeRecovery") },
+                { value: "individual", label: t("sessionTypeIndividual") }
+              ]}
+              onChange={(value) => updateTrainingLoad("sessionType", value || "")}
+            />
+          </FormField>
+          <FormField label={t("durationMinutes")}>
+            <NumberInput
+              aria-label={t("durationMinutes")}
+              value={assessment.trainingLoad.durationMinutes}
+              onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
+              min={0}
+              max={360}
+            />
+          </FormField>
+          <FormField label={t("rpe")}>
+            <NumberInput
+              aria-label={t("rpe")}
+              value={assessment.trainingLoad.rpe}
+              onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
+              min={1}
+              max={10}
+            />
+          </FormField>
+          <FormField label={t("externalLoad")} description={t("externalLoadDescription")}>
+            <NumberInput
+              aria-label={t("externalLoad")}
+              value={assessment.trainingLoad.externalLoad}
+              onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
+              min={0}
+              max={50000}
+            />
+          </FormField>
         </SimpleGrid>
       </SectionCard>
 
