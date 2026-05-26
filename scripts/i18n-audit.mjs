@@ -231,10 +231,37 @@ function auditKnownCopyLeaks() {
   }
 }
 
+function auditCriticalHardcodedUiCopy() {
+  const criticalFiles = [
+    "components/forms/AthleteCheckInApp.tsx",
+    "components/ui/BrandMark.tsx",
+  ];
+  const hardcodedJsxPatterns = [
+    { label: "JSX text node", pattern: />\s*[A-Za-z][^<>{}]*\s*</ },
+    { label: "hard-coded label prop", pattern: /\blabel="[^"]*[A-Za-z][^"]*"/ },
+    { label: "hard-coded title prop", pattern: /\btitle="[^"]*[A-Za-z][^"]*"/ },
+    { label: "hard-coded subheader prop", pattern: /\bsubheader="[^"]*[A-Za-z][^"]*"/ },
+    { label: "hard-coded placeholder prop", pattern: /\bplaceholder="[^"]*[A-Za-z][^"]*"/ },
+    { label: "hard-coded aria-label prop", pattern: /\baria-label="[^"]*[A-Za-z][^"]*"/ },
+  ];
+
+  for (const relative of criticalFiles) {
+    const file = path.join(root, relative);
+    if (!existsSync(file)) continue;
+    const source = readFileSync(file, "utf8");
+    for (const { label, pattern } of hardcodedJsxPatterns) {
+      if (pattern.test(source)) {
+        failures.push(`Hard-coded critical UI copy (${label}) in ${relative}`);
+      }
+    }
+  }
+}
+
 function main() {
   auditMessageCatalogs();
   auditNewsPosts();
   auditKnownCopyLeaks();
+  auditCriticalHardcodedUiCopy();
 
   if (warnings.length > 0) {
     console.warn("i18n audit warnings:");

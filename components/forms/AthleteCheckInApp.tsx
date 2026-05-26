@@ -105,8 +105,9 @@ async function parseApiError(response: Response): Promise<string | null> {
   return body?.error || null;
 }
 
-function getQuestionOptions(questionKey: string): ChoiceOption[] {
+function getQuestionOptions(questionKey: string, translate: (key: string) => string): ChoiceOption[] {
   const fivePoint = [1, 2, 3, 4, 5];
+  const options = (keys: string[]) => keys.map((key, index) => ({ value: fivePoint[index], label: translate(key) }));
 
   switch (questionKey) {
     case "sleep_hours":
@@ -118,21 +119,21 @@ function getQuestionOptions(questionKey: string): ChoiceOption[] {
         { value: 5, label: "10h+" }
       ];
     case "sleep_quality":
-      return ["Very poor", "Poor", "Okay", "Good", "Great"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionVeryPoor", "optionPoor", "optionOkay", "optionGood", "optionGreat"]);
     case "energy_level":
-      return ["Flat", "Low", "Okay", "Ready", "Flying"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionFlat", "optionLow", "optionOkay", "optionReady", "optionFlying"]);
     case "body_feel":
-      return ["Pain", "Sore", "Stiff", "Good", "Fresh"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionPain", "optionSore", "optionStiff", "optionGood", "optionFresh"]);
     case "fuel_hydration":
-      return ["Missed", "Low", "Okay", "Good", "Locked in"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionMissed", "optionLow", "optionOkay", "optionGood", "optionLockedIn"]);
     case "mood_state":
-      return ["Heavy", "Low", "Okay", "Good", "Positive"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionHeavy", "optionLow", "optionOkay", "optionGood", "optionPositive"]);
     case "stress_load":
-      return ["Overloaded", "Tense", "Manageable", "Calm", "Light"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionOverloaded", "optionTense", "optionManageable", "optionCalm", "optionLight"]);
     case "confidence_level":
-      return ["Unsure", "Hesitant", "Okay", "Confident", "Very confident"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionUnsure", "optionHesitant", "optionOkay", "optionConfident", "optionVeryConfident"]);
     case "focus_level":
-      return ["Scattered", "Distracted", "Okay", "Focused", "Sharp"].map((label, index) => ({ value: fivePoint[index], label }));
+      return options(["optionScattered", "optionDistracted", "optionOkay", "optionFocused", "optionSharp"]);
     default:
       return ["1", "2", "3", "4", "5"].map((label, index) => ({ value: fivePoint[index], label }));
   }
@@ -154,7 +155,7 @@ function averageFromKeys(scores: AssessmentPayload["scores"], keys: string[]) {
   return Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1));
 }
 
-function buildSupportSummary(assessment: AssessmentPayload) {
+function buildSupportSummary(assessment: AssessmentPayload, translate: (key: string) => string) {
   const sleepHours = getScore(assessment.scores.sleep_hours);
   const energy = getScore(assessment.scores.energy_level);
   const bodyFeel = getScore(assessment.scores.body_feel);
@@ -166,30 +167,30 @@ function buildSupportSummary(assessment: AssessmentPayload) {
 
   const physical =
     bodyFeel !== null && bodyFeel <= 2
-      ? "Flag pain or heavy soreness early and reduce explosive load today."
+      ? translate("supportPhysicalPain")
       : sleepHours !== null && sleepHours <= 2
-        ? "Protect sleep tonight with an earlier wind-down and lighter recovery work."
+        ? translate("supportPhysicalSleep")
         : fuelHydration !== null && fuelHydration <= 2
-          ? "Make the next support win simple: water bottle, breakfast or snack, and a recovery meal."
+          ? translate("supportPhysicalFuel")
           : energy !== null && energy <= 2
-            ? "Keep volume lower and prioritize mobility, easy touches, and recovery between blocks."
-            : "Physical habits look stable. Keep the same sleep, fuel, and recovery rhythm today.";
+            ? translate("supportPhysicalEnergy")
+            : translate("supportPhysicalStable");
 
   const mental =
     stress !== null && stress <= 2
-      ? "Lower pressure today. Give one clear goal and add a short breathing reset before training."
+      ? translate("supportMentalStress")
       : mood !== null && mood <= 2
-        ? "Check in with the athlete before pushing intensity. Connection first, challenge second."
+        ? translate("supportMentalMood")
         : confidence !== null && confidence <= 2
-          ? "Start with easy success reps to rebuild trust before harder competitive tasks."
-          : "Mental state looks steady. Keep communication simple, calm, and specific.";
+          ? translate("supportMentalConfidence")
+          : translate("supportMentalStable");
 
   const sportBrain =
     focus !== null && focus <= 2
-      ? "Use one coaching cue only, shorter blocks, and a demo-first approach to sharpen focus."
+      ? translate("supportSportBrainFocus")
       : confidence !== null && confidence <= 2
-        ? "Keep decisions simple early, then add complexity after the first successful actions."
-        : "Sport-brain readiness looks solid. Progress to decision-making and learning tasks normally.";
+        ? translate("supportSportBrainConfidence")
+        : translate("supportSportBrainStable");
 
   return { physical, mental, sportBrain };
 }
@@ -234,15 +235,15 @@ export function AthleteCheckInApp() {
     }),
     [assessment.scores]
   );
-  const supportSummary = useMemo(() => buildSupportSummary(assessment), [assessment]);
+  const supportSummary = useMemo(() => buildSupportSummary(assessment, t), [assessment, t]);
   const nextSupportArea = useMemo(() => {
     const areas = [
-      { key: "physical", value: domainScores.physical ?? 99, label: "Physical" },
-      { key: "mental", value: domainScores.mental ?? 99, label: "Mental" },
-      { key: "sportBrain", value: domainScores.sportBrain ?? 99, label: "Sport brain" }
+      { key: "physical", value: domainScores.physical ?? 99, label: t("physicalShortLabel") },
+      { key: "mental", value: domainScores.mental ?? 99, label: t("mentalShortLabel") },
+      { key: "sportBrain", value: domainScores.sportBrain ?? 99, label: t("sportBrainShortLabel") }
     ];
-    return areas.sort((a, b) => a.value - b.value)[0]?.label ?? "Physical";
-  }, [domainScores]);
+    return areas.sort((a, b) => a.value - b.value)[0]?.label ?? t("physicalShortLabel");
+  }, [domainScores, t]);
 
   useEffect(() => {
     void fetch("/api/athletes")
@@ -442,7 +443,7 @@ export function AthleteCheckInApp() {
         </Alert>
       ) : null}
 
-      <SectionCard title={t("setupTitle")} subheader="Keep this daily check-in under 2 minutes.">
+      <SectionCard title={t("setupTitle")} subheader={t("setupSubtitle")}>
         <Stack gap="md">
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
             <Select
@@ -462,44 +463,44 @@ export function AthleteCheckInApp() {
           </SimpleGrid>
 
           <SimpleGrid cols={{ base: 1, md: 3 }} spacing="sm">
-            <InfoChip label="Known traits" value={assessment.child.knownTraits || "No extra notes"} />
-            <InfoChip label="Parent or coach signals" value={assessment.child.parentSignals || "No extra notes"} />
-            <InfoChip label="Birth date" value={assessment.child.birthDate || tc("emptyValue")} />
+            <InfoChip label={t("knownTraits")} value={assessment.child.knownTraits || t("noExtraNotes")} />
+            <InfoChip label={t("parentCoachSignals")} value={assessment.child.parentSignals || t("noExtraNotes")} />
+            <InfoChip label={t("birthDate")} value={assessment.child.birthDate || tc("emptyValue")} />
           </SimpleGrid>
         </Stack>
       </SectionCard>
 
-      <SectionCard title="Training load" subheader="Capture session demand so readiness can be interpreted against actual work.">
+      <SectionCard title={t("trainingLoadTitle")} subheader={t("trainingLoadSubtitle")}>
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
           <Select
-            label="Session type"
+            label={t("sessionType")}
             value={assessment.trainingLoad.sessionType}
             data={[
-              { value: "team", label: "Team training" },
-              { value: "match", label: "Match" },
-              { value: "gym", label: "Gym" },
-              { value: "recovery", label: "Recovery" },
-              { value: "individual", label: "Individual extras" }
+              { value: "team", label: t("sessionTypeTeam") },
+              { value: "match", label: t("sessionTypeMatch") },
+              { value: "gym", label: t("sessionTypeGym") },
+              { value: "recovery", label: t("sessionTypeRecovery") },
+              { value: "individual", label: t("sessionTypeIndividual") }
             ]}
             onChange={(value) => updateTrainingLoad("sessionType", value || "")}
           />
           <NumberInput
-            label="Duration (min)"
+            label={t("durationMinutes")}
             value={assessment.trainingLoad.durationMinutes}
             onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
             min={0}
             max={360}
           />
           <NumberInput
-            label="RPE (1-10)"
+            label={t("rpe")}
             value={assessment.trainingLoad.rpe}
             onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
             min={1}
             max={10}
           />
           <NumberInput
-            label="External load"
-            description="Optional meters / arbitrary units"
+            label={t("externalLoad")}
+            description={t("externalLoadDescription")}
             value={assessment.trainingLoad.externalLoad}
             onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
             min={0}
@@ -513,27 +514,27 @@ export function AthleteCheckInApp() {
           <Group justify="space-between" align="center">
             <Box>
               <Text size="sm" c="dimmed" fw={600}>
-                Daily tracker progress
+                {t("dailyTrackerProgress")}
               </Text>
               <Text fw={800} size="lg">
-                {answeredCount}/{trackerQuestions.length} answered
+                {t("answeredCount", { answered: answeredCount, total: trackerQuestions.length })}
               </Text>
             </Box>
             <Badge variant="light" color={readinessResult.mode === "full" ? "ingress" : readinessResult.mode === "moderate" ? "review" : "red"} size="lg">
-              {greenChecks}/{trackerQuestions.length} green
+              {t("greenChecksCount", { green: greenChecks, total: trackerQuestions.length })}
             </Badge>
           </Group>
           <Progress value={progressPercent} color="ingress" radius="xl" size="lg" />
           <Text size="sm" c="dimmed">
-            Youth-athlete wellness monitoring most commonly centers on sleep, fatigue or energy, soreness, stress or mood, and focus. This version keeps the tracker to those daily signals plus fuel support.
+            {t("dailyTrackerRationale")}
           </Text>
         </Stack>
       </Paper>
 
       <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="sm">
-        <MetricCard label="Physical readiness" value={domainScores.physical} />
-        <MetricCard label="Mental balance" value={domainScores.mental} />
-        <MetricCard label="Sport brain" value={domainScores.sportBrain} />
+        <MetricCard label={t("physicalReadinessMetric")} value={domainScores.physical} />
+        <MetricCard label={t("mentalBalanceMetric")} value={domainScores.mental} />
+        <MetricCard label={t("sportBrainMetric")} value={domainScores.sportBrain} />
       </SimpleGrid>
 
       {sections.map((section) => (
@@ -545,7 +546,7 @@ export function AthleteCheckInApp() {
           <Stack gap="md">
             {section.items.map((item) => {
               const currentScore = getScore(assessment.scores[item.key]);
-              const options = getQuestionOptions(item.key);
+              const options = getQuestionOptions(item.key, t);
 
               return (
                 <Paper key={item.key} withBorder p={{ base: "md", sm: "lg" }} radius="lg">
@@ -556,7 +557,7 @@ export function AthleteCheckInApp() {
                         <Text size="sm" c="dimmed">{t(item.prompt)}</Text>
                       </Box>
                       <Badge variant="light" color="ingress" size="lg">
-                        {currentScore === null ? "Not set" : `${currentScore}/5`}
+                        {currentScore === null ? t("notSet") : `${currentScore}/5`}
                       </Badge>
                     </Group>
 
@@ -585,21 +586,21 @@ export function AthleteCheckInApp() {
       ))}
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-        <SectionCard title="Support today" subheader={`Lowest support area right now: ${nextSupportArea}.`}>
+        <SectionCard title={t("supportTodayTitle")} subheader={t("lowestSupportArea", { area: nextSupportArea })}>
           <Stack gap="sm">
-            <SupportCard title="Physical" body={supportSummary.physical} />
-            <SupportCard title="Mental" body={supportSummary.mental} />
-            <SupportCard title="Sport brain" body={supportSummary.sportBrain} />
+            <SupportCard title={t("physicalShortLabel")} body={supportSummary.physical} />
+            <SupportCard title={t("mentalShortLabel")} body={supportSummary.mental} />
+            <SupportCard title={t("sportBrainShortLabel")} body={supportSummary.sportBrain} />
           </Stack>
         </SectionCard>
 
-        <SectionCard title={t("professionalNotes")} subheader="Optional context the coach should know before training.">
+        <SectionCard title={t("professionalNotes")} subheader={t("professionalNotesSubtitle")}>
           <Textarea
-            label="Anything to share with the coach today?"
+            label={t("shareWithCoach")}
             value={assessment.notes.general}
             onChange={(event) => updateGeneralNote(event.currentTarget.value)}
             minRows={8}
-            placeholder="Examples: poor sleep after travel, school exam day, knee soreness, low confidence, hard focus."
+            placeholder={t("shareWithCoachPlaceholder")}
           />
         </SectionCard>
       </SimpleGrid>
@@ -618,8 +619,8 @@ export function AthleteCheckInApp() {
         <Stack gap="sm">
           <Group justify="space-between" align="center" wrap="nowrap">
             <Box>
-              <Text size="sm" c="dimmed">Daily readiness</Text>
-              <Text fw={700}>{computed.completion.done}/{computed.completion.total} complete</Text>
+              <Text size="sm" c="dimmed">{t("dailyReadiness")}</Text>
+              <Text fw={700}>{t("completionCount", { done: computed.completion.done, total: computed.completion.total })}</Text>
             </Box>
             <Badge variant="light" color={readinessResult.mode === "full" ? "ingress" : readinessResult.mode === "moderate" ? "review" : "red"} size="lg">
               {readinessModeLabel}
