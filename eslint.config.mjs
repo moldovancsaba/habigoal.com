@@ -1,9 +1,16 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
+import { createGdsConfig } from "@doneisbetter/gds-eslint-config";
+
+const gdsScopedConfig = createGdsConfig().map((config) => ({
+  ...config,
+  files: ["components/theme/**/*.{ts,tsx}", "theme/**/*.{ts,tsx}"]
+}));
 
 export default [
   ...nextVitals,
   ...nextTypescript,
+  ...gdsScopedConfig,
   {
     files: ["**/*.{ts,tsx}"],
     rules: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { MantineProvider } from "@mantine/core";
+import { GdsProvider } from "@doneisbetter/gds-theme/client";
 import { useMemo } from "react";
 import { useLocale } from "next-intl";
 import { getHabigoalMantineTheme } from "@/theme/mantine-theme";
@@ -13,9 +13,9 @@ function ThemedTree({ children }: { children: React.ReactNode }) {
   const mantineTheme = useMemo(() => getHabigoalMantineTheme(mode, direction), [mode, direction]);
 
   return (
-    <MantineProvider theme={mantineTheme} forceColorScheme={mode}>
+    <GdsProvider key={`${locale}-${mode}`} locale={locale} theme={mantineTheme} defaultColorScheme={mode}>
       {children}
-    </MantineProvider>
+    </GdsProvider>
   );
 }
 

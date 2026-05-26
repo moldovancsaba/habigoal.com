@@ -2,16 +2,16 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const expectedGdsVersion = "2.4.4";
+const expectedGdsVersion = "2.6.1";
 const manifestPath = path.join(root, "gds-adoption.json");
 const packagePath = path.join(root, "package.json");
 
 const requiredPackages = [
-  "@gds/theme",
-  "@gds/core",
-  "@gds/admin",
-  "@gds/eslint-config",
-  "@gds/compliance"
+  "@doneisbetter/gds-theme",
+  "@doneisbetter/gds-core",
+  "@doneisbetter/gds-admin",
+  "@doneisbetter/gds-eslint-config",
+  "@doneisbetter/gds-compliance"
 ];
 
 const requiredManifestFields = [
@@ -49,16 +49,16 @@ function collectFiles(dir, results = []) {
     const target = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       collectFiles(target, results);
-    } else if (/\.(ts|tsx|js|jsx|mjs|css)$/.test(entry.name)) {
+    } else if (/\.(ts|tsx|js|jsx|mjs|css|md|json)$/.test(entry.name)) {
       results.push(target);
     }
   }
   return results;
 }
 
-function scanForGdsImports() {
+function scanForDoneIsBetterImports() {
   const imports = new Set();
-  const pattern = /from\s+["'](@gds\/[^"']+)["']|import\s+["'](@gds\/[^"']+)["']/g;
+  const pattern = /from\s+["'](@doneisbetter\/gds-[^"']+)["']|import\s+["'](@doneisbetter\/gds-[^"']+)["']/g;
 
   for (const file of collectFiles(root)) {
     const source = fs.readFileSync(file, "utf8");
@@ -68,6 +68,22 @@ function scanForGdsImports() {
   }
 
   return [...imports].sort();
+}
+
+function scanForLegacyGdsReferences() {
+  const references = [];
+  const pattern = new RegExp(`@${"gds"}/`);
+
+  for (const file of collectFiles(root)) {
+    const relativeFile = path.relative(root, file);
+    if (relativeFile === "package-lock.json") continue;
+    const source = fs.readFileSync(file, "utf8");
+    if (pattern.test(source)) {
+      references.push(relativeFile);
+    }
+  }
+
+  return references.sort();
 }
 
 const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
@@ -113,16 +129,21 @@ if (!pkg) {
   }
 
   const mantineVersion = pkg.dependencies?.["@mantine/core"] ?? pkg.devDependencies?.["@mantine/core"];
-  if (mantineVersion && !/^(\^|~)?7\./.test(mantineVersion)) {
-    blockers.push(`@mantine/core is ${mantineVersion}; latest GDS ${expectedGdsVersion} supports Mantine ^7.9.0.`);
+  if (mantineVersion && !/^(\^|~)?(7\.(?:9|\d{2,})|8\.(?:3|\d{2,}))/.test(mantineVersion)) {
+    blockers.push(`@mantine/core is ${mantineVersion}; GDS ${expectedGdsVersion} supports Mantine ^7.9.0 or ^8.3.0.`);
   }
 }
 
-const gdsImports = scanForGdsImports();
+const legacyGdsReferences = scanForLegacyGdsReferences();
+if (legacyGdsReferences.length > 0) {
+  blockers.push(`Legacy placeholder GDS package references remain: ${legacyGdsReferences.join(", ")}.`);
+}
+
+const gdsImports = scanForDoneIsBetterImports();
 if (gdsImports.length === 0) {
-  blockers.push("No @gds/* runtime imports found in source code.");
+  blockers.push("No @doneisbetter/gds-* runtime imports found in source code.");
 } else {
-  warnings.push(`Detected @gds/* imports: ${gdsImports.join(", ")}`);
+  warnings.push(`Detected @doneisbetter/gds-* imports: ${gdsImports.join(", ")}`);
 }
 
 if (blockers.length > 0) {

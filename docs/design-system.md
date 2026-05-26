@@ -1,20 +1,20 @@
 # Design System Adapter
 
-`/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM` is the single source of truth for design, UI, and UX. Project-local files describe only implementation adapter details, migration state, validation commands, and approved exceptions.
+`/Users/Shared/Projects/general-design-system` is the single source of truth for design, UI, and UX. Project-local files describe only implementation adapter details, migration state, validation commands, and approved exceptions.
 
-Habigoal currently uses Mantine with local adapters. The target is 100% General Design System consumption through `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`.
+Habigoal currently uses Mantine with local adapters and the GDS root provider. The target is 100% General Design System consumption through `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
 
-Latest inspected GDS line: `2.4.4` at commit `e931c5a`.
+Latest inspected GDS line: `2.6.1` at commit `53c52b8`.
 
 ## Current Implementation
 
 | Layer | Current role | Target GDS owner |
 |--------|--------------|------------------|
-| `components/theme/ThemeRegistry.tsx` | Mantine provider, local theme mode context, locale direction | `@gds/theme` `GdsProvider` plus thin Habigoal auth/locale adapter |
-| `theme/mantine-theme.ts` | Local Mantine theme and component defaults | `@gds/theme` `gdsTheme` / `extendGdsTheme(...)` |
+| `components/theme/ThemeRegistry.tsx` | GDS provider, local theme mode context, locale direction | `@doneisbetter/gds-theme` `GdsProvider` plus thin Habigoal auth/locale adapter |
+| `theme/mantine-theme.ts` | Local Mantine theme and component defaults | `@doneisbetter/gds-theme` `gdsTheme` / `extendGdsTheme(...)` |
 | `theme/tokens.ts` and `theme/typography.ts` | Local layout, tone, and typography constants | GDS tokens and component contracts |
-| `components/layout/DashboardShell.tsx` | Protected app shell, nav, footer, role-aware layout | `@gds/admin` `AppShell` plus Habigoal nav data |
-| `components/ui/*` | Local page, card, switcher, and data-card primitives | `@gds/core` / `@gds/admin` components or thin route-aware adapters |
+| `components/layout/DashboardShell.tsx` | Protected app shell, nav, footer, role-aware layout | `@doneisbetter/gds-admin` `AppShell` plus Habigoal nav data |
+| `components/ui/*` | Local page, card, switcher, and data-card primitives | `@doneisbetter/gds-core` / `@doneisbetter/gds-admin` components or thin route-aware adapters |
 | `app/globals.css` | Global atmosphere, CSS variables, print helpers, chart font handling | GDS global baseline plus approved print/chart exceptions |
 
 ## GDS Package Use
@@ -22,21 +22,21 @@ Latest inspected GDS line: `2.4.4` at commit `e931c5a`.
 The intended dependency set is:
 
 ```txt
-@gds/theme
-@gds/core
-@gds/admin
-@gds/eslint-config
-@gds/compliance
+@doneisbetter/gds-theme
+@doneisbetter/gds-core
+@doneisbetter/gds-admin
+@doneisbetter/gds-eslint-config
+@doneisbetter/gds-compliance
 ```
 
-Current blocker: the GDS repo is publish-ready and has a manual publish workflow, but registry checks from this consumer repo currently return npm HTTP 404 for the required `@gds/*` packages, and the inspected package peer range targets Mantine `^7.9.0` while Habigoal uses Mantine `8.3.6`.
+Current package source: the public npm registry still returns HTTP 404 for the required `@doneisbetter/*` packages from this workspace, so Habigoal temporarily consumes the sibling checkout at `/Users/Shared/Projects/general-design-system`. This is documented as an explicit manifest exception and must be removed once the packages are available from the approved registry.
 
-Do not add direct imports from `@gds/*` until the package source is available in a stable way and Mantine peer compatibility is resolved.
+GDS `2.6.1` supports Mantine `^7.9.0` and `^8.3.0`; Habigoal is on Mantine `8.3.x`.
 
 Once package adoption starts, use GDS subpath imports:
 
-- `@gds/theme/server`, `@gds/core/server`, and `@gds/admin/server` for server-safe layouts, metadata-adjacent composition, and non-hook structural primitives.
-- `@gds/theme/client`, `@gds/core/client`, and `@gds/admin/client` for providers, hooks, theme toggles, semantic buttons, responsive data views, and other interactive surfaces.
+- `@doneisbetter/gds-theme/server`, `@doneisbetter/gds-core/server`, and `@doneisbetter/gds-admin/server` for server-safe layouts, metadata-adjacent composition, and non-hook structural primitives.
+- `@doneisbetter/gds-theme/client`, `@doneisbetter/gds-core/client`, and `@doneisbetter/gds-admin/client` for providers, hooks, theme toggles, semantic buttons, responsive data views, and other interactive surfaces.
 
 ## Allowed Local Adapters
 
@@ -56,10 +56,10 @@ The machine-readable adoption contract is [gds-adoption.json](/Users/Shared/Proj
 
 The first code PR should be intentionally small:
 
-1. Add a stable package source for `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`.
-2. Add `@gds/eslint-config` and `@gds/compliance` once available from the same release line.
-3. Confirm Mantine compatibility or align both repos on the same Mantine major.
-4. Replace root provider setup with GDS provider semantics while preserving Habigoal theme mode, locale, RTL, and consent behavior.
+1. Replace the temporary sibling package source with the approved registry source for `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
+2. Expand `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` from scoped migration gates into release gates.
+3. Keep Mantine on a single supported major and fail duplicate Mantine majors in the lockfile.
+4. Continue using GDS provider semantics while preserving Habigoal theme mode, locale, RTL, and consent behavior.
 5. Migrate one high-value surface, preferably the public landing page or one dashboard page header/card set.
 6. Add a lockfile audit that fails duplicate Mantine majors or mixed GDS versions.
 7. Validate `gds-adoption.json` against the GDS schema.
@@ -72,7 +72,7 @@ The first code PR should be intentionally small:
 4. Athlete app and trainer dashboard surfaces.
 5. Settings, restore, governance, and admin CRUD surfaces.
 6. News/article shell and public pages.
-7. Delete obsolete local token/theme/component authority.
+7. Delete obsolete local token/gds-theme/component authority.
 
 ## Validation
 
@@ -89,4 +89,5 @@ npm run build
 ```
 
 `npm run semantic:audit` should evolve from legacy hue cleanup into a strict GDS compliance gate.
-`npm run gds:audit` is the explicit 100% GDS-only readiness check. It fails while package adoption, Mantine compatibility, source imports, or manifest migration status are incomplete.
+`npm run gds:audit` is the explicit 100% GDS-only readiness check. It fails while local contract adapters remain planned or manifest migration status is not `governed`.
+`npm run gds:compliance` runs the shared GDS compliance package and currently reports the remaining local UI imports and raw design values that must be eliminated during the adapter migration.

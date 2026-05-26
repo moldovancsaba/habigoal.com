@@ -67,7 +67,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 - MongoDB driver: `6.21.0`
 - next-intl: `4.9.2`
 - Mantine: `8.3.6`
-- General Design System: latest inspected line is `2.4.4`; target package family is `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`; adoption is blocked until the packages are published to a stable registry source and Mantine peer compatibility is resolved.
+- General Design System: latest inspected line is `2.6.1`; package family is `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`. Habigoal currently consumes the sibling GDS checkout because the public npm registry still returns 404 for the package line.
 - Node.js: `22.x`
 - App version: `0.5.1`
 
@@ -110,15 +110,16 @@ HABIGOAL_ENFORCE_AUTH=true
 npm run lint
 npm run test
 npm run gds:audit
+npm run gds:compliance
 npm run i18n:audit
 npm run build
 npm run typecheck
 npm run db:ping
 ```
 
-`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run gds:audit` is the strict GDS-only readiness check; it intentionally fails until the latest GDS packages are installable, Mantine compatibility is resolved, and local adapters are migrated to active GDS contracts. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
+`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run gds:audit` is the strict GDS-only readiness check; it intentionally fails until local adapters are migrated to active GDS contracts and the manifest reaches `governed`. `npm run gds:compliance` runs the shared GDS compliance package and is currently a migration gate, not a release pass/fail gate. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
-Design authority lives in `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM`. Habigoal-local design docs describe only adapter details, migration state, validation commands, and approved exceptions.
+Design authority lives in `/Users/Shared/Projects/general-design-system`. Habigoal-local design docs describe only adapter details, migration state, validation commands, and approved exceptions.
 
 ## Data Collections
 

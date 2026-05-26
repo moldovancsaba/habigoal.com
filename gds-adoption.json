@@ -1,14 +1,15 @@
 {
   "schemaVersion": 1,
-  "gdsVersion": "2.4.4",
+  "gdsVersion": "2.6.1",
   "productArchetype": "hybrid",
+  "packageSource": "file:../general-design-system/packages/*",
   "supportedEntryPoints": [
-    "@gds/theme/client",
-    "@gds/theme/server",
-    "@gds/core/client",
-    "@gds/core/server",
-    "@gds/admin/client",
-    "@gds/admin/server"
+    "@doneisbetter/gds-theme/client",
+    "@doneisbetter/gds-theme/server",
+    "@doneisbetter/gds-core/client",
+    "@doneisbetter/gds-core/server",
+    "@doneisbetter/gds-admin/client",
+    "@doneisbetter/gds-admin/server"
   ],
   "requiredContracts": [
     "GdsProvider",
@@ -30,7 +31,7 @@
     {
       "contract": "GdsProvider",
       "path": "components/theme/ThemeRegistry.tsx",
-      "status": "planned"
+      "status": "active"
     },
     {
       "contract": "AppShell",
@@ -60,37 +61,61 @@
   ],
   "approvedExceptions": [
     {
+      "surface": "Temporary local GDS package source",
+      "reason": "The public npm registry still returns 404 for the @doneisbetter package line from this workspace. Habigoal consumes the sibling GDS checkout until the packages are available from the approved registry.",
+      "owner": "habigoal",
+      "reviewDate": "2026-06-02"
+    },
+    {
       "surface": "Recharts chart internals",
       "reason": "Chart rendering remains outside canonical GDS component ownership; GDS should own surrounding containers, states, labels, spacing, and actions.",
       "owner": "habigoal",
-      "reviewDate": "2026-05-25"
+      "reviewDate": "2026-06-02"
     },
     {
       "surface": "PDF generation internals",
       "reason": "PDF output uses jsPDF layout primitives and print-specific constraints; GDS should own report action semantics and high-level content hierarchy.",
       "owner": "habigoal",
-      "reviewDate": "2026-05-25"
+      "reviewDate": "2026-06-02"
     },
     {
       "surface": "Public news content files",
       "reason": "News posts are structured localized content, not reusable UI primitives; GDS should own article shell and public surface framing.",
       "owner": "habigoal",
-      "reviewDate": "2026-05-25"
+      "reviewDate": "2026-06-02"
     },
     {
       "surface": "Provider-branded OAuth controls",
       "reason": "SSO provider controls may require provider-specific brand constraints while remaining framed by GDS auth shell contracts.",
       "owner": "habigoal",
-      "reviewDate": "2026-05-25"
+      "reviewDate": "2026-06-02"
     },
     {
       "surface": "Print-only report styles",
       "reason": "Print media needs flattened page-safe styles that differ from screen surfaces; exceptions must stay scoped to print/export selectors.",
       "owner": "habigoal",
-      "reviewDate": "2026-05-25"
+      "reviewDate": "2026-06-02"
     }
   ],
-  "migrationStatus": "blocked",
+  "compliance": {
+    "documentationPaths": [
+      "README.md",
+      "DESIGN.md",
+      "docs/design-system.md",
+      "docs/gds-adoption.md",
+      "docs/dod.md",
+      "docs/gds-verification-matrix.md"
+    ],
+    "staleDocumentationReferences": [],
+    "protectedSurfacePaths": [
+      "components/theme",
+      "theme"
+    ],
+    "bannedImports": [
+      "\u0040gds/"
+    ]
+  },
+  "migrationStatus": "partial",
   "owner": "habigoal",
-  "lastReviewedAt": "2026-05-25"
+  "lastReviewedAt": "2026-05-26"
 }

@@ -20,11 +20,19 @@
     "db:migrate-survey-identifiers": "node scripts/migrate-survey-identifiers.mjs",
     "semantic:audit": "node scripts/semantic-audit.mjs",
     "gds:audit": "node scripts/gds-audit.mjs",
+    "gds:compliance": "gds-compliance check --manifest ./gds-adoption.json",
+    "gds:manifest": "node scripts/gds-manifest.mjs ./gds-adoption.json",
     "i18n:audit": "node scripts/i18n-audit.mjs"
   },
   "dependencies": {
+    "@doneisbetter/gds-admin": "file:../general-design-system/packages/gds-admin",
+    "@doneisbetter/gds-core": "file:../general-design-system/packages/gds-core",
+    "@doneisbetter/gds-theme": "file:../general-design-system/packages/gds-theme",
     "@mantine/core": "^8.3.6",
     "@mantine/hooks": "^8.3.6",
+    "@mantine/modals": "^8.3.18",
+    "@mantine/notifications": "^8.3.18",
+    "@tabler/icons-react": "^3.44.0",
     "html2canvas": "^1.4.1",
     "jose": "^6.2.3",
     "jspdf": "^4.2.1",
@@ -37,6 +45,8 @@
     "recharts": "^3.8.1"
   },
   "devDependencies": {
+    "@doneisbetter/gds-compliance": "file:../general-design-system/packages/gds-compliance",
+    "@doneisbetter/gds-eslint-config": "file:../general-design-system/packages/gds-eslint-config",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

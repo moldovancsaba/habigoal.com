@@ -39,9 +39,9 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 
 ## UI Quality
 
-- Follow `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM` as the design, UI, and UX source of truth.
+- Follow `/Users/Shared/Projects/general-design-system` as the design, UI, and UX source of truth.
 - Treat `DESIGN.md` and `docs/design-system.md` as Habigoal adapter and migration documents only.
-- Prefer existing Mantine patterns and shared components until `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance` are available to Habigoal.
+- Prefer GDS-governed provider, primitive, and admin contracts from `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`; keep Mantine usage as implementation detail only when the manifest documents a temporary adapter.
 - Keep `gds-adoption.json` aligned with the consumed GDS version, required contracts, local adapters, approved exceptions, and migration state.
 - Do not add new local token systems or generalized UI primitives that belong in GDS.
 - Avoid nested cards and unnecessary decorative surfaces.
