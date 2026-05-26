@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "gdsVersion": "2.6.1",
   "productArchetype": "hybrid",
-  "packageSource": "file:../general-design-system/packages/*",
+  "packageSource": "npm:@doneisbetter/*@^2.6.1",
   "supportedEntryPoints": [
     "@doneisbetter/gds-theme/client",
     "@doneisbetter/gds-theme/server",
@@ -60,12 +60,6 @@
     }
   ],
   "approvedExceptions": [
-    {
-      "surface": "Temporary local GDS package source",
-      "reason": "The public npm registry still returns 404 for the @doneisbetter package line from this workspace. Habigoal consumes the sibling GDS checkout until the packages are available from the approved registry.",
-      "owner": "habigoal",
-      "reviewDate": "2026-06-02"
-    },
     {
       "surface": "Recharts chart internals",
       "reason": "Chart rendering remains outside canonical GDS component ownership; GDS should own surrounding containers, states, labels, spacing, and actions.",

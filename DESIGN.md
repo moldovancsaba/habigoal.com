@@ -39,13 +39,11 @@ The target package boundary is:
 
 Habigoal-specific code may provide thin adapters only when needed for routing, `next-intl`, auth state, team/role context, or product data mapping.
 
-## Known Integration Blockers
+## Package Source
 
-- The public npm registry still returns HTTP 404 for the `@doneisbetter/*` packages from this workspace.
-- Habigoal temporarily consumes the sibling GDS checkout through `file:../general-design-system/packages/*`.
+- The GDS packages are live on npm under `@doneisbetter/*` at `2.6.1`.
+- Habigoal consumes the npm package line directly through semver ranges in `package.json`.
 - The inspected GDS packages support Mantine `^7.9.0` and `^8.3.0`; Habigoal uses Mantine `8.3.x`.
-
-Until registry publication is resolved, the sibling package source is a documented migration exception and should not be treated as production packaging policy.
 
 Use `@doneisbetter/*/server` for server-safe App Router composition and `@doneisbetter/*/client` for providers, hooks, and interactive surfaces.
 
@@ -61,7 +59,7 @@ Use `@doneisbetter/*/server` for server-safe App Router composition and `@doneis
 ## Migration Phases
 
 1. **Authority lock:** Treat GDS as the only design authority and remove local docs that redefine token/component policy.
-2. **Registry release:** Replace the temporary sibling GDS package source with the approved registry source for `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
+2. **Registry adoption:** Keep the approved npm registry source for `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
 3. **Root provider migration:** Replace `ThemeRegistry` and local Mantine theme ownership with `GdsProvider` or `extendGdsTheme(...)`.
 4. **Core primitive migration:** Replace local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, action buttons, state blocks, and form wrappers with GDS primitives or thin adapters.
 5. **Protected workspace migration:** Replace local dashboard shell, nav links, stats strips, settings tables, restore views, and CRUD layouts with `@doneisbetter/gds-admin`.

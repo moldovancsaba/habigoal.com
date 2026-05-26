@@ -29,7 +29,7 @@ The intended dependency set is:
 @doneisbetter/gds-compliance
 ```
 
-Current package source: the public npm registry still returns HTTP 404 for the required `@doneisbetter/*` packages from this workspace, so Habigoal temporarily consumes the sibling checkout at `/Users/Shared/Projects/general-design-system`. This is documented as an explicit manifest exception and must be removed once the packages are available from the approved registry.
+Current package source: live npm packages under `@doneisbetter/*` at `^2.6.1`. Do not reintroduce sibling `file:` package links or the old placeholder package namespace.
 
 GDS `2.6.1` supports Mantine `^7.9.0` and `^8.3.0`; Habigoal is on Mantine `8.3.x`.
 
@@ -56,7 +56,7 @@ The machine-readable adoption contract is [gds-adoption.json](/Users/Shared/Proj
 
 The first code PR should be intentionally small:
 
-1. Replace the temporary sibling package source with the approved registry source for `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
+1. Keep the approved npm registry source for `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
 2. Expand `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` from scoped migration gates into release gates.
 3. Keep Mantine on a single supported major and fail duplicate Mantine majors in the lockfile.
 4. Continue using GDS provider semantics while preserving Habigoal theme mode, locale, RTL, and consent behavior.

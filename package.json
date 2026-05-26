@@ -25,9 +25,9 @@
     "i18n:audit": "node scripts/i18n-audit.mjs"
   },
   "dependencies": {
-    "@doneisbetter/gds-admin": "file:../general-design-system/packages/gds-admin",
-    "@doneisbetter/gds-core": "file:../general-design-system/packages/gds-core",
-    "@doneisbetter/gds-theme": "file:../general-design-system/packages/gds-theme",
+    "@doneisbetter/gds-admin": "^2.6.1",
+    "@doneisbetter/gds-core": "^2.6.1",
+    "@doneisbetter/gds-theme": "^2.6.1",
     "@mantine/core": "^8.3.6",
     "@mantine/hooks": "^8.3.6",
     "@mantine/modals": "^8.3.18",
@@ -45,8 +45,8 @@
     "recharts": "^3.8.1"
   },
   "devDependencies": {
-    "@doneisbetter/gds-compliance": "file:../general-design-system/packages/gds-compliance",
-    "@doneisbetter/gds-eslint-config": "file:../general-design-system/packages/gds-eslint-config",
+    "@doneisbetter/gds-compliance": "^2.6.1",
+    "@doneisbetter/gds-eslint-config": "^2.6.1",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

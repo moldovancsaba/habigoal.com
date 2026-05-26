@@ -67,7 +67,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 - MongoDB driver: `6.21.0`
 - next-intl: `4.9.2`
 - Mantine: `8.3.6`
-- General Design System: latest inspected line is `2.6.1`; package family is `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`. Habigoal currently consumes the sibling GDS checkout because the public npm registry still returns 404 for the package line.
+- General Design System: latest inspected line is `2.6.1`; package family is `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`. Habigoal consumes the live npm package line at `^2.6.1`.
 - Node.js: `22.x`
 - App version: `0.5.1`
 

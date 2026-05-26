@@ -39,22 +39,16 @@ Current gaps:
 - Local theme/tokens/typography files still own visual decisions.
 - Local UI primitives duplicate contracts that should come from `@doneisbetter/gds-core` and `@doneisbetter/gds-admin`.
 - `app/globals.css` contains product-local colors, shadows, gradients, and glass utilities.
-- GDS packages are publish-ready and the GDS repository now includes a manual `GDS Publish` workflow, but registry checks from this consumer repo still return npm HTTP 404 for all required `@doneisbetter/*` packages.
+- GDS packages are published on npm under the real `@doneisbetter/*` namespace.
 - Local GDS package version inspected: `2.6.1`.
 - GDS package peer dependencies support Mantine `^7.9.0` and `^8.3.0`; Habigoal uses Mantine `8.3.x`.
-- Habigoal now installs the GDS packages from the sibling checkout as a temporary migration bridge.
+- Habigoal now installs the GDS packages from npm.
 - The root provider is now `GdsProvider` from `@doneisbetter/gds-theme/client`, wrapped by the Habigoal theme-mode adapter.
 - Habigoal now includes [gds-adoption.json](/Users/Shared/Projects/habigoal/gds-adoption.json) to declare the current migration state and exceptions.
 
 ## Dependency Strategy
 
-Do not switch the package source to npm until the release operator confirms publication and registry access.
-
-Acceptable package-source options, in priority order:
-
-1. Run the GDS repository's authenticated `GDS Publish` workflow, then verify `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance` resolve from the selected organization package registry.
-2. Replace the temporary `file:../general-design-system/packages/*` package source with the approved registry source.
-3. Add the GDS repo as a workspace/submodule only if the deployment environment can reliably install private Git dependencies.
+Use the live npm packages directly: `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance` at `^2.6.1`. Do not reintroduce sibling `file:` package links or the old placeholder package namespace.
 
 The preferred long-term route is published packages with aligned Mantine major versions. The latest GDS compatibility matrix supports Mantine `7.9.x` and `8.3.x`, React `18.2.x` / `19.x`, Next `15.x`, and Vite `8.x`.
 
