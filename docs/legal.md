@@ -30,7 +30,7 @@ The profile is displayed in:
 
 The app version is developer-managed in `lib/app-version.ts` and should remain aligned with `package.json` when release versioning changes.
 
-Current app version: `0.5.0`
+Current app version: `0.5.1`
 
 ## Current Production Identity
 

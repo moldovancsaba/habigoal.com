@@ -35,6 +35,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - Team management through the `teams` collection and `/api/teams`.
 - Soft-delete and restore workflows for athletes and check-ins.
 - Multilingual UI for `en`, `hu`, `es`, `de`, `ar`, and `he`, including RTL layout support for Arabic and Hebrew.
+- Critical athlete check-in copy is message-catalog driven and covered by the i18n audit hardcoded-copy gate.
 - Codex automation control plane under `.codex/` for audit, planning, implementation, and documentation loops.
 
 ## Documentation
@@ -68,7 +69,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 - Mantine: `8.3.6`
 - General Design System: latest inspected line is `2.4.4`; target package family is `@gds/theme`, `@gds/core`, `@gds/admin`, `@gds/eslint-config`, and `@gds/compliance`; adoption is blocked until the packages are published to a stable registry source and Mantine peer compatibility is resolved.
 - Node.js: `22.x`
-- App version: `0.5.0`
+- App version: `0.5.1`
 
 ## Local Development
 
@@ -115,7 +116,7 @@ npm run typecheck
 npm run db:ping
 ```
 
-`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run gds:audit` is the strict GDS-only readiness check; it intentionally fails until the latest GDS packages are installable, Mantine compatibility is resolved, and local adapters are migrated to active GDS contracts. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
+`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. `npm run semantic:audit` is a targeted design-system cleanup check and currently reports known legacy generic hue props until those UI files are migrated. `npm run gds:audit` is the strict GDS-only readiness check; it intentionally fails until the latest GDS packages are installable, Mantine compatibility is resolved, and local adapters are migrated to active GDS contracts. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
 Design authority lives in `/Users/Shared/Projects/GENERAL_DESIGN_SYSTEM`. Habigoal-local design docs describe only adapter details, migration state, validation commands, and approved exceptions.
 

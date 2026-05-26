@@ -159,6 +159,6 @@ Autonomous loops should use branch-and-PR delivery. Direct pushes to `main` are 
 
 - legacy collection names still exist
 - some feature work exists on branches and is not yet part of `main`
-- i18n coverage requires ongoing audit with `npm run i18n:audit`
+- i18n coverage requires ongoing audit with `npm run i18n:audit`; the current gate covers catalog parity, news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in athlete check-in/brand surfaces
 - team invitations are not yet outbound email invitations
 - centralized forms are the intended direction, but the full rollout is not complete on `main`
