@@ -1,6 +1,7 @@
-import { Button, Container, Title, Text, Stack, Group, Box, Alert, SimpleGrid } from "@mantine/core";
+import Image from "next/image";
+import { Anchor, Group, Text } from "@mantine/core";
+import { EditorialHero, PublicBrandFooter, PublicShell, StateBlock } from "@doneisbetter/gds-core/server";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { BrandMark } from "@/components/ui/BrandMark";
 import { env } from "@/config/env";
 
 export default async function LandingPage({
@@ -15,86 +16,60 @@ export default async function LandingPage({
   const t = await getTranslations({ locale, namespace: "Landing" });
   const { error } = await searchParams;
   const authHref = env.habigoalEnforceAuth ? `/api/auth/login?next=/${locale}/dashboard` : `/${locale}/dashboard`;
+  const homeHref = `/${locale}`;
+  const athleteHref = `/${locale}/athletes`;
+  const newsHref = `/${locale}/news`;
+  const termsHref = `/${locale}/legal/gtc`;
+  const privacyHref = `/${locale}/legal/privacy`;
+  const brand = (
+    <Group gap="sm" wrap="nowrap">
+      <Image src="/images/habigoal_logo.png" alt="" width={40} height={40} priority />
+      <Text fw={800}>Habigoal</Text>
+    </Group>
+  );
 
   return (
-    <Box style={{ minHeight: "100vh", color: "var(--text-primary)", position: "relative", overflow: "hidden" }}>
-      <Container size="xl" py={{ base: 56, md: 96 }}>
-        <Stack gap={60} align="stretch">
-          {error === "access_denied" && (
-            <Alert color="review" title={t("accessDeniedTitle")} radius="md" style={{ maxWidth: 560, marginInline: "auto" }}>
-              {t("accessDenied")}
-            </Alert>
-          )}
-          <Box maw={1080} mx="auto">
-            <Stack className="glass-panel surface-outline" gap="xl" p={{ base: "xl", md: "2rem" }} style={{ borderRadius: 28, minWidth: 0 }}>
-              <Group justify="flex-start" align="center">
-                <BrandMark size={76} align="left" />
-              </Group>
+    <PublicShell
+      brand={<Anchor href={homeHref} underline="never" c="inherit">{brand}</Anchor>}
+      actions={<Anchor href={newsHref} fw={700}>{t("whatsNew")}</Anchor>}
+      footer={
+        <PublicBrandFooter
+          brandTitle="Habigoal"
+          description={t("subtitle")}
+          legal={
+            <Group gap="lg" wrap="wrap">
+              <Anchor href={termsHref}>{t("termsOfService")}</Anchor>
+              <Anchor href={privacyHref}>{t("privacyPolicy")}</Anchor>
+              <Anchor href={newsHref}>{t("whatsNew")}</Anchor>
+              <Anchor href={athleteHref}>{t("athleteApp")}</Anchor>
+            </Group>
+          }
+          compact
+        />
+      }
+      headerVariant="branded-quiet"
+    >
+      {error === "access_denied" && (
+        <StateBlock variant="permission" title={t("accessDeniedTitle")} description={t("accessDenied")} compact />
+      )}
 
-              <Stack gap="lg">
-                <Title order={1} fz={{ base: 42, md: 56, xl: 72 }} maw={760} style={{ lineHeight: 0.98 }}>
-                  {t("title")}
-                </Title>
-                <Text fz={{ base: "lg", md: "xl" }} maw={680} c="var(--text-secondary)" style={{ lineHeight: 1.65 }}>
-                  {t("subtitle")}
-                </Text>
-              </Stack>
+      <EditorialHero
+        title={t("title")}
+        description={t("subtitle")}
+        actions={[
+          { label: t("athleteApp"), href: athleteHref, variant: "primary" },
+          { label: t("trainerApp"), href: authHref, variant: "secondary" },
+          { label: t("whatsNew"), href: newsHref, variant: "subtle" }
+        ]}
+        media={<Image src="/images/habigoal_logo.png" alt="Habigoal" width={420} height={420} priority />}
+        mediaAlt="Habigoal"
+        mediaFade="background-match"
+        surfaceVariant="flat-public"
+      />
 
-              <Stack gap="md">
-                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-                  <Button component="a" href={`/${locale}/athletes`} size="xl" color="ingress" styles={{ label: { fontSize: "1.1rem", fontWeight: 800 } }} style={{ minHeight: 72 }}>
-                    {t("athleteApp")}
-                  </Button>
-                  <Button
-                    component="a"
-                    href={authHref}
-                    size="xl"
-                    styles={{ label: { fontSize: "1.1rem", fontWeight: 800, color: "#08111f" } }}
-                    style={{
-                      minHeight: 72,
-                      background: "linear-gradient(135deg, rgba(0, 85, 255, 0.96) 0%, rgba(22, 188, 214, 0.94) 52%, rgba(197, 247, 46, 0.92) 100%)",
-                      border: "1px solid rgba(111, 225, 255, 0.45)"
-                    }}
-                  >
-                    {t("trainerApp")}
-                  </Button>
-                </SimpleGrid>
-                <Button
-                  component="a"
-                  href={`/${locale}/news`}
-                  size="lg"
-                  variant="default"
-                  styles={{ label: { fontSize: "1rem", fontWeight: 800 } }}
-                >
-                  {t("whatsNew")}
-                </Button>
-                <Text size="sm" c="var(--text-muted)">
-                  {t("ssoNote")}
-                </Text>
-              </Stack>
-            </Stack>
-          </Box>
-        </Stack>
-      </Container>
-
-      <Box component="footer" py="xl" style={{ textAlign: "center" }}>
-        <Container size="lg">
-          <Group className="glass-panel surface-outline" justify="center" gap="xl" py="md" wrap="wrap" style={{ borderRadius: 32 }}>
-            <Text component="a" href={`/${locale}/legal/gtc`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
-              {t("termsOfService")}
-            </Text>
-            <Text component="a" href={`/${locale}/legal/privacy`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
-              {t("privacyPolicy")}
-            </Text>
-            <Text component="a" href={`/${locale}/news`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
-              {t("whatsNew")}
-            </Text>
-            <Text component="a" href={`/${locale}/athletes`} size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>
-              {t("athleteApp")}
-            </Text>
-          </Group>
-        </Container>
-      </Box>
-    </Box>
+      <Text c="dimmed" size="sm">
+        {t("ssoNote")}
+      </Text>
+    </PublicShell>
   );
 }
