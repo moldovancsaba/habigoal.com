@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { Anchor, Group, Text } from "@mantine/core";
-import { EditorialHero, PublicBrandFooter, PublicShell, StateBlock } from "@doneisbetter/gds-core/server";
+import { Alert, Anchor, Box, Button, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { env } from "@/config/env";
 
@@ -29,47 +28,61 @@ export default async function LandingPage({
   );
 
   return (
-    <PublicShell
-      brand={<Anchor href={homeHref} underline="never" c="inherit">{brand}</Anchor>}
-      actions={<Anchor href={newsHref} fw={700}>{t("whatsNew")}</Anchor>}
-      footer={
-        <PublicBrandFooter
-          brandTitle="Habigoal"
-          description={t("subtitle")}
-          legal={
+    <Container size="lg" py="xl">
+      <Stack gap="xl">
+        <Group justify="space-between" wrap="nowrap">
+          <Anchor href={homeHref} underline="never" c="inherit">{brand}</Anchor>
+          <Anchor href={newsHref} fw={700}>{t("whatsNew")}</Anchor>
+        </Group>
+
+      {error === "access_denied" && (
+          <Alert color="red" title={t("accessDeniedTitle")}>
+            {t("accessDenied")}
+          </Alert>
+      )}
+
+        <Paper component="section" withBorder radius="xl" p={{ base: "lg", md: "xl" }}>
+          <Group gap="xl" align="center" justify="space-between">
+            <Stack gap="lg" maw={680}>
+              <Stack gap="sm">
+                <Title order={1}>{t("title")}</Title>
+                <Text size="lg" c="dimmed">{t("subtitle")}</Text>
+              </Stack>
+              <Group gap="sm" wrap="wrap">
+                <Button component="a" href={athleteHref} color="ingress">
+                  {t("athleteApp")}
+                </Button>
+                <Button component="a" href={authHref} variant="default">
+                  {t("trainerApp")}
+                </Button>
+                <Button component="a" href={newsHref} variant="subtle">
+                  {t("whatsNew")}
+                </Button>
+              </Group>
+            </Stack>
+            <Box visibleFrom="sm">
+              <Image src="/images/habigoal_logo.png" alt="Habigoal" width={320} height={320} priority />
+            </Box>
+          </Group>
+        </Paper>
+
+      <Text c="dimmed" size="sm">
+        {t("ssoNote")}
+      </Text>
+
+        <Paper component="footer" withBorder radius="xl" p="lg">
+          <Stack gap="sm">
+            <Title order={4}>Habigoal</Title>
+            <Text c="dimmed">{t("subtitle")}</Text>
             <Group gap="lg" wrap="wrap">
               <Anchor href={termsHref}>{t("termsOfService")}</Anchor>
               <Anchor href={privacyHref}>{t("privacyPolicy")}</Anchor>
               <Anchor href={newsHref}>{t("whatsNew")}</Anchor>
               <Anchor href={athleteHref}>{t("athleteApp")}</Anchor>
             </Group>
-          }
-          compact
-        />
-      }
-      headerVariant="branded-quiet"
-    >
-      {error === "access_denied" && (
-        <StateBlock variant="permission" title={t("accessDeniedTitle")} description={t("accessDenied")} compact />
-      )}
-
-      <EditorialHero
-        title={t("title")}
-        description={t("subtitle")}
-        actions={[
-          { label: t("athleteApp"), href: athleteHref, variant: "primary" },
-          { label: t("trainerApp"), href: authHref, variant: "secondary" },
-          { label: t("whatsNew"), href: newsHref, variant: "subtle" }
-        ]}
-        media={<Image src="/images/habigoal_logo.png" alt="Habigoal" width={420} height={420} priority />}
-        mediaAlt="Habigoal"
-        mediaFade="background-match"
-        surfaceVariant="flat-public"
-      />
-
-      <Text c="dimmed" size="sm">
-        {t("ssoNote")}
-      </Text>
-    </PublicShell>
+          </Stack>
+        </Paper>
+      </Stack>
+    </Container>
   );
 }
