@@ -67,7 +67,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 - MongoDB driver: `6.21.0`
 - next-intl: `4.9.2`
 - Mantine: `8.3.6`
-- General Design System: latest inspected line is `2.6.3`; runtime package is `@doneisbetter/gds`, with `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` for governance. Habigoal consumes the live npm package line at `^2.6.3`.
+- General Design System: latest inspected line is `2.6.4`; runtime package is `@doneisbetter/gds`, with `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` for governance. Habigoal consumes the live npm package line at `^2.6.4`.
 - Node.js: `22.x`
 - App version: `0.5.1`
 

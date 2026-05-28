@@ -7,7 +7,7 @@ Last updated: 2026-05-28
 
 Habigoal must not redefine component behavior, interaction patterns, token policy, responsive strategy, accessibility baseline, or canonical control semantics locally. Those decisions belong to the General Design System.
 
-Latest inspected GDS line: `2.6.3` from `@doneisbetter/gds`.
+Latest inspected GDS line: `2.6.4` from `@doneisbetter/gds`.
 
 ## Current Position
 
@@ -39,7 +39,7 @@ Habigoal-specific code may provide thin adapters only when needed for routing, `
 
 ## Package Source
 
-- The GDS packages are live on npm under `@doneisbetter/*` at `2.6.3`.
+- The GDS packages are live on npm under `@doneisbetter/*` at `2.6.4`.
 - Habigoal consumes the npm package line directly through semver ranges in `package.json`.
 - The inspected GDS packages support Mantine `^7.9.0`, `^8.3.0`, and `^9.0.0`; Habigoal uses Mantine `8.3.x`.
 

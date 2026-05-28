@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const expectedGdsVersion = "2.6.3";
+const expectedGdsVersion = "2.6.4";
 const manifestPath = path.join(root, "gds-adoption.json");
 const packagePath = path.join(root, "package.json");
 

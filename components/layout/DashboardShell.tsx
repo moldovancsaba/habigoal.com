@@ -1,20 +1,18 @@
 "use client";
 
-import { ActionIcon, Badge, Box, Group, Menu, NavLink, Stack, Text, useComputedColorScheme } from "@mantine/core";
+import { ActionIcon, Box, Group, Menu, Stack, Text, useComputedColorScheme } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { AppFooter } from "@/components/layout/AppFooter";
-import { AppShell as GdsAppShell } from "@doneisbetter/gds/client";
+import { AppShell as GdsAppShell, SidebarNav, SidebarNavItem, SidebarNavSection } from "@doneisbetter/gds/client";
 import { APP_LAYOUT } from "@/theme/tokens";
-import { getNavStateCss } from "@/theme/semantic-theme";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
   const pathname = usePathname();
   const router = useRouter();
-  const { mode } = useThemeMode();
 
   const [user, setUser] = useState<{ name: string; email: string; primaryRole?: string; athleteId?: string } | null>(null);
   const [authResolved, setAuthResolved] = useState(false);
@@ -59,50 +57,34 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const nav = [
     ...(primaryRole === "admin" || primaryRole === "trainer" ? [
       { href: "/dashboard", label: t("overview") },
-      { href: "/dashboard/assessment", label: t("survey") },
-      { href: "/dashboard/athletes", label: t("children") },
-      { href: "/dashboard/planning", label: t("planning") }
+      { href: "/dashboard/assessment", label: t("survey"), action: "record" as const },
+      { href: "/dashboard/athletes", label: t("children"), action: "users" as const },
+      { href: "/dashboard/planning", label: t("planning"), action: "calendar" as const }
     ] : []),
-    ...(primaryRole === "admin" ? [{ href: "/dashboard/settings", label: t("settings") }] : [])
+    ...(primaryRole === "admin" ? [{ href: "/dashboard/settings", label: t("settings"), action: "settings" as const }] : [])
   ];
 
   const primaryNavigation = (
-      <Stack gap={6}>
+    <SidebarNav ariaLabel={t("brandName")}>
+      <SidebarNavSection label="Primary">
         {nav.map((item) => {
           const active =
             item.href === "/dashboard"
               ? pathname === "/dashboard"
               : pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
-            <NavLink
+            <SidebarNavItem
               key={item.href}
               component={Link}
               href={item.href}
               label={item.label}
+              action={item.action ?? "dashboard"}
               active={active}
-              styles={{
-                root: {
-                  ...getNavStateCss(mode, active ? "ingress" : "neutral", active),
-                  borderRadius: "var(--mantine-radius-md)",
-                  paddingInlineStart: 16,
-                  paddingInlineEnd: 16,
-                  minHeight: 46
-                },
-                body: { paddingInlineStart: 0 },
-                label: {
-                  color: active ? "var(--nav-link-active)" : "var(--nav-link-inactive)",
-                  fontWeight: active ? 700 : 500,
-                  textAlign: "left"
-                },
-                section: {
-                  color: active ? "var(--nav-link-active)" : "var(--nav-link-inactive)"
-                }
-              }}
-              leftSection={active ? <Badge variant="light" color="ingress" circle size="sm" /> : undefined}
             />
           );
         })}
-      </Stack>
+      </SidebarNavSection>
+    </SidebarNav>
   );
 
   const accountPanel = (
@@ -126,23 +108,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           </Stack>
         </Box>
       ) : null}
-        <NavLink
+        <SidebarNavItem
+          action="logout"
           label={t("logout")}
           onClick={() => {
             window.location.href = "/api/auth/logout";
-          }}
-          styles={{
-            root: {
-              borderRadius: "var(--mantine-radius-md)",
-              paddingInlineStart: 16,
-              paddingInlineEnd: 16,
-              minHeight: 46
-            },
-            label: {
-              color: "var(--nav-link-inactive)",
-              fontWeight: 500,
-              textAlign: "left"
-            }
           }}
         />
     </Stack>
