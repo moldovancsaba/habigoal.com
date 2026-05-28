@@ -25,6 +25,7 @@
     "i18n:audit": "node scripts/i18n-audit.mjs"
   },
   "dependencies": {
+    "@doneisbetter/gds": "^2.6.3",
     "@doneisbetter/gds-admin": "^2.6.1",
     "@doneisbetter/gds-core": "^2.6.1",
     "@doneisbetter/gds-theme": "^2.6.1",
