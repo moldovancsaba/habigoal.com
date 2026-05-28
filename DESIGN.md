@@ -11,7 +11,7 @@ Latest inspected GDS line: `2.6.3` from `@doneisbetter/gds`.
 
 ## Current Position
 
-Habigoal now passes the shared GDS compliance check, but it is not yet 100% governed GDS-only.
+Habigoal now passes the shared GDS compliance check and declares the governed GDS baseline in `gds-adoption.json`.
 
 The application still contains local theme and UI adapter code that predates the General Design System package boundary:
 
@@ -60,7 +60,7 @@ Use `@doneisbetter/gds/server` for server-safe App Router composition and `@done
 2. **Registry adoption:** Keep the approved npm registry source for `@doneisbetter/gds`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
 3. **Root provider migration:** Replace `ThemeRegistry` and local Mantine theme ownership with `GdsProvider` or `extendGdsTheme(...)`.
 4. **Core primitive migration:** Replace local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, action buttons, state blocks, and form wrappers with GDS primitives or thin adapters. Current page/section/state/form imports now use direct GDS primitives on migrated surfaces.
-5. **Protected workspace migration:** Replace the remaining local dashboard shell, nav links, stats strips, settings tables, restore views, and CRUD layouts with `@doneisbetter/gds-admin`. Core action controls now use GDS `SemanticButton` where the action vocabulary is exact; the current shell remains local until the GDS `AppShell` can represent Habigoal's localized role navigation and persisted theme mode without regressions.
+5. **Protected workspace migration:** Keep the protected workspace on GDS `AppShell` and continue migrating stats strips, settings tables, restore views, and CRUD layouts to `@doneisbetter/gds-admin` component families. Core action controls use GDS `SemanticButton` where the action vocabulary is exact.
 6. **CSS/token deletion:** Remove local design tokens, raw colors, repeated spacing literals, and bespoke glass surface classes after equivalent GDS coverage exists.
 7. **Enforcement:** Add `@doneisbetter/gds-eslint-config`, `@doneisbetter/gds-compliance`, adoption-manifest validation, and an expanded `npm run semantic:audit` gate that fails new local token authority, raw colors, and non-GDS generalized UI primitives.
 
@@ -78,4 +78,4 @@ npm run typecheck
 npm run build
 ```
 
-`npm run gds:compliance` currently passes and must remain a release gate. `npm run gds:audit` must also pass before Habigoal can be called 100% GDS-only. Once GDS packages are installed, keep the package compatibility check verifying exactly one Mantine major version and exactly one GDS package version family in the lockfile.
+`npm run gds:compliance` and `npm run gds:audit` currently pass and must remain release gates. Keep the package compatibility check verifying exactly one Mantine major version and exactly one GDS package version family in the lockfile.

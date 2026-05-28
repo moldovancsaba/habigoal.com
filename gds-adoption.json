@@ -39,7 +39,7 @@
     {
       "contract": "AppShell",
       "path": "components/layout/DashboardShell.tsx",
-      "status": "planned"
+      "status": "active"
     },
     {
       "contract": "PageHeader",
@@ -122,7 +122,7 @@
       "\u0040gds/"
     ]
   },
-  "migrationStatus": "partial",
+  "migrationStatus": "governed",
   "owner": "habigoal",
   "lastReviewedAt": "2026-05-28"
 }

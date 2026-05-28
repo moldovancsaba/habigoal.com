@@ -1,11 +1,11 @@
 "use client";
 
-import { ActionIcon, AppShell, Badge, Box, Burger, Divider, Drawer, Group, Menu, NavLink, Stack, Text, Tooltip } from "@mantine/core";
-import Image from "next/image";
+import { ActionIcon, Badge, Box, Group, Menu, NavLink, Stack, Text, useComputedColorScheme } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { AppFooter } from "@/components/layout/AppFooter";
+import { AppShell as GdsAppShell } from "@doneisbetter/gds/client";
 import { APP_LAYOUT } from "@/theme/tokens";
 import { getNavStateCss } from "@/theme/semantic-theme";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
@@ -14,8 +14,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const t = useTranslations("Dashboard");
   const pathname = usePathname();
   const router = useRouter();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const sideInset = 14;
   const { mode } = useThemeMode();
 
   const [user, setUser] = useState<{ name: string; email: string; primaryRole?: string; athleteId?: string } | null>(null);
@@ -68,56 +66,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     ...(primaryRole === "admin" ? [{ href: "/dashboard/settings", label: t("settings") }] : [])
   ];
 
-  const navContent = (
-    <Stack h="100%" gap={0} style={{ background: "var(--sidebar-bg)" }}>
-      <Box p="md" style={{ display: "flex", justifyContent: "center" }}>
-        <Link href="/" aria-label={t("brandName")} style={{ display: "inline-flex", textDecoration: "none" }}>
-          <Image src="/images/habigoal_logo.png" alt="Habigoal" width={108} height={108} priority />
-        </Link>
-      </Box>
-
-      <Stack px={sideInset} pb="sm" gap={4}>
-        <Text fw={800} c="var(--nav-company-label)">{t("brandName")}</Text>
-        <Text size="sm" c="var(--nav-company-description)">{t("brandSubtitle")}</Text>
-      </Stack>
-
-      {user && (
-        <Stack gap={0} px={sideInset} pb="md" align="center">
-          <Box
-            className="glass-panel surface-outline"
-            p="xs"
-            style={{
-              width: "100%",
-              borderRadius: "var(--mantine-radius-md)",
-            }}
-          >
-            <Stack gap={0}>
-              <Box style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {user.name}
-              </Box>
-              <Box style={{ color: "var(--text-secondary)", fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {user.email}
-              </Box>
-            </Stack>
-          </Box>
-        </Stack>
-      )}
-
-      <Group
-        gap={8}
-        p={8}
-        justify="flex-start"
-        style={{
-          marginInline: sideInset,
-          background: "linear-gradient(180deg, var(--surface-gradient-top), var(--surface-gradient-bottom)), var(--surface-base)",
-          border: "1px solid var(--border-primary)",
-          borderRadius: "var(--mantine-radius-md)"
-        }}
-      >
-        <ShellLocaleSwitcher />
-        <ShellThemeSwitcher />
-      </Group>
-      <Stack gap={6} px={sideInset} py="md" style={{ flex: 1 }}>
+  const primaryNavigation = (
+      <Stack gap={6}>
         {nav.map((item) => {
           const active =
             item.href === "/dashboard"
@@ -130,7 +80,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               href={item.href}
               label={item.label}
               active={active}
-              onClick={() => setMobileOpen(false)}
               styles={{
                 root: {
                   ...getNavStateCss(mode, active ? "ingress" : "neutral", active),
@@ -154,12 +103,32 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           );
         })}
       </Stack>
-      <Divider color="var(--surface-section-border)" />
-      <Box px={sideInset} py="md">
+  );
+
+  const accountPanel = (
+    <Stack gap="sm">
+      {user ? (
+        <Box
+          className="glass-panel surface-outline"
+          p="xs"
+          style={{
+            width: "100%",
+            borderRadius: "var(--mantine-radius-md)"
+          }}
+        >
+          <Stack gap={0}>
+            <Box style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {user.name}
+            </Box>
+            <Box style={{ color: "var(--text-secondary)", fontSize: "0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {user.email}
+            </Box>
+          </Stack>
+        </Box>
+      ) : null}
         <NavLink
           label={t("logout")}
           onClick={() => {
-            // Use the GET route to trigger the full SSO logout redirect
             window.location.href = "/api/auth/logout";
           }}
           styles={{
@@ -176,102 +145,54 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             }
           }}
         />
-      </Box>
-      <Box h={16} />
     </Stack>
   );
 
   return (
-    <>
-      {routeBlocked ? null : (
-      <Drawer
-        opened={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        padding={0}
-        withCloseButton={false}
-        size={APP_LAYOUT.drawerWidth}
-        hiddenFrom="md"
-        styles={{
-          content: {
-            background: "var(--sidebar-bg)"
-          },
-          body: {
-            padding: 0
-          }
-        }}
-      >
-        {navContent}
-      </Drawer>
+    <GdsAppShell
+      logoText={t("brandName")}
+      headerContext={t("brandSubtitle")}
+      headerActions={routeBlocked ? undefined : (
+        <Group gap="xs" wrap="nowrap">
+          <ShellThemeModeBridge />
+          <ShellLocaleSwitcher />
+        </Group>
       )}
-
-      <AppShell
-        navbar={routeBlocked ? undefined : { width: APP_LAYOUT.drawerWidth, breakpoint: "md" }}
-        padding={0}
-        styles={{
-          navbar: {
-            borderInlineEnd: "none",
-            background: "var(--sidebar-bg)"
-          },
-          main: {
-            backgroundColor: "transparent"
-          }
-        }}
-      >
-        {!routeBlocked ? (
-          <AppShell.Navbar visibleFrom="md" p={0}>
-            {navContent}
-          </AppShell.Navbar>
-        ) : null}
-
-        <AppShell.Main>
-          <Box className="dashboard-main" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
-            {!routeBlocked ? (
-              <Box
-                hiddenFrom="md"
-                px={APP_LAYOUT.pageGutterMobile}
-                pt={APP_LAYOUT.mobileNavInset}
-                pb={8}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <Burger
-                  opened={mobileOpen}
-                  onClick={() => setMobileOpen((v) => !v)}
-                  size="md"
-                  color="var(--text-primary)"
-                  bg="transparent"
-                  styles={{
-                    root: {
-                      padding: 0,
-                      minWidth: APP_LAYOUT.mobileNavSize,
-                      minHeight: APP_LAYOUT.mobileNavSize,
-                      border: "none",
-                      boxShadow: "none",
-                      background: "transparent"
-                    }
-                  }}
-                />
-              </Box>
-            ) : null}
-            <Box style={{ flex: 1 }}>
-              <Box
-                className="surface-outline"
-                style={{
-                  width: "100%",
-                  maxWidth: APP_LAYOUT.pageMaxWidth,
-                  marginInline: "auto"
-                }}
-                px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
-                pt={{ base: 8, sm: 24 }}
-              >
-                {children}
-              </Box>
-            </Box>
-            <AppFooter />
+      primaryNavigation={routeBlocked ? undefined : primaryNavigation}
+      accountPanel={routeBlocked ? undefined : accountPanel}
+    >
+      <Box className="dashboard-main" style={{ minHeight: "calc(100vh - 60px)", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
+        <Box style={{ flex: 1 }}>
+          <Box
+            className="surface-outline"
+            style={{
+              width: "100%",
+              maxWidth: APP_LAYOUT.pageMaxWidth,
+              marginInline: "auto"
+            }}
+            px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
+            pt={{ base: 8, sm: 24 }}
+          >
+            {children}
           </Box>
-        </AppShell.Main>
-      </AppShell>
-    </>
+        </Box>
+        <AppFooter />
+      </Box>
+    </GdsAppShell>
   );
+}
+
+function ShellThemeModeBridge() {
+  const computedColorScheme = useComputedColorScheme("dark", { getInitialValueInEffect: true });
+  const { mode, setMode } = useThemeMode();
+
+  useEffect(() => {
+    if ((computedColorScheme === "light" || computedColorScheme === "dark") && computedColorScheme !== mode) {
+      setMode(computedColorScheme);
+    }
+  }, [computedColorScheme, mode, setMode]);
+
+  return null;
 }
 
 function ShellLocaleSwitcher() {
@@ -309,26 +230,5 @@ function ShellLocaleSwitcher() {
         <Menu.Item onClick={() => switchLocale("he")}>{t("languageHebrew")}</Menu.Item>
       </Menu.Dropdown>
     </Menu>
-  );
-}
-
-function ShellThemeSwitcher() {
-  const { mode, setMode } = useThemeMode();
-  const t = useTranslations("Common");
-  const label = mode === "dark" ? t("switchToLightMode") : t("switchToDarkMode");
-
-  return (
-    <Tooltip label={label} withArrow>
-      <ActionIcon
-        variant="default"
-        color="gray"
-        size="lg"
-        radius="md"
-        onClick={() => setMode(mode === "light" ? "dark" : "light")}
-        aria-label={label}
-      >
-        {mode === "dark" ? "🌙" : "☀️"}
-      </ActionIcon>
-    </Tooltip>
   );
 }

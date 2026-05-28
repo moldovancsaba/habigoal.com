@@ -2,7 +2,7 @@
 
 `/Users/Shared/Projects/general-design-system` is the single source of truth for design, UI, and UX. Project-local files describe only implementation adapter details, migration state, validation commands, and approved exceptions.
 
-Habigoal currently uses Mantine with local adapters and the GDS root provider. The target is 100% General Design System consumption through `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
+Habigoal uses Mantine through the governed General Design System runtime. Product code consumes GDS contracts through `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
 
 Latest inspected GDS line: `2.6.1` at commit `53c52b8`.
 
@@ -89,5 +89,5 @@ npm run build
 ```
 
 `npm run semantic:audit` should evolve from legacy hue cleanup into a strict GDS compliance gate.
-`npm run gds:audit` is the explicit 100% GDS-only readiness check. It fails while local contract adapters remain planned or manifest migration status is not `governed`.
+`npm run gds:audit` is the explicit 100% GDS-only readiness check. It must pass with all declared contract adapters active and the manifest migration status set to `governed`.
 `npm run gds:compliance` runs the shared GDS compliance package and currently reports the remaining local UI imports and raw design values that must be eliminated during the adapter migration.
