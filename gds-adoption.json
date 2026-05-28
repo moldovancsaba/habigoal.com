@@ -1,15 +1,12 @@
 {
   "schemaVersion": 1,
-  "gdsVersion": "2.6.1",
+  "gdsVersion": "2.6.3",
   "productArchetype": "hybrid",
-  "packageSource": "npm:@doneisbetter/*@^2.6.1",
+  "packageSource": "npm:@doneisbetter/gds@^2.6.3",
   "supportedEntryPoints": [
-    "@doneisbetter/gds-theme/client",
-    "@doneisbetter/gds-theme/server",
-    "@doneisbetter/gds-core/client",
-    "@doneisbetter/gds-core/server",
-    "@doneisbetter/gds-admin/client",
-    "@doneisbetter/gds-admin/server"
+    "@doneisbetter/gds",
+    "@doneisbetter/gds/client",
+    "@doneisbetter/gds/server"
   ],
   "requiredContracts": [
     "GdsProvider",
@@ -25,7 +22,13 @@
     "DataToolbar",
     "ResponsiveDataView",
     "FormField",
-    "DataTable"
+    "DataTable",
+    "SemanticButton",
+    "ConfirmDialog",
+    "ThemeToggle",
+    "UploadDropzone",
+    "AccessRecoveryPanel",
+    "ChoiceChip"
   ],
   "localAdapters": [
     {
@@ -41,21 +44,36 @@
     {
       "contract": "PageHeader",
       "path": "components/ui/PageHeader.tsx",
-      "status": "planned"
+      "status": "active"
+    },
+    {
+      "contract": "SectionPanel",
+      "path": "components/ui/SectionCard.tsx",
+      "status": "active"
+    },
+    {
+      "contract": "SectionPanel",
+      "path": "components/ui/ResponsiveDataCard.tsx",
+      "status": "active"
     },
     {
       "contract": "StateBlock",
-      "path": "components/ui/SectionCard.tsx",
-      "status": "planned"
-    },
-    {
-      "contract": "MetricCard",
-      "path": "components/ui/ResponsiveDataCard.tsx",
-      "status": "planned"
+      "path": "components/ui/StateBlock.tsx",
+      "status": "active"
     },
     {
       "contract": "FormField",
+      "path": "components/forms/AthleteCheckInApp.tsx",
+      "status": "active"
+    },
+    {
+      "contract": "SearchableSelect",
       "path": "components/ui/SearchableSelect.tsx",
+      "status": "planned"
+    },
+    {
+      "contract": "SemanticButton",
+      "path": "action buttons across dashboard and athlete app",
       "status": "planned"
     }
   ],
@@ -111,5 +129,5 @@
   },
   "migrationStatus": "partial",
   "owner": "habigoal",
-  "lastReviewedAt": "2026-05-26"
+  "lastReviewedAt": "2026-05-28"
 }

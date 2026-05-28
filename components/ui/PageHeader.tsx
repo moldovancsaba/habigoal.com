@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHeader as GdsPageHeader } from "@doneisbetter/gds/client";
 import { Box, Flex, Text, Title } from "@mantine/core";
 import type { ReactNode } from "react";
 
@@ -10,6 +11,10 @@ type PageHeaderProps = {
 };
 
 export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
+  if (subtitle == null || subtitle === false || typeof subtitle === "string") {
+    return <GdsPageHeader title={title} subtitle={typeof subtitle === "string" ? subtitle : undefined} actions={actions} />;
+  }
+
   return (
     <Flex
       className="glass-panel surface-outline"
@@ -28,11 +33,9 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
         <Title order={1} size="h2" fw={800}>
           {title}
         </Title>
-        {subtitle ? (
-          <Text component="div" c="var(--text-secondary)" size="sm" style={{ lineHeight: 1.45 }}>
-            {subtitle}
-          </Text>
-        ) : null}
+        <Text component="div" c="var(--text-secondary)" size="sm" style={{ lineHeight: 1.45 }}>
+          {subtitle}
+        </Text>
       </Box>
       {actions ? (
         <Flex

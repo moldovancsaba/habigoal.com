@@ -2,14 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const expectedGdsVersion = "2.6.1";
+const expectedGdsVersion = "2.6.3";
 const manifestPath = path.join(root, "gds-adoption.json");
 const packagePath = path.join(root, "package.json");
 
 const requiredPackages = [
-  "@doneisbetter/gds-theme",
-  "@doneisbetter/gds-core",
-  "@doneisbetter/gds-admin",
+  "@doneisbetter/gds",
   "@doneisbetter/gds-eslint-config",
   "@doneisbetter/gds-compliance"
 ];
@@ -58,7 +56,7 @@ function collectFiles(dir, results = []) {
 
 function scanForDoneIsBetterImports() {
   const imports = new Set();
-  const pattern = /from\s+["'](@doneisbetter\/gds-[^"']+)["']|import\s+["'](@doneisbetter\/gds-[^"']+)["']/g;
+  const pattern = /from\s+["'](@doneisbetter\/gds(?:\/(?:client|server))?|@doneisbetter\/gds-[^"']+)["']|import\s+["'](@doneisbetter\/gds(?:\/(?:client|server))?|@doneisbetter\/gds-[^"']+)["']/g;
 
   for (const file of collectFiles(root)) {
     const source = fs.readFileSync(file, "utf8");
@@ -141,9 +139,9 @@ if (legacyGdsReferences.length > 0) {
 
 const gdsImports = scanForDoneIsBetterImports();
 if (gdsImports.length === 0) {
-  blockers.push("No @doneisbetter/gds-* runtime imports found in source code.");
+    blockers.push("No @doneisbetter/gds runtime imports found in source code.");
 } else {
-  warnings.push(`Detected @doneisbetter/gds-* imports: ${gdsImports.join(", ")}`);
+  warnings.push(`Detected @doneisbetter/gds imports: ${gdsImports.join(", ")}`);
 }
 
 if (blockers.length > 0) {

@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Group, Paper, Stack, Text } from "@mantine/core";
+import { Box } from "@mantine/core";
+import { SectionPanel } from "@doneisbetter/gds/client";
 import type { CSSProperties, ReactNode } from "react";
 
 type SectionCardProps = {
@@ -32,19 +33,12 @@ function toStyleObject(input?: Record<string, unknown>, withDefaultMargin = fals
 
 export function SectionCard({ title, subheader, action, children, className, sx, contentSx }: SectionCardProps) {
   return (
-    <Paper withBorder radius="md" className={`surface-outline ${className ?? ""}`.trim()} style={toStyleObject(sx, true)}>
-      {(title || action) ? (
-        <Group justify="space-between" align="flex-start" wrap="wrap" px="md" pt="md" pb={0}>
-          <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-            {title ? <Text fw={600}>{title}</Text> : null}
-            {subheader ? <Text size="sm" c="var(--text-secondary)" style={{ lineHeight: 1.45 }}>{subheader}</Text> : null}
-          </Stack>
-          {action ? <Box style={{ width: "100%", minWidth: 0 }}>{action}</Box> : null}
-        </Group>
-      ) : null}
-      <Box p={{ base: "md", sm: "md" }} style={toStyleObject(contentSx)}>
-        {children}
-      </Box>
-    </Paper>
+    <Box className={className} style={toStyleObject(sx, true)}>
+      <SectionPanel title={title} description={subheader} action={action}>
+        <Box style={toStyleObject(contentSx)}>
+          {children}
+        </Box>
+      </SectionPanel>
+    </Box>
   );
 }

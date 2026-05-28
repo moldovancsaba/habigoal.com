@@ -1,24 +1,21 @@
 "use client";
 
-import { Box, Paper, Stack, Text } from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
+import { SectionPanel } from "@doneisbetter/gds/client";
 import type { ReactNode } from "react";
 
 export function ResponsiveDataCard({ title, children, onClick }: { title: string; children: ReactNode; onClick?: () => void }) {
   return (
-    <Paper
-      withBorder
-      p="md"
-      radius="md"
+    <Box
       style={{ width: "100%", cursor: onClick ? "pointer" : undefined }}
       onClick={onClick}
     >
-      <Text fw={700} size="xl" mb="md">
-        {title}
-      </Text>
-      <Stack gap="md">
-        {children}
-      </Stack>
-    </Paper>
+      <SectionPanel title={title}>
+        <Stack gap="md">
+          {children}
+        </Stack>
+      </SectionPanel>
+    </Box>
   );
 }
 

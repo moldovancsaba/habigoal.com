@@ -1,13 +1,13 @@
 # Habigoal Design Adapter
 
 Status: Migration adapter
-Last updated: 2026-05-26
+Last updated: 2026-05-28
 
 `/Users/Shared/Projects/general-design-system` is the single source of truth for design, UI, and UX. Project-local files describe only implementation adapter details, migration state, validation commands, and approved exceptions.
 
 Habigoal must not redefine component behavior, interaction patterns, token policy, responsive strategy, accessibility baseline, or canonical control semantics locally. Those decisions belong to the General Design System.
 
-Latest inspected GDS line: `2.6.1` at commit `53c52b8`.
+Latest inspected GDS line: `2.6.3` from `@doneisbetter/gds`.
 
 ## Current Position
 
@@ -23,7 +23,7 @@ The application still contains local theme and UI adapter code that predates the
 - [components/ui](/Users/Shared/Projects/habigoal/components/ui)
 - [app/globals.css](/Users/Shared/Projects/habigoal/app/globals.css)
 
-These files are temporary product adapters while Habigoal migrates fully to `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
+These files are temporary product adapters while Habigoal migrates fully to `@doneisbetter/gds`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
 
 The machine-readable adoption contract is [gds-adoption.json](/Users/Shared/Projects/habigoal/gds-adoption.json).
 
@@ -31,9 +31,7 @@ The machine-readable adoption contract is [gds-adoption.json](/Users/Shared/Proj
 
 The target package boundary is:
 
-- `@doneisbetter/gds-theme`: root provider, Mantine theme, direction, modals, notifications, and GDS i18n context.
-- `@doneisbetter/gds-core`: shared product primitives such as semantic buttons, page headers, metric/progress/product cards, public product cards, state blocks, article/auth/public/docs shells, public navigation/footer primitives, editorial hero, feature band, accent panel, upload/media components, filters, form fields, simple tables, and stats sections.
-- `@doneisbetter/gds-admin`: protected workspace primitives such as app shell, data table, responsive data view, form section, stats strip, admin page header, workspace header, and editor scaffold.
+- `@doneisbetter/gds`: unified runtime package for provider, theme, public/core primitives, admin/workspace primitives, semantic actions, state blocks, forms, responsive data views, upload/media, and recovery flows.
 - `@doneisbetter/gds-eslint-config`: shared lint enforcement for GDS drift.
 - `@doneisbetter/gds-compliance`: manifest and repo-level compliance validation.
 
@@ -41,11 +39,11 @@ Habigoal-specific code may provide thin adapters only when needed for routing, `
 
 ## Package Source
 
-- The GDS packages are live on npm under `@doneisbetter/*` at `2.6.1`.
+- The GDS packages are live on npm under `@doneisbetter/*` at `2.6.3`.
 - Habigoal consumes the npm package line directly through semver ranges in `package.json`.
-- The inspected GDS packages support Mantine `^7.9.0` and `^8.3.0`; Habigoal uses Mantine `8.3.x`.
+- The inspected GDS packages support Mantine `^7.9.0`, `^8.3.0`, and `^9.0.0`; Habigoal uses Mantine `8.3.x`.
 
-Use `@doneisbetter/*/server` for server-safe App Router composition and `@doneisbetter/*/client` for providers, hooks, and interactive surfaces.
+Use `@doneisbetter/gds/server` for server-safe App Router composition and `@doneisbetter/gds/client` for providers, hooks, and interactive surfaces.
 
 ## Migration Rules
 
@@ -59,7 +57,7 @@ Use `@doneisbetter/*/server` for server-safe App Router composition and `@doneis
 ## Migration Phases
 
 1. **Authority lock:** Treat GDS as the only design authority and remove local docs that redefine token/component policy.
-2. **Registry adoption:** Keep the approved npm registry source for `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
+2. **Registry adoption:** Keep the approved npm registry source for `@doneisbetter/gds`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
 3. **Root provider migration:** Replace `ThemeRegistry` and local Mantine theme ownership with `GdsProvider` or `extendGdsTheme(...)`.
 4. **Core primitive migration:** Replace local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, action buttons, state blocks, and form wrappers with GDS primitives or thin adapters.
 5. **Protected workspace migration:** Replace local dashboard shell, nav links, stats strips, settings tables, restore views, and CRUD layouts with `@doneisbetter/gds-admin`.

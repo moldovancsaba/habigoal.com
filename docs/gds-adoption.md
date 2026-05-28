@@ -1,22 +1,20 @@
 # General Design System Adoption Plan
 
 Status: Partial adoption
-Last updated: 2026-05-26
+Last updated: 2026-05-28
 
 Sources inspected:
 
 - [sovereignsquad/general-design-system](https://github.com/sovereignsquad/general-design-system)
 - `/Users/Shared/Projects/general-design-system`
-- Latest inspected GDS version: `2.6.1`
-- Latest inspected GDS commit: `53c52b8`
+- Latest inspected GDS version: `2.6.3`
+- Latest inspected GDS package: `@doneisbetter/gds`
 
 ## What GDS Provides
 
-The General Design System repo exposes five publishable packages:
+The General Design System repo now exposes the unified product package plus governance packages:
 
-- `@doneisbetter/gds-theme`: `gdsTheme`, `extendGdsTheme(...)`, `withGdsMotion(...)`, `GdsProvider`, and GDS i18n helpers.
-- `@doneisbetter/gds-core`: semantic buttons, page headers, product cards, public product cards, metric/progress cards, state blocks, article/auth/public/docs shells, public navigation/footer primitives, editorial hero, feature band, accent panel, upload/media primitives, filter drawers, form fields, simple data tables, stats sections, locale helpers, icons, and vocabulary.
-- `@doneisbetter/gds-admin`: protected workspace shell, data table, responsive data view, form section, stats strip, semantic nav link, info card, workspace header, page header, and editor scaffold.
+- `@doneisbetter/gds`: unified runtime package exposing theme, core, admin, server, and client entrypoints.
 - `@doneisbetter/gds-eslint-config`: shared lint enforcement for raw design values and forbidden drift.
 - `@doneisbetter/gds-compliance`: shared manifest and repository-level compliance validation.
 
@@ -40,15 +38,16 @@ Current gaps:
 - Local UI primitives duplicate contracts that should come from `@doneisbetter/gds-core` and `@doneisbetter/gds-admin`.
 - `app/globals.css` contains product-local colors, shadows, gradients, and glass utilities.
 - GDS packages are published on npm under the real `@doneisbetter/*` namespace.
-- Local GDS package version inspected: `2.6.1`.
-- GDS package peer dependencies support Mantine `^7.9.0` and `^8.3.0`; Habigoal uses Mantine `8.3.x`.
-- Habigoal now installs the GDS packages from npm.
-- The root provider is now `GdsProvider` from `@doneisbetter/gds-theme/client`, wrapped by the Habigoal theme-mode adapter.
+- Local GDS package version inspected: `2.6.3`.
+- GDS package peer dependencies support Mantine `^7.9.0`, `^8.3.0`, and `^9.0.0`; Habigoal uses Mantine `8.3.x`.
+- Habigoal now installs the unified `@doneisbetter/gds` package from npm.
+- The root provider is now `GdsProvider` from `@doneisbetter/gds/client`, wrapped by the Habigoal theme-mode adapter.
 - Habigoal now includes [gds-adoption.json](/Users/Shared/Projects/habigoal/gds-adoption.json) to declare the current migration state and exceptions.
+- Local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, `StateBlock`, and check-in `FormField` usage now route through GDS-backed adapters where the GDS contract is compatible.
 
 ## Dependency Strategy
 
-Use the live npm packages directly: `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance` at `^2.6.1`. Do not reintroduce sibling `file:` package links or the old placeholder package namespace.
+Use the live npm packages directly: `@doneisbetter/gds`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance` at `^2.6.3`. Do not reintroduce sibling `file:` package links, split runtime dependencies, or the old placeholder package namespace.
 
 The preferred long-term route is published packages with aligned Mantine major versions. The latest GDS compatibility matrix supports Mantine `7.9.x` and `8.3.x`, React `18.2.x` / `19.x`, Next `15.x`, and Vite `8.x`.
 
@@ -57,17 +56,13 @@ The preferred long-term route is published packages with aligned Mantine major v
 After package adoption, use server/client entrypoints deliberately:
 
 ```ts
-import { gdsTheme, extendGdsTheme } from "@doneisbetter/gds-theme/server";
-import { PageHeader, PublicShell, ArticleShell } from "@doneisbetter/gds-core/server";
-import { WorkspaceHeader } from "@doneisbetter/gds-admin/server";
+import { gdsTheme, extendGdsTheme, PageHeader, PublicShell, ArticleShell, WorkspaceHeader } from "@doneisbetter/gds/server";
 ```
 
 ```tsx
 "use client";
 
-import { GdsProvider } from "@doneisbetter/gds-theme/client";
-import { SemanticButton, ThemeToggle } from "@doneisbetter/gds-core/client";
-import { AppShell, ResponsiveDataView } from "@doneisbetter/gds-admin/client";
+import { GdsProvider, SemanticButton, ThemeToggle, AppShell, ResponsiveDataView } from "@doneisbetter/gds/client";
 ```
 
 Root layout should own `lang`, `dir`, and any framework script setup. A single client provider boundary should mount `GdsProvider`.
@@ -97,6 +92,20 @@ Root layout should own `lang`, `dir`, and any framework script setup. A single c
 
 - Replace local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, empty/error states, action buttons, and form wrappers with GDS primitives.
 - Keep local adapters only for route links, translations, and product data mapping.
+- Current status: `PageHeader`, `SectionCard`, `ResponsiveDataCard`, and `StateBlock` are GDS-backed adapters. `SearchableSelect`, semantic action buttons, destructive confirmations, upload/dropzone behavior, and access recovery states remain planned.
+
+## New GDS Coverage To Use Next
+
+The `@doneisbetter/gds@2.6.3` package now covers these Habigoal non-standard elements:
+
+- `SemanticButton`: replace repeated arbitrary action buttons for save, add, delete, download, copy, confirm, cancel, and start flows.
+- `ConfirmDialog`: replace browser `confirm(...)` and bespoke destructive modals.
+- `ThemeToggle`: replace local theme switcher once it can connect to Habigoal's theme-mode adapter.
+- `UploadDropzone` and `MediaField`: replace custom media/upload controls and image URL entry surfaces.
+- `AccessRecoveryPanel`: standardize unauthenticated, expired-session, forbidden, missing, and unavailable states.
+- `ChoiceChip`: replace repeated pill/choice controls where a selectable chip is currently assembled from Mantine primitives.
+- `DataToolbar`, `FilterDrawer`, `ResponsiveDataView`, and `SimpleDataTable`: replace local search/filter/table/card-list patterns after route-specific data contracts are mapped.
+- `WorkspaceHeader`, `StatsStrip`, `InfoCard`, and `FormSection`: replace dashboard section headers, metric strips, settings blocks, and admin form groupings.
 
 ### Phase 4: Admin Workspace
 

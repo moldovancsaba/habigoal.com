@@ -1,6 +1,6 @@
 "use client";
 
-import { Paper, Stack, Text } from "@mantine/core";
+import { StateBlock as GdsStateBlock } from "@doneisbetter/gds/client";
 import type { ReactNode } from "react";
 
 type StateBlockProps = {
@@ -10,13 +10,5 @@ type StateBlockProps = {
 };
 
 export function StateBlock({ title, body, action }: StateBlockProps) {
-  return (
-    <Paper withBorder radius="md" p="md" role="status">
-      <Stack gap="sm">
-        <Text fw={700}>{title}</Text>
-        <Text c="dimmed">{body}</Text>
-        {action}
-      </Stack>
-    </Paper>
-  );
+  return <GdsStateBlock variant="info" title={title} description={body} action={action} compact />;
 }
