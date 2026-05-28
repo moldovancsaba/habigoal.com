@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -12,7 +12,6 @@ import type { CheckInRecord } from "@/types/check-in";
 export default function RecordsPage() {
   const t = useTranslations("Dashboard");
   const ta = useTranslations("Assessment");
-  const tc = useTranslations("Common");
   const { locale } = useParams();
   const [savedRecords, setSavedRecords] = useState<CheckInRecord[]>([]);
   const [deletedRecords, setDeletedRecords] = useState<CheckInRecord[]>([]);
@@ -126,17 +125,15 @@ export default function RecordsPage() {
                     <Group gap="sm">
                       {!showDeleted ? (
                         <>
-                          <Button component={Link} href={`/dashboard/records/${record._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
-                            {tc("view")}
-                          </Button>
-                          <Button component={Link} href={`/dashboard/assessment?id=${record._id}`} color="ingress" variant="light" size="sm" onClick={(e) => e.stopPropagation()}>
-                            {tc("update")}
-                          </Button>
+                          <Link href={`/dashboard/records/${record._id}`} style={{ textDecoration: "none" }} onClick={(e) => e.stopPropagation()}>
+                            <SemanticButton action="launch" variant="default" size="sm" />
+                          </Link>
+                          <Link href={`/dashboard/assessment?id=${record._id}`} style={{ textDecoration: "none" }} onClick={(e) => e.stopPropagation()}>
+                            <SemanticButton action="edit" color="ingress" variant="light" size="sm" />
+                          </Link>
                         </>
                       ) : (
-                        <Button color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }}>
-                          {t("restoreAction")}
-                        </Button>
+                        <SemanticButton action="restore" color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }} />
                       )}
                     </Group>
                   </Stack>
@@ -151,8 +148,8 @@ export default function RecordsPage() {
           <Text size="sm">{t("typeRestoreAssessmentToConfirm")}</Text>
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
-            <Button variant="subtle" onClick={() => setRestoreTargetId(null)}>{tc("cancel")}</Button>
-            <Button color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)}>{t("restoreAction")}</Button>
+            <SemanticButton action="cancel" variant="subtle" onClick={() => setRestoreTargetId(null)} />
+            <SemanticButton action="restore" color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)} />
           </Group>
         </Stack>
       </Modal>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { AthleteProfile } from "@/types/athlete";
@@ -175,11 +175,11 @@ function AthletePreviewCard({ athlete }: { athlete: AthleteListItem }) {
         <Group mt="auto" gap="sm">
           {athlete._id ? (
             <Link href={`/athletes/${athlete._id}`} style={{ textDecoration: "none", width: "100%" }}>
-              <Button variant="light" fullWidth>{t("openProfile")}</Button>
+              <SemanticButton action="profile" variant="light" fullWidth />
             </Link>
           ) : null}
           <Link href={`/dashboard/assessment${athlete._id ? `?childId=${athlete._id}` : ""}`} style={{ textDecoration: "none", width: "100%" }}>
-            <Button color="ingress" fullWidth>{t("startCheckIn")}</Button>
+            <SemanticButton action="start" color="ingress" fullWidth />
           </Link>
         </Group>
       </Stack>

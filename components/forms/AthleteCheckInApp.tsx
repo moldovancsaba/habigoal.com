@@ -19,7 +19,7 @@ import {
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FormField, PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { FormField, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
@@ -426,12 +426,14 @@ export function AthleteCheckInApp() {
         subtitle={t("appSubtitle")}
         actions={
           <Group gap="sm" grow>
-            <Button variant="default" onClick={newAssessment} style={{ flex: 1, fontWeight: 600 }}>
-              {tc("new")}
-            </Button>
-            <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ flex: 1, fontWeight: 700 }}>
-              {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
-            </Button>
+            <SemanticButton action="add" variant="default" onClick={newAssessment} style={{ flex: 1, fontWeight: 600 }} />
+            <SemanticButton
+              action={recordId ? "edit" : "save"}
+              color="ingress"
+              onClick={() => void saveAssessment()}
+              loading={saveState === "saving"}
+              style={{ flex: 1, fontWeight: 700 }}
+            />
           </Group>
         }
       />
@@ -633,12 +635,14 @@ export function AthleteCheckInApp() {
             </Badge>
           </Group>
           <Group gap="md" grow>
-            <Button variant="default" onClick={newAssessment} style={{ fontWeight: 600 }}>
-              {tc("new")}
-            </Button>
-            <Button color="ingress" onClick={() => void saveAssessment()} disabled={saveState === "saving"} style={{ fontWeight: 700 }}>
-              {saveState === "saving" ? tc("saving") : recordId ? tc("update") : tc("save")}
-            </Button>
+            <SemanticButton action="add" variant="default" onClick={newAssessment} style={{ fontWeight: 600 }} />
+            <SemanticButton
+              action={recordId ? "edit" : "save"}
+              color="ingress"
+              onClick={() => void saveAssessment()}
+              loading={saveState === "saving"}
+              style={{ fontWeight: 700 }}
+            />
           </Group>
         </Stack>
       </Paper>

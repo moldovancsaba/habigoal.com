@@ -2,7 +2,7 @@
 
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -301,7 +301,7 @@ export default function ChildrenListPage() {
 
   return (
     <Stack gap="md">
-      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><Button color="ingress" onClick={startCreate}>{t("addChild")}</Button></Group>} />
+      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><SemanticButton action="add" color="ingress" onClick={startCreate} /></Group>} />
       <SectionPanel>
         <Stack gap="md">
           {message ? (
@@ -382,12 +382,10 @@ export default function ChildrenListPage() {
                   </SimpleGrid>
                 </Box>
                 <Group justify="flex-end">
-                  <Button variant="subtle" size="sm" onClick={() => {
+                  <SemanticButton action="reset" variant="subtle" size="sm" onClick={() => {
                     setSelectedLocations([]);
                     setReadinessRange([0, 5]);
-                  }}>
-                    {tc("resetFilters")}
-                  </Button>
+                  }} />
                 </Group>
               </Stack>
             </Paper>
@@ -457,11 +455,14 @@ export default function ChildrenListPage() {
                         )}
                       </Box>
                       <Group gap="sm">
-                        {!showDeleted ? <Button component={Link} href={`/dashboard/assessment?childId=${child._id}`} color="ingress" size="sm" onClick={(e) => e.stopPropagation()}>
-                          {t("newSurveyForChild")}
-                        </Button> : null}
+                        {!showDeleted ? (
+                          <Link href={`/dashboard/assessment?childId=${child._id}`} style={{ textDecoration: "none" }} onClick={(e) => e.stopPropagation()}>
+                            <SemanticButton action="start" color="ingress" size="sm" />
+                          </Link>
+                        ) : null}
                         {child.latestRecordId && (
-                          <Button 
+                          <SemanticButton
+                            action="download"
                             variant="outline" 
                             color="ingress" 
                             size="sm"
@@ -470,19 +471,15 @@ export default function ChildrenListPage() {
                               void downloadLatestMap(child._id, child.latestRecordId); 
                             }}
                             loading={downloadingId === child._id}
-                          >
-                            {t("downloadPdf")}
-                          </Button>
+                          />
                         )}
-                        {!showDeleted ? <Button component={Link} href={`/dashboard/athletes/${child._id}`} variant="default" size="sm" onClick={(e) => e.stopPropagation()}>
-                          {t("viewHistory")}
-                        </Button> : null}
-                        {!showDeleted ? <Button variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }}>
-                          {t("editChild")}
-                        </Button> : null}
-                        {!showDeleted ? <Button color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }}>
-                          {t("deleteChild")}
-                        </Button> : <Button color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }}>{t("restoreAction")}</Button>}
+                        {!showDeleted ? (
+                          <Link href={`/dashboard/athletes/${child._id}`} style={{ textDecoration: "none" }} onClick={(e) => e.stopPropagation()}>
+                            <SemanticButton action="profile" variant="default" size="sm" />
+                          </Link>
+                        ) : null}
+                        {!showDeleted ? <SemanticButton action="edit" variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }} /> : null}
+                        {!showDeleted ? <SemanticButton action="delete" color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }} /> : <SemanticButton action="restore" color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }} />}
                       </Group>
                     </Stack>
                   </Paper>
@@ -529,12 +526,8 @@ export default function ChildrenListPage() {
             </Group>
           </Stack>
           <Group justify="flex-end" mt="md">
-          <Button variant="subtle" onClick={() => setEditing(null)} disabled={saving}>
-            {tc("cancel")}
-          </Button>
-          <Button onClick={() => void saveEdit()} color="ingress" disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>
-            {saving ? tc("saving") : tc("save")}
-          </Button>
+          <SemanticButton action="cancel" variant="subtle" onClick={() => setEditing(null)} disabled={saving} />
+          <SemanticButton action="save" onClick={() => void saveEdit()} color="ingress" loading={saving} disabled={!draftName.trim() || !draftBirthDate.trim()} />
         </Group>
       </Modal>
       <Modal opened={createOpen} onClose={() => (saving ? null : setCreateOpen(false))} title={t("addChild")} centered>
@@ -564,8 +557,8 @@ export default function ChildrenListPage() {
             <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
           </Group>
           <Group justify="flex-end" mt="sm">
-            <Button variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving}>{tc("cancel")}</Button>
-            <Button color="ingress" onClick={() => void createChild()} disabled={saving || !draftName.trim() || !draftBirthDate.trim()}>{saving ? tc("saving") : tc("save")}</Button>
+            <SemanticButton action="cancel" variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving} />
+            <SemanticButton action="save" color="ingress" onClick={() => void createChild()} loading={saving} disabled={!draftName.trim() || !draftBirthDate.trim()} />
           </Group>
         </Stack>
       </Modal>
@@ -577,8 +570,9 @@ export default function ChildrenListPage() {
           <Text size="sm" c="dimmed">{t("typeDeleteToConfirm")}</Text>
           <TextInput value={deleteConfirmText} onChange={(e) => setDeleteConfirmText(e.currentTarget.value)} placeholder="delete" />
           <Group justify="flex-end">
-            <Button variant="subtle" onClick={() => setDeleteTarget(null)}>{tc("cancel")}</Button>
-            <Button
+            <SemanticButton action="cancel" variant="subtle" onClick={() => setDeleteTarget(null)} />
+            <SemanticButton
+              action="delete"
               color="red"
               disabled={deleteConfirmText.trim().toLowerCase() !== "delete" || !deleteTarget}
               onClick={() => {
@@ -586,9 +580,7 @@ export default function ChildrenListPage() {
                 void deleteChild(deleteTarget);
                 setDeleteTarget(null);
               }}
-            >
-              {t("deleteChild")}
-            </Button>
+            />
           </Group>
         </Stack>
       </Modal>
@@ -597,8 +589,8 @@ export default function ChildrenListPage() {
           <Text size="sm">{t("typeRestoreToConfirm")}</Text>
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
-            <Button variant="subtle" onClick={() => setRestoreTarget(null)}>{tc("cancel")}</Button>
-            <Button color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)}>{t("restoreAction")}</Button>
+            <SemanticButton action="cancel" variant="subtle" onClick={() => setRestoreTarget(null)} />
+            <SemanticButton action="restore" color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)} />
           </Group>
         </Stack>
       </Modal>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
@@ -421,9 +421,7 @@ export default function SettingsPage() {
               style={{ minWidth: 280 }}
               disabled={!canManageUsers}
             />
-            <Button variant="default" onClick={addNewUser} disabled={!canManageUsers || !userDraft.trim()}>
-              {t("userManagementAddUser")}
-            </Button>
+            <SemanticButton action="add" variant="default" onClick={addNewUser} disabled={!canManageUsers || !userDraft.trim()} />
           </Group>
           <Text size="sm" c="dimmed">
             {t("userManagementSsoHint")}
@@ -469,21 +467,14 @@ export default function SettingsPage() {
                       />
                     ) : null}
                     <Group grow>
-                      <Button
-                        variant="light"
-                        disabled={!canManageUsers}
-                        onClick={() => void saveUserName(user)}
-                      >
-                        {tc("save")}
-                      </Button>
-                      <Button
+                      <SemanticButton action="save" variant="light" disabled={!canManageUsers} onClick={() => void saveUserName(user)} />
+                      <SemanticButton
+                        action="delete"
                         variant="light"
                         color="red"
                         disabled={!canManageUsers || isProtectedAdmin(user)}
                         onClick={() => void removeUserAccess(user)}
-                      >
-                        {tc("remove")}
-                      </Button>
+                      />
                     </Group>
                   </Stack>
                 </ResponsiveDataCard>
@@ -555,23 +546,15 @@ export default function SettingsPage() {
                     </Table.Td>
                     <Table.Td>
                       <Group gap="xs" justify="flex-end" wrap="nowrap">
-                        <Button
-                          variant="light"
-                          size="sm"
-                          disabled={!canManageUsers}
-                          onClick={() => void saveUserName(user)}
-                        >
-                          {tc("save")}
-                        </Button>
-                        <Button
+                        <SemanticButton action="save" variant="light" size="sm" disabled={!canManageUsers} onClick={() => void saveUserName(user)} />
+                        <SemanticButton
+                          action="delete"
                           variant="light"
                           color="red"
                           size="sm"
                           disabled={!canManageUsers || isProtectedAdmin(user)}
                           onClick={() => void removeUserAccess(user)}
-                        >
-                          {tc("remove")}
-                        </Button>
+                        />
                       </Group>
                     </Table.Td>
                   </Table.Tr>
@@ -614,9 +597,7 @@ export default function SettingsPage() {
                 onChange={(value) => setTeamTrainerDraft(value || "")}
               />
             </Box>
-            <Button variant="default" onClick={addTeamTrainerDraft} disabled={!canManageUsers || !teamTrainerDraft}>
-              Add trainer
-            </Button>
+            <SemanticButton action="add" variant="default" onClick={addTeamTrainerDraft} disabled={!canManageUsers || !teamTrainerDraft} />
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
             <Box style={{ minWidth: 240 }}>
@@ -628,12 +609,8 @@ export default function SettingsPage() {
                 onChange={(value) => setTeamAthleteDraft(value || "")}
               />
             </Box>
-            <Button variant="default" onClick={addTeamAthleteDraft} disabled={!canManageUsers || !teamAthleteDraft}>
-              Add athlete
-            </Button>
-            <Button color="ingress" onClick={() => void saveTeam()} disabled={!canManageUsers || !teamNameDraft.trim()}>
-              Save team
-            </Button>
+            <SemanticButton action="add" variant="default" onClick={addTeamAthleteDraft} disabled={!canManageUsers || !teamAthleteDraft} />
+            <SemanticButton action="save" color="ingress" onClick={() => void saveTeam()} disabled={!canManageUsers || !teamNameDraft.trim()} />
           </Group>
           <Group gap="xs" wrap="wrap">
             {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color="knowmore">{email}</Badge>)}
@@ -653,9 +630,7 @@ export default function SettingsPage() {
                       Athletes: {team.athleteIds.map((athleteId) => athletes.find((entry) => entry._id === athleteId)?.name || athleteId).join(", ") || "None assigned"}
                     </Text>
                   </Stack>
-                  <Button variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)}>
-                    {tc("remove")}
-                  </Button>
+                  <SemanticButton action="delete" variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)} />
                 </Group>
               </Paper>
             ))}
@@ -675,12 +650,8 @@ export default function SettingsPage() {
                 onChange={(event) => setLocationDraft(event.currentTarget.value)}
               />
             </Box>
-            <Button variant="default" onClick={addLocation} disabled={!locationDraft.trim()}>
-              {t("addLocation")}
-            </Button>
-            <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
-              {saving ? tc("saving") : tc("save")}
-            </Button>
+            <SemanticButton action="add" variant="default" onClick={addLocation} disabled={!locationDraft.trim()} />
+            <SemanticButton action="save" color="ingress" onClick={() => void handleSaveSettings()} loading={saving} />
           </Group>
           {settings.locations.length === 0 ? (
             <Text c="dimmed">{t("noLocations")}</Text>
@@ -694,9 +665,7 @@ export default function SettingsPage() {
                   style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}
                 >
                   <Text>{loc}</Text>
-                  <Button color="red" variant="light" size="sm" onClick={() => removeLocation(i)}>
-                    {tc("remove")}
-                  </Button>
+                  <SemanticButton action="delete" color="red" variant="light" size="sm" onClick={() => removeLocation(i)} />
                 </Paper>
               ))}
             </Stack>
@@ -773,9 +742,7 @@ export default function SettingsPage() {
             })}
           </Text>
           <Group justify="flex-end">
-            <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
-              {saving ? tc("saving") : tc("save")}
-            </Button>
+            <SemanticButton action="save" color="ingress" onClick={() => void handleSaveSettings()} loading={saving} />
           </Group>
         </Stack>
       </SectionPanel>
@@ -783,9 +750,7 @@ export default function SettingsPage() {
       <SectionPanel
         title={t("legalAndCompany")}
         action={
-          <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
-            {saving ? tc("saving") : tc("save")}
-          </Button>
+          <SemanticButton action="save" color="ingress" onClick={() => void handleSaveSettings()} loading={saving} />
         }
       >
         <Stack gap="md">

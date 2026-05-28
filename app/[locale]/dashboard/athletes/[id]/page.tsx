@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { PageHeader, SectionPanel, StateBlock } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
 import { Link, usePathname } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -315,29 +315,16 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         actions={
           <Group gap="sm" wrap="wrap" className="mobile-actions-stack">
             {isAthleteApp ? (
-              <Button
-                component={Link}
-                href={`/dashboard/assessment${data.child._id ? `?childId=${data.child._id}` : ""}`}
-                color="ingress"
-              >
-                {td("newSurveyForChild")}
-              </Button>
+              <Link href={`/dashboard/assessment${data.child._id ? `?childId=${data.child._id}` : ""}`} style={{ textDecoration: "none" }}>
+                <SemanticButton action="start" color="ingress" />
+              </Link>
             ) : (
               <>
-                <Button
-                  component={Link}
-                  href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"}
-                  variant="default"
-                  disabled={data.assessments.length === 0}
-                >
-                  {tc("update")}
-                </Button>
-                <Button color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>
-                  {td("downloadPdf")}
-                </Button>
-                <Button color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0}>
-                  {t("deleteSurveyTitle")}
-                </Button>
+                <Link href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"} style={{ textDecoration: "none" }}>
+                  <SemanticButton action="edit" variant="default" disabled={data.assessments.length === 0} />
+                </Link>
+                <SemanticButton action="download" color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0} />
+                <SemanticButton action="delete" color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0} />
               </>
             )}
           </Group>
@@ -351,9 +338,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             title={td("athleteHistoryEmptyTitle")}
             description={t("noHistory")}
             action={noRecordsAction?.href ? (
-              <Button component={Link} href={noRecordsAction.href} color="ingress">
-                {td(noRecordsAction.labelKey)}
-              </Button>
+              <Link href={noRecordsAction.href} style={{ textDecoration: "none" }}>
+                <SemanticButton action="start" color="ingress" />
+              </Link>
             ) : null}
           />
         </SectionPanel>
@@ -413,9 +400,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             title={td("athletePlanTitle")}
             description={td("athletePlanSubtitle")}
             action={!isAthleteApp ? (
-              <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
-                {td("planningOpenAction")}
-              </Button>
+              <Link href="/dashboard/planning" style={{ textDecoration: "none" }}>
+                <SemanticButton action="launch" variant="light" size="sm" />
+              </Link>
             ) : undefined}
           >
             {relevantSessionPlan ? (
@@ -484,9 +471,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             title={td("athleteHabitTrackerTitle")}
             description={td("athleteHabitTrackerSubtitle")}
             action={
-              <Button color="ingress" onClick={() => void saveTodayHabits()} loading={savingHabits}>
-                {td("athleteHabitSaveAction")}
-              </Button>
+              <SemanticButton action="save" color="ingress" onClick={() => void saveTodayHabits()} loading={savingHabits} />
             }
           >
             <Stack gap="md">
@@ -660,9 +645,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 title={td("athleteLoadTitle")}
                 description={td("athleteLoadEmpty")}
                 action={noRecordsAction?.href ? (
-                  <Button component={Link} href={noRecordsAction.href} color="ingress">
-                    {td(noRecordsAction.labelKey)}
-                  </Button>
+                  <Link href={noRecordsAction.href} style={{ textDecoration: "none" }}>
+                    <SemanticButton action="start" color="ingress" />
+                  </Link>
                 ) : null}
               />
             ) : (
@@ -1417,7 +1402,6 @@ function DeleteSurveyModal({
   deleting: boolean;
 }) {
   const t = useTranslations("Assessment");
-  const tc = useTranslations("Common");
   return (
     <Modal opened={opened} onClose={onClose} title={t("deleteSurveyTitle")} centered>
       <Stack gap="md">
@@ -1425,10 +1409,8 @@ function DeleteSurveyModal({
         <Text size="sm" c="dimmed">{t("deleteSurveyConfirm")}</Text>
         <TextInput value={confirmValue} onChange={(e) => onConfirmValueChange(e.currentTarget.value)} placeholder={t("deleteKeyword")} />
         <Group justify="flex-end">
-          <Button variant="subtle" onClick={onClose}>{tc("cancel")}</Button>
-          <Button color="red" disabled={confirmValue.trim().toLowerCase() !== "delete" || deleting} loading={deleting} onClick={onDelete}>
-            {t("deleteSurveyTitle")}
-          </Button>
+          <SemanticButton action="cancel" variant="subtle" onClick={onClose} />
+          <SemanticButton action="delete" color="red" disabled={confirmValue.trim().toLowerCase() !== "delete"} loading={deleting} onClick={onDelete} />
         </Group>
       </Stack>
     </Modal>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Badge, Box, Button, Group, Loader, Paper, Select, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { Alert, Badge, Box, Group, Loader, Paper, Select, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
@@ -271,15 +271,11 @@ export default function PlanningPage() {
               label={t("planningLocationFilterLabel")}
               w={{ base: "100%", sm: 240 }}
             />
-            <Button component={Link} href="/dashboard/assessment" color="ingress">
-              {t("startCheckInAction")}
-            </Button>
-            <Button variant="light" onClick={resetPlan}>
-              {t("planningResetAction")}
-            </Button>
-            <Button onClick={savePlan} loading={saving}>
-              {t("planningSaveAction")}
-            </Button>
+            <Link href="/dashboard/assessment" style={{ textDecoration: "none" }}>
+              <SemanticButton action="start" color="ingress" />
+            </Link>
+            <SemanticButton action="reset" variant="light" onClick={resetPlan} />
+            <SemanticButton action="save" onClick={savePlan} loading={saving} />
           </>
         )}
       />

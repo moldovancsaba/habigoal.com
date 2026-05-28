@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
@@ -468,12 +468,12 @@ export function MainDashboard() {
                     ))}
                   </Stack>
                   <Group gap="sm">
-                    <Button component={Link} href={alert.athleteHref} variant="default" size="sm">
-                      {t("openAthleteAction")}
-                    </Button>
-                    <Button component={Link} href={alert.checkInHref} color="ingress" size="sm">
-                      {t("startCheckInAction")}
-                    </Button>
+                    <Link href={alert.athleteHref} style={{ textDecoration: "none" }}>
+                      <SemanticButton action="profile" variant="default" size="sm" />
+                    </Link>
+                    <Link href={alert.checkInHref} style={{ textDecoration: "none" }}>
+                      <SemanticButton action="start" color="ingress" size="sm" />
+                    </Link>
                   </Group>
                 </Stack>
               </Paper>
@@ -546,12 +546,12 @@ export function MainDashboard() {
                       >
                         {t("markAppliedAction")}
                       </Button>
-                      <Button component={Link} href={athleteHref} variant="default" size="sm">
-                        {t("openAthleteAction")}
-                      </Button>
-                      <Button component={Link} href={checkInHref} color="ingress" size="sm">
-                        {t("startCheckInAction")}
-                      </Button>
+                      <Link href={athleteHref} style={{ textDecoration: "none" }}>
+                        <SemanticButton action="profile" variant="default" size="sm" />
+                      </Link>
+                      <Link href={checkInHref} style={{ textDecoration: "none" }}>
+                        <SemanticButton action="start" color="ingress" size="sm" />
+                      </Link>
                     </Group>
                   </Stack>
                 </Paper>
@@ -564,9 +564,9 @@ export function MainDashboard() {
       <SectionPanel title={t("sessionBlueprintTitle")} description={t("sessionBlueprintSubtitle")}>
         <Stack gap="md">
           <Group justify="flex-end">
-            <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
-              {t("planningOpenAction")}
-            </Button>
+          <Link href="/dashboard/planning" style={{ textDecoration: "none" }}>
+            <SemanticButton action="launch" variant="light" size="sm" />
+          </Link>
           </Group>
           <Group justify="space-between" align="flex-start">
             <Box>
@@ -1017,12 +1017,12 @@ function QueueCard({
               </Button>
             </>
           ) : null}
-          <Button component={Link} href={athleteHref} variant="default" size="sm">
-            {t("openAthleteAction")}
-          </Button>
-          <Button component={Link} href={checkInHref} color="ingress" size="sm">
-            {t("startCheckInAction")}
-          </Button>
+          <Link href={athleteHref} style={{ textDecoration: "none" }}>
+            <SemanticButton action="profile" variant="default" size="sm" />
+          </Link>
+          <Link href={checkInHref} style={{ textDecoration: "none" }}>
+            <SemanticButton action="start" color="ingress" size="sm" />
+          </Link>
         </Group>
       </Stack>
     </Paper>

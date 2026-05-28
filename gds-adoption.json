@@ -68,8 +68,8 @@
     },
     {
       "contract": "SemanticButton",
-      "path": "action buttons across dashboard and athlete app",
-      "status": "planned"
+      "path": "components/forms/AthleteCheckInApp.tsx",
+      "status": "active"
     }
   ],
   "approvedExceptions": [
