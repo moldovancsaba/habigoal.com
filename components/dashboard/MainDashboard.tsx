@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
 import { getCompatiblePillarScore, getCompatibleReadinessScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import type { CheckInRecord } from "@/types/check-in";
@@ -446,7 +445,7 @@ export function MainDashboard() {
         <MetricCard label={t("supportFlagsLabel")} value={String(supportNowCount + watchNowCount)} tone="yellow" />
       </SimpleGrid>
 
-      <SectionCard title={t("alertDigestTitle")} subheader={t("alertDigestSubtitle")}>
+      <SectionPanel title={t("alertDigestTitle")} description={t("alertDigestSubtitle")}>
         {escalationDigest.length === 0 ? (
           <Text size="sm" c="dimmed">{t("alertDigestEmpty")}</Text>
         ) : (
@@ -481,9 +480,9 @@ export function MainDashboard() {
             ))}
           </Stack>
         )}
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("nextBestActionsTitle")} subheader={t("nextBestActionsSubtitle")}>
+      <SectionPanel title={t("nextBestActionsTitle")} description={t("nextBestActionsSubtitle")}>
         {coachRecommendations.length === 0 ? (
           <Text size="sm" c="dimmed">{t("nextBestActionsEmpty")}</Text>
         ) : (
@@ -560,9 +559,9 @@ export function MainDashboard() {
             })}
           </SimpleGrid>
         )}
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("sessionBlueprintTitle")} subheader={t("sessionBlueprintSubtitle")}>
+      <SectionPanel title={t("sessionBlueprintTitle")} description={t("sessionBlueprintSubtitle")}>
         <Stack gap="md">
           <Group justify="flex-end">
             <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
@@ -616,9 +615,9 @@ export function MainDashboard() {
             </Paper>
           </SimpleGrid>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("coachActivityTitle")} subheader={t("coachActivitySubtitle")}>
+      <SectionPanel title={t("coachActivityTitle")} description={t("coachActivitySubtitle")}>
         <Stack gap="md">
           <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
             <MetricCard label={t("coachActivityAcknowledgedLabel")} value={String(coachActivity.acknowledgedCount)} tone="yellow" />
@@ -686,7 +685,7 @@ export function MainDashboard() {
             </Paper>
           </SimpleGrid>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
       <Text size="sm" c="dimmed">
         {t("commandCenterInsight", {
@@ -700,7 +699,7 @@ export function MainDashboard() {
       </Text>
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-        <SectionCard title={t("priorityQueueTitle")} subheader={t("priorityQueueSubtitle")}>
+        <SectionPanel title={t("priorityQueueTitle")} description={t("priorityQueueSubtitle")}>
           <Stack gap="sm">
             {priorityAthletes.length === 0 ? (
               <Text size="sm" c="dimmed">{t("priorityQueueEmpty")}</Text>
@@ -717,9 +716,9 @@ export function MainDashboard() {
               ))
             )}
           </Stack>
-        </SectionCard>
+        </SectionPanel>
 
-        <SectionCard title={t("teamActionBucketsTitle")} subheader={t("teamActionBucketsSubtitle")}>
+        <SectionPanel title={t("teamActionBucketsTitle")} description={t("teamActionBucketsSubtitle")}>
           <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
             {actionBuckets.map((bucket) => (
               <Paper key={bucket.label} withBorder p="md" radius="md">
@@ -736,11 +735,11 @@ export function MainDashboard() {
               support: actionBuckets[2]?.count ?? 0
             })}
           </Text>
-        </SectionCard>
+        </SectionPanel>
       </SimpleGrid>
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-        <SectionCard title={t("missedQueueTitle")} subheader={t("missedQueueSubtitle")}>
+        <SectionPanel title={t("missedQueueTitle")} description={t("missedQueueSubtitle")}>
           <Stack gap="sm">
             {missedCheckIns.length === 0 ? (
               <Text size="sm" c="dimmed">{t("missedQueueEmpty")}</Text>
@@ -758,9 +757,9 @@ export function MainDashboard() {
               ))
             )}
           </Stack>
-        </SectionCard>
+        </SectionPanel>
 
-        <SectionCard title={t("supportFlagsTitle")} subheader={t("supportFlagsSubtitle")}>
+        <SectionPanel title={t("supportFlagsTitle")} description={t("supportFlagsSubtitle")}>
           <Stack gap="sm">
             {supportFlags.length === 0 ? (
               <Text size="sm" c="dimmed">{t("supportFlagsEmpty")}</Text>
@@ -777,10 +776,10 @@ export function MainDashboard() {
               ))
             )}
           </Stack>
-        </SectionCard>
+        </SectionPanel>
       </SimpleGrid>
 
-      <SectionCard title={t("teamLocationSummaryTitle")} subheader={t("teamLocationSummarySubtitle")}>
+      <SectionPanel title={t("teamLocationSummaryTitle")} description={t("teamLocationSummarySubtitle")}>
         {locationSummaries.length === 0 ? (
           <Text size="sm" c="dimmed">{t("teamLocationSummaryEmpty")}</Text>
         ) : (
@@ -819,9 +818,9 @@ export function MainDashboard() {
             ))}
           </SimpleGrid>
         )}
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("bucketDrilldownTitle")} subheader={t("bucketDrilldownSubtitle")}>
+      <SectionPanel title={t("bucketDrilldownTitle")} description={t("bucketDrilldownSubtitle")}>
         <SimpleGrid cols={{ base: 1, xl: 3 }} spacing="md">
           <BucketColumn
             title={t("actionBucketReady")}
@@ -848,7 +847,7 @@ export function MainDashboard() {
             tc={tc}
           />
         </SimpleGrid>
-      </SectionCard>
+      </SectionPanel>
     </Stack>
   );
 }

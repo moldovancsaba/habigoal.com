@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { getUsers, saveUser, User } from "@/services/user-service";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
-import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
-import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";
 
@@ -384,7 +382,7 @@ export default function SettingsPage() {
         </Alert>
       ) : null}
 
-      <SectionCard title={t("userRights")}>
+      <SectionPanel title={t("userRights")}>
         <Stack gap="md">
           {!canManageUsers ? (
             <Alert color="yellow">
@@ -589,9 +587,9 @@ export default function SettingsPage() {
             </Table>
           </Paper>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title="Teams">
+      <SectionPanel title="Teams">
         <Stack gap="md">
           {!canManageUsers ? (
             <Alert color="yellow">
@@ -664,18 +662,17 @@ export default function SettingsPage() {
             {teams.length === 0 ? <Text c="dimmed">No teams created yet.</Text> : null}
           </Stack>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("locations")}>
+      <SectionPanel title={t("locations")}>
         <Stack gap="md">
           <Group gap="xs" align="end" wrap="wrap">
             <Box style={{ minWidth: 280, width: 420, maxWidth: "100%" }}>
-              <SearchableSelect
+              <TextInput
                 label={t("addLocation")}
                 value={locationDraft}
-                options={settings.locations.map((name) => ({ id: name, name }))}
-                onChange={setLocationDraft}
-                allowAdd
+                placeholder={t("addLocation")}
+                onChange={(event) => setLocationDraft(event.currentTarget.value)}
               />
             </Box>
             <Button variant="default" onClick={addLocation} disabled={!locationDraft.trim()}>
@@ -705,9 +702,9 @@ export default function SettingsPage() {
             </Stack>
           )}
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("alertingTitle")}>
+      <SectionPanel title={t("alertingTitle")}>
         <Stack gap="md">
           <Checkbox
             label={t("alertingDigestEnabled")}
@@ -781,9 +778,9 @@ export default function SettingsPage() {
             </Button>
           </Group>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard
+      <SectionPanel
         title={t("legalAndCompany")}
         action={
           <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
@@ -813,9 +810,9 @@ export default function SettingsPage() {
           <TextInput label={tl("vatNo")} value={settings.company.vatNo} onChange={(event) => updateCompanyField("vatNo", event.target.value)} />
           <TextInput label={tl("website")} value={settings.company.website} onChange={(event) => updateCompanyField("website", event.target.value)} />
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title="Standards Version Manager">
+      <SectionPanel title="Standards Version Manager">
         <Stack gap="md">
           <Select
             label={t("standardsActiveVersion")}
@@ -924,9 +921,9 @@ export default function SettingsPage() {
             {saving ? tc("saving") : tc("save")}
           </Button>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("restoreBinTitle")}>
+      <SectionPanel title={t("restoreBinTitle")}>
         <Stack gap="lg">
           <Box>
             <Text fw={700} mb="sm">{t("restoreDeletedChildren")}</Text>
@@ -959,16 +956,35 @@ export default function SettingsPage() {
             )}
           </Box>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("governanceMetricsTitle")}>
+      <SectionPanel title={t("governanceMetricsTitle")}>
         <Stack gap="xs">
           <Text size="sm">{t("governanceDeletedAthletes", { count: governanceMetrics.deletedChildren })}</Text>
           <Text size="sm">{t("governanceDeletedAssessments", { count: governanceMetrics.deletedAssessments })}</Text>
           <Text size="sm">{t("governanceMissingConsentReport", { count: governanceMetrics.missingConsentReport })}</Text>
           <Text size="sm">{t("governanceMissingAthleteLink", { count: governanceMetrics.missingChildLink })}</Text>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
+    </Stack>
+  );
+}
+
+function ResponsiveDataCard({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <SectionPanel title={title}>
+      <Stack gap="md">{children}</Stack>
+    </SectionPanel>
+  );
+}
+
+function ResponsiveDataRow({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <Stack gap={4}>
+      <Text size="sm" fw={700} c="var(--text-secondary)" style={{ textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        {label}
+      </Text>
+      <Box style={{ width: "100%", minWidth: 0 }}>{value}</Box>
     </Stack>
   );
 }

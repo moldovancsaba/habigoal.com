@@ -1,6 +1,6 @@
 # General Design System Adoption Plan
 
-Status: Partial adoption
+Status: GDS compliance passing, governed migration incomplete
 Last updated: 2026-05-28
 
 Sources inspected:
@@ -29,13 +29,13 @@ The repo also defines adoption governance:
 
 ## Habigoal Gap
 
-Habigoal has the right foundation choice, Mantine, but it is not yet GDS-only.
+Habigoal has the right foundation choice, Mantine, and now passes the shared `@doneisbetter/gds-compliance` repository check. It is still not yet fully governed GDS-only because the dashboard shell and semantic action-button migration remain open.
 
 Current gaps:
 
 - Local design docs previously acted as the design-system authority.
 - Local theme/tokens/typography files still own visual decisions.
-- Local UI primitives duplicate contracts that should come from `@doneisbetter/gds-core` and `@doneisbetter/gds-admin`.
+- Legacy local UI primitive files still exist for historical compatibility, but checked application paths now import GDS surfaces directly instead of importing local `components/ui` wrappers.
 - `app/globals.css` contains product-local colors, shadows, gradients, and glass utilities.
 - GDS packages are published on npm under the real `@doneisbetter/*` namespace.
 - Local GDS package version inspected: `2.6.3`.
@@ -43,7 +43,9 @@ Current gaps:
 - Habigoal now installs the unified `@doneisbetter/gds` package from npm.
 - The root provider is now `GdsProvider` from `@doneisbetter/gds/client`, wrapped by the Habigoal theme-mode adapter.
 - Habigoal now includes [gds-adoption.json](/Users/Shared/Projects/habigoal/gds-adoption.json) to declare the current migration state and exceptions.
-- Local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, `StateBlock`, and check-in `FormField` usage now route through GDS-backed adapters where the GDS contract is compatible.
+- App pages now use `PageHeader`, `SectionPanel`, `StateBlock`, and `FormField` from `@doneisbetter/gds/client` directly where the GDS contract is compatible.
+- Habigoal semantic token files were moved under `theme/` so raw token literals live only in approved token surfaces.
+- `npm run gds:compliance` passes. `npm run gds:audit` remains a hard fail until `AppShell` and `SemanticButton` are fully active and `migrationStatus` can honestly become `governed`.
 
 ## Dependency Strategy
 
@@ -92,7 +94,7 @@ Root layout should own `lang`, `dir`, and any framework script setup. A single c
 
 - Replace local `PageHeader`, `SectionCard`, `ResponsiveDataCard`, empty/error states, action buttons, and form wrappers with GDS primitives.
 - Keep local adapters only for route links, translations, and product data mapping.
-- Current status: `PageHeader`, `SectionCard`, `ResponsiveDataCard`, and `StateBlock` are GDS-backed adapters. `SearchableSelect`, semantic action buttons, destructive confirmations, upload/dropzone behavior, and access recovery states remain planned.
+- Current status: application surfaces use direct GDS `PageHeader`, `SectionPanel`, `StateBlock`, and `FormField` imports for migrated pages. Semantic action buttons, destructive confirmations, upload/dropzone behavior, access recovery states, and the full GDS `AppShell` contract remain planned.
 
 ## New GDS Coverage To Use Next
 
@@ -110,6 +112,7 @@ The `@doneisbetter/gds@2.6.3` package now covers these Habigoal non-standard ele
 ### Phase 4: Admin Workspace
 
 - Replace `DashboardShell`, admin tables, settings sections, restore bin, governance cards, and CRUD surfaces with `@doneisbetter/gds-admin` contracts.
+- The current dashboard shell keeps Habigoal role-routing, locale switching, and theme-cookie behavior locally because the current GDS `AppShell` exposes hard-coded section labels and an internal theme toggle that does not yet map cleanly to Habigoal's persisted theme mode.
 - Use GDS responsive data views for mobile/RTL-heavy surfaces.
 
 ### Phase 5: Surface Cleanup
@@ -165,4 +168,4 @@ npm run typecheck
 npm run build
 ```
 
-`npm run gds:audit` is expected to fail until the remaining local adapters are active and `migrationStatus` becomes `governed`. Do not claim Habigoal is 100% GDS-only until it passes.
+`npm run gds:compliance` must pass on every delivery. `npm run gds:audit` is expected to fail until the remaining local adapters are active and `migrationStatus` becomes `governed`. Do not claim Habigoal is 100% GDS-only until both checks pass.

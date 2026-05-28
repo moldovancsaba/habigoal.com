@@ -1,17 +1,14 @@
 "use client";
 
-import { AppShell, Box, Burger, Divider, Drawer, Group, NavLink, Stack, Text, Badge } from "@mantine/core";
+import { ActionIcon, AppShell, Badge, Box, Burger, Divider, Drawer, Group, Menu, NavLink, Stack, Text, Tooltip } from "@mantine/core";
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { PageContainer } from "@/components/ui/PageContainer";
 import { AppFooter } from "@/components/layout/AppFooter";
-import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
-import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { APP_LAYOUT } from "@/theme/tokens";
-import { getNavStateCss } from "@/lib/semantic-theme";
+import { getNavStateCss } from "@/theme/semantic-theme";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
-import { BrandMark } from "@/components/ui/BrandMark";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
@@ -74,7 +71,9 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const navContent = (
     <Stack h="100%" gap={0} style={{ background: "var(--sidebar-bg)" }}>
       <Box p="md" style={{ display: "flex", justifyContent: "center" }}>
-        <BrandMark size={108} subtitle={t("brandName")} />
+        <Link href="/" aria-label={t("brandName")} style={{ display: "inline-flex", textDecoration: "none" }}>
+          <Image src="/images/habigoal_logo.png" alt="Habigoal" width={108} height={108} priority />
+        </Link>
       </Box>
 
       <Stack px={sideInset} pb="sm" gap={4}>
@@ -115,8 +114,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           borderRadius: "var(--mantine-radius-md)"
         }}
       >
-        <LocaleSwitcher />
-        <ThemeSwitcher />
+        <ShellLocaleSwitcher />
+        <ShellThemeSwitcher />
       </Group>
       <Stack gap={6} px={sideInset} py="md" style={{ flex: 1 }}>
         {nav.map((item) => {
@@ -254,12 +253,82 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               </Box>
             ) : null}
             <Box style={{ flex: 1 }}>
-              <PageContainer>{children}</PageContainer>
+              <Box
+                className="surface-outline"
+                style={{
+                  width: "100%",
+                  maxWidth: APP_LAYOUT.pageMaxWidth,
+                  marginInline: "auto"
+                }}
+                px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
+                pt={{ base: 8, sm: 24 }}
+              >
+                {children}
+              </Box>
             </Box>
             <AppFooter />
           </Box>
         </AppShell.Main>
       </AppShell>
     </>
+  );
+}
+
+function ShellLocaleSwitcher() {
+  const locale = useLocale();
+  const t = useTranslations("Common");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  function switchLocale(nextLocale: "en" | "hu" | "ar" | "es" | "de" | "he") {
+    const cleanPath = pathname.replace(/^\/(en|hu|ar|es|de|he)(\/|$)/, "/");
+    router.replace(cleanPath, { locale: nextLocale });
+  }
+
+  const localeLabel =
+    locale === "ar" ? "AR" :
+    locale === "hu" ? "HU" :
+    locale === "es" ? "ES" :
+    locale === "de" ? "DE" :
+    locale === "he" ? "HE" :
+    "EN";
+
+  return (
+    <Menu shadow="md" width={170} position="bottom-end">
+      <Menu.Target>
+        <ActionIcon variant="default" color="gray" size="lg" radius="md" aria-label={t("languageEnglish")}>
+          <Text fw={700} size="sm">{localeLabel}</Text>
+        </ActionIcon>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item onClick={() => switchLocale("en")}>{t("languageEnglish")}</Menu.Item>
+        <Menu.Item onClick={() => switchLocale("hu")}>{t("languageHungarian")}</Menu.Item>
+        <Menu.Item onClick={() => switchLocale("ar")}>{t("languageArabic")}</Menu.Item>
+        <Menu.Item onClick={() => switchLocale("es")}>{t("languageSpanish")}</Menu.Item>
+        <Menu.Item onClick={() => switchLocale("de")}>{t("languageGerman")}</Menu.Item>
+        <Menu.Item onClick={() => switchLocale("he")}>{t("languageHebrew")}</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+
+function ShellThemeSwitcher() {
+  const { mode, setMode } = useThemeMode();
+  const t = useTranslations("Common");
+  const label = mode === "dark" ? t("switchToLightMode") : t("switchToDarkMode");
+
+  return (
+    <Tooltip label={label} withArrow>
+      <ActionIcon
+        variant="default"
+        color="gray"
+        size="lg"
+        radius="md"
+        onClick={() => setMode(mode === "light" ? "dark" : "light")}
+        aria-label={label}
+      >
+        {mode === "dark" ? "🌙" : "☀️"}
+      </ActionIcon>
+    </Tooltip>
   );
 }

@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Alert, Badge, Box, Button, Group, Loader, Paper, Select, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
 import { getCompatiblePillarScore, getCompatibleReadinessScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import { DEFAULT_HABIGOAL_SETTINGS, type HabigoalSettings } from "@/services/settings-service";
@@ -292,9 +291,9 @@ export default function PlanningPage() {
         <MetricCard label={t("planningAvgLoadLabel")} value={String(Math.round(averageLoad))} />
       </SimpleGrid>
 
-      <SectionCard
+      <SectionPanel
         title={t("planningCalendarTitle")}
-        subheader={t("planningCalendarSubtitle", { variant: getBlueprintLabel(blueprintVariant, t).toLowerCase() })}
+        description={t("planningCalendarSubtitle", { variant: getBlueprintLabel(blueprintVariant, t).toLowerCase() })}
       >
         {saveState === "saved" ? (
           <Alert color="tactical" mb="md">
@@ -368,10 +367,10 @@ export default function PlanningPage() {
             ))}
           </SimpleGrid>
         )}
-      </SectionCard>
+      </SectionPanel>
 
       <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
-        <SectionCard title={t("planningPriorityTitle")} subheader={t("planningPrioritySubtitle")}>
+        <SectionPanel title={t("planningPriorityTitle")} description={t("planningPrioritySubtitle")}>
           {priorityAthletes.length === 0 ? (
             <Text size="sm" c="dimmed">{t("planningDayAthletesEmpty")}</Text>
           ) : (
@@ -398,9 +397,9 @@ export default function PlanningPage() {
               ))}
             </Stack>
           )}
-        </SectionCard>
+        </SectionPanel>
 
-        <SectionCard title={t("planningStaffTitle")} subheader={t("planningStaffSubtitle")}>
+        <SectionPanel title={t("planningStaffTitle")} description={t("planningStaffSubtitle")}>
           <Stack gap="md">
             <Box>
               <Text size="sm" tt="uppercase" c="dimmed">{t("planningConductorsLabel")}</Text>
@@ -417,7 +416,7 @@ export default function PlanningPage() {
               </Text>
             </Box>
           </Stack>
-        </SectionCard>
+        </SectionPanel>
       </SimpleGrid>
     </Stack>
   );

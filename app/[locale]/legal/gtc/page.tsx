@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Button, Stack, Text } from "@mantine/core";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
 import { APP_VERSION } from "@/lib/app-version";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, type HabigoalSettings } from "@/services/settings-service";
 
@@ -21,24 +20,24 @@ export default function GtcPage() {
     <Stack gap="md">
       <PageHeader title={t("gtcTitle")} subtitle={`${t("effectiveDate")}: ${settings.company.registered}`} />
 
-      <SectionCard title={t("scopeTitle")}>
+      <SectionPanel title={t("scopeTitle")}>
         <Text size="sm">{t("scopeBody")}</Text>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("serviceTitle")}>
+      <SectionPanel title={t("serviceTitle")}>
         <Text size="sm">{t("serviceBody")}</Text>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("responsibilityTitle")}>
+      <SectionPanel title={t("responsibilityTitle")}>
         <Text size="sm">{t("responsibilityBody")}</Text>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("companyDataTitle")}>
+      <SectionPanel title={t("companyDataTitle")}>
         <CompanyData settings={settings} />
         <Text size="sm" mt="xs">
           <strong>App:</strong> Habigoal v{APP_VERSION}
         </Text>
-      </SectionCard>
+      </SectionPanel>
 
       <Button component={Link} href="/dashboard" variant="default" style={{ alignSelf: "flex-start" }}>
         {t("backToDashboard")}

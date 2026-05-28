@@ -1,8 +1,8 @@
 import { Badge, Box, Button, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listNewsPosts } from "@/lib/news";
-import { BrandMark } from "@/components/ui/BrandMark";
 
 export default async function NewsIndexPage({
   params
@@ -19,7 +19,9 @@ export default async function NewsIndexPage({
       <Container size="lg" py={{ base: 40, md: 72 }}>
         <Stack gap="xl">
           <Box>
-            <BrandMark size={84} align="left" href="/dashboard" />
+            <Link href="/dashboard" style={{ display: "inline-flex", textDecoration: "none" }}>
+              <Image src="/images/habigoal_logo.png" alt="Habigoal" width={84} height={84} priority />
+            </Link>
           </Box>
 
           <Stack gap="sm">

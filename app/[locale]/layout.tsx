@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { setRequestLocale } from "next-intl/server";
 import { Noto_Sans, Noto_Sans_Arabic, Noto_Sans_Hebrew } from "next/font/google";
 import { ThemeRegistry } from "@/components/theme/ThemeRegistry";
-import { CookieConsentBanner } from "@/components/ui/CookieConsentBanner";
+import { CookieConsentBanner } from "@/components/layout/CookieConsentBanner";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "../globals.css";

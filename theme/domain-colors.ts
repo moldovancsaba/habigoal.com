@@ -1,4 +1,4 @@
-import { getSemanticTone } from "@/lib/semantic-theme";
+import { getSemanticTone } from "@/theme/semantic-theme";
 import { DOMAIN_TONES } from "@/theme/tokens";
 
 export type AssessmentDomain = "movement" | "social" | "mental";

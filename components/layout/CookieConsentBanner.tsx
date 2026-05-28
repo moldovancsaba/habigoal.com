@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Button, Paper, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { useSyncExternalStore } from "react";
 
 const CONSENT_COOKIE_NAME = "habigoal_cookie_consent";
 const LEGACY_CONSENT_COOKIE_NAMES = ["survey_cookie_consent", "kidex_cookie_consent"];

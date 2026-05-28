@@ -19,9 +19,7 @@ import {
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FormField } from "@doneisbetter/gds/client";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
+import { FormField, PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
@@ -444,7 +442,7 @@ export function AthleteCheckInApp() {
         </Alert>
       ) : null}
 
-      <SectionCard title={t("setupTitle")} subheader={t("setupSubtitle")}>
+      <SectionPanel title={t("setupTitle")} description={t("setupSubtitle")}>
         <Stack gap="md">
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
             <Select
@@ -469,9 +467,9 @@ export function AthleteCheckInApp() {
             <InfoChip label={t("birthDate")} value={assessment.child.birthDate || tc("emptyValue")} />
           </SimpleGrid>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("trainingLoadTitle")} subheader={t("trainingLoadSubtitle")}>
+      <SectionPanel title={t("trainingLoadTitle")} description={t("trainingLoadSubtitle")}>
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="lg" verticalSpacing="lg">
           <FormField label={t("sessionType")}>
             <Select
@@ -515,7 +513,7 @@ export function AthleteCheckInApp() {
             />
           </FormField>
         </SimpleGrid>
-      </SectionCard>
+      </SectionPanel>
 
       <Paper withBorder p={{ base: "md", sm: "lg" }} radius="lg">
         <Stack gap="sm">
@@ -546,10 +544,10 @@ export function AthleteCheckInApp() {
       </SimpleGrid>
 
       {sections.map((section) => (
-        <SectionCard
+        <SectionPanel
           key={section.key}
           title={t(section.title)}
-          subheader={t(athleteIqPillars.find((pillar) => pillar.key === section.key)?.prompt || section.title)}
+          description={t(athleteIqPillars.find((pillar) => pillar.key === section.key)?.prompt || section.title)}
         >
           <Stack gap="md">
             {section.items.map((item) => {
@@ -590,19 +588,19 @@ export function AthleteCheckInApp() {
               );
             })}
           </Stack>
-        </SectionCard>
+        </SectionPanel>
       ))}
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
-        <SectionCard title={t("supportTodayTitle")} subheader={t("lowestSupportArea", { area: nextSupportArea })}>
+        <SectionPanel title={t("supportTodayTitle")} description={t("lowestSupportArea", { area: nextSupportArea })}>
           <Stack gap="sm">
             <SupportCard title={t("physicalShortLabel")} body={supportSummary.physical} />
             <SupportCard title={t("mentalShortLabel")} body={supportSummary.mental} />
             <SupportCard title={t("sportBrainShortLabel")} body={supportSummary.sportBrain} />
           </Stack>
-        </SectionCard>
+        </SectionPanel>
 
-        <SectionCard title={t("professionalNotes")} subheader={t("professionalNotesSubtitle")}>
+        <SectionPanel title={t("professionalNotes")} description={t("professionalNotesSubtitle")}>
           <Textarea
             label={t("shareWithCoach")}
             value={assessment.notes.general}
@@ -610,7 +608,7 @@ export function AthleteCheckInApp() {
             minRows={8}
             placeholder={t("shareWithCoachPlaceholder")}
           />
-        </SectionCard>
+        </SectionPanel>
       </SimpleGrid>
 
       <Paper

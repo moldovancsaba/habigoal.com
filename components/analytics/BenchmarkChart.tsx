@@ -50,7 +50,7 @@ export function BenchmarkChart({
               width={30}
             />
             <Tooltip
-              cursor={{ fill: "rgba(0, 174, 239, 0.08)" }}
+              cursor={{ fill: "var(--surface-hover-top)" }}
               contentStyle={{
                 background: "var(--surface-elevated)",
                 border: "1px solid var(--border-primary)",

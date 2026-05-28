@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
+import type { ReactNode } from "react";
 import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Table, Text, Title, useMantineTheme } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { Link } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -17,17 +19,13 @@ import {
   RadarChart, 
   ResponsiveContainer
 } from "recharts";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { sectionsForMode } from "@/lib/readiness-schema";
-import { getDomainMainColor, type AssessmentDomain } from "@/lib/domain-colors";
+import { getDomainMainColor, type AssessmentDomain } from "@/theme/domain-colors";
 import { hasTrackerScores } from "@/lib/assessment-compat";
 import { formatScore } from "@/lib/utils";
-import { SectionCard } from "@/components/ui/SectionCard";
-import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { MaturityRadarChart } from "@/components/analytics/MaturityRadarChart";
 import type { CheckInRecord } from "@/types/check-in";
-import { BrandMark } from "@/components/ui/BrandMark";
 
 const RADAR_CHART_HEIGHT = 200;
 const RADAR_TICK_FONT_SIZE = 10;
@@ -151,20 +149,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       <Stack gap="md" mb="lg">
         <PageHeader
           title={t("recordTitle")}
-        subtitle={
-          <Box>
-            <Text component="span">{record.session.date} · </Text>
-              <Text 
-                component={Link} 
-                href={`/dashboard/athletes/${record.childId}`}
-                fw={700}
-                color="ingress"
-                style={{ textDecoration: "none" }}
-              >
-                {record.child.name}
-              </Text>
-            </Box>
-          }
+          subtitle={`${record.session.date} · ${record.child.name}`}
           actions={
             <Group gap="xs" wrap="wrap" className="mobile-actions-stack">
               <Button 
@@ -187,11 +172,13 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           }
         />
       </Stack>
-      <SectionCard title={t("reportPreview")}>
+      <SectionPanel title={t("reportPreview")}>
         <Stack gap="xl">
           <Group gap="md" align="center" justify="space-between" wrap="wrap">
             <Group gap="md">
-              <BrandMark size={72} />
+              <Link href="/dashboard" aria-label={tc("goHome")} style={{ display: "inline-flex", textDecoration: "none" }}>
+                <Image src="/images/habigoal_logo.png" alt="Habigoal" width={72} height={72} priority />
+              </Link>
               <Box>
                 <Title order={3} fw={800}>{t("reportPrintTitle")}</Title>
                 <Text size="sm" c="dimmed">{record.child.name}</Text>
@@ -251,10 +238,10 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             <RecordRadarChart title={ts("mental")} data={radarData.mental} domain="mental" />
           </SimpleGrid>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
       {sections.map((section) => (
-        <SectionCard key={section.key} title={t(section.title)}>
+        <SectionPanel key={section.key} title={t(section.title)}>
           <Stack gap="md" hiddenFrom="sm">
             {section.items.map((item) => {
               const entry = record.scores[item.key];
@@ -295,10 +282,10 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               </Table.Tbody>
             </Table>
           </Paper>
-        </SectionCard>
+        </SectionPanel>
       ))}
 
-      <SectionCard title={t("evidenceImages")}>
+      <SectionPanel title={t("evidenceImages")}>
         {record.attachments.length === 0 ? (
           <Text size="sm" c="dimmed" fs="italic">
             {t("noImages")}
@@ -348,9 +335,9 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             })}
           </SimpleGrid>
         )}
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("professionalNotes")}>
+      <SectionPanel title={t("professionalNotes")}>
         <Stack gap="md">
           <Box>
             <Text size="sm" fw={600} mb={4}>
@@ -369,9 +356,9 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             </Text>
           </Box>
         </Stack>
-      </SectionCard>
+      </SectionPanel>
 
-      <SectionCard title={t("historyLog")}>
+      <SectionPanel title={t("historyLog")}>
         <Stack gap="xs">
           <Text size="sm">
             <strong>{t("recordedAt")}:</strong> {new Date(record.createdAt).toLocaleString(undefined, {
@@ -408,7 +395,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
             </Text>
           )}
         </Stack>
-      </SectionCard>
+      </SectionPanel>
     </Box>
   );
 }
@@ -432,6 +419,27 @@ function MetaRow({ label, value }: { label: string; value: string }) {
       <Text size="sm" fw={700}>{label}:</Text>
       <Text size="sm">{value}</Text>
     </Group>
+  );
+}
+
+function ResponsiveDataCard({ title, children, onClick }: { title: string; children: ReactNode; onClick?: () => void }) {
+  return (
+    <Box style={{ width: "100%", cursor: onClick ? "pointer" : undefined }} onClick={onClick}>
+      <SectionPanel title={title}>
+        <Stack gap="md">{children}</Stack>
+      </SectionPanel>
+    </Box>
+  );
+}
+
+function ResponsiveDataRow({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <Stack gap={4}>
+      <Text size="sm" fw={700} c="var(--text-secondary)" style={{ textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        {label}
+      </Text>
+      <Box style={{ width: "100%", minWidth: 0 }}>{value}</Box>
+    </Stack>
   );
 }
 

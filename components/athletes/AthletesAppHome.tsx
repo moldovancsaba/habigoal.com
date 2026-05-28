@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
 import type { AthleteProfile } from "@/types/athlete";
 
 type AthleteListItem = AthleteProfile;
@@ -87,9 +86,9 @@ export function AthletesAppHome() {
           <SummaryCard label={t("summaryCheckIns")} value={String(summary.checkIns)} hint={t("summaryCheckInsHint")} />
         </SimpleGrid>
 
-        <SectionCard
+        <SectionPanel
           title={t("directoryTitle")}
-          subheader={t("directorySubtitle")}
+          description={t("directorySubtitle")}
           action={
             <TextInput
               value={search}
@@ -112,7 +111,7 @@ export function AthletesAppHome() {
               ))}
             </SimpleGrid>
           )}
-        </SectionCard>
+        </SectionPanel>
       </Box>
     </Box>
   );

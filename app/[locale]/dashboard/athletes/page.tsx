@@ -2,11 +2,10 @@
 
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
 import { formatScore } from "@/lib/utils";
 import type { AthleteProfile } from "@/types/athlete";
 import { PdfService } from "@/lib/pdf-service";
@@ -303,7 +302,7 @@ export default function ChildrenListPage() {
   return (
     <Stack gap="md">
       <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><Button color="ingress" onClick={startCreate}>{t("addChild")}</Button></Group>} />
-      <SectionCard>
+      <SectionPanel>
         <Stack gap="md">
           {message ? (
             <Alert color={error ? "red" : "ingress"} withCloseButton onClose={() => setMessage("")}>
@@ -492,7 +491,7 @@ export default function ChildrenListPage() {
             </Stack>
           )}
         </Stack>
-      </SectionCard>
+      </SectionPanel>
       <Modal opened={Boolean(editing)} onClose={() => (saving ? null : setEditing(null))} title={t("editChild")} centered>
           <Stack gap="md" mt="xs">
             <TextInput

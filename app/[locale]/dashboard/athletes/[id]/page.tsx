@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState, use } from "react";
+import type { ReactNode } from "react";
 import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { PageHeader, SectionPanel, StateBlock } from "@doneisbetter/gds/client";
 import { Link, usePathname } from "@/i18n/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { SectionCard } from "@/components/ui/SectionCard";
-import { StateBlock } from "@/components/ui/StateBlock";
-import { ResponsiveDataCard, ResponsiveDataRow } from "@/components/ui/ResponsiveDataCard";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
 import { withDisplayNamesForReport } from "@/lib/report-user-display";
@@ -347,22 +345,23 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
       />
 
       {data.assessments.length === 0 ? (
-        <SectionCard title={td("athleteHistoryEmptyTitle")} subheader={td("athleteHistoryEmptySubtitle")}>
+        <SectionPanel title={td("athleteHistoryEmptyTitle")} description={td("athleteHistoryEmptySubtitle")}>
           <StateBlock
+            variant="empty"
             title={td("athleteHistoryEmptyTitle")}
-            body={t("noHistory")}
+            description={t("noHistory")}
             action={noRecordsAction?.href ? (
               <Button component={Link} href={noRecordsAction.href} color="ingress">
                 {td(noRecordsAction.labelKey)}
               </Button>
             ) : null}
           />
-        </SectionCard>
+        </SectionPanel>
       ) : (
         <>
-          <SectionCard
+          <SectionPanel
             title={td("athleteDailyOperatingTitle")}
-            subheader={td("athleteDailyOperatingSubtitle")}
+            description={td("athleteDailyOperatingSubtitle")}
             action={
               <Group gap="sm" wrap="wrap">
                 <Badge color={getReadinessModeBadgeColor(latestReadinessMode)} size="lg">
@@ -408,11 +407,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 ))}
               </SimpleGrid>
             </Stack>
-          </SectionCard>
+          </SectionPanel>
 
-          <SectionCard
+          <SectionPanel
             title={td("athletePlanTitle")}
-            subheader={td("athletePlanSubtitle")}
+            description={td("athletePlanSubtitle")}
             action={!isAthleteApp ? (
               <Button component={Link} href="/dashboard/planning" variant="light" size="sm">
                 {td("planningOpenAction")}
@@ -479,11 +478,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             ) : (
               <Text c="dimmed">{td("athletePlanEmpty")}</Text>
             )}
-          </SectionCard>
+          </SectionPanel>
 
-          <SectionCard
+          <SectionPanel
             title={td("athleteHabitTrackerTitle")}
-            subheader={td("athleteHabitTrackerSubtitle")}
+            description={td("athleteHabitTrackerSubtitle")}
             action={
               <Button color="ingress" onClick={() => void saveTodayHabits()} loading={savingHabits}>
                 {td("athleteHabitSaveAction")}
@@ -566,11 +565,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 </Stack>
               </SimpleGrid>
             </Stack>
-          </SectionCard>
+          </SectionPanel>
 
-          <SectionCard
+          <SectionPanel
             title={td("athleteMemoryTitle")}
-            subheader={td("athleteMemorySubtitle")}
+            description={td("athleteMemorySubtitle")}
           >
             <Stack gap="md">
               <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
@@ -649,16 +648,17 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 </Stack>
               </SimpleGrid>
             </Stack>
-          </SectionCard>
+          </SectionPanel>
 
-          <SectionCard
+          <SectionPanel
             title={td("athleteLoadTitle")}
-            subheader={td("athleteLoadSubtitle")}
+            description={td("athleteLoadSubtitle")}
           >
             {loadTimeline.length === 0 ? (
               <StateBlock
+                variant="empty"
                 title={td("athleteLoadTitle")}
-                body={td("athleteLoadEmpty")}
+                description={td("athleteLoadEmpty")}
                 action={noRecordsAction?.href ? (
                   <Button component={Link} href={noRecordsAction.href} color="ingress">
                     {td(noRecordsAction.labelKey)}
@@ -690,7 +690,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 </Text>
               </Stack>
             )}
-          </SectionCard>
+          </SectionPanel>
 
           <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
             <HistoryMetricCard label={td("athleteSessionsLabel")} value={String(data.assessments.length)} accent="ingress" />
@@ -703,7 +703,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             <HistoryMetricCard label={td("athleteFocusPillarLabel")} value={focusPillar} accent="review" />
           </SimpleGrid>
 
-          <SectionCard title={td("athleteTrendExplorerTitle")} subheader={td("athleteTrendExplorerSubtitle")}>
+          <SectionPanel title={td("athleteTrendExplorerTitle")} description={td("athleteTrendExplorerSubtitle")}>
             <Stack gap="md">
               <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
                 <Stack gap="xs">
@@ -788,10 +788,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 </>
               )}
             </Stack>
-          </SectionCard>
+          </SectionPanel>
 
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
-            <SectionCard title={td("athleteSessionProfileTitle")} subheader={td("athleteSessionProfileSubtitle")}>
+            <SectionPanel title={td("athleteSessionProfileTitle")} description={td("athleteSessionProfileSubtitle")}>
               <BenchmarkChart
                 title={td("athleteLatestVsBaselineTitle")}
                 data={benchmarkData}
@@ -806,9 +806,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   focus: focusPillar
                 })}
               </Text>
-            </SectionCard>
+            </SectionPanel>
 
-            <SectionCard title={td("athleteReadinessTitle")} subheader={td("athleteReadinessSubtitle")}>
+            <SectionPanel title={td("athleteReadinessTitle")} description={td("athleteReadinessSubtitle")}>
               <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
                 <ReadinessGauge
                   value={latestReadinessState.gaugeValue}
@@ -830,12 +830,12 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   mode: t(`readinessMode${capitalize(latestReadinessMode)}`)
                 })}
               </Text>
-            </SectionCard>
+            </SectionPanel>
           </SimpleGrid>
 
-          <SectionCard
+          <SectionPanel
             title={td("athletePillarEvolutionTitle")}
-            subheader={td("athletePillarEvolutionSubtitle", { range: trendWindowSummary })}
+            description={td("athletePillarEvolutionSubtitle", { range: trendWindowSummary })}
           >
             <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
               {pillarSeries.map((pillar) => (
@@ -847,9 +847,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 />
               ))}
             </SimpleGrid>
-          </SectionCard>
+          </SectionPanel>
 
-          <SectionCard title={td("athleteSessionLogTitle")} subheader={td("athleteSessionLogSubtitle")}>
+          <SectionPanel title={td("athleteSessionLogTitle")} description={td("athleteSessionLogSubtitle")}>
             <Stack gap="md" hiddenFrom="sm">
               {data.assessments.map((assessment) => {
                 const profile = getSessionProfile(assessment, t, emptyValue);
@@ -913,9 +913,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             <Text size="sm" c="dimmed" mt="xs">
               {td("insightChildHistoryCount", { count: data.assessments.length })}
             </Text>
-          </SectionCard>
+          </SectionPanel>
 
-          <SectionCard title={t("evidenceImages")}>
+          <SectionPanel title={t("evidenceImages")}>
             {data.assessments.filter((assessment) => assessment.attachments.length > 0).length === 0 ? (
               <Text c="dimmed">{t("noImages")}</Text>
             ) : (
@@ -970,7 +970,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   ))}
               </Stack>
             )}
-          </SectionCard>
+          </SectionPanel>
         </>
       )}
 
@@ -1378,6 +1378,27 @@ function getHabitFocusCategory(
       return aScore - bScore;
     })[0]?.[0];
   return focus ? translateDashboard(`athleteHabitCategory${capitalize(focus)}`) : "-";
+}
+
+function ResponsiveDataCard({ title, children, onClick }: { title: string; children: ReactNode; onClick?: () => void }) {
+  return (
+    <Box style={{ width: "100%", cursor: onClick ? "pointer" : undefined }} onClick={onClick}>
+      <SectionPanel title={title}>
+        <Stack gap="md">{children}</Stack>
+      </SectionPanel>
+    </Box>
+  );
+}
+
+function ResponsiveDataRow({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <Stack gap={4}>
+      <Text size="sm" fw={700} c="var(--text-secondary)" style={{ textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        {label}
+      </Text>
+      <Box style={{ width: "100%", minWidth: 0 }}>{value}</Box>
+    </Stack>
+  );
 }
 
 function DeleteSurveyModal({

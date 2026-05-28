@@ -1,5 +1,5 @@
 import { createTheme, rgba, type MantineTheme, type MantineThemeOverride } from "@mantine/core";
-import { getSemanticTone, getThemeFoundation, type ThemeMode } from "@/lib/semantic-theme";
+import { getSemanticTone, getThemeFoundation, type ThemeMode } from "@/theme/semantic-theme";
 import { SEMANTIC_TONES, type SemanticTone } from "@/theme/tokens";
 import { APP_FONT_FAMILY_LTR, APP_FONT_FAMILY_RTL, APP_FONT_SIZES, APP_FONT_WEIGHTS } from "@/theme/typography";
 

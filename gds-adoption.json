@@ -67,11 +67,6 @@
       "status": "active"
     },
     {
-      "contract": "SearchableSelect",
-      "path": "components/ui/SearchableSelect.tsx",
-      "status": "planned"
-    },
-    {
       "contract": "SemanticButton",
       "path": "action buttons across dashboard and athlete app",
       "status": "planned"

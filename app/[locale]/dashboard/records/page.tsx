@@ -2,12 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
+import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { formatScore } from "@/lib/utils";
-import { SectionCard } from "@/components/ui/SectionCard";
 import type { CheckInRecord } from "@/types/check-in";
 
 export default function RecordsPage() {
@@ -77,7 +76,7 @@ export default function RecordsPage() {
         title={t("records")}
         actions={<Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button>}
       />
-      <SectionCard>
+      <SectionPanel>
         <Stack gap="md">
           <TextInput
             label={t("searchRecords")}
@@ -146,7 +145,7 @@ export default function RecordsPage() {
             </Stack>
           )}
         </Stack>
-      </SectionCard>
+      </SectionPanel>
       <Modal opened={Boolean(restoreTargetId)} onClose={() => setRestoreTargetId(null)} title={t("restoreAssessment")} centered>
         <Stack gap="md">
           <Text size="sm">{t("typeRestoreAssessmentToConfirm")}</Text>
