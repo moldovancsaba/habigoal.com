@@ -195,13 +195,19 @@ function buildSupportSummary(assessment: AssessmentPayload, translate: (key: str
   return { physical, mental, sportBrain };
 }
 
-export function AthleteCheckInApp() {
+type AthleteCheckInAppProps = {
+  forcedChildId?: string;
+  profileReturnHref?: string;
+};
+
+export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteCheckInAppProps = {}) {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const childIdParam = searchParams.get("childId");
+  const childIdParam = forcedChildId ?? searchParams.get("childId");
   const idParam = searchParams.get("id");
+  const athleteProfileHref = profileReturnHref ?? (childIdParam ? `/athletes/${childIdParam}` : null);
 
   const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
   const [recordId, setRecordId] = useState<string>("");
@@ -400,8 +406,8 @@ export function AthleteCheckInApp() {
     setMessage(t("saved"));
 
     const profileChildId = data.assessment.childId || childIdParam;
-    if (profileChildId && !idParam) {
-      router.replace(`/athletes/${profileChildId}`);
+    if (!idParam) {
+      router.replace(profileReturnHref ?? (profileChildId ? `/athletes/${profileChildId}` : "/athletes"));
     }
   }
 
@@ -433,8 +439,8 @@ export function AthleteCheckInApp() {
         subtitle={t("appSubtitle")}
         actions={
           <Group gap="sm" grow>
-            {childIdParam && !idParam ? (
-              <Link href={`/athletes/${childIdParam}`} style={{ textDecoration: "none", flex: 1 }}>
+            {athleteProfileHref && !idParam ? (
+              <Link href={athleteProfileHref} style={{ textDecoration: "none", flex: 1 }}>
                 <SemanticButton action="back" variant="default" fullWidth />
               </Link>
             ) : null}
@@ -453,6 +459,11 @@ export function AthleteCheckInApp() {
       {message ? (
         <Alert color={saveState === "error" ? "red" : saveState === "saved" ? "ingress" : "blue"} withCloseButton onClose={() => setMessage("")}>
           {message}
+          {saveState === "error" ? (
+            <Group mt="sm">
+              <SemanticButton action="refresh" variant="light" size="sm" onClick={() => void saveAssessment()} />
+            </Group>
+          ) : null}
         </Alert>
       ) : null}
 

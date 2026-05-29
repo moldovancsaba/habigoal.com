@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { ConfirmDialog, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
-import { getUsers, saveUser, User } from "@/services/user-service";
+import { deleteUser, getUsers, saveUser, User } from "@/services/user-service";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";
 
@@ -39,6 +39,8 @@ export default function SettingsPage() {
   const [teamAthleteDraft, setTeamAthleteDraft] = useState("");
   const [teamTrainerEmails, setTeamTrainerEmails] = useState<string[]>([]);
   const [teamAthleteIds, setTeamAthleteIds] = useState<string[]>([]);
+  const [removeUserTarget, setRemoveUserTarget] = useState<User | null>(null);
+  const [removingUser, setRemovingUser] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -135,15 +137,21 @@ export default function SettingsPage() {
   }
 
   async function removeUserAccess(user: User) {
-    const { deleteUser } = await import("@/services/user-service");
-    if (confirm(t("userManagementRemoveConfirm", { email: user.email }))) {
-      const ok = await deleteUser(user.email);
-      if (ok) {
-        setUsers(prev => prev.filter(u => u.email !== user.email));
-        setMessage(tc("success"));
-      } else {
-        setMessage(tc("error"));
-      }
+    setRemoveUserTarget(user);
+  }
+
+  async function confirmRemoveUserAccess() {
+    if (!removeUserTarget) return;
+    setRemovingUser(true);
+    const ok = await deleteUser(removeUserTarget.email);
+    setRemovingUser(false);
+
+    if (ok) {
+      setUsers(prev => prev.filter(u => u.email !== removeUserTarget.email));
+      setRemoveUserTarget(null);
+      setMessage(tc("success"));
+    } else {
+      setMessage(tc("error"));
     }
   }
 
@@ -375,6 +383,19 @@ export default function SettingsPage() {
   return (
     <Stack gap="lg">
       <PageHeader title={t("settings")} />
+      <ConfirmDialog
+        opened={Boolean(removeUserTarget)}
+        onClose={() => {
+          if (!removingUser) setRemoveUserTarget(null);
+        }}
+        onConfirm={() => void confirmRemoveUserAccess()}
+        title={tc("remove")}
+        confirmAction="delete"
+        isDanger
+        loading={removingUser}
+      >
+        {removeUserTarget ? t("userManagementRemoveConfirm", { email: removeUserTarget.email }) : ""}
+      </ConfirmDialog>
 
       {message ? (
         <Alert color={message === tc("error") ? "red" : "ingress"} withCloseButton onClose={() => setMessage("")}>

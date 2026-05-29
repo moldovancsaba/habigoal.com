@@ -178,7 +178,7 @@ function AthletePreviewCard({ athlete }: { athlete: AthleteListItem }) {
               <SemanticButton action="profile" variant="light" fullWidth />
             </Link>
           ) : null}
-          <Link href={`/dashboard/assessment${athlete._id ? `?childId=${athlete._id}` : ""}`} style={{ textDecoration: "none", width: "100%" }}>
+          <Link href={athlete._id ? `/athletes/${athlete._id}/check-in` : "/athletes"} style={{ textDecoration: "none", width: "100%" }}>
             <SemanticButton action="start" color="ingress" fullWidth />
           </Link>
         </Group>

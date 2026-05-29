@@ -3,9 +3,8 @@
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { Alert, Badge, Box, Button, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
-import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
 import type { AthleteProfile } from "@/types/athlete";
 import { PdfService } from "@/lib/pdf-service";
@@ -41,7 +40,7 @@ export default function ChildrenListPage() {
   const ta = useTranslations("Assessment");
   const ts = useTranslations("Schema");
   const tr = useTranslations("Report");
-  const { locale } = useParams();
+  const router = useRouter();
 
   const [children, setChildren] = useState<AthleteProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -407,7 +406,11 @@ export default function ChildrenListPage() {
                     withBorder 
                     p="md"
                     radius="md"
-                    onClick={() => !showDeleted && (window.location.href = `/${locale}/dashboard/athletes/${child._id}`)}
+                    onClick={() => {
+                      if (!showDeleted && child._id) {
+                        router.push(`/dashboard/athletes/${child._id}`);
+                      }
+                    }}
                     style={{ cursor: "pointer" }}
                   >
                     <Stack gap="md">

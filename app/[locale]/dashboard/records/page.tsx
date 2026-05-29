@@ -3,16 +3,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Button, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
-import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
 import type { CheckInRecord } from "@/types/check-in";
 
 export default function RecordsPage() {
   const t = useTranslations("Dashboard");
   const ta = useTranslations("Assessment");
-  const { locale } = useParams();
+  const router = useRouter();
   const [savedRecords, setSavedRecords] = useState<CheckInRecord[]>([]);
   const [deletedRecords, setDeletedRecords] = useState<CheckInRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,7 +93,7 @@ export default function RecordsPage() {
                   withBorder 
                   p="md" 
                   radius="md"
-                  onClick={() => window.location.href = `/${locale}/dashboard/records/${record._id}`}
+                  onClick={() => router.push(`/dashboard/records/${record._id}`)}
                   style={{ cursor: "pointer" }}
                 >
                   <Stack gap="md">

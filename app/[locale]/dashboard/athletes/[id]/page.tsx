@@ -6,7 +6,7 @@ import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedCon
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
 import { withDisplayNamesForReport } from "@/lib/report-user-display";
@@ -54,8 +54,9 @@ const PILLAR_COLORS: Record<string, string> = {
 };
 
 export default function AthleteHistoryPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
-  const { id, locale } = use(params);
+  const { id } = use(params);
   const pathname = usePathname();
+  const router = useRouter();
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
   const td = useTranslations("Dashboard");
@@ -290,6 +291,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     reason: "no_records",
     athleteId: data?.child._id
   });
+  const startCheckInHref = isAthleteApp && data?.child._id ? `/athletes/${data.child._id}/check-in` : `/dashboard/assessment${data?.child._id ? `?childId=${data.child._id}` : ""}`;
+  const emptyActionHref = isAthleteApp && data?.child._id ? `/athletes/${data.child._id}/check-in` : noRecordsAction?.href;
 
   if (loading) {
     return (
@@ -315,7 +318,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         actions={
           <Group gap="sm" wrap="wrap" className="mobile-actions-stack">
             {isAthleteApp ? (
-              <Link href={`/dashboard/assessment${data.child._id ? `?childId=${data.child._id}` : ""}`} style={{ textDecoration: "none" }}>
+              <Link href={startCheckInHref} style={{ textDecoration: "none" }}>
                 <SemanticButton action="start" color="ingress" />
               </Link>
             ) : (
@@ -337,8 +340,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             variant="empty"
             title={td("athleteHistoryEmptyTitle")}
             description={t("noHistory")}
-            action={noRecordsAction?.href ? (
-              <Link href={noRecordsAction.href} style={{ textDecoration: "none" }}>
+            action={emptyActionHref ? (
+              <Link href={emptyActionHref} style={{ textDecoration: "none" }}>
                 <SemanticButton action="start" color="ingress" />
               </Link>
             ) : null}
@@ -644,8 +647,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 variant="empty"
                 title={td("athleteLoadTitle")}
                 description={td("athleteLoadEmpty")}
-                action={noRecordsAction?.href ? (
-                  <Link href={noRecordsAction.href} style={{ textDecoration: "none" }}>
+                action={emptyActionHref ? (
+                  <Link href={emptyActionHref} style={{ textDecoration: "none" }}>
                     <SemanticButton action="start" color="ingress" />
                   </Link>
                 ) : null}
@@ -841,7 +844,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 return (
                   <ResponsiveDataCard
                     key={assessment._id}
-                    onClick={!isAthleteApp ? () => window.location.href = `/${locale}/dashboard/records/${assessment._id}` : undefined}
+                    onClick={!isAthleteApp ? () => router.push(`/dashboard/records/${assessment._id}`) : undefined}
                     title={assessment.session.date}
                   >
                     <ResponsiveDataRow label={tc("mode")} value={t("appTitle")} />
@@ -873,7 +876,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                     return (
                       <Table.Tr
                         key={assessment._id}
-                        onClick={!isAthleteApp ? () => window.location.href = `/${locale}/dashboard/records/${assessment._id}` : undefined}
+                        onClick={!isAthleteApp ? () => router.push(`/dashboard/records/${assessment._id}`) : undefined}
                         style={{ cursor: !isAthleteApp ? "pointer" : undefined }}
                       >
                         <Table.Td>{assessment.session.date}</Table.Td>
