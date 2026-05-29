@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useMemo, useState, use } from "react";
 import type { ReactNode } from "react";
-import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Table, Text, Title, useMantineTheme } from "@mantine/core";
+import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Table, Text, Title, useMantineTheme } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { Link } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -60,6 +60,28 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const [history, setHistory] = useState<CheckInRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const recordsActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("records", {
+        update: {
+          defaultMessage: tc("update"),
+          icon: GdsIcons.Edit
+        },
+        downloadPdf: {
+          defaultMessage: td("downloadPdf"),
+          icon: GdsIcons.Print
+        },
+        view: {
+          defaultMessage: tc("view"),
+          icon: GdsIcons.Eye
+        },
+        download: {
+          defaultMessage: tc("download"),
+          icon: GdsIcons.Download
+        }
+      }),
+    [tc, td]
+  );
 
   const sections = record ? sectionsForMode(record.mode) : [];
   const recordedAt = record ? new Date(record.createdAt) : new Date();
@@ -152,22 +174,17 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           subtitle={`${record.session.date} · ${record.child.name}`}
           actions={
             <Group gap="xs" wrap="wrap" className="mobile-actions-stack">
-              <Button 
-                component={Link}
-                href={`/dashboard/assessment?id=${record._id}`}
-                color="ingress" 
-                variant="light"
-              >
-                {tc("update")}
-              </Button>
-              <Button 
-                color="ingress" 
-                variant="outline" 
-                onClick={() => void downloadPdf()} 
+              <Link href={`/dashboard/assessment?id=${record._id}`} style={{ textDecoration: "none" }}>
+                <SemanticButton action="records:update" color="ingress" variant="light" vocabularyPacks={[recordsActionPack]} />
+              </Link>
+              <SemanticButton
+                action="records:downloadPdf"
+                color="ingress"
+                variant="outline"
+                onClick={() => void downloadPdf()}
                 loading={downloadingPdf}
-              >
-                {td("downloadPdf")}
-              </Button>
+                vocabularyPacks={[recordsActionPack]}
+              />
             </Group>
           }
         />
@@ -317,18 +334,21 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                     <Text size="sm" c="dimmed" mb={4}>
                       {new Date(attachment.uploadedAt).toLocaleDateString()}
                     </Text>
-                    <Button 
-                      component="a" 
-                      href={attachment.url} 
-                      download={attachment.name || t("reportFileName")}
-                      target="_blank" 
-                      rel="noreferrer" 
-                      variant="light"
-                      size="sm"
-                      fullWidth
+                    <a
+                      href={attachment.url}
+                      {...(isPdf ? { download: attachment.name || t("reportFileName") } : {})}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ textDecoration: "none", display: "block" }}
                     >
-                      {isPdf ? tc("download") : tc("view")}
-                    </Button>
+                      <SemanticButton
+                        action={isPdf ? "records:download" : "records:view"}
+                        variant="light"
+                        size="sm"
+                        fullWidth
+                        vocabularyPacks={[recordsActionPack]}
+                      />
+                    </a>
                   </Box>
                 </Paper>
               );

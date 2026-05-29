@@ -1,8 +1,9 @@
-import { Badge, Box, Button, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import { Badge, Box, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listNewsPosts } from "@/lib/news";
+import { NewsReadPostButton } from "@/components/news/NewsReadPostButton";
 
 export default async function NewsIndexPage({
   params
@@ -54,11 +55,7 @@ export default async function NewsIndexPage({
 
                   <Text c="var(--text-secondary)">{post.summary}</Text>
 
-                  <Link href={`/news/${post.slug}`} style={{ textDecoration: "none" }}>
-                    <Button variant="light" w="fit-content">
-                      {t("readPost")}
-                    </Button>
-                  </Link>
+                  <NewsReadPostButton href={`/news/${post.slug}`} label={t("readPost")} />
                 </Stack>
               </Paper>
             ))}

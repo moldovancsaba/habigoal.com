@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
@@ -103,6 +103,20 @@ export function MainDashboard() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const ta = useTranslations("Assessment");
+  const dashboardActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("dashboard", {
+        acknowledgeAction: {
+          defaultMessage: t("acknowledgeAction"),
+          icon: GdsIcons.Check
+        },
+        markAppliedAction: {
+          defaultMessage: t("markAppliedAction"),
+          icon: GdsIcons.Submit
+        }
+      }),
+    [t]
+  );
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [savingActionKey, setSavingActionKey] = useState<string | null>(null);
@@ -595,23 +609,35 @@ export function MainDashboard() {
                     ) : null}
 
                     <Group gap="sm">
-                      <Button
+                      <SemanticButton
+                        action="dashboard:acknowledgeAction"
                         variant="light"
                         size="sm"
-                        onClick={() => saveCoachAction(item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`, primaryRecommendation.key, "acknowledged")}
+                        onClick={() =>
+                          saveCoachAction(
+                            item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`,
+                            primaryRecommendation.key,
+                            "acknowledged"
+                          )
+                        }
                         loading={savingActionKey === `${item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`}:${primaryRecommendation.key}:acknowledged`}
-                      >
-                        {t("acknowledgeAction")}
-                      </Button>
-                      <Button
+                        vocabularyPacks={[dashboardActionPack]}
+                      />
+                      <SemanticButton
+                        action="dashboard:markAppliedAction"
                         variant="light"
                         size="sm"
                         color="tactical"
-                        onClick={() => saveCoachAction(item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`, primaryRecommendation.key, "applied")}
+                        onClick={() =>
+                          saveCoachAction(
+                            item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`,
+                            primaryRecommendation.key,
+                            "applied"
+                          )
+                        }
                         loading={savingActionKey === `${item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`}:${primaryRecommendation.key}:applied`}
-                      >
-                        {t("markAppliedAction")}
-                      </Button>
+                        vocabularyPacks={[dashboardActionPack]}
+                      />
                       <Link href={athleteHref} style={{ textDecoration: "none" }}>
                         <SemanticButton action="profile" variant="default" size="sm" />
                       </Link>
@@ -778,6 +804,7 @@ export function MainDashboard() {
                   tc={tc}
                   onSaveCoachAction={saveCoachAction}
                   savingActionKey={savingActionKey}
+                  dashboardActionPack={dashboardActionPack}
                 />
               ))
             )}
@@ -819,6 +846,7 @@ export function MainDashboard() {
                   emphasizeMissing
                   onSaveCoachAction={saveCoachAction}
                   savingActionKey={savingActionKey}
+                  dashboardActionPack={dashboardActionPack}
                 />
               ))
             )}
@@ -838,6 +866,7 @@ export function MainDashboard() {
                   tc={tc}
                   onSaveCoachAction={saveCoachAction}
                   savingActionKey={savingActionKey}
+                  dashboardActionPack={dashboardActionPack}
                 />
               ))
             )}
@@ -992,7 +1021,8 @@ function QueueCard({
   tc,
   emphasizeMissing = false,
   onSaveCoachAction,
-  savingActionKey
+  savingActionKey,
+  dashboardActionPack
 }: {
   item: QueueItem;
   t: ReturnType<typeof useTranslations>;
@@ -1000,6 +1030,7 @@ function QueueCard({
   emphasizeMissing?: boolean;
   onSaveCoachAction: (athleteKey: string, recommendationKey: string, status: CoachActionStatus) => void;
   savingActionKey: string | null;
+  dashboardActionPack: ReturnType<typeof createGdsVocabularyPack>;
 }) {
   const athleteHref = item.athlete._id ? `/dashboard/athletes/${item.athlete._id}` : "/dashboard/athletes";
   const checkInHref = item.athlete._id ? `/dashboard/assessment?childId=${item.athlete._id}` : "/dashboard/assessment";
@@ -1064,23 +1095,23 @@ function QueueCard({
         <Group gap="sm">
           {item.recommendations[0] ? (
             <>
-              <Button
-                variant="light"
-                size="sm"
-                onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "acknowledged")}
-                loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:acknowledged`}
-              >
-                {t("acknowledgeAction")}
-              </Button>
-              <Button
-                variant="light"
-                size="sm"
-                color="tactical"
-                onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "applied")}
-                loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:applied`}
-              >
-                {t("markAppliedAction")}
-              </Button>
+          <SemanticButton
+            action="dashboard:acknowledgeAction"
+            variant="light"
+            size="sm"
+            onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "acknowledged")}
+            loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:acknowledged`}
+            vocabularyPacks={[dashboardActionPack]}
+          />
+          <SemanticButton
+            action="dashboard:markAppliedAction"
+            variant="light"
+            size="sm"
+            color="tactical"
+            onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "applied")}
+            loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:applied`}
+            vocabularyPacks={[dashboardActionPack]}
+          />
             </>
           ) : null}
           <Link href={athleteHref} style={{ textDecoration: "none" }}>

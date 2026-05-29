@@ -1,8 +1,8 @@
 "use client";
 
 import { MouseEvent, useEffect, useMemo, useState } from "react";
-import { Alert, Badge, Box, Button, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Alert, Badge, Box, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { createGdsVocabularyPack, ChoiceChip, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
@@ -41,6 +41,44 @@ export default function ChildrenListPage() {
   const ts = useTranslations("Schema");
   const tr = useTranslations("Report");
   const router = useRouter();
+  const athleteActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("athletes", {
+        showingDeleted: {
+          defaultMessage: t("showingDeleted"),
+          icon: GdsIcons.Search
+        },
+        showDeleted: {
+          defaultMessage: t("showDeleted"),
+          icon: GdsIcons.Search
+        },
+        hideFilters: {
+          defaultMessage: tc("hideFilters"),
+          icon: GdsIcons.Search
+        },
+        advancedFilters: {
+          defaultMessage: tc("advancedFilters"),
+          icon: GdsIcons.Search
+        },
+        allRange: {
+          defaultMessage: "All",
+          icon: GdsIcons.Filter
+        },
+        supportRange: {
+          defaultMessage: "Support",
+          icon: GdsIcons.Help
+        },
+        watchRange: {
+          defaultMessage: "Watch",
+          icon: GdsIcons.Eye
+        },
+        readyRange: {
+          defaultMessage: "Ready",
+          icon: GdsIcons.Check
+        }
+      }),
+    [t, tc]
+  );
 
   const [children, setChildren] = useState<AthleteProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -300,7 +338,21 @@ export default function ChildrenListPage() {
 
   return (
     <Stack gap="md">
-      <PageHeader title={t("children")} actions={<Group><Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button><SemanticButton action="add" color="ingress" onClick={startCreate} /></Group>} />
+      <PageHeader
+        title={t("children")}
+        actions={
+          <Group>
+            <SemanticButton
+              action={showDeleted ? "athletes:showingDeleted" : "athletes:showDeleted"}
+              variant={showDeleted ? "filled" : "default"}
+              color={showDeleted ? "red" : "gray"}
+              onClick={() => setShowDeleted((v) => !v)}
+              vocabularyPacks={[athleteActionPack]}
+            />
+            <SemanticButton action="add" color="ingress" onClick={startCreate} />
+          </Group>
+        }
+      />
       <SectionPanel>
         <Stack gap="md">
           {message ? (
@@ -317,9 +369,13 @@ export default function ChildrenListPage() {
               placeholder={t("searchChildrenPlaceholder")}
               style={{ flex: 1 }}
             />
-            <Button variant="light" color="gray" onClick={() => setShowAdvanced(!showAdvanced)}>
-              {showAdvanced ? tc("hideFilters") : tc("advancedFilters")}
-            </Button>
+            <SemanticButton
+              action={showAdvanced ? "athletes:hideFilters" : "athletes:advancedFilters"}
+              variant="light"
+              color="gray"
+              onClick={() => setShowAdvanced((v) => !v)}
+              vocabularyPacks={[athleteActionPack]}
+            />
           </Group>
 
           {showAdvanced && (
@@ -339,7 +395,7 @@ export default function ChildrenListPage() {
                 <Box>
                   <Text size="sm" fw={500} mb="xs">{t("athleteReadinessRangeLabel", { min: readinessRange[0], max: readinessRange[1] })}</Text>
                   <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm">
-                    {[
+                  {[
                       { label: "All", value: [0, 5] as [number, number] },
                       { label: "Support", value: [0, 2.9] as [number, number] },
                       { label: "Watch", value: [3, 3.9] as [number, number] },
@@ -347,15 +403,12 @@ export default function ChildrenListPage() {
                     ].map((preset) => {
                       const active = readinessRange[0] === preset.value[0] && readinessRange[1] === preset.value[1];
                       return (
-                        <Button
+                        <ChoiceChip
                           key={preset.label}
-                          variant={active ? "filled" : "default"}
-                          color="ingress"
+                          active={active}
+                          label={preset.label}
                           onClick={() => setReadinessRange(preset.value)}
-                          style={{ minHeight: 46, textTransform: "none", letterSpacing: 0 }}
-                        >
-                          {preset.label}
-                        </Button>
+                        />
                       );
                     })}
                   </SimpleGrid>

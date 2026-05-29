@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Button, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Badge, Box, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
@@ -19,6 +19,20 @@ export default function RecordsPage() {
   const [showDeleted, setShowDeleted] = useState(false);
   const [restoreTargetId, setRestoreTargetId] = useState<string | null>(null);
   const [restoreConfirmText, setRestoreConfirmText] = useState("");
+  const recordsActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("records", {
+        showDeleted: {
+          defaultMessage: t("showDeleted"),
+          icon: GdsIcons.History
+        },
+        showingDeleted: {
+          defaultMessage: t("showingDeleted"),
+          icon: GdsIcons.History
+        }
+      }),
+    [t]
+  );
 
   useEffect(() => {
     void (async () => {
@@ -72,7 +86,15 @@ export default function RecordsPage() {
     <Stack gap="md">
       <PageHeader
         title={t("records")}
-        actions={<Button variant={showDeleted ? "filled" : "default"} color={showDeleted ? "red" : "gray"} onClick={() => setShowDeleted((v) => !v)}>{showDeleted ? t("showingDeleted") : t("showDeleted")}</Button>}
+        actions={
+          <SemanticButton
+            action={showDeleted ? "records:showingDeleted" : "records:showDeleted"}
+            variant={showDeleted ? "filled" : "default"}
+            color={showDeleted ? "red" : "gray"}
+            onClick={() => setShowDeleted((v) => !v)}
+            vocabularyPacks={[recordsActionPack]}
+          />
+        }
       />
       <SectionPanel>
         <Stack gap="md">

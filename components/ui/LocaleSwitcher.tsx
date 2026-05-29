@@ -1,8 +1,10 @@
 "use client";
 
-import { Button, Menu } from "@mantine/core";
+import { Menu } from "@mantine/core";
+import { useMemo } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -22,13 +24,28 @@ export function LocaleSwitcher() {
     locale === "de" ? "DE" :
     locale === "he" ? "HE" :
     "EN";
+  const localeActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("locale", {
+        switchLocale: {
+          defaultMessage: localeLabel,
+          icon: GdsIcons.Language
+        }
+      }),
+    [localeLabel]
+  );
 
   return (
     <Menu shadow="md" width={170} position="bottom-end">
       <Menu.Target>
-        <Button variant="default" size="sm" color="gray" style={{ minWidth: 64, fontWeight: 600 }}>
-          {localeLabel}
-        </Button>
+        <SemanticButton
+          action="locale:switchLocale"
+          variant="default"
+          size="sm"
+          color="gray"
+          style={{ minWidth: 64, fontWeight: 600 }}
+          vocabularyPacks={[localeActionPack]}
+        />
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Item onClick={() => switchLocale("en")}>{t("languageEnglish")}</Menu.Item>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
-import { ActionBar, createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { AthleteProfile } from "@/types/athlete";
@@ -78,13 +78,14 @@ export function AthletesAppHome() {
           title={t("title")}
           subtitle={t("subtitle")}
           actions={
-            <ActionBar
-              secondary={[
-                { action: "athleteHome:backHome", component: Link, href: "/", variant: "default" },
-                { action: "athleteHome:whatsNew", component: Link, href: "/news", variant: "subtle" }
-              ]}
-              vocabularyPacks={[athleteHomeActionsPack]}
-            />
+            <Group gap="xs">
+              <Link href="/" style={{ textDecoration: "none" }}>
+                <SemanticButton action="athleteHome:backHome" variant="default" vocabularyPacks={[athleteHomeActionsPack]} />
+              </Link>
+              <Link href="/news" style={{ textDecoration: "none" }}>
+                <SemanticButton action="athleteHome:whatsNew" variant="subtle" vocabularyPacks={[athleteHomeActionsPack]} />
+              </Link>
+            </Group>
           }
         />
 

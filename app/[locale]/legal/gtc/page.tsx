@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Button, Stack, Text } from "@mantine/core";
-import { PageHeader, SectionPanel } from "@doneisbetter/gds/client";
+import { useEffect, useMemo, useState } from "react";
+import { Stack, Text } from "@mantine/core";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { APP_VERSION } from "@/lib/app-version";
@@ -11,6 +11,16 @@ import { DEFAULT_HABIGOAL_SETTINGS, getSettings, type HabigoalSettings } from "@
 export default function GtcPage() {
   const t = useTranslations("Legal");
   const [settings, setSettings] = useState<HabigoalSettings>(DEFAULT_HABIGOAL_SETTINGS);
+  const legalActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("legal", {
+        backToDashboard: {
+          defaultMessage: t("backToDashboard"),
+          icon: GdsIcons.Dashboard
+        }
+      }),
+    [t]
+  );
 
   useEffect(() => {
     void getSettings().then(setSettings).catch(() => null);
@@ -39,9 +49,9 @@ export default function GtcPage() {
         </Text>
       </SectionPanel>
 
-      <Button component={Link} href="/dashboard" variant="default" style={{ alignSelf: "flex-start" }}>
-        {t("backToDashboard")}
-      </Button>
+      <Link href="/dashboard" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
+        <SemanticButton action="legal:backToDashboard" variant="default" vocabularyPacks={[legalActionPack]} />
+      </Link>
     </Stack>
   );
 }

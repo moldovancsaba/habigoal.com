@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
-import { Button, Paper, Stack, Text } from "@mantine/core";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import { Paper, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
 
 const CONSENT_COOKIE_NAME = "habigoal_cookie_consent";
 const LEGACY_CONSENT_COOKIE_NAMES = ["survey_cookie_consent", "kidex_cookie_consent"];
@@ -27,6 +28,16 @@ export function CookieConsentBanner() {
     () => false
   );
   const [dismissed, setDismissed] = useState(false);
+  const consentActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("cookie", {
+        accept: {
+          defaultMessage: t("cookieAccept"),
+          icon: GdsIcons.Check
+        }
+      }),
+    [t]
+  );
 
   function acceptCookies() {
     document.cookie = `${CONSENT_COOKIE_NAME}=accepted; path=/; max-age=31536000; samesite=lax`;
@@ -69,9 +80,12 @@ export function CookieConsentBanner() {
           {t("cookieConsentMessage")}{" "}
           <Link href="/dashboard/legal/privacy">{t("cookiePolicyLink")}</Link>
         </Text>
-        <Button color="ingress" onClick={acceptCookies}>
-          {t("cookieAccept")}
-        </Button>
+        <SemanticButton
+          action="cookie:accept"
+          color="ingress"
+          onClick={acceptCookies}
+          vocabularyPacks={[consentActionPack]}
+        />
       </Stack>
     </Paper>
   );

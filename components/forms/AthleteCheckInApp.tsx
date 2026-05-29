@@ -5,7 +5,6 @@ import {
   Alert,
   Badge,
   Box,
-  Button,
   Group,
   Paper,
   Progress,
@@ -17,7 +16,7 @@ import {
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { ChoiceChip, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { Link, useRouter } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { sectionsForMode } from "@/lib/readiness-schema";
@@ -568,15 +567,13 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
                       {options.map((option) => {
                         const active = currentScore === option.value;
                         return (
-                          <Button
+                          <ChoiceChip
                             key={`${item.key}-${option.value}`}
-                            variant={active ? "filled" : "default"}
-                            color="ingress"
+                            active={active}
+                            label={option.label}
                             onClick={() => updateScore(item.key, option.value)}
                             style={{ minHeight: 52, whiteSpace: "normal", textTransform: "none", letterSpacing: 0 }}
-                          >
-                            {option.label}
-                          </Button>
+                          />
                         );
                       })}
                     </SimpleGrid>

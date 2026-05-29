@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState, use } from "react";
 import type { ReactNode } from "react";
-import { Badge, Box, Button, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
+import { Badge, Box, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -77,6 +77,20 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [sessionPlans, setSessionPlans] = useState<SessionPlanRecord[]>([]);
   const [savingHabits, setSavingHabits] = useState(false);
   const [habitSaveError, setHabitSaveError] = useState("");
+  const athletesActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("athleteHistory", {
+        view: {
+          defaultMessage: tc("view"),
+          icon: GdsIcons.Eye
+        },
+        download: {
+          defaultMessage: tc("download"),
+          icon: GdsIcons.Download
+        }
+      }),
+    [tc]
+  );
   const [trendWindow, setTrendWindow] = useState<TrendWindow>("30d");
   const [trendMetric, setTrendMetric] = useState<TrendMetric>("readiness");
   const [customStartDate, setCustomStartDate] = useState("");
@@ -1003,22 +1017,25 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                                   unoptimized
                                 />
                               )}
-                              <Button
-                                component="a"
-                                href={attachment.url}
-                                download={attachment.name || t("reportFileName")}
-                                target="_blank"
-                                rel="noreferrer"
-                                variant="light"
-                                size="sm"
-                                mt={8}
-                                fullWidth
-                              >
-                                {isPdf ? tc("download") : tc("view")}
-                              </Button>
-                            </Paper>
-                          );
-                        })}
+                  <a
+                    href={attachment.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    {...(isPdf ? { download: attachment.name || t("reportFileName") } : {})}
+                    style={{ textDecoration: "none", display: "block" }}
+                  >
+                    <SemanticButton
+                      action={isPdf ? "athleteHistory:download" : "athleteHistory:view"}
+                      variant="light"
+                      size="sm"
+                      style={{ marginTop: 8 }}
+                      fullWidth
+                      vocabularyPacks={[athletesActionPack]}
+                    />
+                  </a>
+                </Paper>
+              );
+            })}
                       </SimpleGrid>
                     </Paper>
                   ))}

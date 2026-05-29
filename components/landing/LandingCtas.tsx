@@ -34,31 +34,19 @@ export function LandingCtas({
   return (
     <CtaButtonGroup
       primary={
-        <SemanticButton
-          action="landing:athleteApp"
-          component={Link}
-          href={athleteHref}
-          color="ingress"
-          vocabularyPacks={[landingActionPack]}
-        />
+        <Link href={athleteHref} style={{ textDecoration: "none" }}>
+          <SemanticButton action="landing:athleteApp" color="ingress" vocabularyPacks={[landingActionPack]} />
+        </Link>
       }
       secondary={
-        <SemanticButton
-          action="landing:trainerApp"
-          component={Link}
-          href={trainerHref}
-          variant="default"
-          vocabularyPacks={[landingActionPack]}
-        />
+        <Link href={trainerHref} style={{ textDecoration: "none" }}>
+          <SemanticButton action="landing:trainerApp" variant="default" vocabularyPacks={[landingActionPack]} />
+        </Link>
       }
       tertiary={
-        <SemanticButton
-          action="landing:whatsNew"
-          component={Link}
-          href={newsHref}
-          variant="subtle"
-          vocabularyPacks={[landingActionPack]}
-        />
+        <Link href={newsHref} style={{ textDecoration: "none" }}>
+          <SemanticButton action="landing:whatsNew" variant="subtle" vocabularyPacks={[landingActionPack]} />
+        </Link>
       }
     />
   );

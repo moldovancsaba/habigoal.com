@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { Alert, Badge, Box, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
-import { ConfirmDialog, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Alert, Badge, Box, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
+import { createGdsVocabularyPack, GdsIcons, ConfirmDialog, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { deleteUser, getUsers, saveUser, User } from "@/services/user-service";
@@ -14,7 +14,6 @@ export default function SettingsPage() {
   const t = useTranslations("Dashboard");
   const tc = useTranslations("Common");
   const tl = useTranslations("Legal");
-
   const [settings, setSettings] = useState<HabigoalSettings>(DEFAULT_HABIGOAL_SETTINGS);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<{ email: string; role: string } | null>(null);
@@ -22,6 +21,36 @@ export default function SettingsPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const settingsActionPack = useMemo(
+    () =>
+      createGdsVocabularyPack("settings", {
+        standardsCloneActive: {
+          defaultMessage: t("standardsCloneActive"),
+          icon: GdsIcons.Clone
+        },
+        publish: {
+          defaultMessage: "Publish version",
+          icon: GdsIcons.Launch
+        },
+        previewImpact: {
+          defaultMessage: "Preview Impact",
+          icon: GdsIcons.Preview
+        },
+        save: {
+          defaultMessage: saving ? tc("saving") : tc("save"),
+          icon: GdsIcons.Save
+        },
+        saveTeam: {
+          defaultMessage: tc("save"),
+          icon: GdsIcons.Save
+        },
+        restoreAction: {
+          defaultMessage: t("restoreAction"),
+          icon: GdsIcons.Restore
+        }
+      }),
+    [tc, t, saving]
+  );
   const [message, setMessage] = useState("");
   const [locationDraft, setLocationDraft] = useState("");
   const [userDraft, setUserDraft] = useState("");
@@ -813,9 +842,13 @@ export default function SettingsPage() {
               value={newStandardsVersion}
               onChange={(e) => setNewStandardsVersion(e.currentTarget.value)}
             />
-            <Button variant="default" onClick={cloneActiveStandardsVersion} disabled={!newStandardsVersion.trim()}>
-              {t("standardsCloneActive")}
-            </Button>
+            <SemanticButton
+              action="settings:standardsCloneActive"
+              variant="default"
+              onClick={cloneActiveStandardsVersion}
+              disabled={!newStandardsVersion.trim()}
+              vocabularyPacks={[settingsActionPack]}
+            />
           </Group>
           {settings.standards.versions[settings.standards.activeVersion] ? (
             <Paper withBorder p="sm">
@@ -830,14 +863,14 @@ export default function SettingsPage() {
                   }}
                 />
                 <Group>
-                  <Button
+                  <SemanticButton
+                    action="settings:publish"
                     variant="default"
                     onClick={() => setCurrentVersionMeta({ status: "published" })}
                     disabled={currentVersionMeta().status === "published" || !(versionNotesDraft || currentVersionMeta().notes)}
-                  >
-                    Publish version
-                  </Button>
-                  <Button variant="light" onClick={computeImpactPreview}>Preview Impact</Button>
+                    vocabularyPacks={[settingsActionPack]}
+                  />
+                  <SemanticButton action="settings:previewImpact" variant="light" onClick={computeImpactPreview} vocabularyPacks={[settingsActionPack]} />
                 </Group>
                 {impactPreview ? (
                   <Text size="sm" c="dimmed">
@@ -903,9 +936,13 @@ export default function SettingsPage() {
               </Table>
             </Paper>
           ) : null}
-          <Button color="ingress" onClick={() => void handleSaveSettings()} disabled={saving}>
-            {saving ? tc("saving") : tc("save")}
-          </Button>
+          <SemanticButton
+            action="settings:save"
+            color="ingress"
+            onClick={() => void handleSaveSettings()}
+            disabled={saving}
+            vocabularyPacks={[settingsActionPack]}
+          />
         </Stack>
       </SectionPanel>
 
@@ -919,7 +956,14 @@ export default function SettingsPage() {
                   <Paper key={c._id} withBorder p="sm">
                     <Group justify="space-between">
                       <Text>{c.name}</Text>
-                      <Button size="sm" variant="light" color="ingress" onClick={() => void restoreChild(c._id)}>{t("restoreAction")}</Button>
+                      <SemanticButton
+                        action="settings:restoreAction"
+                        size="sm"
+                        variant="light"
+                        color="ingress"
+                        onClick={() => void restoreChild(c._id)}
+                        vocabularyPacks={[settingsActionPack]}
+                      />
                     </Group>
                   </Paper>
                 ))}
@@ -934,7 +978,14 @@ export default function SettingsPage() {
                   <Paper key={a._id} withBorder p="sm">
                     <Group justify="space-between">
                       <Text>{a.child?.name || t("restoreUnknownChild")} · {a.session?.date || "-"}</Text>
-                      <Button size="sm" variant="light" color="ingress" onClick={() => void restoreAssessment(a._id)}>{t("restoreAction")}</Button>
+                      <SemanticButton
+                        action="settings:restoreAction"
+                        size="sm"
+                        variant="light"
+                        color="ingress"
+                        onClick={() => void restoreAssessment(a._id)}
+                        vocabularyPacks={[settingsActionPack]}
+                      />
                     </Group>
                   </Paper>
                 ))}
