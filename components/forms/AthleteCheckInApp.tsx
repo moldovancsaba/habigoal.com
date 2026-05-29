@@ -20,7 +20,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FormField, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
@@ -433,6 +433,11 @@ export function AthleteCheckInApp() {
         subtitle={t("appSubtitle")}
         actions={
           <Group gap="sm" grow>
+            {childIdParam && !idParam ? (
+              <Link href={`/athletes/${childIdParam}`} style={{ textDecoration: "none", flex: 1 }}>
+                <SemanticButton action="back" variant="default" fullWidth />
+              </Link>
+            ) : null}
             <SemanticButton action="add" variant="default" onClick={newAssessment} style={{ flex: 1, fontWeight: 600 }} />
             <SemanticButton
               action={recordId ? "edit" : "save"}
