@@ -18,6 +18,7 @@ import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/re
 import { getAthleteEmptyStateAction } from "@/lib/empty-state";
 import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitScoreSummary, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
+import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteHistoryPayload } from "@/types/athlete-history";
 import type { HabitRecord } from "@/types/habit-record";
@@ -75,6 +76,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [habitRecords, setHabitRecords] = useState<HabitRecord[]>([]);
   const [sessionPlans, setSessionPlans] = useState<SessionPlanRecord[]>([]);
   const [savingHabits, setSavingHabits] = useState(false);
+  const [habitSaveError, setHabitSaveError] = useState("");
   const [trendWindow, setTrendWindow] = useState<TrendWindow>("30d");
   const [trendMetric, setTrendMetric] = useState<TrendMetric>("readiness");
   const [customStartDate, setCustomStartDate] = useState("");
@@ -128,24 +130,33 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
   async function saveTodayHabits() {
     setSavingHabits(true);
-    try {
-      const response = await fetch(`/api/athletes/${id}/habits`, {
+    setHabitSaveError("");
+    const result = await runRecoverableJsonRequest<HabitRecord>({
+      fallbackError: td("saveError"),
+      request: () => fetch(`/api/athletes/${id}/habits`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           date: todayDate,
           statuses: todayHabitStatuses
         })
-      });
+      })
+    });
+    setSavingHabits(false);
 
-      if (!response.ok) return;
-      const savedRecord = (await response.json()) as HabitRecord;
-      setHabitRecords((current) =>
-        [...current.filter((record) => record.date !== savedRecord.date), savedRecord].sort((a, b) => a.date.localeCompare(b.date))
-      );
-    } finally {
-      setSavingHabits(false);
+    if (!result.ok) {
+      setHabitSaveError(result.error);
+      return;
     }
+
+    const savedRecord = result.data;
+    setHabitRecords((current) =>
+      [...current.filter((record) => record.date !== savedRecord.date), savedRecord].sort((a, b) => a.date.localeCompare(b.date))
+    );
+  }
+
+  async function retryTodayHabits() {
+    await saveTodayHabits();
   }
 
   const chronologicalAssessments = useMemo(
@@ -284,6 +295,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const previousThreeAverage = loadTimeline.length > 3 ? averageScore(loadTimeline.slice(-6, -3).map((entry) => entry.value as number)) : latestThreeAverage;
   const loadRatio = previousThreeAverage > 0 ? Number((latestThreeAverage / previousThreeAverage).toFixed(2)) : 1;
   const loadStatus = getLoadStatus(loadRatio);
+  const checkedInToday = latest?.session.date === todayDate;
+  const habitsCompleteToday = habitCompletion.completed === habitCompletion.total;
   const athleteLocation = latest?.session.location || data?.child.latestLocation || emptyValue;
   const relevantSessionPlan = selectRelevantSessionPlan(sessionPlans, data?.child.name || "", athleteLocation);
   const noRecordsAction = getAthleteEmptyStateAction({
@@ -349,6 +362,51 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         </SectionPanel>
       ) : (
         <>
+          {isAthleteApp ? (
+            <SectionPanel title={td("athleteTodayTasksTitle")} description={td("athleteTodayTasksSubtitle")}>
+              <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+                <Paper withBorder p="md" radius="md">
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start">
+                      <Box>
+                        <Text fw={700}>{td("athleteTodayCheckInTaskTitle")}</Text>
+                        <Text size="sm" c="dimmed">
+                          {checkedInToday ? td("athleteTodayCheckInDone") : td("athleteTodayCheckInOpen")}
+                        </Text>
+                      </Box>
+                      <Badge color={checkedInToday ? "green" : "red"}>
+                        {checkedInToday ? td("athleteTaskDoneBadge") : td("athleteTaskOpenBadge")}
+                      </Badge>
+                    </Group>
+                    <Link href={startCheckInHref} style={{ textDecoration: "none" }}>
+                      <SemanticButton action={checkedInToday ? "edit" : "start"} color="ingress" fullWidth />
+                    </Link>
+                  </Stack>
+                </Paper>
+
+                <Paper withBorder p="md" radius="md">
+                  <Stack gap="sm">
+                    <Group justify="space-between" align="flex-start">
+                      <Box>
+                        <Text fw={700}>{td("athleteTodayHabitsTaskTitle")}</Text>
+                        <Text size="sm" c="dimmed">
+                          {td("athleteTodayHabitsProgress", {
+                            completed: habitCompletion.completed,
+                            total: habitCompletion.total
+                          })}
+                        </Text>
+                      </Box>
+                      <Badge color={habitsCompleteToday ? "green" : "yellow"}>
+                        {habitsCompleteToday ? td("athleteTaskDoneBadge") : td("athleteTaskOpenBadge")}
+                      </Badge>
+                    </Group>
+                    <Text size="sm" c="dimmed">{td("athleteTodayHabitsHint")}</Text>
+                  </Stack>
+                </Paper>
+              </SimpleGrid>
+            </SectionPanel>
+          ) : null}
+
           <SectionPanel
             title={td("athleteDailyOperatingTitle")}
             description={td("athleteDailyOperatingSubtitle")}
@@ -364,6 +422,14 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             }
           >
             <Stack gap="md">
+              {habitSaveError ? (
+                <Paper withBorder p="md" radius="md">
+                  <Group justify="space-between" align="center">
+                    <Text size="sm" c="red">{habitSaveError}</Text>
+                    <SemanticButton action="refresh" variant="light" size="sm" onClick={() => void retryTodayHabits()} loading={savingHabits} />
+                  </Group>
+                </Paper>
+              ) : null}
               <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
                 <HistoryMetricCard label={td("athleteDailyOperatingScoreLabel")} value={String(athleteOperatingScore)} accent="ingress" />
                 <HistoryMetricCard label={td("athleteDailyReadinessModeLabel")} value={t(`readinessMode${capitalize(latestReadinessMode)}`)} accent="knowmore" />

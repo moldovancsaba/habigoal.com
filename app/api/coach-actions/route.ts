@@ -2,14 +2,22 @@ import { NextResponse } from "next/server";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { env } from "@/config/env";
 import { listCoachActionsByDate, upsertCoachAction } from "@/repositories/coach-actions.repository";
-import type { CoachActionStatus } from "@/types/coach-action";
+import type { CoachActionRecord, CoachActionSeverity, CoachActionStatus } from "@/types/coach-action";
 
 function stringValue(value: unknown, max = 240) {
   return typeof value === "string" ? value.slice(0, max).trim() : "";
 }
 
 function statusValue(value: unknown): CoachActionStatus | null {
-  return value === "acknowledged" || value === "applied" ? value : null;
+  return value === "open" || value === "acknowledged" || value === "applied" || value === "resolved" ? value : null;
+}
+
+function severityValue(value: unknown): CoachActionSeverity | undefined {
+  return value === "critical" || value === "warning" ? value : undefined;
+}
+
+function sourceTypeValue(value: unknown): CoachActionRecord["sourceType"] | undefined {
+  return value === "missed-check-in" || value === "readiness-threshold" || value === "recommendation" ? value : undefined;
 }
 
 async function resolveActor() {
@@ -53,6 +61,10 @@ export async function POST(request: Request) {
     const date = stringValue(body?.date, 80) || new Date().toISOString().slice(0, 10);
     const recommendationKey = stringValue(body?.recommendationKey, 240);
     const status = statusValue(body?.status);
+    const severity = severityValue(body?.severity);
+    const sourceType = sourceTypeValue(body?.sourceType);
+    const sourceId = stringValue(body?.sourceId, 240);
+    const detail = stringValue(body?.detail, 1000);
 
     if (!athleteKey || !recommendationKey || !status) {
       return jsonError("Invalid coach action payload", 400, "INVALID_PAYLOAD");
@@ -64,6 +76,10 @@ export async function POST(request: Request) {
       date,
       recommendationKey,
       status,
+      severity,
+      sourceType,
+      sourceId,
+      detail,
       actorName: actor.actorName,
       actorEmail: actor.actorEmail
     });

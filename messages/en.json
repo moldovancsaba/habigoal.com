@@ -527,7 +527,19 @@
     "restoreChild": "Restore athlete",
     "typeRestoreToConfirm": "Type `restore` to confirm.",
     "restoreAssessment": "Restore check-in",
-    "typeRestoreAssessmentToConfirm": "Type `restore` to confirm restoring this check-in."
+    "typeRestoreAssessmentToConfirm": "Type `restore` to confirm restoring this check-in.",
+    "athleteTodayTasksTitle": "Today's tasks",
+    "athleteTodayTasksSubtitle": "The athlete-facing action list for today: check in, complete habits, and review the current profile.",
+    "athleteTodayCheckInTaskTitle": "Daily check-in",
+    "athleteTodayCheckInDone": "Today's check-in is complete. You can still review or update it if something changed.",
+    "athleteTodayCheckInOpen": "Submit today's check-in before training decisions are made.",
+    "athleteTodayHabitsTaskTitle": "Daily habits",
+    "athleteTodayHabitsProgress": "{completed}/{total} habits completed today.",
+    "athleteTodayHabitsHint": "Use the habit tracker below to update today's routine and save the result.",
+    "athleteTaskDoneBadge": "Done",
+    "athleteTaskOpenBadge": "Open",
+    "coachActionOpen": "Open",
+    "coachActionResolved": "Resolved"
   },
   "Assessment": {
     "saved": "Check-in saved.",

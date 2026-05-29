@@ -7,23 +7,24 @@ import {
   Box,
   Button,
   Group,
-  NumberInput,
   Paper,
   Progress,
   Select,
   SimpleGrid,
   Stack,
   Text,
-  TextInput,
   Textarea
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FormField, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { Link, useRouter } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
+import { runRecoverableJsonRequest } from "@/lib/request-recovery";
+import { checkInSetupFields, trainingLoadFields } from "@/lib/forms/central-form";
+import { CentralFormRenderer } from "@/components/forms/CentralFormRenderer";
 import type { AssessmentPayload, ScoreEntry } from "@/types/assessment";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
@@ -325,12 +326,15 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
     setSaveState("idle");
   }
 
-  function updateDate(value: string | null) {
+  function updateSessionField<K extends keyof Pick<AssessmentPayload["session"], "date">>(
+    key: K,
+    value: AssessmentPayload["session"][K]
+  ) {
     setAssessment((current) => ({
       ...current,
       session: {
         ...current.session,
-        date: value || current.session.date
+        [key]: value || current.session[key]
       }
     }));
     setSaveState("idle");
@@ -381,24 +385,26 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
     setSaveState("saving");
     setMessage("");
 
-    const url = recordId ? `/api/check-ins/${recordId}` : "/api/check-ins";
-    const response = await fetch(url, {
-      method: recordId ? "PATCH" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(assessment)
-    }).catch((error: Error) => {
-      setMessage(error.message);
-      return null;
+    const result = await runRecoverableJsonRequest<{ assessment: CheckInRecord }>({
+      fallbackError: t("saveError"),
+      parseError: parseApiError,
+      request: () => {
+        const url = recordId ? `/api/check-ins/${recordId}` : "/api/check-ins";
+        return fetch(url, {
+          method: recordId ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(assessment)
+        });
+      }
     });
 
-    if (!response?.ok) {
+    if (!result.ok) {
       setSaveState("error");
-      const err = response ? await parseApiError(response) : null;
-      setMessage(err ?? t("saveError"));
+      setMessage(result.error);
       return;
     }
 
-    const data = (await response.json()) as { assessment: CheckInRecord };
+    const data = result.data;
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
     localStorage.removeItem(DRAFT_STORAGE_KEY);
@@ -478,11 +484,12 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
               data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
               onChange={selectChild}
             />
-            <TextInput
-              label={tc("date")}
-              value={assessment.session.date}
-              type="date"
-              onChange={(event) => updateDate(event.currentTarget.value)}
+            <CentralFormRenderer
+              fields={checkInSetupFields}
+              namespaceTranslate={t}
+              commonTranslate={tc}
+              values={{ date: assessment.session.date }}
+              onChange={updateSessionField}
             />
           </SimpleGrid>
 
@@ -496,47 +503,12 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
 
       <SectionPanel title={t("trainingLoadTitle")} description={t("trainingLoadSubtitle")}>
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="lg" verticalSpacing="lg">
-          <FormField label={t("sessionType")}>
-            <Select
-              aria-label={t("sessionType")}
-              value={assessment.trainingLoad.sessionType}
-              data={[
-                { value: "team", label: t("sessionTypeTeam") },
-                { value: "match", label: t("sessionTypeMatch") },
-                { value: "gym", label: t("sessionTypeGym") },
-                { value: "recovery", label: t("sessionTypeRecovery") },
-                { value: "individual", label: t("sessionTypeIndividual") }
-              ]}
-              onChange={(value) => updateTrainingLoad("sessionType", value || "")}
-            />
-          </FormField>
-          <FormField label={t("durationMinutes")}>
-            <NumberInput
-              aria-label={t("durationMinutes")}
-              value={assessment.trainingLoad.durationMinutes}
-              onChange={(value) => updateTrainingLoad("durationMinutes", typeof value === "number" ? value : undefined)}
-              min={0}
-              max={360}
-            />
-          </FormField>
-          <FormField label={t("rpe")}>
-            <NumberInput
-              aria-label={t("rpe")}
-              value={assessment.trainingLoad.rpe}
-              onChange={(value) => updateTrainingLoad("rpe", typeof value === "number" ? value : undefined)}
-              min={1}
-              max={10}
-            />
-          </FormField>
-          <FormField label={t("externalLoad")} description={t("externalLoadDescription")}>
-            <NumberInput
-              aria-label={t("externalLoad")}
-              value={assessment.trainingLoad.externalLoad}
-              onChange={(value) => updateTrainingLoad("externalLoad", typeof value === "number" ? value : undefined)}
-              min={0}
-              max={50000}
-            />
-          </FormField>
+          <CentralFormRenderer
+            fields={trainingLoadFields}
+            namespaceTranslate={t}
+            values={assessment.trainingLoad as Record<string, unknown>}
+            onChange={(key, value) => updateTrainingLoad(key as keyof AssessmentPayload["trainingLoad"], value as never)}
+          />
         </SimpleGrid>
       </SectionPanel>
 

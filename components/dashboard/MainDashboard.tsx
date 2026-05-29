@@ -13,6 +13,7 @@ import type { CoachActionRecord, CoachActionStatus } from "@/types/coach-action"
 import type { User } from "@/services/user-service";
 import { formatScore } from "@/lib/utils";
 import { DEFAULT_HABIGOAL_SETTINGS, type HabigoalSettings } from "@/services/settings-service";
+import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 
 type DashboardData = {
   users: User[];
@@ -54,11 +55,15 @@ type LocationSummary = {
 
 type EscalationItem = {
   athlete: AthleteProfile;
+  key: string;
   titles: string[];
   details: string[];
   severity: "critical" | "warning";
   athleteHref: string;
   checkInHref: string;
+  sourceType: CoachActionRecord["sourceType"];
+  sourceId?: string;
+  action?: CoachActionRecord | null;
 };
 
 type Recommendation = {
@@ -306,24 +311,32 @@ export function MainDashboard() {
 
     for (const item of queueItems) {
       const athleteKey = item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`;
+      const alertKey = item.supportLevel === "support" ? "alert-support-mode" : item.checkedInToday ? "alert-watch-mode" : "alert-missed-check-in";
       const athleteHref = item.athlete._id ? `/dashboard/athletes/${item.athlete._id}` : "/dashboard/athletes";
       const checkInHref = item.athlete._id ? `/dashboard/assessment?childId=${item.athlete._id}` : "/dashboard/assessment";
       const existing = itemsByAthlete.get(athleteKey) ?? {
         athlete: item.athlete,
+        key: alertKey,
         titles: [],
         details: [],
         severity: "warning" as const,
         athleteHref,
-        checkInHref
+        checkInHref,
+        sourceType: "readiness-threshold" as const,
+        sourceId: item.latestCheckIn?._id,
+        action: coachActionMap.get(`${athleteKey}:${alertKey}`) ?? null
       };
 
       if (!item.checkedInToday && nowHour >= cutoffHour) {
+        existing.key = "alert-missed-check-in";
         existing.titles.push(t("escalationMissedCheckInTitle"));
         existing.details.push(t("escalationMissedCheckInBody", { hour: cutoffHour }));
         existing.severity = "critical";
+        existing.sourceType = "missed-check-in";
       }
 
       if (item.supportLevel === "support") {
+        existing.key = "alert-support-mode";
         existing.titles.push(t("escalationSupportModeTitle"));
         existing.details.push(
           t("escalationSupportModeBody", {
@@ -332,7 +345,9 @@ export function MainDashboard() {
           })
         );
         existing.severity = "critical";
+        existing.sourceType = "readiness-threshold";
       } else if (item.supportLevel === "watch") {
+        existing.key = "alert-watch-mode";
         existing.titles.push(t("escalationWatchModeTitle"));
         existing.details.push(
           t("escalationWatchModeBody", {
@@ -354,7 +369,51 @@ export function MainDashboard() {
         return a.athlete.name.localeCompare(b.athlete.name);
       })
       .slice(0, 8);
-  }, [data, queueItems, t, tc]);
+  }, [data, queueItems, t, tc, coachActionMap]);
+
+  useEffect(() => {
+    if (escalationDigest.length === 0) return;
+
+    const today = new Date().toISOString().slice(0, 10);
+    const missingAlerts = escalationDigest.filter((alert) => !alert.action);
+    if (missingAlerts.length === 0) return;
+
+    void Promise.all(
+      missingAlerts.map((alert) => {
+        const athleteKey = alert.athlete._id || `${alert.athlete.name}|${alert.athlete.birthDate}`;
+        return fetch("/api/coach-actions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            athleteKey,
+            date: today,
+            recommendationKey: alert.key,
+            status: "open",
+            severity: alert.severity,
+            sourceType: alert.sourceType,
+            sourceId: alert.sourceId,
+            detail: alert.details.join(" ")
+          })
+        })
+          .then((response) => (response.ok ? response.json() as Promise<CoachActionRecord> : null))
+          .catch(() => null);
+      })
+    ).then((actions) => {
+      const savedActions = actions.filter((action): action is CoachActionRecord => Boolean(action));
+      if (savedActions.length === 0) return;
+      setData((current) => {
+        if (!current) return current;
+        const replacementKeys = new Set(savedActions.map((action) => `${action.athleteKey}:${action.recommendationKey}`));
+        return {
+          ...current,
+          coachActions: [
+            ...savedActions,
+            ...current.coachActions.filter((action) => !replacementKeys.has(`${action.athleteKey}:${action.recommendationKey}`))
+          ]
+        };
+      });
+    });
+  }, [escalationDigest]);
 
   const coachRecommendations = useMemo(
     () => queueItems
@@ -395,24 +454,26 @@ export function MainDashboard() {
     setSavingActionKey(requestKey);
 
     try {
-      const response = await fetch("/api/coach-actions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          athleteKey,
-          date: new Date().toISOString().slice(0, 10),
-          recommendationKey,
-          status
+      const result = await runRecoverableJsonRequest<CoachActionRecord>({
+        fallbackError: t("saveError"),
+        request: () => fetch("/api/coach-actions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            athleteKey,
+            date: new Date().toISOString().slice(0, 10),
+            recommendationKey,
+            status,
+            sourceType: "recommendation"
+          })
         })
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to save coach action");
-      }
+      if (!result.ok) return;
 
-      const action = (await response.json()) as CoachActionRecord;
+      const action = result.data;
       setData((current) => {
         if (!current) return current;
         const remaining = current.coachActions.filter((entry) => !(entry.athleteKey === action.athleteKey && entry.recommendationKey === action.recommendationKey));
@@ -461,6 +522,11 @@ export function MainDashboard() {
                     <Badge color={alert.severity === "critical" ? "red" : "yellow"}>
                       {alert.severity === "critical" ? t("alertSeverityCritical") : t("alertSeverityWarning")}
                     </Badge>
+                    {alert.action ? (
+                      <Badge variant="light" color={getActionStatusColor(alert.action.status)}>
+                        {getActionStatusLabel(alert.action.status, t)}
+                      </Badge>
+                    ) : null}
                   </Group>
                   <Stack gap={4}>
                     {alert.details.map((detail) => (
@@ -1165,11 +1231,16 @@ function getRecommendationBadgeLabel(tone: Recommendation["tone"], t: ReturnType
 }
 
 function getActionStatusColor(status: CoachActionStatus) {
-  return status === "applied" ? "green" : "blue";
+  if (status === "applied" || status === "resolved") return "green";
+  if (status === "open") return "red";
+  return "blue";
 }
 
 function getActionStatusLabel(status: CoachActionStatus, t: ReturnType<typeof useTranslations>) {
-  return status === "applied" ? t("coachActionApplied") : t("coachActionAcknowledged");
+  if (status === "applied") return t("coachActionApplied");
+  if (status === "resolved") return t("coachActionResolved");
+  if (status === "open") return t("coachActionOpen");
+  return t("coachActionAcknowledged");
 }
 
 function buildSessionBlueprint(

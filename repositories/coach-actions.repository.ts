@@ -1,5 +1,5 @@
 import { getDatabase } from "@/lib/mongodb";
-import type { CoachActionRecord, CoachActionStatus } from "@/types/coach-action";
+import type { CoachActionRecord, CoachActionSeverity, CoachActionStatus } from "@/types/coach-action";
 
 const collectionName = "coach_actions";
 
@@ -17,6 +17,10 @@ export async function upsertCoachAction(input: {
   date: string;
   recommendationKey: string;
   status: CoachActionStatus;
+  severity?: CoachActionSeverity;
+  sourceType?: CoachActionRecord["sourceType"];
+  sourceId?: string;
+  detail?: string;
   actorName: string;
   actorEmail: string;
 }): Promise<CoachActionRecord> {
@@ -32,6 +36,10 @@ export async function upsertCoachAction(input: {
     {
       $set: {
         status: input.status,
+        ...(input.severity ? { severity: input.severity } : {}),
+        ...(input.sourceType ? { sourceType: input.sourceType } : {}),
+        ...(input.sourceId ? { sourceId: input.sourceId } : {}),
+        ...(input.detail ? { detail: input.detail } : {}),
         actorName: input.actorName,
         actorEmail: input.actorEmail,
         updatedAt: now

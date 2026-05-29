@@ -1,4 +1,5 @@
-export type CoachActionStatus = "acknowledged" | "applied";
+export type CoachActionStatus = "open" | "acknowledged" | "applied" | "resolved";
+export type CoachActionSeverity = "warning" | "critical";
 
 export interface CoachActionRecord {
   _id?: string;
@@ -6,6 +7,10 @@ export interface CoachActionRecord {
   date: string;
   recommendationKey: string;
   status: CoachActionStatus;
+  severity?: CoachActionSeverity;
+  sourceType?: "missed-check-in" | "readiness-threshold" | "recommendation";
+  sourceId?: string;
+  detail?: string;
   actorName: string;
   actorEmail: string;
   createdAt: string;
