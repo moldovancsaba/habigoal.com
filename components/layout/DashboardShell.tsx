@@ -140,7 +140,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       <Box className="dashboard-main" style={{ minHeight: "calc(100vh - 60px)", display: "flex", flexDirection: "column", paddingBottom: 16 }}>
         <Box style={{ flex: 1 }}>
           <Box
-            className="surface-outline"
             style={{
               width: "100%",
               maxWidth: APP_LAYOUT.pageMaxWidth,
