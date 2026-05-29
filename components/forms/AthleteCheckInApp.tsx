@@ -20,6 +20,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FormField, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { useRouter } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
@@ -197,6 +198,7 @@ function buildSupportSummary(assessment: AssessmentPayload, translate: (key: str
 export function AthleteCheckInApp() {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
+  const router = useRouter();
   const searchParams = useSearchParams();
   const childIdParam = searchParams.get("childId");
   const idParam = searchParams.get("id");
@@ -396,6 +398,11 @@ export function AthleteCheckInApp() {
     localStorage.removeItem(DRAFT_STORAGE_KEY);
     LEGACY_DRAFT_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     setMessage(t("saved"));
+
+    const profileChildId = data.assessment.childId || childIdParam;
+    if (profileChildId && !idParam) {
+      router.replace(`/athletes/${profileChildId}`);
+    }
   }
 
   function newAssessment() {
