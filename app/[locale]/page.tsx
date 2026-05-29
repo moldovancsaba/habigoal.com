@@ -1,7 +1,8 @@
 import Image from "next/image";
-import { Alert, Anchor, Box, Button, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import { Alert, Anchor, Box, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { env } from "@/config/env";
+import { LandingCtas } from "@/components/landing/LandingCtas";
 
 export default async function LandingPage({
   params,
@@ -44,21 +45,18 @@ export default async function LandingPage({
         <Paper component="section" withBorder radius="xl" p={{ base: "lg", md: "xl" }}>
           <Group gap="xl" align="center" justify="space-between">
             <Stack gap="lg" maw={680}>
-              <Stack gap="sm">
-                <Title order={1}>{t("title")}</Title>
-                <Text size="lg" c="dimmed">{t("subtitle")}</Text>
-              </Stack>
-              <Group gap="sm" wrap="wrap">
-                <Button component="a" href={athleteHref} color="ingress">
-                  {t("athleteApp")}
-                </Button>
-                <Button component="a" href={authHref} variant="default">
-                  {t("trainerApp")}
-                </Button>
-                <Button component="a" href={newsHref} variant="subtle">
-                  {t("whatsNew")}
-                </Button>
-              </Group>
+                <Stack gap="sm">
+                  <Title order={1}>{t("title")}</Title>
+                  <Text size="lg" c="dimmed">{t("subtitle")}</Text>
+                </Stack>
+              <LandingCtas
+                athleteAppLabel={t("athleteApp")}
+                trainerAppLabel={t("trainerApp")}
+                whatsNewLabel={t("whatsNew")}
+                athleteHref={athleteHref}
+                trainerHref={authHref}
+                newsHref={newsHref}
+              />
             </Stack>
             <Box visibleFrom="sm">
               <Image src="/images/habigoal_logo.png" alt="Habigoal" width={320} height={320} priority />

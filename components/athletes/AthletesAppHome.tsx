@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Button, Group, Loader, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
+import { ActionBar, createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { AthleteProfile } from "@/types/athlete";
@@ -62,6 +62,15 @@ export function AthletesAppHome() {
     };
   }, [athletes]);
 
+  const athleteHomeActionsPack = useMemo(
+    () =>
+      createGdsVocabularyPack("athleteHome", {
+        backHome: { defaultMessage: t("backHome"), icon: GdsIcons.Back },
+        whatsNew: { defaultMessage: t("whatsNew"), icon: GdsIcons.Notifications }
+      }),
+    [t]
+  );
+
   return (
     <Box style={{ minHeight: "100vh", color: "var(--text-primary)" }}>
       <Box px={{ base: "md", md: "xl" }} py={{ base: "lg", md: "xl" }} maw={1320} mx="auto">
@@ -69,14 +78,13 @@ export function AthletesAppHome() {
           title={t("title")}
           subtitle={t("subtitle")}
           actions={
-            <Group gap="sm" justify="flex-end">
-              <Link href="/" style={{ textDecoration: "none" }}>
-                <Button variant="default">{t("backHome")}</Button>
-              </Link>
-              <Link href="/news" style={{ textDecoration: "none" }}>
-                <Button variant="light">{t("whatsNew")}</Button>
-              </Link>
-            </Group>
+            <ActionBar
+              secondary={[
+                { action: "athleteHome:backHome", component: Link, href: "/", variant: "default" },
+                { action: "athleteHome:whatsNew", component: Link, href: "/news", variant: "subtle" }
+              ]}
+              vocabularyPacks={[athleteHomeActionsPack]}
+            />
           }
         />
 
