@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
 import { getCompatiblePillarScore, getCompatibleReadinessScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
 import { DEFAULT_HABIGOAL_SETTINGS, type HabigoalSettings } from "@/services/settings-service";
+import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CheckInRecord } from "@/types/check-in";
 import type { User } from "@/services/user-service";
@@ -40,6 +41,14 @@ type WeekPlanDay = {
   coachNote: string;
   athleteNames: string[];
 };
+
+type SessionPlanSaveResponse = SessionPlanRecord | { plan?: SessionPlanRecord | null };
+
+function resolveSessionPlanPayload(payload: SessionPlanSaveResponse | null): SessionPlanRecord | null {
+  if (!payload) return null;
+  if ("plan" in payload) return payload.plan ?? null;
+  return "days" in payload && Array.isArray(payload.days) ? payload : null;
+}
 
 export default function PlanningPage() {
   const locale = useLocale();
@@ -212,8 +221,9 @@ export default function PlanningPage() {
   async function savePlan() {
     setSaving(true);
     setSaveState("idle");
-    try {
-      const response = await fetch("/api/session-plans", {
+    const result = await runRecoverableJsonRequest<SessionPlanSaveResponse>({
+      fallbackError: t("planningSaveError"),
+      request: () => fetch("/api/session-plans", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -228,20 +238,22 @@ export default function PlanningPage() {
             averageLoad: Math.round(averageLoad)
           }
         })
-      });
+      })
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to save session plan");
+    if (result.ok) {
+      const plan = resolveSessionPlanPayload(result.data);
+      if (!plan) {
+        setSaveState("error");
+        setSaving(false);
+        return;
       }
-
-      const plan = await response.json() as SessionPlanRecord;
       setSavedPlan(plan);
       setSaveState("saved");
-    } catch {
+    } else {
       setSaveState("error");
-    } finally {
-      setSaving(false);
     }
+    setSaving(false);
   }
 
   function resetPlan() {
@@ -303,7 +315,7 @@ export default function PlanningPage() {
         ) : null}
         {savedPlan ? (
           <Text size="sm" c="dimmed" mb="md">
-            {t("planningSavedMeta", { actor: savedPlan.actorName, updatedAt: savedPlan.updatedAt.slice(0, 10) })}
+            {t("planningSavedMeta", { actor: savedPlan.actorName || t("brandName"), updatedAt: savedPlan.updatedAt ? savedPlan.updatedAt.slice(0, 10) : tc("emptyValue") })}
           </Text>
         ) : null}
         {filteredAthletes.length === 0 ? (
