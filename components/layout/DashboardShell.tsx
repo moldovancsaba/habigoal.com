@@ -1,11 +1,12 @@
 "use client";
 
 import { ActionIcon, Box, Group, Menu, Stack, Text, useComputedColorScheme } from "@mantine/core";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { AppFooter } from "@/components/layout/AppFooter";
-import { AppShell as GdsAppShell, SidebarNav, SidebarNavItem, SidebarNavSection } from "@doneisbetter/gds/client";
+import { AppShell as GdsAppShell, SidebarNav, SidebarNavItem } from "@doneisbetter/gds/client";
 import { APP_LAYOUT } from "@/theme/tokens";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
 
@@ -66,25 +67,30 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   const primaryNavigation = (
     <SidebarNav ariaLabel={t("brandName")}>
-      <SidebarNavSection label="Primary">
-        {nav.map((item) => {
-          const active =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
-          return (
-            <SidebarNavItem
-              key={item.href}
-              component={Link}
-              href={item.href}
-              label={item.label}
-              action={item.action ?? "dashboard"}
-              active={active}
-            />
-          );
-        })}
-      </SidebarNavSection>
+      {nav.map((item) => {
+        const active =
+          item.href === "/dashboard"
+            ? pathname === "/dashboard"
+            : pathname === item.href || pathname.startsWith(`${item.href}/`);
+        return (
+          <SidebarNavItem
+            key={item.href}
+            component={Link}
+            href={item.href}
+            label={item.label}
+            action={item.action ?? "dashboard"}
+            active={active}
+          />
+        );
+      })}
     </SidebarNav>
+  );
+
+  const brandHeader = (
+    <Group gap="sm" wrap="nowrap">
+      <Image src="/images/habigoal_logo.png" alt="" width={36} height={36} priority />
+      <span>{t("brandName")}</span>
+    </Group>
   );
 
   const accountPanel = (
@@ -120,7 +126,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   return (
     <GdsAppShell
-      logoText={t("brandName")}
+      logoText={brandHeader as unknown as string}
       headerContext={t("brandSubtitle")}
       headerActions={routeBlocked ? undefined : (
         <Group gap="xs" wrap="nowrap">
