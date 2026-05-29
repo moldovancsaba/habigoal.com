@@ -1,13 +1,8 @@
-import { createTheme, rgba, type MantineTheme, type MantineThemeOverride } from "@mantine/core";
+import { createTheme, rgba, type MantineThemeOverride } from "@mantine/core";
 import { getSemanticTone, getThemeFoundation, type ThemeMode } from "@/theme/semantic-theme";
-import { SEMANTIC_TONES, type SemanticTone } from "@/theme/tokens";
 import { APP_FONT_FAMILY_LTR, APP_FONT_FAMILY_RTL, APP_FONT_SIZES, APP_FONT_WEIGHTS } from "@/theme/typography";
 
 type Direction = "ltr" | "rtl";
-
-function isSemanticTone(value: string | undefined): value is SemanticTone {
-  return typeof value === "string" && SEMANTIC_TONES.includes(value as SemanticTone);
-}
 
 export function getHabigoalMantineTheme(mode: ThemeMode, direction: Direction = "ltr"): MantineThemeOverride {
   const foundation = getThemeFoundation(mode);
@@ -113,37 +108,6 @@ export function getHabigoalMantineTheme(mode: ThemeMode, direction: Direction = 
             fontWeight: APP_FONT_WEIGHTS.bold,
             letterSpacing: "0.04em"
           }
-        }
-      },
-      Button: {
-        defaultProps: {
-          radius: "md",
-          variant: "gradient"
-        },
-        styles: (theme: MantineTheme, props: { color?: string; variant?: string }) => {
-          const selectedToneName = isSemanticTone(props.color) ? props.color : "ingress";
-          const selectedTone = tone(selectedToneName);
-          const isGhost = props.variant === "subtle" || props.variant === "transparent" || props.variant === "default";
-          const isOutline = props.variant === "outline";
-
-          return {
-            root: {
-              fontFamily,
-              fontWeight: APP_FONT_WEIGHTS.bold,
-              textTransform: "uppercase",
-              letterSpacing: "0.04em",
-              border: `1px solid ${selectedTone.border}`,
-              boxShadow: isGhost
-                ? "none"
-                : "0 0 24px rgba(0, 174, 239, 0.22), 0 14px 36px rgba(0, 0, 0, 0.18)",
-              background: isGhost
-                ? "transparent"
-                : isOutline
-                  ? "linear-gradient(180deg, rgba(31, 43, 66, 0.9), rgba(24, 34, 53, 0.88))"
-                  : "var(--brand-gradient)",
-              color: isGhost ? "var(--text-primary)" : "#0A0F1C"
-            }
-          };
         }
       },
       NavLink: {

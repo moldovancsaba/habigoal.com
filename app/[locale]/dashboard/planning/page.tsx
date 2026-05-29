@@ -263,7 +263,7 @@ export default function PlanningPage() {
         title={t("planningTitle")}
         subtitle={t("planningSubtitle")}
         actions={(
-          <>
+          <Group gap="sm" align="end" justify="flex-end" wrap="wrap">
             <Select
               value={selectedLocation}
               onChange={(value) => setSelectedLocation(value || "all")}
@@ -276,7 +276,7 @@ export default function PlanningPage() {
             </Link>
             <SemanticButton action="reset" variant="light" onClick={resetPlan} />
             <SemanticButton action="save" onClick={savePlan} loading={saving} />
-          </>
+          </Group>
         )}
       />
 
