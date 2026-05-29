@@ -17,7 +17,7 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
 
   return (
     <Flex
-      className="glass-panel surface-outline"
+      className="glass-panel"
       gap="md"
       direction={{ base: "column", md: "row" }}
       justify="space-between"
