@@ -168,4 +168,4 @@ npm run typecheck
 npm run build
 ```
 
-Use `npm run db:ping` when the change depends on live database connectivity. `npm run semantic:audit` must pass for UI/design-system cleanup work. `npm run gds:audit` is the explicit 100% GDS-only readiness gate; it is expected to fail until GDS packages are installable, Mantine compatibility is resolved, runtime imports exist, and `gds-adoption.json` is governed.
+Use `npm run db:ping` when the change depends on live database connectivity. `npm run semantic:audit` must pass for UI/design-system cleanup work. `npm run gds:audit` and `npm run gds:compliance` are expected to pass on `main`; treat failures as release blockers for UI, layout, theme, or GDS adoption changes.

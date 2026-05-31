@@ -2,41 +2,39 @@
 
 `/Users/Shared/Projects/general-design-system` is the single source of truth for design, UI, and UX. Project-local files describe only implementation adapter details, migration state, validation commands, and approved exceptions.
 
-Habigoal uses Mantine through the governed General Design System runtime. Product code consumes GDS contracts through `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
+Habigoal uses Mantine through the governed General Design System runtime. Product code consumes GDS contracts through the unified `@doneisbetter/gds` package, with `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` as governance packages.
 
-Latest inspected GDS line: `2.6.1` at commit `53c52b8`.
+Latest inspected GDS line: `2.6.4`.
 
 ## Current Implementation
 
 | Layer | Current role | Target GDS owner |
 |--------|--------------|------------------|
-| `components/theme/ThemeRegistry.tsx` | GDS provider, local theme mode context, locale direction | `@doneisbetter/gds-theme` `GdsProvider` plus thin Habigoal auth/locale adapter |
-| `theme/mantine-theme.ts` | Local Mantine theme and component defaults | `@doneisbetter/gds-theme` `gdsTheme` / `extendGdsTheme(...)` |
-| `theme/tokens.ts` and `theme/typography.ts` | Local layout, tone, and typography constants | GDS tokens and component contracts |
-| `components/layout/DashboardShell.tsx` | Protected app shell, nav, footer, role-aware layout | `@doneisbetter/gds-admin` `AppShell` plus Habigoal nav data |
-| `components/ui/*` | Local page, card, switcher, and data-card primitives | `@doneisbetter/gds-core` / `@doneisbetter/gds-admin` components or thin route-aware adapters |
+| `components/theme/ThemeRegistry.tsx` | Thin adapter around `GdsProvider`, theme mode, and locale direction | `@doneisbetter/gds/client` |
+| `theme/mantine-theme.ts` | Product theme extension passed into GDS provider | GDS tokens and approved Habigoal extension points |
+| `theme/tokens.ts` and `theme/typography.ts` | Approved token surfaces for remaining migration exceptions | GDS tokens and component contracts |
+| `components/layout/DashboardShell.tsx` | Protected app shell, nav, footer, role-aware layout | `@doneisbetter/gds/client` `AppShell` plus Habigoal nav data |
+| `components/ui/*` | Historical local adapters, not the preferred import path | Direct `@doneisbetter/gds/client` / `@doneisbetter/gds/server` imports or thin route-aware adapters |
 | `app/globals.css` | Global atmosphere, CSS variables, print helpers, chart font handling | GDS global baseline plus approved print/chart exceptions |
 
 ## GDS Package Use
 
-The intended dependency set is:
+The active dependency set is:
 
 ```txt
-@doneisbetter/gds-theme
-@doneisbetter/gds-core
-@doneisbetter/gds-admin
+@doneisbetter/gds
 @doneisbetter/gds-eslint-config
 @doneisbetter/gds-compliance
 ```
 
-Current package source: live npm packages under `@doneisbetter/*` at `^2.6.1`. Do not reintroduce sibling `file:` package links or the old placeholder package namespace.
+Current package source: live npm packages under `@doneisbetter/*` at `^2.6.4`. Do not reintroduce sibling `file:` package links, split runtime packages, or the old placeholder package namespace.
 
-GDS `2.6.1` supports Mantine `^7.9.0` and `^8.3.0`; Habigoal is on Mantine `8.3.x`.
+GDS `2.6.4` supports Mantine `^7.9.0`, `^8.3.0`, and `^9.0.0`; Habigoal is on Mantine `8.3.x`.
 
-Once package adoption starts, use GDS subpath imports:
+Use GDS subpath imports deliberately:
 
-- `@doneisbetter/gds-theme/server`, `@doneisbetter/gds-core/server`, and `@doneisbetter/gds-admin/server` for server-safe layouts, metadata-adjacent composition, and non-hook structural primitives.
-- `@doneisbetter/gds-theme/client`, `@doneisbetter/gds-core/client`, and `@doneisbetter/gds-admin/client` for providers, hooks, theme toggles, semantic buttons, responsive data views, and other interactive surfaces.
+- `@doneisbetter/gds/server` for server-safe layouts, metadata-adjacent composition, and non-hook structural primitives.
+- `@doneisbetter/gds/client` for providers, hooks, theme toggles, semantic buttons, responsive data views, and other interactive surfaces.
 
 ## Allowed Local Adapters
 
@@ -52,17 +50,15 @@ Local code must not define a competing token system, generalized component behav
 
 The machine-readable adoption contract is [gds-adoption.json](/Users/Shared/Projects/habigoal/gds-adoption.json). Keep it aligned with this document and the current GDS release line.
 
-## First Safe Implementation Step
+## Current Implementation Priority
 
-The first code PR should be intentionally small:
+The package and provider adoption blocker is resolved. The current priority is reconciliation and hardening:
 
-1. Keep the approved npm registry source for `@doneisbetter/gds-theme`, `@doneisbetter/gds-core`, `@doneisbetter/gds-admin`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance`.
-2. Expand `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` from scoped migration gates into release gates.
-3. Keep Mantine on a single supported major and fail duplicate Mantine majors in the lockfile.
-4. Continue using GDS provider semantics while preserving Habigoal theme mode, locale, RTL, and consent behavior.
-5. Migrate one high-value surface, preferably the public landing page or one dashboard page header/card set.
-6. Add a lockfile audit that fails duplicate Mantine majors or mixed GDS versions.
-7. Validate `gds-adoption.json` against the GDS schema.
+1. Keep `@doneisbetter/gds`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance` aligned on the same release line.
+2. Keep `npm run gds:audit` and `npm run gds:compliance` passing before claiming GDS-governed delivery.
+3. Replace remaining repeated page-local Mantine patterns with GDS component families where the contract exists.
+4. Keep local adapters route-aware only: routing, locale, role/team data, charts, PDF internals, content files, and provider-specific auth.
+5. Update GitHub issues/project state whenever the audited GDS adoption state changes.
 
 ## Migration Sequence
 
@@ -90,4 +86,4 @@ npm run build
 
 `npm run semantic:audit` should evolve from legacy hue cleanup into a strict GDS compliance gate.
 `npm run gds:audit` is the explicit 100% GDS-only readiness check. It must pass with all declared contract adapters active and the manifest migration status set to `governed`.
-`npm run gds:compliance` runs the shared GDS compliance package and currently reports the remaining local UI imports and raw design values that must be eliminated during the adapter migration.
+`npm run gds:compliance` runs the shared GDS compliance package and must pass before delivery that touches UI, layout, theme, or GDS adoption state.

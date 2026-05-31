@@ -112,7 +112,7 @@ export async function getSettings(): Promise<HabigoalSettings> {
     return normalizeSettings((await response.json()) as Partial<HabigoalSettings>);
   }
   
-  // Keep the legacy browser keys so older local workspaces do not lose settings.
+  // Migration-only read path for pre-Habigoal browser settings; this is not an offline fallback.
   const local = localStorage.getItem(STORAGE_KEY) ?? LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
   if (local) return normalizeSettings(JSON.parse(local) as Partial<HabigoalSettings>);
   

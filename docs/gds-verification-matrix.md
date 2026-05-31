@@ -1,11 +1,11 @@
 # GDS Verification Matrix
 
 Status: Active verification contract
-Last updated: 2026-05-25
+Last updated: 2026-05-31
 
 Use this matrix before and after each GDS migration slice. It is the operational smoke checklist for accessibility, route protection, locale/RTL behavior, UI states, and rollback safety.
 
-`npm run gds:audit` is expected to fail until GDS packages are installable, Mantine compatibility is resolved, runtime imports exist, and `gds-adoption.json` is governed. Do not claim Habigoal is 100% GDS-only until that command passes.
+`npm run gds:audit` is expected to pass on `main`. Do not claim a delivery is GDS-governed if this command or `npm run gds:compliance` fails.
 
 ## Automated Gates
 
@@ -23,7 +23,8 @@ npm run build
 
 Current expected state:
 
-- `npm run gds:audit` fails with the known external blockers.
+- `npm run gds:audit` must pass.
+- `npm run gds:compliance` must pass for UI, layout, theme, or GDS adoption changes.
 - `npm run semantic:audit` must pass.
 - `npm run i18n:audit`, `npm run lint`, `npm run test`, `npm run typecheck`, and `npm run build` must pass for release-ready code.
 

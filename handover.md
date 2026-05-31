@@ -5,7 +5,7 @@ This document describes the current implementation state of Habigoal and the mai
 ## Stack
 
 - Framework: Next.js App Router
-- UI: Mantine with the Habigoal design system
+- UI: Mantine through the governed `@doneisbetter/gds` runtime
 - Language: TypeScript
 - i18n: next-intl with locale-prefixed routes
 - Database: MongoDB Atlas through the MongoDB Node driver
@@ -13,7 +13,7 @@ This document describes the current implementation state of Habigoal and the mai
 - Runtime: Node.js `22.x`
 - Deployment target: Vercel
 
-The lockfile currently resolves the core runtime to Next.js `15.5.15`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, and Mantine `8.3.6`.
+The lockfile currently resolves the core runtime to Next.js `15.5.15`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, Mantine `8.3.6`, and GDS `2.6.4`.
 
 ## Current Product Model
 
@@ -143,7 +143,9 @@ Canonical docs:
 - `docs/user-guide.md`: role-based user guide
 - `docs/settings-guide.md`: admin/settings operations guide
 - `docs/sso-setup.md`: SSO client setup
-- `docs/design-system.md`: live design-system implementation
+- `docs/design-system.md`: GDS adapter and migration state
+- `docs/gds-adoption.md`: GDS package, manifest, exceptions, and validation state
+- `docs/gds-verification-matrix.md`: GDS route and accessibility verification matrix
 - `docs/dod.md`: definition of done
 - `ROADMAP.md`: current roadmap
 - `.codex/memory/architecture.md`: Codex automation architecture and operating constraints
@@ -154,7 +156,7 @@ Canonical docs:
 - i18n coverage has improved and `npm run i18n:audit` is now the repeatable release gate for catalog parity, placeholders, public news localization, and known legacy copy leaks. Hardcoded strings still need cleanup as form/report surfaces are migrated.
 - The centralized form-system work exists on a feature branch and should not be documented as shipped on `main` until merged.
 - Team invitations are still admin-managed records, not outbound email invites.
-- GitHub Project state can drift from merged work if branches are merged manually without issue/board updates.
+- GitHub Project state can drift from merged work if branches are merged manually without issue/board updates. GDS package/provider issues must be reconciled against `npm run gds:audit`, `npm run gds:compliance`, `gds-adoption.json`, and `package.json`.
 
 ## GitHub Project Board Operations
 
@@ -270,6 +272,8 @@ On 2026-05-21, `#62` received the first shipped audit gate in commit `30e122f`. 
 
 Issue `#29` was closed because typecheck validation is stable on `main`.
 
+On 2026-05-31, the GDS documentation and project-board state were reconciled after `@doneisbetter/gds@2.6.4` adoption. `npm run gds:audit` and `npm run gds:compliance` pass on `main`, so issue/project references that describe GDS runtime adoption as blocked by package publication or Mantine compatibility are obsolete.
+
 ## Validation
 
 Run before merging meaningful changes:
@@ -284,7 +288,7 @@ npm run build
 npm run typecheck
 ```
 
-`npm run semantic:audit` now passes and should remain a UI/design-system cleanup gate. `npm run gds:audit` is the explicit 100% GDS-only readiness gate; it is expected to fail until GDS packages are installable, Mantine compatibility is resolved, runtime imports exist, and `gds-adoption.json` is governed.
+`npm run semantic:audit` should remain a UI/design-system cleanup gate. `npm run gds:audit` and `npm run gds:compliance` are expected to pass on `main`; treat a failure as drift between code, docs, and the GDS adoption manifest.
 
 GDS migration and rollback checks are documented in [docs/gds-verification-matrix.md](docs/gds-verification-matrix.md).
 

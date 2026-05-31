@@ -79,14 +79,14 @@ Root layout should own `lang`, `dir`, and any framework script setup. A single c
 
 ### Phase 1: Package Compatibility
 
-- Release or consume `@doneisbetter/*` packages from a stable registry source.
+- Done: consume `@doneisbetter/*` packages from a stable registry source.
 - Keep Mantine on one supported major.
 - Add a lockfile check that fails duplicate Mantine majors and mixed GDS versions.
 - Keep `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` wired, then expand them from migration gates into release gates.
 
 ### Phase 2: Root Provider
 
-- Replace local Mantine provider ownership with `@doneisbetter/gds-theme`.
+- Done: replace local Mantine provider ownership with `GdsProvider` from `@doneisbetter/gds/client`.
 - Preserve Habigoal-specific locale, RTL, OAuth/session, cookie consent, and theme-mode behavior through a thin adapter.
 - Confirm modals and notifications are mounted once.
 
@@ -111,7 +111,7 @@ The `@doneisbetter/gds@2.6.4` package now covers these Habigoal non-standard ele
 
 ### Phase 4: Admin Workspace
 
-- Replace `DashboardShell`, admin tables, settings sections, restore bin, governance cards, and CRUD surfaces with `@doneisbetter/gds-admin` contracts.
+- Replace remaining admin tables, settings sections, restore bin, governance cards, and CRUD surfaces with admin/workspace contracts from `@doneisbetter/gds`.
 - The dashboard shell now uses GDS `AppShell`; Habigoal keeps only the product-specific data adapter around it for role-routing, locale switching, account controls, and a theme bridge that syncs the GDS toggle back into Habigoal's persisted theme mode.
 - Use GDS responsive data views for mobile/RTL-heavy surfaces.
 
@@ -148,8 +148,8 @@ The first implementation slice intentionally avoids whole-app migration.
 
 Scope:
 
-- GDS packages are installed from the sibling checkout until registry publication is available.
-- The root provider uses `GdsProvider` from `@doneisbetter/gds-theme/client`.
+- GDS packages are installed from npm under the unified `@doneisbetter/gds` package line.
+- The root provider uses `GdsProvider` from `@doneisbetter/gds/client`.
 - Next.js transpiles the GDS package line and resolves peer dependencies from Habigoal's `node_modules`.
 - `gds-adoption.json`, `npm run gds:audit`, `npm run gds:compliance`, and scoped GDS ESLint config are wired.
 - No GDS audit-blocking adapters remain. Additional component-family migrations remain useful, but `AppShell`, `PageHeader`, `StateBlock`, `FormField`, and `SemanticButton` are now active in production surfaces.

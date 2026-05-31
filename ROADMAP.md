@@ -2,7 +2,7 @@
 
 Habigoal is evolving from a daily check-in product into a role-aware athlete operating system for athletes, trainers, and admins.
 
-Last updated: 2026-05-21
+Last updated: 2026-05-31
 
 ## Shipped Baseline
 
@@ -20,6 +20,7 @@ Last updated: 2026-05-21
 - Public legal pages.
 - MongoDB Atlas integration, health checks, seed scripts, and migration/backfill helpers.
 - Codex automation control plane for branch-and-PR audit/planning/implementation/docs loops.
+- GDS governed runtime baseline with `@doneisbetter/gds@2.6.4`, passing `npm run gds:audit` and `npm run gds:compliance`.
 
 ## Current Active Engineering Themes
 
@@ -39,7 +40,7 @@ Next work:
 
 Goal: reduce page-owned form logic and keep labels, validation, visibility, and onboarding targets consistent.
 
-Status: planned and partly developed on a feature branch, not fully shipped on `main`.
+Status: active roadmap work; GDS `FormField`, `SemanticButton`, and `ChoiceChip` are in production surfaces, but the full central form registry/renderer rollout is not complete on `main`.
 
 Next work:
 
@@ -82,6 +83,17 @@ Next work:
 - localized release-note workflow
 - richer shareable operating reports
 - report i18n regression checks
+
+### 6. GDS Completion And Documentation Reconciliation
+
+Goal: keep code, docs, comments, and GitHub Project 14 aligned with the governed GDS runtime state.
+
+Next work:
+
+- close or downgrade obsolete package-adoption blockers
+- keep GDS component-family issues focused on remaining UI surface migrations
+- update issue bodies when validation proves a blocker is resolved
+- keep `docs/design-system.md`, `docs/gds-adoption.md`, `docs/gds-verification-matrix.md`, and `handover.md` synchronized after each GDS delivery
 
 ## Backlog Themes
 
