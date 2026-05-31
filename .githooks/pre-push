@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[pre-push] lockfile + build safety checks"
+npm run lockfile:check
+npm run typecheck
+npm run build

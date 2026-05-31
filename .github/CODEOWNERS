@@ -1,0 +1,13 @@
+# Default owner for repository content
+* @moldovancsaba
+
+# Critical delivery and release controls
+.github/workflows/* @moldovancsaba
+package.json @moldovancsaba
+package-lock.json @moldovancsaba
+gds-adoption.json @moldovancsaba
+middleware.ts @moldovancsaba
+app/api/auth/** @moldovancsaba
+app/api/oauth/** @moldovancsaba
+lib/access.ts @moldovancsaba
+lib/session.ts @moldovancsaba

@@ -76,6 +76,7 @@ Package ranges are defined in `package.json`; the active lockfile currently reso
 ```bash
 cp .env.example .env
 npm install
+npm run hooks:install
 npm run db:ping
 npm run db:setup
 npm run db:seed-showcase
@@ -116,6 +117,13 @@ npm run build
 npm run typecheck
 npm run db:ping
 ```
+
+## Branch and PR Policy
+
+- `main` is protected and accepts changes through pull requests only.
+- Use feature branches prefixed with `sentinel-squad/`.
+- Install repository hooks with `npm run hooks:install`; pre-push runs `lockfile:check`, `typecheck`, and `build`.
+- CODEOWNERS applies required ownership to critical workflow/auth/release paths.
 
 `npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. `npm run semantic:audit` is a targeted design-system cleanup check. `npm run gds:audit` is the strict GDS-only readiness check and must pass with the manifest set to `governed`. `npm run gds:compliance` runs the shared GDS compliance package and is a release gate. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
