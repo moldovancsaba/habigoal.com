@@ -18,6 +18,7 @@
     "db:backfill-standards-version": "node scripts/backfill-standards-version.mjs",
     "db:backfill-daily-tracker-history": "node scripts/backfill-daily-tracker-history.mjs",
     "db:migrate-survey-identifiers": "node scripts/migrate-survey-identifiers.mjs",
+    "lockfile:check": "node scripts/check-lockfile-sync.mjs",
     "semantic:audit": "node scripts/semantic-audit.mjs",
     "gds:audit": "node scripts/gds-audit.mjs",
     "gds:compliance": "gds-compliance check --manifest ./gds-adoption.json",
