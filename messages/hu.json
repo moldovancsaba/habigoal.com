@@ -544,6 +544,8 @@
   "Assessment": {
     "saved": "Check-in elmentve.",
     "saveError": "A mentés sikertelen. Kérjük, ellenőrizze a kapcsolatot.",
+    "fixRequiredFields": "Töltse ki a kötelező mezőket mentés előtt.",
+    "requiredField": "A(z) {field} mező kötelező.",
     "appSubtitle": "2 perces napi jólléti tracker fiatal sportolóknak",
     "appTitle": "Napi sportolói check-in",
     "setupTitle": "Mai check-in",

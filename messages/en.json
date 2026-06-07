@@ -544,6 +544,8 @@
   "Assessment": {
     "saved": "Check-in saved.",
     "saveError": "Save failed. Please check your connection.",
+    "fixRequiredFields": "Complete the required fields before saving.",
+    "requiredField": "{field} is required.",
     "appSubtitle": "2-minute daily wellness tracker for young athletes",
     "appTitle": "Daily athlete check-in",
     "setupTitle": "Today's check-in",

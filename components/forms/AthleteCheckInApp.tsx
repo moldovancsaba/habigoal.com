@@ -8,11 +8,9 @@ import {
   Group,
   Paper,
   Progress,
-  Select,
   SimpleGrid,
   Stack,
-  Text,
-  Textarea
+  Text
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -22,8 +20,9 @@ import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestio
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
-import { checkInSetupFields, trainingLoadFields } from "@/lib/forms/central-form";
+import { checkInNotesFields, checkInSetupFields, trainingLoadFields, validateCentralForm } from "@/lib/forms/central-form";
 import { CentralFormRenderer } from "@/components/forms/CentralFormRenderer";
+import type { CentralFormErrors } from "@/lib/forms/central-form";
 import type { AssessmentPayload, ScoreEntry } from "@/types/assessment";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
@@ -78,6 +77,8 @@ type ChoiceOption = {
   value: number;
   label: string;
 };
+
+type CheckInSetupValues = { childId: string; date: string };
 
 function cloneAssessment(source: AssessmentPayload): AssessmentPayload {
   return JSON.parse(JSON.stringify(source)) as AssessmentPayload;
@@ -213,6 +214,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
   const [recordId, setRecordId] = useState<string>("");
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
+  const [setupErrors, setSetupErrors] = useState<CentralFormErrors<CheckInSetupValues>>({});
   const [children, setChildren] = useState<AthleteProfile[]>([]);
   const initializedChildPrefill = useRef(false);
 
@@ -243,6 +245,23 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
     [assessment.scores]
   );
   const supportSummary = useMemo(() => buildSupportSummary(assessment, t), [assessment, t]);
+  const setupFields = useMemo(
+    () =>
+      checkInSetupFields.map((field) =>
+        field.key === "childId"
+          ? {
+              ...field,
+              options: children
+                .map((child) => ({
+                  value: child._id || "",
+                  label: `${child.name} (${child.surveyId || "-"})`
+                }))
+                .filter((option) => option.value)
+            }
+          : field
+      ),
+    [children]
+  );
   const nextSupportArea = useMemo(() => {
     const areas = [
       { key: "physical", value: domainScores.physical ?? 99, label: t("physicalShortLabel") },
@@ -325,6 +344,21 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
     setSaveState("idle");
   }
 
+  function updateSetupField(key: "childId" | "date", value: string) {
+    setSetupErrors((current) => {
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+
+    if (key === "childId") {
+      selectChild(value);
+      return;
+    }
+
+    updateSessionField(key, value);
+  }
+
   function updateSessionField<K extends keyof Pick<AssessmentPayload["session"], "date">>(
     key: K,
     value: AssessmentPayload["session"][K]
@@ -381,6 +415,21 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
   }
 
   async function saveAssessment() {
+    const setupValues = { childId: assessment.childId || "", date: assessment.session.date };
+    const validationErrors = validateCentralForm({
+      fields: checkInSetupFields,
+      values: setupValues,
+      translate: t,
+      labelTranslate: (key) => (key === "date" ? tc("date") : t(key))
+    });
+
+    if (Object.keys(validationErrors).length > 0) {
+      setSetupErrors(validationErrors);
+      setSaveState("error");
+      setMessage(t("fixRequiredFields"));
+      return;
+    }
+
     setSaveState("saving");
     setMessage("");
 
@@ -475,20 +524,13 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
       <SectionPanel title={t("setupTitle")} description={t("setupSubtitle")}>
         <Stack gap="md">
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            <Select
-              label={t("childName")}
-              placeholder={t("selectAthlete")}
-              searchable
-              value={assessment.childId || ""}
-              data={children.map((child) => ({ value: child._id || "", label: `${child.name} (${child.surveyId || "-"})` })).filter((x) => x.value)}
-              onChange={selectChild}
-            />
             <CentralFormRenderer
-              fields={checkInSetupFields}
+              fields={setupFields}
               namespaceTranslate={t}
               commonTranslate={tc}
-              values={{ date: assessment.session.date }}
-              onChange={updateSessionField}
+              values={{ childId: assessment.childId || "", date: assessment.session.date }}
+              errors={setupErrors}
+              onChange={updateSetupField}
             />
           </SimpleGrid>
 
@@ -595,12 +637,11 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
         </SectionPanel>
 
         <SectionPanel title={t("professionalNotes")} description={t("professionalNotesSubtitle")}>
-          <Textarea
-            label={t("shareWithCoach")}
-            value={assessment.notes.general}
-            onChange={(event) => updateGeneralNote(event.currentTarget.value)}
-            minRows={8}
-            placeholder={t("shareWithCoachPlaceholder")}
+          <CentralFormRenderer
+            fields={checkInNotesFields}
+            namespaceTranslate={t}
+            values={{ general: assessment.notes.general }}
+            onChange={(_, value) => updateGeneralNote(value)}
           />
         </SectionPanel>
       </SimpleGrid>

@@ -544,6 +544,8 @@
   "Assessment": {
     "saved": "הצק-אין נשמר.",
     "saveError": "Save failed. Please check your connection.",
+    "fixRequiredFields": "Complete the required fields before saving.",
+    "requiredField": "{field} is required.",
     "appSubtitle": "מעקב יומי של 2 דקות לרווחת ספורטאים צעירים",
     "appTitle": "צק-אין יומי לספורטאי",
     "setupTitle": "הצק-אין של היום",

@@ -544,6 +544,8 @@
   "Assessment": {
     "saved": "Check-in gespeichert.",
     "saveError": "Save failed. Please check your connection.",
+    "fixRequiredFields": "Complete the required fields before saving.",
+    "requiredField": "{field} is required.",
     "appSubtitle": "2-Minuten-Tracker fuer taegliches Wohlbefinden junger Athleten",
     "appTitle": "Taeglicher Athleten-Check-in",
     "setupTitle": "Heutiger Check-in",

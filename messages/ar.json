@@ -544,6 +544,8 @@
   "Assessment": {
     "saved": "تم حفظ التسجيل.",
     "saveError": "فشل الحفظ. يرجى التحقق من الاتصال.",
+    "fixRequiredFields": "أكمل الحقول المطلوبة قبل الحفظ.",
+    "requiredField": "{field} مطلوب.",
     "appSubtitle": "متتبع يومي قصير لرفاهية الرياضيين الصغار",
     "appTitle": "تسجيل يومي للرياضي",
     "setupTitle": "تسجيل اليوم",

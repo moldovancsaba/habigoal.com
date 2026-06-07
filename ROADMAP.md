@@ -40,7 +40,7 @@ Next work:
 
 Goal: reduce page-owned form logic and keep labels, validation, visibility, and onboarding targets consistent.
 
-Status: active roadmap work; GDS `FormField`, `SemanticButton`, and `ChoiceChip` are in production surfaces, but the full central form registry/renderer rollout is not complete on `main`.
+Status: active roadmap work; GDS `FormField`, `SemanticButton`, and `ChoiceChip` are in production surfaces. The central form registry/renderer now covers check-in setup, training load, and coach-note fields, but the full rollout across profile, admin, team, and settings forms is not complete on `main`.
 
 Next work:
 

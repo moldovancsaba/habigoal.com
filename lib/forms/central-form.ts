@@ -1,22 +1,65 @@
-export type CentralFormFieldKind = "text" | "date" | "number" | "select";
+export type CentralFormFieldKind = "text" | "date" | "number" | "select" | "searchable-select" | "textarea";
 
 export type CentralFormField<TValues> = {
   key: keyof TValues & string;
   kind: CentralFormFieldKind;
   labelKey: string;
   descriptionKey?: string;
+  placeholderKey?: string;
+  required?: boolean;
   min?: number;
   max?: number;
-  options?: Array<{ value: string; labelKey: string }>;
+  options?: Array<{ value: string; label?: string; labelKey?: string }>;
 };
+
+export type CentralFormErrors<TValues> = Partial<Record<keyof TValues & string, string>>;
+
+function hasValue(value: unknown) {
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+
+  return value !== null && value !== undefined;
+}
+
+export function validateCentralForm<TValues extends Record<string, unknown>>({
+  fields,
+  values,
+  translate,
+  labelTranslate = translate
+}: {
+  fields: CentralFormField<TValues>[];
+  values: TValues;
+  translate: (key: string, params?: Record<string, string>) => string;
+  labelTranslate?: (key: string) => string;
+}) {
+  const errors: CentralFormErrors<TValues> = {};
+
+  for (const field of fields) {
+    if (field.required && !hasValue(values[field.key])) {
+      errors[field.key] = translate("requiredField", { field: labelTranslate(field.labelKey) });
+    }
+  }
+
+  return errors;
+}
 
 export const checkInSetupFields = [
   {
+    key: "childId",
+    kind: "searchable-select",
+    labelKey: "childName",
+    placeholderKey: "selectAthlete",
+    required: true,
+    options: []
+  },
+  {
     key: "date",
     kind: "date",
-    labelKey: "date"
+    labelKey: "date",
+    required: true
   }
-] satisfies CentralFormField<{ date: string }>[];
+] satisfies CentralFormField<{ childId: string; date: string }>[];
 
 export const trainingLoadFields = [
   {
@@ -59,3 +102,12 @@ export const trainingLoadFields = [
   rpe?: number;
   externalLoad?: number;
 }>[];
+
+export const checkInNotesFields = [
+  {
+    key: "general",
+    kind: "textarea",
+    labelKey: "shareWithCoach",
+    placeholderKey: "shareWithCoachPlaceholder"
+  }
+] satisfies CentralFormField<{ general: string }>[];

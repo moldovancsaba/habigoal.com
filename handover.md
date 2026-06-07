@@ -154,7 +154,7 @@ Canonical docs:
 
 - Some older files and database collections still use legacy `child` and `assessment` names. Product-facing code should use aliases or facade modules.
 - i18n coverage has improved and `npm run i18n:audit` is now the repeatable release gate for catalog parity, placeholders, public news localization, and known legacy copy leaks. Hardcoded strings still need cleanup as form/report surfaces are migrated.
-- The centralized form-system work exists on a feature branch and should not be documented as shipped on `main` until merged.
+- The centralized form-system foundation exists on `main` for check-in setup, training-load, and coach-note fields. The full rollout across athlete profile, admin, team, and settings forms is still incomplete.
 - Team invitations are still admin-managed records, not outbound email invites.
 - GitHub Project state can drift from merged work if branches are merged manually without issue/board updates. GDS package/provider issues must be reconciled against `npm run gds:audit`, `npm run gds:compliance`, `gds-adoption.json`, and `package.json`.
 
