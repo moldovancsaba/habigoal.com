@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-07T00:00:00.000Z",
+  "migrationHash": "habigoal-form-registry-v1",
+  "artifacts": [
+    {
+      "id": "admin-settings",
+      "domain": "admin-console",
+      "route": "/[locale]/dashboard/settings",
+      "fields": ["company", "conductors", "locations", "observers", "standards"],
+      "gdsComponentSet": ["layout", "form", "button", "alert"],
+      "locales": ["en", "hu", "de", "fr", "es", "ar", "he", "ru"],
+      "requiresAuth": ["admin"],
+      "ownerTeam": ["platform", "operations"],
+      "lifecycleState": "migrate",
+      "blockers": []
+    },
+    {
+      "id": "athlete-check-in",
+      "domain": "athletes",
+      "route": "/[locale]/dashboard/assessment",
+      "fields": ["athleteId", "dailyHabits", "movement", "mood", "readiness", "recovery", "trainingLoad"],
+      "gdsComponentSet": ["layout", "form", "button", "status", "chart"],
+      "locales": ["en", "hu", "de", "fr", "es", "ar", "he", "ru"],
+      "requiresAuth": ["admin", "trainer", "athlete"],
+      "ownerTeam": ["athletes", "platform"],
+      "lifecycleState": "migrate",
+      "blockers": []
+    },
+    {
+      "id": "athlete-profile",
+      "domain": "profiles",
+      "route": "/[locale]/dashboard/athletes/[id]",
+      "fields": ["birthDate", "dominantHand", "knownTraits", "name", "notes"],
+      "gdsComponentSet": ["layout", "form", "button", "alert"],
+      "locales": ["en", "hu", "de", "fr", "es", "ar", "he", "ru"],
+      "requiresAuth": ["admin", "trainer"],
+      "ownerTeam": ["athletes", "profiles"],
+      "lifecycleState": "migrate",
+      "blockers": []
+    },
+    {
+      "id": "team-role-management",
+      "domain": "admin-console",
+      "route": "/[locale]/dashboard/teams",
+      "fields": ["athleteIds", "name", "trainerEmails"],
+      "gdsComponentSet": ["layout", "form", "button", "table"],
+      "locales": ["en", "hu", "de", "fr", "es", "ar", "he", "ru"],
+      "requiresAuth": ["admin", "trainer"],
+      "ownerTeam": ["platform", "operations"],
+      "lifecycleState": "migrate",
+      "blockers": []
+    }
+  ]
+}
