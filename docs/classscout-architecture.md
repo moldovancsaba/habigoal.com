@@ -9,9 +9,10 @@ ClassScout is a parent-directed AI activity concierge. It helps a parent discove
 3. Human review approves or rejects low-confidence candidates before public projection.
 4. Approved activity data feeds search and recommendation candidate generation.
 5. Parent accounts own households, child activity profiles, preferences, privacy requests, and feedback history.
-6. Recommendation services consume only normalized, parent-managed preferences and redacted participation signals after active parent consent is present.
-7. Provider workflows can claim and update listings, but never receive child profile data or household identity.
-8. Privacy operations export, delete, withdraw consent, and audit parent-managed profile data without logging sensitive note values.
+6. Parent onboarding collects household, profile, interest, constraint, optional history, and consent inputs through GDS-only UI backed by centralized state contracts.
+7. Recommendation services consume only normalized, parent-managed preferences and redacted participation signals after active parent consent is present.
+8. Provider workflows can claim and update listings, but never receive child profile data or household identity.
+9. Privacy operations export, delete, withdraw consent, and audit parent-managed profile data without logging sensitive note values.
 
 ## Actor Boundaries
 
@@ -36,6 +37,8 @@ ClassScout is a parent-directed AI activity concierge. It helps a parent discove
 - `lib/classscout/profile-service.test.ts`: unit coverage for normalization, redaction, ownership denial, export shape, deletion state, and validation failures.
 - `lib/classscout/privacy-service.ts`: consent records, recommendation eligibility gate, consent withdrawal, idempotent deletion requests, export request state, recoverable failure codes, and privacy-safe audit events.
 - `lib/classscout/privacy-service.test.ts`: unit coverage for consent grant/withdrawal, recommendation blocking, deletion idempotency, export success/failure, retryability, and scope denial.
+- `lib/classscout/onboarding-state.ts`: onboarding step model, accessible step metadata, validation, skip handling, stable API error mapping, idempotency key carriage, and normalized profile/preference payload builders.
+- `lib/classscout/onboarding-state.test.ts`: unit coverage for step states, required/optional validation, normalized submit payloads, skip behavior, error mapping, and accessibility metadata.
 
 Future implementation-1 modules must depend on this boundary before adding ingestion, review queue, search, recommendation, provider claim, or frontend surfaces.
 
@@ -44,6 +47,14 @@ Future implementation-1 modules must depend on this boundary before adding inges
 Parent consent is a hard gate before child activity profile data can be used for recommendation scoring. Consent records include household ID, profile ID, actor user ID, consent type, notice version, status, grant timestamp, and optional withdrawal timestamp.
 
 Consent withdrawal immediately makes recommendation eligibility fail with `CONSENT_REQUIRED`. Deletion requests are idempotent per household/target and can be retried after recoverable failures. Export requests expose `requested`, `processing`, `ready`, and `failed` states and carry only redacted household export data.
+
+## Parent Onboarding Lifecycle
+
+The onboarding contract supports `household`, `child`, `interests`, `constraints`, `history`, `privacy`, and `complete` steps. Required steps cannot be skipped. Optional steps can move the parent forward without local or offline persistence.
+
+Each step carries explicit accessible metadata: `ariaLabel`, `describedBy`, and `errorSummaryId`. Validation maps errors to focus targets so UI can move focus to the correct summary after failed submit. API errors map to stable parent-facing codes: `VALIDATION_FAILED`, `CONSENT_REQUIRED`, `UNAUTHORIZED`, `RATE_LIMITED`, `SAVE_FAILED`, and `TIMEOUT`.
+
+The state contract carries an idempotency key through the flow so route/API integration can retry a failed save without duplicate submission. It does not store child profile values in localStorage, indexedDB, or offline fallbacks.
 
 ## UI and Accessibility Gate
 
@@ -62,6 +73,8 @@ Failure paths must surface stable error codes and retryability. Timeout and retr
 The initial foundation adds contracts, service code, tests, and docs only. Rollback is a code revert with no destructive data migration. Once persistent storage is introduced, rollback must retain fields and disable affected routes before any cleanup migration is considered.
 
 For privacy workflows, disabling dashboard controls must not delete consent, export, or deletion-request records. Pending deletion jobs require a manual runbook path before cleanup migration.
+
+For onboarding, hide the route/entry point and keep saved profile, consent, and deletion/export state intact. UI rollback must not perform destructive data cleanup.
 
 ## Verification
 
