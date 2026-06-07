@@ -1,6 +1,6 @@
 # Implementation 5: Form Registry Foundation
 
-This delivery establishes the Habigoal form governance registry used by later form migration work.
+This delivery establishes the Habigoal form governance registry and compiler layer used by later form migration work.
 
 ## Registry Snapshot
 
@@ -23,24 +23,49 @@ type FormArtifact = {
 
 The initial snapshot covers admin settings, athlete check-in, athlete profile, and team role-management forms.
 
+## Compiler Contract
+
+`lib/forms/compiler.ts` compiles registry artifacts into runtime contracts:
+
+```ts
+type CompiledFormContract = {
+  formId: string;
+  route: string;
+  domain: string;
+  fields: Array<{ id: string; name: string; type: string; required: boolean; options?: string[] }>;
+  apiEndpoint: string;
+  responseSchemaVersion: number;
+  locales: string[];
+  requiresAuth: string[];
+  ownerTeam: string[];
+};
+```
+
+The compiler validates duplicate fields, empty field sets, missing locale maps, and unsupported GDS component families. Diagnostics are stable and sorted so CI and admin tooling can compare results predictably.
+
 ## Runtime Flow
 
 1. `getFormRegistrySnapshot()` loads the last known registry snapshot.
 2. `canonicalizeFormRegistry()` normalizes routes, fields, GDS component families, locales, auth roles, owner teams, lifecycle state, and blockers.
 3. Duplicate artifact IDs are deduped by keeping the richer artifact.
 4. `summarizeFormRegistry()` reports artifact count, blocker count, duplicate route conflicts, domains, and owners.
-5. `GET /api/admin/form-registry` returns the read-only snapshot and summary for admin users.
+5. `compileFormContracts()` turns registry artifacts into frontend/server contracts and compatibility diagnostics.
+6. `GET /api/admin/form-registry` returns the read-only snapshot and summary for admin users.
+7. `GET /api/forms/contracts` returns compiled contracts and diagnostics for admin/trainer sanity checks.
 
 ## Operational Behavior
 
 - Endpoint: `GET /api/admin/form-registry`
-- Auth: admin only through existing `requireRole()` behavior.
+- Endpoint: `GET /api/forms/contracts`
+- Auth: registry endpoint is admin only; contract endpoint is admin/trainer through existing `requireRole()` behavior.
 - Cache: `no-store`; release changes invalidate the snapshot by commit.
-- Observability fields are available in the response summary: artifact count, blocker count, route conflict count, domains, and owners.
+- Observability fields are available in response summaries: artifact count, blocker count, route conflict count, contract count, drift error count, compiler error codes, domains, and owners.
 
 ## Rollback and Recovery
 
 `withFormRegistryFallback()` returns the last known-good snapshot and marks the response blocked if a future scanner/parser fails. This keeps downstream migration gates visible instead of failing silently.
+
+`compileWithFallback()` keeps previous stable contracts available when compilation fails and marks the result failed so build/admin gates can stop unsafe rollout.
 
 Rollback is a code/config revert only. No database migration or destructive cleanup is part of this foundation.
 
