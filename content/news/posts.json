@@ -1,5 +1,154 @@
 [
   {
+    "slug": "2026-06-07-central-forms-and-platform-hardening",
+    "title": {
+      "en": "Central forms, safer check-ins, and platform hardening",
+      "hu": "Központosított űrlapok, biztonságosabb check-inek és platformerősítés",
+      "de": "Zentrale Formulare, sicherere Check-ins und Plattformhärtung",
+      "es": "Formularios centrales, check-ins más seguros y refuerzo de plataforma",
+      "ar": "نماذج مركزية وتسجيلات أكثر أماناً وتعزيز للمنصة",
+      "he": "טפסים מרכזיים, צ'ק-אינים בטוחים יותר וחיזוק הפלטפורמה"
+    },
+    "summary": {
+      "en": "The latest Habigoal update strengthens the daily check-in flow with centralized form definitions, required-field validation, multilingual error copy, and audited platform dependency updates.",
+      "hu": "A legújabb Habigoal-frissítés központosított űrlapdefiníciókkal, kötelező mezőellenőrzéssel, többnyelvű hibaszövegekkel és auditált platformfüggőség-frissítésekkel erősíti a napi check-in folyamatot.",
+      "de": "Das neueste Habigoal-Update stärkt den täglichen Check-in mit zentralen Formulardefinitionen, Pflichtfeldprüfung, mehrsprachigen Fehlermeldungen und geprüften Plattformabhängigkeiten.",
+      "es": "La actualización más reciente de Habigoal refuerza el flujo diario de check-in con definiciones centrales de formularios, validación de campos obligatorios, mensajes de error multilingües y dependencias de plataforma auditadas.",
+      "ar": "يعزز تحديث Habigoal الأخير تدفق التسجيل اليومي من خلال تعريفات نماذج مركزية، والتحقق من الحقول المطلوبة، ونصوص أخطاء متعددة اللغات، وتحديثات مدققة لاعتمادات المنصة.",
+      "he": "העדכון האחרון של Habigoal מחזק את תהליך הצ'ק-אין היומי עם הגדרות טפסים מרכזיות, אימות שדות חובה, הודעות שגיאה רב-לשוניות ועדכוני תלות פלטפורמה שעברו ביקורת."
+    },
+    "publishedAt": "2026-06-07",
+    "tags": ["release", "athlete", "reporting"],
+    "sections": [
+      {
+        "title": {
+          "en": "New",
+          "hu": "Új",
+          "de": "Neu",
+          "es": "Nuevo",
+          "ar": "جديد",
+          "he": "חדש"
+        },
+        "items": {
+          "en": [
+            "The daily check-in now uses central form definitions for athlete selection, date, training load, and coach notes.",
+            "The central form renderer now supports searchable selects, text areas, placeholders, dynamic option labels, and field-level errors.",
+            "A professional project brief was added so future product and engineering work can start from a shared view of the structure, business value, roadmap, and GitHub board state."
+          ],
+          "hu": [
+            "A napi check-in most központi űrlapdefiníciókat használ a sportoló kiválasztásához, a dátumhoz, a terhelési adatokhoz és az edzői jegyzetekhez.",
+            "A központi űrlapmegjelenítő most már támogatja a kereshető választómezőket, szövegmezőket, helykitöltőket, dinamikus opciócímkéket és mezőszintű hibákat.",
+            "Elkészült egy professzionális projektösszefoglaló, hogy a következő termék- és fejlesztési munka közös képből induljon a struktúráról, üzleti értékről, roadmapről és GitHub board állapotról."
+          ],
+          "de": [
+            "Der tägliche Check-in nutzt jetzt zentrale Formulardefinitionen für Athletenauswahl, Datum, Trainingsbelastung und Trainernotizen.",
+            "Der zentrale Formular-Renderer unterstützt jetzt durchsuchbare Auswahlfelder, Textbereiche, Platzhalter, dynamische Optionslabels und feldbezogene Fehler.",
+            "Ein professioneller Projektüberblick wurde ergänzt, damit künftige Produkt- und Entwicklungsarbeit mit einem gemeinsamen Bild von Struktur, Geschäftswert, Roadmap und GitHub-Board-Status startet."
+          ],
+          "es": [
+            "El check-in diario ahora usa definiciones centrales de formulario para seleccionar atleta, fecha, carga de entrenamiento y notas del entrenador.",
+            "El renderizador central de formularios ahora admite selects con búsqueda, áreas de texto, placeholders, etiquetas dinámicas de opciones y errores por campo.",
+            "Se añadió un brief profesional del proyecto para que el trabajo futuro de producto e ingeniería parta de una visión compartida de estructura, valor de negocio, roadmap y estado del tablero de GitHub."
+          ],
+          "ar": [
+            "يستخدم التسجيل اليومي الآن تعريفات نماذج مركزية لاختيار الرياضي والتاريخ وحمل التدريب وملاحظات المدرب.",
+            "يدعم عارض النماذج المركزي الآن القوائم القابلة للبحث ومناطق النص والعبارات الإرشادية وتسميات الخيارات الديناميكية والأخطاء على مستوى الحقل.",
+            "تمت إضافة موجز مشروع احترافي حتى يبدأ عمل المنتج والهندسة القادم من رؤية مشتركة للبنية والقيمة التجارية وخريطة الطريق وحالة لوحة GitHub."
+          ],
+          "he": [
+            "הצ'ק-אין היומי משתמש כעת בהגדרות טופס מרכזיות לבחירת ספורטאי, תאריך, עומס אימון והערות מאמן.",
+            "מרנדר הטפסים המרכזי תומך כעת בשדות בחירה עם חיפוש, אזורי טקסט, מצייני מקום, תוויות אפשרות דינמיות ושגיאות ברמת השדה.",
+            "נוסף תקציר פרויקט מקצועי כדי שעבודת המוצר וההנדסה הבאה תתחיל מתמונה משותפת של המבנה, הערך העסקי, מפת הדרכים ומצב לוח GitHub."
+          ]
+        }
+      },
+      {
+        "title": {
+          "en": "Improved",
+          "hu": "Fejlesztve",
+          "de": "Verbessert",
+          "es": "Mejorado",
+          "ar": "محسّن",
+          "he": "שופר"
+        },
+        "items": {
+          "en": [
+            "Required athlete and date fields are now validated before the check-in is saved, so avoidable API errors are caught in the form.",
+            "Validation messages were added for English, Hungarian, German, Spanish, Arabic, and Hebrew.",
+            "Governance tests now protect the central check-in form field groups and required-field validation behavior."
+          ],
+          "hu": [
+            "A kötelező sportoló- és dátummezők most már mentés előtt ellenőrzésre kerülnek, így az elkerülhető API-hibák már az űrlapon megjelennek.",
+            "Az ellenőrzési üzenetek elkészültek angol, magyar, német, spanyol, arab és héber nyelven.",
+            "A governance tesztek most már védik a központi check-in űrlapmező-csoportokat és a kötelező mezők ellenőrzési viselkedését."
+          ],
+          "de": [
+            "Pflichtfelder für Athlet und Datum werden jetzt vor dem Speichern des Check-ins geprüft, sodass vermeidbare API-Fehler direkt im Formular abgefangen werden.",
+            "Validierungsmeldungen wurden für Englisch, Ungarisch, Deutsch, Spanisch, Arabisch und Hebräisch ergänzt.",
+            "Governance-Tests schützen jetzt die zentralen Check-in-Formulargruppen und das Verhalten der Pflichtfeldprüfung."
+          ],
+          "es": [
+            "Los campos obligatorios de atleta y fecha ahora se validan antes de guardar el check-in, por lo que los errores evitables de API se detectan en el formulario.",
+            "Se añadieron mensajes de validación para inglés, húngaro, alemán, español, árabe y hebreo.",
+            "Las pruebas de gobernanza ahora protegen los grupos centrales de campos del check-in y el comportamiento de validación de campos obligatorios."
+          ],
+          "ar": [
+            "يتم الآن التحقق من حقلي الرياضي والتاريخ المطلوبين قبل حفظ التسجيل، لذلك يتم اكتشاف أخطاء API التي يمكن تجنبها داخل النموذج.",
+            "تمت إضافة رسائل التحقق بالإنجليزية والهنغارية والألمانية والإسبانية والعربية والعبرية.",
+            "تحمي اختبارات الحوكمة الآن مجموعات حقول نموذج التسجيل المركزي وسلوك التحقق من الحقول المطلوبة."
+          ],
+          "he": [
+            "שדות החובה של ספורטאי ותאריך מאומתים כעת לפני שמירת הצ'ק-אין, כך ששגיאות API שניתן למנוע נתפסות בטופס.",
+            "נוספו הודעות אימות באנגלית, הונגרית, גרמנית, ספרדית, ערבית ועברית.",
+            "בדיקות הממשל מגנות כעת על קבוצות שדות הצ'ק-אין המרכזיות ועל התנהגות אימות שדות החובה."
+          ]
+        }
+      },
+      {
+        "title": {
+          "en": "Platform",
+          "hu": "Platform",
+          "de": "Plattform",
+          "es": "Plataforma",
+          "ar": "المنصة",
+          "he": "פלטפורמה"
+        },
+        "items": {
+          "en": [
+            "Next.js was updated to 15.5.19 and PostCSS was pinned to the audited fixed version.",
+            "The supported Node engine range now covers Node 22 through Node 26, matching current development and deployment validation.",
+            "The latest validation pass included audit, typecheck, tests, i18n audit, and production build."
+          ],
+          "hu": [
+            "A Next.js 15.5.19-re frissült, a PostCSS pedig az auditált javított verzióra lett rögzítve.",
+            "A támogatott Node engine tartomány most már lefedi a Node 22-től Node 26-ig terjedő verziókat, összhangban az aktuális fejlesztési és deploy validációval.",
+            "A legutóbbi validációs kör tartalmazta az auditot, typechecket, teszteket, i18n auditot és production buildet."
+          ],
+          "de": [
+            "Next.js wurde auf 15.5.19 aktualisiert und PostCSS auf die geprüfte behobene Version festgelegt.",
+            "Der unterstützte Node-Engine-Bereich deckt jetzt Node 22 bis Node 26 ab und passt damit zur aktuellen Entwicklungs- und Deployment-Validierung.",
+            "Die letzte Validierung umfasste Audit, Typecheck, Tests, i18n-Audit und Produktions-Build."
+          ],
+          "es": [
+            "Next.js se actualizó a 15.5.19 y PostCSS quedó fijado en la versión corregida y auditada.",
+            "El rango de Node compatible ahora cubre de Node 22 a Node 26, alineado con la validación actual de desarrollo y despliegue.",
+            "La última pasada de validación incluyó audit, typecheck, pruebas, auditoría i18n y build de producción."
+          ],
+          "ar": [
+            "تم تحديث Next.js إلى 15.5.19 وتثبيت PostCSS على النسخة المصححة والمدققة.",
+            "يغطي نطاق Node المدعوم الآن الإصدارات من Node 22 إلى Node 26 بما يطابق التحقق الحالي للتطوير والنشر.",
+            "شملت آخر دورة تحقق التدقيق وفحص الأنواع والاختبارات وتدقيق i18n وبناء الإنتاج."
+          ],
+          "he": [
+            "Next.js עודכן ל-15.5.19 ו-PostCSS הוצמד לגרסה המתוקנת שעברה ביקורת.",
+            "טווח מנוע Node הנתמך מכסה כעת את Node 22 עד Node 26, בהתאם לאימות הפיתוח והפריסה הנוכחי.",
+            "סבב האימות האחרון כלל audit, typecheck, בדיקות, ביקורת i18n ובניית production."
+          ]
+        }
+      }
+    ]
+  },
+  {
     "slug": "2026-05-11-athlete-operating-and-planning",
     "title": {
       "en": "Athlete operating dashboard, habits, memory, load, and planning",
