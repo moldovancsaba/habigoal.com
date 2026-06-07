@@ -9,9 +9,9 @@ ClassScout is a parent-directed AI activity concierge. It helps a parent discove
 3. Human review approves or rejects low-confidence candidates before public projection.
 4. Approved activity data feeds search and recommendation candidate generation.
 5. Parent accounts own households, child activity profiles, preferences, privacy requests, and feedback history.
-6. Recommendation services consume only normalized, parent-managed preferences and redacted participation signals.
+6. Recommendation services consume only normalized, parent-managed preferences and redacted participation signals after active parent consent is present.
 7. Provider workflows can claim and update listings, but never receive child profile data or household identity.
-8. Privacy operations export, delete, and audit parent-managed profile data without logging sensitive note values.
+8. Privacy operations export, delete, withdraw consent, and audit parent-managed profile data without logging sensitive note values.
 
 ## Actor Boundaries
 
@@ -34,8 +34,16 @@ ClassScout is a parent-directed AI activity concierge. It helps a parent discove
 - `lib/classscout/contracts.ts`: central ClassScout actor, runtime state, route, profile, preference, redaction, and service-result contracts.
 - `lib/classscout/profile-service.ts`: parent-scoped profile and preference service with validation, redaction, deletion flags, bounded timeouts, bounded retries, and privacy-safe audit events.
 - `lib/classscout/profile-service.test.ts`: unit coverage for normalization, redaction, ownership denial, export shape, deletion state, and validation failures.
+- `lib/classscout/privacy-service.ts`: consent records, recommendation eligibility gate, consent withdrawal, idempotent deletion requests, export request state, recoverable failure codes, and privacy-safe audit events.
+- `lib/classscout/privacy-service.test.ts`: unit coverage for consent grant/withdrawal, recommendation blocking, deletion idempotency, export success/failure, retryability, and scope denial.
 
 Future implementation-1 modules must depend on this boundary before adding ingestion, review queue, search, recommendation, provider claim, or frontend surfaces.
+
+## Consent and Privacy Lifecycle
+
+Parent consent is a hard gate before child activity profile data can be used for recommendation scoring. Consent records include household ID, profile ID, actor user ID, consent type, notice version, status, grant timestamp, and optional withdrawal timestamp.
+
+Consent withdrawal immediately makes recommendation eligibility fail with `CONSENT_REQUIRED`. Deletion requests are idempotent per household/target and can be retried after recoverable failures. Export requests expose `requested`, `processing`, `ready`, and `failed` states and carry only redacted household export data.
 
 ## UI and Accessibility Gate
 
@@ -45,13 +53,15 @@ Required runtime states for applicable UI/API flows are: loading, empty, partial
 
 ## Observability
 
-ClassScout audit events may include capability ID, action, status, household ID, profile ID, reason code, run ID, and timestamp. They must not include child names, parent emails, raw support notes, raw profile text, secrets, or full request bodies.
+ClassScout audit events may include capability ID, action, status, household ID, profile ID, request ID, reason code, run ID, and timestamp. They must not include child names, parent emails, raw support notes, raw profile text, secrets, or full request bodies.
 
 Failure paths must surface stable error codes and retryability. Timeout and retry behavior must be bounded and visible to operators or the parent UI where relevant.
 
 ## Rollback and Recovery
 
 The initial foundation adds contracts, service code, tests, and docs only. Rollback is a code revert with no destructive data migration. Once persistent storage is introduced, rollback must retain fields and disable affected routes before any cleanup migration is considered.
+
+For privacy workflows, disabling dashboard controls must not delete consent, export, or deletion-request records. Pending deletion jobs require a manual runbook path before cleanup migration.
 
 ## Verification
 
