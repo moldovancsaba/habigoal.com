@@ -42,7 +42,7 @@
     {
       "id": "team-role-management",
       "domain": "admin-console",
-      "route": "/[locale]/dashboard/teams",
+      "route": "/[locale]/dashboard/settings",
       "fields": ["athleteIds", "name", "trainerEmails"],
       "gdsComponentSet": ["layout", "form", "button", "table"],
       "locales": ["en", "hu", "de", "fr", "es", "ar", "he", "ru"],
