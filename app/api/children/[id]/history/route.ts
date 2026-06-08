@@ -6,6 +6,10 @@ import { ObjectId } from "mongodb";
 import { jsonError, requireRole } from "@/lib/api";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { buildDailyOperatingMetrics } from "@/lib/operating-score";
+import { findTwinByAthleteId } from "@/repositories/athlete-twin.repository";
+import { computeReadiness } from "@/lib/engines/readiness.engine";
+import { computeRecovery } from "@/lib/engines/recovery.engine";
+import { computeInjuryRisk } from "@/lib/engines/injury-risk.engine";
 
 export async function GET(
   request: Request,
@@ -31,16 +35,42 @@ export async function GET(
       return jsonError("Child not found", 404, "NOT_FOUND");
     }
     
-    const [assessments, habitRecords] = await Promise.all([
+    const [assessments, habits] = await Promise.all([
       listAssessmentsByChildId(id),
       listHabitRecordsByAthleteId(id)
     ]);
+    const athleteIdStr = childId.toString();
     const dailyOperatingMetrics = buildDailyOperatingMetrics({
-      athleteId: id,
+      athleteId: athleteIdStr,
       assessments,
-      habitRecords
+      habitRecords: habits
     });
-    return NextResponse.json({ child, assessments, dailyOperatingMetrics });
+
+    let aiIntelligence = null;
+    try {
+      const twin = await findTwinByAthleteId(athleteIdStr);
+      if (twin) {
+        const context = { athleteId: athleteIdStr, twin, organisationId: "default" };
+        const [readiness, recovery, injuryRisk] = await Promise.all([
+          computeReadiness(context),
+          computeRecovery(context),
+          computeInjuryRisk(context)
+        ]);
+        aiIntelligence = { readiness, recovery, injuryRisk };
+      }
+    } catch (err) {
+      console.warn("Failed to compute AI intelligence:", err);
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        child,
+        dailyOperatingMetrics,
+        aiIntelligence,
+        assessments: assessments.sort((a, b) => b.session.date.localeCompare(a.session.date))
+      }
+    });
   } catch (error) {
     return jsonError((error as Error).message);
   }

@@ -29,7 +29,8 @@ export const env = {
   ssoBaseUrl: process.env.SSO_BASE_URL || "https://sso.doneisbetter.com",
   ssoRedirectUri: process.env.SSO_REDIRECT_URI || (appBaseUrl ? `${appBaseUrl}/api/oauth/callback` : undefined),
   ssoLogoutUrl: process.env.SSO_LOGOUT_URL,
-  authSecret: process.env.AUTH_SECRET
+  authSecret: process.env.AUTH_SECRET,
+  trainersIngestApiKey: process.env.TRAINERS_INGEST_API_KEY,
 };
 
 type StringEnvKey = {

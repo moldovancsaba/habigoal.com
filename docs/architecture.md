@@ -162,3 +162,9 @@ Autonomous loops should use branch-and-PR delivery. Direct pushes to `main` are 
 - i18n coverage requires ongoing audit with `npm run i18n:audit`; the current gate covers catalog parity, news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in athlete check-in/brand surfaces
 - team invitations are not yet outbound email invitations
 - centralized forms are the intended direction, but the full rollout is not complete on `main`
+
+## Canonical Metric Layer (Athlete IQ 2.0)
+The canonical metric schema normalises multi-source athlete data (check-ins, wearables, etc.) into a consistent format prior to digital twin integration and AI analysis.
+- **Types**: `types/canonical-metric.ts`
+- **Normalisation**: `lib/normalise-metric.ts`
+- **Storage**: `canonical_metrics` and `raw_metrics` collections
