@@ -36,6 +36,7 @@ export async function listAssessmentSummaries() {
     .collection(collectionName)
     .find({ deletedAt: { $exists: false } }, {
       projection: {
+        childId: 1,
         child: 1,
         session: 1,
         trainingLoad: 1,
@@ -102,6 +103,17 @@ export async function restoreAssessmentById(id: ObjectId) {
     { _id: id },
     ({ $unset: { deletedAt: "" }, $set: { updatedAt: new Date().toISOString() }, $push: { updateHistory: `restore:${new Date().toISOString()}` } } as any)
   );
+}
+
+export async function findAssessmentByChildAndDate(childId: string, date: string) {
+  const db = await getDatabase();
+  const objectId = ObjectId.isValid(childId) ? new ObjectId(childId) : null;
+  const record = await db.collection(collectionName).findOne({
+    deletedAt: { $exists: false },
+    "session.date": date,
+    ...(objectId ? { childId: { $in: [childId, objectId] } } : { childId }),
+  });
+  return record ? normalizeAssessmentRecord(record as Record<string, unknown>) : null;
 }
 
 export async function listAssessmentsByChildId(childId: string) {

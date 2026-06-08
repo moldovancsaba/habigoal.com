@@ -37,6 +37,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     const athleteHome = user.athleteId ? `/${locale}/athletes/${user.athleteId}` : `/${locale}/athletes`;
     const trainerHome = `/${locale}/dashboard`;
 
+    if (user.primaryRole === "parent" && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/parent`)) {
+      router.replace(`/${locale}/dashboard/parent`);
+      return;
+    }
+
     if (user.primaryRole === "athlete" && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/assessment`)) {
       router.replace(athleteHome);
       return;
@@ -53,14 +58,22 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     !!user &&
     (
       (user.primaryRole === "athlete" && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/assessment`)) ||
+      (user.primaryRole === "parent" && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/parent`)) ||
       (user.primaryRole === "trainer" && pathname.startsWith(`/${locale}/dashboard/settings`))
     );
   const nav = [
-    ...(primaryRole === "admin" || primaryRole === "trainer" ? [
+    ...(primaryRole === "parent" ? [
+      { href: "/dashboard/parent", label: t("parentPortal"), action: "users" as const },
+      { href: "/dashboard/reports", label: t("reports"), action: "dashboard" as const },
+    ] : []),
+    ...(primaryRole === "admin" || primaryRole === "trainer" || primaryRole === "performance_coach" || primaryRole === "physio" ? [
       { href: "/dashboard", label: t("overview") },
-      { href: "/dashboard/assessment", label: t("survey"), action: "record" as const },
+      { href: "/dashboard/coach", label: t("coachHub"), action: "dashboard" as const },
+      { href: "/dashboard/planning", label: t("planning"), action: "calendar" as const },
       { href: "/dashboard/athletes", label: t("children"), action: "users" as const },
-      { href: "/dashboard/planning", label: t("planning"), action: "calendar" as const }
+      { href: "/dashboard/reports", label: t("reports"), action: "dashboard" as const },
+      { href: "/dashboard/wearables", label: t("wearables"), action: "dashboard" as const },
+      { href: "/dashboard/assessment", label: t("survey"), action: "record" as const }
     ] : []),
     ...(primaryRole === "admin" ? [{ href: "/dashboard/settings", label: t("settings"), action: "settings" as const }] : [])
   ];

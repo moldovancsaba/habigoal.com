@@ -1,64 +1,153 @@
 "use client";
 
-import { useState } from "react";
-import { Box, Stack, Text, Paper, SimpleGrid, Group, Badge, Select, TextInput, NumberInput } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Box, Stack, Text, Paper, SimpleGrid, Group, Badge, TextInput, NumberInput, Loader, Select } from "@mantine/core";
+import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import type { SessionCategory } from "@/types/training-plan";
+
+interface SessionRow {
+  sessionId: string;
+  title: string;
+  category: SessionCategory;
+  date: string;
+  plannedLoadPoints: number;
+}
+
+interface MicrocycleRow {
+  microcycleId: string;
+  teamId: string;
+  startDate: string;
+  endDate: string;
+  goal: string;
+}
+
+const CATEGORIES: SessionCategory[] = ["strength", "tactical", "endurance", "speed", "recovery", "match"];
 
 export default function SessionPlannerPage() {
-  const t = useTranslations("Dashboard");
-  const [loading, setLoading] = useState(false);
-  const [sessions, setSessions] = useState([
-    { id: '1', title: 'Strength Block A', category: 'strength', date: '2026-06-08', loadPoints: 400 },
-    { id: '2', title: 'Match Prep', category: 'tactical', date: '2026-06-09', loadPoints: 250 }
-  ]);
-
+  const t = useTranslations("PlanningDashboard");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [sessions, setSessions] = useState<SessionRow[]>([]);
+  const [microcycles, setMicrocycles] = useState<MicrocycleRow[]>([]);
   const [draftTitle, setDraftTitle] = useState("");
-  const [draftCategory, setDraftCategory] = useState<string | null>("tactical");
+  const [draftCategory, setDraftCategory] = useState<SessionCategory>("tactical");
   const [draftLoad, setDraftLoad] = useState<number | string>(300);
+  const [cycleGoal, setCycleGoal] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleCreate = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setSessions([...sessions, { id: Date.now().toString(), title: draftTitle || "New Session", category: draftCategory || "tactical", date: '2026-06-10', loadPoints: Number(draftLoad) }]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [sessionRes, cycleRes] = await Promise.all([
+          fetch("/api/training-sessions"),
+          fetch("/api/microcycles"),
+        ]);
+        if (sessionRes.ok) {
+          const json = await sessionRes.json();
+          if (!cancelled) setSessions(json.plans ?? []);
+        }
+        if (cycleRes.ok) {
+          const json = await cycleRes.json();
+          if (!cancelled) setMicrocycles(json.microcycles ?? []);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [refreshKey]);
+
+  const handleCreate = async () => {
+    setSaving(true);
+    try {
+      await fetch("/api/training-sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: draftTitle || t("newSessionDefault"),
+          category: draftCategory,
+          date: new Date().toISOString().split("T")[0],
+          durationMinutes: 60,
+          plannedLoadPoints: Number(draftLoad),
+          description: "",
+          organisationId: "default",
+          coachId: "coach",
+        }),
+      });
       setDraftTitle("");
-      setLoading(false);
-    }, 500);
+      setRefreshKey((k) => k + 1);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  const handleCreateMicrocycle = async () => {
+    setSaving(true);
+    try {
+      const start = new Date();
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      await fetch("/api/microcycles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          teamId: "default",
+          startDate: start.toISOString().split("T")[0],
+          endDate: end.toISOString().split("T")[0],
+          goal: cycleGoal || t("cycleGoalPlaceholder"),
+          sessionIds: sessions.slice(0, 3).map((s) => s.sessionId),
+        }),
+      });
+      setCycleGoal("");
+      setRefreshKey((k) => k + 1);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <Box p="xl"><Loader /></Box>;
+  }
 
   return (
     <Stack gap="md">
-      <PageHeader title="Session Planner & Microcycles" />
-      
+      <PageHeader title={t("title")} />
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-        <SectionPanel title="Create New Session">
+        <SectionPanel title={t("createSession")}>
           <Stack gap="md">
-            <TextInput label="Session Title" value={draftTitle} onChange={(e) => setDraftTitle(e.currentTarget.value)} placeholder="e.g. Strength Block A" />
-            <Select 
-              label="Category" 
-              data={['strength', 'tactical', 'endurance', 'speed', 'recovery', 'match']} 
-              value={draftCategory} 
-              onChange={setDraftCategory} 
+            <TextInput
+              label={t("sessionTitle")}
+              value={draftTitle}
+              onChange={(e) => setDraftTitle(e.currentTarget.value)}
+              placeholder={t("sessionTitlePlaceholder")}
             />
-            <NumberInput label="Planned Load Points" value={draftLoad} onChange={setDraftLoad} />
+            <Select
+              label={t("category")}
+              data={CATEGORIES.map((c) => ({ value: c, label: c }))}
+              value={draftCategory}
+              onChange={(v) => setDraftCategory((v as SessionCategory) ?? "tactical")}
+            />
+            <NumberInput label={t("plannedLoad")} value={draftLoad} onChange={setDraftLoad} />
             <Group justify="flex-end">
-              <SemanticButton action="save" color="ingress" onClick={handleCreate} loading={loading} disabled={!draftTitle} />
+              <SemanticButton action="save" color="ingress" onClick={handleCreate} loading={saving} disabled={!draftTitle} />
             </Group>
           </Stack>
         </SectionPanel>
-
-        <SectionPanel title="Upcoming Microcycle">
+        <SectionPanel title={t("upcomingSessions")}>
           <Stack gap="md">
-            {sessions.map(session => (
-              <Paper key={session.id} withBorder p="md" radius="md">
+            {sessions.length === 0 && <Text c="dimmed">{t("noSessions")}</Text>}
+            {sessions.map((session) => (
+              <Paper key={session.sessionId} withBorder p="md" radius="md">
                 <Group justify="space-between">
                   <Box>
                     <Text fw={700}>{session.title}</Text>
-                    <Text size="sm" c="dimmed">Date: {session.date}</Text>
+                    <Text size="sm" c="dimmed">{t("dateLabel", { date: session.date })}</Text>
                   </Box>
                   <Group>
                     <Badge color="blue" variant="light">{session.category}</Badge>
-                    <Badge color="gray" variant="filled">{session.loadPoints} Pts</Badge>
+                    <Badge color="gray" variant="filled">{session.plannedLoadPoints} Pts</Badge>
                   </Group>
                 </Group>
               </Paper>
@@ -66,6 +155,23 @@ export default function SessionPlannerPage() {
           </Stack>
         </SectionPanel>
       </SimpleGrid>
+      <SectionPanel title={t("microcyclesTitle")}>
+        <Stack gap="md">
+          <TextInput
+            label={t("cycleGoal")}
+            value={cycleGoal}
+            onChange={(e) => setCycleGoal(e.currentTarget.value)}
+            placeholder={t("cycleGoalPlaceholder")}
+          />
+          <SemanticButton action="add" onClick={handleCreateMicrocycle} loading={saving} />
+          {microcycles.map((cycle) => (
+            <Paper key={cycle.microcycleId} withBorder p="md">
+              <Text fw={600}>{cycle.goal}</Text>
+              <Text size="sm" c="dimmed">{cycle.startDate} → {cycle.endDate}</Text>
+            </Paper>
+          ))}
+        </Stack>
+      </SectionPanel>
     </Stack>
   );
 }

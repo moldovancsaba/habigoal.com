@@ -7,6 +7,15 @@ export interface ChildProfile {
   surveyId?: string;
   name: string;
   birthDate: string;
+  organisationId?: string;
+  teamId?: string;
+  position?: string;
+  status?: "active" | "injured" | "unavailable" | "trialist" | "archived";
+  parentGuardianUserId?: string;
+  parentGuardianEmail?: string;
+  injuryHistoryFlags?: string[];
+  customAttributes?: Record<string, string | number | boolean>;
+  seasonHistory?: Array<{ season: string; teamId?: string; notes?: string }>;
   baselineProfile?: {
     heightCm?: number;
     weightKg?: number;
@@ -70,7 +79,7 @@ function normalizeChildProfile(raw: Record<string, unknown>): ChildProfile {
 
 export async function listChildren() {
   const db = await getDatabase();
-  const children = await db.collection(collectionName).find({ deletedAt: { $exists: false } }).sort({ name: 1 }).toArray();
+  const children = await db.collection(collectionName).find({ deletedAt: { $exists: false }, status: { $ne: "archived" } }).sort({ name: 1 }).toArray();
   return children.map((child) => normalizeChildProfile(toJsonId(child) as Record<string, unknown>));
 }
 

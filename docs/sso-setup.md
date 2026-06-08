@@ -65,11 +65,26 @@ Public `news` and `legal` return paths are preserved.
 
 ## Local Authorization Rules
 
-Local roles:
+Local roles (SSO role claim maps via `lib/access.ts`):
 
 - `athlete`
-- `trainer`
+- `trainer` (alias: `coach`, `conductor`)
 - `admin`
+- `parent` (alias: `guardian`)
+- `performance_coach`
+- `physio` (alias: `physiotherapist`)
+- `analyst`
+- `club_management` (alias: `management`)
+
+Capability matrix: `lib/permissions.ts`
+
+Production enforcement:
+
+- Set `HABIGOAL_ENFORCE_AUTH=true` in all non-local environments.
+- Middleware redirects unauthenticated users to `/api/auth/login`.
+- Parent users are routed to `/{locale}/dashboard/parent`.
+- Athlete users are routed to their athlete home unless using the check-in flow.
+- Settings remain admin-only.
 
 Bootstrap behavior:
 

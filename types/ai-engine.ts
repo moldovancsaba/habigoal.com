@@ -36,3 +36,19 @@ export interface InjuryRiskResult {
   flags: string[];
   loadReductionRecommended: boolean;
 }
+
+export interface RecommendationResult {
+  text: string;
+  reason: string;
+  confidence: ConfidenceLevel;
+  humanReviewRequired: boolean;
+  advisoryDisclaimer: string;
+  modelVersion: string;
+}
+
+export interface TechniqueResult {
+  movementSymmetryIndex?: number;
+  runningFormScore?: number;
+  confidence: ConfidenceLevel;
+  limitations: string[];
+}

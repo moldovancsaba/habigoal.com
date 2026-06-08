@@ -11,6 +11,7 @@ function mapUser(doc: any): User {
     email: doc.email,
     roles: normalizeRoles(doc.roles || []),
     athleteId: doc.athleteId,
+    parentAthleteIds: doc.parentAthleteIds || [],
     teamIds: doc.teamIds || [],
     lastLoginAt: doc.lastLoginAt,
     createdAt: doc.createdAt,

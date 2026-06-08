@@ -20,6 +20,7 @@ import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestio
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
+import { enqueueOfflineCheckIn, flushOfflineCheckIns } from "@/lib/offline-check-in-sync";
 import { checkInNotesFields, checkInSetupFields, trainingLoadFields, validateCentralForm } from "@/lib/forms/central-form";
 import { CentralFormRenderer } from "@/components/forms/CentralFormRenderer";
 import type { CentralFormErrors } from "@/lib/forms/central-form";
@@ -216,33 +217,47 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
   const [message, setMessage] = useState("");
   const [setupErrors, setSetupErrors] = useState<CentralFormErrors<CheckInSetupValues>>({});
   const [children, setChildren] = useState<AthleteProfile[]>([]);
+  const [enabledQuestionKeys, setEnabledQuestionKeys] = useState<string[] | null>(null);
   const initializedChildPrefill = useRef(false);
 
-  const sections = sectionsForMode(assessment.mode);
+  const activeQuestions = useMemo(() => {
+    if (!enabledQuestionKeys?.length) return trackerQuestions;
+    return trackerQuestions.filter((question) => enabledQuestionKeys.includes(question.key));
+  }, [enabledQuestionKeys]);
+
+  const sections = useMemo(() => {
+    const base = sectionsForMode(assessment.mode);
+    if (!enabledQuestionKeys?.length) return base;
+    return base.map((section) => ({
+      ...section,
+      items: section.items.filter((item) => enabledQuestionKeys.includes(item.key)),
+    }));
+  }, [assessment.mode, enabledQuestionKeys]);
+
   const computed = useMemo(() => computeAssessment(assessment), [assessment]);
   const answeredCount = useMemo(
-    () => trackerQuestions.filter((question) => typeof assessment.scores[question.key]?.score === "number").length,
-    [assessment.scores]
+    () => activeQuestions.filter((question) => typeof assessment.scores[question.key]?.score === "number").length,
+    [activeQuestions, assessment.scores]
   );
-  const progressPercent = Math.round((answeredCount / trackerQuestions.length) * 100);
+  const progressPercent = Math.round((answeredCount / Math.max(activeQuestions.length, 1)) * 100);
   const greenChecks = useMemo(
     () =>
-      trackerQuestions.filter((question) => {
+      activeQuestions.filter((question) => {
         const score = assessment.scores[question.key]?.score;
         return typeof score === "number" && score >= 4;
       }).length,
-    [assessment.scores]
+    [activeQuestions, assessment.scores]
   );
-  const readinessResult = getReadinessMessage(greenChecks, trackerQuestions.length);
-  const readinessMode = getReadinessMode(greenChecks, trackerQuestions.length);
+  const readinessResult = getReadinessMessage(greenChecks, activeQuestions.length);
+  const readinessMode = getReadinessMode(greenChecks, activeQuestions.length);
   const readinessModeLabel = t(`readinessMode${readinessMode.charAt(0).toUpperCase()}${readinessMode.slice(1)}`);
   const domainScores = useMemo(
     () => ({
-      physical: averageFromKeys(assessment.scores, trackerQuestions.filter((q) => q.pillarKey === "physical_pillar").map((q) => q.key)),
-      mental: averageFromKeys(assessment.scores, trackerQuestions.filter((q) => q.pillarKey === "mental_pillar").map((q) => q.key)),
-      sportBrain: averageFromKeys(assessment.scores, trackerQuestions.filter((q) => q.pillarKey === "sport_brain_pillar").map((q) => q.key))
+      physical: averageFromKeys(assessment.scores, activeQuestions.filter((q) => q.pillarKey === "physical_pillar").map((q) => q.key)),
+      mental: averageFromKeys(assessment.scores, activeQuestions.filter((q) => q.pillarKey === "mental_pillar").map((q) => q.key)),
+      sportBrain: averageFromKeys(assessment.scores, activeQuestions.filter((q) => q.pillarKey === "sport_brain_pillar").map((q) => q.key))
     }),
-    [assessment.scores]
+    [activeQuestions, assessment.scores]
   );
   const supportSummary = useMemo(() => buildSupportSummary(assessment, t), [assessment, t]);
   const setupFields = useMemo(
@@ -276,6 +291,14 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
       .then((response) => response.json())
       .then((data: AthleteProfile[]) => setChildren(Array.isArray(data) ? data : []))
       .catch(() => setChildren([]));
+    void flushOfflineCheckIns().catch(() => undefined);
+    void fetch("/api/settings/check-in-config")
+      .then((response) => response.json())
+      .then((config: { questions?: Array<{ key: string; enabled?: boolean }> }) => {
+        const keys = (config.questions ?? []).filter((q) => q.enabled !== false).map((q) => q.key);
+        if (keys.length > 0) setEnabledQuestionKeys(keys);
+      })
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -447,6 +470,12 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
     });
 
     if (!result.ok) {
+      if (!navigator.onLine) {
+        await enqueueOfflineCheckIn(assessment).catch(() => undefined);
+        setSaveState("saved");
+        setMessage(t("saved"));
+        return;
+      }
       setSaveState("error");
       setMessage(result.error);
       return;
@@ -561,11 +590,11 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
                 {t("dailyTrackerProgress")}
               </Text>
               <Text fw={800} size="lg">
-                {t("answeredCount", { answered: answeredCount, total: trackerQuestions.length })}
+                {t("answeredCount", { answered: answeredCount, total: activeQuestions.length })}
               </Text>
             </Box>
             <Badge variant="light" color={readinessResult.mode === "full" ? "ingress" : readinessResult.mode === "moderate" ? "review" : "red"} size="lg">
-              {t("greenChecksCount", { green: greenChecks, total: trackerQuestions.length })}
+              {t("greenChecksCount", { green: greenChecks, total: activeQuestions.length })}
             </Badge>
           </Group>
           <Progress value={progressPercent} color="ingress" radius="xl" size="lg" />

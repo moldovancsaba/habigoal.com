@@ -26,7 +26,8 @@
     "i18n:audit": "node scripts/i18n-audit.mjs"
   },
   "dependencies": {
-    "@doneisbetter/gds": "^2.6.4",
+    "@aws-sdk/client-s3": "^3.1063.0",
+    "@doneisbetter/gds": "^3.4.7",
     "@mantine/core": "^8.3.6",
     "@mantine/hooks": "^8.3.6",
     "@mantine/modals": "^8.3.18",
@@ -44,8 +45,8 @@
     "recharts": "^3.8.1"
   },
   "devDependencies": {
-    "@doneisbetter/gds-compliance": "^2.6.4",
-    "@doneisbetter/gds-eslint-config": "^2.6.4",
+    "@doneisbetter/gds-compliance": "^3.4.7",
+    "@doneisbetter/gds-eslint-config": "^3.4.7",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

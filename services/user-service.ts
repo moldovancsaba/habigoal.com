@@ -2,8 +2,9 @@ export interface User {
   id?: string;
   name?: string;
   email: string;
-  roles: ("admin" | "trainer" | "athlete")[];
+  roles: ("admin" | "trainer" | "athlete" | "parent" | "performance_coach" | "physio" | "analyst" | "club_management")[];
   athleteId?: string;
+  parentAthleteIds?: string[];
   teamIds?: string[];
   lastLoginAt?: string;
   createdAt?: string;

@@ -5,9 +5,10 @@ import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { parseChildPayload } from "@/lib/validations";
 import { deleteAssessmentsForChild, updateAssessmentsForChildProfile } from "@/repositories/assessment.repository";
 import { deleteChildById, getChildById, updateChildById } from "@/repositories/child.repository";
+import { filterAthleteProfileForRoles } from "@/lib/athlete-field-access";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const authError = await requireRole(_request, ["admin", "trainer", "athlete"]);
+  const authError = await requireRole(_request, ["admin", "trainer", "athlete", "parent", "performance_coach", "physio", "analyst"]);
   if (authError) return authError;
 
   try {
@@ -25,7 +26,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 
-    return NextResponse.json(child);
+    const filtered = authUser
+      ? filterAthleteProfileForRoles(child, authUser.roles)
+      : child;
+
+    return NextResponse.json(filtered);
   } catch (error) {
     return jsonError((error as Error).message);
   }

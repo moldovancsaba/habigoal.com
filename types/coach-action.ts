@@ -1,4 +1,4 @@
-export type CoachActionStatus = "open" | "acknowledged" | "applied" | "resolved";
+export type CoachActionStatus = "open" | "acknowledged" | "applied" | "resolved" | "ignored" | "overridden";
 export type CoachActionSeverity = "warning" | "critical";
 
 export interface CoachActionRecord {

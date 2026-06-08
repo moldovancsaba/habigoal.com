@@ -8,6 +8,11 @@ export interface HabigoalSettings {
     watchReadinessThreshold: number;
     supportReadinessThreshold: number;
   };
+  checkInConfig?: {
+    questions: import("@/types/check-in-config").CheckInQuestionConfig[];
+    allowDuplicateOverride: boolean;
+    updatedAt: string;
+  };
   company: {
     name: string;
     ico: string;

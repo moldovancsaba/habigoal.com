@@ -205,6 +205,15 @@ export interface ChildPayload {
   surveyId?: string;
   name: string;
   birthDate: string;
+  organisationId?: string;
+  teamId?: string;
+  position?: string;
+  status?: "active" | "injured" | "unavailable" | "trialist" | "archived";
+  parentGuardianUserId?: string;
+  parentGuardianEmail?: string;
+  injuryHistoryFlags?: string[];
+  customAttributes?: Record<string, string | number | boolean>;
+  seasonHistory?: Array<{ season: string; teamId?: string; notes?: string }>;
   baselineProfile: {
     heightCm?: number;
     weightKg?: number;
@@ -231,10 +240,38 @@ export interface ChildPayload {
 
 export function parseChildPayload(input: unknown): ChildPayload {
   const data = input && typeof input === "object" ? (input as Record<string, unknown>) : {};
+  const statusRaw = stringValue(data.status, 40);
+  const status = ["active", "injured", "unavailable", "trialist", "archived"].includes(statusRaw)
+    ? (statusRaw as ChildPayload["status"])
+    : undefined;
+  const customAttributes =
+    data.customAttributes && typeof data.customAttributes === "object"
+      ? (data.customAttributes as Record<string, string | number | boolean>)
+      : undefined;
+  const seasonHistory = Array.isArray(data.seasonHistory)
+    ? data.seasonHistory
+        .filter((item): item is Record<string, unknown> => Boolean(item && typeof item === "object"))
+        .map((item) => ({
+          season: stringValue(item.season, 40),
+          teamId: stringValue(item.teamId, 120) || undefined,
+          notes: stringValue(item.notes, 500) || undefined,
+        }))
+        .filter((item) => item.season)
+    : undefined;
+
   return {
     surveyId: stringValue(data.surveyId ?? data.kidexId, 120).trim() || undefined,
     name: stringValue(data.name, 240).trim(),
     birthDate: stringValue(data.birthDate, 80).trim(),
+    organisationId: stringValue(data.organisationId, 120).trim() || undefined,
+    teamId: stringValue(data.teamId, 120).trim() || undefined,
+    position: stringValue(data.position, 80).trim() || undefined,
+    status,
+    parentGuardianUserId: stringValue(data.parentGuardianUserId, 120).trim() || undefined,
+    parentGuardianEmail: stringValue(data.parentGuardianEmail, 240).trim() || undefined,
+    injuryHistoryFlags: stringArray(data.injuryHistoryFlags, 20, 80),
+    customAttributes,
+    seasonHistory,
     baselineProfile: {
       heightCm: numberValue(data.heightCm ?? (data.baselineProfile as Record<string, unknown> | undefined)?.heightCm, 50, 260),
       weightKg: numberValue(data.weightKg ?? (data.baselineProfile as Record<string, unknown> | undefined)?.weightKg, 15, 250),

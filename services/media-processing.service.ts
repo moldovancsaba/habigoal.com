@@ -5,6 +5,9 @@ export interface MediaUploadPayload {
   athleteId: string;
   url: string;
   mimeType: string;
+  fileSize?: number;
+  frameTimestampsMs?: number[];
+  durationMs?: number;
 }
 
 export class MediaProcessingService {

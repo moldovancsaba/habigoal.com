@@ -68,7 +68,7 @@ export async function ingestForConnection(
     }
     
     await updateConnectionStatus(connection.connectionId, "active");
-    
+
     return { metrics: canonicalMetrics.length, errors: [] };
   } catch (error: unknown) {
     console.error(`Ingestion error for connection ${connection.connectionId}:`, error);

@@ -116,8 +116,18 @@ export async function middleware(request: NextRequest) {
 
   const roles = parseRoles(session.role);
   const isAdmin = roles.includes("admin");
-  const isTrainer = roles.includes("trainer");
-  const isAthlete = roles.includes("athlete") && !isAdmin && !isTrainer;
+  const isParent = roles.includes("parent") || roles.includes("guardian");
+  const isTrainer =
+    roles.includes("trainer") ||
+    roles.includes("performance_coach") ||
+    roles.includes("physio") ||
+    roles.includes("analyst") ||
+    roles.includes("club_management");
+  const isAthlete = roles.includes("athlete") && !isAdmin && !isTrainer && !isParent;
+
+  if (isParent && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/parent`)) {
+    return NextResponse.redirect(new URL(`/${locale}/dashboard/parent`, request.url));
+  }
 
   if (isAthlete && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/assessment`)) {
     return NextResponse.redirect(new URL(`/${locale}/athletes`, request.url));
@@ -130,6 +140,10 @@ export async function middleware(request: NextRequest) {
 
   if (isTrainer && pathname.startsWith(`/${locale}/dashboard/settings`)) {
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
+  }
+
+  if (!isAdmin && !isTrainer && !isParent && !isAthlete && pathname.startsWith(`/${locale}/dashboard`)) {
+    return NextResponse.redirect(new URL(`/${locale}/`, request.url));
   }
 
   return NextResponse.next();

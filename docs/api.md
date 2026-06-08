@@ -527,3 +527,47 @@ npm run local:server
 Default URL: `http://localhost:4001`
 
 It uses the same MongoDB and auth environment variables as the Next.js app and exposes a documented subset of the core API.
+
+## Athlete IQ Extensions (v2)
+
+### `GET /api/openapi`
+
+Returns OpenAPI 3.1 JSON for the Athlete IQ API surface.
+
+### `GET|POST /api/training-sessions`
+
+Training session planner (six categories). POST requires `title`, `date`. Optional `plannedLoadPoints`, `assignedTeamId`, `assignedAthleteIds`.
+
+### `GET|POST /api/microcycles`
+
+Weekly microcycle blocks linked to session IDs.
+
+### `GET /api/concerns?date=YYYY-MM-DD`
+
+Daily check-in concern flags for coach dashboards.
+
+### `POST /api/check-ins/sync`
+
+Batch offline check-in sync. Body: `{ assessments: [...], staffOverride?: boolean }`.
+
+### `GET|POST /api/settings/check-in-config`
+
+Org-configurable check-in questions (admin write).
+
+### `GET /api/reports/team?teamId=`
+
+Aggregated team operating report from digital twins.
+
+### `GET /api/athletes/{id}/media`
+
+List uploaded media and vision analyses for an athlete.
+
+### `POST /api/athletes/{id}/media/upload`
+
+Multipart upload (`file` field). Enqueues vision pipeline.
+
+### `PATCH /api/athletes/{id}/assignment`
+
+Update team, position, status, injury flags, parent email, season history, and custom attributes without overwriting baseline medical fields.
+
+`parent`, `performance_coach`, `physio`, `analyst`, `club_management` — see `lib/permissions.ts` capability matrix.

@@ -9,6 +9,7 @@ import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings 
 import { deleteUser, getUsers, saveUser, User } from "@/services/user-service";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";
+import { CheckInConfigAdminPanel } from "@/components/admin/CheckInConfigAdminPanel";
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -945,6 +946,8 @@ export default function SettingsPage() {
           />
         </Stack>
       </SectionPanel>
+
+      <CheckInConfigAdminPanel />
 
       <SectionPanel title={t("restoreBinTitle")}>
         <Stack gap="lg">

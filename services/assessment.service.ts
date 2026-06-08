@@ -3,6 +3,8 @@ import { parseAssessmentPayload } from "@/lib/validations";
 import { createAssessment, deleteAssessmentById, getAssessmentById, listAssessmentSummaries, restoreAssessmentById, updateAssessmentById, listDeletedAssessmentSummaries } from "@/repositories/assessment.repository";
 import { getChildById, updateChildById, upsertChild } from "@/repositories/child.repository";
 import { getGlobalSettings } from "@/repositories/settings.repository";
+import { assertCheckInAllowed, DuplicateCheckInError, processCheckInToTwin } from "@/services/twin-pipeline.service";
+import { syncConcernFlagsToCoachActions } from "@/services/concern-flag.service";
 import { ObjectId } from "mongodb";
 
 export function parseObjectId(id: string) {
@@ -24,7 +26,7 @@ export async function listDeletedAssessments() {
   return { assessments: await listDeletedAssessmentSummaries(), configured: true };
 }
 
-export async function createAssessmentFromPayload(input: unknown) {
+export async function createAssessmentFromPayload(input: unknown, options?: { staffOverride?: boolean }) {
   const payload = parseAssessmentPayload(input);
   const now = new Date().toISOString();
   const integrityIssues: string[] = [];
@@ -33,6 +35,18 @@ export async function createAssessmentFromPayload(input: unknown) {
   if (!payload.session.consentReport) integrityIssues.push("missing_report_consent");
   const scoredCount = Object.values(payload.scores).filter((entry) => typeof entry.score === "number").length;
   if (scoredCount === 0) integrityIssues.push("no_scores_recorded");
+
+  const childObjectId = payload.childId ? parseObjectId(payload.childId) : null;
+  if (childObjectId) {
+    try {
+      await assertCheckInAllowed(childObjectId.toString(), payload.session.date, options?.staffOverride);
+    } catch (error) {
+      if (error instanceof DuplicateCheckInError) {
+        throw error;
+      }
+      throw error;
+    }
+  }
 
   const childProfile = {
     name: payload.child.name,
@@ -43,7 +57,6 @@ export async function createAssessmentFromPayload(input: unknown) {
     dominantEye: payload.child.dominantEye,
     dominantFoot: payload.child.dominantFoot
   };
-  const childObjectId = payload.childId ? parseObjectId(payload.childId) : null;
   const existingChild = childObjectId ? await getChildById(childObjectId) : null;
   const updatedChild = existingChild && childObjectId ? await updateChildById(childObjectId, childProfile) : null;
   const child = updatedChild ?? (await upsertChild(childProfile));
@@ -51,7 +64,7 @@ export async function createAssessmentFromPayload(input: unknown) {
   const settings = await getGlobalSettings();
   const standardsVersionUsed = settings?.standards?.activeVersion || "v1";
 
-  return createAssessment({
+  const assessment = await createAssessment({
     ...payload,
     childId: child._id,
     standardsVersionUsed,
@@ -60,6 +73,17 @@ export async function createAssessmentFromPayload(input: unknown) {
     updatedAt: now,
     updateHistory: integrityIssues.length > 0 ? [`integrity:${integrityIssues.join(",")}:${now}`] : []
   });
+
+  if (child._id) {
+    await processCheckInToTwin(assessment, settings?.company?.name ? "default" : "default").catch((err) => {
+      console.error("Twin pipeline error:", err);
+    });
+    await syncConcernFlagsToCoachActions(assessment, settings).catch((err) => {
+      console.error("Concern flag sync error:", err);
+    });
+  }
+
+  return assessment;
 }
 
 export async function getAssessment(id: ObjectId) {

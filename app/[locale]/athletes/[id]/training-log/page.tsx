@@ -3,10 +3,8 @@
 import { useState } from "react";
 import { Box, Stack, Text, Paper, Slider, Group, NumberInput } from "@mantine/core";
 import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
-import { useParams } from "next/navigation";
 
 export default function RpeLoggerPage() {
-  const { id } = useParams();
   const [rpe, setRpe] = useState<number>(5);
   const [duration, setDuration] = useState<number | string>(60);
   const [saving, setSaving] = useState(false);

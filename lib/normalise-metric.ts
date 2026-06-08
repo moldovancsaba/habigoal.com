@@ -60,11 +60,50 @@ export function normaliseCheckinToMetrics(
     }
   };
 
-  addScoreMetric("mood", "mood_score");
-  addScoreMetric("energy", "energy_score");
-  addScoreMetric("stress", "stress_score");
-  addScoreMetric("soreness", "soreness_score");
-  addScoreMetric("sleep", "sleep_quality_score", "score_1_10");
+  const scoreMappings: Array<[string, CanonicalMetricKey, MetricUnit?]> = [
+    ["mood", "mood_score"],
+    ["mood_state", "mood_score"],
+    ["energy", "energy_score"],
+    ["energy_level", "energy_score"],
+    ["stress", "stress_score"],
+    ["stress_load", "stress_score"],
+    ["soreness", "soreness_score"],
+    ["body_feel", "soreness_score"],
+    ["sleep", "sleep_quality_score", "score_1_10"],
+    ["sleep_quality", "sleep_quality_score", "score_1_10"],
+    ["confidence", "energy_score"],
+    ["confidence_level", "energy_score"],
+    ["focus", "energy_score"],
+    ["focus_level", "energy_score"],
+  ];
+
+  for (const [sourceKey, canonicalKey, unit] of scoreMappings) {
+    addScoreMetric(sourceKey, canonicalKey, unit);
+  }
+
+  const sleepHours = checkin.scores["sleep_hours"]?.score;
+  if (typeof sleepHours === "number") {
+    metrics.push({
+      metricId: buildMetricId(athleteId, date, "check_in", "sleep_duration_minutes"),
+      athleteId,
+      organisationId,
+      source: "check_in",
+      sourceMetric: "scores.sleep_hours",
+      canonicalKey: "sleep_duration_minutes",
+      value: sleepHours * 60,
+      unit: "minutes",
+      confidence: "high",
+      periodStart: date,
+      periodEnd: date,
+      date,
+      rawPayloadId,
+      normalisedAt: now,
+      normalisationVersion: NORMALISATION_VERSION,
+      processingState: "normalised",
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
 
   return metrics;
 }

@@ -43,6 +43,15 @@ APP_URL=https://habigoal.com
 SSO_BASE_URL=https://sso.doneisbetter.com
 SSO_REDIRECT_URI=https://habigoal.com/api/oauth/callback
 HABIGOAL_ENFORCE_AUTH=true
+
+# Optional media object storage (S3-compatible or Cloudflare R2)
+MEDIA_STORAGE_PROVIDER=local
+MEDIA_STORAGE_ENDPOINT=
+MEDIA_STORAGE_BUCKET=
+MEDIA_STORAGE_ACCESS_KEY=
+MEDIA_STORAGE_SECRET_KEY=
+MEDIA_STORAGE_REGION=auto
+MEDIA_STORAGE_PUBLIC_URL=
 ```
 
 `SSO_LOGOUT_URL` is optional and should stay empty unless DoneIsBetter provides a logout endpoint.

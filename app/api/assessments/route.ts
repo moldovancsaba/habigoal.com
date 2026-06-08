@@ -31,6 +31,8 @@ export async function POST(request: Request) {
 
   try {
     const payloadInput = await readJson(request);
+    const body = payloadInput && typeof payloadInput === "object" ? payloadInput as Record<string, unknown> : {};
+    const staffOverride = Boolean(body.staffOverride);
     const payload = parseAssessmentPayload(payloadInput);
     const authUser = await getAuthUser();
     if (authUser?.primaryRole === "athlete") {
@@ -38,7 +40,10 @@ export async function POST(request: Request) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
       }
     }
-    const assessment = await createAssessmentFromPayload(payload);
+    if (staffOverride && authUser && !["admin", "trainer", "performance_coach"].includes(authUser.primaryRole)) {
+      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+    }
+    const assessment = await createAssessmentFromPayload(payload, { staffOverride });
     return NextResponse.json({ assessment }, { status: 201 });
   } catch (error) {
     return jsonError((error as Error).message);
