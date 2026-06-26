@@ -2,7 +2,7 @@
 
 import { Badge, Box, Group, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from "@mantine/core";
 import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
-import { useMemo } from "react";
+import { useMemo, type ComponentType, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import type { ProductFunction, ProductSurface } from "@/lib/product-surfaces";
 
@@ -25,75 +25,182 @@ export function ProductSurfacePage({ surface, relatedSurface }: ProductSurfacePa
   const activeFunctions = surface.functionRegistry.filter((item) => item.status === "phase-1" || item.status === "active");
   const plannedFunctions = surface.functionRegistry.filter((item) => item.status === "planned");
 
-  return (
-    <Box style={{ minHeight: "100vh", color: "var(--text-primary)" }}>
-      <Box px={{ base: "md", md: "xl" }} py={{ base: "lg", md: "xl" }} maw={1320} mx="auto">
-        <Stack gap="md">
-          <PageHeader
-            title={surface.name}
-            subtitle={surface.headline}
-            actions={
-              <Group gap="xs" wrap="wrap">
-                <Link href="/" style={{ textDecoration: "none" }}>
-                  <SemanticButton action="productSurface:home" variant="default" vocabularyPacks={[actionPack]} />
-                </Link>
-                <Link href={surface.id === "habigoal" ? "/athletes" : "/dashboard"} style={{ textDecoration: "none" }}>
-                  <SemanticButton action="productSurface:dashboard" color="ingress" vocabularyPacks={[actionPack]} />
-                </Link>
-              </Group>
-            }
-          />
+  if (surface.id === "habigoal") {
+    return (
+      <Box className="habigoal-home-shell">
+        <Box px={{ base: "md", md: "xl" }} py={{ base: "lg", md: "xl" }} maw={980} mx="auto">
+          <Stack gap="lg">
+            <PageHeader
+              title="Habigoal"
+              subtitle="Home wellbeing, habits, simple sport support, and clear status feedback."
+              actions={
+                <Group gap="xs" wrap="wrap">
+                  <Link href="/" style={{ textDecoration: "none" }}>
+                    <SemanticButton action="productSurface:home" variant="default" vocabularyPacks={[actionPack]} />
+                  </Link>
+                  <Link href="/athletes" style={{ textDecoration: "none" }}>
+                    <SemanticButton action="productSurface:habigoal" color="ingress" vocabularyPacks={[actionPack]} />
+                  </Link>
+                </Group>
+              }
+            />
 
-          <Paper component="section" className="glass-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
-              <Stack gap="md">
-                <Badge variant="light" color={surface.id === "habigoal" ? "ingress" : "strategy"} w="fit-content">
-                  {surface.operatingMode}
-                </Badge>
-                <Title order={1} size="h2">
-                  {surface.promise}
-                </Title>
-                <Text c="var(--text-secondary)" size="lg">
-                  {surface.summary}
-                </Text>
-              </Stack>
-              <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="sm" aria-label={`${surface.name} release summary`}>
-                <MetricCard label="Phase-one functions" value={String(activeFunctions.length)} />
-                <MetricCard label="Planned functions" value={String(plannedFunctions.length)} />
-                <MetricCard label="Audiences" value={String(surface.audiences.length)} />
-              </SimpleGrid>
-            </SimpleGrid>
-          </Paper>
-
-          {relatedSurface ? (
             <SectionPanel
-              title={`${surface.shortName} includes ${relatedSurface.shortName}`}
-              description="The professional system consumes Habigoal through shared contracts. The UI and function registry stay separate so client wellbeing workflows remain simple."
+              title="Simple daily loop"
+              description="Habigoal keeps the home experience intentionally small: check in, complete habits, understand status, and take one safe next action."
+            >
+              <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+                <HomeStepCard icon={<GdsIcons.Check size={18} />} title="Check in" body="Capture today’s wellbeing and sport status without professional dashboards." />
+                <HomeStepCard icon={<GdsIcons.Habit size={18} />} title="Habits" body="Keep the daily routine visible, lightweight, and easy to complete." />
+                <HomeStepCard icon={<GdsIcons.Notifications size={18} />} title="Feedback" body="Show one clear support action using shared backend intelligence." />
+              </SimpleGrid>
+            </SectionPanel>
+
+            <SectionPanel
+              title="Shared backend, home UI"
+              description="Habigoal uses the same database and scoring contracts as Athlete IQ, but the UI stays simplified for home users."
             >
               <Group gap="sm" wrap="wrap">
-                <Link href={relatedSurface.primaryPath} style={{ textDecoration: "none" }}>
-                  <SemanticButton action="productSurface:habigoal" variant="default" vocabularyPacks={[actionPack]} />
-                </Link>
-                <Link href="/dashboard" style={{ textDecoration: "none" }}>
-                  <SemanticButton action="productSurface:dashboard" color="strategy" vocabularyPacks={[actionPack]} />
-                </Link>
+                <Badge variant="light" color="ingress">Home version</Badge>
+                <Badge variant="light" color="gray">Unified backend</Badge>
+                <Badge variant="light" color="gray">Unified database</Badge>
               </Group>
             </SectionPanel>
-          ) : null}
+          </Stack>
+        </Box>
+      </Box>
+    );
+  }
 
-          <SectionPanel
-            title={`${surface.shortName} function registry`}
-            description="Production functions are grouped by execution boundary, runtime flow, contracts, accessibility, observability, and failure behavior."
-          >
-            <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
-              {surface.functionRegistry.map((item) => (
-                <FunctionCard key={item.id} item={item} />
-              ))}
-            </SimpleGrid>
-          </SectionPanel>
-        </Stack>
+  return (
+    <Box className="aiq-pro-shell" style={{ minHeight: "100vh", color: "var(--text-primary)" }}>
+      <Box px={{ base: "md", md: "xl" }} py={{ base: "lg", md: "xl" }} maw={1320} mx="auto">
+        <Box className="aiq-layout-grid">
+          <Paper component="aside" className="aiq-sidebar surface-outline" withBorder radius="md" p="lg">
+            <Stack gap="xl">
+              <Group gap="md" wrap="nowrap">
+                <Box className="aiq-mark" aria-hidden="true">IQ</Box>
+                <Stack gap={0}>
+                  <Title order={1} size="h2">Athlete IQ</Title>
+                  <Text className="aiq-letter-label">Performance OS</Text>
+                </Stack>
+              </Group>
+              <Stack gap="lg">
+                <AiqNavSection title="Today" items={[
+                  ["Home", "/dashboard", GdsIcons.Home],
+                  ["Check-in", "/athletes", GdsIcons.Profile],
+                  ["Live Session", "/athlete-iq", GdsIcons.Play],
+                  ["Daily To-Do", "/dashboard/planning", GdsIcons.Habit],
+                  ["Learning Hub", "/dashboard/reports", GdsIcons.Lesson]
+                ]} />
+                <AiqNavSection title="Pillars" items={[
+                  ["Recovery", "/dashboard/wearables", GdsIcons.Reward],
+                  ["Fuel", "/dashboard", GdsIcons.Goal],
+                  ["Mental", "/dashboard/athletes", GdsIcons.Record],
+                  ["Reflection", "/dashboard/reports", GdsIcons.Edit],
+                  ["Habits", "/athletes", GdsIcons.Check]
+                ]} />
+              </Stack>
+            </Stack>
+          </Paper>
+
+          <Stack gap="md">
+            <PageHeader
+              title={surface.name}
+              subtitle="Pro version for athletes, coaches, academies, dashboards, services, and advanced intelligence."
+              actions={
+                <Group gap="xs" wrap="wrap">
+                  <Link href="/" style={{ textDecoration: "none" }}>
+                    <SemanticButton action="productSurface:home" variant="default" vocabularyPacks={[actionPack]} />
+                  </Link>
+                  <Link href="/dashboard" style={{ textDecoration: "none" }}>
+                    <SemanticButton action="productSurface:dashboard" color="strategy" vocabularyPacks={[actionPack]} />
+                  </Link>
+                </Group>
+              }
+            />
+
+            <Paper component="section" className="aiq-command-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+              <SimpleGrid cols={{ base: 1, md: 2 }} spacing="xl">
+                <Stack gap="md">
+                  <Badge variant="light" color="yellow" w="fit-content">Pro version</Badge>
+                  <Title order={2} size="h1">{surface.promise}</Title>
+                  <Text className="aiq-command-copy" size="lg">{surface.summary}</Text>
+                  <Group gap="sm" wrap="wrap">
+                    <Badge variant="light" color="gray">Unified backend</Badge>
+                    <Badge variant="light" color="gray">Unified database</Badge>
+                    <Badge variant="light" color="yellow">Includes Habigoal signals</Badge>
+                  </Group>
+                </Stack>
+                <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="sm" aria-label={`${surface.name} release summary`}>
+                  <MetricCard label="Live functions" value={String(activeFunctions.length)} />
+                  <MetricCard label="Roadmap functions" value={String(plannedFunctions.length)} />
+                  <MetricCard label="Audiences" value={String(surface.audiences.length)} />
+                </SimpleGrid>
+              </SimpleGrid>
+            </Paper>
+
+            {relatedSurface ? (
+              <SectionPanel
+                title={`${surface.shortName} includes ${relatedSurface.shortName}`}
+                description="Athlete IQ consumes Habigoal through shared contracts. The backend and database are unified, while the home and pro UIs stay separate."
+              >
+                <Group gap="sm" wrap="wrap">
+                  <Link href={relatedSurface.primaryPath} style={{ textDecoration: "none" }}>
+                    <SemanticButton action="productSurface:habigoal" variant="default" vocabularyPacks={[actionPack]} />
+                  </Link>
+                  <Link href="/dashboard" style={{ textDecoration: "none" }}>
+                    <SemanticButton action="productSurface:dashboard" color="strategy" vocabularyPacks={[actionPack]} />
+                  </Link>
+                </Group>
+              </SectionPanel>
+            ) : null}
+
+            <SectionPanel
+              title={`${surface.shortName} function registry`}
+              description="Professional functions are grouped by execution boundary, runtime flow, contracts, accessibility, observability, and failure behavior."
+            >
+              <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
+                {surface.functionRegistry.map((item) => (
+                  <FunctionCard key={item.id} item={item} />
+                ))}
+              </SimpleGrid>
+            </SectionPanel>
+          </Stack>
+        </Box>
       </Box>
     </Box>
+  );
+}
+
+function HomeStepCard({ icon, title, body }: { icon: ReactNode; title: string; body: string }) {
+  return (
+    <Paper className="glass-panel surface-outline" withBorder radius="md" p="lg">
+      <Stack gap="sm">
+        <ThemeIcon variant="light" color="ingress" radius="md" aria-hidden="true">
+          {icon}
+        </ThemeIcon>
+        <Title order={3} size="h4">{title}</Title>
+        <Text c="var(--text-secondary)" size="sm">{body}</Text>
+      </Stack>
+    </Paper>
+  );
+}
+
+function AiqNavSection({ title, items }: { title: string; items: Array<[string, string, ComponentType<{ size?: number }>] > }) {
+  return (
+    <Stack gap="xs">
+      <Text className="aiq-letter-label">{title}</Text>
+      <Stack gap={6}>
+        {items.map(([label, href, Icon], index) => (
+          <Link key={label} href={href} className={index === 0 ? "aiq-nav-link aiq-nav-link-active" : "aiq-nav-link"}>
+            <Icon size={18} />
+            <span>{label}</span>
+            {index === 0 ? <span className="aiq-nav-dot" aria-hidden="true" /> : null}
+          </Link>
+        ))}
+      </Stack>
+    </Stack>
   );
 }
 

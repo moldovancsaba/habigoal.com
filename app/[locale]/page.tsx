@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { env } from "@/config/env";
-import { LandingCtas } from "@/components/landing/LandingCtas";
 
 export default async function LandingPage({
   params,
@@ -15,11 +13,9 @@ export default async function LandingPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Landing" });
   const { error } = await searchParams;
-  const authHref = env.habigoalEnforceAuth ? `/api/auth/login?next=/${locale}/dashboard` : `/${locale}/dashboard`;
   const homeHref = `/${locale}`;
   const habigoalHref = `/${locale}/habigoal`;
   const athleteIqHref = `/${locale}/athlete-iq`;
-  const athleteHref = `/${locale}/athletes`;
   const newsHref = `/${locale}/news`;
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;
@@ -31,7 +27,7 @@ export default async function LandingPage({
   );
 
   return (
-    <Container size="lg" py="xl">
+    <Container size="md" py="xl">
       <Stack gap="xl">
         <Group justify="space-between" wrap="nowrap">
           <Anchor href={homeHref} underline="never" c="inherit">{brand}</Anchor>
@@ -44,44 +40,36 @@ export default async function LandingPage({
           </Alert>
       )}
 
-        <Paper component="section" withBorder radius="xl" p={{ base: "lg", md: "xl" }}>
-          <Group gap="xl" align="center" justify="space-between">
-            <Stack gap="lg" maw={680}>
-                <Stack gap="sm">
-                  <Title order={1}>{t("title")}</Title>
-                  <Text size="lg" c="dimmed">{t("subtitle")}</Text>
-                </Stack>
-              <LandingCtas
-                athleteAppLabel={t("athleteApp")}
-                trainerAppLabel={t("trainerApp")}
-                whatsNewLabel={t("whatsNew")}
-                athleteHref={athleteHref}
-                trainerHref={authHref}
-                newsHref={newsHref}
-              />
+        <Box component="main">
+          <Stack gap="xl">
+            <Stack gap="sm">
+              <Badge variant="light" color="ingress" w="fit-content">Unified platform</Badge>
+              <Title order={1}>Choose your experience</Title>
+              <Text size="lg" c="dimmed">
+                One backend and one database power two separate products: Habigoal for home wellbeing, and Athlete IQ for professional performance operations.
+              </Text>
             </Stack>
-            <Box visibleFrom="sm">
-              <Image src="/images/habigoal_logo.png" alt="Habigoal" width={320} height={320} priority />
-            </Box>
-          </Group>
-        </Paper>
 
-        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-          <ProductEntryCard
-            badge="Habigoal"
-            title="Simple habit tracker and wellbeing support"
-            body="A daily client surface for habits, check-ins, sport support, and clear status feedback."
-            href={habigoalHref}
-            action="Open Habigoal"
-          />
-          <ProductEntryCard
-            badge="Athlete IQ"
-            title="Professional athlete performance OS"
-            body="The professional surface for athletes, coaches, academies, dashboards, services, and advanced intelligence."
-            href={athleteIqHref}
-            action="Open Athlete IQ"
-          />
-        </SimpleGrid>
+            <SimpleGrid cols={{ base: 1 }} spacing="lg">
+              <ProductEntryCard
+                badge="Habigoal"
+                title="Home habit tracker and wellbeing support"
+                body="Simple daily check-ins, habits, wellbeing support, sport support, and clear status feedback."
+                href={habigoalHref}
+                action="Open Habigoal"
+                tone="home"
+              />
+              <ProductEntryCard
+                badge="Athlete IQ"
+                title="Professional athlete performance OS"
+                body="The pro surface for athletes, coaches, academies, dashboards, services, and advanced performance intelligence."
+                href={athleteIqHref}
+                action="Open Athlete IQ"
+                tone="pro"
+              />
+            </SimpleGrid>
+          </Stack>
+        </Box>
 
       <Text c="dimmed" size="sm">
         {t("ssoNote")}
@@ -95,7 +83,8 @@ export default async function LandingPage({
               <Anchor href={termsHref}>{t("termsOfService")}</Anchor>
               <Anchor href={privacyHref}>{t("privacyPolicy")}</Anchor>
               <Anchor href={newsHref}>{t("whatsNew")}</Anchor>
-              <Anchor href={athleteHref}>{t("athleteApp")}</Anchor>
+              <Anchor href={habigoalHref}>Habigoal</Anchor>
+              <Anchor href={athleteIqHref}>Athlete IQ</Anchor>
             </Group>
           </Stack>
         </Paper>
@@ -109,30 +98,39 @@ function ProductEntryCard({
   title,
   body,
   href,
-  action
+  action,
+  tone
 }: {
   badge: string;
   title: string;
   body: string;
   href: string;
   action: string;
+  tone: "home" | "pro";
 }) {
   return (
-    <Paper component="section" withBorder radius="md" p="lg" className="glass-panel surface-outline">
-      <Stack gap="md" h="100%">
-        <Badge variant="light" color={badge === "Habigoal" ? "ingress" : "strategy"} w="fit-content">
-          {badge}
-        </Badge>
-        <Stack gap={6}>
-          <Title order={2} size="h3">
-            {title}
-          </Title>
-          <Text c="dimmed">{body}</Text>
+    <Paper component="section" withBorder radius="md" p={{ base: "lg", md: "xl" }} className={tone === "pro" ? "selector-card selector-card-pro surface-outline" : "selector-card selector-card-home surface-outline"}>
+      <Anchor href={href} underline="never" c="inherit" aria-label={action}>
+        <Stack gap="lg" h="100%">
+          <Group justify="space-between" align="flex-start" gap="md">
+            <Badge variant="light" color={tone === "home" ? "ingress" : "yellow"} w="fit-content">
+              {badge}
+            </Badge>
+            {tone === "pro" ? (
+              <Box className="aiq-mark" aria-hidden="true">IQ</Box>
+            ) : (
+              <Image src="/images/habigoal_logo.png" alt="" width={48} height={48} />
+            )}
+          </Group>
+          <Stack gap={8}>
+            <Title order={2} size="h2">
+              {title}
+            </Title>
+            <Text className={tone === "pro" ? "selector-card-body-pro" : undefined} c={tone === "home" ? "dimmed" : undefined} size="lg">{body}</Text>
+          </Stack>
+          <Text fw={800} mt="auto">{action}</Text>
         </Stack>
-        <Anchor href={href} fw={700} mt="auto">
-          {action}
-        </Anchor>
-      </Stack>
+      </Anchor>
     </Paper>
   );
 }
