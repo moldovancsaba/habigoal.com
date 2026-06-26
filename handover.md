@@ -418,6 +418,21 @@ Issue `#225` / capability `AIQ-1270` now has an executable backend lifecycle for
 
 Rollback is additive: remove consumers of the session endpoints or disable the capability in the module registry. Existing `athleteiq_sessions` and `session_rpe_results` records can remain because older Daily Plan flows do not depend on them.
 
+### AthleteIQ Daily Reality Map Delivered
+
+Issue `#226` / capability `AIQ-1280` now has a local day-planning backend without external calendar dependency:
+
+- Local entry persistence in `athleteiq_calendar_entries`.
+- Day context API through `GET /api/athleteiq/calendar/day?athleteId=&date=&timezone=`.
+- Manual entry creation through `POST /api/athleteiq/calendar/entries`.
+- Manual entry update/delete through `PATCH` and `DELETE /api/athleteiq/calendar/entries/:id`.
+- Daily Plan tasks and AthleteIQ session blocks are merged into the returned `DayContext`.
+- Unknown-time entries are preserved in an unscheduled bucket.
+- Overlap and insufficient-recovery conflicts are labeled without deleting source data.
+- Contract documentation in `docs/athleteiq-calendar-contract.md`.
+
+Rollback is additive: remove consumers of the calendar endpoints or disable the capability in the module registry. Existing `athleteiq_calendar_entries` records can remain because Daily Plan and session lifecycles do not depend on them.
+
 ### GitHub Issue Updates Added
 
 REST issue comments were added on 2026-06-26 to:
