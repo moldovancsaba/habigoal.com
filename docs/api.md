@@ -104,6 +104,55 @@ Response:
 
 The `functionRegistry` values are intentionally structured for UI, governance, operations, and traceability.
 
+## AthleteIQ Module Maturity Registry
+
+### `GET /api/athleteiq/modules?role=&athleteId=&includeFuture=`
+
+Returns the canonical AthleteIQ module maturity registry filtered by signed-in role and optional athlete access.
+
+Response:
+
+```json
+{
+  "registryVersion": "aiq-modules-1201.1",
+  "capabilityKey": "AIQ-1201",
+  "role": "athlete",
+  "modules": [
+    {
+      "key": "readiness",
+      "maturity": "active",
+      "claimBoundary": "backed_by_user_input",
+      "statusLabel": "usable",
+      "dataAvailabilityLabel": "live_data",
+      "allowedRoles": ["admin", "trainer", "performance_coach", "physio", "analyst", "athlete", "parent"],
+      "routes": ["/athletes/[id]", "/dashboard", "/dashboard/athletes/[id]"]
+    }
+  ],
+  "correlationId": "aiq-...",
+  "generatedAt": "2026-06-26T10:00:00.000Z",
+  "latencyMs": 4
+}
+```
+
+Future modules are hidden by default. Roadmap or education consumers must explicitly request `includeFuture=true`, and future modules still return `statusLabel: "future_not_actionable"`.
+
+### `GET /api/athleteiq/modules/:key?role=&athleteId=&includeFuture=`
+
+Returns a single permitted module definition. Unknown modules return a structured `404`.
+
+Structured error shape:
+
+```json
+{
+  "code": "MODULE_NOT_FOUND",
+  "messageKey": "athleteiq.errors.MODULE_NOT_FOUND",
+  "retryable": false,
+  "correlationId": "aiq-..."
+}
+```
+
+Version, maturity, role filtering, validation, and rollback details are documented in [AthleteIQ Module Maturity Registry](athleteiq-module-registry.md).
+
 ## Auth
 
 ### `GET /api/auth/login`
