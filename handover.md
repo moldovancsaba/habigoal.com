@@ -678,3 +678,14 @@ Delivered issue `#231` in local implementation:
 - Added Cognitive Lite value summaries to the AthleteIQ twin projection lite dimensions without promoting them to active or benchmarked claims.
 - Added documentation at `docs/athleteiq-cognitive-cogleague-boundary-contract.md`.
 - No UI primitive was added, so no General Design System request issue was required for this issue.
+
+## 2026-06-26 AthleteIQ GameFlow Future Boundary Delivery
+
+Delivered issue `#232` in local implementation:
+
+- Added `AIQ-1340` GameFlow future boundary contracts for match timelines, segment types, quality metrics, attribution, and roadmap prerequisites.
+- Added disabled roadmap API `GET /api/athleteiq/gameflow/matches/:id/timeline`.
+- The endpoint returns no production segments, no live data, no model output, no active-football percentage, no dead-time ratio, no friction count, no delay confidence, and no model error bounds.
+- Missing data explicitly includes video rights, event source, model validation, reviewer workflow, and legal approval.
+- Added documentation at `docs/athleteiq-gameflow-future-boundary-contract.md`.
+- No UI primitive was added, so no General Design System request issue was required for this issue.

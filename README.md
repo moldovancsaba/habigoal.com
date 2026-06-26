@@ -70,6 +70,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [AthleteIQ Active-Module Daily Report Contract](docs/athleteiq-daily-report-contract.md)
 - [AthleteIQ Lite Module Gateway Contract](docs/athleteiq-lite-module-gateway-contract.md)
 - [AthleteIQ Cognitive Lite and CogLeague Boundary Contract](docs/athleteiq-cognitive-cogleague-boundary-contract.md)
+- [AthleteIQ GameFlow Future Boundary Contract](docs/athleteiq-gameflow-future-boundary-contract.md)
 - [Legal and Company Info](docs/legal.md)
 - [SSO Setup](docs/sso-setup.md)
 - [Product Roadmap](ROADMAP.md)
@@ -136,6 +137,7 @@ HABIGOAL_ENFORCE_AUTH=true
 - AthleteIQ daily report endpoints: `/api/athleteiq/reports/daily/generate`, `/api/athleteiq/reports/daily`, and `/api/athleteiq/reports/daily/:id/export.json`
 - AthleteIQ lite/manual module endpoints: `/api/athleteiq/lite-modules`, `/api/athleteiq/recovery-lite/entries`, `/api/athleteiq/fuel-lite/entries`, `/api/athleteiq/learning/progress`, and `/api/athleteiq/wearables/manual-entry`
 - AthleteIQ cognitive boundary endpoints: `/api/athleteiq/cognitive-lite/results` and `/api/athleteiq/cogleague/tournaments`
+- AthleteIQ GameFlow future boundary endpoint: `/api/athleteiq/gameflow/matches/:id/timeline`
 
 ## Validation Commands
 
