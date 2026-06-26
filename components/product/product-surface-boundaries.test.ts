@@ -97,9 +97,13 @@ describe("product surface route boundaries", () => {
 
   it("keeps AthleteIQ oriented around trainer team and club operations", () => {
     const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
+    const athleteIqRoute = readSource("app/[locale]/athlete-iq/page.tsx");
     const englishMessages = readJson<Messages>("messages/en.json");
 
-    expect(athleteIqSource).toContain("TEAM_OPERATIONS");
+    expect(athleteIqSource).not.toContain("PRIORITY_ATHLETES");
+    expect(athleteIqSource).not.toContain("SERVICE_MODULES");
+    expect(athleteIqSource).not.toContain("TEAM_OPERATIONS");
+    expect(athleteIqRoute).toContain("getAthleteIqProductDashboardProjection");
     expect(athleteIqSource).toContain("teamCommand.title");
     expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.title).toBe("Trainer team and club command");
     expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.copy).toContain("club-level delivery");

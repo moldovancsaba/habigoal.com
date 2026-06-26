@@ -5,6 +5,7 @@ import { Badge, Box, Group, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } f
 import { GdsIcons, SectionPanel } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import { PublicAppControls } from "@/components/layout/PublicAppControls";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductFunction, ProductSurface, ProductSurfaceAudience, ProductSurfaceId } from "@/lib/product-surfaces";
 
@@ -15,7 +16,7 @@ export function SurfaceTopBar({ surface }: { surface: ProductSurface }) {
   const surfaceKey = surface.id === "habigoal" ? "habigoal" : "athleteIq";
 
   return (
-    <Group className={surface.id === "habigoal" ? "surface-topbar hbg-topbar" : "surface-topbar aiq-topbar"} align="center" mb="md">
+    <Group className={surface.id === "habigoal" ? "surface-topbar hbg-topbar" : "surface-topbar aiq-topbar"} align="center" justify="space-between" mb="md" wrap="nowrap">
       <Group gap="sm" wrap="nowrap">
         {surface.id === "habigoal" ? (
           <Image src="/images/habigoal_logo.png" alt="" width={32} height={32} />
@@ -27,6 +28,7 @@ export function SurfaceTopBar({ surface }: { surface: ProductSurface }) {
           <Text size="sm" className={surface.id === "habigoal" ? "hbg-muted-text" : "aiq-muted-soft"}>{t(`${surfaceKey}.operatingMode`)}</Text>
         </Stack>
       </Group>
+      <PublicAppControls compact />
     </Group>
   );
 }

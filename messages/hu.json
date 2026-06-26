@@ -36,7 +36,9 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
-    "goHome": "Go to home"
+    "goHome": "Vissza a kezdőlapra",
+    "openDashboard": "Vezérlőpult megnyitása",
+    "logout": "Kijelentkezés"
   },
   "Dashboard": {
     "title": "Vezérlőpult",
@@ -808,7 +810,7 @@
     "supportMentalMood": "Check in with the athlete before pushing intensity. Connection first, challenge second.",
     "supportMentalConfidence": "Start with easy success reps to rebuild trust before harder competitive tasks.",
     "supportMentalStable": "Mental state looks steady. Keep communication simple, calm, and specific.",
-    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a demo-first approach to sharpen focus.",
+    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a movement-first approach to sharpen focus.",
     "supportSportBrainConfidence": "Keep decisions simple early, then add complexity after the first successful actions.",
     "supportSportBrainStable": "Sport-brain readiness looks solid. Progress to decision-making and learning tasks normally."
   },
@@ -1383,7 +1385,7 @@
     "actions": {
       "dashboard": "Vezérlőpult megnyitása",
       "athleteDashboard": "Athlete IQ dashboard megnyitása",
-      "reset": "Demó visszaállítása",
+      "reset": "Értékek visszaállítása",
       "complete": "Művelet befejezése",
       "acknowledge": "Tudomásul vétel",
       "report": "Riport megnyitása",
@@ -1510,7 +1512,7 @@
         }
       },
       "hero": {
-        "dateLabel": "Ma - 2026. június 26.",
+        "dateLabel": "Ma - {date}",
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "Professzionális operációs felület sportolóknak, edzőknek, csapatoknak, kluboknak és teljesítménydöntéseknek.",
         "copy": "Readiness, mentális állapot, edzésterhelés, csapatműveletek és riportok egy fókuszált edzői munkatérben maradnak.",
@@ -1585,6 +1587,25 @@
             "action": "Haladj egy tervezett edzésblokkal.",
             "source": "Daily IQ + pain safety"
           }
+        },
+        "empty": "Nincs nyitott prioritás élő rekordok alapján.",
+        "reasons": {
+          "painAlert": "A fájdalombiztonsági jelzés aktív, edzői ellenőrzés szükséges.",
+          "dailyIqRisk": "A Daily IQ vagy a készenlét a biztonságos tartomány alatt van.",
+          "missingDailyIq": "A mai Daily IQ még hiányzik.",
+          "active": "A sportoló aktív, sürgős kockázati jelzés nélkül."
+        },
+        "actions": {
+          "reviewPain": "Edzésintenzitás módosítása előtt ellenőrizd a fájdalomvédelmi szabályt.",
+          "reviewDailyIq": "Nézd át a Daily IQ kontextust, és igazítsd hozzá az edzéstervet.",
+          "completeDailyIq": "Töltsétek ki a mai Daily IQ check-int.",
+          "continuePlan": "Folytassátok az aktuális tervet, és figyeljétek a következő mérést."
+        },
+        "sources": {
+          "painSafety": "Fájdalombiztonsági jelzés",
+          "dailyIq": "Daily IQ rekord",
+          "assessment": "Legutóbbi felmérés",
+          "profile": "Sportolói profil"
         }
       },
       "athletes": {
@@ -1592,14 +1613,16 @@
         "academyTitle": "Akadémiai összesítés",
         "copy": "Sűrű professzionális nézet forrásindoklással és folyamatfolytonossággal.",
         "loadLabel": "Terhelés",
-        "mentalLabel": "Mentális"
+        "mentalLabel": "Mentális",
+        "unassignedTeam": "Csapathoz nem rendelve"
       },
       "services": {
         "title": "Szolgáltatások és riportok",
         "copy": "Riport exportok, műveleti review-k és szolgáltatásteljesítés edzői workflow-khoz.",
         "status": {
           "ready": "Kész",
-          "inReview": "Review alatt"
+          "inReview": "Review alatt",
+          "missing": "Hiányzó adat"
         },
         "modules": {
           "daily-report": {
@@ -1621,6 +1644,26 @@
             "name": "Klub delivery board",
             "owner": "Club OS",
             "nextStep": "Tekintsd át a szolgáltatásteljesítést és riport ownershipet keretenként."
+          },
+          "daily-plan-coverage": {
+            "name": "Napi terv lefedettség",
+            "owner": "Coach OS",
+            "nextStep": "Minden aktív sportolónak élő adatokból generált aktuális tervre van szüksége."
+          },
+          "daily-iq-coverage": {
+            "name": "Daily IQ lefedettség",
+            "owner": "Athlete OS",
+            "nextStep": "A napi check-inek és mérések táplálják a készenléti motort."
+          },
+          "coach-action-queue": {
+            "name": "Edzői műveleti sor",
+            "owner": "Trainer OS",
+            "nextStep": "A nyitott edzői műveleteket tudomásul kell venni vagy le kell zárni."
+          },
+          "team-roster-coverage": {
+            "name": "Csapatkeret lefedettség",
+            "owner": "Club OS",
+            "nextStep": "Minden sportolót a megfelelő csapatkerethez kell rendelni."
           }
         }
       },
@@ -1628,7 +1671,8 @@
         "good": "Rendben",
         "watch": "Figyelendő",
         "risk": "Kockázat",
-        "acknowledged": "Nyugtázva"
+        "acknowledged": "Nyugtázva",
+        "missing": "Hiányzó adat"
       },
       "nav": {
         "groups": {

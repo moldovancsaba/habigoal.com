@@ -8,7 +8,7 @@ export function createProductSurfaceActionPack(messages: ProductSurfaceActionMes
   return createGdsVocabularyPack("productSurface", {
     dashboard: { defaultMessage: messages.dashboard ?? "Open dashboard", icon: GdsIcons.Dashboard },
     athleteDashboard: { defaultMessage: messages.athleteDashboard ?? "Open Athlete IQ dashboard", icon: GdsIcons.Dashboard },
-    reset: { defaultMessage: messages.reset ?? "Reset demo", icon: GdsIcons.Restore },
+    reset: { defaultMessage: messages.reset ?? "Reset values", icon: GdsIcons.Restore },
     complete: { defaultMessage: messages.complete ?? "Complete action", icon: GdsIcons.Check },
     acknowledge: { defaultMessage: messages.acknowledge ?? "Acknowledge", icon: GdsIcons.Check },
     report: { defaultMessage: messages.report ?? "Open report", icon: GdsIcons.Eye },

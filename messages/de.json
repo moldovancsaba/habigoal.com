@@ -36,7 +36,9 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
-    "goHome": "Go to home"
+    "goHome": "Zur Startseite",
+    "openDashboard": "Dashboard oeffnen",
+    "logout": "Abmelden"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -808,7 +810,7 @@
     "supportMentalMood": "Check in with the athlete before pushing intensity. Connection first, challenge second.",
     "supportMentalConfidence": "Start with easy success reps to rebuild trust before harder competitive tasks.",
     "supportMentalStable": "Mental state looks steady. Keep communication simple, calm, and specific.",
-    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a demo-first approach to sharpen focus.",
+    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a movement-first approach to sharpen focus.",
     "supportSportBrainConfidence": "Keep decisions simple early, then add complexity after the first successful actions.",
     "supportSportBrainStable": "Sport-brain readiness looks solid. Progress to decision-making and learning tasks normally."
   },
@@ -1383,7 +1385,7 @@
     "actions": {
       "dashboard": "Dashboard oeffnen",
       "athleteDashboard": "Athlete IQ Dashboard oeffnen",
-      "reset": "Demo zuruecksetzen",
+      "reset": "Werte zuruecksetzen",
       "complete": "Aktion abschliessen",
       "acknowledge": "Bestaetigen",
       "report": "Bericht oeffnen",
@@ -1510,7 +1512,7 @@
         }
       },
       "hero": {
-        "dateLabel": "Heute - 26. Juni 2026",
+        "dateLabel": "Heute - {date}",
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "Eine professionelle Betriebsoberflaeche fuer Athleten, Trainer, Teams, Clubs und Performance-Entscheidungen.",
         "copy": "Readiness, mentaler Zustand, Trainingslast, Teamaktionen und Berichte bleiben in einem fokussierten Trainer-Arbeitsbereich.",
@@ -1585,6 +1587,25 @@
             "action": "Einen geplanten Trainingsblock fortsetzen.",
             "source": "Daily IQ + Pain Safety"
           }
+        },
+        "empty": "Keine offenen Prioritaetsathleten aus Live-Daten.",
+        "reasons": {
+          "painAlert": "Schmerz-Sicherheit ist aktiv und braucht Trainerpruefung.",
+          "dailyIqRisk": "Daily IQ oder Bereitschaft liegt unter dem sicheren Betriebsbereich.",
+          "missingDailyIq": "Daily IQ fuer heute fehlt.",
+          "active": "Athlet ist aktiv ohne dringenden Risikomarker."
+        },
+        "actions": {
+          "reviewPain": "Schmerz-Leitplanke vor Aenderungen der Trainingsintensitaet pruefen.",
+          "reviewDailyIq": "Daily-IQ-Kontext pruefen und Sessionplan anpassen.",
+          "completeDailyIq": "Heutigen Daily-IQ-Check-in abschliessen.",
+          "continuePlan": "Aktuellen Plan fortsetzen und die naechste Messung beobachten."
+        },
+        "sources": {
+          "painSafety": "Schmerz-Sicherheitsalarm",
+          "dailyIq": "Daily-IQ-Snapshot",
+          "assessment": "Letzte Bewertung",
+          "profile": "Athletenprofil"
         }
       },
       "athletes": {
@@ -1592,14 +1613,16 @@
         "academyTitle": "Akademie-Rollup",
         "copy": "Dichte professionelle Ansicht mit Quellenrationale und Workflow-Kontinuitaet.",
         "loadLabel": "Load",
-        "mentalLabel": "Mental"
+        "mentalLabel": "Mental",
+        "unassignedTeam": "Keinem Team zugeordnet"
       },
       "services": {
         "title": "Services und Berichte",
         "copy": "Berichtsexporte, Aktionsreviews und Service-Lieferung fuer Trainer-Workflows.",
         "status": {
           "ready": "Bereit",
-          "inReview": "In Review"
+          "inReview": "In Review",
+          "missing": "Fehlende Daten"
         },
         "modules": {
           "daily-report": {
@@ -1621,6 +1644,26 @@
             "name": "Club Delivery Board",
             "owner": "Club OS",
             "nextStep": "Service-Lieferung und Berichtseigentum pro Kader pruefen."
+          },
+          "daily-plan-coverage": {
+            "name": "Tagesplan-Abdeckung",
+            "owner": "Coach OS",
+            "nextStep": "Jeder aktive Athlet braucht einen aktuellen Plan aus Live-Daten."
+          },
+          "daily-iq-coverage": {
+            "name": "Daily-IQ-Abdeckung",
+            "owner": "Athlete OS",
+            "nextStep": "Taegliche Check-ins und Messungen speisen die Readiness-Engine."
+          },
+          "coach-action-queue": {
+            "name": "Trainer-Aktionsliste",
+            "owner": "Trainer OS",
+            "nextStep": "Offene Traineraktionen muessen bestaetigt oder geloest werden."
+          },
+          "team-roster-coverage": {
+            "name": "Teamkader-Abdeckung",
+            "owner": "Club OS",
+            "nextStep": "Jeder Athlet sollte dem richtigen Teamkader zugeordnet sein."
           }
         }
       },
@@ -1628,7 +1671,8 @@
         "good": "Gut",
         "watch": "Beobachten",
         "risk": "Risiko",
-        "acknowledged": "Bestaetigt"
+        "acknowledged": "Bestaetigt",
+        "missing": "Fehlende Daten"
       },
       "nav": {
         "groups": {

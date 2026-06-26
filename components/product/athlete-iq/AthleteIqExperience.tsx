@@ -8,110 +8,22 @@ import { useMemo, useState, type CSSProperties } from "react";
 import { ATHLETE_IQ_OS_GROUPS, type AthleteIqOsGroup } from "@/lib/athlete-iq-os";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
+import type {
+  AthleteIqDashboardAthlete,
+  AthleteIqDashboardOperation,
+  AthleteIqDashboardService,
+  AthleteIqProductDashboardProjection
+} from "@/services/athleteiq-product-dashboard.service";
 import { SectionHeading, SignalCard, SurfaceTopBar } from "../ProductSurfaceShared";
 import { createProductSurfaceActionPack, type ProductSurfaceActionPack } from "../productSurfaceActions";
 
 type AiqTranslate = ReturnType<typeof useTranslations>;
 
-type PriorityAthlete = {
-  id: string;
-  name: string;
-  readiness: number;
-  load: number;
-  mental: number;
-  severity: "risk" | "watch" | "good";
-};
-
-type ServiceModule = {
-  id: string;
-  progress: number;
-  status: "ready" | "inReview";
-};
-
-type TeamOperation = {
-  id: string;
-  value: string;
-  state: "good" | "watch" | "risk";
-};
-
-const PRIORITY_ATHLETES = [
-  {
-    id: "lena",
-    name: "Lena F.",
-    readiness: 64,
-    load: 82,
-    mental: 72,
-    severity: "watch"
-  },
-  {
-    id: "mate",
-    name: "Mate B.",
-    readiness: 52,
-    load: 68,
-    mental: 48,
-    severity: "risk"
-  },
-  {
-    id: "anna",
-    name: "Anna K.",
-    readiness: 79,
-    load: 54,
-    mental: 84,
-    severity: "good"
-  }
-] satisfies PriorityAthlete[];
-
-const SERVICE_MODULES = [
-  {
-    id: "daily-report",
-    progress: 92,
-    status: "ready"
-  },
-  {
-    id: "academy-review",
-    progress: 74,
-    status: "ready"
-  },
-  {
-    id: "session-actions",
-    progress: 68,
-    status: "inReview"
-  },
-  {
-    id: "club-delivery",
-    progress: 81,
-    status: "ready"
-  }
-] satisfies ServiceModule[];
-
-const TEAM_OPERATIONS = [
-  {
-    id: "club-load",
-    value: "6 squads",
-    state: "watch"
-  },
-  {
-    id: "trainer-actions",
-    value: "14 open",
-    state: "risk"
-  },
-  {
-    id: "team-readiness",
-    value: "73%",
-    state: "good"
-  },
-  {
-    id: "club-services",
-    value: "4 live",
-    state: "good"
-  }
-] satisfies TeamOperation[];
-
 const HIDDEN_REFERENCE_NAV_ITEMS = new Set(["habits", "roadmap", "report"]);
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
 const ATHLETE_IQ_THEME_VARIABLES = getGdsVibeThemeCssVariables(ATHLETE_IQ_GDS_THEME_PRESET, "dark") as CSSProperties;
 
-export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurface; surface: ProductSurface }) {
+export function AthleteIqExperience({ dashboard, surface }: { dashboard: AthleteIqProductDashboardProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const t = useTranslations("ProductSurfaces.athleteIq");
   const tActions = useTranslations("ProductSurfaces.actions");
   const actionPack = useMemo(
@@ -151,12 +63,13 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
   const [modeView, setModeView] = useState<"lifestyle" | "performance">("performance");
   const [acknowledged, setAcknowledged] = useState<string[]>([]);
 
-  const activeQueue = PRIORITY_ATHLETES.filter((athlete) => !acknowledged.includes(athlete.id));
-  const queueScore = Math.round(activeQueue.reduce((sum, athlete) => sum + athlete.readiness, 0) / Math.max(activeQueue.length, 1));
-  const teamReadiness = Math.round(PRIORITY_ATHLETES.reduce((sum, athlete) => sum + athlete.readiness, 0) / PRIORITY_ATHLETES.length);
-  const mentalAverage = Math.round(PRIORITY_ATHLETES.reduce((sum, athlete) => sum + athlete.mental, 0) / PRIORITY_ATHLETES.length);
-  const dailyIq = modeView === "performance" ? 78 : 72;
-  const readyServices = SERVICE_MODULES.filter((module) => module.status === "ready").length;
+  const activeQueue = dashboard.activeQueue.filter((athlete) => !acknowledged.includes(athlete.id));
+  const queueScores = activeQueue.map((athlete) => athlete.readiness).filter(isNumber);
+  const queueScore = averageScore(queueScores);
+  const teamReadiness = dashboard.averageReadiness;
+  const mentalAverage = dashboard.averageMental;
+  const dailyIq = dashboard.dailyIqAverage;
+  const readyServices = dashboard.services.filter((module) => module.status === "ready").length;
 
   function acknowledge(id: string) {
     setAcknowledged((current) => current.includes(id) ? current : [...current, id]);
@@ -191,7 +104,7 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
                 {visibleNavigationGroups.map((group) => (
                   <AiqNavSection key={group.title} group={group} translate={t} />
                 ))}
-                <AiqDailyScoreCard mode={modeView} score={dailyIq} translate={t} />
+                <AiqDailyScoreCard mode={modeView} score={formatScore(dailyIq, false)} translate={t} />
                 <Paper className="aiq-mode-card surface-outline" withBorder radius="md" p="md">
                   <Stack gap="xs">
                     <Text className="aiq-letter-label">{t("controls.mode.label")}</Text>
@@ -213,7 +126,7 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
             <Paper id="home" component="section" className="aiq-hero-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
               <SimpleGrid cols={{ base: 1, lg: 2 }} spacing={{ base: "lg", lg: "xl" }}>
                 <Stack gap="lg">
-                  <Text className="aiq-letter-label">{t("hero.dateLabel")}</Text>
+                  <Text className="aiq-letter-label">{t("hero.dateLabel", { date: dashboard.localDate })}</Text>
                   <PageHeader
                     title={t("hero.title")}
                     subtitle={t("hero.subtitle")}
@@ -241,9 +154,9 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
                 </Stack>
 
                 <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="sm" aria-label={t("hero.summaryAria")}>
-                  <MetricCard label={t("metrics.dailyIq")} value={String(dailyIq)} detail={t(`metrics.${modeView}Route`)} />
-                  <MetricCard label={t("metrics.readiness")} value={`${teamReadiness}%`} detail={t("metrics.teamSnapshot")} />
-                  <MetricCard label={t("metrics.mentalEdge")} value={`${mentalAverage}%`} detail={t("metrics.priorityAthletes")} />
+                  <MetricCard label={t("metrics.dailyIq")} value={formatScore(dailyIq, false)} detail={t(`metrics.${modeView}Route`)} />
+                  <MetricCard label={t("metrics.readiness")} value={formatScore(teamReadiness)} detail={t("metrics.teamSnapshot")} />
+                  <MetricCard label={t("metrics.mentalEdge")} value={formatScore(mentalAverage)} detail={t("metrics.priorityAthletes")} />
                 </SimpleGrid>
               </SimpleGrid>
             </Paper>
@@ -257,14 +170,14 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
                   inverse
                 />
                 <SimpleGrid cols={{ base: 1, sm: 2, xl: 4 }} spacing="md">
-                  {TEAM_OPERATIONS.map((operation) => (
+                  {dashboard.operations.map((operation) => (
                     <TeamOperationCard key={operation.id} operation={operation} translate={t} />
                   ))}
                 </SimpleGrid>
                 <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
-                  <SignalCard label={t("signals.openPriorities.label")} value={String(activeQueue.length)} state="watch" detail={t("signals.openPriorities.detail")} inverse />
-                  <SignalCard label={t("signals.queueAverage.label")} value={`${queueScore}%`} state="watch" detail={t("signals.queueAverage.detail")} inverse />
-                  <SignalCard label={t("signals.readyServices.label")} value={String(readyServices)} state="good" detail={t("signals.readyServices.detail")} inverse />
+                  <SignalCard label={t("signals.openPriorities.label")} value={String(activeQueue.length)} state={activeQueue.length > 0 ? "watch" : "good"} detail={t("signals.openPriorities.detail")} inverse />
+                  <SignalCard label={t("signals.queueAverage.label")} value={formatScore(queueScore)} state={queueScore !== null && queueScore < 60 ? "risk" : queueScore !== null && queueScore < 75 ? "watch" : "good"} detail={t("signals.queueAverage.detail")} inverse />
+                  <SignalCard label={t("signals.readyServices.label")} value={`${readyServices}/${dashboard.services.length}`} state={readyServices === dashboard.services.length ? "good" : "watch"} detail={t("signals.readyServices.detail")} inverse />
                 </SimpleGrid>
               </Stack>
             </Paper>
@@ -273,7 +186,8 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
               <Paper id="priority" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
                   <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title={t("priority.title")} copy={t("priority.copy")} inverse />
-                  {PRIORITY_ATHLETES.map((athlete) => (
+                  {activeQueue.length === 0 ? <Text className="aiq-muted">{t("priority.empty")}</Text> : null}
+                  {activeQueue.map((athlete) => (
                     <PriorityAthleteCard key={athlete.id} athlete={athlete} acknowledged={acknowledged.includes(athlete.id)} actionPack={actionPack} onAcknowledge={acknowledge} translate={t} />
                   ))}
                 </Stack>
@@ -282,7 +196,7 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
               <Paper id="athletes" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
                   <SectionHeading icon={<GdsIcons.Profile size={18} />} title={roleView === "academy" ? t("athletes.academyTitle") : t("athletes.title")} copy={t("athletes.copy")} inverse />
-                  {PRIORITY_ATHLETES.map((athlete) => (
+                  {dashboard.athletes.map((athlete) => (
                     <AiqReadinessRow key={athlete.id} athlete={athlete} translate={t} />
                   ))}
                 </Stack>
@@ -291,7 +205,7 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
               <Paper id="services" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
                   <SectionHeading icon={<GdsIcons.Record size={18} />} title={t("services.title")} copy={t("services.copy")} inverse />
-                  {SERVICE_MODULES.map((module) => (
+                  {dashboard.services.map((module) => (
                     <ServiceModuleCard key={module.id} module={module} actionPack={actionPack} translate={t} />
                   ))}
                 </Stack>
@@ -304,7 +218,7 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
   );
 }
 
-function TeamOperationCard({ operation, translate }: { operation: TeamOperation; translate: AiqTranslate }) {
+function TeamOperationCard({ operation, translate }: { operation: AthleteIqDashboardOperation; translate: AiqTranslate }) {
   const color = operation.state === "risk" ? "red" : operation.state === "watch" ? "yellow" : "tactical";
 
   return (
@@ -343,7 +257,7 @@ function getAiqGroupKey(group: AthleteIqOsGroup["title"]) {
   return "development";
 }
 
-function AiqDailyScoreCard({ mode, score, translate }: { mode: "lifestyle" | "performance"; score: number; translate: AiqTranslate }) {
+function AiqDailyScoreCard({ mode, score, translate }: { mode: "lifestyle" | "performance"; score: string; translate: AiqTranslate }) {
   return (
     <Paper className="aiq-score-card surface-outline" withBorder radius="md" p="md">
       <Stack gap={4}>
@@ -389,11 +303,11 @@ function PriorityAthleteCard({
 }: {
   actionPack: ProductSurfaceActionPack;
   acknowledged: boolean;
-  athlete: PriorityAthlete;
+  athlete: AthleteIqDashboardAthlete;
   onAcknowledge: (id: string) => void;
   translate: AiqTranslate;
 }) {
-  const color = athlete.severity === "risk" ? "red" : athlete.severity === "watch" ? "yellow" : "tactical";
+  const color = athlete.severity === "risk" ? "red" : athlete.severity === "watch" ? "yellow" : athlete.severity === "missing" ? "gray" : "tactical";
 
   return (
     <Box className={acknowledged ? "aiq-row-card aiq-row-card-muted" : "aiq-row-card"}>
@@ -401,13 +315,13 @@ function PriorityAthleteCard({
         <Group justify="space-between" align="flex-start" gap="sm">
           <Stack gap={2}>
             <Text fw={900}>{athlete.name}</Text>
-            <Text size="sm" className="aiq-muted-soft">{translate(`priority.athletes.${athlete.id}.squad`)}</Text>
+            <Text size="sm" className="aiq-muted-soft">{athlete.teamName ?? translate("athletes.unassignedTeam")}</Text>
           </Stack>
           <Badge color={acknowledged ? "gray" : color} variant="light">{acknowledged ? translate("states.acknowledged") : translate(`states.${athlete.severity}`)}</Badge>
         </Group>
-        <Text size="sm">{translate(`priority.athletes.${athlete.id}.reason`)}</Text>
-        <Text size="sm" className="aiq-muted"><strong>{translate("priority.actionLabel")}:</strong> {translate(`priority.athletes.${athlete.id}.action`)}</Text>
-        <Text size="sm" className="aiq-muted-faint">{translate("priority.sourceLabel")}: {translate(`priority.athletes.${athlete.id}.source`)}</Text>
+        <Text size="sm">{translate(`priority.reasons.${athlete.reasonKey}`)}</Text>
+        <Text size="sm" className="aiq-muted"><strong>{translate("priority.actionLabel")}:</strong> {translate(`priority.actions.${athlete.actionKey}`)}</Text>
+        <Text size="sm" className="aiq-muted-faint">{translate("priority.sourceLabel")}: {translate(`priority.sources.${athlete.sourceKey}`)}</Text>
         <SemanticButton
           action="productSurface:acknowledge"
           color="yellow"
@@ -422,28 +336,29 @@ function PriorityAthleteCard({
   );
 }
 
-function AiqReadinessRow({ athlete, translate }: { athlete: PriorityAthlete; translate: AiqTranslate }) {
+function AiqReadinessRow({ athlete, translate }: { athlete: AthleteIqDashboardAthlete; translate: AiqTranslate }) {
+  const readiness = athlete.readiness ?? 0;
   return (
     <Box className="aiq-row-card">
       <Stack gap="xs">
         <Group justify="space-between">
           <Text fw={900}>{athlete.name}</Text>
-          <Text fw={900}>{athlete.readiness}%</Text>
+          <Text fw={900}>{formatScore(athlete.readiness)}</Text>
         </Group>
         <Progress.Root size="lg" radius="xl">
-          <Progress.Section value={athlete.readiness} color={athlete.readiness >= 75 ? "tactical" : athlete.readiness >= 60 ? "yellow" : "red"} />
+          <Progress.Section value={readiness} color={readiness >= 75 ? "tactical" : readiness >= 60 ? "yellow" : "red"} />
         </Progress.Root>
         <SimpleGrid cols={2} spacing={6}>
-          <Text size="sm" className="aiq-muted-soft">{translate("athletes.loadLabel")} {athlete.load}%</Text>
-          <Text size="sm" className="aiq-muted-soft">{translate("athletes.mentalLabel")} {athlete.mental}%</Text>
+          <Text size="sm" className="aiq-muted-soft">{translate("athletes.loadLabel")} {formatScore(athlete.load)}</Text>
+          <Text size="sm" className="aiq-muted-soft">{translate("athletes.mentalLabel")} {formatScore(athlete.mental)}</Text>
         </SimpleGrid>
       </Stack>
     </Box>
   );
 }
 
-function ServiceModuleCard({ actionPack, module, translate }: { actionPack: ProductSurfaceActionPack; module: ServiceModule; translate: AiqTranslate }) {
-  const color = module.status === "ready" ? "tactical" : "yellow";
+function ServiceModuleCard({ actionPack, module, translate }: { actionPack: ProductSurfaceActionPack; module: AthleteIqDashboardService; translate: AiqTranslate }) {
+  const color = module.status === "ready" ? "tactical" : module.status === "missing" ? "gray" : "yellow";
   return (
     <Box className="aiq-row-card">
       <Stack gap="sm">
@@ -466,4 +381,18 @@ function ServiceModuleCard({ actionPack, module, translate }: { actionPack: Prod
       </Stack>
     </Box>
   );
+}
+
+function formatScore(value: number | null, suffix = true) {
+  if (value === null) return "-";
+  return suffix ? `${value}%` : String(value);
+}
+
+function averageScore(values: number[]) {
+  if (values.length === 0) return null;
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function isNumber(value: number | null): value is number {
+  return typeof value === "number" && Number.isFinite(value);
 }

@@ -36,10 +36,10 @@ describe("weighted athlete habit scoring", () => {
   it("ignores unknown keys instead of creating an unversioned scoring path", () => {
     const normalized = normalizeHabitStatuses({
       extraTouches: true,
-      localDemoHabit: true
+      localUnsupportedHabit: true
     });
 
-    expect(normalized).not.toHaveProperty("localDemoHabit");
+    expect(normalized).not.toHaveProperty("localUnsupportedHabit");
     expect(getHabitScoreSummary(normalized).score).toBe(20);
   });
 });

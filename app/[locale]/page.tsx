@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductEntryCard } from "@/components/landing/ProductEntryCard";
+import { PublicAppControls } from "@/components/layout/PublicAppControls";
 
 export default async function LandingPage({
   params,
@@ -32,7 +33,10 @@ export default async function LandingPage({
       <Stack gap="xl">
         <Group justify="space-between" wrap="nowrap">
           <Anchor href={homeHref} underline="never" c="inherit">{brand}</Anchor>
-          <Anchor href={newsHref} fw={700}>{t("whatsNew")}</Anchor>
+          <Group gap="sm" wrap="nowrap">
+            <Anchor href={newsHref} fw={700}>{t("whatsNew")}</Anchor>
+            <PublicAppControls />
+          </Group>
         </Group>
 
       {error === "access_denied" && (

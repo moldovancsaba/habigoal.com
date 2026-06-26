@@ -49,7 +49,7 @@ export type SharedDataContract = {
   syncBehavior: string;
 };
 
-export type ProductDemoSignal = {
+export type ProductLiveSignal = {
   id: string;
   label: string;
   value: string;
@@ -71,7 +71,7 @@ export type ProductSurface = {
   theme: ProductTheme;
   navigation: ProductNavigationItem[];
   sharedDataContracts: SharedDataContract[];
-  demoSignals: ProductDemoSignal[];
+  liveSignals: ProductLiveSignal[];
   functionRegistry: ProductFunction[];
 };
 
@@ -393,7 +393,7 @@ export const productSurfaces = [
       }
     ],
     sharedDataContracts,
-    demoSignals: [
+    liveSignals: [
       { id: "readiness", label: "Today status", value: "Ready with one watch item", state: "watch", source: "daily-status" },
       { id: "habits", label: "Habit completion", value: "4 / 6", state: "neutral", source: "daily-status" },
       { id: "next-action", label: "Next action", value: "Hydrate and keep training easy", state: "good", source: "guidance-events" }
@@ -424,7 +424,7 @@ export const productSurfaces = [
     },
     navigation: ATHLETE_IQ_OS_NAVIGATION,
     sharedDataContracts,
-    demoSignals: [
+    liveSignals: [
       { id: "queue", label: "Priority queue", value: "3 athletes", state: "watch", source: "daily-status" },
       { id: "reports", label: "Reports due", value: "2 packages", state: "neutral", source: "guidance-events" },
       { id: "scope", label: "Shared Habigoal signals", value: "Included", state: "good", source: "function-registry" }

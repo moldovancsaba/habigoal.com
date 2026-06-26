@@ -8,7 +8,7 @@ import type { MentalEdgeSnapshot } from "@/types/athleteiq-mental-edge";
 import type { PainGuardrail } from "@/types/athleteiq-pain-safety";
 
 describe("AthleteIQ twin projection contract", () => {
-  it("orders active, lite, and future dimensions without fake future values", () => {
+  it("orders active, lite, and future dimensions without unsupported future values", () => {
     const projection = buildAthleteTwinProjection({
       athleteId: "athlete-1",
       athlete: { name: "Athlete One", birthDate: "2010-01-01", createdAt: "2026-06-26T12:00:00.000Z", updatedAt: "2026-06-26T12:00:00.000Z" },

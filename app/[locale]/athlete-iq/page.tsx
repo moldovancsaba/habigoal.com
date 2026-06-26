@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AthleteIqExperience } from "@/components/product/athlete-iq/AthleteIqExperience";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
+import { getAthleteIqProductDashboardProjection } from "@/services/athleteiq-product-dashboard.service";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params
@@ -24,6 +27,7 @@ export default async function AthleteIqSurfaceRoute({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const dashboard = await getAthleteIqProductDashboardProjection();
 
-  return <AthleteIqExperience surface={getProductSurfaceOrThrow("athlete-iq")} />;
+  return <AthleteIqExperience dashboard={dashboard} surface={getProductSurfaceOrThrow("athlete-iq")} />;
 }

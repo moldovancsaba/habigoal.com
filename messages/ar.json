@@ -36,7 +36,9 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
-    "goHome": "Go to home"
+    "goHome": "العودة إلى الصفحة الرئيسية",
+    "openDashboard": "فتح لوحة التحكم",
+    "logout": "تسجيل الخروج"
   },
   "Dashboard": {
     "title": "لوحة التحكم",
@@ -808,7 +810,7 @@
     "supportMentalMood": "Check in with the athlete before pushing intensity. Connection first, challenge second.",
     "supportMentalConfidence": "Start with easy success reps to rebuild trust before harder competitive tasks.",
     "supportMentalStable": "Mental state looks steady. Keep communication simple, calm, and specific.",
-    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a demo-first approach to sharpen focus.",
+    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a movement-first approach to sharpen focus.",
     "supportSportBrainConfidence": "Keep decisions simple early, then add complexity after the first successful actions.",
     "supportSportBrainStable": "Sport-brain readiness looks solid. Progress to decision-making and learning tasks normally."
   },
@@ -1383,7 +1385,7 @@
     "actions": {
       "dashboard": "فتح لوحة التحكم",
       "athleteDashboard": "فتح لوحة Athlete IQ",
-      "reset": "إعادة ضبط العرض",
+      "reset": "إعادة ضبط القيم",
       "complete": "إكمال الإجراء",
       "acknowledge": "تأكيد",
       "report": "فتح التقرير",
@@ -1510,7 +1512,7 @@
         }
       },
       "hero": {
-        "dateLabel": "اليوم - 26 يونيو 2026",
+        "dateLabel": "اليوم - {date}",
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "واجهة تشغيل احترافية للرياضيين والمدربين والفرق والأندية وقرارات الأداء.",
         "copy": "تبقى الجاهزية والحالة الذهنية وحمل التدريب وإجراءات الفريق والتقارير في مساحة مدرب مركزة واحدة.",
@@ -1585,6 +1587,25 @@
             "action": "التقدم في كتلة تدريب مخططة واحدة.",
             "source": "Daily IQ + سلامة الألم"
           }
+        },
+        "empty": "لا توجد أولويات مفتوحة من السجلات الحية.",
+        "reasons": {
+          "painAlert": "تنبيه سلامة الألم نشط ويتطلب مراجعة المدرب.",
+          "dailyIqRisk": "Daily IQ أو الجاهزية أقل من النطاق الآمن.",
+          "missingDailyIq": "Daily IQ لهذا اليوم غير مكتمل.",
+          "active": "الرياضي نشط ولا توجد علامة خطر عاجلة."
+        },
+        "actions": {
+          "reviewPain": "راجع ضابط الألم قبل تغيير شدة التدريب.",
+          "reviewDailyIq": "راجع سياق Daily IQ وعدّل خطة الحصة.",
+          "completeDailyIq": "أكمل تسجيل Daily IQ لهذا اليوم.",
+          "continuePlan": "تابع الخطة الحالية وراقب القياس التالي."
+        },
+        "sources": {
+          "painSafety": "تنبيه سلامة الألم",
+          "dailyIq": "سجل Daily IQ",
+          "assessment": "آخر تقييم",
+          "profile": "ملف الرياضي"
         }
       },
       "athletes": {
@@ -1592,14 +1613,16 @@
         "academyTitle": "ملخص الأكاديمية",
         "copy": "عرض احترافي كثيف مع تفسير المصدر واستمرارية سير العمل.",
         "loadLabel": "الحمل",
-        "mentalLabel": "ذهني"
+        "mentalLabel": "ذهني",
+        "unassignedTeam": "غير مخصص لفريق"
       },
       "services": {
         "title": "الخدمات والتقارير",
         "copy": "تصدير التقارير ومراجعة الإجراءات وتسليم الخدمات لسير عمل المدرب.",
         "status": {
           "ready": "جاهز",
-          "inReview": "قيد المراجعة"
+          "inReview": "قيد المراجعة",
+          "missing": "بيانات ناقصة"
         },
         "modules": {
           "daily-report": {
@@ -1621,6 +1644,26 @@
             "name": "لوحة تسليم النادي",
             "owner": "Club OS",
             "nextStep": "مراجعة تسليم الخدمة وملكية التقرير حسب المجموعة."
+          },
+          "daily-plan-coverage": {
+            "name": "تغطية الخطة اليومية",
+            "owner": "Coach OS",
+            "nextStep": "كل رياضي نشط يحتاج إلى خطة حالية مولدة من البيانات الحية."
+          },
+          "daily-iq-coverage": {
+            "name": "تغطية Daily IQ",
+            "owner": "Athlete OS",
+            "nextStep": "تغذي الفحوصات والقياسات اليومية محرك الجاهزية."
+          },
+          "coach-action-queue": {
+            "name": "قائمة إجراءات المدرب",
+            "owner": "Trainer OS",
+            "nextStep": "يجب تأكيد إجراءات المدرب المفتوحة أو حلها."
+          },
+          "team-roster-coverage": {
+            "name": "تغطية قائمة الفريق",
+            "owner": "Club OS",
+            "nextStep": "يجب ربط كل رياضي بقائمة الفريق الصحيحة."
           }
         }
       },
@@ -1628,7 +1671,8 @@
         "good": "جيد",
         "watch": "مراقبة",
         "risk": "خطر",
-        "acknowledged": "تم التأكيد"
+        "acknowledged": "تم التأكيد",
+        "missing": "بيانات ناقصة"
       },
       "nav": {
         "groups": {

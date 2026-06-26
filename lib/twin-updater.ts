@@ -93,7 +93,7 @@ export function updatePerformanceDimension(
       case "internal_load_points":
         updated.internalLoadPoints7d = m.value; // For true 7d we'd aggregate history, simplifying here
         updated.acuteLoad7d = (updated.acuteLoad7d || 0) + m.value;
-        // Naive ACWR calculation for demonstration
+        // Initial ACWR calculation until the full workload model is available.
         if (updated.chronicLoad28d && updated.chronicLoad28d > 0) {
           updated.acwr = updated.acuteLoad7d / updated.chronicLoad28d;
         } else {

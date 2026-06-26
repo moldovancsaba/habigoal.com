@@ -52,7 +52,7 @@ export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurfac
     setCompletedHabits((current) => checked ? [...new Set([...current, id])] : current.filter((item) => item !== id));
   }
 
-  function resetDemo() {
+  function resetValues() {
     setEnergy(76);
     setSoreness(34);
     setMood(82);
@@ -138,7 +138,7 @@ export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurfac
                 <StatusSlider label={t("checkIn.sleep")} value={sleep} onChange={setSleep} />
                 <StatusSlider label={t("checkIn.soreness")} value={soreness} onChange={setSoreness} inverse />
                 <Group gap="sm" wrap="wrap">
-                  <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetDemo} />
+                  <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetValues} />
                   <SemanticButton
                     action="productSurface:complete"
                     color="ingress"

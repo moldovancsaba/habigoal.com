@@ -6,7 +6,7 @@ import crypto from "crypto";
 
 // We need to implement a standalone worker because we can't easily import 
 // Next.js TS files into a raw Node script without a build step or ts-node.
-// For simplicity in this demo script, we interact with MongoDB directly.
+// This worker interacts with MongoDB directly.
 
 const uri = process.env.MONGODB_URI;
 if (!uri) throw new Error("MONGODB_URI is required");

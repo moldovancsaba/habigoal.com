@@ -36,7 +36,9 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
-    "goHome": "Go to home"
+    "goHome": "עבור לדף הבית",
+    "openDashboard": "פתח לוח בקרה",
+    "logout": "התנתק"
   },
   "Dashboard": {
     "title": "לוח בקרה",
@@ -808,7 +810,7 @@
     "supportMentalMood": "Check in with the athlete before pushing intensity. Connection first, challenge second.",
     "supportMentalConfidence": "Start with easy success reps to rebuild trust before harder competitive tasks.",
     "supportMentalStable": "Mental state looks steady. Keep communication simple, calm, and specific.",
-    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a demo-first approach to sharpen focus.",
+    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a movement-first approach to sharpen focus.",
     "supportSportBrainConfidence": "Keep decisions simple early, then add complexity after the first successful actions.",
     "supportSportBrainStable": "Sport-brain readiness looks solid. Progress to decision-making and learning tasks normally."
   },
@@ -1383,7 +1385,7 @@
     "actions": {
       "dashboard": "פתח לוח בקרה",
       "athleteDashboard": "פתח לוח Athlete IQ",
-      "reset": "אפס דמו",
+      "reset": "אפס ערכים",
       "complete": "השלם פעולה",
       "acknowledge": "אשר",
       "report": "פתח דוח",
@@ -1510,7 +1512,7 @@
         }
       },
       "hero": {
-        "dateLabel": "היום - 26 ביוני 2026",
+        "dateLabel": "היום - {date}",
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "משטח תפעול מקצועי לספורטאים, מאמנים, קבוצות, מועדונים והחלטות ביצועים.",
         "copy": "מוכנות, מצב מנטלי, עומס אימון, פעולות צוות ודוחות נשארים בסביבת מאמן ממוקדת אחת.",
@@ -1585,6 +1587,25 @@
             "action": "להתקדם בלוק אימון מתוכנן אחד.",
             "source": "Daily IQ + בטיחות כאב"
           }
+        },
+        "empty": "אין ספורטאים בעדיפות פתוחה מתוך נתונים חיים.",
+        "reasons": {
+          "painAlert": "בטיחות כאב פעילה ודורשת בדיקת מאמן.",
+          "dailyIqRisk": "Daily IQ או מוכנות נמצאים מתחת לטווח הבטוח.",
+          "missingDailyIq": "Daily IQ של היום חסר.",
+          "active": "הספורטאי פעיל ללא סימון סיכון דחוף."
+        },
+        "actions": {
+          "reviewPain": "בדוק את מגבלת הכאב לפני שינוי עצימות אימון.",
+          "reviewDailyIq": "בדוק את הקשר Daily IQ והתאם את תוכנית האימון.",
+          "completeDailyIq": "השלם את בדיקת Daily IQ של היום.",
+          "continuePlan": "המשך את התוכנית הנוכחית ועקוב אחרי המדידה הבאה."
+        },
+        "sources": {
+          "painSafety": "התראת בטיחות כאב",
+          "dailyIq": "רשומת Daily IQ",
+          "assessment": "הערכה אחרונה",
+          "profile": "פרופיל ספורטאי"
         }
       },
       "athletes": {
@@ -1592,14 +1613,16 @@
         "academyTitle": "סיכום אקדמיה",
         "copy": "תצוגה מקצועית צפופה עם נימוק מקור והמשכיות תהליך.",
         "loadLabel": "עומס",
-        "mentalLabel": "מנטלי"
+        "mentalLabel": "מנטלי",
+        "unassignedTeam": "לא משויך לקבוצה"
       },
       "services": {
         "title": "שירותים ודוחות",
         "copy": "ייצוא דוחות, סקירת פעולות ומסירת שירותים לתהליכי מאמן.",
         "status": {
           "ready": "מוכן",
-          "inReview": "בבדיקה"
+          "inReview": "בבדיקה",
+          "missing": "נתונים חסרים"
         },
         "modules": {
           "daily-report": {
@@ -1621,6 +1644,26 @@
             "name": "לוח מסירת מועדון",
             "owner": "Club OS",
             "nextStep": "לסקור מסירת שירות ובעלות דוח לפי סגל."
+          },
+          "daily-plan-coverage": {
+            "name": "כיסוי תוכנית יומית",
+            "owner": "Coach OS",
+            "nextStep": "לכל ספורטאי פעיל צריכה להיות תוכנית עדכנית מנתונים חיים."
+          },
+          "daily-iq-coverage": {
+            "name": "כיסוי Daily IQ",
+            "owner": "Athlete OS",
+            "nextStep": "בדיקות ומדידות יומיות מזינות את מנוע המוכנות."
+          },
+          "coach-action-queue": {
+            "name": "תור פעולות מאמן",
+            "owner": "Trainer OS",
+            "nextStep": "יש לאשר או לסגור פעולות מאמן פתוחות."
+          },
+          "team-roster-coverage": {
+            "name": "כיסוי סגל קבוצה",
+            "owner": "Club OS",
+            "nextStep": "כל ספורטאי צריך להיות משויך לסגל הקבוצה הנכון."
           }
         }
       },
@@ -1628,7 +1671,8 @@
         "good": "טוב",
         "watch": "למעקב",
         "risk": "סיכון",
-        "acknowledged": "אושר"
+        "acknowledged": "אושר",
+        "missing": "נתונים חסרים"
       },
       "nav": {
         "groups": {

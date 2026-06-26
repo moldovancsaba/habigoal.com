@@ -36,7 +36,9 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
-    "goHome": "Go to home"
+    "goHome": "Go to home",
+    "openDashboard": "Open dashboard",
+    "logout": "Log out"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -808,7 +810,7 @@
     "supportMentalMood": "Check in with the athlete before pushing intensity. Connection first, challenge second.",
     "supportMentalConfidence": "Start with easy success reps to rebuild trust before harder competitive tasks.",
     "supportMentalStable": "Mental state looks steady. Keep communication simple, calm, and specific.",
-    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a demo-first approach to sharpen focus.",
+    "supportSportBrainFocus": "Use one coaching cue only, shorter blocks, and a movement-first approach to sharpen focus.",
     "supportSportBrainConfidence": "Keep decisions simple early, then add complexity after the first successful actions.",
     "supportSportBrainStable": "Sport-brain readiness looks solid. Progress to decision-making and learning tasks normally."
   },
@@ -1383,7 +1385,7 @@
     "actions": {
       "dashboard": "Open dashboard",
       "athleteDashboard": "Open Athlete IQ dashboard",
-      "reset": "Reset demo",
+      "reset": "Reset values",
       "complete": "Complete action",
       "acknowledge": "Acknowledge",
       "report": "Open report",
@@ -1510,7 +1512,7 @@
         }
       },
       "hero": {
-        "dateLabel": "Today - June 26, 2026",
+        "dateLabel": "Today - {date}",
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "A professional operating surface for athletes, trainers, teams, clubs, and performance decisions.",
         "copy": "Readiness, mental state, training load, team actions, and reports stay in one focused trainer workspace.",
@@ -1585,6 +1587,25 @@
             "action": "Progress one planned training block.",
             "source": "Daily IQ + pain safety"
           }
+        },
+        "empty": "No open priority athletes from live records.",
+        "reasons": {
+          "painAlert": "Pain safety is active and requires trainer review.",
+          "dailyIqRisk": "Daily IQ or readiness is below the safe operating range.",
+          "missingDailyIq": "Daily IQ is missing for today.",
+          "active": "Athlete is active with no urgent risk marker."
+        },
+        "actions": {
+          "reviewPain": "Review pain guardrail before training intensity changes.",
+          "reviewDailyIq": "Review the Daily IQ context and adjust the session plan.",
+          "completeDailyIq": "Complete today's Daily IQ check-in.",
+          "continuePlan": "Continue the current plan and monitor the next measurement."
+        },
+        "sources": {
+          "painSafety": "Pain safety alert",
+          "dailyIq": "Daily IQ snapshot",
+          "assessment": "Latest assessment",
+          "profile": "Athlete profile"
         }
       },
       "athletes": {
@@ -1592,14 +1613,16 @@
         "academyTitle": "Academy rollup",
         "copy": "Dense professional view with source rationale and workflow continuity.",
         "loadLabel": "Load",
-        "mentalLabel": "Mental"
+        "mentalLabel": "Mental",
+        "unassignedTeam": "Unassigned team"
       },
       "services": {
         "title": "Services and reports",
         "copy": "Report exports, action reviews, and service delivery for trainer workflows.",
         "status": {
           "ready": "Ready",
-          "inReview": "In review"
+          "inReview": "In review",
+          "missing": "Missing data"
         },
         "modules": {
           "daily-report": {
@@ -1621,6 +1644,26 @@
             "name": "Club delivery board",
             "owner": "Club OS",
             "nextStep": "Review service delivery and report ownership by squad."
+          },
+          "daily-plan-coverage": {
+            "name": "Daily plan coverage",
+            "owner": "Coach OS",
+            "nextStep": "Every active athlete should have a current plan generated from live data."
+          },
+          "daily-iq-coverage": {
+            "name": "Daily IQ coverage",
+            "owner": "Athlete OS",
+            "nextStep": "Daily check-ins and measurements feed the readiness engine."
+          },
+          "coach-action-queue": {
+            "name": "Coach action queue",
+            "owner": "Trainer OS",
+            "nextStep": "Open coach actions must be acknowledged or resolved."
+          },
+          "team-roster-coverage": {
+            "name": "Team roster coverage",
+            "owner": "Club OS",
+            "nextStep": "Every athlete should be assigned to the correct team roster."
           }
         }
       },
@@ -1628,7 +1671,8 @@
         "good": "Good",
         "watch": "Watch",
         "risk": "Risk",
-        "acknowledged": "Acknowledged"
+        "acknowledged": "Acknowledged",
+        "missing": "Missing data"
       },
       "nav": {
         "groups": {
