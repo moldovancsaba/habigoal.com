@@ -1,7 +1,7 @@
 import { ATHLETEIQ_MODULE_REGISTRY_VERSION } from "@/lib/athleteiq-modules";
 import { buildDailyIqSnapshot } from "@/lib/athleteiq-daily-iq";
 import { getLocalDateForTimezone, isAthleteIqCheckInMode } from "@/lib/athleteiq-check-in";
-import { insertDailyIqSnapshot } from "@/repositories/athleteiq-daily-iq.repository";
+import { upsertDailyIqSnapshot } from "@/repositories/athleteiq-daily-iq.repository";
 import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
 import { listTrainingLoadRecordsByAthleteId } from "@/repositories/training-load.repository";
@@ -46,6 +46,6 @@ export async function recalculateDailyIq(input: DailyIqRecalculateRequest) {
     ...sourceResult.bundle,
     moduleRegistryVersion: ATHLETEIQ_MODULE_REGISTRY_VERSION
   });
-  const saved = await insertDailyIqSnapshot(snapshot);
+  const saved = await upsertDailyIqSnapshot(snapshot);
   return { errors: [], snapshot: saved };
 }

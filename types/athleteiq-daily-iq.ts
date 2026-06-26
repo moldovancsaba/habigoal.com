@@ -5,8 +5,8 @@ import type { TrainingLoadRecord } from "@/types/training-load";
 
 export type DailyIqScoreConfidence = "high" | "medium" | "low" | "insufficient";
 export type DailyIqPainRiskLevel = "none" | "low" | "moderate" | "high";
-export type DailyIqComponentKey = "readiness" | "mentalEdge" | "habit" | "safeLoad";
-export type DailyIqDataSourceKey = "checkIn" | "habits" | "sessionLoad" | "moduleRegistry";
+export type DailyIqComponentKey = "wellnessReadiness" | "mentalEdge" | "loadFit" | "habitConsistency" | "recoverySupport";
+export type DailyIqDataSourceKey = "checkIn" | "habits" | "sessionLoad" | "recoverySupport" | "moduleRegistry";
 
 export type DailyIqInput = {
   athleteId: string;
@@ -32,6 +32,7 @@ export type DailyIqSnapshot = {
   mentalEdgeScore: number | null;
   habitScore: number | null;
   safeLoadScore: number | null;
+  recoverySupportScore: number | null;
   painRiskLevel: DailyIqPainRiskLevel;
   confidence: DailyIqScoreConfidence;
   dataUsed: DailyIqDataSourceKey[];

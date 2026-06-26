@@ -14,13 +14,14 @@ import type {
 import type { TrainingLoadRecord } from "@/types/training-load";
 
 export const ATHLETEIQ_DAILY_IQ_CAPABILITY_KEY = "AIQ-1220";
-export const ATHLETEIQ_DAILY_IQ_ALGORITHM_VERSION = "aiq-daily-iq-1220.1";
+export const ATHLETEIQ_DAILY_IQ_ALGORITHM_VERSION = "aiq-daily-iq-1220.2";
 
 export const DAILY_IQ_WEIGHTS: Record<DailyIqComponentKey, number> = {
-  readiness: 0.4,
-  mentalEdge: 0.3,
-  habit: 0.2,
-  safeLoad: 0.1
+  wellnessReadiness: 0.35,
+  mentalEdge: 0.2,
+  loadFit: 0.2,
+  habitConsistency: 0.15,
+  recoverySupport: 0.1
 };
 
 const privateMentalRoles = new Set(["admin", "trainer", "performance_coach", "physio", "athlete"]);
@@ -32,26 +33,30 @@ export function buildDailyIqSnapshot(input: DailyIqInput, now = new Date()): Dai
   const mentalEdgeScore = checkIn ? computeMentalEdgeScore(checkIn) : null;
   const habitScore = input.habitRecord ? getHabitScoreSummary(input.habitRecord.statuses).score : null;
   const safeLoadScore = computeSafeLoadScore(checkIn, input.trainingLoadRecords);
+  const recoverySupportScore = checkIn ? computeRecoverySupportScore(checkIn) : null;
   const painRiskLevel = getPainRiskLevel(checkIn);
-  const confidence = getDailyIqConfidence({ checkIn, habitScore, safeLoadScore });
+  const confidence = getDailyIqConfidence({ checkIn, readinessScore, mentalEdgeScore, habitScore, safeLoadScore, recoverySupportScore });
   const dataUsed = [
     ...(checkIn ? ["checkIn" as const] : []),
     ...(input.habitRecord ? ["habits" as const] : []),
     ...(safeLoadScore !== null ? ["sessionLoad" as const] : []),
+    ...(recoverySupportScore !== null ? ["recoverySupport" as const] : []),
     "moduleRegistry" as const
   ];
   const missingData = [
     ...(!checkIn ? ["checkIn" as const] : []),
     ...(!input.habitRecord ? ["habits" as const] : []),
-    ...(safeLoadScore === null ? ["sessionLoad" as const] : [])
+    ...(safeLoadScore === null ? ["sessionLoad" as const] : []),
+    ...(recoverySupportScore === null ? ["recoverySupport" as const] : [])
   ];
   const rawScore = confidence === "insufficient"
     ? null
     : weightedAverage({
-        readiness: readinessScore,
+        wellnessReadiness: readinessScore,
         mentalEdge: mentalEdgeScore,
-        habit: habitScore,
-        safeLoad: safeLoadScore
+        loadFit: safeLoadScore,
+        habitConsistency: habitScore,
+        recoverySupport: recoverySupportScore
       });
   const painCapApplied = getPainCap(painRiskLevel);
   const dailyIqScore = rawScore === null ? null : painCapApplied === null ? rawScore : Math.min(rawScore, painCapApplied);
@@ -68,6 +73,7 @@ export function buildDailyIqSnapshot(input: DailyIqInput, now = new Date()): Dai
     mentalEdgeScore,
     habitScore,
     safeLoadScore,
+    recoverySupportScore,
     painRiskLevel,
     confidence,
     dataUsed,
@@ -99,18 +105,32 @@ export function projectDailyIqSnapshotForRole(snapshot: DailyIqSnapshot, context
 
 export function getDailyIqConfidence({
   checkIn,
+  readinessScore,
+  mentalEdgeScore,
   habitScore,
-  safeLoadScore
+  safeLoadScore,
+  recoverySupportScore
 }: {
   checkIn: AthleteIqCheckInSnapshot | null;
+  readinessScore: number | null;
+  mentalEdgeScore: number | null;
   habitScore: number | null;
   safeLoadScore: number | null;
+  recoverySupportScore: number | null;
 }): DailyIqScoreConfidence {
   if (!checkIn) return "insufficient";
-  const optionalSources = [habitScore !== null, safeLoadScore !== null].filter(Boolean).length;
-  if (optionalSources === 2) return "high";
-  if (optionalSources === 1) return "medium";
-  return "low";
+  const availableWeight = [
+    ["wellnessReadiness", readinessScore] as const,
+    ["mentalEdge", mentalEdgeScore] as const,
+    ["loadFit", safeLoadScore] as const,
+    ["habitConsistency", habitScore] as const,
+    ["recoverySupport", recoverySupportScore] as const
+  ].reduce((sum, [key, score]) => sum + (score === null ? 0 : DAILY_IQ_WEIGHTS[key]), 0);
+
+  if (availableWeight < 0.4) return "insufficient";
+  if (availableWeight < 0.6) return "low";
+  if (availableWeight < 0.8) return "medium";
+  return "high";
 }
 
 export function computeReadinessScore(checkIn: AthleteIqCheckInSnapshot) {
@@ -142,10 +162,25 @@ export function computeSafeLoadScore(checkIn: AthleteIqCheckInSnapshot | null, t
 
 export function getPainRiskLevel(checkIn: AthleteIqCheckInSnapshot | null): DailyIqPainRiskLevel {
   const pain = numericRawValue(checkIn, "pain");
-  if (typeof pain !== "number" || pain <= 1) return "none";
+  if (typeof pain !== "number" || pain <= 0) return "none";
   if (pain >= 7) return "high";
-  if (pain >= 5) return "moderate";
+  if (pain >= 4) return "moderate";
+  if (pain >= 1) return "low";
   return "low";
+}
+
+export function computeRecoverySupportScore(checkIn: AthleteIqCheckInSnapshot) {
+  const sources: number[] = [];
+  const sleepHours = numericRawValue(checkIn, "sleepHours");
+  const pain = numericRawValue(checkIn, "pain");
+  const sorenessAreas = checkIn.values.sorenessAreas?.rawValue;
+
+  if (typeof sleepHours === "number") sources.push(scoreSleepHours(sleepHours));
+  if (typeof pain === "number") sources.push(scorePainRecovery(pain));
+  if (Array.isArray(sorenessAreas)) sources.push(scoreSorenessAreaCount(sorenessAreas.length));
+
+  if (sources.length === 0) return null;
+  return roundScore(sources.reduce((sum, value) => sum + value, 0) / sources.length);
 }
 
 function weightedAverage(scores: Record<DailyIqComponentKey, number | null>) {
@@ -175,16 +210,38 @@ function buildExplanation({
 }) {
   const explanation = [`Daily IQ confidence is ${confidence}.`];
   if (missingData.length) explanation.push(`Missing data: ${missingData.join(", ")}.`);
+  if (confidence === "low") explanation.push("Low source confidence blocks high-intensity recommendations.");
   if (painRiskLevel === "high") explanation.push("High pain caps Daily IQ at 60 and blocks high-intensity recommendations.");
-  if (painRiskLevel === "moderate") explanation.push("Moderate pain keeps recommendations conservative.");
+  if (painRiskLevel === "moderate") explanation.push("Moderate pain routes the plan to conservative coach review.");
   if (painCapApplied !== null && painRiskLevel !== "high") explanation.push(`Pain guardrail cap applied at ${painCapApplied}.`);
   return explanation;
 }
 
 function getPainCap(painRiskLevel: DailyIqPainRiskLevel) {
   if (painRiskLevel === "high") return 60;
-  if (painRiskLevel === "moderate") return 75;
   return null;
+}
+
+function scoreSleepHours(value: number) {
+  if (value >= 8 && value <= 10) return 100;
+  if (value >= 7) return 85;
+  if (value >= 6) return 70;
+  if (value >= 5) return 50;
+  if (value > 10 && value <= 12) return 75;
+  return 30;
+}
+
+function scorePainRecovery(value: number) {
+  if (value <= 3) return 100;
+  if (value <= 6) return 60;
+  return 25;
+}
+
+function scoreSorenessAreaCount(count: number) {
+  if (count <= 0) return 100;
+  if (count === 1) return 80;
+  if (count === 2) return 65;
+  return 45;
 }
 
 function numericRawValue(checkIn: AthleteIqCheckInSnapshot | null | undefined, key: AthleteIqCheckInFieldKey) {

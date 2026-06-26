@@ -50,7 +50,7 @@ export function evaluatePainSafety(input: PainSafetyEvaluationInput, now = new D
 
 export function getPainAlertState(painScore: number | null, recurringPainDays: number): PainAlertState {
   if (recurringPainDays >= 3) return "coach_review";
-  if (typeof painScore !== "number") return "monitor";
+  if (typeof painScore !== "number") return "none";
   if (painScore <= 3) return "none";
   if (painScore >= 7) return "capped";
   return "monitor";

@@ -6,24 +6,26 @@ import { GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
+import type { HabigoalHabitKey, HabigoalTodayProjection } from "@/services/habigoal-product.service";
 import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
 import { createProductSurfaceActionPack } from "../productSurfaceActions";
 
 type HabitItem = {
-  id: string;
+  id: HabigoalHabitKey;
+  dbKey: string;
   category: string;
 };
 
 const HABIT_PLAN = [
-  { id: "hydrate", category: "recovery" },
-  { id: "move", category: "sport" },
-  { id: "fuel", category: "fuel" },
-  { id: "reflect", category: "mental" },
-  { id: "sleep", category: "recovery" },
-  { id: "study", category: "life" }
+  { id: "hydrate", dbKey: "hydration", category: "recovery" },
+  { id: "move", dbKey: "mobility", category: "sport" },
+  { id: "fuel", dbKey: "nutrition", category: "fuel" },
+  { id: "reflect", dbKey: "recoverySession", category: "mental" },
+  { id: "sleep", dbKey: "sleepBeforeMidnight", category: "recovery" },
+  { id: "study", dbKey: "tacticalLearning", category: "life" }
 ] satisfies HabitItem[];
 
-export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurface; surface: ProductSurface }) {
+export function HabigoalExperience({ projection, surface }: { projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const t = useTranslations("ProductSurfaces.habigoal");
   const tActions = useTranslations("ProductSurfaces.actions");
   const actionPack = useMemo(
@@ -34,12 +36,13 @@ export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurfac
       }),
     [tActions]
   );
-  const [energy, setEnergy] = useState(76);
-  const [soreness, setSoreness] = useState(34);
-  const [mood, setMood] = useState(82);
-  const [sleep, setSleep] = useState(68);
-  const [completedHabits, setCompletedHabits] = useState<string[]>(["hydrate", "move", "reflect", "sleep"]);
+  const [energy, setEnergy] = useState(projection.values.energy);
+  const [soreness, setSoreness] = useState(projection.values.soreness);
+  const [mood, setMood] = useState(projection.values.mood);
+  const [sleep, setSleep] = useState(projection.values.sleep);
+  const [completedHabits, setCompletedHabits] = useState<HabigoalHabitKey[]>(projection.completedHabits);
   const [completedSupportAction, setCompletedSupportAction] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const readiness = Math.round((energy + mood + sleep + (100 - soreness)) / 4);
   const habitScore = Math.round((completedHabits.length / HABIT_PLAN.length) * 100);
@@ -48,17 +51,58 @@ export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurfac
   const stateLabel = t(`states.${state}`);
   const nextAction = t(`nextAction.${state}`);
 
-  function toggleHabit(id: string, checked: boolean) {
+  function toggleHabit(id: HabigoalHabitKey, checked: boolean) {
     setCompletedHabits((current) => checked ? [...new Set([...current, id])] : current.filter((item) => item !== id));
   }
 
   function resetValues() {
-    setEnergy(76);
-    setSoreness(34);
-    setMood(82);
-    setSleep(68);
-    setCompletedHabits(["hydrate", "move", "reflect", "sleep"]);
+    setEnergy(projection.values.energy);
+    setSoreness(projection.values.soreness);
+    setMood(projection.values.mood);
+    setSleep(projection.values.sleep);
+    setCompletedHabits(projection.completedHabits);
     setCompletedSupportAction(false);
+  }
+
+  async function completeDailyOperation() {
+    if (!projection.athleteId) return;
+    setSaving(true);
+    try {
+      const statuses = Object.fromEntries(
+        HABIT_PLAN.map((habit) => [habit.dbKey, completedHabits.includes(habit.id)])
+      );
+      const habitResponse = await fetch(`/api/athletes/${projection.athleteId}/habits`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: projection.localDate,
+          statuses
+        })
+      });
+      if (!habitResponse.ok) return;
+
+      const checkInResponse = await fetch("/api/athleteiq/check-ins", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          athleteId: projection.athleteId,
+          mode: "lifestyle",
+          timezone: projection.timezone,
+          idempotencyKey: `habigoal:${projection.athleteId}:${projection.localDate}`,
+          values: {
+            sleepQuality: percentToTenPoint(sleep),
+            fatigue: percentToTenPoint(100 - energy),
+            pain: percentToTenPoint(soreness),
+            stress: percentToTenPoint(100 - mood),
+            mood: percentToTenPoint(mood)
+          }
+        })
+      });
+      if (!checkInResponse.ok) return;
+      setCompletedSupportAction(true);
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -143,7 +187,9 @@ export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurfac
                     action="productSurface:complete"
                     color="ingress"
                     vocabularyPacks={[actionPack]}
-                    onClick={() => setCompletedSupportAction(true)}
+                    onClick={completeDailyOperation}
+                    disabled={!projection.athleteId || saving}
+                    loading={saving}
                   />
                 </Group>
               </Stack>
@@ -218,6 +264,11 @@ export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurfac
       </Box>
     </Box>
   );
+}
+
+function percentToTenPoint(value: number) {
+  const clamped = Math.max(0, Math.min(100, value));
+  return Math.max(1, Math.min(10, Math.round((clamped / 100) * 9 + 1)));
 }
 
 function StatusSlider({

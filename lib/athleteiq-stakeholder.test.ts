@@ -108,6 +108,7 @@ function athleteSource(input: {
       mentalEdgeScore: input.score,
       habitScore: null,
       safeLoadScore: null,
+      recoverySupportScore: null,
       painRiskLevel: input.painRiskLevel ?? "none",
       confidence: input.confidence ?? "high",
       dataUsed: ["checkIn"],
@@ -115,7 +116,7 @@ function athleteSource(input: {
       explanation: [],
       algorithmVersion: "test",
       moduleRegistryVersion: "test",
-      componentWeights: { readiness: 0.4, mentalEdge: 0.3, habit: 0.2, safeLoad: 0.1 },
+      componentWeights: { wellnessReadiness: 0.35, mentalEdge: 0.2, loadFit: 0.2, habitConsistency: 0.15, recoverySupport: 0.1 },
       painCapApplied: null,
       highIntensityBlocked: false,
       createdAt: "2026-06-26T12:00:00.000Z"

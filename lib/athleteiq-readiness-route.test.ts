@@ -5,7 +5,7 @@ import type { DailyIqSnapshot } from "@/types/athleteiq-daily-iq";
 import type { PainGuardrail } from "@/types/athleteiq-pain-safety";
 
 describe("AthleteIQ readiness route engine", () => {
-  it("routes high-confidence strong readiness to green", () => {
+  it("routes high-confidence strong Daily IQ to green", () => {
     const snapshot = buildReadinessRouteSnapshot({
       athleteId: "athlete-1",
       localDate: "2026-06-26",
@@ -17,6 +17,19 @@ describe("AthleteIQ readiness route engine", () => {
     expect(snapshot.route).toBe("green");
     expect(snapshot.action).toBe("full_training_allowed");
     expect(snapshot.allowedActions).toContain("high_intensity_if_planned");
+  });
+
+  it("routes moderate pain to amber even with a strong Daily IQ", () => {
+    const snapshot = buildReadinessRouteSnapshot({
+      athleteId: "athlete-1",
+      localDate: "2026-06-26",
+      timezone: "UTC",
+      dailyIq: dailyIq({ readinessScore: 90, dailyIqScore: 88, confidence: "high" }),
+      painGuardrail: painGuardrail("monitor")
+    });
+
+    expect(snapshot.route).toBe("amber");
+    expect(snapshot.rulesUsed.map((rule) => rule.explanationKey)).toContain("athleteiq.readinessRoute.rules.moderatePainReview");
   });
 
   it("routes high pain to red regardless of base readiness", () => {
@@ -70,6 +83,7 @@ function dailyIq(overrides: Partial<DailyIqSnapshot>): DailyIqSnapshot {
     mentalEdgeScore: 70,
     habitScore: null,
     safeLoadScore: null,
+    recoverySupportScore: null,
     painRiskLevel: "none",
     confidence: "medium",
     dataUsed: ["checkIn", "moduleRegistry"],
@@ -77,7 +91,7 @@ function dailyIq(overrides: Partial<DailyIqSnapshot>): DailyIqSnapshot {
     explanation: [],
     algorithmVersion: "daily-iq-test",
     moduleRegistryVersion: "registry-test",
-    componentWeights: { readiness: 0.4, mentalEdge: 0.3, habit: 0.2, safeLoad: 0.1 },
+    componentWeights: { wellnessReadiness: 0.35, mentalEdge: 0.2, loadFit: 0.2, habitConsistency: 0.15, recoverySupport: 0.1 },
     painCapApplied: null,
     highIntensityBlocked: false,
     createdAt: "2026-06-26T12:00:00.000Z",
@@ -90,11 +104,11 @@ function painGuardrail(state: PainGuardrail["state"]): PainGuardrail {
     athleteId: "athlete-1",
     localDate: "2026-06-26",
     state,
-    riskLevel: state === "capped" ? "high" : "none",
-    maxTrainingIntensity: state === "capped" ? "recovery" : "normal",
+    riskLevel: state === "capped" ? "high" : state === "monitor" ? "moderate" : "none",
+    maxTrainingIntensity: state === "capped" ? "recovery" : state === "monitor" ? "low" : "normal",
     dailyIqCap: state === "capped" ? 60 : null,
     requiredCopyKey: "copy",
-    reasonCodes: state === "capped" ? ["high_pain_today"] : [],
+    reasonCodes: state === "capped" ? ["high_pain_today"] : state === "monitor" ? ["monitor_pain_today"] : [],
     dataUsed: ["daily_check_ins"],
     missingData: [],
     generatedAt: "2026-06-26T12:00:00.000Z"

@@ -5,8 +5,10 @@ import { getHabitScoreSummary } from "@/lib/athlete-habits";
 import { buildAthleteIqCheckInSnapshot } from "@/lib/athleteiq-check-in";
 import {
   ATHLETEIQ_DAILY_IQ_ALGORITHM_VERSION,
+  DAILY_IQ_WEIGHTS,
   buildDailyIqSnapshot,
   computeMentalEdgeScore,
+  computeRecoverySupportScore,
   computeReadinessScore,
   projectDailyIqSnapshotForRole
 } from "@/lib/athleteiq-daily-iq";
@@ -43,11 +45,13 @@ describe("AthleteIQ Daily IQ scoring contract", () => {
     expect(snapshot.mentalEdgeScore).toBe(69.2);
     expect(snapshot.habitScore).toBe(getHabitScoreSummary(habitRecord.statuses).score);
     expect(snapshot.safeLoadScore).toBe(90);
+    expect(snapshot.recoverySupportScore).toBe(25);
     expect(snapshot.confidence).toBe("high");
     expect(snapshot.painRiskLevel).toBe("high");
     expect(snapshot.dailyIqScore).toBe(60);
     expect(snapshot.highIntensityBlocked).toBe(true);
     expect(snapshot.missingData).toEqual([]);
+    expect(snapshot.componentWeights).toEqual(DAILY_IQ_WEIGHTS);
   });
 
   it("returns insufficient confidence with no check-in and no numeric composite", () => {
@@ -64,14 +68,15 @@ describe("AthleteIQ Daily IQ scoring contract", () => {
 
     expect(snapshot.dailyIqScore).toBeNull();
     expect(snapshot.confidence).toBe("insufficient");
-    expect(snapshot.missingData).toEqual(["checkIn", "habits", "sessionLoad"]);
+    expect(snapshot.missingData).toEqual(["checkIn", "habits", "sessionLoad", "recoverySupport"]);
   });
 
   it("keeps readiness and mental edge calculations independently explainable", () => {
-    const checkIn = createCheckIn({ sleepQuality: 10, fatigue: 1, pain: 1, stress: 1, mood: 10, confidence: 10, focus: 10, motivation: 10 });
+    const checkIn = createCheckIn({ sleepQuality: 10, fatigue: 1, pain: 1, stress: 1, mood: 10, confidence: 10, focus: 10, motivation: 10, sleepHours: 8, sorenessAreas: [] });
 
     expect(computeReadinessScore(checkIn)).toBe(100);
     expect(computeMentalEdgeScore(checkIn)).toBe(100);
+    expect(computeRecoverySupportScore(checkIn)).toBe(100);
   });
 
   it("redacts mental and pain details for non-clinical family projections", () => {

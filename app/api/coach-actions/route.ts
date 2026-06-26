@@ -20,7 +20,7 @@ function severityValue(value: unknown): CoachActionSeverity | undefined {
 }
 
 function sourceTypeValue(value: unknown): CoachActionRecord["sourceType"] | undefined {
-  return value === "missed-check-in" || value === "readiness-threshold" || value === "recommendation" ? value : undefined;
+  return value === "missed-check-in" || value === "readiness-threshold" || value === "recommendation" || value === "pain-safety" || value === "daily-engine" ? value : undefined;
 }
 
 async function resolveActor() {

@@ -7,8 +7,8 @@ export const ATHLETEIQ_READINESS_ROUTE_CAPABILITY_KEY = "AIQ-1245";
 export const ATHLETEIQ_READINESS_ROUTE_VERSION = "aiq-readiness-route-1245.1";
 
 const greenRule: RouteRule = {
-  inputSignal: "readinessScore",
-  threshold: 70,
+  inputSignal: "dailyIqScore",
+  threshold: 75,
   operator: ">=",
   outputRoute: "green",
   explanationKey: "athleteiq.readinessRoute.rules.greenReadiness",
@@ -16,8 +16,8 @@ const greenRule: RouteRule = {
 };
 
 const amberRule: RouteRule = {
-  inputSignal: "readinessScore",
-  threshold: 45,
+  inputSignal: "dailyIqScore",
+  threshold: 50,
   operator: ">=",
   outputRoute: "amber",
   explanationKey: "athleteiq.readinessRoute.rules.amberReadiness",
@@ -25,8 +25,8 @@ const amberRule: RouteRule = {
 };
 
 const redLowReadinessRule: RouteRule = {
-  inputSignal: "readinessScore",
-  threshold: 45,
+  inputSignal: "dailyIqScore",
+  threshold: 50,
   operator: "<",
   outputRoute: "red",
   explanationKey: "athleteiq.readinessRoute.rules.redLowReadiness",
@@ -48,6 +48,15 @@ const lowConfidenceRule: RouteRule = {
   operator: "=",
   outputRoute: "amber",
   explanationKey: "athleteiq.readinessRoute.rules.lowConfidence",
+  severity: "warning"
+};
+
+const moderatePainRule: RouteRule = {
+  inputSignal: "painGuardrail",
+  threshold: "monitor",
+  operator: "=",
+  outputRoute: "amber",
+  explanationKey: "athleteiq.readinessRoute.rules.moderatePainReview",
   severity: "warning"
 };
 
@@ -117,21 +126,23 @@ function getAppliedRules(dailyIq: DailyIqSnapshot | null, painGuardrail: PainGua
 
   if (painGuardrail && (painGuardrail.state === "capped" || painGuardrail.state === "coach_review" || painGuardrail.riskLevel === "high" || painGuardrail.riskLevel === "recurring")) {
     rules.push({ ...highPainRule, actualValue: painGuardrail.state });
+  } else if (painGuardrail && (painGuardrail.state === "monitor" || painGuardrail.riskLevel === "moderate")) {
+    rules.push({ ...moderatePainRule, actualValue: painGuardrail.state });
   }
 
   if (dailyIq.confidence === "low" || dailyIq.confidence === "insufficient") {
     rules.push({ ...lowConfidenceRule, actualValue: dailyIq.confidence });
   }
 
-  const readinessScore = dailyIq.readinessScore;
-  if (readinessScore === null) {
-    rules.push({ ...lowConfidenceRule, actualValue: "missing_readiness" });
-  } else if (readinessScore < 45) {
-    rules.push({ ...redLowReadinessRule, actualValue: readinessScore });
-  } else if (readinessScore >= 70 && dailyIq.confidence !== "low" && dailyIq.confidence !== "insufficient" && !dailyIq.highIntensityBlocked) {
-    rules.push({ ...greenRule, actualValue: readinessScore });
+  const dailyIqScore = dailyIq.dailyIqScore;
+  if (dailyIqScore === null) {
+    rules.push({ ...lowConfidenceRule, actualValue: "missing_daily_iq_score" });
+  } else if (dailyIqScore < 50) {
+    rules.push({ ...redLowReadinessRule, actualValue: dailyIqScore });
+  } else if (dailyIqScore >= 75 && dailyIq.confidence !== "low" && dailyIq.confidence !== "insufficient" && !dailyIq.highIntensityBlocked) {
+    rules.push({ ...greenRule, actualValue: dailyIqScore });
   } else {
-    rules.push({ ...amberRule, actualValue: readinessScore });
+    rules.push({ ...amberRule, actualValue: dailyIqScore });
   }
 
   return rules;

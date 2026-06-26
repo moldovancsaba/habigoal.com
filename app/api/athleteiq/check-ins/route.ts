@@ -5,6 +5,7 @@ import { logAuditEvent } from "@/lib/audit";
 import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_CHECK_IN_CAPABILITY_KEY, buildAthleteIqCheckInSnapshot } from "@/lib/athleteiq-check-in";
 import { upsertAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
+import { runAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
 import type { AthleteIqCheckInInput } from "@/types/athleteiq-check-in";
 
 export async function POST(request: Request) {
@@ -45,8 +46,23 @@ export async function POST(request: Request) {
     }
     console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CHECK_IN_CAPABILITY_KEY, event: "athleteiq.checkin.submitted", correlationId, mode: snapshot.mode, localDate: snapshot.localDate }));
 
+    const engineRun = await runAthleteIqDailyEngine({
+      athleteId: snapshot.athleteId,
+      localDate: snapshot.localDate,
+      timezone: snapshot.timezone,
+      mode: snapshot.mode,
+      sourceEvent: "check_in_submitted",
+      idempotencyKey: snapshot.idempotencyKey || `${snapshot.athleteId}:${snapshot.localDate}:${snapshot.mode}`,
+      actor: {
+        email: user.email,
+        name: user.name,
+        role: user.primaryRole
+      }
+    });
+
     return NextResponse.json({
       snapshot,
+      engineRun,
       highPain: result.highPain,
       correlationId,
       generatedAt: new Date().toISOString(),

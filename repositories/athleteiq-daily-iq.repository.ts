@@ -17,6 +17,21 @@ export async function insertDailyIqSnapshot(snapshot: DailyIqSnapshot) {
   return { ...snapshot, id: result.insertedId.toString() };
 }
 
+export async function upsertDailyIqSnapshot(snapshot: DailyIqSnapshot) {
+  const db = await getDatabase();
+  const collection = db.collection<DailyIqDocument>(collectionName);
+  const result = await collection.findOneAndUpdate(
+    {
+      athleteId: snapshot.athleteId,
+      localDate: snapshot.localDate,
+      mode: snapshot.mode
+    },
+    { $set: snapshot },
+    { upsert: true, returnDocument: "after" }
+  );
+  return normalizeDailyIqSnapshot(result as unknown as Record<string, unknown>);
+}
+
 export async function getLatestDailyIqSnapshot(input: {
   athleteId: string;
   localDate: string;

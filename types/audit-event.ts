@@ -6,6 +6,7 @@ export type AuditAction =
   | "athlete.delete"
   | "athlete.export"
   | "athlete.erase"
+  | "athleteiq.daily_engine.run"
   | "checkin.create"
   | "checkin.duplicate_blocked"
   | "consent.grant"

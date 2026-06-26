@@ -62,6 +62,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
   const [roleView, setRoleView] = useState<"coach" | "academy" | "services">("coach");
   const [modeView, setModeView] = useState<"lifestyle" | "performance">("performance");
   const [acknowledged, setAcknowledged] = useState<string[]>([]);
+  const [savingAcknowledgement, setSavingAcknowledgement] = useState<string | null>(null);
 
   const activeQueue = dashboard.activeQueue.filter((athlete) => !acknowledged.includes(athlete.id));
   const queueScores = activeQueue.map((athlete) => athlete.readiness).filter(isNumber);
@@ -71,8 +72,27 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
   const dailyIq = dashboard.dailyIqAverage;
   const readyServices = dashboard.services.filter((module) => module.status === "ready").length;
 
-  function acknowledge(id: string) {
-    setAcknowledged((current) => current.includes(id) ? current : [...current, id]);
+  async function acknowledge(athlete: AthleteIqDashboardAthlete) {
+    setSavingAcknowledgement(athlete.id);
+    try {
+      const response = await fetch("/api/coach-actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          athleteKey: athlete.id,
+          date: dashboard.localDate,
+          recommendationKey: recommendationKeyForAthlete(athlete),
+          status: "acknowledged",
+          severity: athlete.severity === "risk" ? "critical" : "warning",
+          sourceType: athlete.reasonKey === "painAlert" ? "pain-safety" : athlete.reasonKey === "missingDailyIq" ? "daily-engine" : "readiness-threshold",
+          detail: `${athlete.reasonKey}:${athlete.actionKey}`
+        })
+      });
+      if (!response.ok) return;
+      setAcknowledged((current) => current.includes(athlete.id) ? current : [...current, athlete.id]);
+    } finally {
+      setSavingAcknowledgement(null);
+    }
   }
 
   function openAthleteDashboard() {
@@ -188,7 +208,15 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
                   <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title={t("priority.title")} copy={t("priority.copy")} inverse />
                   {activeQueue.length === 0 ? <Text className="aiq-muted">{t("priority.empty")}</Text> : null}
                   {activeQueue.map((athlete) => (
-                    <PriorityAthleteCard key={athlete.id} athlete={athlete} acknowledged={acknowledged.includes(athlete.id)} actionPack={actionPack} onAcknowledge={acknowledge} translate={t} />
+                    <PriorityAthleteCard
+                      key={athlete.id}
+                      athlete={athlete}
+                      acknowledged={acknowledged.includes(athlete.id)}
+                      actionPack={actionPack}
+                      onAcknowledge={acknowledge}
+                      saving={savingAcknowledgement === athlete.id}
+                      translate={t}
+                    />
                   ))}
                 </Stack>
               </Paper>
@@ -299,12 +327,14 @@ function PriorityAthleteCard({
   acknowledged,
   athlete,
   onAcknowledge,
+  saving,
   translate
 }: {
   actionPack: ProductSurfaceActionPack;
   acknowledged: boolean;
   athlete: AthleteIqDashboardAthlete;
-  onAcknowledge: (id: string) => void;
+  onAcknowledge: (athlete: AthleteIqDashboardAthlete) => void;
+  saving: boolean;
   translate: AiqTranslate;
 }) {
   const color = athlete.severity === "risk" ? "red" : athlete.severity === "watch" ? "yellow" : athlete.severity === "missing" ? "gray" : "tactical";
@@ -328,12 +358,20 @@ function PriorityAthleteCard({
           size="sm"
           variant={acknowledged ? "default" : "light"}
           vocabularyPacks={[actionPack]}
-          onClick={() => onAcknowledge(athlete.id)}
-          disabled={acknowledged}
+          onClick={() => onAcknowledge(athlete)}
+          disabled={acknowledged || saving}
+          loading={saving}
         />
       </Stack>
     </Box>
   );
+}
+
+function recommendationKeyForAthlete(athlete: AthleteIqDashboardAthlete) {
+  if (athlete.reasonKey === "painAlert") return "athleteiq.pain_safety.review";
+  if (athlete.reasonKey === "missingDailyIq") return "athleteiq.daily_engine.missing_data";
+  if (athlete.reasonKey === "dailyIqRisk") return "athleteiq.readiness_route.review";
+  return "athleteiq.daily_plan.continue";
 }
 
 function AiqReadinessRow({ athlete, translate }: { athlete: AthleteIqDashboardAthlete; translate: AiqTranslate }) {

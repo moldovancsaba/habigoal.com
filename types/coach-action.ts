@@ -8,7 +8,7 @@ export interface CoachActionRecord {
   recommendationKey: string;
   status: CoachActionStatus;
   severity?: CoachActionSeverity;
-  sourceType?: "missed-check-in" | "readiness-threshold" | "recommendation";
+  sourceType?: "missed-check-in" | "readiness-threshold" | "recommendation" | "pain-safety" | "daily-engine";
   sourceId?: string;
   detail?: string;
   actorName: string;
