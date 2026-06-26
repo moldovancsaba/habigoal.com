@@ -4,7 +4,7 @@
 
 Habigoal uses Mantine through the governed General Design System runtime. Product code consumes GDS contracts through the unified `@doneisbetter/gds` package, with `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` as governance packages.
 
-Latest inspected GDS line: `2.6.4`.
+Latest inspected GDS line: `3.4.7`.
 
 ## Current Implementation
 
@@ -27,9 +27,9 @@ The active dependency set is:
 @doneisbetter/gds-compliance
 ```
 
-Current package source: live npm packages under `@doneisbetter/*` at `^2.6.4`. Do not reintroduce sibling `file:` package links, split runtime packages, or the old placeholder package namespace.
+Current package source: live npm packages under `@doneisbetter/*` at `^3.4.7`. Do not reintroduce sibling `file:` package links, split runtime packages, or the old placeholder package namespace.
 
-GDS `2.6.4` supports Mantine `^7.9.0`, `^8.3.0`, and `^9.0.0`; Habigoal is on Mantine `8.3.x`.
+GDS `3.4.7` supports Mantine `^7.9.0`, `^8.3.0`, and `^9.0.0`; Habigoal is on Mantine `8.3.x`.
 
 Use GDS subpath imports deliberately:
 

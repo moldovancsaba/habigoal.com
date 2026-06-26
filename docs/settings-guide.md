@@ -1,6 +1,6 @@
 # Habigoal Settings Guide
 
-Last updated: 2026-05-21
+Last updated: 2026-06-26
 
 Settings are available to admins at `/{locale}/dashboard/settings`. Trainers must not be able to open this route when authentication is enforced.
 
@@ -57,6 +57,16 @@ Governance metrics summarize operational data quality, including:
 - check-ins missing athlete links
 
 These metrics are intended to reveal cleanup work, not to replace full audit logs.
+
+## Admin Onboarding
+
+Admin onboarding is delivered through the shared onboarding runtime. Prompts are role-scoped, dismissible, and non-blocking. They should reinforce safe setup behavior for users, teams, standards, restore workflows, and governance metrics.
+
+The runtime uses:
+
+- `GET /api/onboarding/state`
+- `POST /api/onboarding/events`
+- `docs/onboarding-architecture.md` as the architecture contract
 
 ## Company And Legal Profile
 

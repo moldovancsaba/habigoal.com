@@ -1,13 +1,13 @@
 # General Design System Adoption Plan
 
 Status: GDS governed baseline passing
-Last updated: 2026-05-28
+Last updated: 2026-06-26
 
 Sources inspected:
 
 - [sovereignsquad/general-design-system](https://github.com/sovereignsquad/general-design-system)
 - `/Users/Shared/Projects/general-design-system`
-- Latest inspected GDS version: `2.6.4`
+- Latest inspected GDS version: `3.4.7`
 - Latest inspected GDS package: `@doneisbetter/gds`
 
 ## What GDS Provides
@@ -38,7 +38,7 @@ Current gaps:
 - Legacy local UI primitive files still exist for historical compatibility, but checked application paths now import GDS surfaces directly instead of importing local `components/ui` wrappers.
 - `app/globals.css` contains product-local colors, shadows, gradients, and glass utilities.
 - GDS packages are published on npm under the real `@doneisbetter/*` namespace.
-- Local GDS package version inspected: `2.6.4`.
+- Local GDS package version inspected: `3.4.7`.
 - GDS package peer dependencies support Mantine `^7.9.0`, `^8.3.0`, and `^9.0.0`; Habigoal uses Mantine `8.3.x`.
 - Habigoal now installs the unified `@doneisbetter/gds` package from npm.
 - The root provider is now `GdsProvider` from `@doneisbetter/gds/client`, wrapped by the Habigoal theme-mode adapter.
@@ -49,7 +49,7 @@ Current gaps:
 
 ## Dependency Strategy
 
-Use the live npm packages directly: `@doneisbetter/gds`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance` at `^2.6.4`. Do not reintroduce sibling `file:` package links, split runtime dependencies, or the old placeholder package namespace.
+Use the live npm packages directly: `@doneisbetter/gds`, `@doneisbetter/gds-eslint-config`, and `@doneisbetter/gds-compliance` at `^3.4.7`. Do not reintroduce sibling `file:` package links, split runtime dependencies, or the old placeholder package namespace.
 
 The preferred long-term route is published packages with aligned Mantine major versions. The latest GDS compatibility matrix supports Mantine `7.9.x` and `8.3.x`, React `18.2.x` / `19.x`, Next `15.x`, and Vite `8.x`.
 
@@ -98,7 +98,7 @@ Root layout should own `lang`, `dir`, and any framework script setup. A single c
 
 ## New GDS Coverage To Use Next
 
-The `@doneisbetter/gds@2.6.4` package now covers these Habigoal non-standard elements:
+The `@doneisbetter/gds@3.4.7` package now covers these Habigoal non-standard elements:
 
 - `SemanticButton`: replace repeated arbitrary action buttons for save, add, delete, download, copy, confirm, cancel, and start flows.
 - `ConfirmDialog`: replace browser `confirm(...)` and bespoke destructive modals.

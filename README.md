@@ -4,7 +4,10 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 
 ## Current Product Surface
 
-- Public landing page at `/{locale}` with app entry buttons for athletes and trainers.
+- Public landing page at `/{locale}` with explicit product entry cards for Habigoal and Athlete IQ.
+- Product surfaces:
+  - Habigoal at `/{locale}/habigoal` for client wellbeing, habit tracking, status capture, and lightweight guidance.
+  - Athlete IQ at `/{locale}/athlete-iq` for coaches, academies, professional dashboards, and advanced services.
 - Public news and release notes at `/{locale}/news`.
 - Public legal pages at `/{locale}/legal/gtc` and `/{locale}/legal/privacy`.
 - Athlete app at `/{locale}/athletes` and `/{locale}/athletes/[id]`.
@@ -25,6 +28,8 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - Persisted coach action status through the `coach_actions` collection and `/api/coach-actions`.
 - Weekly session planning through `/dashboard/planning`, persisted in `session_plans`, and reflected on athlete detail pages.
 - PDF/report export surfaces for athlete and check-in records.
+- Phase 1 product split between Habigoal and Athlete IQ with a shared function registry exposed via `/api/product-surfaces`.
+- Shared Baseline route and API compatibility preserved while splitting runtime UI surfaces.
 - Public weekly news surface backed by `content/news/posts.json`, with locale-specific fail-closed rendering.
 - DoneIsBetter SSO integration with local user authorization.
 - Role model: `athlete`, `trainer`, and `admin`.
@@ -61,13 +66,13 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 
 Package ranges are defined in `package.json`; the active lockfile currently resolves to:
 
-- Next.js: `15.5.15`
+- Next.js: `15.5.19`
 - React: `19.2.5`
 - TypeScript: `5.9.3`
 - MongoDB driver: `6.21.0`
 - next-intl: `4.9.2`
-- Mantine: `8.3.6`
-- General Design System: latest inspected line is `2.6.4`; runtime package is `@doneisbetter/gds`, with `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` for governance. Habigoal consumes the live npm package line at `^2.6.4`.
+- Mantine: `8.3.18`
+- General Design System: runtime package is `@doneisbetter/gds`, with `@doneisbetter/gds-eslint-config` and `@doneisbetter/gds-compliance` for governance. Habigoal currently consumes the live npm package line at `^3.4.7`.
 - Node.js: `22.x`
 - App version: `0.5.1`
 
@@ -104,6 +109,12 @@ HABIGOAL_ENFORCE_AUTH=true
 
 `HABIGOAL_ENFORCE_AUTH=false` is useful for local open-mode development. Production should run with `HABIGOAL_ENFORCE_AUTH=true`.
 
+### Product Surfaces
+
+- Habigoal: `/{locale}/habigoal`
+- Athlete IQ: `/{locale}/athlete-iq`
+- Product registry endpoint: `/api/product-surfaces`
+
 ## Validation Commands
 
 ```bash
@@ -112,12 +123,13 @@ npm run test
 npm run gds:audit
 npm run gds:compliance
 npm run i18n:audit
+npm run version:audit
 npm run build
 npm run typecheck
 npm run db:ping
 ```
 
-`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. `npm run semantic:audit` is a targeted design-system cleanup check. `npm run gds:audit` is the strict GDS-only readiness check and must pass with the manifest set to `governed`. `npm run gds:compliance` runs the shared GDS compliance package and is a release gate. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
+`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. `npm run version:audit` verifies app-version truth across `package.json`, `package-lock.json`, `lib/app-version.ts`, README, and legal docs. `npm run semantic:audit` is a targeted design-system cleanup check. `npm run gds:audit` is the strict GDS-only readiness check and must pass with the manifest set to `governed`. `npm run gds:compliance` runs the shared GDS compliance package and is a release gate. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
 Design authority lives in `/Users/Shared/Projects/general-design-system`. Habigoal-local design docs describe only adapter details, migration state, validation commands, and approved exceptions.
 

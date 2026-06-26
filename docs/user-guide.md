@@ -1,6 +1,6 @@
 # Habigoal User Guide
 
-Last updated: 2026-05-21
+Last updated: 2026-06-26
 
 Habigoal has three operating roles: athlete, trainer, and admin. Public visitors can read the landing page, news, and legal pages. Personal athlete data requires an authenticated Habigoal session when `HABIGOAL_ENFORCE_AUTH=true`.
 
@@ -22,6 +22,7 @@ When signed in, an athlete should land on their own athlete profile and should n
 Athletes can:
 
 - view their own readiness history and operating summary
+- save first-login baseline setup fields such as weekly goal, preferred training days, and support preferences
 - complete their own daily check-in
 - track habits and task-like routines with weighted training, recovery, wellness, and learning contribution
 - see training load, memory summaries, and weekly context that belongs to their own profile
@@ -34,6 +35,8 @@ Athletes cannot:
 - manage users, teams, settings, restore bins, or governance metrics
 
 Empty or partial athlete surfaces should explain the missing source and show the next safe action, such as starting the athlete's own daily check-in. Habigoal must not inject sample/demo data to fill an empty state.
+
+Athlete onboarding prompts can appear on the athlete profile route. They are short, dismissible, keyboard-accessible prompts that guide the athlete to open their own profile and complete a daily check-in. If onboarding state cannot load, the athlete route remains usable.
 
 ## Trainer Experience
 
@@ -48,6 +51,8 @@ Trainers can:
 - track coach action status
 - create and review weekly session plans
 - read team-scoped data through the API and dashboard
+
+Trainer onboarding prompts can appear on trainer dashboard surfaces. They explain the priority queue, team scope, planning, and recommendation workflows without blocking dashboard access.
 
 Trainers cannot:
 
@@ -69,6 +74,8 @@ Admins can:
 - restore soft-deleted athletes and check-ins
 
 Admins should keep at least one valid admin account active. The API prevents deleting or demoting the final admin.
+
+Admin onboarding prompts can appear on settings surfaces. They explain user rights, team membership, standards, restore controls, and governance metrics. Non-admin users do not receive admin onboarding modules.
 
 ## Daily Check-In
 

@@ -197,6 +197,24 @@ function buildSupportSummary(assessment: AssessmentPayload, translate: (key: str
   return { physical, mental, sportBrain };
 }
 
+function recordAthleteCheckInOnboarding(childId: string, recordId: string) {
+  const route = `/athletes/${childId}/check-in`;
+  const payload = {
+    moduleId: "athlete-first-login-baseline",
+    event: "completed",
+    route,
+    stepId: "complete-check-in",
+    idempotencyKey: `athlete-first-login-baseline:complete-check-in:${recordId || childId}`
+  };
+
+  return fetch("/api/onboarding/events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    keepalive: true,
+    body: JSON.stringify(payload)
+  }).catch(() => undefined);
+}
+
 type AthleteCheckInAppProps = {
   forcedChildId?: string;
   profileReturnHref?: string;
@@ -489,6 +507,9 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
     setMessage(t("saved"));
 
     const profileChildId = data.assessment.childId || childIdParam;
+    if (profileChildId) {
+      void recordAthleteCheckInOnboarding(profileChildId, data.assessment._id || assessment.session.date);
+    }
     if (!idParam) {
       router.replace(profileReturnHref ?? (profileChildId ? `/athletes/${profileChildId}` : "/athletes"));
     }

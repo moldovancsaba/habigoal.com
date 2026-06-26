@@ -37,7 +37,7 @@ export default function AthleteIntelligencePage() {
                 <PolarGrid />
                 <PolarAngleAxis dataKey="dimension" />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                <Radar name="Athlete" dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+                <Radar name="Athlete" dataKey="value" stroke="var(--brand-blue)" fill="var(--brand-blue)" fillOpacity={0.6} />
               </RadarChart>
             </ResponsiveContainer>
           </Box>

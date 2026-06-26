@@ -9,6 +9,7 @@ import { AppFooter } from "@/components/layout/AppFooter";
 import { AppShell as GdsAppShell, SidebarNav, SidebarNavItem } from "@doneisbetter/gds/client";
 import { APP_LAYOUT } from "@/theme/tokens";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
+import { OnboardingProvider } from "@/components/onboarding/OnboardingPrompt";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
@@ -161,7 +162,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
             pt={{ base: 8, sm: 24 }}
           >
-            {children}
+            <OnboardingProvider>{children}</OnboardingProvider>
           </Box>
         </Box>
         <AppFooter />

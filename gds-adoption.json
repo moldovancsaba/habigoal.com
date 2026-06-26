@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "gdsVersion": "2.6.4",
+  "gdsVersion": "3.4.7",
   "productArchetype": "hybrid",
-  "packageSource": "npm:@doneisbetter/gds@^2.6.4",
+  "packageSource": "npm:@doneisbetter/gds@^3.4.7",
   "supportedEntryPoints": [
     "@doneisbetter/gds",
     "@doneisbetter/gds/client",
@@ -101,6 +101,15 @@
       "allowedImplementation": "Store localized news content as product-authored structured data and render it through GDS public/article surfaces.",
       "mustStillUse": "GDS PublicShell, ArticleShell, PageHeader, SectionPanel, and locale filtering for all news rendering.",
       "mustNotDo": "Do not render a post in a locale unless that post has authored content for that locale.",
+      "a11yRequirements": [
+        "Rendered news pages must preserve ArticleShell landmarks, localized headings, meaningful link text, keyboard-readable publication metadata, and locale-safe fallbacks without hidden untranslated content."
+      ],
+      "testingRequirements": [
+        "Run localized news route tests or manual route checks for list/detail pages in each supported locale whenever post structure or rendering changes."
+      ],
+      "observabilityRequirements": [
+        "News rendering failures must surface through standard Next.js error logging with route, locale, and slug context; missing localized post content must fail closed by returning notFound instead of rendering partial content."
+      ],
       "exitCondition": "Move to a GDS-compatible CMS/content adapter if the GDS package ships one.",
       "status": "approved",
       "owner": "habigoal",

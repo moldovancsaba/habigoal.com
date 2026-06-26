@@ -13,7 +13,7 @@ This document describes the current implementation state of Habigoal and the mai
 - Runtime: Node.js `22.x`
 - Deployment target: Vercel
 
-The lockfile currently resolves the core runtime to Next.js `15.5.15`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, Mantine `8.3.6`, and GDS `2.6.4`.
+The lockfile currently resolves the core runtime to Next.js `15.5.19`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, Mantine `8.3.18`, and GDS `3.4.7`.
 
 ## Current Product Model
 
@@ -32,6 +32,13 @@ Legacy terms still exist in storage and compatibility layers:
 
 Product copy and new code should use `athlete`, `trainer`, `admin`, and `check-in`.
 
+The product now runs in two separate surfaces:
+
+- Habigoal at `/{locale}/habigoal`: client wellbeing, habit tracking, daily check-ins, and supportive feedback.
+- Athlete IQ at `/{locale}/athlete-iq`: professional athletes, coaches, dashboards, planning, services, and advanced analytics.
+
+Athlete IQ includes Habigoal through shared contracts in `lib/product-surfaces.ts` and the registry payload from `/api/product-surfaces`.
+
 ## Application Routes
 
 Public routes:
@@ -41,6 +48,8 @@ Public routes:
 - `/{locale}/news/[slug]`
 - `/{locale}/legal/gtc`
 - `/{locale}/legal/privacy`
+- `/{locale}/habigoal`
+- `/{locale}/athlete-iq`
 
 Protected personal-data routes:
 
@@ -258,6 +267,269 @@ Do not delete custom project fields during reconciliation. The existing `scripts
 
 If GraphQL is exhausted, create/update issues with REST immediately, then schedule or resume the same thread after the reset time shown by `gh api rate_limit`.
 
+## Client QA Delivery Handover - 2026-06-26
+
+This section records the direct GitHub artifact delivery for the client-reported Habigoal inconsistencies around user manuals, popup/bubble onboarding, and version numbers.
+
+### Canonical Standard
+
+All created or rewritten issues follow the production-grade issue structure from:
+
+- `https://github.com/sovereignsquad/general-design-system/issues/81`
+
+Mandatory constraints applied to every UI/UX/frontend issue:
+
+- all UI/UX/frontend work must use only `https://github.com/sovereignsquad/general-design-system`
+- accessibility is mandatory
+- no parallel visual system
+- no vague umbrella tickets
+- every issue must be independently executable
+
+### GitHub Scope Delivered
+
+Repository:
+
+- `moldovancsaba/habigoal.com`
+
+Project board:
+
+- Project 14: `{habigoal.com} - From IDEA to LIVE`
+- URL: `https://github.com/users/moldovancsaba/projects/14`
+
+Milestone:
+
+- `Client QA - manuals, onboarding, version reconciliation`
+
+Labels added or used:
+
+- `client-reported`
+- `source:client-qa`
+- `area:onboarding`
+- `area:release-governance`
+- `type:testing`
+- existing GDS, accessibility, priority, track, type, and area labels
+
+Project fields added:
+
+- `Client QA Lane`
+- `Client QA Sequence`
+- `Client QA Dependencies`
+
+### Issue Decomposition
+
+The broad ticket `#213` was closed as `not planned` and moved to project status `Declined (NEVER)` because it was an umbrella task. It is superseded by the concrete issues below.
+
+| Sequence | Issue | Lane | Board Status | Dependencies | Purpose |
+| --- | --- | --- | --- | --- | --- |
+| 101 | `#214` Docs: Onboarding architecture - canonical runtime and accessibility contract | Onboarding | Todo (NEXT) | None | Create the missing canonical onboarding architecture document and runtime/accessibility contract. |
+| 102 | `#50` Onboarding: State API - per-user module eligibility and event persistence | Onboarding | Todo (NEXT) | `#214` | Implement onboarding state, eligibility, and idempotent event persistence. |
+| 103 | `#215` UI: Onboarding bubble primitive - GDS-only accessible prompt and checklist renderer | Onboarding | Todo (NEXT) | `#214`, `#50` | Build the reusable GDS-only accessible popup/bubble/checklist primitive. |
+| 104 | `#85` Athlete Profile: First-login baseline - required setup contract and recovery states | Onboarding | Todo (NEXT) | `#214`, `#50` | Define and persist athlete first-login baseline setup and recovery behavior. |
+| 105 | `#49` Onboarding: Athlete journey - first-login and check-in completion prompts | Onboarding | Todo (NEXT) | `#214`, `#50`, `#215`, `#85` | Wire athlete-specific onboarding prompts and completion behavior. |
+| 106 | `#48` Onboarding: Trainer journey - dashboard planning and recommendation guidance prompts | Onboarding | Backlog (SOONER) | `#214`, `#50`, `#215` | Wire trainer-specific onboarding prompts and completion events. |
+| 107 | `#51` Onboarding: Admin journey - settings teams users and governance setup prompts | Onboarding | Backlog (SOONER) | `#214`, `#50`, `#215` | Wire admin-specific onboarding prompts and completion events. |
+| 108 | `#216` Docs: User manuals - reconcile role journeys with shipped route and onboarding truth | Manuals | Todo (NEXT) | `#214`; runtime claims blocked by `#50`, `#215`, `#49`, `#48`, `#51` | Reconcile user/settings manuals with actual route and onboarding truth. |
+| 109 | `#217` Release: Version governance - package runtime docs and rendered UI drift gate | Version Governance | Todo (NEXT) | None | Add a version drift gate for package, runtime, docs, legal, and rendered UI truth. |
+
+### Issue Body Requirements Delivered
+
+Every active issue above defines, where relevant:
+
+- executive summary
+- product context
+- current state
+- problem statement
+- functional, technical, and UX goals
+- non-goals
+- mandatory GDS constraint
+- architecture
+- data model/contracts
+- API contracts
+- pseudo-code
+- UX/operator behavior
+- accessibility requirements
+- edge cases
+- performance expectations
+- security/privacy requirements
+- acceptance criteria
+- testing requirements
+- documentation requirements
+- dependencies
+- execution order
+- operational behavior
+- handover and rollback plan
+
+### Current GitHub State
+
+Open active client-QA issues in the milestone:
+
+- `#214`
+- `#50`
+- `#215`
+- `#85`
+- `#49`
+- `#48`
+- `#51`
+- `#216`
+- `#217`
+
+Closed superseded issue:
+
+- `#213` - closed as `not planned`, board status `Declined (NEVER)`
+
+The issue bodies contain the complete dependency and sequencing information even when the project field text is not perfect.
+
+### Code And Documentation Delivered
+
+The implementation pass delivered the runtime and documentation that the client QA issues decomposed:
+
+- Onboarding module registry, route normalization, role gating, module state resolution, and event validation in `lib/onboarding.ts` and `types/onboarding.ts`.
+- Mongo-backed onboarding event persistence with idempotency in `repositories/onboarding.repository.ts`.
+- Onboarding APIs:
+  - `GET /api/onboarding/state`
+  - `POST /api/onboarding/events`
+- Athlete baseline API:
+  - `PATCH /api/athletes/:id/baseline`
+- GDS-only accessible onboarding prompt/checklist renderer in `components/onboarding/OnboardingPrompt.tsx`.
+- Dashboard, athlete-profile, and athlete check-in wiring through `DashboardShell`, `/{locale}/athletes/:id`, and `/{locale}/athletes/:id/check-in`.
+- Athlete first-login baseline setup UI on `/{locale}/athletes/:id`, including weekly goal, preferred training days, support preferences, localized copy, GDS controls, save/error states, and page-state refresh after `PATCH /api/athletes/:id/baseline`.
+- Successful athlete check-in saves emit the `complete-check-in` onboarding step event without blocking the save or redirect.
+- Athlete baseline persistence fields in `repositories/child.repository.ts`.
+- Canonical onboarding architecture documentation in `docs/onboarding-architecture.md`.
+- Manual reconciliation in `docs/user-guide.md`, `docs/settings-guide.md`, and `docs/api.md`.
+- Version drift gate in `scripts/version-audit.mjs`, exposed as `npm run version:audit`.
+- GDS governance reconciliation to `@doneisbetter/gds@^3.4.7` in README, `docs/design-system.md`, `gds-adoption.json`, and `scripts/gds-audit.mjs`.
+- GDS compliance cleanup for raw color literals and product-authored news exception metadata.
+
+The implementation preserves the mandatory frontend constraint: onboarding UI imports interactive primitives from `@doneisbetter/gds/client` and does not introduce a parallel UI system.
+
+### GitHub Issue Updates Added
+
+REST issue comments were added on 2026-06-26 to:
+
+- `#214`
+- `#50`
+- `#215`
+- `#85`
+- `#49`
+- `#48`
+- `#51`
+- `#216`
+- `#217`
+
+Each comment records that the implementation is present locally, lists the delivered runtime/manual/version scope, and records the passing validation set. REST was used because the GitHub GraphQL project API rate limit was exhausted.
+
+### Remaining Board Field Cleanup
+
+GitHub GraphQL project API rate limit was hit near the end of board-field cleanup.
+
+On 2026-06-26 at 09:33 CEST, active GitHub board work was intentionally paused and a one-time local automation was scheduled to retry the handover project-board cleanup at 2026-06-26 17:00 CEST.
+
+Scheduled automation:
+
+- LaunchAgent: `~/Library/LaunchAgents/com.habigoal.client-qa-handover-update.plist`
+- Script: `scripts/client-qa-handover-project-update-once.sh`
+- Logs:
+  - `~/Library/Logs/Habigoal/client-qa-handover-update.log`
+  - `~/Library/Logs/Habigoal/client-qa-handover-update.err.log`
+
+The script reads this handover context, verifies the expected Client QA delivery section exists, checks GitHub GraphQL availability, applies the remaining `Client QA Dependencies` cleanup for `#215` and `#216`, and attempts to move the active client-QA project items to `Review (ALMOST)`. It unloads and removes its LaunchAgent before running so it is one-time behavior.
+
+Rate-limit snapshot at the time of handover:
+
+```json
+{
+  "graphql": {
+    "limit": 5000,
+    "remaining": 5,
+    "reset": 1782459398,
+    "used": 4995
+  }
+}
+```
+
+Reset time from the local machine:
+
+```text
+2026-06-26 09:36:38 CEST
+```
+
+The only known incomplete board-field cleanup is cosmetic:
+
+- Project field `Client QA Dependencies` for `#215` should be changed from `Docs architecture and state API` to `#214, #50`.
+- Project field `Client QA Dependencies` for `#216` should be changed from `Onboarding architecture; do not claim runtime onboarding until implementation ships` to `#214; runtime claims blocked by #50, #215, #49, #48, #51`.
+- Project item statuses should be advanced from planning statuses to review/done statuses after the local implementation changes are pushed or otherwise accepted.
+
+After GraphQL reset, run:
+
+```bash
+project_id=$(gh project view 14 --owner moldovancsaba --format json --jq '.id')
+items=$(gh project item-list 14 --owner moldovancsaba --limit 350 --format json)
+item215=$(printf '%s' "$items" | jq -r '.items[] | select(.content.repository=="moldovancsaba/habigoal.com" and .content.number==215) | .id')
+item216=$(printf '%s' "$items" | jq -r '.items[] | select(.content.repository=="moldovancsaba/habigoal.com" and .content.number==216) | .id')
+gh project item-edit --project-id "$project_id" --id "$item215" --field-id PVTF_lAHOACGtF84BXSjzzhWcRxU --text '#214, #50'
+gh project item-edit --project-id "$project_id" --id "$item216" --field-id PVTF_lAHOACGtF84BXSjzzhWcRxU --text '#214; runtime claims blocked by #50, #215, #49, #48, #51'
+```
+
+### Verification Commands Run
+
+GitHub issue verification:
+
+```bash
+for n in 48 49 50 51 85 214 215 216 217 213; do
+  gh issue view "$n" --repo moldovancsaba/habigoal.com --json number,title,state,labels,milestone
+done
+```
+
+Project board verification:
+
+```bash
+gh project item-list 14 --owner moldovancsaba --limit 350 --format json
+gh project field-list 14 --owner moldovancsaba --format json
+```
+
+Local repository status at handover time:
+
+```text
+Working tree contains the delivered local implementation files and documentation updates listed in this handover section.
+```
+
+Local validation completed after implementation:
+
+```bash
+npm run lint
+npm test
+npm run typecheck
+npm run version:audit
+npm run i18n:audit
+npm run gds:audit
+npm run gds:compliance
+npm run build
+```
+
+Results:
+
+- ESLint: passed with no warnings or errors.
+- Vitest: 13 test files passed, 41 tests passed.
+- TypeScript: passed with `tsc --noEmit`.
+- Version audit: passed for app version `0.5.1`; OpenAPI version remains `2.0.0`.
+- i18n audit: passed for 6 locales, 6 message catalogs, and localized news content.
+- GDS audit: passed for Habigoal on GDS `3.4.7`.
+- GDS compliance: passed for `habigoal`.
+- Next.js production build: passed; new routes include `/api/onboarding/state`, `/api/onboarding/events`, and `/api/athletes/[id]/baseline`.
+
+Local dev server verification:
+
+```bash
+npm run dev -- --hostname 127.0.0.1 --port 3000
+curl -I http://127.0.0.1:3000/en
+curl -I http://127.0.0.1:3000/en/athletes/demo
+curl -I http://127.0.0.1:3000/en/athletes/demo/check-in
+curl -I http://127.0.0.1:3000/en/dashboard
+```
+
+All four HTTP checks returned `HTTP/1.1 200 OK`.
+
 ### Recent Reconciliation Notes
 
 On 2026-05-20, the board was compared against code and documentation. Issues `#62` to `#66` were created for the missing active roadmap gaps.
@@ -272,7 +544,7 @@ On 2026-05-21, `#62` received the first shipped audit gate in commit `30e122f`. 
 
 Issue `#29` was closed because typecheck validation is stable on `main`.
 
-On 2026-05-31, the GDS documentation and project-board state were reconciled after `@doneisbetter/gds@2.6.4` adoption. `npm run gds:audit` and `npm run gds:compliance` pass on `main`, so issue/project references that describe GDS runtime adoption as blocked by package publication or Mantine compatibility are obsolete.
+On 2026-05-31, the GDS documentation and project-board state were reconciled after `@doneisbetter/gds@2.6.4` adoption. On 2026-06-26, the repository was reconciled again to `@doneisbetter/gds@3.4.7`; `npm run gds:audit` and `npm run gds:compliance` pass locally, so issue/project references that describe GDS runtime adoption as blocked by package publication or Mantine compatibility are obsolete.
 
 ## Validation
 

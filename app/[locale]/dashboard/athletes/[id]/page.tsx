@@ -5,7 +5,21 @@ import type { ReactNode } from "react";
 import { Badge, Box, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import {
+  Badge as GdsBadge,
+  Box as GdsBox,
+  Checkbox as GdsCheckbox,
+  createGdsVocabularyPack,
+  GdsIcons,
+  Group as GdsGroup,
+  PageHeader,
+  SectionPanel,
+  SemanticButton,
+  SimpleGrid as GdsSimpleGrid,
+  Stack as GdsStack,
+  StateBlock,
+  TextInput as GdsTextInput
+} from "@doneisbetter/gds/client";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -47,12 +61,36 @@ type MemoryEntry = {
 
 type TrendWindow = "7d" | "30d" | "all" | "custom";
 type TrendMetric = "readiness" | "movement" | "social" | "mental" | "ski";
+type BaselineSaveState = "idle" | "saving" | "saved" | "error";
+
+type BaselineDraft = {
+  weeklyGoal: string;
+  preferredTrainingDays: string[];
+  supportPreferences: string[];
+};
 
 const PILLAR_COLORS: Record<string, string> = {
   physical_pillar: "var(--mantine-color-tactical-6)",
   mental_pillar: "var(--mantine-color-synthesis-6)",
   sport_brain_pillar: "var(--mantine-color-strategy-6)"
 };
+
+const baselineTrainingDayOptions = [
+  { value: "Monday", labelKey: "athleteBaselineMonday" },
+  { value: "Tuesday", labelKey: "athleteBaselineTuesday" },
+  { value: "Wednesday", labelKey: "athleteBaselineWednesday" },
+  { value: "Thursday", labelKey: "athleteBaselineThursday" },
+  { value: "Friday", labelKey: "athleteBaselineFriday" },
+  { value: "Saturday", labelKey: "athleteBaselineSaturday" },
+  { value: "Sunday", labelKey: "athleteBaselineSunday" }
+];
+
+const baselineSupportOptions = [
+  { value: "Short feedback", labelKey: "athleteBaselineSupportShortFeedback" },
+  { value: "Check-in reminders", labelKey: "athleteBaselineSupportReminders" },
+  { value: "Recovery guidance", labelKey: "athleteBaselineSupportRecovery" },
+  { value: "Training plan context", labelKey: "athleteBaselineSupportPlanning" }
+];
 
 export default function AthleteHistoryPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
   const { id } = use(params);
@@ -77,6 +115,13 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [sessionPlans, setSessionPlans] = useState<SessionPlanRecord[]>([]);
   const [savingHabits, setSavingHabits] = useState(false);
   const [habitSaveError, setHabitSaveError] = useState("");
+  const [baselineDraft, setBaselineDraft] = useState<BaselineDraft>({
+    weeklyGoal: "",
+    preferredTrainingDays: [],
+    supportPreferences: []
+  });
+  const [baselineSaveState, setBaselineSaveState] = useState<BaselineSaveState>("idle");
+  const [baselineMessage, setBaselineMessage] = useState("");
   const athletesActionPack = useMemo(
     () =>
       createGdsVocabularyPack("athleteHistory", {
@@ -107,6 +152,13 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     ])
       .then(([historyPayload, habitPayload, sessionPlanPayload]: [AthleteHistoryPayload, HabitPayload, SessionPlanPayload]) => {
         setData(historyPayload);
+        setBaselineDraft({
+          weeklyGoal: historyPayload.child.baselineProfile?.weeklyGoal || "",
+          preferredTrainingDays: historyPayload.child.baselineProfile?.preferredTrainingDays || [],
+          supportPreferences: historyPayload.child.baselineProfile?.supportPreferences || []
+        });
+        setBaselineSaveState("idle");
+        setBaselineMessage("");
         const nextHabitRecords = Array.isArray(habitPayload?.records) ? habitPayload.records : [];
         setHabitRecords(nextHabitRecords);
         setSessionPlans(Array.isArray(sessionPlanPayload?.plans) ? sessionPlanPayload.plans : []);
@@ -171,6 +223,40 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
   async function retryTodayHabits() {
     await saveTodayHabits();
+  }
+
+  function toggleBaselineListValue(field: "preferredTrainingDays" | "supportPreferences", value: string, checked: boolean) {
+    setBaselineDraft((current) => ({
+      ...current,
+      [field]: checked ? Array.from(new Set([...current[field], value])) : current[field].filter((item) => item !== value)
+    }));
+    setBaselineSaveState("idle");
+    setBaselineMessage("");
+  }
+
+  async function saveBaselineSetup() {
+    if (!data?.child._id) return;
+    setBaselineSaveState("saving");
+    setBaselineMessage("");
+
+    const response = await fetch(`/api/athletes/${data.child._id}/baseline`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(baselineDraft)
+    }).catch(() => null);
+
+    if (!response?.ok) {
+      setBaselineSaveState("error");
+      setBaselineMessage(td("athleteBaselineSaveError"));
+      return;
+    }
+
+    const payload = (await response.json().catch(() => null)) as { athlete?: AthleteHistoryPayload["child"] } | null;
+    if (payload?.athlete) {
+      setData((current) => current ? { ...current, child: payload.athlete! } : current);
+    }
+    setBaselineSaveState("saved");
+    setBaselineMessage(td("athleteBaselineSaveSuccess"));
   }
 
   const chronologicalAssessments = useMemo(
@@ -320,6 +406,12 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   });
   const startCheckInHref = isAthleteApp && data?.child._id ? `/athletes/${data.child._id}/check-in` : `/dashboard/assessment${data?.child._id ? `?childId=${data.child._id}` : ""}`;
   const emptyActionHref = isAthleteApp && data?.child._id ? `/athletes/${data.child._id}/check-in` : noRecordsAction?.href;
+  const baselineSaved = Boolean(
+    data?.child.baselineProfile?.onboardingCompletedAt ||
+    data?.child.baselineProfile?.weeklyGoal ||
+    data?.child.baselineProfile?.preferredTrainingDays?.length ||
+    data?.child.baselineProfile?.supportPreferences?.length
+  );
 
   if (loading) {
     return (
@@ -360,6 +452,24 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           </Group>
         }
       />
+
+      {isAthleteApp ? (
+        <AthleteBaselineSetupSection
+          draft={baselineDraft}
+          message={baselineMessage}
+          saved={baselineSaved}
+          saveState={baselineSaveState}
+          translate={td}
+          onGoalChange={(weeklyGoal) => {
+            setBaselineDraft((current) => ({ ...current, weeklyGoal }));
+            setBaselineSaveState("idle");
+            setBaselineMessage("");
+          }}
+          onToggleDay={(value, checked) => toggleBaselineListValue("preferredTrainingDays", value, checked)}
+          onToggleSupport={(value, checked) => toggleBaselineListValue("supportPreferences", value, checked)}
+          onSave={() => void saveBaselineSetup()}
+        />
+      ) : null}
 
       {data.assessments.length === 0 ? (
         <SectionPanel title={td("athleteHistoryEmptyTitle")} description={td("athleteHistoryEmptySubtitle")}>
@@ -1056,6 +1166,98 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         />
       ) : null}
     </Stack>
+  );
+}
+
+function AthleteBaselineSetupSection({
+  draft,
+  message,
+  saved,
+  saveState,
+  translate,
+  onGoalChange,
+  onToggleDay,
+  onToggleSupport,
+  onSave
+}: {
+  draft: BaselineDraft;
+  message: string;
+  saved: boolean;
+  saveState: BaselineSaveState;
+  translate: (key: string) => string;
+  onGoalChange: (value: string) => void;
+  onToggleDay: (value: string, checked: boolean) => void;
+  onToggleSupport: (value: string, checked: boolean) => void;
+  onSave: () => void;
+}) {
+  const canSave = Boolean(draft.weeklyGoal.trim() || draft.preferredTrainingDays.length || draft.supportPreferences.length);
+  const messageTone = saveState === "error" ? "var(--status-error)" : "var(--status-success)";
+
+  return (
+    <SectionPanel
+      title={translate("athleteBaselineSetupTitle")}
+      description={translate("athleteBaselineSetupSubtitle")}
+      action={
+        <GdsBadge color={saved ? "green" : "yellow"}>
+          {saved ? translate("athleteBaselineSavedBadge") : translate("athleteBaselineOpenBadge")}
+        </GdsBadge>
+      }
+    >
+      <GdsStack gap="md">
+        {message ? (
+          <GdsBox
+            role={saveState === "error" ? "alert" : "status"}
+            p="sm"
+            style={{
+              border: "1px solid var(--border-primary)",
+              borderRadius: "var(--mantine-radius-sm)",
+              color: messageTone
+            }}
+          >
+            {message}
+          </GdsBox>
+        ) : null}
+
+        <GdsTextInput
+          label={translate("athleteBaselineGoalLabel")}
+          placeholder={translate("athleteBaselineGoalPlaceholder")}
+          value={draft.weeklyGoal}
+          onChange={(event) => onGoalChange(event.currentTarget.value)}
+        />
+
+        <GdsBox>
+          <p style={{ marginBlock: 0, fontWeight: 700 }}>{translate("athleteBaselineDaysLabel")}</p>
+          <GdsSimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="xs" mt="xs">
+            {baselineTrainingDayOptions.map((option) => (
+              <GdsCheckbox
+                key={option.value}
+                checked={draft.preferredTrainingDays.includes(option.value)}
+                label={translate(option.labelKey)}
+                onChange={(event) => onToggleDay(option.value, event.currentTarget.checked)}
+              />
+            ))}
+          </GdsSimpleGrid>
+        </GdsBox>
+
+        <GdsBox>
+          <p style={{ marginBlock: 0, fontWeight: 700 }}>{translate("athleteBaselineSupportLabel")}</p>
+          <GdsSimpleGrid cols={{ base: 1, sm: 2 }} spacing="xs" mt="xs">
+            {baselineSupportOptions.map((option) => (
+              <GdsCheckbox
+                key={option.value}
+                checked={draft.supportPreferences.includes(option.value)}
+                label={translate(option.labelKey)}
+                onChange={(event) => onToggleSupport(option.value, event.currentTarget.checked)}
+              />
+            ))}
+          </GdsSimpleGrid>
+        </GdsBox>
+
+        <GdsGroup justify="flex-end">
+          <SemanticButton action="save" color="ingress" onClick={onSave} loading={saveState === "saving"} disabled={!canSave} />
+        </GdsGroup>
+      </GdsStack>
+    </SectionPanel>
   );
 }
 

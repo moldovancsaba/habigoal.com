@@ -65,6 +65,45 @@ Returns service diagnostics:
 - configured MongoDB app name
 - ImgBB key presence
 
+## Product Surfaces Registry
+
+### `GET /api/product-surfaces`
+
+Returns the canonical phase-1 surface and function split used by the app landing workflow.
+
+Response:
+
+```json
+{
+  "version": "phase-1",
+  "generatedAt": "2026-06-26T10:00:00.000Z",
+  "surfaces": [
+    {
+      "id": "habigoal",
+      "name": "Habigoal",
+      "shortName": "Habigoal",
+      "headline": "Simple habit tracking and wellbeing support",
+      "summary": "A client-facing daily system for living better, training smarter, and receiving clear feedback about current status.",
+      "primaryPath": "/habigoal",
+      "includedSurfaceIds": [],
+      "functionRegistry": []
+    },
+    {
+      "id": "athlete-iq",
+      "name": "Athlete IQ",
+      "shortName": "AIQ",
+      "headline": "Professional performance operating system",
+      "summary": "The professional layer for athletes, coaches, academies, dashboards, reports, services, CogLeague, GameFlow, and advanced intelligence.",
+      "primaryPath": "/athlete-iq",
+      "includedSurfaceIds": ["habigoal"],
+      "functionRegistry": []
+    }
+  ]
+}
+```
+
+The `functionRegistry` values are intentionally structured for UI, governance, operations, and traceability.
+
 ## Auth
 
 ### `GET /api/auth/login`
@@ -86,6 +125,55 @@ Deletes the local session and redirects to the SSO logout URL when configured.
 ### `POST /api/auth/logout`
 
 Deletes the local session and returns `{ "success": true }`.
+
+## Onboarding
+
+Onboarding prompts are role-scoped and non-blocking. The route remains usable if onboarding state cannot load.
+
+### `GET /api/onboarding/state`
+
+Returns eligible onboarding modules for the signed-in user and supplied route.
+
+Query parameters:
+
+- `route`: current locale-prefixed or product route, for example `/en/dashboard` or `/en/athletes/ATHLETE_ID`.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Response:
+
+```json
+{
+  "modules": [
+    {
+      "id": "athlete-first-login-baseline",
+      "role": "athlete",
+      "state": "eligible",
+      "completedStepIds": []
+    }
+  ]
+}
+```
+
+### `POST /api/onboarding/events`
+
+Records an onboarding event idempotently when `idempotencyKey` is supplied.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Request:
+
+```json
+{
+  "moduleId": "athlete-first-login-baseline",
+  "event": "completed",
+  "route": "/en/athletes/ATHLETE_ID",
+  "stepId": "complete-check-in",
+  "idempotencyKey": "athlete-first-login-baseline:completed:complete-check-in:/en/athletes/ATHLETE_ID"
+}
+```
+
+Supported events are `shown`, `dismissed`, `snoozed`, `completed`, and `failed`.
 
 ## Athletes
 
@@ -142,6 +230,26 @@ Scope: checked with `canAccessAthlete`.
 Updates an athlete profile and syncs linked check-in identity fields.
 
 Roles: `admin`, `trainer`
+
+### `PATCH /api/athletes/:id/baseline`
+
+Updates the athlete first-login baseline setup contract and records onboarding completion metadata for the actor.
+
+Roles: `admin`, `trainer`, `athlete`
+
+Scope: checked with `canAccessAthlete`; athlete users can update only their linked athlete profile.
+
+Request:
+
+```json
+{
+  "weeklyGoal": "Build consistent recovery habits",
+  "preferredTrainingDays": ["Monday", "Wednesday", "Friday"],
+  "supportPreferences": ["Short feedback", "Check-in reminders"]
+}
+```
+
+At least one baseline field is required. The route updates `baselineProfile.weeklyGoal`, `baselineProfile.preferredTrainingDays`, `baselineProfile.supportPreferences`, and `baselineProfile.onboardingCompletedAt`.
 
 ### `DELETE /api/athletes/:id`
 

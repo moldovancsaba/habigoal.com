@@ -27,6 +27,10 @@ export interface ChildProfile {
     focusBaseline?: number;
     motivationBaseline?: number;
     stressBaseline?: number;
+    weeklyGoal?: string;
+    preferredTrainingDays?: string[];
+    supportPreferences?: string[];
+    onboardingCompletedAt?: string;
     injuryNotes?: string;
     medicalNotes?: string;
     coachBaselineNotes?: string;
@@ -252,6 +256,33 @@ export async function updateChildById(
   const result = await db.collection(collectionName).findOneAndUpdate(
     { _id: id },
     { $set: nextProfile, $unset: { kidexId: "" } },
+    { returnDocument: "after" }
+  );
+
+  return result ? normalizeChildProfile(toJsonId(result) as Record<string, unknown>) : null;
+}
+
+export async function updateChildBaselineSetup(
+  id: ObjectId,
+  baseline: {
+    weeklyGoal?: string;
+    preferredTrainingDays?: string[];
+    supportPreferences?: string[];
+  }
+) {
+  const db = await getDatabase();
+  const now = new Date().toISOString();
+  const result = await db.collection(collectionName).findOneAndUpdate(
+    { _id: id, deletedAt: { $exists: false } },
+    {
+      $set: {
+        "baselineProfile.weeklyGoal": baseline.weeklyGoal,
+        "baselineProfile.preferredTrainingDays": baseline.preferredTrainingDays || [],
+        "baselineProfile.supportPreferences": baseline.supportPreferences || [],
+        "baselineProfile.onboardingCompletedAt": now,
+        updatedAt: now
+      }
+    },
     { returnDocument: "after" }
   );
 

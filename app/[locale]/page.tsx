@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Alert, Anchor, Box, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { env } from "@/config/env";
 import { LandingCtas } from "@/components/landing/LandingCtas";
@@ -17,6 +17,8 @@ export default async function LandingPage({
   const { error } = await searchParams;
   const authHref = env.habigoalEnforceAuth ? `/api/auth/login?next=/${locale}/dashboard` : `/${locale}/dashboard`;
   const homeHref = `/${locale}`;
+  const habigoalHref = `/${locale}/habigoal`;
+  const athleteIqHref = `/${locale}/athlete-iq`;
   const athleteHref = `/${locale}/athletes`;
   const newsHref = `/${locale}/news`;
   const termsHref = `/${locale}/legal/gtc`;
@@ -64,6 +66,23 @@ export default async function LandingPage({
           </Group>
         </Paper>
 
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+          <ProductEntryCard
+            badge="Habigoal"
+            title="Simple habit tracker and wellbeing support"
+            body="A daily client surface for habits, check-ins, sport support, and clear status feedback."
+            href={habigoalHref}
+            action="Open Habigoal"
+          />
+          <ProductEntryCard
+            badge="Athlete IQ"
+            title="Professional athlete performance OS"
+            body="The professional surface for athletes, coaches, academies, dashboards, services, and advanced intelligence."
+            href={athleteIqHref}
+            action="Open Athlete IQ"
+          />
+        </SimpleGrid>
+
       <Text c="dimmed" size="sm">
         {t("ssoNote")}
       </Text>
@@ -82,5 +101,38 @@ export default async function LandingPage({
         </Paper>
       </Stack>
     </Container>
+  );
+}
+
+function ProductEntryCard({
+  badge,
+  title,
+  body,
+  href,
+  action
+}: {
+  badge: string;
+  title: string;
+  body: string;
+  href: string;
+  action: string;
+}) {
+  return (
+    <Paper component="section" withBorder radius="md" p="lg" className="glass-panel surface-outline">
+      <Stack gap="md" h="100%">
+        <Badge variant="light" color={badge === "Habigoal" ? "ingress" : "strategy"} w="fit-content">
+          {badge}
+        </Badge>
+        <Stack gap={6}>
+          <Title order={2} size="h3">
+            {title}
+          </Title>
+          <Text c="dimmed">{body}</Text>
+        </Stack>
+        <Anchor href={href} fw={700} mt="auto">
+          {action}
+        </Anchor>
+      </Stack>
+    </Paper>
   );
 }

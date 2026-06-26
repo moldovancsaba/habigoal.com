@@ -25,7 +25,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           <Text size="lg">{description}</Text>
           
           <Title order={3} mt="xl">Raw Data Dump</Title>
-          <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", background: "#f8f9fa", padding: "1rem", borderRadius: "var(--gds-radius-medium)" }}>
+          <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", background: "var(--surface-elevated)", padding: "1rem", borderRadius: "var(--gds-radius-medium)" }}>
             {JSON.stringify(service.draftPayload, null, 2)}
           </pre>
         </Stack>
