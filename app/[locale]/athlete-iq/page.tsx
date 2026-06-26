@@ -16,10 +16,5 @@ export default async function AthleteIqSurfaceRoute({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return (
-    <AthleteIqExperience
-      surface={getProductSurfaceOrThrow("athlete-iq")}
-      relatedSurface={getProductSurfaceOrThrow("habigoal")}
-    />
-  );
+  return <AthleteIqExperience surface={getProductSurfaceOrThrow("athlete-iq")} />;
 }

@@ -108,6 +108,10 @@ describe("product surface route boundaries", () => {
       "Report"
     ]);
     expect(athleteIqSource).toContain("AthleteIQ Daily Development OS");
-    expect(athleteIqSource).toContain("Daily Development OS menu");
+    expect(athleteIqSource).not.toContain("Daily Development OS menu");
+    expect(athleteIqSource).not.toContain("AiqModuleGroup");
+    expect(athleteIqSource).not.toContain("FunctionDirectory");
+    expect(athleteIqSource).not.toContain("<strong>Output:</strong>");
+    expect(athleteIqSource).toContain("HIDDEN_REFERENCE_NAV_ITEMS");
   });
 });

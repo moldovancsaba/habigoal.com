@@ -5,7 +5,7 @@ import { Badge, Box, Checkbox, Group, Paper, Progress, SimpleGrid, Slider, Stack
 import { GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
 import { useMemo, useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
-import { FunctionDirectory, SectionHeading, SharedFoundationSection, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
+import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
 import { createProductSurfaceActionPack } from "../productSurfaceActions";
 
 type HabitItem = {
@@ -23,7 +23,7 @@ const HABIT_PLAN = [
   { id: "study", label: "Learning block", category: "Life" }
 ] satisfies HabitItem[];
 
-export function HabigoalExperience({ relatedSurface, surface }: { relatedSurface?: ProductSurface; surface: ProductSurface }) {
+export function HabigoalExperience({ surface }: { relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const actionPack = useMemo(() => createProductSurfaceActionPack(), []);
   const [energy, setEnergy] = useState(76);
   const [soreness, setSoreness] = useState(34);
@@ -183,8 +183,6 @@ export function HabigoalExperience({ relatedSurface, surface }: { relatedSurface
             </SimpleGrid>
           </Paper>
 
-          <SharedFoundationSection surface={surface} relatedSurface={relatedSurface} />
-          <FunctionDirectory surface={surface} compact />
         </Box>
 
         <nav className="hbg-bottom-nav" aria-label="Habigoal app navigation">

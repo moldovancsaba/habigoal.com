@@ -5,10 +5,10 @@ import { Badge, Box, Group, Paper, Progress, SegmentedControl, SimpleGrid, Stack
 import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme, SemanticButton } from "@doneisbetter/gds/client";
 import { useMemo, useState, type CSSProperties } from "react";
 import { Link } from "@/i18n/navigation";
-import { ATHLETE_IQ_OS_GROUPS, ATHLETE_IQ_OS_MODULES, type AthleteIqOsGroup, type AthleteIqOsModule, type AthleteIqOsStatus } from "@/lib/athlete-iq-os";
+import { ATHLETE_IQ_OS_GROUPS, type AthleteIqOsGroup } from "@/lib/athlete-iq-os";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
-import { FunctionDirectory, SectionHeading, SharedFoundationSection, SignalCard, SurfaceTopBar } from "../ProductSurfaceShared";
+import { SectionHeading, SignalCard, SurfaceTopBar } from "../ProductSurfaceShared";
 import { createProductSurfaceActionPack, type ProductSurfaceActionPack } from "../productSurfaceActions";
 
 type PriorityAthlete = {
@@ -29,8 +29,8 @@ type ServiceModule = {
   name: string;
   owner: string;
   progress: number;
-  output: string;
-  status: "ready" | "needs data" | "roadmap";
+  nextStep: string;
+  status: "ready" | "in review";
 };
 
 type TeamOperation = {
@@ -86,7 +86,7 @@ const SERVICE_MODULES = [
     name: "Daily readiness report",
     owner: "Coach OS",
     progress: 92,
-    output: "Team-ready PDF and dashboard summary",
+    nextStep: "Review the team summary and export the current report.",
     status: "ready"
   },
   {
@@ -94,24 +94,24 @@ const SERVICE_MODULES = [
     name: "Academy review package",
     owner: "Academy OS",
     progress: 74,
-    output: "Role-redacted athlete and parent views",
+    nextStep: "Open athlete and parent views prepared for staff review.",
     status: "ready"
   },
   {
-    id: "lab-profile",
-    name: "Sports lab profile",
-    owner: "Services",
-    progress: 46,
-    output: "Needs benchmark and testing data",
-    status: "needs data"
+    id: "session-actions",
+    name: "Session action export",
+    owner: "Trainer OS",
+    progress: 68,
+    nextStep: "Check trainer actions before publishing the session plan.",
+    status: "in review"
   },
   {
-    id: "gameflow",
-    name: "GameFlow match intelligence",
-    owner: "Partner/Future",
-    progress: 28,
-    output: "Roadmap module isolated from core dashboard",
-    status: "roadmap"
+    id: "club-delivery",
+    name: "Club delivery board",
+    owner: "Club OS",
+    progress: 81,
+    nextStep: "Review service delivery and report ownership by squad.",
+    status: "ready"
   }
 ] satisfies ServiceModule[];
 
@@ -157,11 +157,20 @@ const AIQ_MODE_OPTIONS = [
   { value: "performance", label: "Performance" }
 ];
 
+const HIDDEN_REFERENCE_NAV_ITEMS = new Set(["habits", "roadmap", "report"]);
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
 const ATHLETE_IQ_THEME_VARIABLES = getGdsVibeThemeCssVariables(ATHLETE_IQ_GDS_THEME_PRESET, "dark") as CSSProperties;
 
-export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurface?: ProductSurface; surface: ProductSurface }) {
+export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const actionPack = useMemo(() => createProductSurfaceActionPack(), []);
+  const visibleNavigationGroups = useMemo(
+    () =>
+      ATHLETE_IQ_OS_GROUPS.map((group) => ({
+        ...group,
+        modules: group.modules.filter((module) => !HIDDEN_REFERENCE_NAV_ITEMS.has(module.anchorId))
+      })).filter((group) => group.modules.length > 0),
+    []
+  );
   const [roleView, setRoleView] = useState<"coach" | "academy" | "services">("coach");
   const [modeView, setModeView] = useState<"lifestyle" | "performance">("performance");
   const [acknowledged, setAcknowledged] = useState<string[]>([]);
@@ -172,9 +181,6 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
   const mentalAverage = Math.round(PRIORITY_ATHLETES.reduce((sum, athlete) => sum + athlete.mental, 0) / PRIORITY_ATHLETES.length);
   const dailyIq = modeView === "performance" ? 78 : 72;
   const readyServices = SERVICE_MODULES.filter((module) => module.status === "ready").length;
-  const activeModules = ATHLETE_IQ_OS_MODULES.filter((module) => module.status === "active").length;
-  const liteModules = ATHLETE_IQ_OS_MODULES.filter((module) => module.status === "lite").length;
-  const proOnlyFunctions = surface.functionRegistry.filter((item) => item.id.startsWith("aiq-"));
 
   function acknowledge(id: string) {
     setAcknowledged((current) => current.includes(id) ? current : [...current, id]);
@@ -197,12 +203,12 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
                 <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={88} height={78} priority className="aiq-brand-logo" />
                 <Stack gap={0}>
                   <Title order={1} size="h2">AthleteIQ</Title>
-                  <Text className="aiq-letter-label">Layered MVP V7</Text>
+                  <Text className="aiq-letter-label">Performance command</Text>
                 </Stack>
               </Group>
 
               <Stack gap="lg">
-                {ATHLETE_IQ_OS_GROUPS.map((group) => (
+                {visibleNavigationGroups.map((group) => (
                   <AiqNavSection key={group.title} group={group} />
                 ))}
                 <AiqDailyScoreCard mode={modeView} score={dailyIq} />
@@ -230,7 +236,7 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
                   <Text className="aiq-letter-label">Today - June 26, 2026</Text>
                   <PageHeader
                     title="AthleteIQ Daily Development OS"
-                    subtitle="A professional operating surface for athletes, trainers, teams, clubs, reports, and honest staged intelligence."
+                    subtitle="A professional operating surface for athletes, trainers, teams, clubs, and performance decisions."
                     actions={
                       <Group gap="xs" wrap="wrap">
                         <Link href="/dashboard" style={{ textDecoration: "none" }}>
@@ -240,7 +246,7 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
                     }
                   />
                   <Text className="aiq-command-copy" size="lg">
-                    Readiness, mental state, pain, habits, training logs, calendar, team actions, and reports are active. Lite and future pillars stay clearly labeled.
+                    Readiness, mental state, training load, team actions, and reports stay in one focused trainer workspace.
                   </Text>
                   <SegmentedControl
                     value={roleView}
@@ -256,31 +262,6 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
                   <MetricCard label="Mental edge" value={`${mentalAverage}%`} detail="Priority athletes" />
                 </SimpleGrid>
               </SimpleGrid>
-            </Paper>
-
-            <Paper component="section" className="aiq-truth-banner surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
-              <Group gap="md" align="center" wrap="wrap">
-                <Box className="aiq-ai-mark" aria-hidden="true">AI</Box>
-                <Stack gap={4}>
-                  <Text className="aiq-letter-label">Product Truth</Text>
-                  <Title order={2}>This is the Daily Development OS, not yet the full six-pillar platform.</Title>
-                  <Text className="aiq-command-copy">The UI shows active, lite, and future modules separately so trainers and clubs can trust what is operational today.</Text>
-                </Stack>
-              </Group>
-            </Paper>
-
-            <Paper component="section" className="aiq-os-map-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
-              <Stack gap="lg">
-                <SectionHeading
-                  icon={<GdsIcons.Dashboard size={18} />}
-                  title="Daily Development OS menu"
-                  copy={`${activeModules} active modules and ${liteModules} lite modules mapped from the supplied AthleteIQ reference.`}
-                  inverse
-                />
-                {ATHLETE_IQ_OS_GROUPS.map((group) => (
-                  <AiqModuleGroup key={group.title} group={group} />
-                ))}
-              </Stack>
             </Paper>
 
             <Paper id="team-club" component="section" className="aiq-team-command-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
@@ -307,7 +288,7 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
             <SimpleGrid cols={{ base: 1, lg: 3 }} spacing="md">
               <Paper id="priority" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
-                  <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title="Priority queue" copy="Professional ranking powered by the shared Habigoal daily signal layer." inverse />
+                  <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title="Priority queue" copy="Professional ranking powered by daily readiness and training context." inverse />
                   {PRIORITY_ATHLETES.map((athlete) => (
                     <PriorityAthleteCard key={athlete.id} athlete={athlete} acknowledged={acknowledged.includes(athlete.id)} actionPack={actionPack} onAcknowledge={acknowledge} />
                   ))}
@@ -325,35 +306,13 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
 
               <Paper id="services" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
-                  <SectionHeading icon={<GdsIcons.Record size={18} />} title="Services and reports" copy="Professional modules are visible here, not in the Habigoal client shell." inverse />
+                  <SectionHeading icon={<GdsIcons.Record size={18} />} title="Services and reports" copy="Report exports, action reviews, and service delivery for trainer workflows." inverse />
                   {SERVICE_MODULES.map((module) => (
                     <ServiceModuleCard key={module.id} module={module} actionPack={actionPack} />
                   ))}
                 </Stack>
               </Paper>
             </SimpleGrid>
-
-            {relatedSurface ? (
-              <Paper component="section" className="aiq-includes-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
-                <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
-                  <Stack gap="xs">
-                    <Text className="aiq-letter-label">{surface.shortName} includes {relatedSurface.shortName}</Text>
-                    <Title order={2}>Same data, different product</Title>
-                    <Text className="aiq-command-copy">
-                      AthleteIQ consumes Habigoal signals through shared contracts while preserving a separate professional theme, navigation, and function set.
-                    </Text>
-                  </Stack>
-                  {relatedSurface.demoSignals.map((signal) => (
-                    <SignalCard key={signal.id} label={signal.label} value={signal.value} state={signal.state} detail={signal.source} inverse />
-                  ))}
-                </SimpleGrid>
-              </Paper>
-            ) : null}
-
-            <Box id="shared">
-              <SharedFoundationSection surface={surface} relatedSurface={relatedSurface} inverse />
-            </Box>
-            <FunctionDirectory surface={surface} featuredFunctions={proOnlyFunctions} />
           </Stack>
         </Box>
       </Box>
@@ -362,7 +321,7 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
 }
 
 function TeamOperationCard({ operation }: { operation: TeamOperation }) {
-  const color = operation.state === "risk" ? "red" : operation.state === "watch" ? "yellow" : "green";
+  const color = operation.state === "risk" ? "red" : operation.state === "watch" ? "yellow" : "tactical";
 
   return (
     <Box className="aiq-row-card aiq-operation-card">
@@ -406,52 +365,6 @@ function AiqDailyScoreCard({ mode, score }: { mode: "lifestyle" | "performance";
   );
 }
 
-function AiqModuleGroup({ group }: { group: AthleteIqOsGroup }) {
-  return (
-    <Stack gap="sm">
-      <Group justify="space-between" gap="md">
-        <Text className="aiq-letter-label">{group.title}</Text>
-        <Badge color="yellow" variant="light">{group.modules.length} modules</Badge>
-      </Group>
-      <SimpleGrid cols={{ base: 1, md: group.modules.length > 5 ? 3 : 2, xl: group.modules.length > 5 ? 4 : 3 }} spacing="md">
-        {group.modules.map((module) => (
-          <AiqOsModuleCard key={module.anchorId} module={module} />
-        ))}
-      </SimpleGrid>
-    </Stack>
-  );
-}
-
-function AiqOsModuleCard({ module }: { module: AthleteIqOsModule }) {
-  return (
-    <Box id={module.anchorId === "home" ? undefined : module.anchorId} className="aiq-row-card aiq-os-module-card">
-      <Stack gap="sm">
-        <Group justify="space-between" align="flex-start" gap="sm">
-          <Box className="aiq-module-code">{module.code}</Box>
-          <Badge color={statusColor(module.status)} variant="light">{module.stage}</Badge>
-        </Group>
-        <Stack gap={4}>
-          <Title order={3}>{module.label}</Title>
-          <Text size="sm" className="aiq-muted">{module.summary}</Text>
-        </Stack>
-        <Text size="sm" className="aiq-muted-faint"><strong>Output:</strong> {module.output}</Text>
-      </Stack>
-    </Box>
-  );
-}
-
-function statusColor(status: AthleteIqOsStatus) {
-  if (status === "active") {
-    return "green";
-  }
-
-  if (status === "lite") {
-    return "blue";
-  }
-
-  return "gray";
-}
-
 function AiqThemeBlock({ theme }: { theme: ProductTheme }) {
   return (
     <Paper className="aiq-theme-card surface-outline" withBorder radius="md" p="md">
@@ -488,7 +401,7 @@ function PriorityAthleteCard({
   athlete: PriorityAthlete;
   onAcknowledge: (id: string) => void;
 }) {
-  const color = athlete.severity === "risk" ? "red" : athlete.severity === "watch" ? "yellow" : "green";
+  const color = athlete.severity === "risk" ? "red" : athlete.severity === "watch" ? "yellow" : "tactical";
 
   return (
     <Box className={acknowledged ? "aiq-row-card aiq-row-card-muted" : "aiq-row-card"}>
@@ -526,7 +439,7 @@ function AiqReadinessRow({ athlete }: { athlete: PriorityAthlete }) {
           <Text fw={900}>{athlete.readiness}%</Text>
         </Group>
         <Progress.Root size="lg" radius="xl">
-          <Progress.Section value={athlete.readiness} color={athlete.readiness >= 75 ? "green" : athlete.readiness >= 60 ? "yellow" : "red"} />
+          <Progress.Section value={athlete.readiness} color={athlete.readiness >= 75 ? "tactical" : athlete.readiness >= 60 ? "yellow" : "red"} />
         </Progress.Root>
         <SimpleGrid cols={2} spacing={6}>
           <Text size="sm" className="aiq-muted-soft">Load {athlete.load}%</Text>
@@ -538,7 +451,7 @@ function AiqReadinessRow({ athlete }: { athlete: PriorityAthlete }) {
 }
 
 function ServiceModuleCard({ actionPack, module }: { actionPack: ProductSurfaceActionPack; module: ServiceModule }) {
-  const color = module.status === "ready" ? "green" : module.status === "needs data" ? "yellow" : "gray";
+  const color = module.status === "ready" ? "tactical" : "yellow";
   return (
     <Box className="aiq-row-card">
       <Stack gap="sm">
@@ -550,7 +463,7 @@ function ServiceModuleCard({ actionPack, module }: { actionPack: ProductSurfaceA
           <Badge color={color} variant="light">{module.status}</Badge>
         </Group>
         <Progress value={module.progress} color={color} radius="xl" />
-        <Text size="sm" className="aiq-muted">{module.output}</Text>
+        <Text size="sm" className="aiq-muted">{module.nextStep}</Text>
         <SemanticButton
           action={module.status === "ready" ? "productSurface:report" : "productSurface:launch"}
           color="yellow"
