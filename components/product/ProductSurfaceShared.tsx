@@ -30,7 +30,7 @@ export function SurfaceTopBar({ surface }: { surface: ProductSurface }) {
 export function SectionHeading({ icon, title, copy, inverse = false }: { icon: ReactNode; title: string; copy: string; inverse?: boolean }) {
   return (
     <Group align="flex-start" gap="sm" wrap="nowrap">
-      <ThemeIcon variant="light" color={inverse ? "yellow" : "teal"} radius="md" aria-hidden="true">
+      <ThemeIcon variant="light" color={inverse ? "yellow" : "ingress"} radius="md" aria-hidden="true">
         {icon}
       </ThemeIcon>
       <Stack gap={2}>
@@ -54,7 +54,7 @@ export function SignalCard({
   state: SurfaceSignalState;
   value: string;
 }) {
-  const color = state === "good" ? "green" : state === "risk" ? "red" : state === "watch" ? "yellow" : "gray";
+  const color = state === "good" ? "tactical" : state === "risk" ? "red" : state === "watch" ? "yellow" : "gray";
   return (
     <Paper className={inverse ? "aiq-signal-card surface-outline" : "hbg-signal-card surface-outline"} withBorder radius="md" p="lg">
       <Stack gap={8}>
@@ -88,7 +88,7 @@ export function SharedFoundationSection({
         {surface.sharedDataContracts.map((contract) => (
           <Paper key={contract.id} className={inverse ? "aiq-data-card surface-outline" : "hbg-data-card surface-outline"} withBorder radius="md" p="lg">
             <Stack gap="sm">
-              <Badge variant="light" color={inverse ? "yellow" : "teal"} w="fit-content">{contract.owner}</Badge>
+              <Badge variant="light" color={inverse ? "yellow" : "ingress"} w="fit-content">{contract.owner}</Badge>
               <Title order={3} size="h4">{contract.name}</Title>
               <Text size="sm" className={inverse ? "aiq-muted" : "hbg-muted-text"}>{contract.description}</Text>
               <Text size="sm"><strong>Sync:</strong> {contract.syncBehavior}</Text>
@@ -133,14 +133,14 @@ function FunctionCard({ item, productId }: { item: ProductFunction; productId: P
         <Group justify="space-between" align="flex-start" gap="sm">
           <Stack gap={4} style={{ minWidth: 0 }}>
             <Group gap="xs" wrap="nowrap">
-              <ThemeIcon variant="light" color={item.status === "planned" ? "gray" : pro ? "yellow" : "teal"} radius="md" aria-hidden="true">
+              <ThemeIcon variant="light" color={item.status === "planned" ? "gray" : pro ? "yellow" : "ingress"} radius="md" aria-hidden="true">
                 <GdsIcons.Check size={16} />
               </ThemeIcon>
               <Title order={3} size="h4">{item.name}</Title>
             </Group>
             <Text size="sm" className={pro ? "aiq-muted" : "hbg-muted-text"}>{item.summary}</Text>
           </Stack>
-          <Badge variant="light" color={item.status === "planned" ? "gray" : pro ? "yellow" : "teal"}>{item.status}</Badge>
+          <Badge variant="light" color={item.status === "planned" ? "gray" : pro ? "yellow" : "ingress"}>{item.status}</Badge>
         </Group>
         <AudienceBadges audience={item.audience} pro={pro} />
         <DetailList title="Runtime flow" items={item.runtimeFlow.slice(0, 3)} pro={pro} />
@@ -156,7 +156,7 @@ function AudienceBadges({ audience, pro }: { audience: ProductSurfaceAudience[];
   return (
     <Group gap={6} wrap="wrap">
       {audience.map((item) => (
-        <Badge key={item} variant="outline" color={pro ? "yellow" : "teal"}>{item}</Badge>
+        <Badge key={item} variant="outline" color={pro ? "yellow" : "ingress"}>{item}</Badge>
       ))}
     </Group>
   );

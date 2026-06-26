@@ -159,7 +159,7 @@ export function HabigoalExperience({ relatedSurface, surface }: { relatedSurface
                     <Text fw={800}>Completion</Text>
                     <Text fw={800}>{habitScore}%</Text>
                   </Group>
-                  <Progress value={habitScore} color={habitScore >= 70 ? "green" : "yellow"} radius="xl" size="lg" />
+                  <Progress value={habitScore} color={habitScore >= 70 ? "tactical" : "yellow"} radius="xl" size="lg" />
                 </Box>
               </Stack>
             </Paper>
@@ -233,7 +233,7 @@ function StatusSlider({
         min={0}
         max={100}
         step={1}
-        color={inverse ? "orange" : "teal"}
+        color={inverse ? "review" : "ingress"}
         label={(current) => `${current}%`}
         aria-label={label}
       />

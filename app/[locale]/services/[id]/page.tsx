@@ -19,7 +19,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         <Stack gap="md">
           <Group justify="space-between">
             <Title order={1}>{title}</Title>
-            <Badge color="blue" size="lg">{service.entityKind}</Badge>
+            <Badge color="ingress" size="lg">{service.entityKind}</Badge>
           </Group>
           
           <Text size="lg">{description}</Text>

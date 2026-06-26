@@ -1113,7 +1113,21 @@
     "athleteApp": "Sportolói app",
     "whatsNew": "Újdonságok",
     "termsOfService": "Felhasználási feltételek",
-    "privacyPolicy": "Adatvédelmi tájékoztató"
+    "privacyPolicy": "Adatvédelmi tájékoztató",
+    "selectorBadge": "Két külön alkalmazás",
+    "selectorTitle": "Válassza ki a termékdomaint",
+    "selectorSubtitle": "A választó csak prezentációs nézet. A Habigoal és az Athlete IQ külön design nyelvet használ, és külön termékdomainként fog működni.",
+    "habigoalBadge": "Habigoal",
+    "habigoalTitle": "Mobil szokás- és jóllét app",
+    "habigoalBody": "Világos, mobile-first PWA napi check-inekhez, szokásokhoz, jólléti támogatáshoz és egyértelmű következő lépéshez.",
+    "habigoalAction": "Habigoal megnyitása",
+    "habigoalAria": "Habigoal mobil jólléti alkalmazás megnyitása",
+    "athleteIqBadge": "Athlete IQ",
+    "athleteIqTitle": "Professzionális sportolói teljesítmény OS",
+    "athleteIqBody": "Sötét arany, desktop-first parancsfelület edzőknek, csapatoknak, kluboknak, riportoknak és teljesítményoperációnak.",
+    "athleteIqAction": "Athlete IQ megnyitása",
+    "athleteIqAria": "Athlete IQ professzionális teljesítmény alkalmazás megnyitása",
+    "footerTitle": "Habigoal"
   },
   "News": {
     "badge": "Habigoal Hírek",

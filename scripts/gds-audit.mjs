@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const expectedGdsVersion = "3.4.7";
+const fallbackExpectedGdsVersion = "3.6.0";
 const manifestPath = path.join(root, "gds-adoption.json");
 const packagePath = path.join(root, "package.json");
 
@@ -86,6 +86,12 @@ function scanForLegacyGdsReferences() {
 
 const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
 const pkg = fs.existsSync(packagePath) ? readJson(packagePath) : null;
+const expectedGdsVersion = normalizePackageVersion(
+  pkg?.dependencies?.["@doneisbetter/gds"] ??
+  pkg?.devDependencies?.["@doneisbetter/gds"] ??
+  manifest?.gdsVersion ??
+  fallbackExpectedGdsVersion
+);
 
 if (!manifest) {
   blockers.push("gds-adoption.json is required for GDS governance.");
@@ -161,4 +167,8 @@ if (blockers.length > 0) {
 console.log(`GDS audit passed for Habigoal on GDS ${expectedGdsVersion}.`);
 for (const warning of warnings) {
   console.log(`- ${warning}`);
+}
+
+function normalizePackageVersion(version) {
+  return String(version).replace(/^[~^]/, "");
 }

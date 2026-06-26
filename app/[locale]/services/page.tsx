@@ -25,7 +25,7 @@ export default async function ServicesDirectoryPage() {
               <Card key={service.id} shadow="sm" padding="lg" radius="md" withBorder component={Link} href={`/en/services/${service.id}`}>
                 <Group justify="space-between" mt="md" mb="xs">
                   <Text fw={500} lineClamp={1}>{title}</Text>
-                  <Badge color="blue">{service.entityKind}</Badge>
+                  <Badge color="ingress">{service.entityKind}</Badge>
                 </Group>
                 <Text size="sm" c="dimmed" lineClamp={3}>
                   {description}

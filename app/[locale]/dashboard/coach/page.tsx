@@ -90,7 +90,7 @@ export default function CoachDashboardPage() {
                 <Box>
                   <Group gap="xs" mb={4}>
                     <Text fw={700} size="lg">{athlete.name}</Text>
-                    <Badge color="green" variant="light">{t("ready")}</Badge>
+                    <Badge color="tactical" variant="light">{t("ready")}</Badge>
                   </Group>
                   <Text size="sm" c="dimmed">{t("statusActive")}</Text>
                 </Box>

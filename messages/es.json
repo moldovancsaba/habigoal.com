@@ -1113,7 +1113,21 @@
     "trainerApp": "App del entrenador",
     "whatsNew": "Novedades",
     "termsOfService": "Terminos del servicio",
-    "privacyPolicy": "Politica de privacidad"
+    "privacyPolicy": "Politica de privacidad",
+    "selectorBadge": "Dos apps separadas",
+    "selectorTitle": "Elige el dominio de producto",
+    "selectorSubtitle": "El selector es solo para presentacion. Habigoal y Athlete IQ usan lenguajes visuales separados y funcionaran como dominios de producto independientes.",
+    "habigoalBadge": "Habigoal",
+    "habigoalTitle": "App movil de habitos y bienestar",
+    "habigoalBody": "Una PWA clara y mobile-first para check-ins diarios, habitos, apoyo de bienestar y una siguiente accion clara.",
+    "habigoalAction": "Abrir Habigoal",
+    "habigoalAria": "Abrir la app movil de bienestar Habigoal",
+    "athleteIqBadge": "Athlete IQ",
+    "athleteIqTitle": "OS profesional de rendimiento deportivo",
+    "athleteIqBody": "Una superficie de mando oscura y dorada, desktop-first, para entrenadores, equipos, clubes, informes y operaciones de rendimiento.",
+    "athleteIqAction": "Abrir Athlete IQ",
+    "athleteIqAria": "Abrir la app profesional de rendimiento Athlete IQ",
+    "footerTitle": "Habigoal"
   },
   "News": {
     "badge": "Noticias Habigoal",

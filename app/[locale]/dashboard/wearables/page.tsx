@@ -117,8 +117,8 @@ export default function WearablesConnectFlow() {
             return (
               <Paper key={wearable.id} withBorder p="lg" radius="md">
                 <Group justify="space-between" mb="md">
-                  <Avatar radius="xl" color="blue">{wearable.name[0]}</Avatar>
-                  <Text size="sm" c={status === "active" || status === "connected" ? "green" : "dimmed"} tt="uppercase">
+                  <Avatar radius="xl" color="ingress">{wearable.name[0]}</Avatar>
+                  <Text size="sm" c={status === "active" || status === "connected" ? "var(--mantine-color-tactical-6)" : "dimmed"} tt="uppercase">
                     {status}
                   </Text>
                 </Group>

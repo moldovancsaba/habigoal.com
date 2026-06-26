@@ -1113,7 +1113,21 @@
     "trainerApp": "אפליקציית מאמנים",
     "whatsNew": "מה חדש",
     "termsOfService": "תנאי שימוש",
-    "privacyPolicy": "מדיניות פרטיות"
+    "privacyPolicy": "מדיניות פרטיות",
+    "selectorBadge": "שתי אפליקציות נפרדות",
+    "selectorTitle": "בחרו את דומיין המוצר",
+    "selectorSubtitle": "מסך הבחירה מיועד להצגה בלבד. Habigoal ו-Athlete IQ משתמשים בשפות עיצוב נפרדות ויפעלו כדומייני מוצר עצמאיים.",
+    "habigoalBadge": "Habigoal",
+    "habigoalTitle": "אפליקציית מובייל להרגלים ורווחה",
+    "habigoalBody": "PWA בהירה וממוקדת מובייל לצק-אין יומי, הרגלים, תמיכת רווחה ופעולה הבאה ברורה.",
+    "habigoalAction": "פתח Habigoal",
+    "habigoalAria": "פתח את אפליקציית המובייל לרווחה של Habigoal",
+    "athleteIqBadge": "Athlete IQ",
+    "athleteIqTitle": "מערכת מקצועית לביצועי ספורטאים",
+    "athleteIqBody": "ממשק פיקוד כהה וזהוב, desktop-first, למאמנים, קבוצות, מועדונים, דוחות ותפעול ביצועים.",
+    "athleteIqAction": "פתח Athlete IQ",
+    "athleteIqAria": "פתח את אפליקציית הביצועים המקצועית Athlete IQ",
+    "footerTitle": "Habigoal"
   },
   "News": {
     "badge": "חדשות Habigoal",

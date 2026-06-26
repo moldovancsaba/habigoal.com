@@ -1113,7 +1113,21 @@
     "trainerApp": "تطبيق المدرب",
     "whatsNew": "ما الجديد",
     "termsOfService": "شروط الخدمة",
-    "privacyPolicy": "سياسة الخصوصية"
+    "privacyPolicy": "سياسة الخصوصية",
+    "selectorBadge": "تطبيقان منفصلان",
+    "selectorTitle": "اختر نطاق المنتج",
+    "selectorSubtitle": "هذه شاشة اختيار للعرض فقط. يستخدم Habigoal و Athlete IQ لغتين بصريتين منفصلتين وسيعملان كنطاقي منتج مستقلين.",
+    "habigoalBadge": "Habigoal",
+    "habigoalTitle": "تطبيق جوال للعادات والرفاه",
+    "habigoalBody": "تطبيق PWA فاتح ومصمم للجوال أولاً للتسجيلات اليومية والعادات ودعم الرفاه وخطوة تالية واضحة.",
+    "habigoalAction": "فتح Habigoal",
+    "habigoalAria": "فتح تطبيق Habigoal للرفاه على الجوال",
+    "athleteIqBadge": "Athlete IQ",
+    "athleteIqTitle": "نظام احترافي لأداء الرياضيين",
+    "athleteIqBody": "واجهة أوامر داكنة وذهبية ومصممة لسطح المكتب أولاً للمدربين والفرق والأندية والتقارير وعمليات الأداء.",
+    "athleteIqAction": "فتح Athlete IQ",
+    "athleteIqAria": "فتح تطبيق Athlete IQ الاحترافي للأداء",
+    "footerTitle": "Habigoal"
   },
   "News": {
     "badge": "أخبار Habigoal",

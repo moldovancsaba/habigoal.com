@@ -146,7 +146,7 @@ export default function SessionPlannerPage() {
                     <Text size="sm" c="dimmed">{t("dateLabel", { date: session.date })}</Text>
                   </Box>
                   <Group>
-                    <Badge color="blue" variant="light">{session.category}</Badge>
+                    <Badge color="ingress" variant="light">{session.category}</Badge>
                     <Badge color="gray" variant="filled">{session.plannedLoadPoints} Pts</Badge>
                   </Group>
                 </Group>

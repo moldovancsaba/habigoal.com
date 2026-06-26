@@ -22,7 +22,7 @@ export default function RpeLoggerPage() {
   if (success) {
     return (
       <Box p="xl" style={{ textAlign: "center" }}>
-        <Text size="xl" fw={700} c="green">Session Logged!</Text>
+        <Text size="xl" fw={700} c="var(--mantine-color-tactical-6)">Session Logged!</Text>
         <Text mt="sm">Your load points have been updated.</Text>
       </Box>
     );
@@ -63,7 +63,7 @@ export default function RpeLoggerPage() {
           <Paper withBorder p="md" bg="gray.0">
             <Group justify="space-between">
               <Text fw={500}>Calculated Load:</Text>
-              <Text fw={700} size="lg" c="blue">{rpe * Number(duration)} Points</Text>
+              <Text fw={700} size="lg" c="var(--mantine-color-ingress-7)">{rpe * Number(duration)} Points</Text>
             </Group>
           </Paper>
 

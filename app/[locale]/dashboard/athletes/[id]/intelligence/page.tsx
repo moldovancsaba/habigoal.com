@@ -48,7 +48,7 @@ export default function AthleteIntelligencePage() {
             <Paper withBorder p="md">
               <Group justify="space-between">
                 <Text fw={500}>Garmin Connect</Text>
-                <Badge color="green">Synced Today</Badge>
+                <Badge color="tactical">Synced Today</Badge>
               </Group>
             </Paper>
             <Paper withBorder p="md" mt="sm">
