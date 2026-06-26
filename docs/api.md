@@ -221,6 +221,32 @@ Returns latest snapshots per local date for the requested range.
 
 Daily IQ uses algorithm version `aiq-daily-iq-1220.1`: readiness `0.40`, Mental Edge `0.30`, habit `0.20`, safe load `0.10`. High pain caps the final score at `60` and blocks high-intensity recommendations. Full contract, privacy, rollback, and recovery notes are documented in [AthleteIQ Daily IQ Composite Contract](athleteiq-daily-iq-contract.md).
 
+## AthleteIQ Mental Edge
+
+### `GET /api/athleteiq/mental-edge/today?athleteId=&timezone=&localDate=`
+
+Returns the current Mental Edge score, risk level, trend, supportive routines, missing signals, source labels, and alert candidate for one athlete. Reflection body text is excluded by default.
+
+### `POST /api/athleteiq/mental-edge/routines/:routineId/complete`
+
+Idempotently marks a supportive routine complete for `athleteId + routineId + localDate`.
+
+Request:
+
+```json
+{
+  "athleteId": "athlete-id",
+  "localDate": "2026-06-26",
+  "timezone": "Europe/Budapest"
+}
+```
+
+### `GET /api/athleteiq/coach/mental-alerts?teamId=&timezone=&localDate=`
+
+Returns coach-visible Mental Edge alert candidates for the team. Alerts include reason codes, trend, visible source labels, and recommended coach action. They do not include private reflection content.
+
+Mental Edge uses algorithm version `aiq-mental-edge-1230.1`. Full contract, privacy, rollback, and recovery notes are documented in [AthleteIQ Mental Edge Contract](athleteiq-mental-edge-contract.md).
+
 ## Auth
 
 ### `GET /api/auth/login`

@@ -48,3 +48,29 @@ export async function getAthleteIqCheckInSnapshot(athleteId: string, localDate: 
   const record = await collection.findOne({ athleteId, localDate, mode });
   return record ? normalizeSnapshot(record as Record<string, unknown>) : null;
 }
+
+export async function listAthleteIqCheckInSnapshots(input: {
+  athleteId: string;
+  from: string;
+  to: string;
+  mode?: AthleteIqCheckInMode;
+}) {
+  const db = await getDatabase();
+  const collection = db.collection<AthleteIqCheckInDocument>(collectionName);
+  const records = await collection
+    .find({
+      athleteId: input.athleteId,
+      localDate: { $gte: input.from, $lte: input.to },
+      ...(input.mode ? { mode: input.mode } : {})
+    })
+    .sort({ localDate: 1, updatedAt: -1 })
+    .toArray();
+
+  const latestByDate = new Map<string, AthleteIqCheckInSnapshot>();
+  for (const record of records) {
+    const snapshot = normalizeSnapshot(record as unknown as Record<string, unknown>);
+    if (!latestByDate.has(snapshot.localDate)) latestByDate.set(snapshot.localDate, snapshot);
+  }
+
+  return Array.from(latestByDate.values());
+}

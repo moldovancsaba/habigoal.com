@@ -36,6 +36,13 @@ export async function listTeamsByAthleteId(athleteId: string): Promise<Team[]> {
   return teams.map((team) => normalizeTeam(team as Record<string, unknown>));
 }
 
+export async function getTeamById(teamId: string): Promise<Team | null> {
+  if (!ObjectId.isValid(teamId)) return null;
+  const db = await getDatabase();
+  const team = await db.collection(collectionName).findOne({ _id: new ObjectId(teamId) });
+  return team ? normalizeTeam(team as Record<string, unknown>) : null;
+}
+
 export async function upsertTeam(input: Omit<Team, "_id" | "createdAt" | "updatedAt"> & { _id?: string }) {
   const db = await getDatabase();
   const now = new Date().toISOString();
