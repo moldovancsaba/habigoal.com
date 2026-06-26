@@ -57,6 +57,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Settings Guide](docs/settings-guide.md)
 - [Onboarding Architecture](docs/onboarding-architecture.md)
 - [AthleteIQ Module Maturity Registry](docs/athleteiq-module-registry.md)
+- [AthleteIQ Adaptive Check-In Contract](docs/athleteiq-check-in-contract.md)
 - [Legal and Company Info](docs/legal.md)
 - [SSO Setup](docs/sso-setup.md)
 - [Product Roadmap](ROADMAP.md)

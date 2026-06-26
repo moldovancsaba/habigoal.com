@@ -153,6 +153,45 @@ Structured error shape:
 
 Version, maturity, role filtering, validation, and rollback details are documented in [AthleteIQ Module Maturity Registry](athleteiq-module-registry.md).
 
+## AthleteIQ Adaptive Check-Ins
+
+### `GET /api/athleteiq/check-ins/schema?athleteId=&mode=`
+
+Returns the render-ready field contract for `lifestyle` or `performance` mode. Lifestyle mode includes five required wellness fields plus note. Performance mode includes those fields plus optional motivation, confidence, focus, training load, soreness areas, sleep hours, manual HRV, manual resting heart rate, and device source status.
+
+### `POST /api/athleteiq/check-ins`
+
+Persists or updates the same-day adaptive check-in snapshot for one athlete.
+
+Request:
+
+```json
+{
+  "athleteId": "athlete-id",
+  "mode": "performance",
+  "timezone": "Europe/Budapest",
+  "values": {
+    "sleepQuality": 8,
+    "fatigue": 4,
+    "pain": 2,
+    "stress": 3,
+    "mood": 7,
+    "confidence": 6,
+    "manualHrv": 72,
+    "deviceSourceStatus": "manual"
+  },
+  "idempotencyKey": "athlete-id:2026-06-26:performance"
+}
+```
+
+The response includes raw values, normalized values for 1-10 fields, missing fields, source labels, `highPain`, and a correlation id. No Daily IQ score is computed here.
+
+### `GET /api/athleteiq/check-ins/today?athleteId=&mode=&timezone=`
+
+Returns the current local-date snapshot for the athlete, mode, and timezone, or `empty: true` when none exists.
+
+Full contract and rollback notes are documented in [AthleteIQ Adaptive Check-In Contract](athleteiq-check-in-contract.md).
+
 ## Auth
 
 ### `GET /api/auth/login`
