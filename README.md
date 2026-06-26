@@ -69,6 +69,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [AthleteIQ Stakeholder Projection Contract](docs/athleteiq-stakeholder-projection-contract.md)
 - [AthleteIQ Active-Module Daily Report Contract](docs/athleteiq-daily-report-contract.md)
 - [AthleteIQ Lite Module Gateway Contract](docs/athleteiq-lite-module-gateway-contract.md)
+- [AthleteIQ Cognitive Lite and CogLeague Boundary Contract](docs/athleteiq-cognitive-cogleague-boundary-contract.md)
 - [Legal and Company Info](docs/legal.md)
 - [SSO Setup](docs/sso-setup.md)
 - [Product Roadmap](ROADMAP.md)
@@ -134,6 +135,7 @@ HABIGOAL_ENFORCE_AUTH=true
 - AthleteIQ stakeholder projection endpoints: `/api/athleteiq/coach/dashboard`, `/api/athleteiq/parents/summary`, `/api/athleteiq/team/overview`, and `/api/athleteiq/coach/alerts/:id/actions`
 - AthleteIQ daily report endpoints: `/api/athleteiq/reports/daily/generate`, `/api/athleteiq/reports/daily`, and `/api/athleteiq/reports/daily/:id/export.json`
 - AthleteIQ lite/manual module endpoints: `/api/athleteiq/lite-modules`, `/api/athleteiq/recovery-lite/entries`, `/api/athleteiq/fuel-lite/entries`, `/api/athleteiq/learning/progress`, and `/api/athleteiq/wearables/manual-entry`
+- AthleteIQ cognitive boundary endpoints: `/api/athleteiq/cognitive-lite/results` and `/api/athleteiq/cogleague/tournaments`
 
 ## Validation Commands
 

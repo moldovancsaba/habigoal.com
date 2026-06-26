@@ -1,4 +1,5 @@
 import type { AppRole } from "@/lib/access";
+import { buildCognitiveLiteJourney } from "@/lib/athleteiq-cognitive";
 import { ATHLETEIQ_MODULE_REGISTRY, ATHLETEIQ_MODULE_REGISTRY_VERSION } from "@/lib/athleteiq-modules";
 import type { ChildProfile } from "@/repositories/child.repository";
 import type { DailyIqSnapshot } from "@/types/athleteiq-daily-iq";
@@ -37,19 +38,42 @@ export function buildAthleteTwinProjection(input: {
   ];
   const liteDimensions = ATHLETEIQ_MODULE_REGISTRY
     .filter((module) => module.maturity === "lite_manual")
-    .map((module): ProfileDimension => ({
-      key: module.key,
-      status: "lite_manual",
-      moduleMaturity: module.maturity,
-      claimBoundary: module.claimBoundary,
-      valueSummary: null,
-      sourceLabels: module.dataSources.map((source) => source.availability === "manual" ? "manual_data_required" : source.availability),
-      visibilityByRole: module.allowedRoles,
-      lastUpdatedAt: null,
-      confidence: "low",
-      missingData: ["manual_entry_required"],
-      redactedFields: []
-    }));
+    .map((module): ProfileDimension => {
+      if (module.key === "cognitive_lite") {
+        const journey = buildCognitiveLiteJourney({ athleteId: input.athleteId, athlete: input.athlete, now });
+        return {
+          key: module.key,
+          status: "lite_manual",
+          moduleMaturity: module.maturity,
+          claimBoundary: module.claimBoundary,
+          valueSummary: {
+            benchmarkStatus: journey.benchmarkStatus,
+            completedTraitCount: journey.completedTraitCount,
+            totalTraitCount: journey.totalTraitCount,
+            traitBands: journey.traitResults.map((result) => ({ trait: result.trait, band: result.band, score: result.score }))
+          },
+          sourceLabels: journey.sourceLabels,
+          visibilityByRole: module.allowedRoles,
+          lastUpdatedAt: input.athlete?.updatedAt ?? null,
+          confidence: journey.isComplete ? "medium" : journey.completedTraitCount ? "low" : "insufficient",
+          missingData: journey.missingData,
+          redactedFields: []
+        };
+      }
+      return {
+        key: module.key,
+        status: "lite_manual",
+        moduleMaturity: module.maturity,
+        claimBoundary: module.claimBoundary,
+        valueSummary: null,
+        sourceLabels: module.dataSources.map((source) => source.availability === "manual" ? "manual_data_required" : source.availability),
+        visibilityByRole: module.allowedRoles,
+        lastUpdatedAt: null,
+        confidence: "low",
+        missingData: ["manual_entry_required"],
+        redactedFields: []
+      };
+    });
   const futureDimensions = ATHLETEIQ_MODULE_REGISTRY
     .filter((module) => module.maturity === "future")
     .map((module): ProfileDimension => ({

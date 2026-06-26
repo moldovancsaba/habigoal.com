@@ -663,3 +663,18 @@ Delivered issue `#230` in local implementation:
 - Added plan/report summary generation with source labels, plan reason labels, evidence labels, and confidence boundaries.
 - Added documentation at `docs/athleteiq-lite-module-gateway-contract.md`.
 - No UI primitive was added, so no General Design System request issue was required for this issue.
+
+## 2026-06-26 AthleteIQ Cognitive Lite And CogLeague Boundary Delivery
+
+Delivered issue `#231` in local implementation:
+
+- Added `AIQ-1330` Cognitive Lite local trait journey contracts for alertness, impulse control, attention, risk, reasoning, and memory retention.
+- Cognitive Lite results are normalized to 0-100 where profile baseline data exists and are always marked `benchmarkStatus=non_benchmark`.
+- Partial trait journeys expose completed count, missing-data labels, local source labels, and non-benchmark claim boundaries.
+- Added disabled CogLeague future boundary with tournament template, cohorts, `attemptLimit=3`, partner/consent requirements, no rewards, no revenue claims, and ranking disabled until tie-breakers are documented.
+- Added APIs:
+  - `GET /api/athleteiq/cognitive-lite/results?athleteId=...`
+  - `GET /api/athleteiq/cogleague/tournaments`
+- Added Cognitive Lite value summaries to the AthleteIQ twin projection lite dimensions without promoting them to active or benchmarked claims.
+- Added documentation at `docs/athleteiq-cognitive-cogleague-boundary-contract.md`.
+- No UI primitive was added, so no General Design System request issue was required for this issue.
