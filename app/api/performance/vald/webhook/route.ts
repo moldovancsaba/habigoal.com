@@ -2,17 +2,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    console.log(`Received VALD Hub webhook:`, body);
+    await request.json().catch(() => null);
 
-    // Mock processing for VALD force plate and NordBord data
-    const { athleteId, testType, metrics } = body;
-    
-    if (testType === 'Countermovement Jump') {
-      console.log(`Ingesting CMJ for ${athleteId}: Peak Force ${metrics.peakForce} N`);
-    }
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      error: "VALD webhook ingestion is not configured for live signature validation and canonical metric persistence."
+    }, { status: 501 });
   } catch {
     return NextResponse.json({ error: "Webhook ingestion failed" }, { status: 500 });
   }
