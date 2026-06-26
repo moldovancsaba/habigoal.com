@@ -1,4 +1,5 @@
 import type { PainTrainingIntensity } from "@/types/athleteiq-pain-safety";
+import type { LiteModuleDailySummary } from "@/types/athleteiq-lite-modules";
 
 export type DailyPlanStatus = "active" | "stale" | "superseded";
 export type DailyTaskCategory = "safety" | "mental" | "habit" | "setup" | "coach";
@@ -34,6 +35,7 @@ export type DailyPlan = {
   recommendation: SessionRecommendation;
   dataUsed: string[];
   missingData: string[];
+  liteModuleSummaries?: LiteModuleDailySummary[];
   generatedAt: string;
   updatedAt: string;
   version: string;

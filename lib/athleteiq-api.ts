@@ -7,6 +7,7 @@ export type AthleteIqStructuredErrorCode =
   | "MODULE_NOT_FOUND"
   | "FUTURE_MODULE_NOT_ACTIONABLE"
   | "REGISTRY_INVALID"
+  | "TIMEOUT"
   | "UNKNOWN_ERROR";
 
 export function createAthleteIqCorrelationId() {

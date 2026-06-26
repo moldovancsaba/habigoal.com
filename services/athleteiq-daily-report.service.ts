@@ -2,6 +2,7 @@ import { buildDailyReportSnapshot } from "@/lib/athleteiq-daily-report";
 import { getLatestDailyIqSnapshot } from "@/repositories/athleteiq-daily-iq.repository";
 import { getDailyPlanByDate } from "@/repositories/athleteiq-daily-plan.repository";
 import { getDailyReportById, getLatestDailyReport, insertDailyReportSnapshot } from "@/repositories/athleteiq-daily-report.repository";
+import { getLiteModuleDailySummary } from "@/services/athleteiq-lite-modules.service";
 import { getCoachDashboardProjection, getParentSummaryProjection, getTeamOverviewProjection } from "@/services/athleteiq-stakeholder.service";
 import type { DailyReportType } from "@/types/athleteiq-daily-report";
 
@@ -12,9 +13,10 @@ export async function generateDailyReport(input: {
   localDate: string;
   timezone?: string;
 }) {
-  const [dailyIq, dailyPlan, parentProjection, coachProjection, teamProjection] = await Promise.all([
+  const [dailyIq, dailyPlan, liteGatewaySummary, parentProjection, coachProjection, teamProjection] = await Promise.all([
     input.athleteId ? getLatestDailyIqSnapshot({ athleteId: input.athleteId, localDate: input.localDate }) : Promise.resolve(null),
     input.athleteId ? getDailyPlanByDate(input.athleteId, input.localDate) : Promise.resolve(null),
+    input.athleteId ? getLiteModuleDailySummary({ athleteId: input.athleteId, localDate: input.localDate }) : Promise.resolve(null),
     input.reportType === "parent" && input.athleteId ? getParentSummaryProjection({ athleteId: input.athleteId, localDate: input.localDate, timezone: input.timezone }) : Promise.resolve(null),
     input.reportType === "coach" && input.teamId ? getCoachDashboardProjection({ teamId: input.teamId, localDate: input.localDate, timezone: input.timezone }) : Promise.resolve(null),
     input.reportType === "team" && input.teamId ? getTeamOverviewProjection({ teamId: input.teamId, localDate: input.localDate, timezone: input.timezone }) : Promise.resolve(null)
@@ -27,6 +29,7 @@ export async function generateDailyReport(input: {
     localDate: input.localDate,
     dailyIq,
     dailyPlan,
+    liteGatewaySummary,
     parentProjection,
     coachProjection,
     teamProjection

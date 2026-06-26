@@ -1,6 +1,7 @@
 import { ATHLETEIQ_MODULE_REGISTRY, ATHLETEIQ_MODULE_REGISTRY_VERSION, type AthleteIqModuleDefinition } from "@/lib/athleteiq-modules";
 import type { DailyIqSnapshot } from "@/types/athleteiq-daily-iq";
 import type { DailyPlan } from "@/types/athleteiq-daily-plan";
+import type { LiteModuleGatewaySummary } from "@/types/athleteiq-lite-modules";
 import type { ParentProjection, CoachProjection, TeamProjection } from "@/types/athleteiq-stakeholder";
 import type { DailyReportSnapshot, DailyReportType, ReportSection } from "@/types/athleteiq-daily-report";
 
@@ -14,6 +15,7 @@ export type DailyReportSourceBundle = {
   localDate: string;
   dailyIq?: DailyIqSnapshot | null;
   dailyPlan?: DailyPlan | null;
+  liteGatewaySummary?: LiteModuleGatewaySummary | null;
   parentProjection?: ParentProjection | null;
   coachProjection?: CoachProjection | null;
   teamProjection?: TeamProjection | null;
@@ -90,6 +92,8 @@ function factsForModule(moduleKey: string, input: DailyReportSourceBundle) {
   if (moduleKey === "parent_summary" && input.parentProjection) return [input.parentProjection.dailySummary];
   if (moduleKey === "coach_alerts" && input.coachProjection) return [`Alerts: ${input.coachProjection.alerts.length}`, `Action queue: ${input.coachProjection.actionQueue.length}`];
   if (moduleKey === "team_overview" && input.teamProjection) return [`Athletes: ${input.teamProjection.athleteCount}`, `Flags: ${input.teamProjection.flagsCount}`];
+  const liteSummary = input.liteGatewaySummary?.summaries.find((summary) => summary.moduleKey === moduleKey);
+  if (liteSummary) return liteSummary.facts;
   return ["No live facts available for this section."];
 }
 
@@ -97,6 +101,8 @@ function confidenceForModule(moduleKey: string, input: DailyReportSourceBundle) 
   if (moduleKey === "readiness" || moduleKey === "mental_edge" || moduleKey === "pain_safety") return input.dailyIq?.confidence ?? "insufficient";
   if (moduleKey === "team_overview") return input.teamProjection?.readinessDistribution.suppressed ? "low" : "medium";
   if (moduleKey === "daily_plan") return input.dailyPlan ? "medium" : "insufficient";
+  const liteSummary = input.liteGatewaySummary?.summaries.find((summary) => summary.moduleKey === moduleKey);
+  if (liteSummary) return liteSummary.confidence;
   return "medium";
 }
 

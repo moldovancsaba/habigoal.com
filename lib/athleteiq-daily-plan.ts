@@ -1,6 +1,7 @@
 import { athleteHabitDefinitions, getHabitScoreSummary, normalizeHabitStatuses } from "@/lib/athlete-habits";
 import type { DailyIqSnapshot } from "@/types/athleteiq-daily-iq";
 import type { DailyPlan, DailyTask, DailyTaskPriority, SessionRecommendation } from "@/types/athleteiq-daily-plan";
+import type { LiteModuleGatewaySummary } from "@/types/athleteiq-lite-modules";
 import type { MentalEdgeSnapshot } from "@/types/athleteiq-mental-edge";
 import type { PainGuardrail } from "@/types/athleteiq-pain-safety";
 import type { HabitRecord } from "@/types/habit-record";
@@ -16,6 +17,7 @@ export function buildDailyPlan(input: {
   mentalEdge: MentalEdgeSnapshot | null;
   painGuardrail: PainGuardrail;
   habitRecord: HabitRecord | null;
+  liteGatewaySummary?: LiteModuleGatewaySummary | null;
   previousPlan?: DailyPlan | null;
 }, now = new Date()): DailyPlan {
   const previousTaskState = new Map((input.previousPlan?.tasks ?? []).map((task) => [task.id, task.completionState]));
@@ -36,13 +38,16 @@ export function buildDailyPlan(input: {
       ...(input.dailyIq ? ["daily_iq"] : []),
       ...(input.mentalEdge ? ["mental_edge"] : []),
       "pain_guardrail",
-      ...(input.habitRecord ? ["habit_records"] : [])
+      ...(input.habitRecord ? ["habit_records"] : []),
+      ...(input.liteGatewaySummary ? input.liteGatewaySummary.dataUsed : [])
     ],
     missingData: [
       ...(!input.dailyIq ? ["daily_iq"] : []),
       ...(!input.mentalEdge ? ["mental_edge"] : []),
-      ...(!input.habitRecord ? ["habit_records"] : [])
+      ...(!input.habitRecord ? ["habit_records"] : []),
+      ...(input.liteGatewaySummary ? input.liteGatewaySummary.missingData : [])
     ],
+    liteModuleSummaries: input.liteGatewaySummary?.summaries,
     generatedAt: timestamp,
     updatedAt: timestamp,
     version: ATHLETEIQ_DAILY_PLAN_VERSION,
@@ -55,6 +60,7 @@ function buildTasks(input: {
   mentalEdge: MentalEdgeSnapshot | null;
   painGuardrail: PainGuardrail;
   habitRecord: HabitRecord | null;
+  liteGatewaySummary?: LiteModuleGatewaySummary | null;
 }) {
   const tasks: DailyTask[] = [];
   if (input.painGuardrail.state !== "none") {
@@ -79,6 +85,12 @@ function buildTasks(input: {
   for (const habit of athleteHabitDefinitions) {
     if (!statuses[habit.key]) {
       tasks.push(task(`habit:${habit.key}`, "habit", `athleteiq.dailyPlan.habits.${habit.key}.title`, "athleteiq.dailyPlan.tasks.habit.description", habitSummary.score < 60 ? "medium" : "low", [`habit_gap:${habit.category}`], "anytime"));
+    }
+  }
+
+  for (const summary of input.liteGatewaySummary?.summaries ?? []) {
+    if (summary.entryCount === 0 && (summary.moduleKey === "recovery_lite" || summary.moduleKey === "fuel_lite")) {
+      tasks.push(task(`setup:${summary.moduleKey}`, "setup", `athleteiq.dailyPlan.tasks.${summary.moduleKey}.title`, "athleteiq.dailyPlan.tasks.liteModule.description", "low", summary.planReasonLabels, "anytime"));
     }
   }
 

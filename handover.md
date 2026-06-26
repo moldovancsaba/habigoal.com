@@ -645,3 +645,21 @@ For database/env validation:
 ```bash
 npm run db:ping
 ```
+
+## 2026-06-26 AthleteIQ Lite Module Gateway Delivery
+
+Delivered issue `#230` in local implementation:
+
+- Added `AIQ-1320` lite/manual gateway contracts for recovery, fuel, learning, and manual wearable-style entries.
+- Added `athleteiq_lite_module_entries` persistence with idempotent writes by athlete, module, and idempotency key.
+- Added APIs:
+  - `GET /api/athleteiq/lite-modules`
+  - `POST /api/athleteiq/recovery-lite/entries`
+  - `POST /api/athleteiq/fuel-lite/entries`
+  - `POST /api/athleteiq/learning/progress`
+  - `POST /api/athleteiq/wearables/manual-entry`
+- Manual wearable entries explicitly set `deviceConnectionClaim=false`, `integrationStatus=not_connected_manual_only`, and keep `wearable_normalisation` as missing data.
+- Out-of-range wearable values hard fail; plausible but unusual values return warnings for UI review.
+- Added plan/report summary generation with source labels, plan reason labels, evidence labels, and confidence boundaries.
+- Added documentation at `docs/athleteiq-lite-module-gateway-contract.md`.
+- No UI primitive was added, so no General Design System request issue was required for this issue.
