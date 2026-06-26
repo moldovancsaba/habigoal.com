@@ -24,6 +24,12 @@ export async function listHabitRecordsByAthleteId(athleteId: string): Promise<Ha
   return records.map((record) => normalizeHabitRecord(record as Record<string, unknown>));
 }
 
+export async function getHabitRecordByAthleteIdAndDate(athleteId: string, date: string): Promise<HabitRecord | null> {
+  const db = await getDatabase();
+  const record = await db.collection(collectionName).findOne({ athleteId, date });
+  return record ? normalizeHabitRecord(record as Record<string, unknown>) : null;
+}
+
 export async function upsertHabitRecord(input: {
   athleteId: string;
   date: string;

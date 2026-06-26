@@ -192,6 +192,35 @@ Returns the current local-date snapshot for the athlete, mode, and timezone, or 
 
 Full contract and rollback notes are documented in [AthleteIQ Adaptive Check-In Contract](athleteiq-check-in-contract.md).
 
+## AthleteIQ Daily IQ
+
+### `POST /api/athleteiq/daily-iq/recalculate`
+
+Creates a new immutable Daily IQ recalculation snapshot for one athlete/date/mode.
+
+Request:
+
+```json
+{
+  "athleteId": "athlete-id",
+  "localDate": "2026-06-26",
+  "timezone": "Europe/Budapest",
+  "mode": "performance"
+}
+```
+
+The engine reads the adaptive check-in snapshot, habit record, session load, and module registry version. The response includes component scores, final `dailyIqScore`, confidence, data-used labels, missing-data labels, pain guardrail state, algorithm version, and a correlation id. No raw check-in values are returned.
+
+### `GET /api/athleteiq/daily-iq/today?athleteId=&mode=&timezone=`
+
+Returns the latest Daily IQ snapshot for the athlete's current local date, or `empty: true` when no recalculation exists.
+
+### `GET /api/athleteiq/daily-iq/history?athleteId=&from=&to=&mode=&timezone=`
+
+Returns latest snapshots per local date for the requested range.
+
+Daily IQ uses algorithm version `aiq-daily-iq-1220.1`: readiness `0.40`, Mental Edge `0.30`, habit `0.20`, safe load `0.10`. High pain caps the final score at `60` and blocks high-intensity recommendations. Full contract, privacy, rollback, and recovery notes are documented in [AthleteIQ Daily IQ Composite Contract](athleteiq-daily-iq-contract.md).
+
 ## Auth
 
 ### `GET /api/auth/login`
