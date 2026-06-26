@@ -448,6 +448,21 @@ Issue `#227` / capability `AIQ-1290` now has a private-by-default daily reflecti
 
 Rollback is additive: remove consumers of the reflection endpoints or disable the capability in the module registry. Existing `athleteiq_reflections` records can remain because check-in, Daily Plan, sessions, and calendar flows do not depend on them.
 
+### AthleteIQ Stakeholder Projections Delivered
+
+Issue `#228` / capability `AIQ-1300` now has role-safe stakeholder projection APIs:
+
+- Coach dashboard projection through `GET /api/athleteiq/coach/dashboard?teamId=&date=&timezone=`.
+- Parent-safe summary projection through `GET /api/athleteiq/parents/summary?athleteId=&date=&timezone=`.
+- Team aggregate overview through `GET /api/athleteiq/team/overview?teamId=&date=&timezone=`.
+- Coach alert action recording through `POST /api/athleteiq/coach/alerts/:id/actions`.
+- Projection composition from Daily IQ, Pain Safety, Mental Edge, Daily Plan, Digital Athlete Twin, teams, and coach actions.
+- Parent projections redact mental risk details, pain risk details, pain locations, raw mental signals, and coach-only alerts.
+- Team readiness aggregates are suppressed for teams smaller than three athletes.
+- Contract documentation in `docs/athleteiq-stakeholder-projection-contract.md`.
+
+Rollback is additive: remove consumers of the stakeholder endpoints or disable the capability in the module registry. Alert actions use the existing `coach_actions` contract and remain auditable.
+
 ### GitHub Issue Updates Added
 
 REST issue comments were added on 2026-06-26 to:
