@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Badge, Box, Group, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from "@mantine/core";
 import { GdsIcons, SectionPanel } from "@doneisbetter/gds/client";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductFunction, ProductSurface, ProductSurfaceAudience, ProductSurfaceId } from "@/lib/product-surfaces";
@@ -10,6 +11,9 @@ import type { ProductFunction, ProductSurface, ProductSurfaceAudience, ProductSu
 export type SurfaceSignalState = "good" | "watch" | "risk" | "neutral";
 
 export function SurfaceTopBar({ surface }: { surface: ProductSurface }) {
+  const t = useTranslations("ProductSurfaces");
+  const surfaceKey = surface.id === "habigoal" ? "habigoal" : "athleteIq";
+
   return (
     <Group className={surface.id === "habigoal" ? "surface-topbar hbg-topbar" : "surface-topbar aiq-topbar"} align="center" mb="md">
       <Group gap="sm" wrap="nowrap">
@@ -19,8 +23,8 @@ export function SurfaceTopBar({ surface }: { surface: ProductSurface }) {
           <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={44} height={39} className="aiq-mini-logo" />
         )}
         <Stack gap={0}>
-          <Text fw={900}>{surface.name}</Text>
-          <Text size="sm" className={surface.id === "habigoal" ? "hbg-muted-text" : "aiq-muted-soft"}>{surface.operatingMode}</Text>
+          <Text fw={900}>{t(`${surfaceKey}.surfaceName`)}</Text>
+          <Text size="sm" className={surface.id === "habigoal" ? "hbg-muted-text" : "aiq-muted-soft"}>{t(`${surfaceKey}.operatingMode`)}</Text>
         </Stack>
       </Group>
     </Group>
@@ -54,13 +58,14 @@ export function SignalCard({
   state: SurfaceSignalState;
   value: string;
 }) {
+  const t = useTranslations("ProductSurfaces.common.state");
   const color = state === "good" ? "tactical" : state === "risk" ? "red" : state === "watch" ? "yellow" : "gray";
   return (
     <Paper className={inverse ? "aiq-signal-card surface-outline" : "hbg-signal-card surface-outline"} withBorder radius="md" p="lg">
       <Stack gap={8}>
         <Group justify="space-between" gap="sm">
           <Text fw={900}>{label}</Text>
-          <Badge color={color} variant="light">{state}</Badge>
+          <Badge color={color} variant="light">{t(state)}</Badge>
         </Group>
         <Title order={3}>{value}</Title>
         <Text size="sm" className={inverse ? "aiq-muted" : "hbg-muted-text"}>{detail}</Text>

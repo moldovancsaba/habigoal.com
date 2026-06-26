@@ -235,20 +235,38 @@ function auditCriticalHardcodedUiCopy() {
   const criticalFiles = [
     "components/forms/AthleteCheckInApp.tsx",
     "components/ui/BrandMark.tsx",
+    "components/landing/ProductEntryCard.tsx",
+    "components/product/habigoal/HabigoalExperience.tsx",
+    "components/product/athlete-iq/AthleteIqExperience.tsx",
+    "app/[locale]/habigoal/page.tsx",
+    "app/[locale]/athlete-iq/page.tsx",
   ];
+  const allowedLiteralText = new Set(["Habigoal", "AthleteIQ"]);
   const hardcodedJsxPatterns = [
-    { label: "JSX text node", pattern: />\s*[A-Za-z][^<>{}]*\s*</ },
     { label: "hard-coded label prop", pattern: /\blabel="[^"]*[A-Za-z][^"]*"/ },
     { label: "hard-coded title prop", pattern: /\btitle="[^"]*[A-Za-z][^"]*"/ },
     { label: "hard-coded subheader prop", pattern: /\bsubheader="[^"]*[A-Za-z][^"]*"/ },
     { label: "hard-coded placeholder prop", pattern: /\bplaceholder="[^"]*[A-Za-z][^"]*"/ },
     { label: "hard-coded aria-label prop", pattern: /\baria-label="[^"]*[A-Za-z][^"]*"/ },
   ];
+  const hardcodedJsxTextPattern = />\s*([A-Za-z][^<>{}]*)\s*</g;
 
   for (const relative of criticalFiles) {
     const file = path.join(root, relative);
     if (!existsSync(file)) continue;
     const source = readFileSync(file, "utf8");
+    let textMatch;
+
+    while ((textMatch = hardcodedJsxTextPattern.exec(source))) {
+      const literal = textMatch[1].trim().replace(/\s+/g, " ");
+
+      if (!literal || allowedLiteralText.has(literal)) {
+        continue;
+      }
+
+      failures.push(`Hard-coded critical UI copy (JSX text node: "${literal}") in ${relative}`);
+    }
+
     for (const { label, pattern } of hardcodedJsxPatterns) {
       if (pattern.test(source)) {
         failures.push(`Hard-coded critical UI copy (${label}) in ${relative}`);
@@ -257,11 +275,40 @@ function auditCriticalHardcodedUiCopy() {
   }
 }
 
+function auditProductSurfaceCatalogQuality() {
+  const canonical = readJson(path.join(messagesDir, "en.json"));
+  const coreProductKeys = [
+    "ProductSurfaces.habigoal.headline",
+    "ProductSurfaces.habigoal.promise",
+    "ProductSurfaces.athleteIq.teamCommand.title",
+    "ProductSurfaces.athleteIq.hero.subtitle",
+    "ProductSurfaces.athleteIq.services.title",
+  ];
+
+  for (const locale of supportedLocales.filter((item) => item !== "en")) {
+    const localized = readJson(path.join(messagesDir, `${locale}.json`));
+
+    for (const key of coreProductKeys) {
+      const englishValue = getPath(canonical, key);
+      const localizedValue = getPath(localized, key);
+
+      if (localizedValue === englishValue) {
+        failures.push(`messages/${locale}.json product copy still matches English at ${key}`);
+      }
+    }
+  }
+}
+
+function getPath(value, dottedPath) {
+  return dottedPath.split(".").reduce((current, key) => current?.[key], value);
+}
+
 function main() {
   auditMessageCatalogs();
   auditNewsPosts();
   auditKnownCopyLeaks();
   auditCriticalHardcodedUiCopy();
+  auditProductSurfaceCatalogQuality();
 
   if (warnings.length > 0) {
     console.warn("i18n audit warnings:");

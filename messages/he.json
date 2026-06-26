@@ -1096,8 +1096,8 @@
     "website": "אתר"
   },
   "Landing": {
-    "title": "פלטפורמת Habigoal",
-    "subtitle": "מרחב עבודה יומי לתמיכה בספורטאים עבור מאמנים, ספורטאים וקבוצות.",
+    "title": "Habigoal ו-Athlete IQ",
+    "subtitle": "Backend משותף אחד מפעיל שתי אפליקציות מוצר נפרדות: Habigoal לרווחה יומית במובייל ו-Athlete IQ לתפעול ביצועים מקצועי.",
     "login": "כניסה ללוח הבקרה",
     "feature1": "הערכות מבוססות ראיות",
     "feature2": "ניתוח מגמות לאורך זמן",
@@ -1107,27 +1107,27 @@
     "badge": "{brand} OS",
     "ssoNote": "SSO מאובטח דרך DoneIsBetter",
     "brandSubtitle": "Habigoal",
-    "previewTitle": "ממשק Habigoal",
-    "previewSubtitle": "לוחות מחוונים סמנטיים, רשומות מודרכות ומשטחי זכוכית שקטים עם ניגודיות גבוהה לעבודה תפעולית צפופה.",
+    "previewTitle": "תצוגה מקדימה למוצרים נפרדים",
+    "previewSubtitle": "Habigoal נשארת mobile-first ותומכת; Athlete IQ נשארת desktop-first, מקצועית ומונחית מאמן.",
     "athleteApp": "אפליקציית ספורטאים",
     "trainerApp": "אפליקציית מאמנים",
     "whatsNew": "מה חדש",
     "termsOfService": "תנאי שימוש",
     "privacyPolicy": "מדיניות פרטיות",
-    "selectorBadge": "שתי אפליקציות נפרדות",
-    "selectorTitle": "בחרו את דומיין המוצר",
-    "selectorSubtitle": "מסך הבחירה מיועד להצגה בלבד. Habigoal ו-Athlete IQ משתמשים בשפות עיצוב נפרדות ויפעלו כדומייני מוצר עצמאיים.",
+    "selectorBadge": "בורר להצגה",
+    "selectorTitle": "בחרו את האפליקציה לתצוגה",
+    "selectorSubtitle": "הבורר הזה מיועד להצגת לקוח בלבד. המוצרים המסופקים נשארים מבודדים: Habigoal פותחת את ה-PWA למובייל ו-Athlete IQ פותחת את סביבת המאמן המקצועית.",
     "habigoalBadge": "Habigoal",
-    "habigoalTitle": "אפליקציית מובייל להרגלים ורווחה",
-    "habigoalBody": "PWA בהירה וממוקדת מובייל לצק-אין יומי, הרגלים, תמיכת רווחה ופעולה הבאה ברורה.",
+    "habigoalTitle": "PWA מובייל להרגלים ורווחה",
+    "habigoalBody": "אפליקציה בהירה וממוקדת מובייל לצק-אין יומי, הרגלים, תמיכת רווחה, תמיכת ספורט ופעולה הבאה ברורה.",
     "habigoalAction": "פתח Habigoal",
     "habigoalAria": "פתח את אפליקציית המובייל לרווחה של Habigoal",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "מערכת מקצועית לביצועי ספורטאים",
-    "athleteIqBody": "ממשק פיקוד כהה וזהוב, desktop-first, למאמנים, קבוצות, מועדונים, דוחות ותפעול ביצועים.",
+    "athleteIqBody": "משטח פיקוד כהה וזהוב, desktop-first, למאמנים, קבוצות, מועדונים, לוחות בקרה, דוחות, שירותים ותפעול ביצועים.",
     "athleteIqAction": "פתח Athlete IQ",
     "athleteIqAria": "פתח את אפליקציית הביצועים המקצועית Athlete IQ",
-    "footerTitle": "Habigoal"
+    "footerTitle": "אפליקציות מוצר נפרדות"
   },
   "News": {
     "badge": "חדשות Habigoal",
@@ -1378,5 +1378,289 @@
     "subtitle": "שאלות וספי אזהרה",
     "allowDuplicateOverride": "אפשר override לכפילויות",
     "concernThreshold": "סף אזהרה"
+  },
+  "ProductSurfaces": {
+    "actions": {
+      "dashboard": "פתח לוח בקרה",
+      "athleteDashboard": "פתח לוח Athlete IQ",
+      "reset": "אפס דמו",
+      "complete": "השלם פעולה",
+      "acknowledge": "אשר",
+      "report": "פתח דוח",
+      "launch": "הפעל מודול"
+    },
+    "common": {
+      "state": {
+        "good": "טוב",
+        "watch": "למעקב",
+        "risk": "סיכון",
+        "neutral": "ניטרלי"
+      }
+    },
+    "habigoal": {
+      "metadata": {
+        "title": "Habigoal | PWA מובייל להרגלים ורווחה",
+        "description": "Habigoal היא PWA בגישת מובייל תחילה לצק-אין יומי, הרגלים, תמיכת רווחה, תמיכת ספורט ופעולה הבאה ברורה."
+      },
+      "surfaceName": "Habigoal",
+      "operatingMode": "תמיכת רווחה והרגלים במובייל",
+      "themeName": "אור יום תומך",
+      "headline": "מעקב הרגלים פשוט ותמיכת רווחה",
+      "promise": "Habigoal שומרת על הלולאה היומית פשוטה: צק-אין, השלמת הרגלים, הבנת מצב וקבלת פעולה הבאה בטוחה.",
+      "todayLabel": "היום",
+      "scoreAria": "ציון תמיכה יומי {score}",
+      "scoreExplanation": "הציון משתמש באותם נתוני מוכנות והרגלים ש-Athlete IQ יכול להשתמש בהם, אבל חוויית המובייל נשארת פשוטה.",
+      "states": {
+        "good": "מוכן",
+        "watch": "יציב עם נקודה אחת למעקב",
+        "risk": "דורש תמיכה"
+      },
+      "nextAction": {
+        "good": "שמרו על אימון הספורט המתוכנן והגנו על שגרת השינה הערב.",
+        "watch": "שתו מים, השאירו את האימון קל, ובדקו שוב כאבי שרירים אחרי התנועה.",
+        "risk": "עצרו אימון עצים ושתפו את מצב היום עם איש התמיכה."
+      },
+      "badges": {
+        "checkIn": "צק-אין",
+        "habits": "הרגלים",
+        "support": "תמיכה"
+      },
+      "signals": {
+        "readiness": {
+          "label": "מוכנות",
+          "detail": "רווחה, שינה, מצב רוח, כאבי שרירים"
+        },
+        "habitLoop": {
+          "label": "לולאת הרגלים",
+          "detail": "אחריות יומית ללא לוחות מקצועיים"
+        },
+        "supportAction": {
+          "label": "פעולת תמיכה",
+          "done": "בוצע",
+          "open": "פתוח",
+          "detail": "פעולה הבאה בטוחה אחת"
+        }
+      },
+      "checkIn": {
+        "title": "צק-אין יומי",
+        "copy": "כוונו את האותות כדי לראות את ההנחיה הבטוחה ללקוח מתעדכנת מיד.",
+        "energy": "אנרגיה",
+        "mood": "מצב רוח",
+        "sleep": "איכות שינה",
+        "soreness": "כאבי שרירים"
+      },
+      "habits": {
+        "title": "תמיכת הרגלים",
+        "copy": "בקרות הרגלים פשוטות נשארות מופרדות מה-OS המקצועי.",
+        "itemLabel": "{label} ({category})",
+        "completion": "השלמה",
+        "categories": {
+          "recovery": "התאוששות",
+          "sport": "ספורט",
+          "fuel": "תזונה",
+          "mental": "מנטלי",
+          "life": "חיים"
+        },
+        "items": {
+          "hydrate": "שתייה",
+          "move": "תנועה קלה",
+          "fuel": "ארוחה מאוזנת",
+          "reflect": "רפלקציה",
+          "sleep": "שגרת שינה",
+          "study": "בלוק למידה"
+        }
+      },
+      "guidance": {
+        "kicker": "משוב אוטומטי",
+        "title": "פעולה הבאה אחת ברורה",
+        "copy": "Habigoal נמנעת מצפיפות מקצועית. היא מסבירה את המצב, המקור והפעולה הבאה.",
+        "sourceTitle": "נתוני מקור",
+        "sourceBody": "יומן מצב יומי, השלמת הרגלים, מודל מוכנות ואירועי הנחיה."
+      },
+      "navigation": {
+        "aria": "ניווט אפליקציית Habigoal",
+        "today": "היום",
+        "checkIn": "צק-אין",
+        "habits": "הרגלים",
+        "action": "פעולה"
+      }
+    },
+    "athleteIq": {
+      "metadata": {
+        "title": "Athlete IQ | מערכת הפעלה מקצועית לביצועים",
+        "description": "Athlete IQ היא שכבת הביצועים המקצועית לספורטאים, מאמנים, קבוצות, מועדונים, לוחות בקרה, דוחות ושירותים."
+      },
+      "surfaceName": "Athlete IQ",
+      "operatingMode": "תפעול מקצועי למאמן, קבוצה, מועדון ושירותים",
+      "sidebar": {
+        "kicker": "פיקוד ביצועים"
+      },
+      "controls": {
+        "role": {
+          "aria": "תצוגת תפקיד Athlete IQ",
+          "coach": "Coach OS",
+          "academy": "Academy OS",
+          "services": "שירותים"
+        },
+        "mode": {
+          "label": "מצב",
+          "aria": "מצב פעולה Athlete IQ",
+          "lifestyle": "אורח חיים",
+          "performance": "ביצועים"
+        }
+      },
+      "hero": {
+        "dateLabel": "היום - 26 ביוני 2026",
+        "title": "Athlete IQ Daily Development OS",
+        "subtitle": "משטח תפעול מקצועי לספורטאים, מאמנים, קבוצות, מועדונים והחלטות ביצועים.",
+        "copy": "מוכנות, מצב מנטלי, עומס אימון, פעולות צוות ודוחות נשארים בסביבת מאמן ממוקדת אחת.",
+        "summaryAria": "סיכום תפעולי Athlete IQ"
+      },
+      "metrics": {
+        "dailyIq": "Daily IQ",
+        "lifestyleRoute": "מסלול אורח חיים",
+        "performanceRoute": "מסלול ביצועים",
+        "readiness": "מוכנות",
+        "teamSnapshot": "תמונת צוות",
+        "mentalEdge": "Mental edge",
+        "priorityAthletes": "ספורטאים בעדיפות"
+      },
+      "teamCommand": {
+        "title": "פיקוד מאמן, קבוצה ומועדון",
+        "copy": "שכבת תפעול desktop-first לניהול סגלים, פעולות, שירותים ומסירה ברמת מועדון."
+      },
+      "operations": {
+        "club-load": {
+          "label": "עומס מועדון",
+          "detail": "תצוגת מאמן על אקדמיה, חזרה למשחק וקבוצות ביצועים."
+        },
+        "trainer-actions": {
+          "label": "פעולות מאמן",
+          "detail": "שיחות שהוקצו, שינויי התאוששות, דוחות ועדכוני תוכנית."
+        },
+        "team-readiness": {
+          "label": "מוכנות צוות",
+          "detail": "ממוצע צוות מתוך מצב יומי של Habigoal ונתוני תכנון של Athlete IQ."
+        },
+        "club-services": {
+          "label": "שירותי מועדון",
+          "detail": "דוחות, חבילות שירות, מודולי מעבדה ומסירה לבעלי עניין."
+        }
+      },
+      "signals": {
+        "openPriorities": {
+          "label": "עדיפויות פתוחות",
+          "detail": "תור פעולות מאמן"
+        },
+        "queueAverage": {
+          "label": "ממוצע תור",
+          "detail": "מוכנות שלא אושרה"
+        },
+        "readyServices": {
+          "label": "שירותים מוכנים",
+          "detail": "חבילות דוח"
+        }
+      },
+      "priority": {
+        "title": "תור עדיפויות",
+        "copy": "דירוג מקצועי שמבוסס על מוכנות יומית והקשר אימון.",
+        "actionLabel": "פעולה",
+        "sourceLabel": "מקור",
+        "athletes": {
+          "lena": {
+            "squad": "ביצועים U16",
+            "reason": "עומס גבוה עם מוכנות נמוכה יותר אחרי שני ימים קשים.",
+            "action": "להעביר לתוכנית טכנית בעצימות נמוכה ולבדוק כאבי שרירים.",
+            "source": "מצב יומי Habigoal + עומס אימון"
+          },
+          "mate": {
+            "squad": "ספרינט אקדמיה",
+            "reason": "Mental edge ומגמת שינה ירדו מתחת לקו הבסיס.",
+            "action": "להקצות שיחת התאוששות ולקצר בלוקי אימון.",
+            "source": "רפלקציה + מסלול מוכנות"
+          },
+          "anna": {
+            "squad": "חזרה למשחק",
+            "reason": "מסלול ירוק עם עומס מבוקר והרגלים עקביים.",
+            "action": "להתקדם בלוק אימון מתוכנן אחד.",
+            "source": "Daily IQ + בטיחות כאב"
+          }
+        }
+      },
+      "athletes": {
+        "title": "פיקוד ספורטאי",
+        "academyTitle": "סיכום אקדמיה",
+        "copy": "תצוגה מקצועית צפופה עם נימוק מקור והמשכיות תהליך.",
+        "loadLabel": "עומס",
+        "mentalLabel": "מנטלי"
+      },
+      "services": {
+        "title": "שירותים ודוחות",
+        "copy": "ייצוא דוחות, סקירת פעולות ומסירת שירותים לתהליכי מאמן.",
+        "status": {
+          "ready": "מוכן",
+          "inReview": "בבדיקה"
+        },
+        "modules": {
+          "daily-report": {
+            "name": "דוח מוכנות יומי",
+            "owner": "Coach OS",
+            "nextStep": "לעיין בסיכום הצוות ולייצא את הדוח הנוכחי."
+          },
+          "academy-review": {
+            "name": "חבילת סקירת אקדמיה",
+            "owner": "Academy OS",
+            "nextStep": "לפתוח תצוגות ספורטאי והורה שהוכנו לסקירת צוות."
+          },
+          "session-actions": {
+            "name": "ייצוא פעולות אימון",
+            "owner": "Trainer OS",
+            "nextStep": "לבדוק פעולות מאמן לפני פרסום תוכנית האימון."
+          },
+          "club-delivery": {
+            "name": "לוח מסירת מועדון",
+            "owner": "Club OS",
+            "nextStep": "לסקור מסירת שירות ובעלות דוח לפי סגל."
+          }
+        }
+      },
+      "states": {
+        "good": "טוב",
+        "watch": "למעקב",
+        "risk": "סיכון",
+        "acknowledged": "אושר"
+      },
+      "nav": {
+        "groups": {
+          "dailyOs": "Daily OS",
+          "stakeholders": "בעלי עניין",
+          "development": "פיתוח"
+        },
+        "modules": {
+          "home": "בית",
+          "profile": "פרופיל משתמש",
+          "checkin": "צק-אין",
+          "session": "אימון חי",
+          "calendar": "לוח שנה",
+          "coach": "מאמן",
+          "parent": "הורה",
+          "team": "קבוצה",
+          "pillars": "סטטוס עמודים",
+          "recovery": "התאוששות",
+          "fuel": "תזונה",
+          "mental": "מנטלי",
+          "cognitive": "Cognitive Lite",
+          "reflection": "רפלקציה",
+          "habits": "הרגלים",
+          "roadmap": "מפת דרכים",
+          "report": "דוח"
+        }
+      },
+      "theme": {
+        "label": "ערכת עיצוב",
+        "name": "Gold Athlete",
+        "surfaceTone": "שליטה ביצועית יוקרתית בשחור וזהב"
+      }
+    }
   }
 }

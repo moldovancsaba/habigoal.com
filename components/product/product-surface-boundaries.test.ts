@@ -5,6 +5,24 @@ import { ATHLETE_IQ_OS_GROUPS, ATHLETE_IQ_OS_MODULES } from "@/lib/athlete-iq-os
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 
 const readSource = (path: string) => readFileSync(join(process.cwd(), path), "utf8");
+const readJson = <T,>(path: string) => JSON.parse(readSource(path)) as T;
+
+type Messages = {
+  ProductSurfaces: {
+    athleteIq: {
+      hero: {
+        title: string;
+      };
+      teamCommand: {
+        copy: string;
+        title: string;
+      };
+    };
+    habigoal: {
+      headline: string;
+    };
+  };
+};
 
 describe("product surface route boundaries", () => {
   it("routes import product-owned entry components instead of the shared dispatcher", () => {
@@ -79,15 +97,18 @@ describe("product surface route boundaries", () => {
 
   it("keeps AthleteIQ oriented around trainer team and club operations", () => {
     const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
+    const englishMessages = readJson<Messages>("messages/en.json");
 
     expect(athleteIqSource).toContain("TEAM_OPERATIONS");
-    expect(athleteIqSource).toContain("Trainer team and club command");
-    expect(athleteIqSource).toContain("club-level delivery");
+    expect(athleteIqSource).toContain("teamCommand.title");
+    expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.title).toBe("Trainer team and club command");
+    expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.copy).toContain("club-level delivery");
     expect(ATHLETE_IQ_OS_MODULES.map((module) => module.label)).toContain("Team");
   });
 
   it("matches the AthleteIQ Daily Development OS reference menu", () => {
     const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
+    const englishMessages = readJson<Messages>("messages/en.json");
 
     expect(ATHLETE_IQ_OS_GROUPS.map((group) => group.title)).toEqual(["Daily OS", "Stakeholders", "Development"]);
     expect(ATHLETE_IQ_OS_MODULES).toHaveLength(17);
@@ -110,11 +131,32 @@ describe("product surface route boundaries", () => {
       "Roadmap",
       "Report"
     ]);
-    expect(athleteIqSource).toContain("AthleteIQ Daily Development OS");
+    expect(athleteIqSource).toContain("hero.title");
+    expect(englishMessages.ProductSurfaces.athleteIq.hero.title).toBe("Athlete IQ Daily Development OS");
     expect(athleteIqSource).not.toContain("Daily Development OS menu");
     expect(athleteIqSource).not.toContain("AiqModuleGroup");
     expect(athleteIqSource).not.toContain("FunctionDirectory");
     expect(athleteIqSource).not.toContain("<strong>Output:</strong>");
     expect(athleteIqSource).toContain("HIDDEN_REFERENCE_NAV_ITEMS");
+  });
+
+  it("localizes the separated product app shells in every supported catalog", () => {
+    const locales = ["en", "hu", "de", "es", "ar", "he"];
+    const englishMessages = readJson<Messages>("messages/en.json");
+
+    for (const locale of locales) {
+      const messages = readJson<Messages>(`messages/${locale}.json`);
+
+      expect(messages.ProductSurfaces.habigoal.headline).toBeTruthy();
+      expect(messages.ProductSurfaces.athleteIq.teamCommand.title).toBeTruthy();
+      expect(messages.ProductSurfaces.athleteIq.hero.title).toBeTruthy();
+    }
+
+    for (const locale of locales.filter((item) => item !== "en")) {
+      const messages = readJson<Messages>(`messages/${locale}.json`);
+
+      expect(messages.ProductSurfaces.habigoal.headline).not.toBe(englishMessages.ProductSurfaces.habigoal.headline);
+      expect(messages.ProductSurfaces.athleteIq.teamCommand.title).not.toBe(englishMessages.ProductSurfaces.athleteIq.teamCommand.title);
+    }
   });
 });

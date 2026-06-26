@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HabigoalExperience } from "@/components/product/habigoal/HabigoalExperience";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
 
-export const metadata: Metadata = {
-  title: "Habigoal | Simple habit and wellbeing support",
-  description: "Habigoal is the simple client wellbeing, habit tracking, sport support, and status feedback surface."
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "ProductSurfaces.habigoal.metadata" });
+
+  return {
+    title: t("title"),
+    description: t("description")
+  };
+}
 
 export default async function HabigoalSurfaceRoute({
   params

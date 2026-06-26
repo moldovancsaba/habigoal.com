@@ -2,15 +2,17 @@
 
 import { createGdsVocabularyPack, GdsIcons } from "@doneisbetter/gds/client";
 
-export function createProductSurfaceActionPack() {
+export type ProductSurfaceActionMessages = Partial<Record<"dashboard" | "athleteDashboard" | "reset" | "complete" | "acknowledge" | "report" | "launch", string>>;
+
+export function createProductSurfaceActionPack(messages: ProductSurfaceActionMessages = {}) {
   return createGdsVocabularyPack("productSurface", {
-    dashboard: { defaultMessage: "Open dashboard", icon: GdsIcons.Dashboard },
-    athleteDashboard: { defaultMessage: "Open Athlete IQ dashboard", icon: GdsIcons.Dashboard },
-    reset: { defaultMessage: "Reset demo", icon: GdsIcons.Restore },
-    complete: { defaultMessage: "Complete action", icon: GdsIcons.Check },
-    acknowledge: { defaultMessage: "Acknowledge", icon: GdsIcons.Check },
-    report: { defaultMessage: "Open report", icon: GdsIcons.Eye },
-    launch: { defaultMessage: "Launch module", icon: GdsIcons.Launch }
+    dashboard: { defaultMessage: messages.dashboard ?? "Open dashboard", icon: GdsIcons.Dashboard },
+    athleteDashboard: { defaultMessage: messages.athleteDashboard ?? "Open Athlete IQ dashboard", icon: GdsIcons.Dashboard },
+    reset: { defaultMessage: messages.reset ?? "Reset demo", icon: GdsIcons.Restore },
+    complete: { defaultMessage: messages.complete ?? "Complete action", icon: GdsIcons.Check },
+    acknowledge: { defaultMessage: messages.acknowledge ?? "Acknowledge", icon: GdsIcons.Check },
+    report: { defaultMessage: messages.report ?? "Open report", icon: GdsIcons.Eye },
+    launch: { defaultMessage: messages.launch ?? "Launch module", icon: GdsIcons.Launch }
   });
 }
 

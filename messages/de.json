@@ -1096,9 +1096,9 @@
     "website": "Webseite"
   },
   "Landing": {
-    "title": "Habigoal Plattform",
-    "subtitle": "Taeglicher Unterstuetzungsarbeitsplatz fuer Trainer, Athleten und Teams.",
-    "login": "Zum Dashboard anmelden",
+    "title": "Habigoal und Athlete IQ",
+    "subtitle": "Ein gemeinsames Backend betreibt zwei getrennte Produkt-Apps: Habigoal fuer mobiles taegliches Wohlbefinden und Athlete IQ fuer professionelle Performance-Operationen.",
+    "login": "Im Dashboard anmelden",
     "feature1": "Evidenzbasierte Bewertungen",
     "feature2": "Longitudinale Trendanalyse",
     "feature3": "Automatisierte professionelle Berichte",
@@ -1107,27 +1107,27 @@
     "badge": "{brand} OS",
     "ssoNote": "Sicheres SSO ueber DoneIsBetter",
     "brandSubtitle": "Habigoal",
-    "previewTitle": "Habigoal-Oberflaeche",
-    "previewSubtitle": "Semantische Dashboards, gefuehrte Eintraege und ruhige kontrastreiche Glasflaechen fuer dichte operative Arbeit.",
+    "previewTitle": "Getrennte Produktvorschau",
+    "previewSubtitle": "Habigoal bleibt mobile-first und unterstuetzend; Athlete IQ bleibt desktop-first, professionell und trainergefuehrt.",
     "athleteApp": "Athleten-App",
     "trainerApp": "Trainer-App",
     "whatsNew": "Neuigkeiten",
     "termsOfService": "Nutzungsbedingungen",
     "privacyPolicy": "Datenschutzrichtlinie",
-    "selectorBadge": "Zwei separate Apps",
-    "selectorTitle": "Produktdomain waehlen",
-    "selectorSubtitle": "Der Selector dient nur der Praesentation. Habigoal und Athlete IQ nutzen getrennte Designs und laufen spaeter als eigene Produktdomains.",
+    "selectorBadge": "Praesentationsauswahl",
+    "selectorTitle": "App fuer die Vorschau waehlen",
+    "selectorSubtitle": "Diese Auswahl ist nur fuer die Kundenpraesentation. Die gelieferten Produkte bleiben isoliert: Habigoal oeffnet die mobile PWA und Athlete IQ den professionellen Trainer-Arbeitsbereich.",
     "habigoalBadge": "Habigoal",
-    "habigoalTitle": "Mobile App fuer Gewohnheiten und Wohlbefinden",
-    "habigoalBody": "Eine helle mobile-first PWA fuer taegliche Check-ins, Gewohnheiten, Wohlbefinden und eine klare naechste Aktion.",
+    "habigoalTitle": "Mobile PWA fuer Gewohnheiten und Wohlbefinden",
+    "habigoalBody": "Eine helle mobile-first App fuer taegliche Check-ins, Gewohnheiten, Wohlbefinden, Sport-Support und eine klare naechste Aktion.",
     "habigoalAction": "Habigoal oeffnen",
     "habigoalAria": "Habigoal Mobile-Wohlbefinden-App oeffnen",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "Professionelles Athleten-Performance-OS",
-    "athleteIqBody": "Eine dunkle goldene desktop-first Kommandooberflaeche fuer Trainer, Teams, Clubs, Berichte und Performance-Operationen.",
+    "athleteIqBody": "Eine dunkle goldene desktop-first Kommandooberflaeche fuer Trainer, Teams, Clubs, Dashboards, Berichte, Services und Performance-Operationen.",
     "athleteIqAction": "Athlete IQ oeffnen",
     "athleteIqAria": "Professionelle Athlete IQ Performance-App oeffnen",
-    "footerTitle": "Habigoal"
+    "footerTitle": "Getrennte Produkt-Apps"
   },
   "News": {
     "badge": "Habigoal News",
@@ -1378,5 +1378,289 @@
     "subtitle": "Fragen aktivieren und Schwellenwerte setzen",
     "allowDuplicateOverride": "Staff-Override fuer doppelte Check-ins erlauben",
     "concernThreshold": "Warnschwelle"
+  },
+  "ProductSurfaces": {
+    "actions": {
+      "dashboard": "Dashboard oeffnen",
+      "athleteDashboard": "Athlete IQ Dashboard oeffnen",
+      "reset": "Demo zuruecksetzen",
+      "complete": "Aktion abschliessen",
+      "acknowledge": "Bestaetigen",
+      "report": "Bericht oeffnen",
+      "launch": "Modul starten"
+    },
+    "common": {
+      "state": {
+        "good": "Gut",
+        "watch": "Beobachten",
+        "risk": "Risiko",
+        "neutral": "Neutral"
+      }
+    },
+    "habigoal": {
+      "metadata": {
+        "title": "Habigoal | Mobile PWA fuer Gewohnheiten und Wohlbefinden",
+        "description": "Habigoal ist die mobile-first PWA fuer taegliche Check-ins, Gewohnheiten, Wohlbefinden, Sport-Support und eine klare naechste Aktion."
+      },
+      "surfaceName": "Habigoal",
+      "operatingMode": "Mobiler Wohlbefinden- und Gewohnheits-Support",
+      "themeName": "Unterstuetzendes Tageslicht",
+      "headline": "Einfaches Gewohnheitstracking und Wohlbefinden",
+      "promise": "Habigoal haelt die taegliche Schleife einfach: einchecken, Gewohnheiten erledigen, Status verstehen und eine sichere naechste Aktion erhalten.",
+      "todayLabel": "Heute",
+      "scoreAria": "Taeglicher Support-Score {score}",
+      "scoreExplanation": "Der Score nutzt dieselben Readiness- und Gewohnheitsdaten, die Athlete IQ verwenden kann, aber das mobile Erlebnis bleibt einfach.",
+      "states": {
+        "good": "Bereit",
+        "watch": "Stabil mit einem Beobachtungspunkt",
+        "risk": "Braucht Support"
+      },
+      "nextAction": {
+        "good": "Halte die geplante Sporteinheit und schuetze heute Abend deine Schlafroutine.",
+        "watch": "Trinke genug, halte das Training leicht und pruefe die Muskelmuedigkeit nach der Bewegung erneut.",
+        "risk": "Pausiere hartes Training und teile den heutigen Status mit deiner Support-Person."
+      },
+      "badges": {
+        "checkIn": "Check-in",
+        "habits": "Gewohnheiten",
+        "support": "Support"
+      },
+      "signals": {
+        "readiness": {
+          "label": "Readiness",
+          "detail": "Wohlbefinden, Schlaf, Stimmung, Muskelmuedigkeit"
+        },
+        "habitLoop": {
+          "label": "Gewohnheitsschleife",
+          "detail": "Taegliche Verbindlichkeit ohne Profi-Dashboards"
+        },
+        "supportAction": {
+          "label": "Support-Aktion",
+          "done": "Erledigt",
+          "open": "Offen",
+          "detail": "Eine sichere naechste Aktion"
+        }
+      },
+      "checkIn": {
+        "title": "Taeglicher Check-in",
+        "copy": "Passe die Signale an und sieh, wie sich die klientensichere Empfehlung sofort aktualisiert.",
+        "energy": "Energie",
+        "mood": "Stimmung",
+        "sleep": "Schlafqualitaet",
+        "soreness": "Muskelmuedigkeit"
+      },
+      "habits": {
+        "title": "Gewohnheits-Support",
+        "copy": "Einfache Gewohnheitssteuerung bleibt vom professionellen OS getrennt.",
+        "itemLabel": "{label} ({category})",
+        "completion": "Abschluss",
+        "categories": {
+          "recovery": "Erholung",
+          "sport": "Sport",
+          "fuel": "Fuel",
+          "mental": "Mental",
+          "life": "Leben"
+        },
+        "items": {
+          "hydrate": "Hydration",
+          "move": "Leichte Bewegung",
+          "fuel": "Ausgewogene Mahlzeit",
+          "reflect": "Reflexion",
+          "sleep": "Schlafroutine",
+          "study": "Lernblock"
+        }
+      },
+      "guidance": {
+        "kicker": "Automatisches Feedback",
+        "title": "Eine klare naechste Aktion",
+        "copy": "Habigoal vermeidet professionelle Dichte. Es erklaert Status, Quelle und naechste Aktion.",
+        "sourceTitle": "Quelldaten",
+        "sourceBody": "Taegliches Status-Ledger, Gewohnheitsabschluss, Readiness-Modell und Guidance-Events."
+      },
+      "navigation": {
+        "aria": "Habigoal App-Navigation",
+        "today": "Heute",
+        "checkIn": "Check-in",
+        "habits": "Gewohnheiten",
+        "action": "Aktion"
+      }
+    },
+    "athleteIq": {
+      "metadata": {
+        "title": "Athlete IQ | Professionelles Performance-Betriebssystem",
+        "description": "Athlete IQ ist die professionelle Performance-Ebene fuer Athleten, Trainer, Teams, Clubs, Dashboards, Berichte und Services."
+      },
+      "surfaceName": "Athlete IQ",
+      "operatingMode": "Professionelle Trainer-, Team-, Club- und Service-Operationen",
+      "sidebar": {
+        "kicker": "Performance-Kommando"
+      },
+      "controls": {
+        "role": {
+          "aria": "Athlete IQ Rollenansicht",
+          "coach": "Coach OS",
+          "academy": "Academy OS",
+          "services": "Services"
+        },
+        "mode": {
+          "label": "Modus",
+          "aria": "Athlete IQ Betriebsmodus",
+          "lifestyle": "Lifestyle",
+          "performance": "Performance"
+        }
+      },
+      "hero": {
+        "dateLabel": "Heute - 26. Juni 2026",
+        "title": "Athlete IQ Daily Development OS",
+        "subtitle": "Eine professionelle Betriebsoberflaeche fuer Athleten, Trainer, Teams, Clubs und Performance-Entscheidungen.",
+        "copy": "Readiness, mentaler Zustand, Trainingslast, Teamaktionen und Berichte bleiben in einem fokussierten Trainer-Arbeitsbereich.",
+        "summaryAria": "Athlete IQ Betriebszusammenfassung"
+      },
+      "metrics": {
+        "dailyIq": "Daily IQ",
+        "lifestyleRoute": "Lifestyle-Route",
+        "performanceRoute": "Performance-Route",
+        "readiness": "Readiness",
+        "teamSnapshot": "Team-Snapshot",
+        "mentalEdge": "Mental Edge",
+        "priorityAthletes": "Prioritaetsathleten"
+      },
+      "teamCommand": {
+        "title": "Trainer-, Team- und Club-Kommando",
+        "copy": "Eine desktop-first Betriebsebene fuer Kader, Aktionen, Services und clubweite Lieferung."
+      },
+      "operations": {
+        "club-load": {
+          "label": "Club-Load",
+          "detail": "Traineransicht ueber Akademie, Return-to-play und Performance-Gruppen."
+        },
+        "trainer-actions": {
+          "label": "Traineraktionen",
+          "detail": "Zugewiesene Gespraeche, Recovery-Aenderungen, Berichte und Planupdates."
+        },
+        "team-readiness": {
+          "label": "Team-Readiness",
+          "detail": "Teamdurchschnitt aus Habigoal Tagesstatus und Athlete IQ Planungsdaten."
+        },
+        "club-services": {
+          "label": "Club-Services",
+          "detail": "Berichte, Servicepakete, Lab-Module und Stakeholder-Lieferung."
+        }
+      },
+      "signals": {
+        "openPriorities": {
+          "label": "Offene Prioritaeten",
+          "detail": "Coach-Aktionsqueue"
+        },
+        "queueAverage": {
+          "label": "Queue-Schnitt",
+          "detail": "Nicht bestaetigte Readiness"
+        },
+        "readyServices": {
+          "label": "Bereite Services",
+          "detail": "Berichtspakete"
+        }
+      },
+      "priority": {
+        "title": "Prioritaetsqueue",
+        "copy": "Professionelles Ranking aus taeglicher Readiness und Trainingskontext.",
+        "actionLabel": "Aktion",
+        "sourceLabel": "Quelle",
+        "athletes": {
+          "lena": {
+            "squad": "U16 Performance",
+            "reason": "Hohe Last mit niedrigerer Readiness nach zwei harten Tagen.",
+            "action": "Auf einen low-impact Technikplan wechseln und Muskelmuedigkeit pruefen.",
+            "source": "Habigoal Tagesstatus + Trainingslast"
+          },
+          "mate": {
+            "squad": "Akademie Sprint",
+            "reason": "Mental Edge und Schlaftrend sind unter die Baseline gefallen.",
+            "action": "Recovery-Gespraech zuweisen und Session-Bloecke kuerzen.",
+            "source": "Reflexion + Readiness-Route"
+          },
+          "anna": {
+            "squad": "Return-to-play",
+            "reason": "Gruene Route mit kontrollierter Last und konstanten Gewohnheiten.",
+            "action": "Einen geplanten Trainingsblock fortsetzen.",
+            "source": "Daily IQ + Pain Safety"
+          }
+        }
+      },
+      "athletes": {
+        "title": "Athletenkommando",
+        "academyTitle": "Akademie-Rollup",
+        "copy": "Dichte professionelle Ansicht mit Quellenrationale und Workflow-Kontinuitaet.",
+        "loadLabel": "Load",
+        "mentalLabel": "Mental"
+      },
+      "services": {
+        "title": "Services und Berichte",
+        "copy": "Berichtsexporte, Aktionsreviews und Service-Lieferung fuer Trainer-Workflows.",
+        "status": {
+          "ready": "Bereit",
+          "inReview": "In Review"
+        },
+        "modules": {
+          "daily-report": {
+            "name": "Taeglicher Readiness-Bericht",
+            "owner": "Coach OS",
+            "nextStep": "Teamzusammenfassung pruefen und aktuellen Bericht exportieren."
+          },
+          "academy-review": {
+            "name": "Akademie-Review-Paket",
+            "owner": "Academy OS",
+            "nextStep": "Athleten- und Elternansichten fuer Staff-Review oeffnen."
+          },
+          "session-actions": {
+            "name": "Session-Aktions-Export",
+            "owner": "Trainer OS",
+            "nextStep": "Traineraktionen vor der Veroeffentlichung des Sessionplans pruefen."
+          },
+          "club-delivery": {
+            "name": "Club Delivery Board",
+            "owner": "Club OS",
+            "nextStep": "Service-Lieferung und Berichtseigentum pro Kader pruefen."
+          }
+        }
+      },
+      "states": {
+        "good": "Gut",
+        "watch": "Beobachten",
+        "risk": "Risiko",
+        "acknowledged": "Bestaetigt"
+      },
+      "nav": {
+        "groups": {
+          "dailyOs": "Daily OS",
+          "stakeholders": "Stakeholder",
+          "development": "Entwicklung"
+        },
+        "modules": {
+          "home": "Home",
+          "profile": "Benutzerprofil",
+          "checkin": "Check-in",
+          "session": "Live Session",
+          "calendar": "Kalender",
+          "coach": "Coach",
+          "parent": "Eltern",
+          "team": "Team",
+          "pillars": "Pillar-Status",
+          "recovery": "Recovery",
+          "fuel": "Fuel",
+          "mental": "Mental",
+          "cognitive": "Cognitive Lite",
+          "reflection": "Reflexion",
+          "habits": "Gewohnheiten",
+          "roadmap": "Roadmap",
+          "report": "Bericht"
+        }
+      },
+      "theme": {
+        "label": "Theme",
+        "name": "Gold Athlete",
+        "surfaceTone": "Premium schwarz-goldene Performance-Steuerung"
+      }
+    }
   }
 }

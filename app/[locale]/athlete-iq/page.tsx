@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AthleteIqExperience } from "@/components/product/athlete-iq/AthleteIqExperience";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
 
-export const metadata: Metadata = {
-  title: "Athlete IQ | Professional performance operating system",
-  description: "Athlete IQ is the professional performance layer for athletes, coaches, academies, dashboards, and services."
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "ProductSurfaces.athleteIq.metadata" });
+
+  return {
+    title: t("title"),
+    description: t("description")
+  };
+}
 
 export default async function AthleteIqSurfaceRoute({
   params

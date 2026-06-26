@@ -1096,10 +1096,10 @@
     "website": "Weboldal"
   },
   "Landing": {
-    "title": "Habigoal Platform",
-    "subtitle": "Napi sportolói támogatási munkatér edzőknek, sportolóknak és csapatoknak.",
-    "login": "Belépés a Vezérlőpultra",
-    "trainerApp": "Tréner app",
+    "title": "Habigoal és Athlete IQ",
+    "subtitle": "Egy közös backend két elkülönített termékappot működtet: a Habigoal a mobil napi jóllétre, az Athlete IQ a professzionális teljesítményoperációra fókuszál.",
+    "login": "Belépés a vezérlőpultra",
+    "trainerApp": "Edzői app",
     "feature1": "Bizonyítékokon alapuló felmérések",
     "feature2": "Longitudinális trendelemzés",
     "feature3": "Automatizált szakmai jelentések",
@@ -1108,26 +1108,26 @@
     "badge": "{brand} OS",
     "ssoNote": "Biztonságos SSO a DoneIsBetter rendszeren keresztül",
     "brandSubtitle": "Habigoal",
-    "previewTitle": "Habigoal felulet",
-    "previewSubtitle": "Szemantikus dashboardok, vezetett rekordok és nyugodt, nagy kontrasztú üvegfelületek intenzív operatív munkához hangolva.",
+    "previewTitle": "Elkülönített termékbemutató",
+    "previewSubtitle": "A Habigoal mobile-first és támogató marad; az Athlete IQ desktop-first, professzionális és edzői irányítású.",
     "athleteApp": "Sportolói app",
     "whatsNew": "Újdonságok",
     "termsOfService": "Felhasználási feltételek",
     "privacyPolicy": "Adatvédelmi tájékoztató",
-    "selectorBadge": "Két külön alkalmazás",
-    "selectorTitle": "Válassza ki a termékdomaint",
-    "selectorSubtitle": "A választó csak prezentációs nézet. A Habigoal és az Athlete IQ külön design nyelvet használ, és külön termékdomainként fog működni.",
+    "selectorBadge": "Prezentációs választó",
+    "selectorTitle": "Válassza ki a bemutatandó appot",
+    "selectorSubtitle": "Ez a választó csak ügyfélprezentációhoz készült. Az átadott termékek izoláltak maradnak: a Habigoal a mobil PWA-t, az Athlete IQ a professzionális edzői munkateret nyitja meg.",
     "habigoalBadge": "Habigoal",
-    "habigoalTitle": "Mobil szokás- és jóllét app",
-    "habigoalBody": "Világos, mobile-first PWA napi check-inekhez, szokásokhoz, jólléti támogatáshoz és egyértelmű következő lépéshez.",
+    "habigoalTitle": "Mobil szokás- és jóllét PWA",
+    "habigoalBody": "Világos, mobile-first app napi check-inekhez, szokásokhoz, jólléti támogatáshoz, sporttámogatáshoz és egy egyértelmű következő lépéshez.",
     "habigoalAction": "Habigoal megnyitása",
     "habigoalAria": "Habigoal mobil jólléti alkalmazás megnyitása",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "Professzionális sportolói teljesítmény OS",
-    "athleteIqBody": "Sötét arany, desktop-first parancsfelület edzőknek, csapatoknak, kluboknak, riportoknak és teljesítményoperációnak.",
+    "athleteIqBody": "Sötét arany, desktop-first parancsfelület edzőknek, csapatoknak, kluboknak, dashboardoknak, riportoknak, szolgáltatásoknak és teljesítményoperációnak.",
     "athleteIqAction": "Athlete IQ megnyitása",
     "athleteIqAria": "Athlete IQ professzionális teljesítmény alkalmazás megnyitása",
-    "footerTitle": "Habigoal"
+    "footerTitle": "Elkülönített termékappok"
   },
   "News": {
     "badge": "Habigoal Hírek",
@@ -1378,5 +1378,289 @@
     "subtitle": "Kérdések engedélyezése és küszöbértékek beállítása",
     "allowDuplicateOverride": "Duplikált napi check-in felülírása engedélyezése",
     "concernThreshold": "Figyelmeztetési küszöb"
+  },
+  "ProductSurfaces": {
+    "actions": {
+      "dashboard": "Vezérlőpult megnyitása",
+      "athleteDashboard": "Athlete IQ dashboard megnyitása",
+      "reset": "Demó visszaállítása",
+      "complete": "Művelet befejezése",
+      "acknowledge": "Tudomásul vétel",
+      "report": "Riport megnyitása",
+      "launch": "Modul indítása"
+    },
+    "common": {
+      "state": {
+        "good": "Rendben",
+        "watch": "Figyelendő",
+        "risk": "Kockázat",
+        "neutral": "Semleges"
+      }
+    },
+    "habigoal": {
+      "metadata": {
+        "title": "Habigoal | Mobil szokás- és jóllét PWA",
+        "description": "A Habigoal mobile-first PWA napi check-inekhez, szokásokhoz, jólléti támogatáshoz, sporttámogatáshoz és egy egyértelmű következő lépéshez."
+      },
+      "surfaceName": "Habigoal",
+      "operatingMode": "Mobil jóllét- és szokástámogatás",
+      "themeName": "Támogató nappali téma",
+      "headline": "Egyszerű szokáskövetés és jólléti támogatás",
+      "promise": "A Habigoal egyszerűen tartja a napi kört: check-in, szokások teljesítése, státusz megértése és egy biztonságos következő lépés.",
+      "todayLabel": "Ma",
+      "scoreAria": "Napi támogatási pontszám {score}",
+      "scoreExplanation": "A pontszám ugyanazt a readiness és szokásadatot használja, amelyet az Athlete IQ is használhat, de a mobil élmény egyszerű marad.",
+      "states": {
+        "good": "Készen áll",
+        "watch": "Stabil, egy figyelendő ponttal",
+        "risk": "Támogatást igényel"
+      },
+      "nextAction": {
+        "good": "Tartsd a tervezett sportprogramot, és védd az esti alvásrutint.",
+        "watch": "Hidratálj, tartsd könnyen az edzést, és mozgás után ellenőrizd újra az izomfáradtságot.",
+        "risk": "Állítsd meg a kemény edzést, és oszd meg a mai státuszt a támogató személlyel."
+      },
+      "badges": {
+        "checkIn": "Check-in",
+        "habits": "Szokások",
+        "support": "Támogatás"
+      },
+      "signals": {
+        "readiness": {
+          "label": "Readiness",
+          "detail": "Jóllét, alvás, hangulat, izomfáradtság"
+        },
+        "habitLoop": {
+          "label": "Szokáskör",
+          "detail": "Napi elszámoltathatóság pro dashboardok nélkül"
+        },
+        "supportAction": {
+          "label": "Támogatási művelet",
+          "done": "Kész",
+          "open": "Nyitott",
+          "detail": "Egy biztonságos következő lépés"
+        }
+      },
+      "checkIn": {
+        "title": "Napi check-in",
+        "copy": "Állítsd a jeleket, és az ügyfélbiztos útmutatás azonnal frissül.",
+        "energy": "Energia",
+        "mood": "Hangulat",
+        "sleep": "Alvásminőség",
+        "soreness": "Izomfáradtság"
+      },
+      "habits": {
+        "title": "Szokástámogatás",
+        "copy": "Az egyszerű szokásvezérlők külön maradnak a professzionális OS-től.",
+        "itemLabel": "{label} ({category})",
+        "completion": "Teljesítés",
+        "categories": {
+          "recovery": "Regeneráció",
+          "sport": "Sport",
+          "fuel": "Táplálkozás",
+          "mental": "Mentális",
+          "life": "Élet"
+        },
+        "items": {
+          "hydrate": "Hidratálás",
+          "move": "Könnyű mozgás",
+          "fuel": "Kiegyensúlyozott étkezés",
+          "reflect": "Reflexió",
+          "sleep": "Alvásrutin",
+          "study": "Tanulási blokk"
+        }
+      },
+      "guidance": {
+        "kicker": "Automatikus visszajelzés",
+        "title": "Egy egyértelmű következő lépés",
+        "copy": "A Habigoal kerüli a professzionális sűrűséget. Elmagyarázza a státuszt, a forrást és a következő lépést.",
+        "sourceTitle": "Forrásadatok",
+        "sourceBody": "Napi státusznapló, szokásteljesítés, readiness modell és útmutatási események."
+      },
+      "navigation": {
+        "aria": "Habigoal app navigáció",
+        "today": "Ma",
+        "checkIn": "Check-in",
+        "habits": "Szokások",
+        "action": "Művelet"
+      }
+    },
+    "athleteIq": {
+      "metadata": {
+        "title": "Athlete IQ | Professzionális teljesítmény operációs rendszer",
+        "description": "Az Athlete IQ professzionális teljesítményréteg sportolóknak, edzőknek, csapatoknak, kluboknak, dashboardoknak, riportoknak és szolgáltatásoknak."
+      },
+      "surfaceName": "Athlete IQ",
+      "operatingMode": "Professzionális edzői, csapat-, klub- és szolgáltatásoperáció",
+      "sidebar": {
+        "kicker": "Teljesítmény parancsfelület"
+      },
+      "controls": {
+        "role": {
+          "aria": "Athlete IQ szerepnézet",
+          "coach": "Coach OS",
+          "academy": "Academy OS",
+          "services": "Szolgáltatások"
+        },
+        "mode": {
+          "label": "Mód",
+          "aria": "Athlete IQ működési mód",
+          "lifestyle": "Életmód",
+          "performance": "Teljesítmény"
+        }
+      },
+      "hero": {
+        "dateLabel": "Ma - 2026. június 26.",
+        "title": "Athlete IQ Daily Development OS",
+        "subtitle": "Professzionális operációs felület sportolóknak, edzőknek, csapatoknak, kluboknak és teljesítménydöntéseknek.",
+        "copy": "Readiness, mentális állapot, edzésterhelés, csapatműveletek és riportok egy fókuszált edzői munkatérben maradnak.",
+        "summaryAria": "Athlete IQ operációs összefoglaló"
+      },
+      "metrics": {
+        "dailyIq": "Daily IQ",
+        "lifestyleRoute": "Életmód útvonal",
+        "performanceRoute": "Teljesítmény útvonal",
+        "readiness": "Readiness",
+        "teamSnapshot": "Csapat pillanatkép",
+        "mentalEdge": "Mental edge",
+        "priorityAthletes": "Prioritásos sportolók"
+      },
+      "teamCommand": {
+        "title": "Edzői csapat- és klubirányítás",
+        "copy": "Desktop-first operációs réteg keretek, műveletek, szolgáltatások és klubszintű teljesítés kezeléséhez."
+      },
+      "operations": {
+        "club-load": {
+          "label": "Klubterhelés",
+          "detail": "Edzői nézet akadémiai, return-to-play és teljesítménycsoportokon át."
+        },
+        "trainer-actions": {
+          "label": "Edzői műveletek",
+          "detail": "Kiosztott beszélgetések, regenerációs módosítások, riportok és tervfrissítések."
+        },
+        "team-readiness": {
+          "label": "Csapat readiness",
+          "detail": "Csapatátlag Habigoal napi státuszból és Athlete IQ tervezési adatokból."
+        },
+        "club-services": {
+          "label": "Klubszolgáltatások",
+          "detail": "Riportok, szolgáltatáscsomagok, lab modulok és stakeholder delivery."
+        }
+      },
+      "signals": {
+        "openPriorities": {
+          "label": "Nyitott prioritások",
+          "detail": "Edzői műveleti sor"
+        },
+        "queueAverage": {
+          "label": "Sor átlag",
+          "detail": "Nem nyugtázott readiness"
+        },
+        "readyServices": {
+          "label": "Kész szolgáltatások",
+          "detail": "Riportcsomagok"
+        }
+      },
+      "priority": {
+        "title": "Prioritási sor",
+        "copy": "Professzionális rangsor napi readiness és edzéskontextus alapján.",
+        "actionLabel": "Művelet",
+        "sourceLabel": "Forrás",
+        "athletes": {
+          "lena": {
+            "squad": "U16 teljesítmény",
+            "reason": "Magas terhelés alacsonyabb readiness mellett két kemény nap után.",
+            "action": "Válts alacsony terhelésű technikai tervre, és ellenőrizd az izomfáradtságot.",
+            "source": "Habigoal napi státusz + edzésterhelés"
+          },
+          "mate": {
+            "squad": "Akadémiai sprint",
+            "reason": "A mental edge és az alvástrend baseline alá esett.",
+            "action": "Rendelj regenerációs beszélgetést, és rövidítsd az edzésblokkokat.",
+            "source": "Reflexió + readiness útvonal"
+          },
+          "anna": {
+            "squad": "Return-to-play",
+            "reason": "Zöld útvonal kontrollált terheléssel és stabil szokásokkal.",
+            "action": "Haladj egy tervezett edzésblokkal.",
+            "source": "Daily IQ + pain safety"
+          }
+        }
+      },
+      "athletes": {
+        "title": "Sportolói parancsnézet",
+        "academyTitle": "Akadémiai összesítés",
+        "copy": "Sűrű professzionális nézet forrásindoklással és folyamatfolytonossággal.",
+        "loadLabel": "Terhelés",
+        "mentalLabel": "Mentális"
+      },
+      "services": {
+        "title": "Szolgáltatások és riportok",
+        "copy": "Riport exportok, műveleti review-k és szolgáltatásteljesítés edzői workflow-khoz.",
+        "status": {
+          "ready": "Kész",
+          "inReview": "Review alatt"
+        },
+        "modules": {
+          "daily-report": {
+            "name": "Napi readiness riport",
+            "owner": "Coach OS",
+            "nextStep": "Tekintsd át a csapatösszefoglalót, és exportáld az aktuális riportot."
+          },
+          "academy-review": {
+            "name": "Akadémiai review csomag",
+            "owner": "Academy OS",
+            "nextStep": "Nyisd meg a staff review-ra előkészített sportolói és szülői nézeteket."
+          },
+          "session-actions": {
+            "name": "Edzésművelet export",
+            "owner": "Trainer OS",
+            "nextStep": "Ellenőrizd az edzői műveleteket az edzésterv publikálása előtt."
+          },
+          "club-delivery": {
+            "name": "Klub delivery board",
+            "owner": "Club OS",
+            "nextStep": "Tekintsd át a szolgáltatásteljesítést és riport ownershipet keretenként."
+          }
+        }
+      },
+      "states": {
+        "good": "Rendben",
+        "watch": "Figyelendő",
+        "risk": "Kockázat",
+        "acknowledged": "Nyugtázva"
+      },
+      "nav": {
+        "groups": {
+          "dailyOs": "Daily OS",
+          "stakeholders": "Stakeholderek",
+          "development": "Fejlesztés"
+        },
+        "modules": {
+          "home": "Home",
+          "profile": "Felhasználói profil",
+          "checkin": "Check-in",
+          "session": "Élő edzés",
+          "calendar": "Naptár",
+          "coach": "Coach",
+          "parent": "Szülő",
+          "team": "Csapat",
+          "pillars": "Pillér státusz",
+          "recovery": "Regeneráció",
+          "fuel": "Fuel",
+          "mental": "Mentális",
+          "cognitive": "Cognitive Lite",
+          "reflection": "Reflexió",
+          "habits": "Szokások",
+          "roadmap": "Roadmap",
+          "report": "Riport"
+        }
+      },
+      "theme": {
+        "label": "Téma",
+        "name": "Gold Athlete",
+        "surfaceTone": "Prémium fekete-arany teljesítményvezérlés"
+      }
+    }
   }
 }
