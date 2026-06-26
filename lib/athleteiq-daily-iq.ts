@@ -143,7 +143,7 @@ export function computeSafeLoadScore(checkIn: AthleteIqCheckInSnapshot | null, t
 export function getPainRiskLevel(checkIn: AthleteIqCheckInSnapshot | null): DailyIqPainRiskLevel {
   const pain = numericRawValue(checkIn, "pain");
   if (typeof pain !== "number" || pain <= 1) return "none";
-  if (pain >= 8) return "high";
+  if (pain >= 7) return "high";
   if (pain >= 5) return "moderate";
   return "low";
 }

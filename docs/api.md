@@ -247,6 +247,22 @@ Returns coach-visible Mental Edge alert candidates for the team. Alerts include 
 
 Mental Edge uses algorithm version `aiq-mental-edge-1230.1`. Full contract, privacy, rollback, and recovery notes are documented in [AthleteIQ Mental Edge Contract](athleteiq-mental-edge-contract.md).
 
+## AthleteIQ Pain Safety
+
+### `GET /api/athleteiq/pain-guardrail/today?athleteId=&timezone=&localDate=`
+
+Returns the current recovery guardrail for one athlete, including state, risk level, maximum training intensity, Daily IQ cap, required copy key, reason codes, and coach alert id when an alert exists.
+
+### `GET /api/athleteiq/pain-alerts?athleteId=&timezone=&localDate=`
+
+Evaluates the current pain window, upserts an active alert when needed, and returns the athlete's pain alert history.
+
+### `PATCH /api/athleteiq/pain-alerts/:id`
+
+Updates an alert state to `resolved`, `dismissed`, `monitor`, or `coach_review` and appends audit history.
+
+Pain Safety uses algorithm version `aiq-pain-safety-1240.1`. Pain `>= 7` caps Daily IQ at `60` and limits recommendation intensity to recovery. Full contract, rollback, and recovery notes are documented in [AthleteIQ Pain Safety Contract](athleteiq-pain-safety-contract.md).
+
 ## Auth
 
 ### `GET /api/auth/login`
