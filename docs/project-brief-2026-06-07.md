@@ -141,7 +141,7 @@ Milestones:
 
 - `GDS-only migration`: 5 open issues, 4 closed issues
 - `Athlete IQ gap import`: 8 open issues, 5 closed issues
-- `ClassScout 2.0 - implementation-4 implementation pack` (#6): 20 open issues, 0 closed issues
+- `AthleteIQ integration backlog`: current high-priority integration stream
 
 Current high-priority open work:
 
@@ -172,9 +172,9 @@ Important next-tier work:
 - `#60` admin and team-management form migration
 - `#59` athlete profile and baseline form migration
 
-Implementation-4 execution pack:
+AthleteIQ integration execution pack:
 
-- `#127` to `#146`: `implementation-4` ClassScout delivery stream (20 items), linked to milestone #6 and label `source:implementation-4`.
+- `#81`, `#84`, `#86`: active guidance and reliability stream for Phase 1 delivery.
 
 Expansion backlog includes role/privacy controls, health events, return-to-play, parent summaries, task assignment, team hierarchy, integrations, testing library, match center, resources, finance, wearable/device integrations, and custom formulas.
 
