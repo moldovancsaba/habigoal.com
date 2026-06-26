@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthorizationUrl } from "@/services/auth-service";
 import { cookies } from "next/headers";
 import { env } from "@/config/env";
-import { getPrimaryRole } from "@/lib/access";
 import { createSession } from "@/lib/session";
 import { upsertPersonaLoginUser } from "@/repositories/user.repository";
 
@@ -69,13 +68,8 @@ function normalizePersona(input: unknown): LoginPersona | null {
   return input === "athlete" || input === "trainer" ? input : null;
 }
 
-function roleRedirect(locale: string, roles: string[]) {
-  const primaryRole = getPrimaryRole(roles);
-  if (primaryRole === "athlete") {
-    return `/${locale}/habigoal`;
-  }
-  if (primaryRole === "admin") return `/${locale}/dashboard/settings`;
-  return `/${locale}/athlete-iq`;
+function personaRedirect(locale: string, persona: LoginPersona) {
+  return persona === "athlete" ? `/${locale}/habigoal` : `/${locale}/athlete-iq`;
 }
 
 function shouldUsePersonaRedirect(next: string, locale: string) {
@@ -165,11 +159,11 @@ export async function POST(request: NextRequest) {
     id: localUser.id || identity.email,
     email: identity.email,
     name,
-    role: localUser.roles.join(",") || persona
+    role: persona
   });
 
   const redirectTarget = shouldUsePersonaRedirect(next, locale)
-    ? roleRedirect(locale, localUser.roles)
+    ? personaRedirect(locale, persona)
     : next;
 
   if (acceptsJson) {
@@ -178,7 +172,8 @@ export async function POST(request: NextRequest) {
         email: identity.email,
         name,
         roles: localUser.roles,
-        primaryRole: getPrimaryRole(localUser.roles)
+        activeRole: persona,
+        primaryRole: persona
       },
       redirectTo: redirectTarget
     });

@@ -69,13 +69,15 @@ export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" |
   const normalizedEmail = user.email.toLowerCase().trim();
   const normalizedRoles = normalizeRoles(user.roles || []);
   const now = new Date().toISOString();
+  const existing = await db.collection(collectionName).findOne({ email: normalizedEmail });
+  const mergedRoles = normalizeRoles([...(Array.isArray(existing?.roles) ? existing.roles : []), ...normalizedRoles]);
   await db.collection(collectionName).updateOne(
     { email: normalizedEmail },
     {
       $set: {
         email: normalizedEmail,
         name: user.name || normalizedEmail,
-        roles: normalizedRoles,
+        roles: mergedRoles,
         updatedAt: now,
         lastLoginAt: now
       },

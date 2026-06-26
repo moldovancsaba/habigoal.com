@@ -71,16 +71,25 @@ export async function getAuthUser(): Promise<AuthUser | null> {
 
   const roles = normalizeRoles(localUser.roles);
   const teamIds = Array.isArray(localUser.teamIds) ? localUser.teamIds : [];
+  const sessionRoles = normalizeRoles(session.role?.split(",") ?? []);
+  const primaryRole = resolveSessionPrimaryRole(sessionRoles, roles);
 
   return {
     email: localUser.email,
     name: localUser.name || session.name || localUser.email,
     roles,
-    primaryRole: getPrimaryRole(roles),
+    primaryRole,
     athleteId: localUser.athleteId,
     parentAthleteIds: localUser.parentAthleteIds,
     teamIds
   };
+}
+
+function resolveSessionPrimaryRole(sessionRoles: AppRole[], userRoles: AppRole[]) {
+  const usableSessionRoles = sessionRoles.filter((role) => userRoles.includes(role));
+  if (usableSessionRoles.length === 1) return usableSessionRoles[0];
+  if (usableSessionRoles.length > 1) return getPrimaryRole(usableSessionRoles);
+  return getPrimaryRole(userRoles);
 }
 
 export async function resolveAccessibleAthleteIds(user: AuthUser): Promise<string[] | null> {

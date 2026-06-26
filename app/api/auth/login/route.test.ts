@@ -50,7 +50,7 @@ describe("persona pseudo login", () => {
       id: "user-2",
       email: "coach@example.com",
       name: "coach@example.com",
-      roles: ["trainer"]
+      roles: ["athlete", "trainer"]
     });
 
     const response = await POST(loginRequest({ identifier: "Coach@Example.com", persona: "trainer", next: "/hu" }));
@@ -68,6 +68,26 @@ describe("persona pseudo login", () => {
     });
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe("http://localhost/hu/athlete-iq");
+  });
+
+  it("keeps the selected athlete persona active when the same user has both roles", async () => {
+    mockedUpsertPersonaLoginUser.mockResolvedValue({
+      id: "user-3",
+      email: "same-user@example.com",
+      name: "same-user@example.com",
+      roles: ["athlete", "trainer"]
+    });
+
+    const response = await POST(loginRequest({ identifier: "same-user@example.com", persona: "athlete", next: "/hu" }));
+
+    expect(mockedCreateSession).toHaveBeenCalledWith({
+      id: "user-3",
+      email: "same-user@example.com",
+      name: "same-user@example.com",
+      role: "athlete"
+    });
+    expect(response.status).toBe(303);
+    expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
   });
 
   it("returns to the login page when persona is missing", async () => {
