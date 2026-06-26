@@ -279,6 +279,18 @@ Updates a task completion state to `open`, `completed`, or `dismissed`.
 
 Daily Plan uses version `aiq-daily-plan-1250.1`. Full contract, rollback, and recovery notes are documented in [AthleteIQ Daily Plan Contract](athleteiq-daily-plan-contract.md).
 
+## AthleteIQ Digital Athlete Twin Projection
+
+### `GET /api/athleteiq/athletes/:id/twin?view=athlete|coach|parent|team`
+
+Returns a live role-filtered twin projection with active dimensions first, lite/manual indicators second, and future roadmap dimensions last. Parent view redacts private mental and pain details. Future dimensions never include fake values.
+
+### `POST /api/athleteiq/athletes/:id/twin/rebuild`
+
+Rebuilds and persists a projection snapshot for `athleteId + view`.
+
+Twin Projection uses version `aiq-twin-projection-1260.1`. Full contract, rollback, and recovery notes are documented in [AthleteIQ Digital Athlete Twin Projection Contract](athleteiq-twin-projection-contract.md).
+
 ## Auth
 
 ### `GET /api/auth/login`
