@@ -1431,7 +1431,7 @@
       "promise": "Habigoal keeps the daily loop simple: check in, complete habits, understand status, and get one safe next action.",
       "todayLabel": "Today",
       "scoreAria": "Daily support score {score}",
-      "scoreExplanation": "The score uses the same readiness and habit data that Athlete IQ can use, but the mobile experience stays simple.",
+      "scoreExplanation": "Your score combines today's check-in, habits, and support signals into one clear status.",
       "states": {
         "good": "Ready",
         "watch": "Steady with one watch item",
@@ -1454,7 +1454,7 @@
         },
         "habitLoop": {
           "label": "Habit loop",
-          "detail": "Daily accountability without pro dashboards"
+          "detail": "Daily habit accountability in a simple mobile view"
         },
         "supportAction": {
           "label": "Support action",
@@ -1465,7 +1465,7 @@
       },
       "checkIn": {
         "title": "Daily check-in",
-        "copy": "Adjust the signals to see the client-safe guidance update immediately.",
+        "copy": "Adjust the signals and your guidance updates immediately.",
         "energy": "Energy",
         "mood": "Mood",
         "sleep": "Sleep quality",
@@ -1473,7 +1473,7 @@
       },
       "habits": {
         "title": "Habit support",
-        "copy": "Simple habit controls stay separated from the professional OS.",
+        "copy": "Track the habits you completed today and keep the daily routine visible.",
         "itemLabel": "{label} ({category})",
         "completion": "Completion",
         "categories": {
@@ -1495,7 +1495,7 @@
       "guidance": {
         "kicker": "Automatic feedback",
         "title": "One clear next action",
-        "copy": "Habigoal avoids professional density. It explains the status, the source, and the next action.",
+        "copy": "Habigoal explains your status, the source, and the next action in simple language.",
         "sourceTitle": "Source data",
         "sourceBody": "Daily status ledger, habit completion, readiness model, and guidance events."
       },

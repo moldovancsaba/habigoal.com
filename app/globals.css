@@ -713,9 +713,15 @@ a {
 
 .hbg-main-grid {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--mantine-spacing-sm);
   padding-bottom: calc(82px + env(safe-area-inset-bottom));
   scroll-padding-top: calc(76px + env(safe-area-inset-top));
+}
+
+.hbg-main-grid > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .hbg-hero-panel,
@@ -806,7 +812,12 @@ a {
 .habigoal-product-shell .mantine-Title-root,
 .habigoal-product-shell .mantine-Text-root,
 .habigoal-product-shell .mantine-Checkbox-label {
-  color: inherit;
+  color: inherit !important;
+}
+
+.habigoal-product-shell .mantine-Badge-root {
+  color: var(--hbg-ink) !important;
+  font-weight: 900;
 }
 
 .hbg-checkbox {
@@ -818,12 +829,28 @@ a {
 }
 
 .hbg-signal-strip {
-  grid-template-columns: repeat(3, minmax(128px, 1fr)) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  min-width: 0;
+  width: 100%;
 }
 
 .hbg-signal-strip .hbg-signal-card {
+  min-width: 0;
   min-height: 128px;
   padding: 12px !important;
+}
+
+.hbg-signal-strip .mantine-Group-root {
+  align-items: flex-start;
+}
+
+.hbg-signal-strip .mantine-Badge-root {
+  max-width: 100%;
+}
+
+.hbg-signal-strip .mantine-Badge-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hbg-signal-strip .hbg-signal-card h3 {

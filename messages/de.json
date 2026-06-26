@@ -1431,7 +1431,7 @@
       "promise": "Habigoal haelt die taegliche Schleife einfach: einchecken, Gewohnheiten erledigen, Status verstehen und eine sichere naechste Aktion erhalten.",
       "todayLabel": "Heute",
       "scoreAria": "Taeglicher Support-Score {score}",
-      "scoreExplanation": "Der Score nutzt dieselben Readiness- und Gewohnheitsdaten, die Athlete IQ verwenden kann, aber das mobile Erlebnis bleibt einfach.",
+      "scoreExplanation": "Der Score fasst den heutigen Check-in, Gewohnheiten und Unterstuetzungssignale zu einem klaren Status zusammen.",
       "states": {
         "good": "Bereit",
         "watch": "Stabil mit einem Beobachtungspunkt",
@@ -1454,7 +1454,7 @@
         },
         "habitLoop": {
           "label": "Gewohnheitsschleife",
-          "detail": "Taegliche Verbindlichkeit ohne Profi-Dashboards"
+          "detail": "Taegliche Gewohnheitsroutine in einer einfachen mobilen Ansicht"
         },
         "supportAction": {
           "label": "Support-Aktion",
@@ -1465,7 +1465,7 @@
       },
       "checkIn": {
         "title": "Taeglicher Check-in",
-        "copy": "Passe die Signale an und sieh, wie sich die klientensichere Empfehlung sofort aktualisiert.",
+        "copy": "Passe die Signale an und deine Empfehlung aktualisiert sich sofort.",
         "energy": "Energie",
         "mood": "Stimmung",
         "sleep": "Schlafqualitaet",
@@ -1473,7 +1473,7 @@
       },
       "habits": {
         "title": "Gewohnheits-Support",
-        "copy": "Einfache Gewohnheitssteuerung bleibt vom professionellen OS getrennt.",
+        "copy": "Markiere die heute erledigten Gewohnheiten und halte deine Tagesroutine sichtbar.",
         "itemLabel": "{label} ({category})",
         "completion": "Abschluss",
         "categories": {
@@ -1495,7 +1495,7 @@
       "guidance": {
         "kicker": "Automatisches Feedback",
         "title": "Eine klare naechste Aktion",
-        "copy": "Habigoal vermeidet professionelle Dichte. Es erklaert Status, Quelle und naechste Aktion.",
+        "copy": "Habigoal erklaert Status, Quelle und naechste Aktion in einfacher Sprache.",
         "sourceTitle": "Quelldaten",
         "sourceBody": "Taegliches Status-Ledger, Gewohnheitsabschluss, Readiness-Modell und Guidance-Events."
       },

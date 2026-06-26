@@ -1431,7 +1431,7 @@
       "promise": "A Habigoal egyszerűen tartja a napi kört: check-in, szokások teljesítése, státusz megértése és egy biztonságos következő lépés.",
       "todayLabel": "Ma",
       "scoreAria": "Napi támogatási pontszám {score}",
-      "scoreExplanation": "A pontszám ugyanazt a readiness és szokásadatot használja, amelyet az Athlete IQ is használhat, de a mobil élmény egyszerű marad.",
+      "scoreExplanation": "A pontszám a mai check-int, szokásokat és támogatási jelzéseket egy egyértelmű státusszá foglalja.",
       "states": {
         "good": "Készen áll",
         "watch": "Stabil, egy figyelendő ponttal",
@@ -1454,7 +1454,7 @@
         },
         "habitLoop": {
           "label": "Szokáskör",
-          "detail": "Napi elszámoltathatóság pro dashboardok nélkül"
+          "detail": "Napi szokáskövetés egyszerű mobil nézetben"
         },
         "supportAction": {
           "label": "Támogatási művelet",
@@ -1465,7 +1465,7 @@
       },
       "checkIn": {
         "title": "Napi check-in",
-        "copy": "Állítsd a jeleket, és az ügyfélbiztos útmutatás azonnal frissül.",
+        "copy": "Állítsd a jelzéseket, és az útmutatás azonnal frissül.",
         "energy": "Energia",
         "mood": "Hangulat",
         "sleep": "Alvásminőség",
@@ -1473,7 +1473,7 @@
       },
       "habits": {
         "title": "Szokástámogatás",
-        "copy": "Az egyszerű szokásvezérlők külön maradnak a professzionális OS-től.",
+        "copy": "Jelöld a ma teljesített szokásokat, és tartsd láthatóan a napi rutint.",
         "itemLabel": "{label} ({category})",
         "completion": "Teljesítés",
         "categories": {
@@ -1495,7 +1495,7 @@
       "guidance": {
         "kicker": "Automatikus visszajelzés",
         "title": "Egy egyértelmű következő lépés",
-        "copy": "A Habigoal kerüli a professzionális sűrűséget. Elmagyarázza a státuszt, a forrást és a következő lépést.",
+        "copy": "A Habigoal egyszerű nyelven magyarázza el a státuszt, a forrást és a következő lépést.",
         "sourceTitle": "Forrásadatok",
         "sourceBody": "Napi státusznapló, szokásteljesítés, readiness modell és útmutatási események."
       },

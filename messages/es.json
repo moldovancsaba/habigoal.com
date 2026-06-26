@@ -1431,7 +1431,7 @@
       "promise": "Habigoal mantiene simple el ciclo diario: hacer check-in, completar habitos, entender el estado y recibir una siguiente accion segura.",
       "todayLabel": "Hoy",
       "scoreAria": "Puntuacion diaria de apoyo {score}",
-      "scoreExplanation": "La puntuacion usa los mismos datos de readiness y habitos que Athlete IQ puede usar, pero la experiencia movil sigue siendo simple.",
+      "scoreExplanation": "Tu puntuacion combina el check-in de hoy, los habitos y las senales de apoyo en un estado claro.",
       "states": {
         "good": "Listo",
         "watch": "Estable con un punto a vigilar",
@@ -1454,7 +1454,7 @@
         },
         "habitLoop": {
           "label": "Ciclo de habitos",
-          "detail": "Responsabilidad diaria sin paneles profesionales"
+          "detail": "Responsabilidad diaria de habitos en una vista movil simple"
         },
         "supportAction": {
           "label": "Accion de apoyo",
@@ -1465,7 +1465,7 @@
       },
       "checkIn": {
         "title": "Check-in diario",
-        "copy": "Ajusta las señales para ver como se actualiza de inmediato la guia segura para el cliente.",
+        "copy": "Ajusta las senales y tu guia se actualiza de inmediato.",
         "energy": "Energia",
         "mood": "Animo",
         "sleep": "Calidad del sueño",
@@ -1473,7 +1473,7 @@
       },
       "habits": {
         "title": "Apoyo de habitos",
-        "copy": "Los controles simples de habitos se mantienen separados del OS profesional.",
+        "copy": "Marca los habitos completados hoy y manten visible la rutina diaria.",
         "itemLabel": "{label} ({category})",
         "completion": "Finalizacion",
         "categories": {
@@ -1495,7 +1495,7 @@
       "guidance": {
         "kicker": "Feedback automatico",
         "title": "Una siguiente accion clara",
-        "copy": "Habigoal evita la densidad profesional. Explica el estado, la fuente y la siguiente accion.",
+        "copy": "Habigoal explica el estado, la fuente y la siguiente accion en lenguaje simple.",
         "sourceTitle": "Datos fuente",
         "sourceBody": "Registro diario de estado, finalizacion de habitos, modelo de readiness y eventos de guia."
       },
