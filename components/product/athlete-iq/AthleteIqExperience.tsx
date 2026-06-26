@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Badge, Box, Group, Paper, Progress, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme, SemanticButton } from "@doneisbetter/gds/client";
 import { useMemo, useState, type CSSProperties } from "react";
-import { Link } from "@/i18n/navigation";
 import { ATHLETE_IQ_OS_GROUPS, type AthleteIqOsGroup } from "@/lib/athlete-iq-os";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
@@ -186,6 +185,10 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
     setAcknowledged((current) => current.includes(id) ? current : [...current, id]);
   }
 
+  function openAthleteDashboard() {
+    document.getElementById("team-club")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <Box
       className="aiq-product-shell"
@@ -239,9 +242,13 @@ export function AthleteIqExperience({ surface }: { relatedSurface?: ProductSurfa
                     subtitle="A professional operating surface for athletes, trainers, teams, clubs, and performance decisions."
                     actions={
                       <Group gap="xs" wrap="wrap">
-                        <Link href="/dashboard" style={{ textDecoration: "none" }}>
-                          <SemanticButton action="productSurface:dashboard" color="yellow" vocabularyPacks={[actionPack]} />
-                        </Link>
+                        <SemanticButton
+                          action="productSurface:athleteDashboard"
+                          aria-controls="team-club"
+                          color="yellow"
+                          onClick={openAthleteDashboard}
+                          vocabularyPacks={[actionPack]}
+                        />
                       </Group>
                     }
                   />

@@ -78,7 +78,7 @@ export function CookieConsentBanner() {
       >
         <Text size="sm">
           {t("cookieConsentMessage")}{" "}
-          <Link href="/dashboard/legal/privacy">{t("cookiePolicyLink")}</Link>
+          <Link href="/legal/privacy">{t("cookiePolicyLink")}</Link>
         </Text>
         <SemanticButton
           action="cookie:accept"

@@ -69,6 +69,9 @@ describe("product surface route boundaries", () => {
     expect(habigoalSource).not.toContain("href=\"/athlete-iq\"");
     expect(athleteIqSource).not.toContain("href=\"/\"");
     expect(athleteIqSource).not.toContain("href=\"/habigoal\"");
+    expect(athleteIqSource).not.toContain("href=\"/dashboard\"");
+    expect(athleteIqSource).not.toContain("productSurface:dashboard");
+    expect(athleteIqSource).toContain("productSurface:athleteDashboard");
     expect(actionSource).not.toContain("productSurface:habigoal");
     expect(actionSource).not.toContain("productSurface:aiq");
     expect(actionSource).not.toContain("productSurface:home");
