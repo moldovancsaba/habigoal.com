@@ -689,3 +689,18 @@ Delivered issue `#232` in local implementation:
 - Missing data explicitly includes video rights, event source, model validation, reviewer workflow, and legal approval.
 - Added documentation at `docs/athleteiq-gameflow-future-boundary-contract.md`.
 - No UI primitive was added, so no General Design System request issue was required for this issue.
+
+## 2026-06-26 AthleteIQ Readiness Route Delivery
+
+Delivered issue `#234` in local implementation:
+
+- Added `AIQ-1245` green/amber/red readiness route engine.
+- Route snapshots consume Daily IQ and pain guardrail outputs instead of duplicating readiness or pain logic.
+- Added persisted `athleteiq_readiness_routes` snapshots with route, action, readiness score, confidence, rules used, caps applied, allowed/blocked actions, data-used, missing-data, and audit history.
+- Added APIs:
+  - `GET /api/athleteiq/readiness-route/today?athleteId=&localDate=&timezone=`
+  - `POST /api/athleteiq/readiness-route/recalculate`
+- High pain and coach-review pain override the base score and block green/high-intensity actions.
+- Missing Daily IQ or insufficient confidence routes amber rather than making unsupported green claims.
+- Added documentation at `docs/athleteiq-readiness-route-contract.md`.
+- No UI primitive was added, so no General Design System request issue was required for this issue.

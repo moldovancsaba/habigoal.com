@@ -62,6 +62,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [AthleteIQ Mental Edge Contract](docs/athleteiq-mental-edge-contract.md)
 - [AthleteIQ Pain Safety Contract](docs/athleteiq-pain-safety-contract.md)
 - [AthleteIQ Daily Plan Contract](docs/athleteiq-daily-plan-contract.md)
+- [AthleteIQ Readiness Route Contract](docs/athleteiq-readiness-route-contract.md)
 - [AthleteIQ Digital Athlete Twin Projection Contract](docs/athleteiq-twin-projection-contract.md)
 - [AthleteIQ Session Lifecycle Contract](docs/athleteiq-session-lifecycle-contract.md)
 - [AthleteIQ Daily Reality Map Contract](docs/athleteiq-calendar-contract.md)
@@ -132,6 +133,7 @@ HABIGOAL_ENFORCE_AUTH=true
 - Product registry endpoint: `/api/product-surfaces`
 - AthleteIQ session lifecycle endpoints: `/api/athleteiq/sessions`, `/api/athleteiq/sessions/from-plan`, `/api/athleteiq/sessions/:id/state`, and `/api/athleteiq/sessions/:id/debrief`
 - AthleteIQ daily reality map endpoints: `/api/athleteiq/calendar/day`, `/api/athleteiq/calendar/entries`, and `/api/athleteiq/calendar/entries/:id`
+- AthleteIQ readiness route endpoints: `/api/athleteiq/readiness-route/today` and `/api/athleteiq/readiness-route/recalculate`
 - AthleteIQ reflection memory endpoints: `/api/athleteiq/reflections`, `/api/athleteiq/reflections/day`, `/api/athleteiq/reflections/:id/visibility`, and `/api/athleteiq/memory-handoff`
 - AthleteIQ stakeholder projection endpoints: `/api/athleteiq/coach/dashboard`, `/api/athleteiq/parents/summary`, `/api/athleteiq/team/overview`, and `/api/athleteiq/coach/alerts/:id/actions`
 - AthleteIQ daily report endpoints: `/api/athleteiq/reports/daily/generate`, `/api/athleteiq/reports/daily`, and `/api/athleteiq/reports/daily/:id/export.json`
