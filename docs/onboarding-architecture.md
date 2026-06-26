@@ -251,9 +251,46 @@ Validation:
 | `blocked` | The module is not returned because role, route, or access does not match. |
 | `unavailable` | API failure or missing route state must not block the page. Provider degrades to no prompt plus recoverable error state when a prompt action fails. |
 
+## Prompt Primitive Contract
+
+`OnboardingPrompt` is the reusable GDS-only popup/checklist primitive. It does not fetch, persist, authorize, rank, or infer role eligibility. The provider owns route state, API calls, and event writes; the primitive owns deterministic rendering and typed callback wiring only.
+
+```ts
+type OnboardingPromptState =
+  | "loading"
+  | "ready"
+  | "submitting"
+  | "error"
+  | "blocked"
+  | "completed";
+
+type OnboardingPromptProps = {
+  module: OnboardingModuleView;
+  state: OnboardingPromptState;
+  errorMessage?: string;
+  onDismiss(): Promise<void> | void;
+  onComplete(stepId?: string): Promise<void> | void;
+  onSnooze?(): Promise<void> | void;
+  onRetry?(): Promise<void> | void;
+};
+```
+
+Runtime behavior:
+
+- `loading` renders an inline GDS loading state instead of a modal so it does not trap focus.
+- `ready` renders the module body, checklist progress, step status badges, step completion actions, dismiss, optional snooze, and module completion.
+- `submitting` keeps the same prompt visible while disabling duplicate user actions.
+- `error` renders a visible GDS error state with retry when the provider supplies `onRetry`; completion actions are disabled to avoid duplicate writes after a failed event.
+- `blocked` renders a non-completion GDS permission state and safe dismiss only.
+- `completed` renders a GDS success state, treats checklist steps as done, and offers safe close/dismiss only.
+- Step progress is deterministic: completed steps divided by total steps; zero-step modules render an empty state and report 100% progress.
+- All user-facing primitive copy comes from `messages/*/Onboarding.states` and `messages/*/Onboarding.actions`; the component must not add hardcoded English fallback copy.
+- `onSnooze` maps to the existing `snoozed` onboarding event when supplied by the provider.
+- Focus restoration is handled on unmount by returning focus to the previously active element when the browser still exposes it.
+
 ## GDS And Accessibility Contract
 
-All onboarding UI must use the Sovereign Squad General Design System. Current runtime uses `@doneisbetter/gds/client` primitives: `Modal`, `Stack`, `Group`, `Box`, `Badge`, `Progress`, `SemanticButton`, and `StateBlock`.
+All onboarding UI must use the Sovereign Squad General Design System. Current runtime uses `@doneisbetter/gds/client` primitives: `Modal`, `Stack`, `Group`, `Box`, `Badge`, `Progress`, `SemanticButton`, `StateBlock`, and `createGdsVocabularyPack` for the custom snooze action.
 
 Release-blocking requirements:
 
@@ -339,11 +376,13 @@ Rollback must not delete event history unless a privacy/legal deletion request r
 Current automated coverage:
 
 - `lib/onboarding.test.ts` verifies locale route normalization, role/route filtering, dismissed state, and partial step completion.
+- `components/onboarding/OnboardingPrompt.test.ts` verifies prompt lifecycle rendering, action availability, callback gates, progress calculation, and zero-step empty state behavior.
 
 Required checks for onboarding changes:
 
 ```bash
-npm run test -- lib/onboarding.test.ts
+npm run test -- components/onboarding/OnboardingPrompt.test.ts lib/onboarding.test.ts
+npm run i18n:audit
 npm run typecheck
 npm run build
 ```
@@ -376,6 +415,7 @@ Manuals must describe only the runtime behavior that exists. Future onboarding i
 What changed:
 
 - `docs/onboarding-architecture.md` is the source of truth for onboarding lifecycle, APIs, role boundaries, GDS/accessibility behavior, retries, rollback, and tests.
+- `components/onboarding/OnboardingPrompt.tsx` ships the reusable GDS-only prompt/checklist primitive with typed callbacks for dismiss, complete, snooze, and retry.
 
 Configuration:
 

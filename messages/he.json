@@ -1139,8 +1139,21 @@
       "done": "Done",
       "next": "Next"
     },
+    "states": {
+      "loadingTitle": "Loading onboarding",
+      "loadingBody": "The current route remains available while onboarding state loads.",
+      "emptyTitle": "No checklist steps",
+      "emptyBody": "This onboarding module has no checklist steps yet.",
+      "errorTitle": "Onboarding update failed",
+      "errorBody": "Retry the onboarding action or dismiss this prompt. The current page remains usable.",
+      "blockedTitle": "Onboarding unavailable",
+      "blockedBody": "This onboarding module is not available for the current role or route.",
+      "completedTitle": "Onboarding completed",
+      "completedBody": "This onboarding module is complete and can be closed."
+    },
     "actions": {
-      "dismiss": "Dismiss"
+      "dismiss": "Dismiss",
+      "snooze": "Snooze"
     }
   },
   "AthletesApp": {
