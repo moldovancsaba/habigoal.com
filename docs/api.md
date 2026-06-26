@@ -263,6 +263,22 @@ Updates an alert state to `resolved`, `dismissed`, `monitor`, or `coach_review` 
 
 Pain Safety uses algorithm version `aiq-pain-safety-1240.1`. Pain `>= 7` caps Daily IQ at `60` and limits recommendation intensity to recovery. Full contract, rollback, and recovery notes are documented in [AthleteIQ Pain Safety Contract](athleteiq-pain-safety-contract.md).
 
+## AthleteIQ Daily Plan
+
+### `POST /api/athleteiq/daily-plan/generate`
+
+Generates or regenerates the active daily plan for one athlete/date from Daily IQ, Mental Edge, Pain Safety, and habits. Completed task state is preserved when deterministic task ids remain valid.
+
+### `GET /api/athleteiq/daily-plan/today?athleteId=&timezone=&localDate=`
+
+Returns the active daily plan for the athlete's local date, or `empty: true` when none exists.
+
+### `PATCH /api/athleteiq/daily-plan/tasks/:id`
+
+Updates a task completion state to `open`, `completed`, or `dismissed`.
+
+Daily Plan uses version `aiq-daily-plan-1250.1`. Full contract, rollback, and recovery notes are documented in [AthleteIQ Daily Plan Contract](athleteiq-daily-plan-contract.md).
+
 ## Auth
 
 ### `GET /api/auth/login`
