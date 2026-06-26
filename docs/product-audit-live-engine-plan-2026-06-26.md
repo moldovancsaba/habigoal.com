@@ -192,26 +192,215 @@ Required pipeline:
 
 The engine must be idempotent by athlete id, local date, mode, source event, and idempotency key. It must not fabricate healthy values when sources are missing.
 
+## Research-Backed Business Logic Decisions
+
+These decisions replace vague product logic with implementation rules grounded in sport-science consensus, peer-reviewed monitoring literature, and current athlete-management business patterns. They are decision-support rules, not diagnosis, medical clearance, or injury prediction.
+
+### Daily readiness and check-in logic
+
+Athlete IQ and Habigoal should use a short daily self-report as the primary daily input because subjective athlete self-report measures are practical, low-burden, and supported by athlete-monitoring literature. The required daily fields should be:
+
+- sleep quality
+- fatigue or energy
+- soreness and pain
+- stress
+- mood
+- confidence, focus, and motivation for Athlete IQ performance mode
+- optional notes and pain location
+
+Implementation rules:
+
+- The daily check-in must be completable in under 60 seconds on mobile.
+- Missing fields reduce confidence; they must not be converted to healthy defaults.
+- Scores must be interpreted against the athlete's own rolling baseline when at least 14 days of data exist.
+- A single bad input should not create a diagnosis; repeated poor signals should create a coach review action.
+- Sleep is an important readiness input, but the app should use individualized sleep needs and trends instead of one universal target.
+
+Research support:
+
+- Saw, Main, and Gastin's systematic review supports subjective self-report measures for monitoring athlete wellbeing responses to training.
+- Single-item team-sport wellbeing reviews show the common practical constructs are soreness, fatigue, sleep quality, stress, and mood.
+- Walsh et al.'s athlete sleep consensus recommends individualized sleep handling and targeted support for athletes at risk of sleep inadequacy.
+
+### Training load and session logic
+
+The system should use session RPE multiplied by duration as the primary internal-load metric for live product workflows. This is simple enough for athletes and trainers, works across session types, and is supported by validation and review literature.
+
+Implementation rules:
+
+- Store `plannedLoad`, `athletePerceivedLoad`, `durationMinutes`, `rpe`, `sessionType`, and `completedLoadPoints`.
+- Compare coach-planned load with athlete-perceived load after each session.
+- Use 7-day and 28-day rolling load windows as context only.
+- Flag acute load spikes, monotony, and missing debriefs as coach-review signals.
+- Do not claim ACWR or any load ratio predicts injury. It can trigger "review load", not "injury risk probability".
+- Any high load combined with poor sleep, high fatigue, or pain should route to amber or red review.
+
+Research support:
+
+- Foster et al. found session-RPE valid for quantifying a broad range of exercise training.
+- Later reviews support session-RPE as a practical internal-load method.
+- IOC load consensus supports monitoring training, competition, psychological load, wellbeing, and injury together.
+- ACWR literature is contested; therefore AIQ should use load spikes as contextual flags rather than deterministic injury prediction.
+- Coach-athlete perceived-load research shows the perceived dose can differ from intended coach load, especially in easy sessions, so both views must be stored.
+
+### Pain safety and availability logic
+
+Pain must be a guardrail, not just a score component. The app must not allow a high Daily IQ score to override high pain.
+
+Implementation rules:
+
+- Pain `0-3`: normal monitoring unless trend worsens.
+- Pain `4-6`: amber route, conservative training recommendation, and pain follow-up task.
+- Pain `>=7`: red route, high-intensity blocked, Daily IQ capped at `60`, coach/physio review created.
+- Pain `>=5` on three days in a rolling three-day window: red route and recurring-pain coach review.
+- Pain location, onset, training context, and post-session pain should be persisted for review.
+- The copy must say "coach/physio review" or "recovery route"; it must not claim diagnosis.
+
+Research support:
+
+- IOC pain-management consensus states pain in elite athletes is multifactorial and should be handled with an evidence-informed approach that addresses pathophysiology, biomechanics, and psychosocial contributors.
+- IOC injury/illness surveillance guidance supports structured recording and reporting to protect athlete health.
+
+### Mental Edge logic
+
+Mental Edge should support performance state and escalation workflows, not diagnose mental health disorders.
+
+Implementation rules:
+
+- Confidence, focus, motivation, stress, mood, and optional reflection form the Mental Edge signal.
+- Repeated low confidence/focus/motivation or high stress creates a private coach-check-in action.
+- Urgent self-harm or safeguarding content, if introduced later, must bypass scoring and route to a configured safeguarding process.
+- Parent views must redact raw mental details and show only safe support guidance.
+- Reports must state source confidence and redactions.
+
+Research support:
+
+- IOC mental-health consensus recognizes mental health symptoms and disorders among elite athletes and recommends comprehensive, integrated management.
+- Mental-health surveillance guidance supports standardized recording and reporting, but not casual diagnosis by an app.
+
+### Habit and behavior-change logic
+
+Habigoal should use habit tracking as a behavior-support loop. Athlete IQ should use it as a consistency signal and a daily-plan input.
+
+Implementation rules:
+
+- Habit completion is always user-entered or trainer-entered; never inferred.
+- Streaks are derived from dated records in Atlas.
+- The app should use self-monitoring, goal setting, feedback, prompts/cues, and action planning.
+- The product should recommend one next action, not a long advice list.
+- Habit score should contribute to Daily IQ only when current-day habit data exists.
+- Habit categories should remain stable and versioned: recovery, fuel, movement/training, mental, learning/life.
+
+Research support:
+
+- Habit-formation literature supports repeated action in stable contexts, prompts/cues, and simple sustainable behavior change.
+- Digital behavior-change intervention reviews identify self-monitoring, goal setting, prompts/cues, and feedback as common techniques for habit formation.
+
+### Wearables and external-data logic
+
+Wearable and partner integrations should be treated as confidence-labelled data sources, not automatic truth.
+
+Implementation rules:
+
+- Until a provider has a real OAuth/token exchange, signed callback validation, raw payload persistence, normalizer, and canonical metric mapping, it must stay hidden or labelled manual/lite.
+- HRV, resting heart rate, sleep duration, and sleep quality should be shown as rolling trends, not one-off daily verdicts.
+- Wearable readings should never override high pain or explicit athlete self-report.
+- Every metric must carry `source`, `normalisationVersion`, `rawPayloadId`, `confidence`, and consent status.
+- The engine should use manual entry and validated wearable data through the same canonical metric contract.
+
+Research support:
+
+- Expert guidance on HRV monitoring supports routine/near-daily collection and trend interpretation rather than isolated readings.
+- Wearable validation literature shows consumer devices can be useful but variable by metric and device, so product logic must preserve source confidence.
+
+### Coach dashboard and business logic
+
+The business value of Athlete IQ is not a score alone. The core product must help trainers and clubs make faster, safer, auditable decisions across teams and individual athletes.
+
+Implementation rules:
+
+- The trainer dashboard's first screen must answer:
+  - who needs attention
+  - why they need attention
+  - what data was used
+  - what the trainer should do next
+  - whether the action was acknowledged, applied, resolved, or ignored
+- Every alert must create or update a persistent coach action.
+- Dense raw metrics should be secondary to priority queues, status distribution, and next action.
+- Dashboard design should be co-created around trainer workflows, not only data availability.
+- The system must support individual athlete drill-down and team/club aggregate views.
+- All AI/recommendation copy must cite source labels, confidence, and algorithm version.
+
+Business and research support:
+
+- A 2024 scoping review found coaches and support staff use athlete monitoring mainly to reduce injury/illness, inform training programs, and improve or maintain performance; it also emphasizes monitoring as part of the bigger communication picture.
+- Coach dashboard research supports building dashboards from scientific knowledge, sensor data, and coach/user requirements to support training decisions.
+- Current AMS market leaders sell the same business category around centralized data, configurable dashboards, role-based views, integrations, workflows, and operational collaboration. AIQ should compete as a focused daily operating system, not as a disconnected score page.
+
+### Daily IQ v2 scoring and routing specification
+
+The best implementation is a guardrail-first daily engine:
+
+1. Validate source data and confidence.
+2. Apply safety guardrails.
+3. Compute Daily IQ only when enough source weight exists.
+4. Generate route and plan.
+5. Create coach actions for risk, missing data, or follow-up.
+
+Initial Daily IQ v2 component weights:
+
+| Component | Weight | Inputs | Notes |
+| --- | ---: | --- | --- |
+| Wellness readiness | 35% | sleep quality, fatigue/energy, stress, mood | Primary daily self-report state. |
+| Mental Edge | 20% | confidence, focus, motivation, stress | Redacted for parent view. |
+| Load fit | 20% | session RPE x duration, planned-vs-perceived load, 7/28 day context | Review flag only; not injury prediction. |
+| Habit consistency | 15% | dated habit completions by category | Dated records only. |
+| Recovery support | 10% | soreness, sleep hours, validated HRV/resting HR trend when available | Manual or validated device sources. |
+
+Confidence rules:
+
+- `insufficient`: no same-day check-in or less than 40% source weight available; no Daily IQ number, only missing-data action.
+- `low`: 40-59% source weight available; show Daily IQ with caution and block high-intensity recommendation.
+- `medium`: 60-79% source weight available.
+- `high`: 80%+ source weight available and no critical guardrail.
+
+Guardrail rules:
+
+- High pain or recurring pain overrides score and creates red route.
+- Moderate pain creates amber route even if Daily IQ is high.
+- Low confidence creates amber route and missing-data action.
+- Acute load spike plus poor readiness creates amber route and coach review.
+- Any red route blocks high-intensity session recommendation.
+
+Readiness route rules:
+
+- `green`: Daily IQ `>=75`, confidence medium/high, no pain cap, no unresolved critical coach action.
+- `amber`: Daily IQ `50-74`, low confidence, moderate pain, load spike, or meaningful missing data.
+- `red`: Daily IQ `<50`, high/recurring pain, unavailable/injured status, or critical coach action.
+
+These thresholds are initial product thresholds. They must be versioned, tested, and recalibrated with real organization data once enough Atlas history exists.
+
 ## Prioritized Fix Plan
 
 ### P0 - Make the product honest and live
 
 1. Create `services/athleteiq-daily-engine.service.ts` and an API route such as `POST /api/athleteiq/daily-engine/run`.
-2. Change `POST /api/athleteiq/check-ins` to call the daily engine after successful persistence.
-3. Build an AIQ check-in UI that reads `/api/athleteiq/check-ins/schema` and posts to `/api/athleteiq/check-ins`.
-4. Replace local acknowledgement in `AthleteIqExperience` with `POST /api/athleteiq/coach/alerts/[id]/actions`.
-5. Replace Habigoal product-surface client state with Atlas-backed `/api/check-ins` and `/api/athletes/[id]/habits` or create Habigoal-specific thin endpoints over the same records.
-6. Implement a dedicated Athlete IQ dashboard route and stop sending AIQ users into `components/dashboard/MainDashboard.tsx`.
-7. Hide or disable any route that is still hard-coded, mocked, or not persisted:
+2. Implement Daily IQ v2 scoring, confidence, and guardrail-first routing in a versioned pure library.
+3. Change `POST /api/athleteiq/check-ins` to call the daily engine after successful persistence.
+4. Build an AIQ check-in UI that reads `/api/athleteiq/check-ins/schema` and posts to `/api/athleteiq/check-ins`.
+5. Replace local acknowledgement in `AthleteIqExperience` with `POST /api/athleteiq/coach/alerts/[id]/actions`.
+6. Replace Habigoal product-surface client state with Atlas-backed `/api/check-ins` and `/api/athletes/[id]/habits` or create Habigoal-specific thin endpoints over the same records.
+7. Implement a dedicated Athlete IQ dashboard route and stop sending AIQ users into `components/dashboard/MainDashboard.tsx`.
+8. Hide or disable any route that is still hard-coded, mocked, or not persisted:
    - `/api/v1/metrics`
    - wearable OAuth callback
    - Garmin/Whoop connector fetches
    - health sync
    - VALD webhook
    - team messages
-8. Add host-based routing/middleware for product domains and remove cross-product navigation on those domains.
-9. Replace all user-visible hardcoded English statuses/placeholders in production pages with message catalog keys.
-10. Add integration tests for the daily engine: check-in -> Daily IQ -> Pain Safety -> Readiness Route -> Daily Plan -> Coach action/projection.
+9. Add host-based routing/middleware for product domains and remove cross-product navigation on those domains.
+10. Replace all user-visible hardcoded English statuses/placeholders in production pages with message catalog keys.
+11. Add integration tests for the daily engine: check-in -> Daily IQ -> Pain Safety -> Readiness Route -> Daily Plan -> Coach action/projection.
 
 Acceptance criteria:
 
@@ -305,9 +494,29 @@ Additional required tests:
 ## Immediate Next Implementation Order
 
 1. Build daily engine orchestration service and tests.
-2. Wire AIQ check-in POST into that engine.
-3. Build real AIQ dashboard/workspace pages that consume the engine outputs.
-4. Convert Habigoal mobile surface to live Atlas reads/writes.
-5. Remove or block all non-live integration endpoints from active UI.
-6. Add host-based product routing.
-7. Run the full validation suite and push.
+2. Implement Daily IQ v2 scoring and guardrail-first readiness routing.
+3. Wire AIQ check-in POST into that engine.
+4. Build real AIQ dashboard/workspace pages that consume the engine outputs.
+5. Convert Habigoal mobile surface to live Atlas reads/writes.
+6. Remove or block all non-live integration endpoints from active UI.
+7. Add host-based product routing.
+8. Run the full validation suite and push.
+
+## Research Sources
+
+- Saw AE, Main LC, Gastin PB. [Monitoring the athlete training response: subjective self-reported measures trump commonly used objective measures](https://bjsm.bmj.com/content/50/5/281).
+- Foster C, Florhaug JA, Franklin J, et al. [A new approach to monitoring exercise training](https://pubmed.ncbi.nlm.nih.gov/11708692/).
+- Soligard T, Schwellnus M, Alonso JM, et al. [IOC consensus statement on load in sport and risk of injury](https://pubmed.ncbi.nlm.nih.gov/27535989/).
+- Impellizzeri FM, et al. [Acute:Chronic Workload Ratio: Is There Scientific Evidence?](https://pmc.ncbi.nlm.nih.gov/articles/PMC8138569/).
+- Reardon CL, Hainline B, Aron CM, et al. [Mental health in elite athletes: IOC consensus statement](https://pubmed.ncbi.nlm.nih.gov/31097450/).
+- Hainline B, Turner JA, Caneiro JP, et al. [IOC consensus statement on pain management in elite athletes](https://pubmed.ncbi.nlm.nih.gov/28827314/).
+- IOC Injury and Illness Epidemiology Consensus Group. [Methods for recording and reporting epidemiological data on injury and illness in sport 2020](https://pmc.ncbi.nlm.nih.gov/articles/PMC7146946/).
+- Walsh NP, Halson SL, Sargent C, et al. [Sleep and the athlete: 2021 expert consensus recommendations](https://pubmed.ncbi.nlm.nih.gov/33144349/).
+- Timmerman WP, Abbiss CR, Lawler NG, Stanley M, Raynor AJ. [Athlete monitoring perspectives of sports coaches and support staff: a scoping review](https://journals.sagepub.com/doi/10.1177/17479541241247131).
+- Van der Zwaard S, et al. [Co-operative design of a coach dashboard for training monitoring and feedback](https://pmc.ncbi.nlm.nih.gov/articles/PMC9737713/).
+- Inoue A, Bunn PS, do Carmo EC, et al. [Internal training load perceived by athletes and planned by coaches](https://link.springer.com/article/10.1186/s40798-022-00420-3).
+- Gardner B, Lally P, Wardle J. [Making health habitual: the psychology of habit-formation](https://pmc.ncbi.nlm.nih.gov/articles/PMC3505409/).
+- Wang Y, Fadhil A, Reiterer H. [Digital behavior change intervention designs for habit formation](https://pmc.ncbi.nlm.nih.gov/articles/PMC11161714/).
+- Miller DJ, Sargent C, Roach GD. [Validation of six wearable devices for sleep, heart rate, and heart rate variability](https://www.mdpi.com/1424-8220/22/16/6317).
+- Teamworks. [Athlete Management System](https://teamworks.com/ams/).
+- Kitman Labs. [Athlete Monitoring Systems vs. Athlete Management Systems](https://www.kitmanlabs.com/blog/athlete-monitoring-systems-vs-athlete-management-systems/).
