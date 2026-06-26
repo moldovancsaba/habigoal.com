@@ -110,7 +110,7 @@ const habigoalFunctions = [
     audience: ["client", "athlete"],
     summary: "Fast wellbeing, readiness, sport, and life status capture that can run without professional staff.",
     runtimeFlow: [
-      "Open Habigoal surface",
+      "Start daily support surface",
       "Capture today status",
       "Validate completion and missing data",
       "Calculate readiness and support state",

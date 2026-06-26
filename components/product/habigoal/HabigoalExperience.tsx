@@ -61,7 +61,7 @@ export function HabigoalExperience({ relatedSurface, surface }: { relatedSurface
     <Box className="habigoal-product-shell">
       <Box className="hbg-app-frame" px={{ base: "sm", md: "md" }} py={{ base: 0, md: "md" }} mx="auto">
         <Box className="hbg-desktop-topbar">
-          <SurfaceTopBar surface={surface} relatedSurface={relatedSurface} actionPack={actionPack} />
+          <SurfaceTopBar surface={surface} />
         </Box>
 
         <Box className="hbg-mobile-app-header">

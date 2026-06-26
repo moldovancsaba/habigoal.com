@@ -188,7 +188,7 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
       style={ATHLETE_IQ_THEME_VARIABLES}
     >
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
-        <SurfaceTopBar surface={surface} relatedSurface={relatedSurface} actionPack={actionPack} />
+        <SurfaceTopBar surface={surface} />
 
         <Box className="aiq-command-layout">
           <Paper component="aside" className="aiq-sidebar-v2 surface-outline" withBorder radius="md" p="lg">
@@ -233,9 +233,6 @@ export function AthleteIqExperience({ relatedSurface, surface }: { relatedSurfac
                     subtitle="A professional operating surface for athletes, trainers, teams, clubs, reports, and honest staged intelligence."
                     actions={
                       <Group gap="xs" wrap="wrap">
-                        <Link href="/" style={{ textDecoration: "none" }}>
-                          <SemanticButton action="productSurface:home" variant="default" vocabularyPacks={[actionPack]} />
-                        </Link>
                         <Link href="/dashboard" style={{ textDecoration: "none" }}>
                           <SemanticButton action="productSurface:dashboard" color="yellow" vocabularyPacks={[actionPack]} />
                         </Link>

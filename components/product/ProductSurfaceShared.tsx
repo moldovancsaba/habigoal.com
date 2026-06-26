@@ -2,26 +2,16 @@
 
 import Image from "next/image";
 import { Badge, Box, Group, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from "@mantine/core";
-import { GdsIcons, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { GdsIcons, SectionPanel } from "@doneisbetter/gds/client";
 import type { ReactNode } from "react";
-import { Link } from "@/i18n/navigation";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductFunction, ProductSurface, ProductSurfaceAudience, ProductSurfaceId } from "@/lib/product-surfaces";
-import type { ProductSurfaceActionPack } from "./productSurfaceActions";
 
 export type SurfaceSignalState = "good" | "watch" | "risk" | "neutral";
 
-export function SurfaceTopBar({
-  actionPack,
-  relatedSurface,
-  surface
-}: {
-  actionPack: ProductSurfaceActionPack;
-  relatedSurface?: ProductSurface;
-  surface: ProductSurface;
-}) {
+export function SurfaceTopBar({ surface }: { surface: ProductSurface }) {
   return (
-    <Group className={surface.id === "habigoal" ? "surface-topbar hbg-topbar" : "surface-topbar aiq-topbar"} justify="space-between" align="center" mb="md">
+    <Group className={surface.id === "habigoal" ? "surface-topbar hbg-topbar" : "surface-topbar aiq-topbar"} align="center" mb="md">
       <Group gap="sm" wrap="nowrap">
         {surface.id === "habigoal" ? (
           <Image src="/images/habigoal_logo.png" alt="" width={32} height={32} />
@@ -32,25 +22,6 @@ export function SurfaceTopBar({
           <Text fw={900}>{surface.name}</Text>
           <Text size="sm" className={surface.id === "habigoal" ? "hbg-muted-text" : "aiq-muted-soft"}>{surface.operatingMode}</Text>
         </Stack>
-      </Group>
-      <Group gap="xs" wrap="wrap">
-        <Link href="/" style={{ textDecoration: "none" }}>
-          <SemanticButton action="productSurface:home" variant="default" size="sm" vocabularyPacks={[actionPack]} />
-        </Link>
-        {relatedSurface ? (
-          <Link href={relatedSurface.primaryPath} style={{ textDecoration: "none" }}>
-            <SemanticButton
-              action={relatedSurface.id === "habigoal" ? "productSurface:habigoal" : "productSurface:aiq"}
-              variant="default"
-              size="sm"
-              vocabularyPacks={[actionPack]}
-            />
-          </Link>
-        ) : (
-          <Link href={surface.id === "habigoal" ? "/athlete-iq" : "/habigoal"} style={{ textDecoration: "none" }}>
-            <SemanticButton action={surface.id === "habigoal" ? "productSurface:aiq" : "productSurface:habigoal"} variant="default" size="sm" vocabularyPacks={[actionPack]} />
-          </Link>
-        )}
       </Group>
     </Group>
   );

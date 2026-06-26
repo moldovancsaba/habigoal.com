@@ -58,6 +58,22 @@ describe("product surface route boundaries", () => {
     expect(habigoalSource).toContain("hbg-bottom-nav");
   });
 
+  it("keeps product apps isolated from selector and cross-app navigation", () => {
+    const sharedSource = readSource("components/product/ProductSurfaceShared.tsx");
+    const habigoalSource = readSource("components/product/habigoal/HabigoalExperience.tsx");
+    const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
+    const actionSource = readSource("components/product/productSurfaceActions.ts");
+
+    expect(sharedSource).not.toContain("Link href");
+    expect(sharedSource).not.toContain("relatedSurface.primaryPath");
+    expect(habigoalSource).not.toContain("href=\"/athlete-iq\"");
+    expect(athleteIqSource).not.toContain("href=\"/\"");
+    expect(athleteIqSource).not.toContain("href=\"/habigoal\"");
+    expect(actionSource).not.toContain("productSurface:habigoal");
+    expect(actionSource).not.toContain("productSurface:aiq");
+    expect(actionSource).not.toContain("productSurface:home");
+  });
+
   it("keeps AthleteIQ oriented around trainer team and club operations", () => {
     const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
 
