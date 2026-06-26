@@ -49,7 +49,10 @@ export function PublicAppControls({
 
   const dashboardHref = user?.primaryRole === "athlete" ? "/athletes" : "/dashboard";
   const localeLabel = locale.toUpperCase();
-  const loginHref = `/api/auth/login?next=${encodeURIComponent(pathname || `/${locale}`)}`;
+  const currentPath = pathname && pathname !== "/"
+    ? (pathname.startsWith(`/${locale}`) ? pathname : `/${locale}${pathname}`)
+    : `/${locale}`;
+  const loginHref = `/${locale}/login?next=${encodeURIComponent(currentPath)}`;
   const languageOptions: Array<{ label: string; shortLabel: string; value: SupportedLocale }> = [
     { label: common("languageEnglish"), shortLabel: "EN", value: "en" },
     { label: common("languageHungarian"), shortLabel: "HU", value: "hu" },

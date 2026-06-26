@@ -1109,7 +1109,7 @@
     "accessDenied": "Acceso denegado. Tu correo no esta en la lista autorizada. Contacta con tu administrador.",
     "accessDeniedTitle": "Acceso denegado",
     "badge": "{brand} OS",
-    "ssoNote": "SSO seguro via DoneIsBetter",
+    "ssoNote": "El acceso por email crea o abre el espacio de producto seleccionado.",
     "brandSubtitle": "Habigoal",
     "previewTitle": "Vista previa de productos separados",
     "previewSubtitle": "Habigoal sigue siendo mobile-first y de apoyo; Athlete IQ sigue siendo desktop-first, profesional y dirigido por entrenadores.",
@@ -1132,6 +1132,24 @@
     "athleteIqAction": "Abrir Athlete IQ",
     "athleteIqAria": "Abrir la app profesional de rendimiento Athlete IQ",
     "footerTitle": "Apps de producto separadas"
+  },
+  "Login": {
+    "badge": "Acceso por email",
+    "title": "Continuar a tu app",
+    "subtitle": "Introduce tu email o usuario, elige tu perfil y abre la superficie de app correspondiente.",
+    "identifierLabel": "Email o usuario",
+    "identifierPlaceholder": "nombre@example.com o tu usuario",
+    "personaLabel": "Elegir perfil",
+    "athletePersonaTitle": "Atleta",
+    "athletePersonaCopy": "Abrir la app movil de bienestar Habigoal.",
+    "trainerPersonaTitle": "Entrenador",
+    "trainerPersonaCopy": "Abrir el espacio profesional Athlete IQ.",
+    "submit": "Continuar",
+    "supportingCopy": "El mismo email o usuario abre la misma cuenta la proxima vez.",
+    "errorTitle": "Problema de login",
+    "invalidIdentifier": "Introduce un email o usuario valido.",
+    "missingPersona": "Elige atleta o entrenador.",
+    "genericError": "No pudimos completar el login. Intentalo de nuevo."
   },
   "News": {
     "badge": "Noticias Habigoal",

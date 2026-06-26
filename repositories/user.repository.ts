@@ -64,6 +64,31 @@ export async function upsertUser(user: Omit<User, "id">) {
   return result;
 }
 
+export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" | "roles">): Promise<User | null> {
+  const db = await getDatabase();
+  const normalizedEmail = user.email.toLowerCase().trim();
+  const normalizedRoles = normalizeRoles(user.roles || []);
+  const now = new Date().toISOString();
+  await db.collection(collectionName).updateOne(
+    { email: normalizedEmail },
+    {
+      $set: {
+        email: normalizedEmail,
+        name: user.name || normalizedEmail,
+        roles: normalizedRoles,
+        updatedAt: now,
+        lastLoginAt: now
+      },
+      $setOnInsert: {
+        createdAt: now,
+        teamIds: []
+      }
+    },
+    { upsert: true }
+  );
+  return findUserByEmail(normalizedEmail);
+}
+
 export async function deleteUserByEmail(email: string) {
   const db = await getDatabase();
   await db.collection(collectionName).deleteOne({ email: email.toLowerCase().trim() });

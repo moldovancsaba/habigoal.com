@@ -1110,7 +1110,7 @@
     "accessDenied": "Hozzáférés megtagadva. Az Ön e-mail címe nem szerepel a meghívott felhasználók listáján. Kérjük, forduljon a rendszergazdához.",
     "accessDeniedTitle": "Hozzáférés megtagadva",
     "badge": "{brand} OS",
-    "ssoNote": "Biztonságos SSO a DoneIsBetter rendszeren keresztül",
+    "ssoNote": "Az e-mailes hozzáférés létrehozza vagy megnyitja a kiválasztott termékfelületet.",
     "brandSubtitle": "Habigoal",
     "previewTitle": "Elkülönített termékbemutató",
     "previewSubtitle": "A Habigoal mobile-first és támogató marad; az Athlete IQ desktop-first, professzionális és edzői irányítású.",
@@ -1132,6 +1132,24 @@
     "athleteIqAction": "Athlete IQ megnyitása",
     "athleteIqAria": "Athlete IQ professzionális teljesítmény alkalmazás megnyitása",
     "footerTitle": "Elkülönített termékappok"
+  },
+  "Login": {
+    "badge": "E-mail hozzáférés",
+    "title": "Tovább a saját appba",
+    "subtitle": "Adja meg az e-mail címét vagy felhasználónevét, válasszon szerepet, és nyissa meg a hozzá tartozó appfelületet.",
+    "identifierLabel": "E-mail vagy felhasználónév",
+    "identifierPlaceholder": "nev@example.com vagy felhasználónév",
+    "personaLabel": "Szerep kiválasztása",
+    "athletePersonaTitle": "Sportoló",
+    "athletePersonaCopy": "Habigoal mobil jólléti app megnyitása.",
+    "trainerPersonaTitle": "Edző",
+    "trainerPersonaCopy": "Athlete IQ professzionális munkafelület megnyitása.",
+    "submit": "Tovább",
+    "supportingCopy": "Ugyanez az e-mail vagy felhasználónév legközelebb ugyanazt a fiókot nyitja meg.",
+    "errorTitle": "Belépési probléma",
+    "invalidIdentifier": "Adjon meg érvényes e-mail címet vagy felhasználónevet.",
+    "missingPersona": "Válassza ki, hogy sportoló vagy edző.",
+    "genericError": "Nem sikerült befejezni a belépést. Kérjük, próbálja újra."
   },
   "News": {
     "badge": "Habigoal Hírek",

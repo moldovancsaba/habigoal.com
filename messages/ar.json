@@ -1109,7 +1109,7 @@
     "accessDenied": "تم رفض الوصول. بريدك الإلكتروني ليس مدرجاً في قائمة المستخدمين المدعوين. يرجى الاتصال بالمسؤول.",
     "accessDeniedTitle": "تم رفض الوصول",
     "badge": "{brand} OS",
-    "ssoNote": "دخول موحد آمن عبر DoneIsBetter",
+    "ssoNote": "الدخول بالبريد الإلكتروني ينشئ أو يفتح مساحة المنتج المختارة.",
     "brandSubtitle": "Habigoal",
     "previewTitle": "معاينة منتجات منفصلة",
     "previewSubtitle": "يبقى Habigoal موجهاً للجوال وداعماً، بينما يبقى Athlete IQ موجهاً لسطح المكتب واحترافياً وتحت قيادة المدرب.",
@@ -1132,6 +1132,24 @@
     "athleteIqAction": "فتح Athlete IQ",
     "athleteIqAria": "فتح تطبيق Athlete IQ الاحترافي للأداء",
     "footerTitle": "تطبيقات منتج منفصلة"
+  },
+  "Login": {
+    "badge": "دخول بالبريد الإلكتروني",
+    "title": "المتابعة إلى تطبيقك",
+    "subtitle": "أدخل بريدك الإلكتروني أو اسم المستخدم، اختر الشخصية، وافتح واجهة التطبيق المناسبة.",
+    "identifierLabel": "البريد الإلكتروني أو اسم المستخدم",
+    "identifierPlaceholder": "name@example.com أو اسم المستخدم",
+    "personaLabel": "اختر الشخصية",
+    "athletePersonaTitle": "رياضي",
+    "athletePersonaCopy": "فتح تطبيق Habigoal للرفاه على الجوال.",
+    "trainerPersonaTitle": "مدرب",
+    "trainerPersonaCopy": "فتح مساحة عمل Athlete IQ الاحترافية.",
+    "submit": "متابعة",
+    "supportingCopy": "نفس البريد الإلكتروني أو اسم المستخدم يفتح نفس الحساب في المرة القادمة.",
+    "errorTitle": "مشكلة في تسجيل الدخول",
+    "invalidIdentifier": "أدخل بريداً إلكترونياً أو اسم مستخدم صالحاً.",
+    "missingPersona": "اختر رياضي أو مدرب.",
+    "genericError": "تعذر إكمال تسجيل الدخول. حاول مرة أخرى."
   },
   "News": {
     "badge": "أخبار Habigoal",

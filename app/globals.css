@@ -338,6 +338,65 @@ a {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)), var(--surface-base);
 }
 
+.login-page-container {
+  width: min(calc(100vw - 32px), 520px);
+  max-width: min(calc(100vw - 32px), 520px);
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  margin-inline: auto;
+  padding-block: var(--mantine-spacing-xl);
+  box-sizing: border-box;
+  overflow-x: clip;
+}
+
+.login-panel {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  background: linear-gradient(180deg, var(--surface-gradient-top), var(--surface-gradient-bottom)), var(--surface-base);
+  border-color: var(--border-primary);
+  box-shadow: var(--surface-shadow-elevated);
+}
+
+.login-panel .mantine-Title-root {
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+}
+
+.login-panel .mantine-Text-root,
+.login-panel .mantine-Input-input {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.login-persona-option {
+  min-height: 88px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--mantine-spacing-sm);
+  padding: var(--mantine-spacing-md);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--mantine-radius-md);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  cursor: pointer;
+}
+
+.login-persona-option > input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  accent-color: var(--brand-cyan);
+}
+
+.login-persona-option > span {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
 .selector-card.selector-card-home {
   color: #0e2d2a !important;
   background:

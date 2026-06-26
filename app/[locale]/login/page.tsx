@@ -1,0 +1,84 @@
+import Image from "next/image";
+import { Alert, Anchor, Badge, Button, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+
+function sanitizeNext(input: string | undefined, locale: string) {
+  if (!input) return `/${locale}`;
+  if (!input.startsWith("/") || input.startsWith("//") || input.startsWith("/api/")) return `/${locale}`;
+  return input;
+}
+
+export default async function LoginPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "Login" });
+  const landing = await getTranslations({ locale, namespace: "Landing" });
+  const { error, next } = await searchParams;
+  const nextPath = sanitizeNext(next, locale);
+
+  return (
+    <main className="login-page-container">
+      <Paper className="login-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
+        <form action="/api/auth/login" method="post">
+          <Stack gap="lg">
+            <Stack gap="sm" align="flex-start">
+              <Image src="/images/habigoal_logo.png" alt="" width={54} height={54} priority />
+              <Badge variant="light" color="ingress">{t("badge")}</Badge>
+              <Title order={1}>{t("title")}</Title>
+              <Text c="dimmed">{t("subtitle")}</Text>
+            </Stack>
+
+            {error ? (
+              <Alert color="red" title={t("errorTitle")}>
+                {t(error === "invalid_identifier" ? "invalidIdentifier" : error === "missing_persona" ? "missingPersona" : "genericError")}
+              </Alert>
+            ) : null}
+
+            <input type="hidden" name="next" value={nextPath} />
+            <TextInput
+              autoComplete="username"
+              label={t("identifierLabel")}
+              name="identifier"
+              placeholder={t("identifierPlaceholder")}
+              required
+            />
+
+            <Stack gap="xs">
+              <Text fw={700}>{t("personaLabel")}</Text>
+              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm" mt="xs">
+                <label className="login-persona-option">
+                  <input type="radio" name="persona" value="athlete" defaultChecked required />
+                  <span>
+                    <Text component="span" fw={900}>{t("athletePersonaTitle")}</Text>
+                    <Text component="span" c="dimmed" size="sm">{t("athletePersonaCopy")}</Text>
+                  </span>
+                </label>
+                <label className="login-persona-option">
+                  <input type="radio" name="persona" value="trainer" required />
+                  <span>
+                    <Text component="span" fw={900}>{t("trainerPersonaTitle")}</Text>
+                    <Text component="span" c="dimmed" size="sm">{t("trainerPersonaCopy")}</Text>
+                  </span>
+                </label>
+              </SimpleGrid>
+            </Stack>
+            <Button fullWidth type="submit" size="md" variant="filled">
+              {t("submit")}
+            </Button>
+
+            <Text c="dimmed" size="sm">
+              {t("supportingCopy")}
+            </Text>
+            <Anchor href={`/${locale}`} fw={700}>{landing("brandSubtitle")}</Anchor>
+          </Stack>
+        </form>
+      </Paper>
+    </main>
+  );
+}

@@ -1109,7 +1109,7 @@
     "accessDenied": "Zugriff verweigert. Deine E-Mail steht nicht auf der Liste autorisierter Benutzer. Bitte kontaktiere den Administrator.",
     "accessDeniedTitle": "Zugriff verweigert",
     "badge": "{brand} OS",
-    "ssoNote": "Sicheres SSO ueber DoneIsBetter",
+    "ssoNote": "E-Mail-Zugang erstellt oder oeffnet den ausgewaehlten Produktarbeitsbereich.",
     "brandSubtitle": "Habigoal",
     "previewTitle": "Getrennte Produktvorschau",
     "previewSubtitle": "Habigoal bleibt mobile-first und unterstuetzend; Athlete IQ bleibt desktop-first, professionell und trainergefuehrt.",
@@ -1132,6 +1132,24 @@
     "athleteIqAction": "Athlete IQ oeffnen",
     "athleteIqAria": "Professionelle Athlete IQ Performance-App oeffnen",
     "footerTitle": "Getrennte Produkt-Apps"
+  },
+  "Login": {
+    "badge": "E-Mail-Zugang",
+    "title": "Weiter zur passenden App",
+    "subtitle": "E-Mail oder Benutzername eingeben, Persona waehlen und die passende App-Oberflaeche oeffnen.",
+    "identifierLabel": "E-Mail oder Benutzername",
+    "identifierPlaceholder": "name@example.com oder Benutzername",
+    "personaLabel": "Persona waehlen",
+    "athletePersonaTitle": "Athlet",
+    "athletePersonaCopy": "Habigoal mobile Wohlbefinden-App oeffnen.",
+    "trainerPersonaTitle": "Trainer",
+    "trainerPersonaCopy": "Professionellen Athlete IQ Arbeitsbereich oeffnen.",
+    "submit": "Weiter",
+    "supportingCopy": "Dieselbe E-Mail oder derselbe Benutzername oeffnet beim naechsten Mal dasselbe Konto.",
+    "errorTitle": "Login-Problem",
+    "invalidIdentifier": "Gib eine gueltige E-Mail oder einen gueltigen Benutzernamen ein.",
+    "missingPersona": "Waehle Athlet oder Trainer.",
+    "genericError": "Login konnte nicht abgeschlossen werden. Bitte erneut versuchen."
   },
   "News": {
     "badge": "Habigoal News",

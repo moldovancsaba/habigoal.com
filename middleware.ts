@@ -57,6 +57,7 @@ function isPublicPath(pathname: string) {
   if (!localePattern.test(pathname)) return true;
   if (localePattern.test(pathname) && pathname.split("/").filter(Boolean).length === 1) return true;
   return (
+    /^\/(hu|en|ar|es|de|he)\/login$/.test(pathname) ||
     /^\/(hu|en|ar|es|de|he)\/news(\/[^/]+)?$/.test(pathname) ||
     /^\/(hu|en|ar|es|de|he)\/legal\/(gtc|privacy)$/.test(pathname)
   );
@@ -109,7 +110,7 @@ export async function middleware(request: NextRequest) {
   const locale = getLocale(pathname);
 
   if (!session) {
-    const loginUrl = new URL("/api/auth/login", request.url);
+    const loginUrl = new URL(`/${locale}/login`, request.url);
     loginUrl.searchParams.set("next", `${pathname}${search}`);
     return NextResponse.redirect(loginUrl);
   }
