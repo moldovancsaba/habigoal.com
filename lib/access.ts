@@ -2,7 +2,8 @@ import { ObjectId } from "mongodb";
 import { env } from "@/config/env";
 import { getSession } from "@/lib/session";
 import { findUserByEmail } from "@/repositories/user.repository";
-import { listTeamsByAthleteId, listTeamsByTrainerEmail } from "@/repositories/team.repository";
+import { getTeamById, listTeamsByAthleteId, listTeamsByTrainerEmail } from "@/repositories/team.repository";
+import type { Team } from "@/types/team";
 
 export type AppRole = "admin" | "trainer" | "athlete" | "parent" | "performance_coach" | "physio" | "analyst" | "club_management";
 
@@ -95,8 +96,22 @@ export async function resolveAccessibleAthleteIds(user: AuthUser): Promise<strin
     return user.parentAthleteIds?.length ? user.parentAthleteIds : [];
   }
 
-  const teams = await listTeamsByTrainerEmail(user.email);
+  const [emailTeams, assignedTeams] = await Promise.all([
+    listTeamsByTrainerEmail(user.email),
+    Promise.all(user.teamIds.map((teamId) => getTeamById(teamId)))
+  ]);
+  const teams = dedupeTeams([...emailTeams, ...assignedTeams.filter((team): team is Team => Boolean(team))]);
   return Array.from(new Set(teams.flatMap((team) => team.athleteIds || [])));
+}
+
+function dedupeTeams(teams: Team[]) {
+  const seen = new Set<string>();
+  return teams.filter((team) => {
+    const key = team._id ?? team.name;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 export async function canAccessAthlete(user: AuthUser, athleteId: string): Promise<boolean> {

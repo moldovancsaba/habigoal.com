@@ -4,6 +4,8 @@ import { getDailyPlanByDate } from "@/repositories/athleteiq-daily-plan.reposito
 import { getLatestDailyIqSnapshot } from "@/repositories/athleteiq-daily-iq.repository";
 import { listPainAlertsByAthlete } from "@/repositories/athleteiq-pain-safety.repository";
 import { listTeams } from "@/repositories/team.repository";
+import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
+import type { CoachActionRecord } from "@/types/coach-action";
 import type { Team } from "@/types/team";
 
 export type AthleteIqDashboardSeverity = "risk" | "watch" | "good" | "missing";
@@ -70,14 +72,31 @@ export function getBudapestLocalDate(date = new Date()) {
 export async function getAthleteIqProductDashboardProjection(input: {
   localDate?: string;
   timezone?: string;
+  user?: AuthUser | null;
 } = {}): Promise<AthleteIqProductDashboardProjection> {
   const timezone = input.timezone ?? DEFAULT_TIMEZONE;
   const localDate = input.localDate ?? getBudapestLocalDate();
-  const [athletes, teams, actions] = await Promise.all([
+  const user = input.user === undefined ? await getAuthUser() : input.user;
+  if (!user) return emptyDashboardProjection({ localDate, timezone });
+
+  const [allAthletes, allTeams, allActions, allowedAthleteIds] = await Promise.all([
     listChildrenWithMetrics(),
     listTeams(),
-    listCoachActionsByDate(localDate)
+    listCoachActionsByDate(localDate),
+    resolveAccessibleAthleteIds(user)
   ]);
+
+  const { actions, athletes, teams } = scopeDashboardData({
+    actions: allActions,
+    allowedAthleteIds,
+    athletes: allAthletes,
+    teams: allTeams,
+    user
+  });
+
+  if (athletes.length === 0 && teams.length === 0 && actions.length === 0) {
+    return emptyDashboardProjection({ localDate, timezone });
+  }
 
   const teamsByAthleteId = mapTeamsByAthleteId(teams);
   const openActionCounts = new Map<string, number>();
@@ -88,7 +107,7 @@ export async function getAthleteIqProductDashboardProjection(input: {
 
   const athleteRows = await Promise.all(
     athletes.map(async (athlete) => {
-      const athleteId = String(athlete._id ?? athlete.surveyId ?? athlete.name);
+      const athleteId = getAthleteProfileId(athlete);
       const [dailyIq, dailyPlan, painAlerts] = await Promise.all([
         getLatestDailyIqSnapshot({ athleteId, localDate }),
         getDailyPlanByDate(athleteId, localDate),
@@ -167,6 +186,62 @@ export async function getAthleteIqProductDashboardProjection(input: {
     }),
     missingData
   };
+}
+
+function emptyDashboardProjection(input: { localDate: string; timezone: string }): AthleteIqProductDashboardProjection {
+  return {
+    localDate: input.localDate,
+    timezone: input.timezone,
+    state: "empty",
+    teamCount: 0,
+    athleteCount: 0,
+    openActionCount: 0,
+    averageReadiness: null,
+    averageMental: null,
+    dailyIqAverage: null,
+    activeQueue: [],
+    athletes: [],
+    operations: [],
+    services: [],
+    missingData: []
+  };
+}
+
+function scopeDashboardData(input: {
+  actions: CoachActionRecord[];
+  allowedAthleteIds: string[] | null;
+  athletes: ChildProfile[];
+  teams: Team[];
+  user: AuthUser;
+}) {
+  if (input.allowedAthleteIds === null) {
+    return {
+      actions: input.actions,
+      athletes: input.athletes,
+      teams: input.teams
+    };
+  }
+
+  const explicitAthleteIds = new Set(input.allowedAthleteIds);
+  const normalizedEmail = input.user.email.toLowerCase().trim();
+  const assignedTeamIds = new Set(input.user.teamIds);
+  const teams = input.teams.filter((team) => {
+    const matchesAssignedTeam = Boolean(team._id && assignedTeamIds.has(team._id));
+    const matchesTrainerEmail = team.trainerEmails.some((email) => email.toLowerCase().trim() === normalizedEmail);
+    const matchesAccessibleAthlete = team.athleteIds.some((athleteId) => explicitAthleteIds.has(athleteId));
+    return matchesAssignedTeam || matchesTrainerEmail || matchesAccessibleAthlete;
+  });
+  const scopedAthleteIds = new Set([...explicitAthleteIds, ...teams.flatMap((team) => team.athleteIds)]);
+
+  return {
+    actions: input.actions.filter((action) => scopedAthleteIds.has(action.athleteKey)),
+    athletes: input.athletes.filter((athlete) => scopedAthleteIds.has(getAthleteProfileId(athlete))),
+    teams
+  };
+}
+
+function getAthleteProfileId(athlete: ChildProfile) {
+  return String(athlete._id ?? athlete.surveyId ?? athlete.name);
 }
 
 function mapTeamsByAthleteId(teams: Team[]) {
