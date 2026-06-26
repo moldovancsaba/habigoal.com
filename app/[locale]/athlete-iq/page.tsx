@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { ProductSurfacePage } from "@/components/product/ProductSurfacePage";
+import { AthleteIqExperience } from "@/components/product/athlete-iq/AthleteIqExperience";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default async function AthleteIqSurfaceRoute({
   setRequestLocale(locale);
 
   return (
-    <ProductSurfacePage
+    <AthleteIqExperience
       surface={getProductSurfaceOrThrow("athlete-iq")}
       relatedSurface={getProductSurfaceOrThrow("habigoal")}
     />

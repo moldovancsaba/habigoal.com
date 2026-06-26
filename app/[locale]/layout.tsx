@@ -1,12 +1,41 @@
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
 import { setRequestLocale } from "next-intl/server";
 import { Noto_Sans, Noto_Sans_Arabic, Noto_Sans_Hebrew } from "next/font/google";
 import { ThemeRegistry } from "@/components/theme/ThemeRegistry";
 import { CookieConsentBanner } from "@/components/layout/CookieConsentBanner";
+import { getSemanticTone } from "@/theme/semantic-theme";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "../globals.css";
+
+const mobileThemeColor = getSemanticTone("light", "knowmore").color;
+
+export const metadata: Metadata = {
+  applicationName: "Habigoal",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Habigoal"
+  },
+  icons: {
+    icon: "/images/habigoal_logo.png",
+    apple: "/images/habigoal_logo.png"
+  }
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: mobileThemeColor,
+  colorScheme: "light dark",
+  interactiveWidget: "resizes-content"
+};
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 
 export default async function LandingPage({
   params,
@@ -117,7 +118,7 @@ function ProductEntryCard({
               {badge}
             </Badge>
             {tone === "pro" ? (
-              <Box className="aiq-mark" aria-hidden="true">IQ</Box>
+              <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={64} height={57} className="aiq-mark" />
             ) : (
               <Image src="/images/habigoal_logo.png" alt="" width={48} height={48} />
             )}

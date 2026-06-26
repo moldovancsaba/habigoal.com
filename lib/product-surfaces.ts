@@ -1,3 +1,7 @@
+import type { GdsThemePresetId } from "@doneisbetter/gds";
+import { ATHLETE_IQ_OS_FUNCTIONS, ATHLETE_IQ_OS_NAVIGATION } from "@/lib/athlete-iq-os";
+import { ATHLETE_IQ_GDS_THEME_PRESET } from "@/lib/product-surface-branding";
+
 export type ProductSurfaceId = "habigoal" | "athlete-iq";
 
 export type ProductSurfaceAudience = "client" | "athlete" | "coach" | "academy" | "operator";
@@ -29,6 +33,7 @@ export type ProductNavigationItem = {
 export type ProductTheme = {
   name: string;
   mode: "supportive-light" | "professional-dark";
+  gdsPresetId?: GdsThemePresetId;
   accent: string;
   secondaryAccent: string;
   surfaceTone: string;
@@ -334,6 +339,11 @@ const athleteIqOnlyFunctions = [
   }
 ] satisfies ProductFunction[];
 
+const athleteIqFunctions = [
+  ...athleteIqOnlyFunctions,
+  ...ATHLETE_IQ_OS_FUNCTIONS
+] satisfies ProductFunction[];
+
 export const productSurfaces = [
   {
     id: "habigoal",
@@ -404,54 +414,22 @@ export const productSurfaces = [
     audiences: ["athlete", "coach", "academy", "operator"],
     operatingMode: "Professional athlete, coach, academy, and service operations",
     theme: {
-      name: "Professional command",
+      name: "Athlete Gold",
       mode: "professional-dark",
+      gdsPresetId: ATHLETE_IQ_GDS_THEME_PRESET,
       accent: "Gold",
-      secondaryAccent: "Electric blue",
-      surfaceTone: "Dense, operational, role-aware control",
+      secondaryAccent: "Black performance shell",
+      surfaceTone: "Premium black-and-gold performance control",
       typographyTone: "Performance language with explicit decision rationale"
     },
-    navigation: [
-      {
-        id: "command",
-        label: "Command",
-        path: "/athlete-iq",
-        description: "Priority athletes, risks, services, and workflow state.",
-        audience: ["coach", "academy", "operator"],
-        sharedFunctionId: "aiq-professional-dashboard"
-      },
-      {
-        id: "athletes",
-        label: "Athletes",
-        path: "/dashboard/athletes",
-        description: "Professional athlete profiles and shared daily signal history.",
-        audience: ["athlete", "coach", "academy"],
-        sharedFunctionId: "aiq-performance-intelligence"
-      },
-      {
-        id: "services",
-        label: "Services",
-        path: "/dashboard/reports",
-        description: "Reports, lab, package delivery, and partner outputs.",
-        audience: ["coach", "academy", "operator"],
-        sharedFunctionId: "aiq-service-command"
-      },
-      {
-        id: "habigoal-layer",
-        label: "Habigoal layer",
-        path: "/habigoal",
-        description: "Embedded daily support signals from the client product.",
-        audience: ["athlete", "coach", "academy", "operator"],
-        sharedFunctionId: "hbg-check-in"
-      }
-    ],
+    navigation: ATHLETE_IQ_OS_NAVIGATION,
     sharedDataContracts,
     demoSignals: [
       { id: "queue", label: "Priority queue", value: "3 athletes", state: "watch", source: "daily-status" },
       { id: "reports", label: "Reports due", value: "2 packages", state: "neutral", source: "guidance-events" },
       { id: "scope", label: "Shared Habigoal signals", value: "Included", state: "good", source: "function-registry" }
     ],
-    functionRegistry: [...habigoalFunctions, ...athleteIqOnlyFunctions]
+    functionRegistry: [...habigoalFunctions, ...athleteIqFunctions]
   }
 ] satisfies ProductSurface[];
 

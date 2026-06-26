@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "gdsVersion": "3.4.7",
+  "gdsVersion": "3.6.0",
   "productArchetype": "hybrid",
-  "packageSource": "npm:@doneisbetter/gds@^3.4.7",
+  "packageSource": "npm:@doneisbetter/gds@^3.6.0",
   "supportedEntryPoints": [
     "@doneisbetter/gds",
     "@doneisbetter/gds/client",

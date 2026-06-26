@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { resolveGdsVibeTheme } from "@doneisbetter/gds";
+import { ATHLETE_IQ_GDS_THEME_PRESET } from "./product-surface-branding";
 import { getSurfaceFunctionIds, getSurfaceFunctions, getSurfaceNavigation, productSurfaces } from "./product-surfaces";
 
 describe("product surface function registries", () => {
@@ -42,9 +44,18 @@ describe("product surface function registries", () => {
 
     expect(habigoal?.theme.mode).toBe("supportive-light");
     expect(athleteIq?.theme.mode).toBe("professional-dark");
+    expect(athleteIq?.theme.gdsPresetId).toBe(ATHLETE_IQ_GDS_THEME_PRESET);
     expect(getSurfaceNavigation("habigoal").map((item) => item.label)).not.toEqual(
       getSurfaceNavigation("athlete-iq").map((item) => item.label)
     );
+  });
+
+  it("uses the GDS Athlete Gold preset for Athlete IQ", () => {
+    const athleteGold = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
+
+    expect(athleteGold.id).toBe(ATHLETE_IQ_GDS_THEME_PRESET);
+    expect(athleteGold.label).toBe("Athlete Gold");
+    expect(athleteGold.gradient).toContain("linear-gradient");
   });
 
   it("shares the same foundation contracts across both surfaces", () => {

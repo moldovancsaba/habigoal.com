@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { ProductSurfacePage } from "@/components/product/ProductSurfacePage";
+import { HabigoalExperience } from "@/components/product/habigoal/HabigoalExperience";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
 
 export const metadata: Metadata = {
@@ -16,5 +16,5 @@ export default async function HabigoalSurfaceRoute({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <ProductSurfacePage surface={getProductSurfaceOrThrow("habigoal")} />;
+  return <HabigoalExperience surface={getProductSurfaceOrThrow("habigoal")} />;
 }
