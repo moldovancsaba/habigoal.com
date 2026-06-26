@@ -433,6 +433,21 @@ Issue `#226` / capability `AIQ-1280` now has a local day-planning backend withou
 
 Rollback is additive: remove consumers of the calendar endpoints or disable the capability in the module registry. Existing `athleteiq_calendar_entries` records can remain because Daily Plan and session lifecycles do not depend on them.
 
+### AthleteIQ Reflection Memory Delivered
+
+Issue `#227` / capability `AIQ-1290` now has a private-by-default daily reflection and next-day memory handoff backend:
+
+- Raw reflection persistence in `athleteiq_reflections`.
+- Reflection creation through `POST /api/athleteiq/reflections`, with blank reflections skipped without persistence.
+- Role-redacted day views through `GET /api/athleteiq/reflections/day?athleteId=&date=`.
+- Visibility updates through `PATCH /api/athleteiq/reflections/:id/visibility`.
+- Next-day planning handoff through `GET /api/athleteiq/memory-handoff?athleteId=&date=`.
+- Deterministic local tag derivation only; no external AI provider and no OpenAI integration.
+- Raw body is visible only to the linked athlete. Coach/parent summaries use derived safe summary and tags only when visibility allows it.
+- Contract documentation in `docs/athleteiq-reflection-contract.md`.
+
+Rollback is additive: remove consumers of the reflection endpoints or disable the capability in the module registry. Existing `athleteiq_reflections` records can remain because check-in, Daily Plan, sessions, and calendar flows do not depend on them.
+
 ### GitHub Issue Updates Added
 
 REST issue comments were added on 2026-06-26 to:
