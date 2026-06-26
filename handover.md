@@ -403,6 +403,21 @@ The implementation pass delivered the runtime and documentation that the client 
 
 The implementation preserves the mandatory frontend constraint: onboarding UI imports interactive primitives from `@doneisbetter/gds/client` and does not introduce a parallel UI system.
 
+### AthleteIQ Session Lifecycle Delivered
+
+Issue `#225` / capability `AIQ-1270` now has an executable backend lifecycle for Daily Plan session recommendations:
+
+- Session draft creation from Daily Plan and Pain Safety guardrail through `POST /api/athleteiq/sessions/from-plan`.
+- Session listing through `GET /api/athleteiq/sessions?athleteId=&from=&to=`.
+- Access-checked state transitions through `PATCH /api/athleteiq/sessions/:id/state`.
+- Debrief capture through `POST /api/athleteiq/sessions/:id/debrief`, including RPE persistence into `session_rpe_results`.
+- Session persistence in `athleteiq_sessions` with deterministic `athleteId + localDate` session ids and audit history.
+- Structured AthleteIQ errors with `code`, `messageKey`, `retryable`, and `correlationId`.
+- Operational events for `athleteiq.session.created_from_plan`, `athleteiq.sessions.listed`, `athleteiq.session.state_updated`, `athleteiq.session.completed`, and `athleteiq.score.recalculate_requested`.
+- Contract documentation in `docs/athleteiq-session-lifecycle-contract.md`.
+
+Rollback is additive: remove consumers of the session endpoints or disable the capability in the module registry. Existing `athleteiq_sessions` and `session_rpe_results` records can remain because older Daily Plan flows do not depend on them.
+
 ### GitHub Issue Updates Added
 
 REST issue comments were added on 2026-06-26 to:

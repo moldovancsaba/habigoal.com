@@ -63,6 +63,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [AthleteIQ Pain Safety Contract](docs/athleteiq-pain-safety-contract.md)
 - [AthleteIQ Daily Plan Contract](docs/athleteiq-daily-plan-contract.md)
 - [AthleteIQ Digital Athlete Twin Projection Contract](docs/athleteiq-twin-projection-contract.md)
+- [AthleteIQ Session Lifecycle Contract](docs/athleteiq-session-lifecycle-contract.md)
 - [Legal and Company Info](docs/legal.md)
 - [SSO Setup](docs/sso-setup.md)
 - [Product Roadmap](ROADMAP.md)
@@ -122,6 +123,7 @@ HABIGOAL_ENFORCE_AUTH=true
 - Habigoal: `/{locale}/habigoal`
 - Athlete IQ: `/{locale}/athlete-iq`
 - Product registry endpoint: `/api/product-surfaces`
+- AthleteIQ session lifecycle endpoints: `/api/athleteiq/sessions`, `/api/athleteiq/sessions/from-plan`, `/api/athleteiq/sessions/:id/state`, and `/api/athleteiq/sessions/:id/debrief`
 
 ## Validation Commands
 
