@@ -17,6 +17,41 @@ export type ProductFunction = {
   failureMode: string;
 };
 
+export type ProductNavigationItem = {
+  id: string;
+  label: string;
+  path: string;
+  description: string;
+  audience: ProductSurfaceAudience[];
+  sharedFunctionId?: string;
+};
+
+export type ProductTheme = {
+  name: string;
+  mode: "supportive-light" | "professional-dark";
+  accent: string;
+  secondaryAccent: string;
+  surfaceTone: string;
+  typographyTone: string;
+};
+
+export type SharedDataContract = {
+  id: string;
+  name: string;
+  owner: "shared-foundation";
+  description: string;
+  usedBy: ProductSurfaceId[];
+  syncBehavior: string;
+};
+
+export type ProductDemoSignal = {
+  id: string;
+  label: string;
+  value: string;
+  state: "good" | "watch" | "risk" | "neutral";
+  source: string;
+};
+
 export type ProductSurface = {
   id: ProductSurfaceId;
   name: string;
@@ -28,14 +63,45 @@ export type ProductSurface = {
   includedSurfaceIds: ProductSurfaceId[];
   audiences: ProductSurfaceAudience[];
   operatingMode: string;
+  theme: ProductTheme;
+  navigation: ProductNavigationItem[];
+  sharedDataContracts: SharedDataContract[];
+  demoSignals: ProductDemoSignal[];
   functionRegistry: ProductFunction[];
 };
+
+const sharedDataContracts = [
+  {
+    id: "daily-status",
+    name: "Daily status ledger",
+    owner: "shared-foundation",
+    description: "Wellbeing, readiness, pain, recovery, habits, and context answers stored once and projected differently per product.",
+    usedBy: ["habigoal", "athlete-iq"],
+    syncBehavior: "Habigoal writes simple check-ins; AthleteIQ reads the same ledger for professional dashboards and reports."
+  },
+  {
+    id: "function-registry",
+    name: "Product-aware function registry",
+    owner: "shared-foundation",
+    description: "One feature directory filtered by product surface, role, entitlement, and module maturity.",
+    usedBy: ["habigoal", "athlete-iq"],
+    syncBehavior: "Habigoal receives only client-safe functions; AthleteIQ includes Habigoal plus pro modules."
+  },
+  {
+    id: "guidance-events",
+    name: "Guidance and audit events",
+    owner: "shared-foundation",
+    description: "Recommendations, coach actions, escalations, and dismissals are logged with product surface and source confidence.",
+    usedBy: ["habigoal", "athlete-iq"],
+    syncBehavior: "Client guidance and professional interventions remain auditable without duplicating data."
+  }
+] satisfies SharedDataContract[];
 
 const habigoalFunctions = [
   {
     id: "hbg-check-in",
     name: "Simple daily status check-in",
-    status: "phase-1",
+    status: "active",
     audience: ["client", "athlete"],
     summary: "Fast wellbeing, readiness, sport, and life status capture that can run without professional staff.",
     runtimeFlow: [
@@ -64,7 +130,7 @@ const habigoalFunctions = [
   {
     id: "hbg-habits",
     name: "Habit tracker and accountability loop",
-    status: "phase-1",
+    status: "active",
     audience: ["client", "athlete"],
     summary: "Daily habit list for movement, recovery, learning, nutrition, hydration, sleep, and personal goals.",
     runtimeFlow: [
@@ -93,7 +159,7 @@ const habigoalFunctions = [
   {
     id: "hbg-support-feedback",
     name: "Automatic life and sport support feedback",
-    status: "phase-1",
+    status: "active",
     audience: ["client", "athlete"],
     summary: "Plain-language feedback that turns status and habits into safe daily guidance.",
     runtimeFlow: [
@@ -118,6 +184,34 @@ const habigoalFunctions = [
       "Track blocked guidance when source data is insufficient"
     ],
     failureMode: "If recommendations fail, show the latest known readiness state and ask for manual review."
+  },
+  {
+    id: "hbg-progress",
+    name: "Client progress and streak reflection",
+    status: "phase-1",
+    audience: ["client", "athlete"],
+    summary: "A simple progress view that shows consistency, wellbeing direction, and completed support actions.",
+    runtimeFlow: [
+      "Read the daily status ledger",
+      "Compare the last seven days with the current day",
+      "Summarize progress in client-safe copy",
+      "Highlight one habit or support action to keep"
+    ],
+    contracts: [
+      "Trend text must cite the source window",
+      "Progress summaries cannot expose coach-only notes",
+      "Low-confidence trends must render as neutral"
+    ],
+    accessibility: [
+      "Progress is available as text before visual meters",
+      "Streaks and deltas include explicit labels",
+      "Reduced-motion users receive static summaries"
+    ],
+    observability: [
+      "Track progress panel view and selected summary",
+      "Track incomplete trend windows without exposing raw sensitive notes"
+    ],
+    failureMode: "If historical data is unavailable, show today's support state and a first-week onboarding message."
   }
 ] satisfies ProductFunction[];
 
@@ -125,7 +219,7 @@ const athleteIqOnlyFunctions = [
   {
     id: "aiq-professional-dashboard",
     name: "Professional athlete, coach, and academy dashboard",
-    status: "phase-1",
+    status: "active",
     audience: ["athlete", "coach", "academy", "operator"],
     summary: "Role-based operating surface for professional monitoring, planning, reporting, and interventions.",
     runtimeFlow: [
@@ -154,7 +248,7 @@ const athleteIqOnlyFunctions = [
   {
     id: "aiq-performance-intelligence",
     name: "Performance intelligence and Digital Athlete Twin",
-    status: "planned",
+    status: "phase-1",
     audience: ["athlete", "coach", "academy"],
     summary: "Advanced scoring, profile evolution, benchmarks, forecast, and explainable development priorities.",
     runtimeFlow: [
@@ -181,21 +275,21 @@ const athleteIqOnlyFunctions = [
     failureMode: "If advanced intelligence is unavailable, preserve Habigoal status and show professional review required."
   },
   {
-    id: "aiq-services-ecosystem",
-    name: "Professional services, CogLeague, GameFlow, and partner ecosystem",
-    status: "planned",
+    id: "aiq-service-command",
+    name: "Service package and report command center",
+    status: "phase-1",
     audience: ["coach", "academy", "operator"],
-    summary: "Expansion layer for assessments, competitions, match intelligence, education, licensing, CRM, and partner products.",
+    summary: "Operational workspace for service packages, reports, lab tasks, partner modules, and stakeholder delivery.",
     runtimeFlow: [
-      "Select service module",
-      "Validate entitlement and data availability",
-      "Run service-specific workflow",
-      "Generate artifacts and reports",
-      "Publish outcomes to stakeholder dashboards"
+      "Select service package",
+      "Validate entitlement and required data",
+      "Run the service checklist",
+      "Generate report-ready artifacts",
+      "Publish to the correct stakeholder surface"
     ],
     contracts: [
-      "Service modules must declare data requirements before execution",
-      "Partner exports must be redacted by audience",
+      "Service modules declare data requirements before launch",
+      "Report payloads are versioned and redacted by audience",
       "Commercial modules cannot mutate athlete source truth without approval"
     ],
     accessibility: [
@@ -204,10 +298,39 @@ const athleteIqOnlyFunctions = [
       "Partner dashboards support reduced-motion and keyboard navigation"
     ],
     observability: [
-      "Track module adoption, completion, export, and entitlement failures",
+      "Track service package launch, completion, export, and entitlement failures",
       "Track partner report publication and rollback events"
     ],
-    failureMode: "If an expansion module is unavailable, isolate it from the core professional dashboard."
+    failureMode: "If a service module is unavailable, isolate it from the core professional dashboard."
+  },
+  {
+    id: "aiq-ecosystem",
+    name: "CogLeague, GameFlow, partners, and academy ecosystem",
+    status: "planned",
+    audience: ["coach", "academy", "operator"],
+    summary: "Expansion layer for cognitive products, match intelligence, education, licensing, CRM, and partner operations.",
+    runtimeFlow: [
+      "Resolve enabled ecosystem module",
+      "Check organization and partner scope",
+      "Load the product-specific workflow",
+      "Publish outputs back to the professional OS",
+      "Keep Habigoal client experience untouched"
+    ],
+    contracts: [
+      "Ecosystem modules cannot bypass product-surface permissions",
+      "Partner exports must identify source, version, and redaction policy",
+      "Future modules must register in the same product-aware function directory"
+    ],
+    accessibility: [
+      "Every module must declare keyboard and screen-reader states",
+      "Dashboard data must include accessible table alternatives",
+      "Client-safe and professional-only language must be separated"
+    ],
+    observability: [
+      "Track module availability and blocked entitlement attempts",
+      "Track export scope, report target, and rollback state"
+    ],
+    failureMode: "If an ecosystem module is inactive, it remains visible only as roadmap context and cannot affect live guidance."
   }
 ] satisfies ProductFunction[];
 
@@ -225,6 +348,46 @@ export const productSurfaces = [
     includedSurfaceIds: [],
     audiences: ["client", "athlete"],
     operatingMode: "Consumer wellbeing and habit support",
+    theme: {
+      name: "Supportive daylight",
+      mode: "supportive-light",
+      accent: "Mint",
+      secondaryAccent: "Sky",
+      surfaceTone: "Bright, calm, mobile-first support",
+      typographyTone: "Plain language and low-pressure status"
+    },
+    navigation: [
+      {
+        id: "today",
+        label: "Today",
+        path: "/habigoal",
+        description: "Daily check-in, habits, and simple status.",
+        audience: ["client", "athlete"],
+        sharedFunctionId: "hbg-check-in"
+      },
+      {
+        id: "habits",
+        label: "Habits",
+        path: "/athletes",
+        description: "Client-safe habit loop using shared scoring.",
+        audience: ["client", "athlete"],
+        sharedFunctionId: "hbg-habits"
+      },
+      {
+        id: "support",
+        label: "Support",
+        path: "/habigoal",
+        description: "Automatic life and sport feedback.",
+        audience: ["client", "athlete"],
+        sharedFunctionId: "hbg-support-feedback"
+      }
+    ],
+    sharedDataContracts,
+    demoSignals: [
+      { id: "readiness", label: "Today status", value: "Ready with one watch item", state: "watch", source: "daily-status" },
+      { id: "habits", label: "Habit completion", value: "4 / 6", state: "neutral", source: "daily-status" },
+      { id: "next-action", label: "Next action", value: "Hydrate and keep training easy", state: "good", source: "guidance-events" }
+    ],
     functionRegistry: habigoalFunctions
   },
   {
@@ -240,6 +403,54 @@ export const productSurfaces = [
     includedSurfaceIds: ["habigoal"],
     audiences: ["athlete", "coach", "academy", "operator"],
     operatingMode: "Professional athlete, coach, academy, and service operations",
+    theme: {
+      name: "Professional command",
+      mode: "professional-dark",
+      accent: "Gold",
+      secondaryAccent: "Electric blue",
+      surfaceTone: "Dense, operational, role-aware control",
+      typographyTone: "Performance language with explicit decision rationale"
+    },
+    navigation: [
+      {
+        id: "command",
+        label: "Command",
+        path: "/athlete-iq",
+        description: "Priority athletes, risks, services, and workflow state.",
+        audience: ["coach", "academy", "operator"],
+        sharedFunctionId: "aiq-professional-dashboard"
+      },
+      {
+        id: "athletes",
+        label: "Athletes",
+        path: "/dashboard/athletes",
+        description: "Professional athlete profiles and shared daily signal history.",
+        audience: ["athlete", "coach", "academy"],
+        sharedFunctionId: "aiq-performance-intelligence"
+      },
+      {
+        id: "services",
+        label: "Services",
+        path: "/dashboard/reports",
+        description: "Reports, lab, package delivery, and partner outputs.",
+        audience: ["coach", "academy", "operator"],
+        sharedFunctionId: "aiq-service-command"
+      },
+      {
+        id: "habigoal-layer",
+        label: "Habigoal layer",
+        path: "/habigoal",
+        description: "Embedded daily support signals from the client product.",
+        audience: ["athlete", "coach", "academy", "operator"],
+        sharedFunctionId: "hbg-check-in"
+      }
+    ],
+    sharedDataContracts,
+    demoSignals: [
+      { id: "queue", label: "Priority queue", value: "3 athletes", state: "watch", source: "daily-status" },
+      { id: "reports", label: "Reports due", value: "2 packages", state: "neutral", source: "guidance-events" },
+      { id: "scope", label: "Shared Habigoal signals", value: "Included", state: "good", source: "function-registry" }
+    ],
     functionRegistry: [...habigoalFunctions, ...athleteIqOnlyFunctions]
   }
 ] satisfies ProductSurface[];
@@ -260,4 +471,16 @@ export function getProductSurfaceOrThrow(id: ProductSurfaceId) {
 
 export function getSurfaceFunctionIds(id: ProductSurfaceId) {
   return getProductSurfaceOrThrow(id).functionRegistry.map((item) => item.id);
+}
+
+export function getSurfaceNavigation(id: ProductSurfaceId) {
+  return getProductSurfaceOrThrow(id).navigation;
+}
+
+export function getSurfaceFunctions(id: ProductSurfaceId) {
+  return getProductSurfaceOrThrow(id).functionRegistry;
+}
+
+export function isProductSurfaceId(value: string): value is ProductSurfaceId {
+  return value === "habigoal" || value === "athlete-iq";
 }
