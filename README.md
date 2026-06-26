@@ -67,6 +67,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [AthleteIQ Daily Reality Map Contract](docs/athleteiq-calendar-contract.md)
 - [AthleteIQ Reflection Memory Contract](docs/athleteiq-reflection-contract.md)
 - [AthleteIQ Stakeholder Projection Contract](docs/athleteiq-stakeholder-projection-contract.md)
+- [AthleteIQ Active-Module Daily Report Contract](docs/athleteiq-daily-report-contract.md)
 - [Legal and Company Info](docs/legal.md)
 - [SSO Setup](docs/sso-setup.md)
 - [Product Roadmap](ROADMAP.md)
@@ -130,6 +131,7 @@ HABIGOAL_ENFORCE_AUTH=true
 - AthleteIQ daily reality map endpoints: `/api/athleteiq/calendar/day`, `/api/athleteiq/calendar/entries`, and `/api/athleteiq/calendar/entries/:id`
 - AthleteIQ reflection memory endpoints: `/api/athleteiq/reflections`, `/api/athleteiq/reflections/day`, `/api/athleteiq/reflections/:id/visibility`, and `/api/athleteiq/memory-handoff`
 - AthleteIQ stakeholder projection endpoints: `/api/athleteiq/coach/dashboard`, `/api/athleteiq/parents/summary`, `/api/athleteiq/team/overview`, and `/api/athleteiq/coach/alerts/:id/actions`
+- AthleteIQ daily report endpoints: `/api/athleteiq/reports/daily/generate`, `/api/athleteiq/reports/daily`, and `/api/athleteiq/reports/daily/:id/export.json`
 
 ## Validation Commands
 

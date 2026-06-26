@@ -463,6 +463,22 @@ Issue `#228` / capability `AIQ-1300` now has role-safe stakeholder projection AP
 
 Rollback is additive: remove consumers of the stakeholder endpoints or disable the capability in the module registry. Alert actions use the existing `coach_actions` contract and remain auditable.
 
+### AthleteIQ Daily Reports Delivered
+
+Issue `#229` / capability `AIQ-1310` now has immutable active-module daily report snapshots:
+
+- Report generation through `POST /api/athleteiq/reports/daily/generate`.
+- Latest report lookup through `GET /api/athleteiq/reports/daily?athleteId=&teamId=&date=&view=`.
+- JSON export through `GET /api/athleteiq/reports/daily/:id/export.json`.
+- Snapshot persistence in `athleteiq_daily_reports`.
+- Active and lite/manual modules are included according to the module registry and report visibility.
+- Future modules are excluded from live sections and exposed only in the roadmap appendix.
+- Reports reproduce stored Daily IQ and Daily Plan facts; they do not recalculate scores independently.
+- Low or insufficient confidence sections suppress prescriptive recommendations.
+- Contract documentation in `docs/athleteiq-daily-report-contract.md`.
+
+Rollback is additive: remove consumers of the daily report endpoints or disable the capability in the module registry. Existing `athleteiq_daily_reports` snapshots remain readable and do not affect scoring or planning.
+
 ### GitHub Issue Updates Added
 
 REST issue comments were added on 2026-06-26 to:
