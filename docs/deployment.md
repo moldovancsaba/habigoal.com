@@ -168,6 +168,7 @@ Full setup is documented in [SSO Setup](sso-setup.md).
 Run the full local validation set before production release:
 
 ```bash
+npm run version:audit
 npm run i18n:audit
 npm run semantic:audit
 npm run gds:audit
@@ -177,4 +178,4 @@ npm run typecheck
 npm run build
 ```
 
-Use `npm run db:ping` when the change depends on live database connectivity. `npm run semantic:audit` must pass for UI/design-system cleanup work. `npm run gds:audit` and `npm run gds:compliance` are expected to pass on `main`; treat failures as release blockers for UI, layout, theme, or GDS adoption changes.
+Use `npm run db:ping` when the change depends on live database connectivity. `npm run version:audit` must pass before client-facing release sign-off so package, runtime, docs, footer, and legal-page app-version truth cannot drift. `npm run semantic:audit` must pass for UI/design-system cleanup work. `npm run gds:audit` and `npm run gds:compliance` are expected to pass on `main`; treat failures as release blockers for UI, layout, theme, or GDS adoption changes.

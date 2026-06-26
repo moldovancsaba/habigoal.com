@@ -28,9 +28,33 @@ The profile is displayed in:
 
 ## Version Source
 
-The app version is developer-managed in `lib/app-version.ts` and should remain aligned with `package.json` when release versioning changes.
+The app version is developer-managed in `lib/app-version.ts` and should remain aligned with `package.json` and `package-lock.json` when release versioning changes.
 
 Current app version: `0.5.1`
+
+The release gate is:
+
+```bash
+npm run version:audit
+```
+
+The audit checks these app-version sources:
+
+- `package.json`
+- `package-lock.json`
+- `lib/app-version.ts`
+- README app-version documentation
+- this legal document
+- dashboard footer runtime binding in `components/layout/AppFooter.tsx`
+- public legal page runtime bindings in `app/[locale]/legal/gtc/page.tsx` and `app/[locale]/legal/privacy/page.tsx`
+
+Separate version domains must not be forced to match the app version:
+
+- API/OpenAPI metadata in `lib/openapi-spec.ts`
+- readiness standards versions managed in settings
+- consent or privacy notice versions
+- product surface registry version metadata
+- local model, scoring, or pipeline versions
 
 ## Current Production Identity
 
