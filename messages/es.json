@@ -28,6 +28,7 @@
     "emptyValue": "—",
     "latestAssessment": "Ultimo",
     "unknown": "Desconocido",
+    "menu": "Menú",
     "switchToLightMode": "Cambiar a modo claro",
     "switchToDarkMode": "Cambiar a modo oscuro",
     "languageEnglish": "English",
@@ -36,6 +37,7 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
+    "languageSelector": "Seleccionar idioma",
     "goHome": "Ir al inicio",
     "openDashboard": "Abrir panel",
     "logout": "Cerrar sesión"

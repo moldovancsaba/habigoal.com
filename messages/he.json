@@ -28,6 +28,7 @@
     "emptyValue": "—",
     "latestAssessment": "אחרון",
     "unknown": "לא ידוע",
+    "menu": "תפריט",
     "switchToLightMode": "עבור למצב בהיר",
     "switchToDarkMode": "עבור למצב כהה",
     "languageEnglish": "English",
@@ -36,6 +37,7 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
+    "languageSelector": "בחר שפה",
     "goHome": "עבור לדף הבית",
     "openDashboard": "פתח לוח בקרה",
     "logout": "התנתק"

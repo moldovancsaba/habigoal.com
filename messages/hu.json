@@ -28,6 +28,7 @@
     "emptyValue": "—",
     "latestAssessment": "Legutóbbi",
     "unknown": "Ismeretlen",
+    "menu": "Menü",
     "switchToLightMode": "Váltás világos módra",
     "switchToDarkMode": "Váltás sötét módra",
     "languageEnglish": "English",
@@ -36,6 +37,7 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
+    "languageSelector": "Nyelv kiválasztása",
     "goHome": "Vissza a kezdőlapra",
     "openDashboard": "Vezérlőpult megnyitása",
     "logout": "Kijelentkezés"

@@ -28,6 +28,7 @@
     "emptyValue": "—",
     "latestAssessment": "الأحدث",
     "unknown": "غير معروف",
+    "menu": "القائمة",
     "switchToLightMode": "التبديل إلى الوضع الفاتح",
     "switchToDarkMode": "التبديل إلى الوضع الداكن",
     "languageEnglish": "English",
@@ -36,6 +37,7 @@
     "languageSpanish": "Español",
     "languageGerman": "Deutsch",
     "languageHebrew": "עברית",
+    "languageSelector": "اختيار اللغة",
     "goHome": "العودة إلى الصفحة الرئيسية",
     "openDashboard": "فتح لوحة التحكم",
     "logout": "تسجيل الخروج"

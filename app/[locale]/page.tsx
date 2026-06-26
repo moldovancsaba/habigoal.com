@@ -22,20 +22,20 @@ export default async function LandingPage({
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;
   const brand = (
-    <Group gap="sm" wrap="nowrap">
-      <Image src="/images/habigoal_logo.png" alt="" width={40} height={40} priority />
-      <Text fw={800}>{t("brandSubtitle")}</Text>
+    <Group className="landing-brand" gap="sm" wrap="nowrap">
+      <Image className="landing-brand-logo" src="/images/habigoal_logo.png" alt="" width={40} height={40} priority />
+      <Text className="landing-brand-text" fw={800}>{t("brandSubtitle")}</Text>
     </Group>
   );
 
   return (
-    <Container size="md" py="xl">
+    <Container className="landing-selector-container" size="md" py="xl">
       <Stack gap="xl">
-        <Group justify="space-between" wrap="nowrap">
-          <Anchor href={homeHref} underline="never" c="inherit">{brand}</Anchor>
-          <Group gap="sm" wrap="nowrap">
-            <Anchor href={newsHref} fw={700}>{t("whatsNew")}</Anchor>
-            <PublicAppControls />
+        <Group className="landing-topbar" justify="space-between" wrap="wrap">
+          <Anchor className="landing-brand-link" href={homeHref} underline="never" c="inherit">{brand}</Anchor>
+          <Group className="landing-top-actions" gap="sm" wrap="wrap">
+            <Anchor className="landing-news-link" href={newsHref} fw={700}>{t("whatsNew")}</Anchor>
+            <PublicAppControls mobileNewsHref={newsHref} mobileNewsLabel={t("whatsNew")} />
           </Group>
         </Group>
 
