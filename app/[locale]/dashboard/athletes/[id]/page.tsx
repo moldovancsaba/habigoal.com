@@ -69,6 +69,17 @@ type BaselineDraft = {
   supportPreferences: string[];
 };
 
+// The history route responds with a `{ success, data: { child, assessments, ... } }`
+// envelope. Earlier code read the envelope as if it were the flat payload, so
+// `historyPayload.child` was always undefined and the page rendered its error
+// state. Unwrap defensively so both the enveloped and (legacy) flat shapes work.
+function unwrapHistoryPayload(response: unknown): AthleteHistoryPayload | null {
+  if (!response || typeof response !== "object") return null;
+  const envelope = response as { data?: AthleteHistoryPayload };
+  const payload = envelope.data ?? (response as AthleteHistoryPayload);
+  return payload && payload.child ? payload : null;
+}
+
 const PILLAR_COLORS: Record<string, string> = {
   physical_pillar: "var(--mantine-color-tactical-6)",
   mental_pillar: "var(--mantine-color-synthesis-6)",
@@ -150,7 +161,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
       fetch(`/api/athletes/${id}/habits`).then((res) => res.json()).catch(() => ({ records: [] })),
       fetch(`/api/session-plans?weekStart=${currentWeekStart}`).then((res) => res.json()).catch(() => ({ plans: [] }))
     ])
-      .then(([historyPayload, habitPayload, sessionPlanPayload]: [AthleteHistoryPayload, HabitPayload, SessionPlanPayload]) => {
+      .then(([historyResponse, habitPayload, sessionPlanPayload]: [unknown, HabitPayload, SessionPlanPayload]) => {
+        const historyPayload = unwrapHistoryPayload(historyResponse);
+        if (!historyPayload) {
+          return;
+        }
         setData(historyPayload);
         setBaselineDraft({
           weeklyGoal: historyPayload.child.baselineProfile?.weeklyGoal || "",

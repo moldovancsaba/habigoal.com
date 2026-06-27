@@ -139,14 +139,14 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     key: "calendar",
     displayNameKey: "athleteiq.modules.calendar.name",
     summaryKey: "athleteiq.modules.calendar.summary",
-    maturity: "planned",
+    maturity: "active",
     claimBoundary: "backed_by_manual_entry",
     allowedRoles: ["admin", "trainer", "performance_coach", "athlete"],
     dataSources: [livePlanningSource],
     routes: ["/dashboard/planning"],
     reportVisibility: ["athlete", "coach", "team"],
     dependencies: ["daily_plan"],
-    observabilityEvents: ["aiq.module.calendar.roadmap_viewed"]
+    observabilityEvents: ["aiq.module.calendar.viewed", "aiq.module.calendar.updated"]
   },
   {
     key: "reflection",
