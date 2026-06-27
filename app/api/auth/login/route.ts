@@ -76,6 +76,14 @@ function shouldUsePersonaRedirect(next: string, locale: string) {
   return next === `/${locale}` || next === `/${locale}/login` || next === `/${locale}/dashboard`;
 }
 
+function safeProductRedirect(next: string, locale: string, persona: LoginPersona) {
+  const expected = personaRedirect(locale, persona);
+  if (shouldUsePersonaRedirect(next, locale)) return expected;
+  if (next.includes("/athlete-iq") && persona !== "trainer") return expected;
+  if (next.includes("/habigoal") && persona !== "athlete") return expected;
+  return next;
+}
+
 function loginPageUrl(request: NextRequest, locale: string, next: string, error?: string) {
   const url = new URL(`/${locale}/login`, request.url);
   url.searchParams.set("next", next);
@@ -162,9 +170,7 @@ export async function POST(request: NextRequest) {
     role: persona
   });
 
-  const redirectTarget = shouldUsePersonaRedirect(next, locale)
-    ? personaRedirect(locale, persona)
-    : next;
+  const redirectTarget = safeProductRedirect(next, locale, persona);
 
   if (acceptsJson) {
     return NextResponse.json({

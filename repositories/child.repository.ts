@@ -5,6 +5,10 @@ import { toJsonId } from "@/lib/utils";
 export interface ChildProfile {
   _id?: string;
   surveyId?: string;
+  userId?: string;
+  email?: string;
+  createdFrom?: "pseudo-login" | "sso" | "manual";
+  profileState?: "empty" | "active";
   name: string;
   birthDate: string;
   organisationId?: string;
@@ -207,6 +211,48 @@ export async function getChildById(id: ObjectId) {
   const db = await getDatabase();
   const child = await db.collection(collectionName).findOne({ _id: id, deletedAt: { $exists: false } });
   return child ? normalizeChildProfile(toJsonId(child) as Record<string, unknown>) : null;
+}
+
+export async function findChildByUserIdentity(input: { email: string; userId?: string }) {
+  const db = await getDatabase();
+  const filters: Record<string, unknown>[] = [
+    { email: input.email.toLowerCase().trim() },
+    { parentGuardianEmail: input.email.toLowerCase().trim() }
+  ];
+  if (input.userId) filters.unshift({ userId: input.userId });
+
+  const child = await db.collection(collectionName).findOne({
+    deletedAt: { $exists: false },
+    $or: filters
+  });
+
+  return child ? normalizeChildProfile(toJsonId(child) as Record<string, unknown>) : null;
+}
+
+export async function createEmptyAthleteProfileForUser(input: {
+  email: string;
+  locale?: string;
+  name: string;
+  userId?: string;
+}) {
+  const db = await getDatabase();
+  const now = new Date().toISOString();
+  const normalizedEmail = input.email.toLowerCase().trim();
+  const profile = {
+    userId: input.userId,
+    email: normalizedEmail,
+    name: input.name.trim() || normalizedEmail,
+    birthDate: "",
+    status: "active",
+    profileState: "empty",
+    createdFrom: "pseudo-login",
+    locale: input.locale,
+    surveyId: crypto.randomUUID(),
+    createdAt: now,
+    updatedAt: now
+  };
+  const result = await db.collection(collectionName).insertOne(profile);
+  return normalizeChildProfile({ ...profile, _id: result.insertedId.toString() });
 }
 
 export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt" | "updatedAt">) {

@@ -20,6 +20,8 @@
     "lockfile:check": "node scripts/check-lockfile-sync.mjs",
     "semantic:audit": "node scripts/semantic-audit.mjs",
     "version:audit": "node scripts/version-audit.mjs",
+    "habigoal:audit": "node scripts/habigoal-production-audit.mjs",
+    "habigoal:release-gate": "node scripts/habigoal-release-gate.mjs",
     "gds:audit": "node scripts/gds-audit.mjs",
     "gds:compliance": "gds-compliance check --manifest ./gds-adoption.json",
     "gds:manifest": "node scripts/gds-manifest.mjs ./gds-adoption.json",

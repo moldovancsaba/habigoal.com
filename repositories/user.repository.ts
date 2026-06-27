@@ -91,6 +91,24 @@ export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" |
   return findUserByEmail(normalizedEmail);
 }
 
+export async function setUserAthleteId(email: string, athleteId: string) {
+  const db = await getDatabase();
+  const normalizedEmail = email.toLowerCase().trim();
+  const now = new Date().toISOString();
+  await db.collection(collectionName).updateOne(
+    { email: normalizedEmail },
+    {
+      $set: {
+        athleteId,
+        updatedAt: now
+      },
+      $addToSet: {
+        roles: "athlete"
+      }
+    }
+  );
+}
+
 export async function deleteUserByEmail(email: string) {
   const db = await getDatabase();
   await db.collection(collectionName).deleteOne({ email: email.toLowerCase().trim() });

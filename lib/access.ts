@@ -44,6 +44,7 @@ export function getPrimaryRole(roles: string[] | undefined | null): AppRole {
 }
 
 export type AuthUser = {
+  id?: string;
   email: string;
   name: string;
   roles: AppRole[];
@@ -75,6 +76,7 @@ export async function getAuthUser(): Promise<AuthUser | null> {
   const primaryRole = resolveSessionPrimaryRole(sessionRoles, roles);
 
   return {
+    id: localUser.id,
     email: localUser.email,
     name: localUser.name || session.name || localUser.email,
     roles,

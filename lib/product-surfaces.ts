@@ -108,17 +108,17 @@ const habigoalFunctions = [
     name: "Simple daily status check-in",
     status: "active",
     audience: ["client", "athlete"],
-    summary: "Fast wellbeing, readiness, sport, and life status capture that can run without professional staff.",
+    summary: "Fast wellbeing, sport, and life status capture that can run without professional staff.",
     runtimeFlow: [
       "Start daily support surface",
       "Capture today status",
       "Validate completion and missing data",
-      "Calculate readiness and support state",
+      "Calculate daily status and support state",
       "Return simple next action"
     ],
     contracts: [
       "Inputs use the shared check-in schema",
-      "Scores use the shared readiness model",
+      "Scores use the shared daily status rules",
       "Missing data must be represented explicitly instead of inferred as healthy"
     ],
     accessibility: [
@@ -168,7 +168,7 @@ const habigoalFunctions = [
     audience: ["client", "athlete"],
     summary: "Plain-language feedback that turns status and habits into safe daily guidance.",
     runtimeFlow: [
-      "Read status, habit, and readiness signals",
+      "Read status, habit, and daily check-in signals",
       "Apply support rules",
       "Rank one to three next actions",
       "Explain why the action was selected",
@@ -186,9 +186,9 @@ const habigoalFunctions = [
     ],
     observability: [
       "Track recommendation key, source confidence, and user dismissal",
-      "Track blocked guidance when source data is insufficient"
+      "Track blocked guidance when saved data is insufficient"
     ],
-    failureMode: "If recommendations fail, show the latest known readiness state and ask for manual review."
+    failureMode: "If recommendations fail, show the latest known daily status and ask for manual review."
   },
   {
     id: "hbg-progress",
@@ -359,7 +359,7 @@ export const productSurfaces = [
     audiences: ["client", "athlete"],
     operatingMode: "Consumer wellbeing and habit support",
     theme: {
-      name: "Supportive daylight",
+      name: "Habigoal daily",
       mode: "supportive-light",
       accent: "Mint",
       secondaryAccent: "Sky",

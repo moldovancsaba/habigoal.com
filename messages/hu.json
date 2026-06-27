@@ -1120,15 +1120,15 @@
     "privacyPolicy": "Adatvédelmi tájékoztató",
     "selectorBadge": "App választó",
     "selectorTitle": "Válassza ki az appot",
-    "selectorSubtitle": "Válassza a Habigoalt a mobil jóllét PWA-hoz, vagy az Athlete IQ-t a professzionális edzői munkafelülethez. Ugyanaz az e-mail vagy felhasználónév ugyanazt a fiókot nyitja meg a kiválasztott appban.",
+    "selectorSubtitle": "Válassza a Habigoalt a napi szokásokhoz és jólléthez, vagy az Athlete IQ-t a professzionális edzői munkafelülethez. Ugyanaz az e-mail vagy felhasználónév a kiválasztott appot nyitja meg.",
     "habigoalBadge": "Habigoal",
-    "habigoalTitle": "Mobil szokás- és jóllét PWA",
-    "habigoalBody": "Világos, mobile-first app napi check-inekhez, szokásokhoz, jólléti támogatáshoz, sporttámogatáshoz és egy egyértelmű következő lépéshez.",
+    "habigoalTitle": "Napi szokások és jóllét",
+    "habigoalBody": "Fókuszált mobil app a mai check-inhez, szokásokhoz, jólléthez, sporttámogatáshoz és egy egyértelmű következő lépéshez.",
     "habigoalAction": "Habigoal megnyitása",
     "habigoalAria": "Habigoal mobil jólléti alkalmazás megnyitása",
     "athleteIqBadge": "Athlete IQ",
-    "athleteIqTitle": "Professzionális sportolói teljesítmény OS",
-    "athleteIqBody": "Sötét arany, desktop-first parancsfelület edzőknek, csapatoknak, kluboknak, dashboardoknak, riportoknak, szolgáltatásoknak és teljesítményoperációnak.",
+    "athleteIqTitle": "Professzionális sportolói teljesítmény munkafelület",
+    "athleteIqBody": "Sötét arany parancsfelület edzőknek, csapatoknak, kluboknak, dashboardoknak, riportoknak, szolgáltatásoknak és teljesítménymunkához.",
     "athleteIqAction": "Athlete IQ megnyitása",
     "athleteIqAria": "Athlete IQ professzionális teljesítmény alkalmazás megnyitása",
     "footerTitle": "Elkülönített termékappok"
@@ -1405,8 +1405,8 @@
     "actions": {
       "dashboard": "Vezérlőpult megnyitása",
       "athleteDashboard": "Athlete IQ dashboard megnyitása",
-      "reset": "Értékek visszaállítása",
-      "complete": "Művelet befejezése",
+      "reset": "Mai értékek visszaállítása",
+      "complete": "Mai nap mentése",
       "acknowledge": "Tudomásul vétel",
       "report": "Riport megnyitása",
       "launch": "Modul indítása"
@@ -1421,59 +1421,64 @@
     },
     "habigoal": {
       "metadata": {
-        "title": "Habigoal | Mobil szokás- és jóllét PWA",
-        "description": "A Habigoal mobile-first PWA napi check-inekhez, szokásokhoz, jólléti támogatáshoz, sporttámogatáshoz és egy egyértelmű következő lépéshez."
+        "title": "Habigoal | Napi szokások és jóllét",
+        "description": "A Habigoal segít elvégezni a mai check-int, szokásokat, státuszáttekintést és egy egyértelmű következő lépést."
       },
       "surfaceName": "Habigoal",
-      "operatingMode": "Mobil jóllét- és szokástámogatás",
-      "themeName": "Támogató nappali téma",
-      "headline": "Egyszerű szokáskövetés és jólléti támogatás",
-      "promise": "A Habigoal egyszerűen tartja a napi kört: check-in, szokások teljesítése, státusz megértése és egy biztonságos következő lépés.",
+      "operatingMode": "Napi szokások és jóllét",
+      "headline": "Mai státusz és szokások",
+      "promise": "Töltse ki a check-int, jelölje a mai szokásokat, és mentse az egyértelmű következő lépést.",
       "todayLabel": "Ma",
-      "scoreAria": "Napi támogatási pontszám {score}",
-      "scoreExplanation": "A pontszám a mai check-int, szokásokat és támogatási jelzéseket egy egyértelmű státusszá foglalja.",
+      "scoreAria": "Napi státuszpontszám {score}",
+      "scoreExplanation": "A státusz a mai mentett check-in és szokásadatokból készül.",
       "states": {
-        "good": "Készen áll",
-        "watch": "Stabil, egy figyelendő ponttal",
-        "risk": "Támogatást igényel"
+        "needs_input": "Adatra vár",
+        "balanced": "Készen áll",
+        "watch": "Figyelendő",
+        "needs_support": "Támogatást igényel"
       },
       "nextAction": {
-        "good": "Tartsd a tervezett sportprogramot, és védd az esti alvásrutint.",
-        "watch": "Hidratálj, tartsd könnyen az edzést, és mozgás után ellenőrizd újra az izomfáradtságot.",
-        "risk": "Állítsd meg a kemény edzést, és oszd meg a mai státuszt a támogató személlyel."
+        "needs_input": "Kezdje a check-innel, majd mentse a mai szokásokat.",
+        "balanced": "Tartsa a tervezett programot, és védje az esti alvásrutint.",
+        "watch": "Hidratáljon, tartsa kontrolláltan a következő terhelést, és mozgás után nézze újra az izomfáradtságot.",
+        "needs_support": "Legyen könnyű a következő lépés, és ossza meg a mai státuszt a támogató személlyel."
       },
       "badges": {
         "checkIn": "Check-in",
         "habits": "Szokások",
-        "support": "Támogatás"
+        "action": "Következő lépés"
       },
       "signals": {
-        "readiness": {
-          "label": "Readiness",
-          "detail": "Jóllét, alvás, hangulat, izomfáradtság"
+        "status": {
+          "label": "Napi státusz",
+          "detail": {
+            "none": "Mai adatra vár",
+            "low": "Kevés mentett adat",
+            "medium": "Elég adat az útmutatáshoz",
+            "high": "Check-in és szokások mentve"
+          }
         },
         "habitLoop": {
           "label": "Szokáskör",
-          "detail": "Napi szokáskövetés egyszerű mobil nézetben"
+          "detail": "Ma mentett szokások"
         },
-        "supportAction": {
-          "label": "Támogatási művelet",
-          "done": "Kész",
-          "open": "Nyitott",
-          "detail": "Egy biztonságos következő lépés"
+        "nextAction": {
+          "label": "Következő lépés"
         }
       },
       "checkIn": {
         "title": "Napi check-in",
-        "copy": "Állítsd a jelzéseket, és az útmutatás azonnal frissül.",
+        "copy": "Állítsa be az összes jelzést, majd mentse a mai napot.",
         "energy": "Energia",
         "mood": "Hangulat",
         "sleep": "Alvásminőség",
-        "soreness": "Izomfáradtság"
+        "soreness": "Izomfáradtság",
+        "unset": "Beállítás",
+        "completeAll": "Mentés előtt állítsa be mind a négy check-in jelzést."
       },
       "habits": {
-        "title": "Szokástámogatás",
-        "copy": "Jelöld a ma teljesített szokásokat, és tartsd láthatóan a napi rutint.",
+        "title": "Szokások",
+        "copy": "Jelölje a ma teljesített szokásokat.",
         "itemLabel": "{label} ({category})",
         "completion": "Teljesítés",
         "categories": {
@@ -1493,11 +1498,9 @@
         }
       },
       "guidance": {
-        "kicker": "Automatikus visszajelzés",
-        "title": "Egy egyértelmű következő lépés",
-        "copy": "A Habigoal egyszerű nyelven magyarázza el a státuszt, a forrást és a következő lépést.",
-        "sourceTitle": "Forrásadatok",
-        "sourceBody": "Napi státusznapló, szokásteljesítés, readiness modell és útmutatási események."
+        "kicker": "Következő lépés",
+        "title": "Egy egyértelmű művelet",
+        "copy": "A mentett státusz alapján válassza ki a mai biztonságos következő lépést."
       },
       "navigation": {
         "aria": "Habigoal app navigáció",
@@ -1505,6 +1508,25 @@
         "checkIn": "Check-in",
         "habits": "Szokások",
         "action": "Művelet"
+      },
+      "athleteFallback": "Mai napom",
+      "scorePending": "Indítás",
+      "scoreUnavailable": "Nincs pontszám",
+      "scorePendingAria": "A napi státusz a mai check-in mentése után jelenik meg",
+      "scoreEmptyExplanation": "Mentse a mai check-int és szokásokat a státusz létrehozásához.",
+      "savedTitle": "Mentve",
+      "saved": "A mai check-in és szokások mentve.",
+      "emptyState": {
+        "title": "Kezdje a mai check-int",
+        "copy": "Státusz csak valódi check-in és szokásadat mentése után jelenik meg."
+      },
+      "errors": {
+        "title": "Nem sikerült menteni",
+        "saveFailed": "A mentés nem fejeződött be. Ellenőrizze a kapcsolatot, és próbálja újra.",
+        "completeCheckIn": "Mentés előtt állítsa be az összes check-in jelzést.",
+        "profileRequired": "A sportolói profil még nem áll készen. Lépjen be újra, majd próbálja ismét.",
+        "sessionExpired": "A munkamenet lejárt. Jelentkezzen be újra a folytatáshoz.",
+        "reference": "Hivatkozás: {correlationId}"
       }
     },
     "athleteIq": {
@@ -1673,7 +1695,7 @@
           "daily-iq-coverage": {
             "name": "Daily IQ lefedettség",
             "owner": "Athlete OS",
-            "nextStep": "A napi check-inek és mérések táplálják a készenléti motort."
+            "nextStep": "A napi check-inek és mérések frissítik a mentett napi státuszt."
           },
           "coach-action-queue": {
             "name": "Edzői műveleti sor",

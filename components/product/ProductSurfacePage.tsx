@@ -27,16 +27,25 @@ function emptyHabigoalProjection(): HabigoalTodayProjection {
   return {
     athleteId: null,
     athleteName: null,
+    completedHabits: [],
+    confidence: "none",
+    correlationId: "hbg-empty-client-fallback",
+    dataState: "missing_profile",
+    hasLiveCheckIn: false,
+    hasLiveHabits: false,
     localDate,
+    missingSignals: ["profile", "energy", "soreness", "mood", "sleep", "habits"],
+    nextActionKey: "needs_input",
+    reasonCodes: ["missing_profile"],
+    score: null,
+    source: "authenticated-empty",
+    status: "needs_input",
     timezone: "UTC",
     values: {
-      energy: 0,
-      soreness: 0,
-      mood: 0,
-      sleep: 0
-    },
-    completedHabits: [],
-    hasLiveCheckIn: false,
-    hasLiveHabits: false
+      energy: null,
+      soreness: null,
+      mood: null,
+      sleep: null
+    }
   };
 }

@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { Badge, Box, Checkbox, Group, Paper, Progress, SimpleGrid, Slider, Stack, Text, Title } from "@mantine/core";
+import { useRouter } from "next/navigation";
+import { Alert, Badge, Box, Checkbox, Group, Paper, Progress, SimpleGrid, Slider, Stack, Text, Title } from "@mantine/core";
 import { GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
+import type { HabigoalDailyStatus } from "@/lib/habigoal-status";
 import type { HabigoalHabitKey, HabigoalTodayProjection } from "@/services/habigoal-product.service";
 import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
 import { createProductSurfaceActionPack } from "../productSurfaceActions";
@@ -14,6 +16,13 @@ type HabitItem = {
   id: HabigoalHabitKey;
   dbKey: string;
   category: string;
+};
+
+type MetricDraft = HabigoalTodayProjection["values"];
+type FeedbackState = {
+  correlationId?: string;
+  kind: "error" | "success";
+  messageKey: string;
 };
 
 const HABIT_PLAN = [
@@ -26,6 +35,7 @@ const HABIT_PLAN = [
 ] satisfies HabitItem[];
 
 export function HabigoalExperience({ projection, surface }: { projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
+  const router = useRouter();
   const t = useTranslations("ProductSurfaces.habigoal");
   const tActions = useTranslations("ProductSurfaces.actions");
   const actionPack = useMemo(
@@ -36,70 +46,85 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
       }),
     [tActions]
   );
-  const [energy, setEnergy] = useState(projection.values.energy);
-  const [soreness, setSoreness] = useState(projection.values.soreness);
-  const [mood, setMood] = useState(projection.values.mood);
-  const [sleep, setSleep] = useState(projection.values.sleep);
+  const [activeProjection, setActiveProjection] = useState(projection);
+  const [draftValues, setDraftValues] = useState<MetricDraft>(projection.values);
   const [completedHabits, setCompletedHabits] = useState<HabigoalHabitKey[]>(projection.completedHabits);
-  const [completedSupportAction, setCompletedSupportAction] = useState(false);
+  const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const readiness = Math.round((energy + mood + sleep + (100 - soreness)) / 4);
   const habitScore = Math.round((completedHabits.length / HABIT_PLAN.length) * 100);
-  const dailyScore = Math.round(readiness * 0.65 + habitScore * 0.35);
-  const state: SurfaceSignalState = dailyScore >= 78 && soreness < 50 ? "good" : dailyScore >= 62 ? "watch" : "risk";
-  const stateLabel = t(`states.${state}`);
-  const nextAction = t(`nextAction.${state}`);
+  const score = activeProjection.score;
+  const statusState = surfaceStateFromStatus(activeProjection.status);
+  const statusLabel = t(`states.${activeProjection.status}`);
+  const scoreText = score === null ? t("scorePending") : String(score);
+  const scoreAria = score === null ? t("scorePendingAria") : t("scoreAria", { score });
+  const hasCompleteDraft = Object.values(draftValues).every((value) => typeof value === "number" && Number.isFinite(value));
+  const canSave = Boolean(activeProjection.athleteId) && hasCompleteDraft && !saving;
+
+  function setMetric(key: keyof MetricDraft, value: number) {
+    setDraftValues((current) => ({ ...current, [key]: value }));
+    setFeedback(null);
+  }
 
   function toggleHabit(id: HabigoalHabitKey, checked: boolean) {
     setCompletedHabits((current) => checked ? [...new Set([...current, id])] : current.filter((item) => item !== id));
+    setFeedback(null);
   }
 
   function resetValues() {
-    setEnergy(projection.values.energy);
-    setSoreness(projection.values.soreness);
-    setMood(projection.values.mood);
-    setSleep(projection.values.sleep);
-    setCompletedHabits(projection.completedHabits);
-    setCompletedSupportAction(false);
+    setDraftValues(activeProjection.values);
+    setCompletedHabits(activeProjection.completedHabits);
+    setFeedback(null);
   }
 
   async function completeDailyOperation() {
-    if (!projection.athleteId) return;
-    setSaving(true);
-    try {
-      const statuses = Object.fromEntries(
-        HABIT_PLAN.map((habit) => [habit.dbKey, completedHabits.includes(habit.id)])
-      );
-      const habitResponse = await fetch(`/api/athletes/${projection.athleteId}/habits`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          date: projection.localDate,
-          statuses
-        })
-      });
-      if (!habitResponse.ok) return;
+    if (!activeProjection.athleteId) {
+      setFeedback({ kind: "error", messageKey: "errors.profileRequired" });
+      return;
+    }
+    if (!hasCompleteDraft) {
+      setFeedback({ kind: "error", messageKey: "errors.completeCheckIn" });
+      return;
+    }
 
-      const checkInResponse = await fetch("/api/athleteiq/check-ins", {
+    setSaving(true);
+    setFeedback(null);
+    try {
+      const response = await fetch("/api/habigoal/daily-operation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          athleteId: projection.athleteId,
-          mode: "lifestyle",
-          timezone: projection.timezone,
-          idempotencyKey: `habigoal:${projection.athleteId}:${projection.localDate}`,
-          values: {
-            sleepQuality: percentToTenPoint(sleep),
-            fatigue: percentToTenPoint(100 - energy),
-            pain: percentToTenPoint(soreness),
-            stress: percentToTenPoint(100 - mood),
-            mood: percentToTenPoint(mood)
-          }
+          athleteId: activeProjection.athleteId,
+          localDate: activeProjection.localDate,
+          timezone: activeProjection.timezone,
+          idempotencyKey: `habigoal:${activeProjection.athleteId}:${activeProjection.localDate}`,
+          values: draftValues,
+          habits: completedHabits
         })
       });
-      if (!checkInResponse.ok) return;
-      setCompletedSupportAction(true);
+      const payload = await response.json().catch(() => null) as null | {
+        code?: string;
+        correlationId?: string;
+        ok?: boolean;
+        projection?: HabigoalTodayProjection;
+      };
+
+      if (!response.ok || !payload?.ok || !payload.projection) {
+        setFeedback({
+          correlationId: payload?.correlationId,
+          kind: "error",
+          messageKey: payload?.code === "AUTH_REQUIRED" ? "errors.sessionExpired" : "errors.saveFailed"
+        });
+        return;
+      }
+
+      setActiveProjection(payload.projection);
+      setDraftValues(payload.projection.values);
+      setCompletedHabits(payload.projection.completedHabits);
+      setFeedback({ correlationId: payload.correlationId, kind: "success", messageKey: "saved" });
+      router.refresh();
+    } catch {
+      setFeedback({ kind: "error", messageKey: "errors.saveFailed" });
     } finally {
       setSaving(false);
     }
@@ -120,127 +145,130 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
               <Text fw={900}>Habigoal</Text>
             </Stack>
           </Group>
-          <Box className="hbg-score-pill" aria-label={t("scoreAria", { score: dailyScore })}>{dailyScore}</Box>
+          <Box className={score === null ? "hbg-score-pill hbg-score-pill-empty" : "hbg-score-pill"} aria-label={scoreAria}>{scoreText}</Box>
         </Box>
 
         <Box component="main" className="hbg-main-grid" pb="xl">
-          <Paper id="today" component="section" className="hbg-hero-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
-            <SimpleGrid cols={1} spacing="lg">
-              <Stack gap="lg">
+          <Paper id="today" component="section" className="hbg-hero-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <Stack gap="md">
                 <Group gap="sm" wrap="nowrap">
-                  <Image src="/images/habigoal_logo.png" alt="" width={44} height={44} priority />
+                  <Image src="/images/habigoal_logo.png" alt="" width={42} height={42} priority />
                   <Stack gap={0}>
-                    <Text className="hbg-kicker">{t("themeName")}</Text>
+                    <Text className="hbg-kicker">{activeProjection.athleteName || t("athleteFallback")}</Text>
                     <Title order={1} className="hbg-title">Habigoal</Title>
                   </Stack>
                 </Group>
 
-                <Stack gap="sm">
-                  <Title order={2} className="hbg-headline">{t("headline")}</Title>
-                  <Text size="lg" className="hbg-copy">{t("promise")}</Text>
+                <Stack gap="xs">
+                  <Title order={2} className="hbg-headline">{activeProjection.dataState === "no_today_data" ? t("emptyState.title") : t("headline")}</Title>
+                  <Text className="hbg-copy">{activeProjection.dataState === "no_today_data" ? t("emptyState.copy") : t("promise")}</Text>
                 </Stack>
 
                 <Group gap="sm" wrap="wrap">
                   <Badge className="hbg-soft-badge">{t("badges.checkIn")}</Badge>
                   <Badge className="hbg-soft-badge">{t("badges.habits")}</Badge>
-                  <Badge className="hbg-soft-badge">{t("badges.support")}</Badge>
+                  <Badge className="hbg-soft-badge">{t("badges.action")}</Badge>
                 </Group>
               </Stack>
 
-              <Stack gap="md" align="center" justify="center">
-                <Box className="hbg-score-ring" style={{ "--score": `${dailyScore}%` } as CSSProperties} aria-label={t("scoreAria", { score: dailyScore })}>
+              <Stack gap="sm" align="center" justify="center">
+                <Box className={score === null ? "hbg-score-ring hbg-score-ring-empty" : "hbg-score-ring"} style={{ "--score": `${score ?? 0}%` } as CSSProperties} aria-label={scoreAria}>
                   <Stack gap={0} align="center">
                     <Text className="hbg-score-label">{t("todayLabel")}</Text>
-                    <Title order={2} className="hbg-score-value">{dailyScore}</Title>
-                    <Text className="hbg-score-state">{stateLabel}</Text>
+                    <Title order={2} className="hbg-score-value">{scoreText}</Title>
+                    <Text className="hbg-score-state">{statusLabel}</Text>
                   </Stack>
                 </Box>
-                <Text ta="center" className="hbg-copy" maw={420}>
-                  {t("scoreExplanation")}
+                <Text ta="center" className="hbg-copy" maw={360}>
+                  {score === null ? t("scoreEmptyExplanation") : t("scoreExplanation")}
                 </Text>
               </Stack>
             </SimpleGrid>
           </Paper>
 
-          <SimpleGrid className="hbg-signal-strip" cols={3} spacing="sm">
-            <SignalCard label={t("signals.readiness.label")} value={`${readiness}%`} state={state} detail={t("signals.readiness.detail")} />
+          {feedback ? (
+            <Alert color={feedback.kind === "success" ? "tactical" : "red"} title={feedback.kind === "success" ? t("savedTitle") : t("errors.title")} role={feedback.kind === "success" ? "status" : "alert"}>
+              <Stack gap={4}>
+                <Text>{t(feedback.messageKey)}</Text>
+                {feedback.correlationId ? <Text size="sm">{t("errors.reference", { correlationId: feedback.correlationId })}</Text> : null}
+              </Stack>
+            </Alert>
+          ) : null}
+
+          <SimpleGrid className="hbg-signal-strip" cols={{ base: 1, xs: 3 }} spacing="sm">
+            <SignalCard label={t("signals.status.label")} value={score === null ? t("scoreUnavailable") : `${score}%`} state={statusState} detail={t(`signals.status.detail.${activeProjection.confidence}`)} />
             <SignalCard label={t("signals.habitLoop.label")} value={`${completedHabits.length}/${HABIT_PLAN.length}`} state="neutral" detail={t("signals.habitLoop.detail")} />
             <SignalCard
-              label={t("signals.supportAction.label")}
-              value={completedSupportAction ? t("signals.supportAction.done") : t("signals.supportAction.open")}
-              state={completedSupportAction ? "good" : "watch"}
-              detail={t("signals.supportAction.detail")}
+              label={t("signals.nextAction.label")}
+              value={t(`states.${activeProjection.status}`)}
+              state={statusState}
+              detail={t(`nextAction.${activeProjection.nextActionKey}`)}
             />
           </SimpleGrid>
 
-          <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
-            <Paper id="check-in" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
-              <Stack gap="lg">
-                <SectionHeading icon={<GdsIcons.Profile size={18} />} title={t("checkIn.title")} copy={t("checkIn.copy")} />
-                <StatusSlider label={t("checkIn.energy")} value={energy} onChange={setEnergy} />
-                <StatusSlider label={t("checkIn.mood")} value={mood} onChange={setMood} />
-                <StatusSlider label={t("checkIn.sleep")} value={sleep} onChange={setSleep} />
-                <StatusSlider label={t("checkIn.soreness")} value={soreness} onChange={setSoreness} inverse />
-                <Group gap="sm" wrap="wrap">
-                  <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetValues} />
-                  <SemanticButton
-                    action="productSurface:complete"
-                    color="ingress"
-                    vocabularyPacks={[actionPack]}
-                    onClick={completeDailyOperation}
-                    disabled={!projection.athleteId || saving}
-                    loading={saving}
+          <Paper id="check-in" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+            <Stack gap="lg">
+              <SectionHeading icon={<GdsIcons.Profile size={18} />} title={t("checkIn.title")} copy={t("checkIn.copy")} />
+              <StatusSlider label={t("checkIn.energy")} unsetLabel={t("checkIn.unset")} value={draftValues.energy} onChange={(value) => setMetric("energy", value)} />
+              <StatusSlider label={t("checkIn.mood")} unsetLabel={t("checkIn.unset")} value={draftValues.mood} onChange={(value) => setMetric("mood", value)} />
+              <StatusSlider label={t("checkIn.sleep")} unsetLabel={t("checkIn.unset")} value={draftValues.sleep} onChange={(value) => setMetric("sleep", value)} />
+              <StatusSlider label={t("checkIn.soreness")} unsetLabel={t("checkIn.unset")} value={draftValues.soreness} onChange={(value) => setMetric("soreness", value)} inverse />
+              <Group gap="sm" wrap="wrap">
+                <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetValues} disabled={saving} />
+                <SemanticButton
+                  action="productSurface:complete"
+                  color="ingress"
+                  vocabularyPacks={[actionPack]}
+                  onClick={completeDailyOperation}
+                  disabled={!canSave}
+                  loading={saving}
+                />
+              </Group>
+              {!hasCompleteDraft ? <Text size="sm" className="hbg-muted-text">{t("checkIn.completeAll")}</Text> : null}
+            </Stack>
+          </Paper>
+
+          <Paper id="habits" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+            <Stack gap="lg">
+              <SectionHeading icon={<GdsIcons.Habit size={18} />} title={t("habits.title")} copy={t("habits.copy")} />
+              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                {HABIT_PLAN.map((habit) => (
+                  <Checkbox
+                    key={habit.id}
+                    checked={completedHabits.includes(habit.id)}
+                    label={t("habits.itemLabel", {
+                      category: t(`habits.categories.${habit.category}`),
+                      label: t(`habits.items.${habit.id}`)
+                    })}
+                    onChange={(event) => toggleHabit(habit.id, event.currentTarget.checked)}
+                    className="hbg-checkbox"
                   />
+                ))}
+              </SimpleGrid>
+              <Box>
+                <Group justify="space-between" mb={6}>
+                  <Text fw={800}>{t("habits.completion")}</Text>
+                  <Text fw={800}>{habitScore}%</Text>
                 </Group>
-              </Stack>
-            </Paper>
+                <Progress value={habitScore} color={habitScore >= 70 ? "tactical" : "yellow"} radius="xl" size="lg" />
+              </Box>
+            </Stack>
+          </Paper>
 
-            <Paper id="habits" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
-              <Stack gap="lg">
-                <SectionHeading icon={<GdsIcons.Habit size={18} />} title={t("habits.title")} copy={t("habits.copy")} />
-                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                  {HABIT_PLAN.map((habit) => (
-                    <Checkbox
-                      key={habit.id}
-                      checked={completedHabits.includes(habit.id)}
-                      label={t("habits.itemLabel", {
-                        category: t(`habits.categories.${habit.category}`),
-                        label: t(`habits.items.${habit.id}`)
-                      })}
-                      onChange={(event) => toggleHabit(habit.id, event.currentTarget.checked)}
-                      className="hbg-checkbox"
-                    />
-                  ))}
-                </SimpleGrid>
-                <Box>
-                  <Group justify="space-between" mb={6}>
-                    <Text fw={800}>{t("habits.completion")}</Text>
-                    <Text fw={800}>{habitScore}%</Text>
-                  </Group>
-                  <Progress value={habitScore} color={habitScore >= 70 ? "tactical" : "yellow"} radius="xl" size="lg" />
-                </Box>
-              </Stack>
-            </Paper>
-          </SimpleGrid>
-
-          <Paper id="action" component="section" className="hbg-guidance-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
-            <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
+          <Paper id="action" component="section" className="hbg-guidance-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
               <Stack gap="xs">
                 <Text className="hbg-kicker">{t("guidance.kicker")}</Text>
                 <Title order={2}>{t("guidance.title")}</Title>
                 <Text className="hbg-copy">{t("guidance.copy")}</Text>
               </Stack>
               <Box className="hbg-action-card">
-                <Text fw={900} mb={6}>{stateLabel}</Text>
-                <Text>{nextAction}</Text>
-              </Box>
-              <Box className="hbg-action-card">
-                <Text fw={900} mb={6}>{t("guidance.sourceTitle")}</Text>
-                <Text>{t("guidance.sourceBody")}</Text>
+                <Text fw={900} mb={6}>{statusLabel}</Text>
+                <Text>{t(`nextAction.${activeProjection.nextActionKey}`)}</Text>
               </Box>
             </SimpleGrid>
           </Paper>
-
         </Box>
 
         <nav className="hbg-bottom-nav" aria-label={t("navigation.aria")}>
@@ -266,30 +294,35 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
   );
 }
 
-function percentToTenPoint(value: number) {
-  const clamped = Math.max(0, Math.min(100, value));
-  return Math.max(1, Math.min(10, Math.round((clamped / 100) * 9 + 1)));
+function surfaceStateFromStatus(status: HabigoalDailyStatus): SurfaceSignalState {
+  if (status === "balanced") return "good";
+  if (status === "needs_support") return "risk";
+  if (status === "needs_input") return "neutral";
+  return "watch";
 }
 
 function StatusSlider({
   inverse = false,
   label,
   onChange,
+  unsetLabel,
   value
 }: {
   inverse?: boolean;
   label: string;
   onChange: (value: number) => void;
-  value: number;
+  unsetLabel: string;
+  value: number | null;
 }) {
+  const sliderValue = value ?? 50;
   return (
     <Stack gap={6}>
       <Group justify="space-between">
         <Text fw={800}>{label}</Text>
-        <Text fw={800}>{value}%</Text>
+        <Text fw={800}>{value === null ? unsetLabel : `${value}%`}</Text>
       </Group>
       <Slider
-        value={value}
+        value={sliderValue}
         onChange={onChange}
         min={0}
         max={100}

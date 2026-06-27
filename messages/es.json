@@ -1120,15 +1120,15 @@
     "privacyPolicy": "Politica de privacidad",
     "selectorBadge": "Selector de apps",
     "selectorTitle": "Elige tu app",
-    "selectorSubtitle": "Selecciona Habigoal para la PWA movil de bienestar o Athlete IQ para el espacio profesional del entrenador. El mismo email o nombre de usuario abre la misma cuenta en la app seleccionada.",
+    "selectorSubtitle": "Elige Habigoal para hábitos diarios y bienestar, o Athlete IQ para el espacio profesional de entrenadores. El mismo correo o usuario abre la app seleccionada.",
     "habigoalBadge": "Habigoal",
-    "habigoalTitle": "PWA movil de habitos y bienestar",
-    "habigoalBody": "Una app clara y mobile-first para check-ins diarios, habitos, apoyo de bienestar, apoyo deportivo y una siguiente accion clara.",
+    "habigoalTitle": "Hábitos diarios y bienestar",
+    "habigoalBody": "Una app móvil enfocada para el check-in de hoy, hábitos, bienestar, apoyo deportivo y una siguiente acción clara.",
     "habigoalAction": "Abrir Habigoal",
     "habigoalAria": "Abrir la app movil de bienestar Habigoal",
     "athleteIqBadge": "Athlete IQ",
-    "athleteIqTitle": "OS profesional de rendimiento deportivo",
-    "athleteIqBody": "Una superficie de mando oscura y dorada, desktop-first, para entrenadores, equipos, clubes, paneles, informes, servicios y operaciones de rendimiento.",
+    "athleteIqTitle": "Espacio profesional de rendimiento deportivo",
+    "athleteIqBody": "Una superficie de mando oscura y dorada para entrenadores, equipos, clubes, paneles, informes, servicios y operaciones de rendimiento.",
     "athleteIqAction": "Abrir Athlete IQ",
     "athleteIqAria": "Abrir la app profesional de rendimiento Athlete IQ",
     "footerTitle": "Apps de producto separadas"
@@ -1405,8 +1405,8 @@
     "actions": {
       "dashboard": "Abrir panel",
       "athleteDashboard": "Abrir panel de Athlete IQ",
-      "reset": "Restablecer valores",
-      "complete": "Completar accion",
+      "reset": "Restablecer hoy",
+      "complete": "Guardar hoy",
       "acknowledge": "Confirmar",
       "report": "Abrir informe",
       "launch": "Iniciar modulo"
@@ -1421,90 +1421,112 @@
     },
     "habigoal": {
       "metadata": {
-        "title": "Habigoal | PWA movil de habitos y bienestar",
-        "description": "Habigoal es la PWA mobile-first para check-ins diarios, habitos, apoyo de bienestar, apoyo deportivo y una siguiente accion clara."
+        "title": "Habigoal | Hábitos diarios y bienestar",
+        "description": "Habigoal ayuda con el check-in de hoy, hábitos, estado y una siguiente acción clara."
       },
       "surfaceName": "Habigoal",
-      "operatingMode": "Apoyo movil de bienestar y habitos",
-      "themeName": "Luz diurna de apoyo",
-      "headline": "Seguimiento simple de habitos y apoyo de bienestar",
-      "promise": "Habigoal mantiene simple el ciclo diario: hacer check-in, completar habitos, entender el estado y recibir una siguiente accion segura.",
+      "operatingMode": "Hábitos diarios y bienestar",
+      "headline": "Estado y hábitos de hoy",
+      "promise": "Completa el check-in, marca los hábitos de hoy y guarda la siguiente acción.",
       "todayLabel": "Hoy",
-      "scoreAria": "Puntuacion diaria de apoyo {score}",
-      "scoreExplanation": "Tu puntuacion combina el check-in de hoy, los habitos y las senales de apoyo en un estado claro.",
+      "scoreAria": "Puntuación de estado diario {score}",
+      "scoreExplanation": "Tu estado usa el check-in y los hábitos guardados de hoy.",
       "states": {
-        "good": "Listo",
-        "watch": "Estable con un punto a vigilar",
-        "risk": "Necesita apoyo"
+        "needs_input": "Faltan datos",
+        "balanced": "Listo",
+        "watch": "Observar",
+        "needs_support": "Necesita apoyo"
       },
       "nextAction": {
-        "good": "Mantén la sesion deportiva planificada y protege tu rutina de sueño esta noche.",
-        "watch": "Hidrátate, mantén el entrenamiento suave y revisa la molestia muscular despues del movimiento.",
-        "risk": "Pausa el entrenamiento intenso y comparte el estado de hoy con tu persona de apoyo."
+        "needs_input": "Empieza con el check-in y luego guarda los hábitos de hoy.",
+        "balanced": "Mantén la sesión planificada y protege tu rutina de sueño esta noche.",
+        "watch": "Hidrátate, controla el siguiente esfuerzo y revisa la molestia después del movimiento.",
+        "needs_support": "Mantén ligero el siguiente paso y comparte el estado de hoy con tu persona de apoyo."
       },
       "badges": {
         "checkIn": "Check-in",
-        "habits": "Habitos",
-        "support": "Apoyo"
+        "habits": "Hábitos",
+        "action": "Siguiente acción"
       },
       "signals": {
-        "readiness": {
-          "label": "Readiness",
-          "detail": "Bienestar, sueño, animo, molestia muscular"
+        "status": {
+          "label": "Estado diario",
+          "detail": {
+            "none": "Esperando datos de hoy",
+            "low": "Datos guardados limitados",
+            "medium": "Datos suficientes para orientación",
+            "high": "Check-in y hábitos guardados"
+          }
         },
         "habitLoop": {
-          "label": "Ciclo de habitos",
-          "detail": "Responsabilidad diaria de habitos en una vista movil simple"
+          "label": "Hábitos",
+          "detail": "Hábitos guardados para hoy"
         },
-        "supportAction": {
-          "label": "Accion de apoyo",
-          "done": "Hecho",
-          "open": "Abierto",
-          "detail": "Una siguiente accion segura"
+        "nextAction": {
+          "label": "Siguiente acción"
         }
       },
       "checkIn": {
         "title": "Check-in diario",
-        "copy": "Ajusta las senales y tu guia se actualiza de inmediato.",
-        "energy": "Energia",
-        "mood": "Animo",
+        "copy": "Configura cada señal y guarda el día.",
+        "energy": "Energía",
+        "mood": "Ánimo",
         "sleep": "Calidad del sueño",
-        "soreness": "Molestia muscular"
+        "soreness": "Molestia muscular",
+        "unset": "Configurar",
+        "completeAll": "Configura las cuatro señales antes de guardar."
       },
       "habits": {
-        "title": "Apoyo de habitos",
-        "copy": "Marca los habitos completados hoy y manten visible la rutina diaria.",
+        "title": "Hábitos",
+        "copy": "Marca los hábitos completados hoy.",
         "itemLabel": "{label} ({category})",
-        "completion": "Finalizacion",
+        "completion": "Finalización",
         "categories": {
-          "recovery": "Recuperacion",
+          "recovery": "Recuperación",
           "sport": "Deporte",
-          "fuel": "Nutricion",
+          "fuel": "Nutrición",
           "mental": "Mental",
           "life": "Vida"
         },
         "items": {
-          "hydrate": "Hidratacion",
+          "hydrate": "Hidratación",
           "move": "Movimiento ligero",
           "fuel": "Comida equilibrada",
-          "reflect": "Reflexion",
+          "reflect": "Reflexión",
           "sleep": "Rutina de sueño",
           "study": "Bloque de aprendizaje"
         }
       },
       "guidance": {
-        "kicker": "Feedback automatico",
-        "title": "Una siguiente accion clara",
-        "copy": "Habigoal explica el estado, la fuente y la siguiente accion en lenguaje simple.",
-        "sourceTitle": "Datos fuente",
-        "sourceBody": "Registro diario de estado, finalizacion de habitos, modelo de readiness y eventos de guia."
+        "kicker": "Siguiente paso",
+        "title": "Una acción clara",
+        "copy": "Usa el estado guardado para elegir el siguiente paso seguro de hoy."
       },
       "navigation": {
-        "aria": "Navegacion de la app Habigoal",
+        "aria": "Navegación de la app Habigoal",
         "today": "Hoy",
         "checkIn": "Check-in",
-        "habits": "Habitos",
-        "action": "Accion"
+        "habits": "Hábitos",
+        "action": "Acción"
+      },
+      "athleteFallback": "Mi día",
+      "scorePending": "Iniciar",
+      "scoreUnavailable": "Sin puntuación",
+      "scorePendingAria": "El estado diario aparecerá después de guardar el check-in de hoy",
+      "scoreEmptyExplanation": "Guarda el check-in y los hábitos de hoy para crear tu estado.",
+      "savedTitle": "Guardado",
+      "saved": "El check-in y los hábitos de hoy se guardaron.",
+      "emptyState": {
+        "title": "Inicia el check-in de hoy",
+        "copy": "No se muestra estado hasta guardar datos reales de check-in y hábitos."
+      },
+      "errors": {
+        "title": "No se pudo guardar",
+        "saveFailed": "El guardado no terminó. Revisa la conexión e inténtalo otra vez.",
+        "completeCheckIn": "Configura todas las señales antes de guardar.",
+        "profileRequired": "Tu perfil de atleta aún no está listo. Inicia sesión de nuevo y vuelve a intentarlo.",
+        "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo para continuar.",
+        "reference": "Referencia: {correlationId}"
       }
     },
     "athleteIq": {
@@ -1673,7 +1695,7 @@
           "daily-iq-coverage": {
             "name": "Cobertura Daily IQ",
             "owner": "Athlete OS",
-            "nextStep": "Los check-ins y mediciones diarias alimentan el motor de disponibilidad."
+            "nextStep": "Los check-ins diarios y las mediciones actualizan el estado diario guardado."
           },
           "coach-action-queue": {
             "name": "Cola de acciones del entrenador",

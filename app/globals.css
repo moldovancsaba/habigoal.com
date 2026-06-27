@@ -711,6 +711,11 @@ a {
   box-shadow: 0 12px 28px rgba(15, 109, 101, 0.2);
 }
 
+.hbg-score-pill-empty {
+  padding-inline: 14px;
+  background: rgba(16, 42, 43, 0.72);
+}
+
 .hbg-main-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -752,14 +757,14 @@ a {
 
 .hbg-title {
   color: var(--hbg-ink) !important;
-  font-size: clamp(2.1rem, 11vw, 3.2rem);
+  font-size: 2.5rem;
   line-height: 1;
 }
 
 .hbg-headline {
   max-width: 760px;
   color: var(--hbg-ink) !important;
-  font-size: clamp(1.35rem, 6vw, 2rem);
+  font-size: 1.45rem;
   line-height: 1.08;
 }
 
@@ -790,6 +795,12 @@ a {
   box-shadow: 0 20px 56px rgba(15, 109, 101, 0.16);
 }
 
+.hbg-score-ring-empty {
+  background:
+    radial-gradient(circle at center, #ffffff 0 57%, transparent 58%),
+    conic-gradient(rgba(16, 42, 43, 0.16) 100%, rgba(16, 42, 43, 0.1) 0);
+}
+
 .hbg-score-label,
 .hbg-score-state {
   color: var(--hbg-muted) !important;
@@ -805,7 +816,7 @@ a {
 
 .hbg-score-value {
   color: var(--hbg-ink) !important;
-  font-size: clamp(3rem, 10vw, 5rem);
+  font-size: 3rem;
   line-height: 1;
 }
 
@@ -829,7 +840,6 @@ a {
 }
 
 .hbg-signal-strip {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   min-width: 0;
   width: 100%;
 }

@@ -1120,15 +1120,15 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "selectorBadge": "App-Auswahl",
     "selectorTitle": "App auswaehlen",
-    "selectorSubtitle": "Waehlen Sie Habigoal fuer die mobile Wohlbefinden-PWA oder Athlete IQ fuer den professionellen Trainer-Arbeitsbereich. Dieselbe E-Mail oder derselbe Benutzername oeffnet dasselbe Konto in der ausgewaehlten App.",
+    "selectorSubtitle": "Wähle Habigoal für tägliche Gewohnheiten und Wohlbefinden oder Athlete IQ für den professionellen Trainerarbeitsplatz. Dieselbe E-Mail oder derselbe Benutzername öffnet die gewählte App.",
     "habigoalBadge": "Habigoal",
-    "habigoalTitle": "Mobile PWA fuer Gewohnheiten und Wohlbefinden",
-    "habigoalBody": "Eine helle mobile-first App fuer taegliche Check-ins, Gewohnheiten, Wohlbefinden, Sport-Support und eine klare naechste Aktion.",
+    "habigoalTitle": "Tägliche Gewohnheiten und Wohlbefinden",
+    "habigoalBody": "Eine fokussierte mobile App für den heutigen Check-in, Gewohnheiten, Wohlbefinden, Sportsupport und einen klaren nächsten Schritt.",
     "habigoalAction": "Habigoal oeffnen",
     "habigoalAria": "Habigoal Mobile-Wohlbefinden-App oeffnen",
     "athleteIqBadge": "Athlete IQ",
-    "athleteIqTitle": "Professionelles Athleten-Performance-OS",
-    "athleteIqBody": "Eine dunkle goldene desktop-first Kommandooberflaeche fuer Trainer, Teams, Clubs, Dashboards, Berichte, Services und Performance-Operationen.",
+    "athleteIqTitle": "Professioneller Performance-Arbeitsplatz",
+    "athleteIqBody": "Eine dunkle goldene Kommandooberfläche für Trainer, Teams, Clubs, Dashboards, Berichte, Services und Performance-Abläufe.",
     "athleteIqAction": "Athlete IQ oeffnen",
     "athleteIqAria": "Professionelle Athlete IQ Performance-App oeffnen",
     "footerTitle": "Getrennte Produkt-Apps"
@@ -1405,8 +1405,8 @@
     "actions": {
       "dashboard": "Dashboard oeffnen",
       "athleteDashboard": "Athlete IQ Dashboard oeffnen",
-      "reset": "Werte zuruecksetzen",
-      "complete": "Aktion abschliessen",
+      "reset": "Heute zurücksetzen",
+      "complete": "Heute speichern",
       "acknowledge": "Bestaetigen",
       "report": "Bericht oeffnen",
       "launch": "Modul starten"
@@ -1421,65 +1421,70 @@
     },
     "habigoal": {
       "metadata": {
-        "title": "Habigoal | Mobile PWA fuer Gewohnheiten und Wohlbefinden",
-        "description": "Habigoal ist die mobile-first PWA fuer taegliche Check-ins, Gewohnheiten, Wohlbefinden, Sport-Support und eine klare naechste Aktion."
+        "title": "Habigoal | Tägliche Gewohnheiten und Wohlbefinden",
+        "description": "Habigoal hilft beim heutigen Check-in, Gewohnheiten, Status und einem klaren nächsten Schritt."
       },
       "surfaceName": "Habigoal",
-      "operatingMode": "Mobiler Wohlbefinden- und Gewohnheits-Support",
-      "themeName": "Unterstuetzendes Tageslicht",
-      "headline": "Einfaches Gewohnheitstracking und Wohlbefinden",
-      "promise": "Habigoal haelt die taegliche Schleife einfach: einchecken, Gewohnheiten erledigen, Status verstehen und eine sichere naechste Aktion erhalten.",
+      "operatingMode": "Tägliche Gewohnheiten und Wohlbefinden",
+      "headline": "Heutiger Status und Gewohnheiten",
+      "promise": "Check-in ausfüllen, heutige Gewohnheiten markieren und den nächsten Schritt speichern.",
       "todayLabel": "Heute",
-      "scoreAria": "Taeglicher Support-Score {score}",
-      "scoreExplanation": "Der Score fasst den heutigen Check-in, Gewohnheiten und Unterstuetzungssignale zu einem klaren Status zusammen.",
+      "scoreAria": "Tagesstatuswert {score}",
+      "scoreExplanation": "Dein Status nutzt den gespeicherten Check-in und die Gewohnheiten von heute.",
       "states": {
-        "good": "Bereit",
-        "watch": "Stabil mit einem Beobachtungspunkt",
-        "risk": "Braucht Support"
+        "needs_input": "Eingabe nötig",
+        "balanced": "Bereit",
+        "watch": "Beobachten",
+        "needs_support": "Braucht Unterstützung"
       },
       "nextAction": {
-        "good": "Halte die geplante Sporteinheit und schuetze heute Abend deine Schlafroutine.",
-        "watch": "Trinke genug, halte das Training leicht und pruefe die Muskelmuedigkeit nach der Bewegung erneut.",
-        "risk": "Pausiere hartes Training und teile den heutigen Status mit deiner Support-Person."
+        "needs_input": "Beginne mit dem Check-in und speichere danach die heutigen Gewohnheiten.",
+        "balanced": "Halte die geplante Einheit ein und schütze heute Abend deine Schlafroutine.",
+        "watch": "Trinke genug, halte die nächste Belastung kontrolliert und prüfe die Muskelmüdigkeit nach Bewegung erneut.",
+        "needs_support": "Halte den nächsten Schritt leicht und teile den heutigen Status mit deiner Unterstützungsperson."
       },
       "badges": {
         "checkIn": "Check-in",
         "habits": "Gewohnheiten",
-        "support": "Support"
+        "action": "Nächster Schritt"
       },
       "signals": {
-        "readiness": {
-          "label": "Readiness",
-          "detail": "Wohlbefinden, Schlaf, Stimmung, Muskelmuedigkeit"
+        "status": {
+          "label": "Tagesstatus",
+          "detail": {
+            "none": "Wartet auf heutige Daten",
+            "low": "Wenig gespeicherte Daten",
+            "medium": "Genug Daten für Orientierung",
+            "high": "Check-in und Gewohnheiten gespeichert"
+          }
         },
         "habitLoop": {
-          "label": "Gewohnheitsschleife",
-          "detail": "Taegliche Gewohnheitsroutine in einer einfachen mobilen Ansicht"
+          "label": "Gewohnheiten",
+          "detail": "Heute gespeicherte Gewohnheiten"
         },
-        "supportAction": {
-          "label": "Support-Aktion",
-          "done": "Erledigt",
-          "open": "Offen",
-          "detail": "Eine sichere naechste Aktion"
+        "nextAction": {
+          "label": "Nächster Schritt"
         }
       },
       "checkIn": {
-        "title": "Taeglicher Check-in",
-        "copy": "Passe die Signale an und deine Empfehlung aktualisiert sich sofort.",
+        "title": "Täglicher Check-in",
+        "copy": "Setze jedes Signal und speichere dann den heutigen Tag.",
         "energy": "Energie",
         "mood": "Stimmung",
-        "sleep": "Schlafqualitaet",
-        "soreness": "Muskelmuedigkeit"
+        "sleep": "Schlafqualität",
+        "soreness": "Muskelmüdigkeit",
+        "unset": "Setzen",
+        "completeAll": "Setze alle vier Check-in-Signale vor dem Speichern."
       },
       "habits": {
-        "title": "Gewohnheits-Support",
-        "copy": "Markiere die heute erledigten Gewohnheiten und halte deine Tagesroutine sichtbar.",
+        "title": "Gewohnheiten",
+        "copy": "Markiere die heute erledigten Gewohnheiten.",
         "itemLabel": "{label} ({category})",
         "completion": "Abschluss",
         "categories": {
           "recovery": "Erholung",
           "sport": "Sport",
-          "fuel": "Fuel",
+          "fuel": "Ernährung",
           "mental": "Mental",
           "life": "Leben"
         },
@@ -1493,11 +1498,9 @@
         }
       },
       "guidance": {
-        "kicker": "Automatisches Feedback",
-        "title": "Eine klare naechste Aktion",
-        "copy": "Habigoal erklaert Status, Quelle und naechste Aktion in einfacher Sprache.",
-        "sourceTitle": "Quelldaten",
-        "sourceBody": "Taegliches Status-Ledger, Gewohnheitsabschluss, Readiness-Modell und Guidance-Events."
+        "kicker": "Nächster Schritt",
+        "title": "Eine klare Aktion",
+        "copy": "Nutze den gespeicherten Status, um den nächsten sicheren Schritt für heute zu wählen."
       },
       "navigation": {
         "aria": "Habigoal App-Navigation",
@@ -1505,6 +1508,25 @@
         "checkIn": "Check-in",
         "habits": "Gewohnheiten",
         "action": "Aktion"
+      },
+      "athleteFallback": "Mein Tag",
+      "scorePending": "Start",
+      "scoreUnavailable": "Kein Wert",
+      "scorePendingAria": "Der Tagesstatus erscheint nach dem Speichern des heutigen Check-ins",
+      "scoreEmptyExplanation": "Speichere den heutigen Check-in und die Gewohnheiten, um den Status zu erstellen.",
+      "savedTitle": "Gespeichert",
+      "saved": "Der heutige Check-in und die Gewohnheiten wurden gespeichert.",
+      "emptyState": {
+        "title": "Heutigen Check-in starten",
+        "copy": "Ein Status erscheint erst nach dem Speichern echter Check-in- und Gewohnheitsdaten."
+      },
+      "errors": {
+        "title": "Speichern fehlgeschlagen",
+        "saveFailed": "Das Speichern wurde nicht abgeschlossen. Prüfe die Verbindung und versuche es erneut.",
+        "completeCheckIn": "Setze alle Check-in-Signale vor dem Speichern.",
+        "profileRequired": "Dein Athletenprofil ist noch nicht bereit. Melde dich erneut an und versuche es noch einmal.",
+        "sessionExpired": "Deine Sitzung ist abgelaufen. Melde dich erneut an.",
+        "reference": "Referenz: {correlationId}"
       }
     },
     "athleteIq": {
@@ -1673,7 +1695,7 @@
           "daily-iq-coverage": {
             "name": "Daily-IQ-Abdeckung",
             "owner": "Athlete OS",
-            "nextStep": "Taegliche Check-ins und Messungen speisen die Readiness-Engine."
+            "nextStep": "Tägliche Check-ins und Messungen aktualisieren den gespeicherten Tagesstatus."
           },
           "coach-action-queue": {
             "name": "Trainer-Aktionsliste",

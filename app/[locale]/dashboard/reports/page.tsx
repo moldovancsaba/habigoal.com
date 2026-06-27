@@ -70,7 +70,7 @@ export default function ReportsHubPage() {
     <Stack gap="xl" pb="xl">
       <PageHeader
         title="AI Reporting Hub"
-        subtitle="Reports include date range, source data notes, and clearly marked AI-generated commentary."
+        subtitle="Reports include date range, data notes, and clearly marked AI-generated commentary."
       />
 
       <SectionPanel title="Generate New Report">

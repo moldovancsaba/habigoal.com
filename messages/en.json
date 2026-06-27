@@ -1120,15 +1120,15 @@
     "privacyPolicy": "Privacy Policy",
     "selectorBadge": "App selector",
     "selectorTitle": "Choose your app",
-    "selectorSubtitle": "Select Habigoal for the mobile wellbeing PWA or Athlete IQ for the professional trainer workspace. Your email or username opens the same account in the selected app.",
+    "selectorSubtitle": "Choose Habigoal for daily habits and wellbeing, or Athlete IQ for the professional trainer workspace. The same email or username opens the selected app.",
     "habigoalBadge": "Habigoal",
-    "habigoalTitle": "Mobile habit and wellbeing PWA",
-    "habigoalBody": "A light mobile-first app for daily check-ins, habits, wellbeing support, sport support, and one clear next action.",
+    "habigoalTitle": "Daily habits and wellbeing",
+    "habigoalBody": "A focused mobile app for today check-ins, habits, wellbeing, sport support, and one clear next action.",
     "habigoalAction": "Open Habigoal",
     "habigoalAria": "Open the Habigoal mobile wellbeing app",
     "athleteIqBadge": "Athlete IQ",
-    "athleteIqTitle": "Professional athlete performance OS",
-    "athleteIqBody": "A dark gold desktop-first command surface for trainers, teams, clubs, dashboards, reports, services, and performance operations.",
+    "athleteIqTitle": "Professional athlete performance workspace",
+    "athleteIqBody": "A dark gold command surface for trainers, teams, clubs, dashboards, reports, services, and performance operations.",
     "athleteIqAction": "Open Athlete IQ",
     "athleteIqAria": "Open the Athlete IQ professional performance app",
     "footerTitle": "Separated product apps"
@@ -1405,8 +1405,8 @@
     "actions": {
       "dashboard": "Open dashboard",
       "athleteDashboard": "Open Athlete IQ dashboard",
-      "reset": "Reset values",
-      "complete": "Complete action",
+      "reset": "Reset today",
+      "complete": "Save today",
       "acknowledge": "Acknowledge",
       "report": "Open report",
       "launch": "Launch module"
@@ -1421,59 +1421,64 @@
     },
     "habigoal": {
       "metadata": {
-        "title": "Habigoal | Mobile habit and wellbeing PWA",
-        "description": "Habigoal is the mobile-first PWA for daily check-ins, habits, wellbeing support, sport support, and one clear next action."
+        "title": "Habigoal | Daily habits and wellbeing",
+        "description": "Habigoal helps athletes complete today check-in, habits, status review, and one clear next action."
       },
       "surfaceName": "Habigoal",
-      "operatingMode": "Mobile wellbeing and habit support",
-      "themeName": "Supportive daylight",
-      "headline": "Simple habit tracking and wellbeing support",
-      "promise": "Habigoal keeps the daily loop simple: check in, complete habits, understand status, and get one safe next action.",
+      "operatingMode": "Daily habits and wellbeing",
+      "headline": "Today's status and habits",
+      "promise": "Complete your check-in, mark today's habits, and save one clear next action.",
       "todayLabel": "Today",
-      "scoreAria": "Daily support score {score}",
-      "scoreExplanation": "Your score combines today's check-in, habits, and support signals into one clear status.",
+      "scoreAria": "Daily status score {score}",
+      "scoreExplanation": "Your status uses saved check-in and habit data from today.",
       "states": {
-        "good": "Ready",
-        "watch": "Steady with one watch item",
-        "risk": "Needs support"
+        "needs_input": "Needs input",
+        "balanced": "Ready",
+        "watch": "Watch",
+        "needs_support": "Needs support"
       },
       "nextAction": {
-        "good": "Keep the planned sport session and protect your sleep routine tonight.",
-        "watch": "Hydrate, keep training easy, and check soreness again after movement.",
-        "risk": "Pause hard training and share today's status with your support person."
+        "needs_input": "Start with the check-in, then save today's habits.",
+        "balanced": "Keep the planned session and protect your sleep routine tonight.",
+        "watch": "Hydrate, keep the next effort controlled, and review soreness after movement.",
+        "needs_support": "Keep the next step light and share today's status with your support person."
       },
       "badges": {
-        "checkIn": "Check in",
+        "checkIn": "Check-in",
         "habits": "Habits",
-        "support": "Support"
+        "action": "Next action"
       },
       "signals": {
-        "readiness": {
-          "label": "Readiness",
-          "detail": "Wellbeing, sleep, mood, soreness"
+        "status": {
+          "label": "Daily status",
+          "detail": {
+            "none": "Waiting for today's data",
+            "low": "Limited saved data",
+            "medium": "Enough data for guidance",
+            "high": "Check-in and habits saved"
+          }
         },
         "habitLoop": {
           "label": "Habit loop",
-          "detail": "Daily habit accountability in a simple mobile view"
+          "detail": "Habits saved for today"
         },
-        "supportAction": {
-          "label": "Support action",
-          "done": "Done",
-          "open": "Open",
-          "detail": "One safe next action"
+        "nextAction": {
+          "label": "Next action"
         }
       },
       "checkIn": {
         "title": "Daily check-in",
-        "copy": "Adjust the signals and your guidance updates immediately.",
+        "copy": "Set each signal, then save today.",
         "energy": "Energy",
         "mood": "Mood",
         "sleep": "Sleep quality",
-        "soreness": "Soreness"
+        "soreness": "Soreness",
+        "unset": "Set",
+        "completeAll": "Set all four check-in signals before saving."
       },
       "habits": {
-        "title": "Habit support",
-        "copy": "Track the habits you completed today and keep the daily routine visible.",
+        "title": "Habits",
+        "copy": "Mark the habits completed today.",
         "itemLabel": "{label} ({category})",
         "completion": "Completion",
         "categories": {
@@ -1493,11 +1498,9 @@
         }
       },
       "guidance": {
-        "kicker": "Automatic feedback",
-        "title": "One clear next action",
-        "copy": "Habigoal explains your status, the source, and the next action in simple language.",
-        "sourceTitle": "Source data",
-        "sourceBody": "Daily status ledger, habit completion, readiness model, and guidance events."
+        "kicker": "Next step",
+        "title": "One clear action",
+        "copy": "Use the saved status to choose the next safe step for today."
       },
       "navigation": {
         "aria": "Habigoal app navigation",
@@ -1505,6 +1508,25 @@
         "checkIn": "Check-in",
         "habits": "Habits",
         "action": "Action"
+      },
+      "athleteFallback": "My day",
+      "scorePending": "Start",
+      "scoreUnavailable": "No score",
+      "scorePendingAria": "Daily status will appear after today's check-in is saved",
+      "scoreEmptyExplanation": "Save today's check-in and habits to create your status.",
+      "savedTitle": "Saved",
+      "saved": "Today's check-in and habits were saved.",
+      "emptyState": {
+        "title": "Start today's check-in",
+        "copy": "No status is shown until you save real check-in and habit data."
+      },
+      "errors": {
+        "title": "Could not save",
+        "saveFailed": "The save did not finish. Check your connection and try again.",
+        "completeCheckIn": "Set all check-in signals before saving.",
+        "profileRequired": "Your athlete profile is not ready yet. Sign in again and try once more.",
+        "sessionExpired": "Your session expired. Sign in again to continue.",
+        "reference": "Reference: {correlationId}"
       }
     },
     "athleteIq": {
@@ -1673,7 +1695,7 @@
           "daily-iq-coverage": {
             "name": "Daily IQ coverage",
             "owner": "Athlete OS",
-            "nextStep": "Daily check-ins and measurements feed the readiness engine."
+            "nextStep": "Daily check-ins and measurements update the saved daily status."
           },
           "coach-action-queue": {
             "name": "Coach action queue",
