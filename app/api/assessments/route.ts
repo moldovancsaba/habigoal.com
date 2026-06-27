@@ -43,7 +43,10 @@ export async function POST(request: Request) {
     if (staffOverride && authUser && !["admin", "trainer", "performance_coach"].includes(authUser.primaryRole)) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
-    const assessment = await createAssessmentFromPayload(payload, { staffOverride });
+    const assessment = await createAssessmentFromPayload(payload, {
+      staffOverride,
+      actor: authUser ? { email: authUser.email, name: authUser.name, role: authUser.primaryRole } : undefined
+    });
     return NextResponse.json({ assessment }, { status: 201 });
   } catch (error) {
     return jsonError((error as Error).message);

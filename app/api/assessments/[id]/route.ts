@@ -54,13 +54,15 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   try {
     const existing = await getAssessment(_id);
+    const authUser = await getAuthUser();
     if (existing) {
-      const authUser = await getAuthUser();
       if (authUser && (!existing.childId || !(await canAccessAthlete(authUser, existing.childId)))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
       }
     }
-    const assessment = await updateAssessmentFromPayload(_id, await readJson(request));
+    const assessment = await updateAssessmentFromPayload(_id, await readJson(request), {
+      actor: authUser ? { email: authUser.email, name: authUser.name, role: authUser.primaryRole } : undefined
+    });
     if (!assessment) {
       return jsonError("Assessment not found", 404, "NOT_FOUND");
     }

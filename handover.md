@@ -47,6 +47,7 @@ Implemented scope for GitHub issues `#319` to `#328`:
 - Habigoal remains the mobile-first home app, but it is now a filtered live surface over the same canonical Athlete IQ athlete profile and daily records.
 - Athlete IQ now supports both trainer/professional and athlete personas behind the Athlete IQ product surface.
 - `services/shared-daily-state.service.ts` bridges Habigoal values and habits to canonical `athleteiq_checkins` and `habit_records`.
+- Legacy assessment/check-in saves now call `services/assessment-daily-state-bridge.service.ts`, which maps completed 1-5 check-in answers into canonical Athlete IQ `lifestyle` and `performance` snapshots, updates the same Habigoal-readable daily state, and runs the Athlete IQ daily engine with the authenticated actor.
 - `POST /api/habigoal/daily-operation` writes through the shared daily-state bridge and then runs the Athlete IQ daily engine.
 - `GET/PATCH /api/daily-state` exposes the same shared contract for product clients and runs the engine after writes.
 - `scripts/seed-haho-ecosystem.mjs` creates the Haho live cohort in MongoDB Atlas: 5 trainers, 25 athletes, 5 teams, and 90 Budapest-local days of measurements, habits, plans, Daily IQ snapshots, pain alerts, and coach actions.

@@ -20,7 +20,10 @@ export async function POST(request: Request) {
 
   for (let i = 0; i < items.length; i++) {
     try {
-      const created = await createAssessmentFromPayload(items[i], { staffOverride: body?.staffOverride });
+      const created = await createAssessmentFromPayload(items[i], {
+        staffOverride: body?.staffOverride,
+        actor: user ? { email: user.email, name: user.name, role: user.primaryRole } : undefined
+      });
       results.push(created);
     } catch (error) {
       errors.push({ index: i, error: error instanceof Error ? error.message : "sync failed" });

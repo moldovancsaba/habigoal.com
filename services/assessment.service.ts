@@ -5,6 +5,8 @@ import { getChildById, updateChildById, upsertChild } from "@/repositories/child
 import { getGlobalSettings } from "@/repositories/settings.repository";
 import { assertCheckInAllowed, DuplicateCheckInError, processCheckInToTwin } from "@/services/twin-pipeline.service";
 import { syncConcernFlagsToCoachActions } from "@/services/concern-flag.service";
+import { syncAssessmentToAthleteIqDailyState } from "@/services/assessment-daily-state-bridge.service";
+import type { DailyEngineActor } from "@/types/athleteiq-daily-engine";
 import { ObjectId } from "mongodb";
 
 export function parseObjectId(id: string) {
@@ -26,7 +28,7 @@ export async function listDeletedAssessments() {
   return { assessments: await listDeletedAssessmentSummaries(), configured: true };
 }
 
-export async function createAssessmentFromPayload(input: unknown, options?: { staffOverride?: boolean }) {
+export async function createAssessmentFromPayload(input: unknown, options?: { actor?: DailyEngineActor; staffOverride?: boolean }) {
   const payload = parseAssessmentPayload(input);
   const now = new Date().toISOString();
   const integrityIssues: string[] = [];
@@ -81,6 +83,9 @@ export async function createAssessmentFromPayload(input: unknown, options?: { st
     await syncConcernFlagsToCoachActions(assessment, settings).catch((err) => {
       console.error("Concern flag sync error:", err);
     });
+    await syncAssessmentToAthleteIqDailyState(assessment, { actor: options?.actor }).catch((err) => {
+      console.error("Assessment daily state sync error:", err);
+    });
   }
 
   return assessment;
@@ -90,7 +95,7 @@ export async function getAssessment(id: ObjectId) {
   return getAssessmentById(id);
 }
 
-export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) {
+export async function updateAssessmentFromPayload(id: ObjectId, input: unknown, options?: { actor?: DailyEngineActor }) {
   const payload = parseAssessmentPayload(input);
   const integrityIssues: string[] = [];
   if (!payload.child.name || !payload.child.birthDate) integrityIssues.push("missing_child_identity");
@@ -120,7 +125,7 @@ export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) 
   const settings = await getGlobalSettings();
   const standardsVersionUsed = settings?.standards?.activeVersion || existing?.standardsVersionUsed || "v1";
 
-  return updateAssessmentById(id, {
+  const assessment = await updateAssessmentById(id, {
     ...payload,
     childId: child._id,
     standardsVersionUsed,
@@ -128,6 +133,14 @@ export async function updateAssessmentFromPayload(id: ObjectId, input: unknown) 
     updatedAt: now,
     updateHistory: [...updateHistory, ...(integrityIssues.length > 0 ? [`integrity:${integrityIssues.join(",")}:${now}`] : []), now]
   });
+
+  if (assessment?.childId) {
+    await syncAssessmentToAthleteIqDailyState(assessment, { actor: options?.actor }).catch((err) => {
+      console.error("Assessment daily state sync error:", err);
+    });
+  }
+
+  return assessment;
 }
 
 export async function removeAssessment(id: ObjectId) {
