@@ -86,12 +86,16 @@ export function resolvePersonaLoginEntitlements(input: {
   existingProductEntitlements?: unknown;
   existingRoles?: string[] | null;
   requestedRoles?: string[] | null;
+  requestedSurface?: ProductSurfaceId;
   now?: string;
 }): ProductEntitlements {
   const requestedRoles = normalizeRoleSet(input.requestedRoles);
   const explicit = normalizeProductEntitlements(input.existingProductEntitlements);
-  if (explicit) return grantRequestedProfessionalEntitlement(explicit, requestedRoles, input.now);
+  if (explicit) return grantRequestedProfessionalEntitlement(explicit, requestedRoles, input.now, input.requestedSurface);
   const combinedRoles = [...normalizeRoleSet(input.existingRoles), ...requestedRoles];
+  if (input.requestedSurface === "athlete-iq" && requestedRoles.includes("athlete")) {
+    return createAthleteIqAthleteEntitlements(input.now);
+  }
   if (combinedRoles.length > 0) {
     return deriveLegacyProductEntitlements(combinedRoles, input.now);
   }
@@ -114,10 +118,12 @@ function normalizeRoleSet(roles: string[] | undefined | null) {
 function grantRequestedProfessionalEntitlement(
   entitlements: ProductEntitlements,
   requestedRoles: string[],
-  now = new Date().toISOString()
+  now = new Date().toISOString(),
+  requestedSurface?: ProductSurfaceId
 ): ProductEntitlements {
   const hasRequestedProfessionalRole = requestedRoles.some((role) => PROFESSIONAL_ROLES.has(role));
-  if (!hasRequestedProfessionalRole) return entitlements;
+  const hasRequestedAthleteIqAthlete = requestedSurface === "athlete-iq" && requestedRoles.includes("athlete");
+  if (!hasRequestedProfessionalRole && !hasRequestedAthleteIqAthlete) return entitlements;
   const isAdmin = requestedRoles.includes("admin");
 
   return {
@@ -129,7 +135,22 @@ function grantRequestedProfessionalEntitlement(
     athleteIq: {
       enabled: true,
       grantedAt: entitlements.athleteIq.grantedAt ?? now,
-      reason: entitlements.athleteIq.reason ?? (isAdmin ? "admin_grant" : "trainer_assignment")
+      reason: entitlements.athleteIq.reason ?? (hasRequestedAthleteIqAthlete ? "pro_athlete_membership" : isAdmin ? "admin_grant" : "trainer_assignment")
+    }
+  };
+}
+
+function createAthleteIqAthleteEntitlements(now = new Date().toISOString()): ProductEntitlements {
+  return {
+    habigoal: {
+      enabled: true,
+      grantedAt: now,
+      reason: "aiq_member"
+    },
+    athleteIq: {
+      enabled: true,
+      grantedAt: now,
+      reason: "pro_athlete_membership"
     }
   };
 }

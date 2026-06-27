@@ -1140,10 +1140,12 @@
     "identifierLabel": "E-mail",
     "identifierPlaceholder": "nev@example.com",
     "personaLabel": "Szerep kiválasztása",
-    "athletePersonaTitle": "Sportoló",
-    "athletePersonaCopy": "Habigoal mobil jólléti app megnyitása.",
-    "trainerPersonaTitle": "Edző",
-    "trainerPersonaCopy": "Athlete IQ professzionális munkafelület megnyitása.",
+  "athletePersonaTitle": "Sportoló",
+  "athletePersonaCopy": "Habigoal mobil jólléti app megnyitása.",
+  "athleteIqAthletePersonaCopy": "Athlete IQ sportolói támogatási felület megnyitása.",
+  "trainerPersonaTitle": "Edző",
+  "trainerPersonaCopy": "Athlete IQ professzionális munkafelület megnyitása.",
+  "athleteIqTrainerPersonaCopy": "Athlete IQ edzői és csapatmunkafelület megnyitása.",
     "submit": "Tovább",
     "supportingCopy": "Ugyanez az e-mail legközelebb ugyanazt a közös fiókot nyitja meg.",
     "errorTitle": "Belépési probléma",
@@ -1844,6 +1846,37 @@
           "habits": "Szokások",
           "roadmap": "Roadmap",
           "report": "Riport"
+        }
+      },
+      "athleteWorkspace": {
+        "sidebarKicker": "Sportolói támogatás",
+        "summaryAria": "Athlete IQ sportolói összefoglaló",
+        "hero": {
+          "title": "Sportolói támogatási munkafelület",
+          "subtitle": "Professzionális napi nézet readinesshez, edzéskontextushoz, támogatási műveletekhez és közös Habigoal szokásadatokhoz.",
+          "copy": "Az Athlete IQ-ban láthatod azokat az adatokat, amelyekkel az edződ dolgozhat, miközben a Habigoal gyors napi szokásrögzítésre is elérhető."
+        },
+        "metrics": {
+          "ownReadiness": "Saját readiness",
+          "ownMental": "Saját mentális állapot"
+        },
+        "today": {
+          "title": "Mai állapot",
+          "copy": "Mentett napi jelzések, csapatkontextus, Habigoal szokásteljesítés és támogatási státusz.",
+          "teamLabel": "Csapat"
+        },
+        "support": {
+          "title": "Támogatási sor",
+          "copy": "Nyitott elemek readinessből, fájdalombiztonságból, napi tervből és edzői műveletekből.",
+          "empty": "Nincs nyitott támogatási elem élő rekordok alapján."
+        },
+        "shared": {
+          "kicker": "Közös adatréteg",
+          "title": "A Habigoal és az Athlete IQ egy profilt használ",
+          "copy": "Bármelyik appban rögzített napi szokás és check-in ugyanazt a sportolói történetet frissíti, a professzionális mezők csak Athlete IQ-ban jelennek meg."
+        },
+        "empty": {
+          "copy": "Az Athlete IQ profil készen áll, de még nincs mentett élő napi rekord."
         }
       },
       "theme": {

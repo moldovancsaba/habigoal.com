@@ -99,6 +99,20 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
     document.getElementById("team-club")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  if (dashboard.persona === "athlete") {
+    return (
+      <AiqAthleteWorkspace
+        actionPack={actionPack}
+        dashboard={dashboard}
+        modeOptions={modeOptions}
+        modeView={modeView}
+        setModeView={setModeView}
+        surface={surface}
+        translate={t}
+      />
+    );
+  }
+
   return (
     <Box
       className="aiq-product-shell"
@@ -239,6 +253,163 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
                 </Stack>
               </Paper>
             </SimpleGrid>
+          </Stack>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+function AiqAthleteWorkspace({
+  actionPack,
+  dashboard,
+  modeOptions,
+  modeView,
+  setModeView,
+  surface,
+  translate
+}: {
+  actionPack: ProductSurfaceActionPack;
+  dashboard: AthleteIqProductDashboardProjection;
+  modeOptions: Array<{ label: string; value: string }>;
+  modeView: "lifestyle" | "performance";
+  setModeView: (value: "lifestyle" | "performance") => void;
+  surface: ProductSurface;
+  translate: AiqTranslate;
+}) {
+  const athlete = dashboard.athletes[0] ?? null;
+  const supportQueue = dashboard.activeQueue;
+  const readiness = athlete?.readiness ?? dashboard.averageReadiness;
+  const mental = athlete?.mental ?? dashboard.averageMental;
+  const habitDetail = athlete
+    ? `${translate("athletes.habitsLabel")} ${athlete.habigoalDaily.habitCompletion} · ${translate(`athletes.habigoalCompletion.${athlete.habigoalDaily.completionState}`)}`
+    : translate("athleteWorkspace.empty.copy");
+
+  return (
+    <Box
+      className="aiq-product-shell"
+      data-gds-theme-preset={ATHLETE_IQ_GDS_THEME_PRESET}
+      data-mantine-color-scheme="dark"
+      style={ATHLETE_IQ_THEME_VARIABLES}
+    >
+      <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
+        <SurfaceTopBar surface={surface} />
+
+        <Box className="aiq-command-layout">
+          <Paper component="aside" className="aiq-sidebar-v2 surface-outline" withBorder radius="md" p="lg">
+            <Stack gap="xl">
+              <Group gap="md" wrap="nowrap">
+                <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={88} height={78} priority className="aiq-brand-logo" />
+                <Stack gap={0}>
+                  <Title order={1} size="h2">AthleteIQ</Title>
+                  <Text className="aiq-letter-label">{translate("athleteWorkspace.sidebarKicker")}</Text>
+                </Stack>
+              </Group>
+              <Stack gap={6}>
+                {["home", "checkin", "calendar", "habits"].map((id, index) => (
+                  <a key={id} href={`#${id === "habits" ? "shared-data" : id}`} className={index === 0 ? "aiq-nav-link aiq-nav-link-active" : "aiq-nav-link"}>
+                    <span>{translate(`nav.modules.${id}`)}</span>
+                    <span className="aiq-nav-code">{index + 1}</span>
+                  </a>
+                ))}
+              </Stack>
+              <AiqDailyScoreCard mode={modeView} score={formatScore(dashboard.dailyIqAverage, false)} translate={translate} />
+              <Paper className="aiq-mode-card surface-outline" withBorder radius="md" p="md">
+                <Stack gap="xs">
+                  <Text className="aiq-letter-label">{translate("controls.mode.label")}</Text>
+                  <SegmentedControl
+                    value={modeView}
+                    onChange={(value) => setModeView(value as "lifestyle" | "performance")}
+                    data={modeOptions}
+                    aria-label={translate("controls.mode.aria")}
+                    fullWidth
+                  />
+                </Stack>
+              </Paper>
+            </Stack>
+          </Paper>
+
+          <Stack gap="md" component="main">
+            <Paper id="home" component="section" className="aiq-hero-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
+              <SimpleGrid cols={{ base: 1, lg: 2 }} spacing={{ base: "lg", lg: "xl" }}>
+                <Stack gap="lg">
+                  <Text className="aiq-letter-label">{translate("hero.dateLabel", { date: dashboard.localDate })}</Text>
+                  <PageHeader
+                    title={translate("athleteWorkspace.hero.title")}
+                    subtitle={translate("athleteWorkspace.hero.subtitle")}
+                    actions={
+                      <SemanticButton
+                        action="productSurface:launch"
+                        color="yellow"
+                        onClick={() => document.getElementById("checkin")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                        vocabularyPacks={[actionPack]}
+                      />
+                    }
+                  />
+                  <Text className="aiq-command-copy" size="lg">
+                    {translate("athleteWorkspace.hero.copy")}
+                  </Text>
+                </Stack>
+
+                <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="sm" aria-label={translate("athleteWorkspace.summaryAria")}>
+                  <MetricCard label={translate("metrics.dailyIq")} value={formatScore(dashboard.dailyIqAverage, false)} detail={translate(`metrics.${modeView}Route`)} />
+                  <MetricCard label={translate("metrics.readiness")} value={formatScore(readiness)} detail={translate("athleteWorkspace.metrics.ownReadiness")} />
+                  <MetricCard label={translate("metrics.mentalEdge")} value={formatScore(mental)} detail={translate("athleteWorkspace.metrics.ownMental")} />
+                </SimpleGrid>
+              </SimpleGrid>
+            </Paper>
+
+            <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
+              <Paper id="checkin" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                <Stack gap="md">
+                  <SectionHeading icon={<GdsIcons.Profile size={18} />} title={translate("athleteWorkspace.today.title")} copy={translate("athleteWorkspace.today.copy")} inverse />
+                  {athlete ? (
+                    <Stack gap="sm">
+                      <AiqReadinessRow athlete={athlete} translate={translate} />
+                      <SignalCard label={translate("athleteWorkspace.today.teamLabel")} value={athlete.teamName ?? translate("athletes.unassignedTeam")} state={athlete.teamName ? "good" : "watch"} detail={habitDetail} inverse />
+                    </Stack>
+                  ) : (
+                    <Text className="aiq-muted">{translate("athleteWorkspace.empty.copy")}</Text>
+                  )}
+                </Stack>
+              </Paper>
+
+              <Paper id="calendar" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                <Stack gap="md">
+                  <SectionHeading icon={<GdsIcons.Record size={18} />} title={translate("athleteWorkspace.support.title")} copy={translate("athleteWorkspace.support.copy")} inverse />
+                  {supportQueue.length === 0 ? <Text className="aiq-muted">{translate("athleteWorkspace.support.empty")}</Text> : null}
+                  {supportQueue.map((item) => (
+                    <Box key={item.id} className="aiq-row-card">
+                      <Stack gap="xs">
+                        <Group justify="space-between" gap="sm">
+                          <Text fw={900}>{item.name}</Text>
+                          <Badge color={item.severity === "risk" ? "red" : item.severity === "watch" ? "yellow" : "gray"} variant="light">
+                            {translate(`states.${item.severity}`)}
+                          </Badge>
+                        </Group>
+                        <Text size="sm">{translate(`priority.reasons.${item.reasonKey}`)}</Text>
+                        <Text size="sm" className="aiq-muted">{translate(`priority.actions.${item.actionKey}`)}</Text>
+                      </Stack>
+                    </Box>
+                  ))}
+                </Stack>
+              </Paper>
+            </SimpleGrid>
+
+            <Paper id="shared-data" component="section" className="aiq-team-command-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
+              <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
+                <Stack gap="xs">
+                  <Text className="aiq-letter-label">{translate("athleteWorkspace.shared.kicker")}</Text>
+                  <Title order={2}>{translate("athleteWorkspace.shared.title")}</Title>
+                  <Text className="aiq-command-copy">{translate("athleteWorkspace.shared.copy")}</Text>
+                </Stack>
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                  {dashboard.services.map((module) => (
+                    <ServiceModuleCard key={module.id} module={module} actionPack={actionPack} translate={translate} />
+                  ))}
+                </SimpleGrid>
+              </SimpleGrid>
+            </Paper>
           </Stack>
         </Box>
       </Box>

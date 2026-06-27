@@ -69,7 +69,7 @@ function safeProductRedirect(next: string, locale: string, persona: LoginPersona
   if (shouldUsePersonaRedirect(next, locale)) return expected;
   if (next.includes("/athlete-iq") && surface !== "athlete-iq") return expected;
   if (next.includes("/habigoal") && surface !== "habigoal") return expected;
-  if (next.includes("/athlete-iq") && persona !== "trainer") return expected;
+  if (next.includes("/athlete-iq") && persona !== "trainer" && persona !== "athlete") return expected;
   if (next.includes("/habigoal") && persona !== "athlete") return expected;
   return next;
 }
@@ -154,6 +154,7 @@ export async function POST(request: NextRequest) {
   const localUser = await upsertPersonaLoginUser({
     email: identity.email,
     name: identity.name,
+    productSurface,
     roles: [persona]
   });
 

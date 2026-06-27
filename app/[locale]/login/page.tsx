@@ -12,9 +12,9 @@ function sanitizeNext(input: string | undefined, locale: string) {
 type LoginProductSurface = "habigoal" | "athlete-iq";
 
 function sanitizePersona(input: string | undefined, nextPath: string, surface: LoginProductSurface) {
+  if (input === "athlete" || input === "trainer") return input;
   if (surface === "athlete-iq") return "trainer";
   if (surface === "habigoal") return "athlete";
-  if (input === "athlete" || input === "trainer") return input;
   if (nextPath.includes("/athlete-iq")) return "trainer";
   return "athlete";
 }
@@ -91,14 +91,14 @@ export default async function LoginPage({
                   <input type="radio" name="persona" value="athlete" defaultChecked={initialPersona === "athlete"} required />
                   <span>
                     <Text component="span" fw={900}>{t("athletePersonaTitle")}</Text>
-                    <Text component="span" c="dimmed" size="sm">{t("athletePersonaCopy")}</Text>
+                    <Text component="span" c="dimmed" size="sm">{t(isAthleteIqSurface ? "athleteIqAthletePersonaCopy" : "athletePersonaCopy")}</Text>
                   </span>
                 </label>
                 <label className="login-persona-option">
                   <input type="radio" name="persona" value="trainer" defaultChecked={initialPersona === "trainer"} required />
                   <span>
                     <Text component="span" fw={900}>{t("trainerPersonaTitle")}</Text>
-                    <Text component="span" c="dimmed" size="sm">{t("trainerPersonaCopy")}</Text>
+                    <Text component="span" c="dimmed" size="sm">{t(isAthleteIqSurface ? "athleteIqTrainerPersonaCopy" : "trainerPersonaCopy")}</Text>
                   </span>
                 </label>
               </SimpleGrid>

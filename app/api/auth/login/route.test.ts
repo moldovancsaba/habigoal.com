@@ -51,6 +51,7 @@ describe("persona pseudo login", () => {
     expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
       email: "coach@example.com",
       name: "Coach@Example.com",
+      productSurface: "athlete-iq",
       roles: ["trainer"]
     });
     expect(mockedCreateSession).toHaveBeenCalledWith({
@@ -58,6 +59,39 @@ describe("persona pseudo login", () => {
       email: "coach@example.com",
       name: "coach@example.com",
       role: "trainer",
+      productSurface: "athlete-iq"
+    });
+    expect(response.status).toBe(303);
+    expect(response.headers.get("location")).toBe("http://localhost/hu/athlete-iq");
+  });
+
+  it("creates an Athlete IQ athlete session when registering through the Athlete IQ surface", async () => {
+    mockedFindUserByEmail.mockResolvedValue(null);
+    mockedUpsertPersonaLoginUser.mockResolvedValue({
+      id: "user-aiq-athlete",
+      email: "athlete@example.com",
+      name: "athlete@example.com",
+      roles: ["athlete"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "aiq_member" },
+        athleteIq: { enabled: true, reason: "pro_athlete_membership" }
+      }
+    });
+
+    const response = await POST(loginRequest({ identifier: "Athlete@Example.com", persona: "athlete", next: "/hu/athlete-iq", productSurface: "athlete-iq" }));
+
+    expect(mockedFindUserByEmail).toHaveBeenCalledWith("athlete@example.com");
+    expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
+      email: "athlete@example.com",
+      name: "Athlete@Example.com",
+      productSurface: "athlete-iq",
+      roles: ["athlete"]
+    });
+    expect(mockedCreateSession).toHaveBeenCalledWith({
+      id: "user-aiq-athlete",
+      email: "athlete@example.com",
+      name: "athlete@example.com",
+      role: "athlete",
       productSurface: "athlete-iq"
     });
     expect(response.status).toBe(303);
@@ -88,6 +122,12 @@ describe("persona pseudo login", () => {
 
     const response = await POST(loginRequest({ identifier: "same-user@example.com", persona: "athlete", next: "/hu" }));
 
+    expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
+      email: "same-user@example.com",
+      name: "same-user@example.com",
+      productSurface: "habigoal",
+      roles: ["athlete"]
+    });
     expect(mockedCreateSession).toHaveBeenCalledWith({
       id: "user-3",
       email: "same-user@example.com",

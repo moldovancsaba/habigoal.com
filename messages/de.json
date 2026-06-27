@@ -1140,10 +1140,12 @@
     "identifierLabel": "E-Mail",
     "identifierPlaceholder": "name@example.com",
     "personaLabel": "Persona waehlen",
-    "athletePersonaTitle": "Athlet",
-    "athletePersonaCopy": "Habigoal mobile Wohlbefinden-App oeffnen.",
-    "trainerPersonaTitle": "Trainer",
-    "trainerPersonaCopy": "Professionellen Athlete IQ Arbeitsbereich oeffnen.",
+  "athletePersonaTitle": "Athlet",
+  "athletePersonaCopy": "Habigoal mobile Wohlbefinden-App oeffnen.",
+  "athleteIqAthletePersonaCopy": "Athlete IQ Athleten-Support-Arbeitsbereich oeffnen.",
+  "trainerPersonaTitle": "Trainer",
+  "trainerPersonaCopy": "Professionellen Athlete IQ Arbeitsbereich oeffnen.",
+  "athleteIqTrainerPersonaCopy": "Athlete IQ Trainer- und Team-Arbeitsbereich oeffnen.",
     "submit": "Weiter",
     "supportingCopy": "Dieselbe E-Mail oeffnet beim naechsten Mal dasselbe gemeinsame Konto.",
     "errorTitle": "Login-Problem",
@@ -1844,6 +1846,37 @@
           "habits": "Gewohnheiten",
           "roadmap": "Roadmap",
           "report": "Bericht"
+        }
+      },
+      "athleteWorkspace": {
+        "sidebarKicker": "Athleten-Support",
+        "summaryAria": "Athlete IQ Athletenuebersicht",
+        "hero": {
+          "title": "Athleten-Support-Arbeitsbereich",
+          "subtitle": "Deine professionelle Tagesansicht fuer Readiness, Trainingskontext, Support-Aktionen und geteilte Habigoal-Gewohnheitsdaten.",
+          "copy": "Nutze Athlete IQ fuer die Daten, mit denen dein Trainer arbeiten kann, waehrend Habigoal fuer schnelle taegliche Gewohnheitserfassung verfuegbar bleibt."
+        },
+        "metrics": {
+          "ownReadiness": "Deine Readiness",
+          "ownMental": "Dein mentaler Status"
+        },
+        "today": {
+          "title": "Heute und aktueller Status",
+          "copy": "Gespeicherte Tagessignale, Teamkontext, Habigoal-Gewohnheiten und Support-Status.",
+          "teamLabel": "Team"
+        },
+        "support": {
+          "title": "Support-Warteschlange",
+          "copy": "Offene Punkte aus Readiness, Schmerzschutz, Tagesplanung und Traineraktionen.",
+          "empty": "Keine offenen Support-Punkte aus Live-Daten."
+        },
+        "shared": {
+          "kicker": "Gemeinsame Datenschicht",
+          "title": "Habigoal und Athlete IQ nutzen ein Profil",
+          "copy": "Taegliche Gewohnheiten und Check-ins aus beiden Apps aktualisieren dieselbe Athletenhistorie; professionelle Felder erscheinen nur in Athlete IQ."
+        },
+        "empty": {
+          "copy": "Dein Athlete-IQ-Profil ist bereit, aber es gibt noch keine gespeicherten Live-Tagesdaten."
         }
       },
       "theme": {

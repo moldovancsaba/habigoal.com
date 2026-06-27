@@ -1140,10 +1140,12 @@
     "identifierLabel": "אימייל",
     "identifierPlaceholder": "name@example.com",
     "personaLabel": "בחר פרסונה",
-    "athletePersonaTitle": "ספורטאי",
-    "athletePersonaCopy": "פתח את אפליקציית המובייל לרווחה של Habigoal.",
-    "trainerPersonaTitle": "מאמן",
-    "trainerPersonaCopy": "פתח את סביבת העבודה המקצועית של Athlete IQ.",
+  "athletePersonaTitle": "ספורטאי",
+  "athletePersonaCopy": "פתח את אפליקציית המובייל לרווחה של Habigoal.",
+  "athleteIqAthletePersonaCopy": "פתח את סביבת התמיכה לספורטאי של Athlete IQ.",
+  "trainerPersonaTitle": "מאמן",
+  "trainerPersonaCopy": "פתח את סביבת העבודה המקצועית של Athlete IQ.",
+  "athleteIqTrainerPersonaCopy": "פתח את סביבת המאמן והקבוצה של Athlete IQ.",
     "submit": "המשך",
     "supportingCopy": "אותו אימייל יפתח את אותו חשבון משותף בפעם הבאה.",
     "errorTitle": "בעיית התחברות",
@@ -1844,6 +1846,37 @@
           "habits": "הרגלים",
           "roadmap": "מפת דרכים",
           "report": "דוח"
+        }
+      },
+      "athleteWorkspace": {
+        "sidebarKicker": "תמיכת ספורטאי",
+        "summaryAria": "סיכום ספורטאי ב-Athlete IQ",
+        "hero": {
+          "title": "סביבת תמיכה לספורטאי",
+          "subtitle": "התצוגה היומית המקצועית שלך למוכנות, הקשר אימון, פעולות תמיכה ונתוני הרגלים משותפים של Habigoal.",
+          "copy": "אפשר להשתמש ב-Athlete IQ כדי לראות את הנתונים שהמאמן יכול לפעול לפיהם, בעוד Habigoal נשאר זמין לרישום מהיר של הרגלים יומיים."
+        },
+        "metrics": {
+          "ownReadiness": "המוכנות שלך",
+          "ownMental": "המצב המנטלי שלך"
+        },
+        "today": {
+          "title": "היום והמצב הנוכחי",
+          "copy": "אותות יומיים שמורים, הקשר קבוצה, השלמת הרגלי Habigoal ומצב תמיכה.",
+          "teamLabel": "קבוצה"
+        },
+        "support": {
+          "title": "תור תמיכה",
+          "copy": "פריטים פתוחים ממוכנות, בטיחות כאב, תכנית יומית ופעולות מאמן.",
+          "empty": "אין פריטי תמיכה פתוחים מרשומות חיות."
+        },
+        "shared": {
+          "kicker": "שכבת נתונים משותפת",
+          "title": "Habigoal ו-Athlete IQ משתמשים בפרופיל אחד",
+          "copy": "הרגלים יומיים ו-check-ins שנרשמים בכל אחת מהאפליקציות מעדכנים את אותו היסטוריית ספורטאי, ושדות מקצועיים מוצגים רק בתוך Athlete IQ."
+        },
+        "empty": {
+          "copy": "פרופיל Athlete IQ מוכן, אך עדיין אין רשומות יומיות חיות שמורות."
         }
       },
       "theme": {

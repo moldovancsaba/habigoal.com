@@ -1140,10 +1140,12 @@
     "identifierLabel": "Email",
     "identifierPlaceholder": "nombre@example.com",
     "personaLabel": "Elegir perfil",
-    "athletePersonaTitle": "Atleta",
-    "athletePersonaCopy": "Abrir la app movil de bienestar Habigoal.",
-    "trainerPersonaTitle": "Entrenador",
-    "trainerPersonaCopy": "Abrir el espacio profesional Athlete IQ.",
+  "athletePersonaTitle": "Atleta",
+  "athletePersonaCopy": "Abrir la app movil de bienestar Habigoal.",
+  "athleteIqAthletePersonaCopy": "Abrir el espacio de soporte para atleta de Athlete IQ.",
+  "trainerPersonaTitle": "Entrenador",
+  "trainerPersonaCopy": "Abrir el espacio profesional Athlete IQ.",
+  "athleteIqTrainerPersonaCopy": "Abrir el espacio de entrenador y equipo de Athlete IQ.",
     "submit": "Continuar",
     "supportingCopy": "El mismo email abre la misma cuenta compartida la proxima vez.",
     "errorTitle": "Problema de login",
@@ -1844,6 +1846,37 @@
           "habits": "Habitos",
           "roadmap": "Roadmap",
           "report": "Informe"
+        }
+      },
+      "athleteWorkspace": {
+        "sidebarKicker": "Soporte de atleta",
+        "summaryAria": "Resumen de atleta en Athlete IQ",
+        "hero": {
+          "title": "Espacio de soporte del atleta",
+          "subtitle": "Tu vista diaria profesional para readiness, contexto de entrenamiento, acciones de soporte y datos compartidos de habitos de Habigoal.",
+          "copy": "Usa Athlete IQ para revisar los datos que tu entrenador puede utilizar, mientras Habigoal sigue disponible para capturar habitos diarios rapidamente."
+        },
+        "metrics": {
+          "ownReadiness": "Tu readiness",
+          "ownMental": "Tu estado mental"
+        },
+        "today": {
+          "title": "Hoy y estado actual",
+          "copy": "Senales diarias guardadas, contexto de equipo, habitos de Habigoal y estado de soporte.",
+          "teamLabel": "Equipo"
+        },
+        "support": {
+          "title": "Cola de soporte",
+          "copy": "Elementos abiertos desde readiness, seguridad de dolor, plan diario y acciones del entrenador.",
+          "empty": "No hay elementos de soporte abiertos desde registros en vivo."
+        },
+        "shared": {
+          "kicker": "Capa de datos compartida",
+          "title": "Habigoal y Athlete IQ usan un perfil",
+          "copy": "Los habitos y check-ins diarios registrados en cualquiera de las apps actualizan el mismo historial del atleta; los campos profesionales solo se muestran en Athlete IQ."
+        },
+        "empty": {
+          "copy": "Tu perfil de Athlete IQ esta listo, pero aun no hay registros diarios en vivo guardados."
         }
       },
       "theme": {

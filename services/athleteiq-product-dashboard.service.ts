@@ -52,6 +52,7 @@ export type AthleteIqDashboardService = {
 
 export type AthleteIqProductDashboardProjection = {
   localDate: string;
+  persona: "athlete" | "trainer";
   timezone: string;
   state: AthleteIqDashboardState;
   teamCount: number;
@@ -177,6 +178,7 @@ export async function getAthleteIqProductDashboardProjection(input: {
 
   return {
     localDate,
+    persona: user.primaryRole === "athlete" ? "athlete" : "trainer",
     timezone,
     state,
     teamCount: teams.length,
@@ -208,6 +210,7 @@ export async function getAthleteIqProductDashboardProjection(input: {
 function emptyDashboardProjection(input: { localDate: string; timezone: string }): AthleteIqProductDashboardProjection {
   return {
     localDate: input.localDate,
+    persona: "trainer",
     timezone: input.timezone,
     state: "empty",
     teamCount: 0,

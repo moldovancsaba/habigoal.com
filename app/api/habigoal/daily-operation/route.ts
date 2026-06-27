@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import { canAccessHabigoalAthlete, canOpenProductSurface, getAuthUser } from "@/lib/access";
+import { canOpenProductSurface, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { buildAthleteIqCheckInSnapshot } from "@/lib/athleteiq-check-in";
 import { createHabigoalCorrelationId, habigoalJsonError, logHabigoalEvent } from "@/lib/habigoal-api";
-import { getHabigoalHabitStatuses, getHabigoalTodayProjection, type HabigoalHabitKey } from "@/services/habigoal-product.service";
-import { upsertAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
-import { upsertHabitRecord } from "@/repositories/habit-records.repository";
+import { getHabigoalTodayProjection, type HabigoalHabitKey } from "@/services/habigoal-product.service";
 import { runAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
+import { patchSharedDailyState, SharedDailyStateError } from "@/services/shared-daily-state.service";
 
 type DailyOperationBody = {
   athleteId?: unknown;
@@ -53,8 +51,8 @@ export async function POST(request: Request) {
       return fail("VALIDATION_ERROR", 400, correlationId, operationId, startedAt, "athleteId is required");
     }
 
-    if (!(await canAccessHabigoalAthlete(user, athleteId))) {
-      return fail("FORBIDDEN", 403, correlationId, operationId, startedAt, "athlete access denied");
+    if (localDate && !isDateOnly(localDate)) {
+      return fail("VALIDATION_ERROR", 400, correlationId, operationId, startedAt, "localDate must use YYYY-MM-DD");
     }
 
     const missingValues = Object.entries(values).filter(([, value]) => value === null).map(([key]) => key);
@@ -62,30 +60,21 @@ export async function POST(request: Request) {
       return fail("VALIDATION_ERROR", 400, correlationId, operationId, startedAt, `missing values: ${missingValues.join(", ")}`);
     }
 
-    const checkInResult = buildAthleteIqCheckInSnapshot({
+    const sharedState = await patchSharedDailyState({
       athleteId,
-      mode: "lifestyle",
-      timezone,
+      habits: completedHabits,
       idempotencyKey,
+      localDate: localDate || undefined,
+      product: "habigoal",
+      timezone,
+      user,
       values: {
-        sleepQuality: percentToTenPoint(values.sleep as number),
-        fatigue: percentToTenPoint(100 - (values.energy as number)),
-        pain: percentToTenPoint(values.soreness as number),
-        stress: percentToTenPoint(100 - (values.mood as number)),
-        mood: percentToTenPoint(values.mood as number)
+        energy: values.energy as number,
+        mood: values.mood as number,
+        sleep: values.sleep as number,
+        soreness: values.soreness as number
       }
     });
-
-    if (!checkInResult.snapshot) {
-      return fail("VALIDATION_ERROR", 400, correlationId, operationId, startedAt, checkInResult.errors);
-    }
-
-    const saveDate = localDate || checkInResult.snapshot.localDate;
-    const statuses = getHabigoalHabitStatuses(completedHabits);
-    const [habitRecord, snapshot] = await Promise.all([
-      upsertHabitRecord({ athleteId, date: saveDate, statuses }),
-      upsertAthleteIqCheckInSnapshot(checkInResult.snapshot)
-    ]);
 
     const engineRun = await runAthleteIqDailyEngine({
       actor: {
@@ -95,10 +84,10 @@ export async function POST(request: Request) {
       },
       athleteId,
       idempotencyKey,
-      localDate: snapshot.localDate,
-      mode: snapshot.mode,
+      localDate: sharedState.localDate,
+      mode: "lifestyle",
       sourceEvent: "check_in_submitted",
-      timezone: snapshot.timezone
+      timezone: sharedState.timezone
     });
     const projection = await getHabigoalTodayProjection({ timezone, user });
 
@@ -117,8 +106,8 @@ export async function POST(request: Request) {
       status: "completed",
       projection,
       saved: {
-        checkInId: snapshot.id,
-        habitRecordId: habitRecord._id
+        sharedDailyStateVersion: sharedState.version,
+        sourceCollections: sharedState.dataFreshness.sourceCollections
       },
       engineRun,
       correlationId,
@@ -126,6 +115,9 @@ export async function POST(request: Request) {
       latencyMs: Date.now() - startedAt
     });
   } catch (error) {
+    if (error instanceof SharedDailyStateError) {
+      return fail(error.code, error.code === "VALIDATION_ERROR" ? 400 : 403, correlationId, operationId, startedAt, error.message);
+    }
     logHabigoalEvent("habigoal.daily_operation.failure", {
       correlationId,
       durationMs: Date.now() - startedAt,
@@ -143,7 +135,7 @@ export async function POST(request: Request) {
 }
 
 function fail(
-  code: "FORBIDDEN" | "VALIDATION_ERROR",
+  code: "FORBIDDEN" | "PRODUCT_ACCESS_DENIED" | "VALIDATION_ERROR",
   status: number,
   correlationId: string,
   operationId: string,
@@ -155,10 +147,10 @@ function fail(
     durationMs: Date.now() - startedAt,
     errorClass: code,
     operationId,
-    retryable: code !== "FORBIDDEN",
+    retryable: code !== "FORBIDDEN" && code !== "PRODUCT_ACCESS_DENIED",
     status: "failure"
   });
-  return habigoalJsonError(code, status, correlationId, { details, retryable: code !== "FORBIDDEN" });
+  return habigoalJsonError(code, status, correlationId, { details, retryable: code !== "FORBIDDEN" && code !== "PRODUCT_ACCESS_DENIED" });
 }
 
 function normalizeValues(input: unknown) {
@@ -184,11 +176,10 @@ function percentOrNull(input: unknown) {
   return Math.round(value);
 }
 
-function percentToTenPoint(value: number) {
-  const clamped = Math.max(0, Math.min(100, value));
-  return Math.max(1, Math.min(10, Math.round((clamped / 100) * 9 + 1)));
-}
-
 function stringValue(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
+function isDateOnly(value: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
 }

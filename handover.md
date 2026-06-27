@@ -13,7 +13,7 @@ This document describes the current implementation state of Habigoal and the mai
 - Runtime: Node.js `22.x`
 - Deployment target: Vercel
 
-The lockfile currently resolves the core runtime to Next.js `15.5.19`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, Mantine `8.3.18`, and GDS `3.4.7`.
+The lockfile currently resolves the core runtime to Next.js `15.5.19`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, Mantine `8.3.18`, and GDS `3.6.0`.
 
 ## Current Product Model
 
@@ -38,6 +38,30 @@ The product now runs in two separate surfaces:
 - Athlete IQ at `/{locale}/athlete-iq`: professional athletes, coaches, dashboards, planning, services, and advanced analytics.
 
 Athlete IQ includes Habigoal through shared contracts in `lib/product-surfaces.ts` and the registry payload from `/api/product-surfaces`.
+
+## 2026-06-27 Haho Ecosystem Live Data Delivery
+
+Implemented scope for GitHub issues `#319` to `#328`:
+
+- Email-only pseudo-login now stores `normalizedEmail`, supports role selection, and grants Athlete IQ athlete access when the user registers through Athlete IQ.
+- Habigoal remains the mobile-first home app, but it is now a filtered live surface over the same canonical Athlete IQ athlete profile and daily records.
+- Athlete IQ now supports both trainer/professional and athlete personas behind the Athlete IQ product surface.
+- `services/shared-daily-state.service.ts` bridges Habigoal values and habits to canonical `athleteiq_checkins` and `habit_records`.
+- `POST /api/habigoal/daily-operation` writes through the shared daily-state bridge and then runs the Athlete IQ daily engine.
+- `GET/PATCH /api/daily-state` exposes the same shared contract for product clients and runs the engine after writes.
+- `scripts/seed-haho-ecosystem.mjs` creates the Haho live cohort in MongoDB Atlas: 5 trainers, 25 athletes, 5 teams, and 90 Budapest-local days of measurements, habits, plans, Daily IQ snapshots, pain alerts, and coach actions.
+- `scripts/haho-ecosystem-release-gate.mjs` validates required artifacts, package scripts, product wording gates, UI markers, and Atlas coverage when Atlas validation is enabled.
+- Full contract, rollback, and verification notes are in [docs/haho-ecosystem-live-data.md](docs/haho-ecosystem-live-data.md).
+
+Operational commands:
+
+```bash
+npm run db:seed-haho-ecosystem -- --dry-run
+npm run db:seed-haho-ecosystem -- --reset
+npm run db:seed-haho-ecosystem -- --rollback
+HAHO_RELEASE_GATE_SKIP_ATLAS=1 npm run haho:release-gate
+npm run haho:release-gate
+```
 
 ## Application Routes
 
@@ -398,7 +422,7 @@ The implementation pass delivered the runtime and documentation that the client 
 - Canonical onboarding architecture documentation in `docs/onboarding-architecture.md`.
 - Manual reconciliation in `docs/user-guide.md`, `docs/settings-guide.md`, and `docs/api.md`.
 - Version drift gate in `scripts/version-audit.mjs`, exposed as `npm run version:audit`.
-- GDS governance reconciliation to `@doneisbetter/gds@^3.4.7` in README, `docs/design-system.md`, `gds-adoption.json`, and `scripts/gds-audit.mjs`.
+- GDS governance reconciliation to `@doneisbetter/gds@^3.6.0` in README, `docs/design-system.md`, `gds-adoption.json`, and `scripts/gds-audit.mjs`.
 - GDS compliance cleanup for raw color literals and product-authored news exception metadata.
 
 The implementation preserves the mandatory frontend constraint: onboarding UI imports interactive primitives from `@doneisbetter/gds/client` and does not introduce a parallel UI system.
@@ -590,7 +614,7 @@ Results:
 - TypeScript: passed with `tsc --noEmit`.
 - Version audit: passed for app version `0.5.1`; OpenAPI version remains `2.0.0`.
 - i18n audit: passed for 6 locales, 6 message catalogs, and localized news content.
-- GDS audit: passed for Habigoal on GDS `3.4.7`.
+- GDS audit: passed for Habigoal on GDS `3.6.0`.
 - GDS compliance: passed for `habigoal`.
 - Next.js production build: passed; new routes include `/api/onboarding/state`, `/api/onboarding/events`, and `/api/athletes/[id]/baseline`.
 
@@ -599,8 +623,8 @@ Local dev server verification:
 ```bash
 npm run dev -- --hostname 127.0.0.1 --port 3000
 curl -I http://127.0.0.1:3000/en
-curl -I http://127.0.0.1:3000/en/athletes/demo
-curl -I http://127.0.0.1:3000/en/athletes/demo/check-in
+curl -I http://127.0.0.1:3000/en/habigoal
+curl -I http://127.0.0.1:3000/en/athlete-iq
 curl -I http://127.0.0.1:3000/en/dashboard
 ```
 
@@ -620,7 +644,7 @@ On 2026-05-21, `#62` received the first shipped audit gate in commit `30e122f`. 
 
 Issue `#29` was closed because typecheck validation is stable on `main`.
 
-On 2026-05-31, the GDS documentation and project-board state were reconciled after `@doneisbetter/gds@2.6.4` adoption. On 2026-06-26, the repository was reconciled again to `@doneisbetter/gds@3.4.7`; `npm run gds:audit` and `npm run gds:compliance` pass locally, so issue/project references that describe GDS runtime adoption as blocked by package publication or Mantine compatibility are obsolete.
+On 2026-05-31, the GDS documentation and project-board state were reconciled after `@doneisbetter/gds@2.6.4` adoption. On 2026-06-27, the repository is reconciled to `@doneisbetter/gds@3.6.0`; `npm run gds:audit` and `npm run gds:compliance` pass locally, so issue/project references that describe GDS runtime adoption as blocked by package publication or Mantine compatibility are obsolete.
 
 ## Validation
 

@@ -29,7 +29,7 @@ export default async function AthleteIqSurfaceRoute({
   const { locale } = await params;
   setRequestLocale(locale);
   await requireProductSession({
-    allowedRoles: ["admin", "trainer", "performance_coach", "physio", "analyst", "club_management"],
+    allowedRoles: ["admin", "athlete", "trainer", "performance_coach", "physio", "analyst", "club_management"],
     locale,
     path: `/${locale}/athlete-iq`,
     persona: "trainer",

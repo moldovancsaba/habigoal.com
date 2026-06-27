@@ -37,7 +37,13 @@ export async function listAllUsers(): Promise<User[]> {
 
 export async function findUserByEmail(email: string): Promise<User | null> {
   const db = await getDatabase();
-  const doc = await db.collection(collectionName).findOne({ email: email.toLowerCase().trim() });
+  const normalizedEmail = email.toLowerCase().trim();
+  const doc = await db.collection(collectionName).findOne({
+    $or: [
+      { normalizedEmail },
+      { email: normalizedEmail }
+    ]
+  });
   return doc ? mapUser(doc) : null;
 }
 
@@ -55,12 +61,19 @@ export async function upsertUser(user: Omit<User, "id">) {
   const normalizedEmail = user.email.toLowerCase().trim();
   const normalizedRoles = normalizeRoles(user.roles || []);
   const now = new Date().toISOString();
+  const existing = await db.collection(collectionName).findOne({
+    $or: [
+      { normalizedEmail },
+      { email: normalizedEmail }
+    ]
+  });
   const result = await db.collection(collectionName).updateOne(
-    { email: normalizedEmail },
+    existing?._id ? { _id: existing._id } : { normalizedEmail },
     {
       $set: {
         ...user,
         email: normalizedEmail,
+        normalizedEmail,
         roles: normalizedRoles,
         productEntitlements: normalizeProductEntitlements(user.productEntitlements) ?? resolveProductEntitlements({ roles: normalizedRoles }),
         teamIds: user.teamIds || [],
@@ -75,24 +88,31 @@ export async function upsertUser(user: Omit<User, "id">) {
   return result;
 }
 
-export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" | "roles">): Promise<User | null> {
+export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" | "roles"> & { productSurface?: "habigoal" | "athlete-iq" }): Promise<User | null> {
   const db = await getDatabase();
   const normalizedEmail = user.email.toLowerCase().trim();
   const normalizedRoles = normalizeRoles(user.roles || []);
   const now = new Date().toISOString();
-  const existing = await db.collection(collectionName).findOne({ email: normalizedEmail });
+  const existing = await db.collection(collectionName).findOne({
+    $or: [
+      { normalizedEmail },
+      { email: normalizedEmail }
+    ]
+  });
   const mergedRoles = normalizeRoles([...(Array.isArray(existing?.roles) ? existing.roles : []), ...normalizedRoles]);
   const productEntitlements = resolvePersonaLoginEntitlements({
     existingProductEntitlements: existing?.productEntitlements,
     existingRoles: Array.isArray(existing?.roles) ? existing.roles : [],
     requestedRoles: normalizedRoles,
+    requestedSurface: user.productSurface,
     now
   });
   await db.collection(collectionName).updateOne(
-    { email: normalizedEmail },
+    existing?._id ? { _id: existing._id } : { normalizedEmail },
     {
       $set: {
         email: normalizedEmail,
+        normalizedEmail,
         name: user.name || normalizedEmail,
         productEntitlements,
         roles: mergedRoles,
@@ -114,9 +134,10 @@ export async function setUserProductEntitlements(email: string, productEntitleme
   const normalizedEmail = email.toLowerCase().trim();
   const now = new Date().toISOString();
   await db.collection(collectionName).updateOne(
-    { email: normalizedEmail },
+    { $or: [{ normalizedEmail }, { email: normalizedEmail }] },
     {
       $set: {
+        normalizedEmail,
         productEntitlements: normalizeProductEntitlements(productEntitlements),
         updatedAt: now
       }
@@ -129,10 +150,11 @@ export async function setUserAthleteId(email: string, athleteId: string) {
   const normalizedEmail = email.toLowerCase().trim();
   const now = new Date().toISOString();
   await db.collection(collectionName).updateOne(
-    { email: normalizedEmail },
+    { $or: [{ normalizedEmail }, { email: normalizedEmail }] },
     {
       $set: {
         athleteId,
+        normalizedEmail,
         updatedAt: now
       },
       $addToSet: {

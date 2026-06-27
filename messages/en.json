@@ -1140,10 +1140,12 @@
     "identifierLabel": "Email",
     "identifierPlaceholder": "name@example.com",
     "personaLabel": "Choose persona",
-    "athletePersonaTitle": "Athlete",
-    "athletePersonaCopy": "Open the Habigoal mobile wellbeing app.",
-    "trainerPersonaTitle": "Trainer",
-    "trainerPersonaCopy": "Open the Athlete IQ professional workspace.",
+  "athletePersonaTitle": "Athlete",
+  "athletePersonaCopy": "Open the Habigoal mobile wellbeing app.",
+  "athleteIqAthletePersonaCopy": "Open the Athlete IQ athlete support workspace.",
+  "trainerPersonaTitle": "Trainer",
+  "trainerPersonaCopy": "Open the Athlete IQ professional workspace.",
+  "athleteIqTrainerPersonaCopy": "Open the Athlete IQ trainer and team workspace.",
     "submit": "Continue",
     "supportingCopy": "The same email opens the same shared account next time.",
     "errorTitle": "Login problem",
@@ -1844,6 +1846,37 @@
           "habits": "Habits",
           "roadmap": "Roadmap",
           "report": "Report"
+        }
+      },
+      "athleteWorkspace": {
+        "sidebarKicker": "Athlete support",
+        "summaryAria": "Athlete IQ athlete summary",
+        "hero": {
+          "title": "Athlete support workspace",
+          "subtitle": "Your professional daily view for readiness, training context, support actions, and shared Habigoal habit data.",
+          "copy": "Use Athlete IQ to review the data your trainer can act on, while Habigoal stays available for fast daily habit capture."
+        },
+        "metrics": {
+          "ownReadiness": "Your readiness",
+          "ownMental": "Your mental state"
+        },
+        "today": {
+          "title": "Today and current status",
+          "copy": "Read your saved daily signals, team context, Habigoal habit completion, and support status.",
+          "teamLabel": "Team"
+        },
+        "support": {
+          "title": "Support queue",
+          "copy": "Open items from readiness, pain safety, daily planning, and trainer actions.",
+          "empty": "No open support items from live records."
+        },
+        "shared": {
+          "kicker": "Shared data layer",
+          "title": "Habigoal and Athlete IQ use one profile",
+          "copy": "Daily habits and check-ins recorded in either app update the same athlete history, with professional fields shown only inside Athlete IQ."
+        },
+        "empty": {
+          "copy": "Your Athlete IQ profile is ready, but no live daily records are saved yet."
         }
       },
       "theme": {

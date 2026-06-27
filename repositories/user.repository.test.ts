@@ -58,11 +58,18 @@ describe("user repository persona login", () => {
       roles: ["trainer"]
     });
 
+    expect(findOne).toHaveBeenCalledWith({
+      $or: [
+        { normalizedEmail: "same-user@example.com" },
+        { email: "same-user@example.com" }
+      ]
+    });
     expect(updateOne).toHaveBeenCalledWith(
-      { email: "same-user@example.com" },
+      { _id: expect.objectContaining({ toString: expect.any(Function) }) },
       expect.objectContaining({
         $set: expect.objectContaining({
           email: "same-user@example.com",
+          normalizedEmail: "same-user@example.com",
           name: "Same User",
           productEntitlements: {
             habigoal: expect.objectContaining({ enabled: true, reason: "aiq_member", grantedAt: expect.any(String) }),

@@ -34,6 +34,20 @@ describe("product entitlement contract", () => {
     expect(entitlements.athleteIq.enabled).toBe(false);
   });
 
+  it("grants Athlete IQ athlete access when the athlete registers through the AIQ surface", () => {
+    const entitlements = resolvePersonaLoginEntitlements({
+      existingRoles: [],
+      requestedRoles: ["athlete"],
+      requestedSurface: "athlete-iq",
+      now: "2026-06-27T08:00:00.000Z"
+    });
+
+    expect(entitlements.habigoal.enabled).toBe(true);
+    expect(entitlements.habigoal.reason).toBe("aiq_member");
+    expect(entitlements.athleteIq.enabled).toBe(true);
+    expect(entitlements.athleteIq.reason).toBe("pro_athlete_membership");
+  });
+
   it("provisions Athlete IQ access when the pseudo-login persona is trainer", () => {
     const entitlements = resolvePersonaLoginEntitlements({
       existingRoles: [],
