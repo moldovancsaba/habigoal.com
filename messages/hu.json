@@ -1120,7 +1120,7 @@
     "privacyPolicy": "Adatvédelmi tájékoztató",
     "selectorBadge": "App választó",
     "selectorTitle": "Válassza ki az appot",
-    "selectorSubtitle": "Válassza a Habigoalt a napi szokásokhoz és jólléthez, vagy az Athlete IQ-t a professzionális edzői munkafelülethez. Ugyanaz az e-mail vagy felhasználónév a kiválasztott appot nyitja meg.",
+    "selectorSubtitle": "Válassza a Habigoalt a napi szokásokhoz és jólléthez, vagy az Athlete IQ-t a professzionális edzői munkafelülethez. Először e-mail címmel regisztráljon az Athlete IQ-ban, utána ugyanaz az e-mail mindkét appot megnyitja.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "Napi szokások és jóllét",
     "habigoalBody": "Fókuszált mobil app a mai check-inhez, szokásokhoz, jólléthez, sporttámogatáshoz és egy egyértelmű következő lépéshez.",
@@ -1136,33 +1136,34 @@
   "Login": {
     "badge": "E-mail hozzáférés",
     "title": "Tovább a saját appba",
-    "subtitle": "Adja meg az e-mail címét vagy felhasználónevét, válasszon szerepet, és nyissa meg a hozzá tartozó appfelületet.",
-    "identifierLabel": "E-mail vagy felhasználónév",
-    "identifierPlaceholder": "nev@example.com vagy felhasználónév",
+    "subtitle": "Adja meg az e-mail címét, válasszon szerepet, és nyissa meg a hozzá tartozó appfelületet.",
+    "identifierLabel": "E-mail",
+    "identifierPlaceholder": "nev@example.com",
     "personaLabel": "Szerep kiválasztása",
     "athletePersonaTitle": "Sportoló",
     "athletePersonaCopy": "Habigoal mobil jólléti app megnyitása.",
     "trainerPersonaTitle": "Edző",
     "trainerPersonaCopy": "Athlete IQ professzionális munkafelület megnyitása.",
     "submit": "Tovább",
-    "supportingCopy": "Ugyanez az e-mail vagy felhasználónév legközelebb ugyanazt a fiókot nyitja meg.",
+    "supportingCopy": "Ugyanez az e-mail legközelebb ugyanazt a közös fiókot nyitja meg.",
     "errorTitle": "Belépési probléma",
-    "invalidIdentifier": "Adjon meg érvényes e-mail címet vagy felhasználónevet.",
+    "invalidIdentifier": "Adjon meg érvényes e-mail címet.",
     "missingPersona": "Válassza ki, hogy sportoló vagy edző.",
     "genericError": "Nem sikerült befejezni a belépést. Kérjük, próbálja újra.",
     "athleteIqAccessRequired": "Az Athlete IQ professzionális csapat- vagy edzői hozzáférést igényel. Habigoallal folytathatod, ha a fiókodhoz Habigoal hozzáférés tartozik.",
     "habigoalAccessRequired": "A Habigoal hozzáférés még nincs engedélyezve ehhez a fiókhoz.",
+    "athleteIqRegistrationRequired": "Először regisztráljon az Athlete IQ-ban. Ezután ugyanaz az e-mail megnyitja a Habigoalt is.",
     "surfaces": {
       "habigoal": {
         "badge": "Habigoal hozzáférés",
         "title": "Tovább a Habigoalba",
-        "subtitle": "Adja meg az e-mail címét vagy felhasználónevét, és nyissa meg a Habigoal mobil napi appot.",
-        "supportingCopy": "Ugyanez az e-mail vagy felhasználónév legközelebb ugyanazt a Habigoal fiókot nyitja meg."
+        "subtitle": "Adja meg az Athlete IQ-ban már regisztrált e-mail címét, és nyissa meg a Habigoal mobil napi appot.",
+        "supportingCopy": "A Habigoal ugyanazt az Athlete IQ-ban létrehozott e-mail fiókot használja."
       },
       "athleteIq": {
         "badge": "Athlete IQ hozzáférés",
         "title": "Tovább az Athlete IQ-ba",
-        "subtitle": "Adja meg az e-mail címét vagy felhasználónevét, és nyissa meg az Athlete IQ professzionális munkafelületet.",
+        "subtitle": "Adja meg az e-mail címét, és nyissa meg az Athlete IQ professzionális munkafelületet.",
         "supportingCopy": "Az edzői belépés az Athlete IQ-t nyitja meg, ugyanazzal a közös fiókazonossággal."
       }
     }

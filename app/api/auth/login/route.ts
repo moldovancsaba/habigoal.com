@@ -5,7 +5,7 @@ import { env } from "@/config/env";
 import { createSession } from "@/lib/session";
 import { canOpenProductSurface } from "@/lib/access";
 import type { ProductSurfaceId } from "@/lib/product-entitlements";
-import { upsertPersonaLoginUser } from "@/repositories/user.repository";
+import { findUserByEmail, upsertPersonaLoginUser } from "@/repositories/user.repository";
 
 function sanitizeReturnTo(input: string | null, fallbackLocale: string) {
   if (!input) return `/${fallbackLocale}/dashboard`;
@@ -34,21 +34,6 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function isValidUsername(username: string) {
-  return username.length >= 2 && username.length <= 80 && /^[\p{L}\p{N}._ -]+$/u.test(username);
-}
-
-function slugifyUsername(username: string) {
-  return username
-    .trim()
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^\p{L}\p{N}._ -]/gu, "")
-    .replace(/[\s_]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
 function resolveLoginIdentity(identifier: string) {
   const normalized = identifier.trim();
   if (isValidEmail(normalized.toLowerCase())) {
@@ -57,13 +42,7 @@ function resolveLoginIdentity(identifier: string) {
       name: normalized
     };
   }
-  if (!isValidUsername(normalized)) return null;
-  const slug = slugifyUsername(normalized);
-  if (!slug) return null;
-  return {
-    email: `${slug}@habigoal.local`,
-    name: normalized
-  };
+  return null;
 }
 
 function normalizePersona(input: unknown): LoginPersona | null {
@@ -158,6 +137,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid login input" }, { status: 400 });
     }
     return NextResponse.redirect(loginPageUrl(request, locale, next, !identity ? "invalid_identifier" : "missing_persona"), 303);
+  }
+
+  const existingUser = await findUserByEmail(identity.email);
+  if (productSurface === "habigoal" && !existingUser) {
+    const code = "athlete_iq_registration_required";
+    if (acceptsJson) {
+      return NextResponse.json({
+        error: "Athlete IQ registration required",
+        code
+      }, { status: 403 });
+    }
+    return NextResponse.redirect(loginPageUrl(request, locale, next, code), 303);
   }
 
   const localUser = await upsertPersonaLoginUser({

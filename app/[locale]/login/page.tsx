@@ -30,6 +30,7 @@ function errorKey(error: string | undefined) {
   if (error === "missing_persona") return "missingPersona";
   if (error === "athlete_iq_access_required") return "athleteIqAccessRequired";
   if (error === "habigoal_access_required") return "habigoalAccessRequired";
+  if (error === "athlete_iq_registration_required") return "athleteIqRegistrationRequired";
   return "genericError";
 }
 
@@ -75,11 +76,12 @@ export default async function LoginPage({
             <input type="hidden" name="next" value={nextPath} />
             <input type="hidden" name="productSurface" value={selectedSurface} />
             <TextInput
-              autoComplete="username"
+              autoComplete="email"
               label={t("identifierLabel")}
               name="identifier"
               placeholder={t("identifierPlaceholder")}
               required
+              type="email"
             />
 
             <Stack gap="xs">

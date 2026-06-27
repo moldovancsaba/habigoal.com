@@ -1120,7 +1120,7 @@
     "privacyPolicy": "Privacy Policy",
     "selectorBadge": "App selector",
     "selectorTitle": "Choose your app",
-    "selectorSubtitle": "Choose Habigoal for daily habits and wellbeing, or Athlete IQ for the professional trainer workspace. The same email or username opens the selected app.",
+    "selectorSubtitle": "Choose Habigoal for daily habits and wellbeing, or Athlete IQ for the professional trainer workspace. Register with email in Athlete IQ first, then use the same email for both apps.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "Daily habits and wellbeing",
     "habigoalBody": "A focused mobile app for today check-ins, habits, wellbeing, sport support, and one clear next action.",
@@ -1136,33 +1136,34 @@
   "Login": {
     "badge": "Email access",
     "title": "Continue to your app",
-    "subtitle": "Enter your email or username, choose your persona, and open the matching app surface.",
-    "identifierLabel": "Email or username",
-    "identifierPlaceholder": "name@example.com or your username",
+    "subtitle": "Enter your email, choose your persona, and open the matching app surface.",
+    "identifierLabel": "Email",
+    "identifierPlaceholder": "name@example.com",
     "personaLabel": "Choose persona",
     "athletePersonaTitle": "Athlete",
     "athletePersonaCopy": "Open the Habigoal mobile wellbeing app.",
     "trainerPersonaTitle": "Trainer",
     "trainerPersonaCopy": "Open the Athlete IQ professional workspace.",
     "submit": "Continue",
-    "supportingCopy": "The same email or username opens the same account next time.",
+    "supportingCopy": "The same email opens the same shared account next time.",
     "errorTitle": "Login problem",
-    "invalidIdentifier": "Enter a valid email or username.",
+    "invalidIdentifier": "Enter a valid email address.",
     "missingPersona": "Choose athlete or trainer.",
     "genericError": "We could not complete login. Please try again.",
     "athleteIqAccessRequired": "Athlete IQ requires professional team or trainer access. You can continue with Habigoal when your account has Habigoal access.",
     "habigoalAccessRequired": "Habigoal access is not enabled for this account yet.",
+    "athleteIqRegistrationRequired": "Register with Athlete IQ first. After that, the same email can open Habigoal.",
     "surfaces": {
       "habigoal": {
         "badge": "Habigoal access",
         "title": "Continue to Habigoal",
-        "subtitle": "Enter your email or username and open the Habigoal mobile daily app.",
-        "supportingCopy": "The same email or username opens the same Habigoal account next time."
+        "subtitle": "Enter the email you already registered with Athlete IQ and open the Habigoal mobile daily app.",
+        "supportingCopy": "Habigoal uses the same email account created through Athlete IQ."
       },
       "athleteIq": {
         "badge": "Athlete IQ access",
         "title": "Continue to Athlete IQ",
-        "subtitle": "Enter your email or username and open the Athlete IQ professional workspace.",
+        "subtitle": "Enter your email and open the Athlete IQ professional workspace.",
         "supportingCopy": "Trainer login opens Athlete IQ and preserves the same shared account identity."
       }
     }

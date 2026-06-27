@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createSession } from "@/lib/session";
-import { upsertPersonaLoginUser } from "@/repositories/user.repository";
+import { findUserByEmail, upsertPersonaLoginUser } from "@/repositories/user.repository";
 import { POST } from "./route";
 
 vi.mock("@/lib/session", () => ({
@@ -9,10 +9,12 @@ vi.mock("@/lib/session", () => ({
 }));
 
 vi.mock("@/repositories/user.repository", () => ({
+  findUserByEmail: vi.fn(),
   upsertPersonaLoginUser: vi.fn()
 }));
 
 const mockedCreateSession = vi.mocked(createSession);
+const mockedFindUserByEmail = vi.mocked(findUserByEmail);
 const mockedUpsertPersonaLoginUser = vi.mocked(upsertPersonaLoginUser);
 
 describe("persona pseudo login", () => {
@@ -20,37 +22,18 @@ describe("persona pseudo login", () => {
     vi.clearAllMocks();
   });
 
-  it("creates a username athlete session and redirects to Habigoal", async () => {
-    mockedUpsertPersonaLoginUser.mockResolvedValue({
-      id: "user-1",
-      email: "maria-player@habigoal.local",
-      name: "Maria Player",
-      roles: ["athlete"],
-      productEntitlements: {
-        habigoal: { enabled: true, reason: "self_registered" },
-        athleteIq: { enabled: false }
-      }
-    });
-
+  it("rejects username-only login because registration is email-only", async () => {
     const response = await POST(loginRequest({ identifier: "Maria Player", persona: "athlete", next: "/hu" }));
 
-    expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
-      email: "maria-player@habigoal.local",
-      name: "Maria Player",
-      roles: ["athlete"]
-    });
-    expect(mockedCreateSession).toHaveBeenCalledWith({
-      id: "user-1",
-      email: "maria-player@habigoal.local",
-      name: "Maria Player",
-      role: "athlete",
-      productSurface: "habigoal"
-    });
+    expect(mockedFindUserByEmail).not.toHaveBeenCalled();
+    expect(mockedUpsertPersonaLoginUser).not.toHaveBeenCalled();
+    expect(mockedCreateSession).not.toHaveBeenCalled();
     expect(response.status).toBe(303);
-    expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
+    expect(response.headers.get("location")).toBe("http://localhost/hu/login?next=%2Fhu&error=invalid_identifier");
   });
 
   it("creates an email trainer session and redirects to Athlete IQ", async () => {
+    mockedFindUserByEmail.mockResolvedValue(null);
     mockedUpsertPersonaLoginUser.mockResolvedValue({
       id: "user-2",
       email: "coach@example.com",
@@ -64,6 +47,7 @@ describe("persona pseudo login", () => {
 
     const response = await POST(loginRequest({ identifier: "Coach@Example.com", persona: "trainer", next: "/hu" }));
 
+    expect(mockedFindUserByEmail).toHaveBeenCalledWith("coach@example.com");
     expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
       email: "coach@example.com",
       name: "Coach@Example.com",
@@ -81,6 +65,16 @@ describe("persona pseudo login", () => {
   });
 
   it("keeps the selected athlete persona active when the same user has both roles", async () => {
+    mockedFindUserByEmail.mockResolvedValue({
+      id: "user-3",
+      email: "same-user@example.com",
+      name: "same-user@example.com",
+      roles: ["athlete", "trainer"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "aiq_member" },
+        athleteIq: { enabled: true, reason: "trainer_assignment" }
+      }
+    });
     mockedUpsertPersonaLoginUser.mockResolvedValue({
       id: "user-3",
       email: "same-user@example.com",
@@ -105,7 +99,28 @@ describe("persona pseudo login", () => {
     expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
   });
 
+  it("blocks Habigoal-first registration when the email has not registered through Athlete IQ", async () => {
+    mockedFindUserByEmail.mockResolvedValue(null);
+
+    const response = await POST(loginRequest({ identifier: "new-athlete@example.com", persona: "athlete", next: "/hu/habigoal", productSurface: "habigoal" }));
+
+    expect(mockedUpsertPersonaLoginUser).not.toHaveBeenCalled();
+    expect(mockedCreateSession).not.toHaveBeenCalled();
+    expect(response.status).toBe(303);
+    expect(response.headers.get("location")).toBe("http://localhost/hu/login?next=%2Fhu%2Fhabigoal&error=athlete_iq_registration_required");
+  });
+
   it("denies Athlete IQ when explicit professional entitlement is missing", async () => {
+    mockedFindUserByEmail.mockResolvedValue({
+      id: "user-4",
+      email: "new-coach@example.com",
+      name: "New Coach",
+      roles: ["trainer"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: false }
+      }
+    });
     mockedUpsertPersonaLoginUser.mockResolvedValue({
       id: "user-4",
       email: "new-coach@example.com",

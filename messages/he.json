@@ -1120,7 +1120,7 @@
     "privacyPolicy": "מדיניות פרטיות",
     "selectorBadge": "בורר אפליקציה",
     "selectorTitle": "בחרו את האפליקציה",
-    "selectorSubtitle": "בחרו Habigoal להרגלים יומיים ורווחה, או Athlete IQ לסביבת עבודה מקצועית למאמנים. אותו אימייל או שם משתמש פותח את האפליקציה שנבחרה.",
+    "selectorSubtitle": "בחרו Habigoal להרגלים יומיים ורווחה, או Athlete IQ לסביבת עבודה מקצועית למאמנים. נרשמים קודם עם אימייל ב-Athlete IQ, ואז אותו אימייל פותח את שתי האפליקציות.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "הרגלים יומיים ורווחה",
     "habigoalBody": "אפליקציה ניידת ממוקדת לצ׳ק-אין היום, הרגלים, רווחה, תמיכה ספורטיבית וצעד הבא ברור.",
@@ -1136,33 +1136,34 @@
   "Login": {
     "badge": "גישה באימייל",
     "title": "המשך לאפליקציה שלך",
-    "subtitle": "הזן אימייל או שם משתמש, בחר פרסונה ופתח את ממשק האפליקציה המתאים.",
-    "identifierLabel": "אימייל או שם משתמש",
-    "identifierPlaceholder": "name@example.com או שם המשתמש שלך",
+    "subtitle": "הזן אימייל, בחר פרסונה ופתח את ממשק האפליקציה המתאים.",
+    "identifierLabel": "אימייל",
+    "identifierPlaceholder": "name@example.com",
     "personaLabel": "בחר פרסונה",
     "athletePersonaTitle": "ספורטאי",
     "athletePersonaCopy": "פתח את אפליקציית המובייל לרווחה של Habigoal.",
     "trainerPersonaTitle": "מאמן",
     "trainerPersonaCopy": "פתח את סביבת העבודה המקצועית של Athlete IQ.",
     "submit": "המשך",
-    "supportingCopy": "אותו אימייל או שם משתמש יפתח את אותו חשבון בפעם הבאה.",
+    "supportingCopy": "אותו אימייל יפתח את אותו חשבון משותף בפעם הבאה.",
     "errorTitle": "בעיית התחברות",
-    "invalidIdentifier": "הזן אימייל או שם משתמש תקין.",
+    "invalidIdentifier": "הזן כתובת אימייל תקינה.",
     "missingPersona": "בחר ספורטאי או מאמן.",
     "genericError": "לא הצלחנו להשלים את ההתחברות. נסה שוב.",
     "athleteIqAccessRequired": "Athlete IQ דורשת גישת צוות או מאמן מקצועית. אפשר להמשיך עם Habigoal אם לחשבון יש גישת Habigoal.",
     "habigoalAccessRequired": "גישת Habigoal עדיין לא מופעלת לחשבון זה.",
+    "athleteIqRegistrationRequired": "יש להירשם קודם ב-Athlete IQ. לאחר מכן אותו אימייל יפתח גם את Habigoal.",
     "surfaces": {
       "habigoal": {
         "badge": "גישת Habigoal",
         "title": "המשך אל Habigoal",
-        "subtitle": "יש להזין אימייל או שם משתמש ולפתוח את אפליקציית היום הניידת של Habigoal.",
-        "supportingCopy": "אותו אימייל או שם משתמש יפתחו בפעם הבאה את אותו חשבון Habigoal."
+        "subtitle": "יש להזין את האימייל שכבר נרשם ב-Athlete IQ ולפתוח את אפליקציית היום הניידת של Habigoal.",
+        "supportingCopy": "Habigoal משתמש באותו חשבון אימייל שנוצר דרך Athlete IQ."
       },
       "athleteIq": {
         "badge": "גישת Athlete IQ",
         "title": "המשך אל Athlete IQ",
-        "subtitle": "יש להזין אימייל או שם משתמש ולפתוח את סביבת העבודה המקצועית של Athlete IQ.",
+        "subtitle": "יש להזין אימייל ולפתוח את סביבת העבודה המקצועית של Athlete IQ.",
         "supportingCopy": "כניסת מאמן פותחת את Athlete IQ ושומרת על אותה זהות חשבון משותפת."
       }
     }
