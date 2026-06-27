@@ -7,6 +7,10 @@ import type { AuthUser } from "@/lib/access";
 const athleteUser: AuthUser = {
   email: "athlete@example.com",
   name: "Athlete",
+  productEntitlements: {
+    habigoal: { enabled: true, reason: "self_registered" },
+    athleteIq: { enabled: true, reason: "team_athlete" }
+  },
   roles: ["athlete"],
   primaryRole: "athlete",
   athleteId: "athlete-1",
@@ -16,6 +20,10 @@ const athleteUser: AuthUser = {
 const trainerUser: AuthUser = {
   email: "trainer@example.com",
   name: "Trainer",
+  productEntitlements: {
+    habigoal: { enabled: true, reason: "aiq_member" },
+    athleteIq: { enabled: true, reason: "trainer_assignment" }
+  },
   roles: ["trainer"],
   primaryRole: "trainer",
   teamIds: ["team-1"]

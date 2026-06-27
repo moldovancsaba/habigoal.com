@@ -2,6 +2,8 @@
 
 Habigoal is a Next.js App Router application backed by MongoDB Atlas. The product boundary is role-aware: athletes operate on their own data, trainers operate on team-scoped athlete data, and admins manage organization data.
 
+The relationship between Habigoal and Athlete IQ is governed by [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md): Habigoal is the filtered mobile home surface, Athlete IQ is the professional team and performance surface, and both use the same canonical athlete identity, profile, and history with separate product entitlements.
+
 ## Layers
 
 ### App Routes

@@ -406,7 +406,7 @@ export const productSurfaces = [
     shortName: "AIQ",
     headline: "Professional performance operating system",
     summary:
-      "The professional layer for athletes, coaches, academies, dashboards, reports, services, CogLeague, GameFlow, and advanced intelligence.",
+      "The professional layer that includes Habigoal as a daily signal layer, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
     promise:
       "Athlete IQ includes Habigoal as its daily signal layer, then adds professional workflows, role-based dashboards, and service modules.",
     primaryPath: "/athlete-iq",

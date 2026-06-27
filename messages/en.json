@@ -1149,7 +1149,9 @@
     "errorTitle": "Login problem",
     "invalidIdentifier": "Enter a valid email or username.",
     "missingPersona": "Choose athlete or trainer.",
-    "genericError": "We could not complete login. Please try again."
+    "genericError": "We could not complete login. Please try again.",
+    "athleteIqAccessRequired": "Athlete IQ requires professional team or trainer access. You can continue with Habigoal when your account has Habigoal access.",
+    "habigoalAccessRequired": "Habigoal access is not enabled for this account yet."
   },
   "News": {
     "badge": "Habigoal News",
@@ -1495,7 +1497,9 @@
           "reflect": "Reflection",
           "sleep": "Sleep routine",
           "study": "Learning block"
-        }
+        },
+        "reviewed": "I reviewed today’s habits",
+        "confirmRequired": "Review today’s habits before saving."
       },
       "guidance": {
         "kicker": "Next step",
@@ -1527,6 +1531,79 @@
         "profileRequired": "Your athlete profile is not ready yet. Sign in again and try once more.",
         "sessionExpired": "Your session expired. Sign in again to continue.",
         "reference": "Reference: {correlationId}"
+      },
+      "statusLocked": "Record",
+      "dailyState": {
+        "empty_day": "Start today",
+        "check_in_in_progress": "Check-in needed",
+        "habits_in_progress": "Habits needed",
+        "ready_to_save": "Ready to save",
+        "saving": "Saving",
+        "saved_status": "Status ready",
+        "save_failed_retryable": "Try again",
+        "save_failed_blocked": "Blocked"
+      },
+      "journey": {
+        "empty_day": {
+          "title": "Start today’s daily loop",
+          "copy": "Record today’s check-in and habits before Habigoal shows a status.",
+          "detail": "No saved activity yet today",
+          "nextAction": "Start with the check-in.",
+          "aria": "Today has not started yet"
+        },
+        "check_in_in_progress": {
+          "title": "Complete the check-in first",
+          "copy": "Set all four wellbeing signals, then review today’s habits.",
+          "detail": "Check-in is still incomplete",
+          "nextAction": "Set every check-in signal.",
+          "aria": "Check-in is incomplete"
+        },
+        "habits_in_progress": {
+          "title": "Review today’s habits",
+          "copy": "Mark completed habits or confirm that you reviewed them before saving.",
+          "detail": "Habits still need review",
+          "nextAction": "Review and confirm today’s habits.",
+          "aria": "Habit review is incomplete"
+        },
+        "ready_to_save": {
+          "title": "Review and save today",
+          "copy": "Your check-in and habits are ready. Save them to create today’s status.",
+          "detail": "Ready to save today",
+          "nextAction": "Save today to unlock status.",
+          "aria": "Daily loop is ready to save"
+        },
+        "saving": {
+          "title": "Saving today",
+          "copy": "Habigoal is saving your check-in and habits.",
+          "detail": "Save in progress",
+          "nextAction": "Keep this screen open while saving.",
+          "aria": "Daily loop is saving"
+        },
+        "saved_status": {
+          "title": "Today’s status is ready",
+          "copy": "Today’s status is based on saved check-in and habit data.",
+          "detail": "Status available",
+          "nextAction": "Review your next action.",
+          "aria": "Daily status is ready"
+        },
+        "save_failed_retryable": {
+          "title": "Save did not finish",
+          "copy": "Your entries are still here. Try saving again.",
+          "detail": "Retry is available",
+          "nextAction": "Try saving again.",
+          "aria": "Daily save can be retried"
+        },
+        "save_failed_blocked": {
+          "title": "Save is blocked",
+          "copy": "Resolve the message shown before saving today.",
+          "detail": "Save is blocked",
+          "nextAction": "Review the blocking message.",
+          "aria": "Daily save is blocked"
+        }
+      },
+      "review": {
+        "title": "Review and save",
+        "copy": "Status appears only after today’s check-in and habits are saved."
       }
     },
     "athleteIq": {
@@ -1656,7 +1733,19 @@
         "copy": "Dense professional view with source rationale and workflow continuity.",
         "loadLabel": "Load",
         "mentalLabel": "Mental",
-        "unassignedTeam": "Unassigned team"
+        "unassignedTeam": "Unassigned team",
+        "habigoalLabel": "Habigoal",
+        "habitsLabel": "Habits",
+        "habigoalCompletion": {
+          "missing": "No Habigoal day saved",
+          "partial": "Habigoal day incomplete",
+          "complete": "Habigoal day saved"
+        },
+        "habigoalSource": {
+          "habigoal": "Habigoal data",
+          "athlete_iq": "Athlete IQ data",
+          "mixed": "Shared data"
+        }
       },
       "services": {
         "title": "Services and reports",

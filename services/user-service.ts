@@ -1,3 +1,5 @@
+import type { ProductEntitlements } from "@/lib/product-entitlements";
+
 export interface User {
   id?: string;
   name?: string;
@@ -5,6 +7,7 @@ export interface User {
   roles: ("admin" | "trainer" | "athlete" | "parent" | "performance_coach" | "physio" | "analyst" | "club_management")[];
   athleteId?: string;
   parentAthleteIds?: string[];
+  productEntitlements?: ProductEntitlements;
   teamIds?: string[];
   lastLoginAt?: string;
   createdAt?: string;

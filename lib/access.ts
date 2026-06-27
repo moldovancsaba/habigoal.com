@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { env } from "@/config/env";
+import { hasProductEntitlement, resolveProductEntitlements, type ProductEntitlements, type ProductSurfaceId } from "@/lib/product-entitlements";
 import { getSession } from "@/lib/session";
 import { findUserByEmail } from "@/repositories/user.repository";
 import { getTeamById, listTeamsByAthleteId, listTeamsByTrainerEmail } from "@/repositories/team.repository";
@@ -51,6 +52,7 @@ export type AuthUser = {
   primaryRole: AppRole;
   athleteId?: string;
   parentAthleteIds?: string[];
+  productEntitlements: ProductEntitlements;
   teamIds: string[];
 };
 
@@ -61,6 +63,10 @@ export async function getAuthUser(): Promise<AuthUser | null> {
       name: "Habigoal Dev",
       roles: ["admin", "trainer", "athlete"],
       primaryRole: "admin",
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "admin_grant" },
+        athleteIq: { enabled: true, reason: "admin_grant" }
+      },
       teamIds: []
     };
   }
@@ -71,6 +77,7 @@ export async function getAuthUser(): Promise<AuthUser | null> {
   if (!localUser) return null;
 
   const roles = normalizeRoles(localUser.roles);
+  const productEntitlements = resolveProductEntitlements(localUser);
   const teamIds = Array.isArray(localUser.teamIds) ? localUser.teamIds : [];
   const sessionRoles = normalizeRoles(session.role?.split(",") ?? []);
   const primaryRole = resolveSessionPrimaryRole(sessionRoles, roles);
@@ -83,6 +90,7 @@ export async function getAuthUser(): Promise<AuthUser | null> {
     primaryRole,
     athleteId: localUser.athleteId,
     parentAthleteIds: localUser.parentAthleteIds,
+    productEntitlements,
     teamIds
   };
 }
@@ -130,6 +138,21 @@ export async function canAccessAthlete(user: AuthUser, athleteId: string): Promi
   const allowedIds = await resolveAccessibleAthleteIds(user);
   if (allowedIds === null) return true;
   return allowedIds.includes(athleteId);
+}
+
+export function canOpenProductSurface(user: { productEntitlements?: ProductEntitlements; roles?: string[] | null }, surface: ProductSurfaceId) {
+  return hasProductEntitlement(resolveProductEntitlements(user), surface);
+}
+
+export async function canAccessAthleteIqAthlete(user: AuthUser, athleteId: string): Promise<boolean> {
+  if (!canOpenProductSurface(user, "athlete-iq")) return false;
+  return canAccessAthlete(user, athleteId);
+}
+
+export async function canAccessHabigoalAthlete(user: AuthUser, athleteId: string): Promise<boolean> {
+  if (!canOpenProductSurface(user, "habigoal")) return false;
+  if (user.primaryRole !== "athlete" && user.primaryRole !== "admin") return false;
+  return canAccessAthlete(user, athleteId);
 }
 
 export async function getAthleteTeamIds(athleteId: string): Promise<string[]> {

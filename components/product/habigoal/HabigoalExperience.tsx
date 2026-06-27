@@ -24,6 +24,15 @@ type FeedbackState = {
   kind: "error" | "success";
   messageKey: string;
 };
+type HabigoalDailyUiState =
+  | "empty_day"
+  | "check_in_in_progress"
+  | "habits_in_progress"
+  | "ready_to_save"
+  | "saving"
+  | "saved_status"
+  | "save_failed_retryable"
+  | "save_failed_blocked";
 
 const HABIT_PLAN = [
   { id: "hydrate", dbKey: "hydration", category: "recovery" },
@@ -50,16 +59,32 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
   const [draftValues, setDraftValues] = useState<MetricDraft>(projection.values);
   const [completedHabits, setCompletedHabits] = useState<HabigoalHabitKey[]>(projection.completedHabits);
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
+  const [habitsReviewed, setHabitsReviewed] = useState(projection.hasLiveHabits);
   const [saving, setSaving] = useState(false);
 
   const habitScore = Math.round((completedHabits.length / HABIT_PLAN.length) * 100);
-  const score = activeProjection.score;
-  const statusState = surfaceStateFromStatus(activeProjection.status);
-  const statusLabel = t(`states.${activeProjection.status}`);
-  const scoreText = score === null ? t("scorePending") : String(score);
-  const scoreAria = score === null ? t("scorePendingAria") : t("scoreAria", { score });
   const hasCompleteDraft = Object.values(draftValues).every((value) => typeof value === "number" && Number.isFinite(value));
-  const canSave = Boolean(activeProjection.athleteId) && hasCompleteDraft && !saving;
+  const hasRecordedHabits = habitsReviewed || activeProjection.hasLiveHabits;
+  const statusAvailable = activeProjection.hasLiveCheckIn && activeProjection.hasLiveHabits && activeProjection.score !== null;
+  const dailyUiState = resolveDailyUiState({
+    hasCompleteDraft,
+    hasRecordedHabits,
+    hasProfile: Boolean(activeProjection.athleteId),
+    saving,
+    statusAvailable
+  });
+  const score = statusAvailable ? activeProjection.score : null;
+  const statusState = statusAvailable ? surfaceStateFromStatus(activeProjection.status) : "neutral";
+  const statusLabel = statusAvailable ? t(`states.${activeProjection.status}`) : t(`dailyState.${dailyUiState}`);
+  const scoreText = statusAvailable && score !== null ? String(score) : t("statusLocked");
+  const scoreAria = statusAvailable && score !== null ? t("scoreAria", { score }) : t("scorePendingAria");
+  const canSave = Boolean(activeProjection.athleteId) && hasCompleteDraft && hasRecordedHabits && !saving;
+  const progressSteps = [
+    hasCompleteDraft,
+    hasRecordedHabits,
+    statusAvailable
+  ].filter(Boolean).length;
+  const dailyProgress = Math.round((progressSteps / 3) * 100);
 
   function setMetric(key: keyof MetricDraft, value: number) {
     setDraftValues((current) => ({ ...current, [key]: value }));
@@ -68,12 +93,14 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
 
   function toggleHabit(id: HabigoalHabitKey, checked: boolean) {
     setCompletedHabits((current) => checked ? [...new Set([...current, id])] : current.filter((item) => item !== id));
+    setHabitsReviewed(true);
     setFeedback(null);
   }
 
   function resetValues() {
     setDraftValues(activeProjection.values);
     setCompletedHabits(activeProjection.completedHabits);
+    setHabitsReviewed(activeProjection.hasLiveHabits);
     setFeedback(null);
   }
 
@@ -84,6 +111,10 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
     }
     if (!hasCompleteDraft) {
       setFeedback({ kind: "error", messageKey: "errors.completeCheckIn" });
+      return;
+    }
+    if (!hasRecordedHabits) {
+      setFeedback({ kind: "error", messageKey: "habits.confirmRequired" });
       return;
     }
 
@@ -121,6 +152,7 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
       setActiveProjection(payload.projection);
       setDraftValues(payload.projection.values);
       setCompletedHabits(payload.projection.completedHabits);
+      setHabitsReviewed(payload.projection.hasLiveHabits);
       setFeedback({ correlationId: payload.correlationId, kind: "success", messageKey: "saved" });
       router.refresh();
     } catch {
@@ -145,7 +177,7 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
               <Text fw={900}>Habigoal</Text>
             </Stack>
           </Group>
-          <Box className={score === null ? "hbg-score-pill hbg-score-pill-empty" : "hbg-score-pill"} aria-label={scoreAria}>{scoreText}</Box>
+          <Box className={statusAvailable ? "hbg-score-pill" : "hbg-score-pill hbg-score-pill-empty"} aria-label={scoreAria}>{scoreText}</Box>
         </Box>
 
         <Box component="main" className="hbg-main-grid" pb="xl">
@@ -161,8 +193,8 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
                 </Group>
 
                 <Stack gap="xs">
-                  <Title order={2} className="hbg-headline">{activeProjection.dataState === "no_today_data" ? t("emptyState.title") : t("headline")}</Title>
-                  <Text className="hbg-copy">{activeProjection.dataState === "no_today_data" ? t("emptyState.copy") : t("promise")}</Text>
+                  <Title order={2} className="hbg-headline">{statusAvailable ? t("headline") : t(`journey.${dailyUiState}.title`)}</Title>
+                  <Text className="hbg-copy">{statusAvailable ? t("promise") : t(`journey.${dailyUiState}.copy`)}</Text>
                 </Stack>
 
                 <Group gap="sm" wrap="wrap">
@@ -173,15 +205,19 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
               </Stack>
 
               <Stack gap="sm" align="center" justify="center">
-                <Box className={score === null ? "hbg-score-ring hbg-score-ring-empty" : "hbg-score-ring"} style={{ "--score": `${score ?? 0}%` } as CSSProperties} aria-label={scoreAria}>
-                  <Stack gap={0} align="center">
-                    <Text className="hbg-score-label">{t("todayLabel")}</Text>
-                    <Title order={2} className="hbg-score-value">{scoreText}</Title>
-                    <Text className="hbg-score-state">{statusLabel}</Text>
-                  </Stack>
-                </Box>
+                {statusAvailable ? (
+                  <Box className="hbg-score-ring" style={{ "--score": `${score ?? 0}%` } as CSSProperties} aria-label={scoreAria}>
+                    <Stack gap={0} align="center">
+                      <Text className="hbg-score-label">{t("todayLabel")}</Text>
+                      <Title order={2} className="hbg-score-value">{scoreText}</Title>
+                      <Text className="hbg-score-state">{statusLabel}</Text>
+                    </Stack>
+                  </Box>
+                ) : (
+                  <JourneyProgress progress={dailyProgress} state={dailyUiState} translate={t} />
+                )}
                 <Text ta="center" className="hbg-copy" maw={360}>
-                  {score === null ? t("scoreEmptyExplanation") : t("scoreExplanation")}
+                  {statusAvailable ? t("scoreExplanation") : t("scoreEmptyExplanation")}
                 </Text>
               </Stack>
             </SimpleGrid>
@@ -197,13 +233,13 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
           ) : null}
 
           <SimpleGrid className="hbg-signal-strip" cols={{ base: 1, xs: 3 }} spacing="sm">
-            <SignalCard label={t("signals.status.label")} value={score === null ? t("scoreUnavailable") : `${score}%`} state={statusState} detail={t(`signals.status.detail.${activeProjection.confidence}`)} />
+            <SignalCard label={t("signals.status.label")} value={statusAvailable && score !== null ? `${score}%` : t("scoreUnavailable")} state={statusState} detail={statusAvailable ? t(`signals.status.detail.${activeProjection.confidence}`) : t(`journey.${dailyUiState}.detail`)} />
             <SignalCard label={t("signals.habitLoop.label")} value={`${completedHabits.length}/${HABIT_PLAN.length}`} state="neutral" detail={t("signals.habitLoop.detail")} />
             <SignalCard
               label={t("signals.nextAction.label")}
-              value={t(`states.${activeProjection.status}`)}
+              value={statusLabel}
               state={statusState}
-              detail={t(`nextAction.${activeProjection.nextActionKey}`)}
+              detail={statusAvailable ? t(`nextAction.${activeProjection.nextActionKey}`) : t(`journey.${dailyUiState}.nextAction`)}
             />
           </SimpleGrid>
 
@@ -216,14 +252,6 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
               <StatusSlider label={t("checkIn.soreness")} unsetLabel={t("checkIn.unset")} value={draftValues.soreness} onChange={(value) => setMetric("soreness", value)} inverse />
               <Group gap="sm" wrap="wrap">
                 <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetValues} disabled={saving} />
-                <SemanticButton
-                  action="productSurface:complete"
-                  color="ingress"
-                  vocabularyPacks={[actionPack]}
-                  onClick={completeDailyOperation}
-                  disabled={!canSave}
-                  loading={saving}
-                />
               </Group>
               {!hasCompleteDraft ? <Text size="sm" className="hbg-muted-text">{t("checkIn.completeAll")}</Text> : null}
             </Stack>
@@ -246,6 +274,15 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
                   />
                 ))}
               </SimpleGrid>
+              <Checkbox
+                checked={habitsReviewed}
+                label={t("habits.reviewed")}
+                onChange={(event) => {
+                  setHabitsReviewed(event.currentTarget.checked);
+                  setFeedback(null);
+                }}
+                className="hbg-checkbox"
+              />
               <Box>
                 <Group justify="space-between" mb={6}>
                   <Text fw={800}>{t("habits.completion")}</Text>
@@ -260,12 +297,25 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
             <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
               <Stack gap="xs">
                 <Text className="hbg-kicker">{t("guidance.kicker")}</Text>
-                <Title order={2}>{t("guidance.title")}</Title>
-                <Text className="hbg-copy">{t("guidance.copy")}</Text>
+                <Title order={2}>{statusAvailable ? t("guidance.title") : t("review.title")}</Title>
+                <Text className="hbg-copy">{statusAvailable ? t("guidance.copy") : t("review.copy")}</Text>
               </Stack>
               <Box className="hbg-action-card">
                 <Text fw={900} mb={6}>{statusLabel}</Text>
-                <Text>{t(`nextAction.${activeProjection.nextActionKey}`)}</Text>
+                <Text>{statusAvailable ? t(`nextAction.${activeProjection.nextActionKey}`) : t(`journey.${dailyUiState}.nextAction`)}</Text>
+                {!statusAvailable ? (
+                  <Box mt="md">
+                    <SemanticButton
+                      action="productSurface:complete"
+                      color="ingress"
+                      vocabularyPacks={[actionPack]}
+                      onClick={completeDailyOperation}
+                      disabled={!canSave}
+                      loading={saving}
+                    />
+                    {!hasRecordedHabits ? <Text size="sm" mt="xs" className="hbg-muted-text">{t("habits.confirmRequired")}</Text> : null}
+                  </Box>
+                ) : null}
               </Box>
             </SimpleGrid>
           </Paper>
@@ -299,6 +349,41 @@ function surfaceStateFromStatus(status: HabigoalDailyStatus): SurfaceSignalState
   if (status === "needs_support") return "risk";
   if (status === "needs_input") return "neutral";
   return "watch";
+}
+
+function resolveDailyUiState(input: {
+  hasCompleteDraft: boolean;
+  hasProfile: boolean;
+  hasRecordedHabits: boolean;
+  saving: boolean;
+  statusAvailable: boolean;
+}): HabigoalDailyUiState {
+  if (!input.hasProfile) return "empty_day";
+  if (input.saving) return "saving";
+  if (input.statusAvailable) return "saved_status";
+  if (!input.hasCompleteDraft) return "check_in_in_progress";
+  if (!input.hasRecordedHabits) return "habits_in_progress";
+  return "ready_to_save";
+}
+
+function JourneyProgress({
+  progress,
+  state,
+  translate
+}: {
+  progress: number;
+  state: HabigoalDailyUiState;
+  translate: ReturnType<typeof useTranslations>;
+}) {
+  return (
+    <Box className="hbg-score-ring hbg-score-ring-empty" style={{ "--score": `${progress}%` } as CSSProperties} aria-label={translate(`journey.${state}.aria`)}>
+      <Stack gap={4} align="center">
+        <Text className="hbg-score-label">{translate("todayLabel")}</Text>
+        <Title order={2} className="hbg-score-value">{progress}%</Title>
+        <Text className="hbg-score-state">{translate(`dailyState.${state}`)}</Text>
+      </Stack>
+    </Box>
+  );
 }
 
 function StatusSlider({

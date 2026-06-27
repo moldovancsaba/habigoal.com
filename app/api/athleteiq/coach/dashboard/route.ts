@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/access";
+import { canOpenProductSurface, getAuthUser } from "@/lib/access";
 import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_STAKEHOLDER_CAPABILITY_KEY, canViewTeamProjection } from "@/lib/athleteiq-stakeholder";
 import { getTeamById } from "@/repositories/team.repository";
@@ -10,6 +10,7 @@ export async function GET(request: Request) {
   const startedAt = Date.now();
   const user = await getAuthUser();
   if (!user) return athleteIqJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true });
+  if (!canOpenProductSurface(user, "athlete-iq")) return athleteIqJsonError("PRODUCT_ACCESS_DENIED", 403, correlationId, { retryable: false });
 
   try {
     const { searchParams } = new URL(request.url);

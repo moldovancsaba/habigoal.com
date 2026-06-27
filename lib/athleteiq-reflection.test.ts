@@ -92,6 +92,10 @@ function user(primaryRole: AuthUser["primaryRole"]): AuthUser {
   return {
     email: `${primaryRole}@habigoal.local`,
     name: primaryRole,
+    productEntitlements: {
+      habigoal: { enabled: true, reason: primaryRole === "athlete" ? "self_registered" : "aiq_member" },
+      athleteIq: { enabled: primaryRole !== "athlete", reason: primaryRole === "admin" ? "admin_grant" : primaryRole === "athlete" ? undefined : "trainer_assignment" }
+    },
     primaryRole,
     roles: [primaryRole],
     teamIds: []

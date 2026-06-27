@@ -5,6 +5,10 @@ import type { AuthUser } from "@/lib/access";
 const athleteUser: AuthUser = {
   email: "athlete@example.com",
   name: "Athlete",
+  productEntitlements: {
+    habigoal: { enabled: true, reason: "self_registered" },
+    athleteIq: { enabled: false }
+  },
   roles: ["athlete"],
   primaryRole: "athlete",
   athleteId: "athlete-1",

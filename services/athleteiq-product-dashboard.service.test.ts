@@ -2,9 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
 import { getDailyPlanByDate } from "@/repositories/athleteiq-daily-plan.repository";
 import { getLatestDailyIqSnapshot } from "@/repositories/athleteiq-daily-iq.repository";
+import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import { listPainAlertsByAthlete } from "@/repositories/athleteiq-pain-safety.repository";
 import { listCoachActionsByDate } from "@/repositories/coach-actions.repository";
 import { listChildrenWithMetrics, type ChildProfile } from "@/repositories/child.repository";
+import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
 import { listTeams } from "@/repositories/team.repository";
 import { getAthleteIqProductDashboardProjection } from "@/services/athleteiq-product-dashboard.service";
 import type { CoachActionRecord } from "@/types/coach-action";
@@ -23,6 +25,10 @@ vi.mock("@/repositories/athleteiq-daily-iq.repository", () => ({
   getLatestDailyIqSnapshot: vi.fn()
 }));
 
+vi.mock("@/repositories/athleteiq-check-in.repository", () => ({
+  getAthleteIqCheckInSnapshot: vi.fn()
+}));
+
 vi.mock("@/repositories/athleteiq-pain-safety.repository", () => ({
   listPainAlertsByAthlete: vi.fn()
 }));
@@ -35,6 +41,10 @@ vi.mock("@/repositories/child.repository", () => ({
   listChildrenWithMetrics: vi.fn()
 }));
 
+vi.mock("@/repositories/habit-records.repository", () => ({
+  getHabitRecordByAthleteIdAndDate: vi.fn()
+}));
+
 vi.mock("@/repositories/team.repository", () => ({
   listTeams: vi.fn()
 }));
@@ -43,7 +53,9 @@ const mockedGetAuthUser = vi.mocked(getAuthUser);
 const mockedResolveAccessibleAthleteIds = vi.mocked(resolveAccessibleAthleteIds);
 const mockedGetDailyPlanByDate = vi.mocked(getDailyPlanByDate);
 const mockedGetLatestDailyIqSnapshot = vi.mocked(getLatestDailyIqSnapshot);
+const mockedGetAthleteIqCheckInSnapshot = vi.mocked(getAthleteIqCheckInSnapshot);
 const mockedListPainAlertsByAthlete = vi.mocked(listPainAlertsByAthlete);
+const mockedGetHabitRecordByAthleteIdAndDate = vi.mocked(getHabitRecordByAthleteIdAndDate);
 const mockedListCoachActionsByDate = vi.mocked(listCoachActionsByDate);
 const mockedListChildrenWithMetrics = vi.mocked(listChildrenWithMetrics);
 const mockedListTeams = vi.mocked(listTeams);
@@ -57,7 +69,9 @@ describe("Athlete IQ dashboard access scope", () => {
     mockedListTeams.mockResolvedValue([]);
     mockedListCoachActionsByDate.mockResolvedValue([]);
     mockedGetLatestDailyIqSnapshot.mockResolvedValue(null);
+    mockedGetAthleteIqCheckInSnapshot.mockResolvedValue(null);
     mockedGetDailyPlanByDate.mockResolvedValue(null);
+    mockedGetHabitRecordByAthleteIdAndDate.mockResolvedValue(null);
     mockedListPainAlertsByAthlete.mockResolvedValue([]);
   });
 
@@ -135,6 +149,7 @@ describe("Athlete IQ dashboard access scope", () => {
     expect(mockedGetLatestDailyIqSnapshot).toHaveBeenCalledTimes(1);
     expect(mockedGetLatestDailyIqSnapshot).toHaveBeenCalledWith({ athleteId: "athlete-1", localDate: "2026-06-27" });
     expect(mockedListPainAlertsByAthlete).toHaveBeenCalledWith("athlete-1");
+    expect(projection.athletes[0].habigoalDaily.completionState).toBe("missing");
   });
 
   it("keeps full dashboard visibility for administrator roles", async () => {
@@ -158,6 +173,10 @@ function trainerUser(email: string): AuthUser {
   return {
     email,
     name: "Trainer",
+    productEntitlements: {
+      habigoal: { enabled: true, reason: "aiq_member" },
+      athleteIq: { enabled: true, reason: "trainer_assignment" }
+    },
     roles: ["trainer"],
     primaryRole: "trainer",
     teamIds: []
@@ -168,6 +187,10 @@ function adminUser(): AuthUser {
   return {
     email: "admin@example.com",
     name: "Admin",
+    productEntitlements: {
+      habigoal: { enabled: true, reason: "admin_grant" },
+      athleteIq: { enabled: true, reason: "admin_grant" }
+    },
     roles: ["admin"],
     primaryRole: "admin",
     teamIds: []

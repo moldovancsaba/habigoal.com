@@ -23,6 +23,17 @@ describe("product surface function registries", () => {
     }
   });
 
+  it("treats Athlete IQ inclusion of Habigoal as shared data capability, not UI nesting", () => {
+    const habigoal = productSurfaces.find((surface) => surface.id === "habigoal");
+    const athleteIq = productSurfaces.find((surface) => surface.id === "athlete-iq");
+
+    expect(athleteIq?.includedSurfaceIds).toEqual(["habigoal"]);
+    expect(athleteIq?.primaryPath).toBe("/athlete-iq");
+    expect(habigoal?.primaryPath).toBe("/habigoal");
+    expect(athleteIq?.summary).toContain("daily signal layer");
+    expect(athleteIq?.summary).not.toMatch(/copy|embed|presentation/i);
+  });
+
   it("does not duplicate function IDs inside a surface", () => {
     for (const surface of productSurfaces) {
       const functionIds = surface.functionRegistry.map((item) => item.id);

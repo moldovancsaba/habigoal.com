@@ -1149,7 +1149,9 @@
     "errorTitle": "Login-Problem",
     "invalidIdentifier": "Gib eine gueltige E-Mail oder einen gueltigen Benutzernamen ein.",
     "missingPersona": "Waehle Athlet oder Trainer.",
-    "genericError": "Login konnte nicht abgeschlossen werden. Bitte erneut versuchen."
+    "genericError": "Login konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
+    "athleteIqAccessRequired": "Athlete IQ erfordert professionellen Team- oder Trainerzugang. Du kannst mit Habigoal fortfahren, wenn dein Konto Habigoal-Zugriff hat.",
+    "habigoalAccessRequired": "Habigoal-Zugriff ist fuer dieses Konto noch nicht aktiviert."
   },
   "News": {
     "badge": "Habigoal News",
@@ -1495,7 +1497,9 @@
           "reflect": "Reflexion",
           "sleep": "Schlafroutine",
           "study": "Lernblock"
-        }
+        },
+        "reviewed": "Ich habe die heutigen Gewohnheiten geprüft",
+        "confirmRequired": "Prüfe die heutigen Gewohnheiten vor dem Speichern."
       },
       "guidance": {
         "kicker": "Nächster Schritt",
@@ -1527,6 +1531,79 @@
         "profileRequired": "Dein Athletenprofil ist noch nicht bereit. Melde dich erneut an und versuche es noch einmal.",
         "sessionExpired": "Deine Sitzung ist abgelaufen. Melde dich erneut an.",
         "reference": "Referenz: {correlationId}"
+      },
+      "statusLocked": "Erfassen",
+      "dailyState": {
+        "empty_day": "Heute starten",
+        "check_in_in_progress": "Check-in nötig",
+        "habits_in_progress": "Gewohnheiten nötig",
+        "ready_to_save": "Bereit zum Speichern",
+        "saving": "Speichern",
+        "saved_status": "Status bereit",
+        "save_failed_retryable": "Erneut versuchen",
+        "save_failed_blocked": "Blockiert"
+      },
+      "journey": {
+        "empty_day": {
+          "title": "Starte die heutige Routine",
+          "copy": "Erfasse Check-in und Gewohnheiten, bevor Habigoal einen Status zeigt.",
+          "detail": "Heute noch keine gespeicherte Aktivität",
+          "nextAction": "Beginne mit dem Check-in.",
+          "aria": "Heute wurde noch nicht gestartet"
+        },
+        "check_in_in_progress": {
+          "title": "Check-in zuerst abschließen",
+          "copy": "Setze alle vier Signale und prüfe danach die Gewohnheiten.",
+          "detail": "Check-in ist unvollständig",
+          "nextAction": "Setze jedes Check-in-Signal.",
+          "aria": "Check-in ist unvollständig"
+        },
+        "habits_in_progress": {
+          "title": "Heutige Gewohnheiten prüfen",
+          "copy": "Markiere erledigte Gewohnheiten oder bestätige die Prüfung vor dem Speichern.",
+          "detail": "Gewohnheiten müssen geprüft werden",
+          "nextAction": "Prüfe und bestätige die Gewohnheiten.",
+          "aria": "Gewohnheitsprüfung ist unvollständig"
+        },
+        "ready_to_save": {
+          "title": "Prüfen und speichern",
+          "copy": "Check-in und Gewohnheiten sind bereit. Speichere sie für den heutigen Status.",
+          "detail": "Bereit zum Speichern",
+          "nextAction": "Speichere heute, um den Status freizuschalten.",
+          "aria": "Tagesroutine ist speicherbereit"
+        },
+        "saving": {
+          "title": "Speichern läuft",
+          "copy": "Habigoal speichert Check-in und Gewohnheiten.",
+          "detail": "Speichern läuft",
+          "nextAction": "Bleibe während des Speicherns hier.",
+          "aria": "Tagesroutine wird gespeichert"
+        },
+        "saved_status": {
+          "title": "Heutiger Status ist bereit",
+          "copy": "Der heutige Status basiert auf gespeicherten Check-in- und Gewohnheitsdaten.",
+          "detail": "Status verfügbar",
+          "nextAction": "Prüfe deine nächste Aktion.",
+          "aria": "Tagesstatus ist bereit"
+        },
+        "save_failed_retryable": {
+          "title": "Speichern nicht abgeschlossen",
+          "copy": "Deine Eingaben bleiben erhalten. Versuche es erneut.",
+          "detail": "Erneut versuchen möglich",
+          "nextAction": "Speichern erneut versuchen.",
+          "aria": "Speichern kann erneut versucht werden"
+        },
+        "save_failed_blocked": {
+          "title": "Speichern blockiert",
+          "copy": "Behebe die angezeigte Meldung vor dem Speichern.",
+          "detail": "Speichern blockiert",
+          "nextAction": "Prüfe die blockierende Meldung.",
+          "aria": "Speichern ist blockiert"
+        }
+      },
+      "review": {
+        "title": "Prüfen und speichern",
+        "copy": "Der Status erscheint erst, nachdem Check-in und Gewohnheiten gespeichert wurden."
       }
     },
     "athleteIq": {
@@ -1656,7 +1733,19 @@
         "copy": "Dichte professionelle Ansicht mit Quellenrationale und Workflow-Kontinuitaet.",
         "loadLabel": "Load",
         "mentalLabel": "Mental",
-        "unassignedTeam": "Keinem Team zugeordnet"
+        "unassignedTeam": "Keinem Team zugeordnet",
+        "habigoalLabel": "Habigoal",
+        "habitsLabel": "Gewohnheiten",
+        "habigoalCompletion": {
+          "missing": "Kein Habigoal-Tag gespeichert",
+          "partial": "Habigoal-Tag unvollständig",
+          "complete": "Habigoal-Tag gespeichert"
+        },
+        "habigoalSource": {
+          "habigoal": "Habigoal-Daten",
+          "athlete_iq": "Athlete-IQ-Daten",
+          "mixed": "Gemeinsame Daten"
+        }
       },
       "services": {
         "title": "Services und Berichte",

@@ -8,7 +8,7 @@ export interface ChildProfile {
   userId?: string;
   email?: string;
   createdFrom?: "pseudo-login" | "sso" | "manual";
-  profileState?: "empty" | "active";
+  profileState?: "empty" | "active" | "needs_review";
   name: string;
   birthDate: string;
   organisationId?: string;
@@ -214,6 +214,11 @@ export async function getChildById(id: ObjectId) {
 }
 
 export async function findChildByUserIdentity(input: { email: string; userId?: string }) {
+  const children = await findChildrenByUserIdentity(input);
+  return children[0] ?? null;
+}
+
+export async function findChildrenByUserIdentity(input: { email: string; userId?: string }) {
   const db = await getDatabase();
   const filters: Record<string, unknown>[] = [
     { email: input.email.toLowerCase().trim() },
@@ -221,12 +226,12 @@ export async function findChildByUserIdentity(input: { email: string; userId?: s
   ];
   if (input.userId) filters.unshift({ userId: input.userId });
 
-  const child = await db.collection(collectionName).findOne({
+  const children = await db.collection(collectionName).find({
     deletedAt: { $exists: false },
     $or: filters
-  });
+  }).sort({ updatedAt: -1 }).limit(5).toArray();
 
-  return child ? normalizeChildProfile(toJsonId(child) as Record<string, unknown>) : null;
+  return children.map((child) => normalizeChildProfile(toJsonId(child) as Record<string, unknown>));
 }
 
 export async function createEmptyAthleteProfileForUser(input: {
@@ -253,6 +258,23 @@ export async function createEmptyAthleteProfileForUser(input: {
   };
   const result = await db.collection(collectionName).insertOne(profile);
   return normalizeChildProfile({ ...profile, _id: result.insertedId.toString() });
+}
+
+export async function markChildProfileNeedsReview(id: string) {
+  if (!ObjectId.isValid(id)) return null;
+  const db = await getDatabase();
+  const now = new Date().toISOString();
+  const result = await db.collection(collectionName).findOneAndUpdate(
+    { _id: new ObjectId(id), deletedAt: { $exists: false } },
+    {
+      $set: {
+        profileState: "needs_review",
+        updatedAt: now
+      }
+    },
+    { returnDocument: "after" }
+  );
+  return result ? normalizeChildProfile(toJsonId(result) as Record<string, unknown>) : null;
 }
 
 export async function upsertChild(profile: Omit<ChildProfile, "_id" | "createdAt" | "updatedAt">) {

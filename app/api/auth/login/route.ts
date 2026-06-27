@@ -3,6 +3,8 @@ import { getAuthorizationUrl } from "@/services/auth-service";
 import { cookies } from "next/headers";
 import { env } from "@/config/env";
 import { createSession } from "@/lib/session";
+import { canOpenProductSurface } from "@/lib/access";
+import type { ProductSurfaceId } from "@/lib/product-entitlements";
 import { upsertPersonaLoginUser } from "@/repositories/user.repository";
 
 function sanitizeReturnTo(input: string | null, fallbackLocale: string) {
@@ -68,17 +70,26 @@ function normalizePersona(input: unknown): LoginPersona | null {
   return input === "athlete" || input === "trainer" ? input : null;
 }
 
-function personaRedirect(locale: string, persona: LoginPersona) {
-  return persona === "athlete" ? `/${locale}/habigoal` : `/${locale}/athlete-iq`;
+function normalizeProductSurface(input: unknown, next: string, persona: LoginPersona | null): ProductSurfaceId {
+  if (input === "habigoal" || input === "athlete-iq") return input;
+  if (next.includes("/athlete-iq")) return "athlete-iq";
+  if (next.includes("/habigoal")) return "habigoal";
+  return persona === "trainer" ? "athlete-iq" : "habigoal";
 }
 
 function shouldUsePersonaRedirect(next: string, locale: string) {
   return next === `/${locale}` || next === `/${locale}/login` || next === `/${locale}/dashboard`;
 }
 
-function safeProductRedirect(next: string, locale: string, persona: LoginPersona) {
-  const expected = personaRedirect(locale, persona);
+function surfaceRedirect(locale: string, surface: ProductSurfaceId) {
+  return surface === "athlete-iq" ? `/${locale}/athlete-iq` : `/${locale}/habigoal`;
+}
+
+function safeProductRedirect(next: string, locale: string, persona: LoginPersona, surface: ProductSurfaceId) {
+  const expected = surfaceRedirect(locale, surface);
   if (shouldUsePersonaRedirect(next, locale)) return expected;
+  if (next.includes("/athlete-iq") && surface !== "athlete-iq") return expected;
+  if (next.includes("/habigoal") && surface !== "habigoal") return expected;
   if (next.includes("/athlete-iq") && persona !== "trainer") return expected;
   if (next.includes("/habigoal") && persona !== "athlete") return expected;
   return next;
@@ -140,6 +151,7 @@ export async function POST(request: NextRequest) {
   const identifier = normalizeIdentifier(body.identifier || body.email);
   const identity = resolveLoginIdentity(identifier);
   const persona = normalizePersona(body.persona);
+  const productSurface = normalizeProductSurface(body.productSurface, next, persona);
 
   if (!identity || !persona) {
     if (acceptsJson) {
@@ -163,14 +175,27 @@ export async function POST(request: NextRequest) {
 
   const name = localUser.name || identity.name;
 
+  if (!canOpenProductSurface(localUser as Parameters<typeof canOpenProductSurface>[0], productSurface)) {
+    const code = productSurface === "athlete-iq" ? "athlete_iq_access_required" : "habigoal_access_required";
+    if (acceptsJson) {
+      return NextResponse.json({
+        error: "Product access denied",
+        code,
+        productEntitlements: localUser.productEntitlements
+      }, { status: 403 });
+    }
+    return NextResponse.redirect(loginPageUrl(request, locale, next, code), 303);
+  }
+
   await createSession({
     id: localUser.id || identity.email,
     email: identity.email,
     name,
-    role: persona
+    role: persona,
+    productSurface
   });
 
-  const redirectTarget = safeProductRedirect(next, locale, persona);
+  const redirectTarget = safeProductRedirect(next, locale, persona, productSurface);
 
   if (acceptsJson) {
     return NextResponse.json({
@@ -179,7 +204,9 @@ export async function POST(request: NextRequest) {
         name,
         roles: localUser.roles,
         activeRole: persona,
-        primaryRole: persona
+        primaryRole: persona,
+        productEntitlements: localUser.productEntitlements,
+        productSurface
       },
       redirectTo: redirectTarget
     });

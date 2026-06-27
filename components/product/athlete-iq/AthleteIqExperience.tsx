@@ -390,6 +390,9 @@ function AiqReadinessRow({ athlete, translate }: { athlete: AthleteIqDashboardAt
           <Text size="sm" className="aiq-muted-soft">{translate("athletes.loadLabel")} {formatScore(athlete.load)}</Text>
           <Text size="sm" className="aiq-muted-soft">{translate("athletes.mentalLabel")} {formatScore(athlete.mental)}</Text>
         </SimpleGrid>
+        <Text size="sm" className="aiq-muted-faint">
+          {translate("athletes.habigoalLabel")}: {translate(`athletes.habigoalCompletion.${athlete.habigoalDaily.completionState}`)} · {translate("athletes.habitsLabel")} {athlete.habigoalDaily.habitCompletion} · {translate(`athletes.habigoalSource.${athlete.habigoalDaily.source}`)}
+        </Text>
       </Stack>
     </Box>
   );

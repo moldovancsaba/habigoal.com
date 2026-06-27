@@ -25,7 +25,11 @@ describe("persona pseudo login", () => {
       id: "user-1",
       email: "maria-player@habigoal.local",
       name: "Maria Player",
-      roles: ["athlete"]
+      roles: ["athlete"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: false }
+      }
     });
 
     const response = await POST(loginRequest({ identifier: "Maria Player", persona: "athlete", next: "/hu" }));
@@ -39,7 +43,8 @@ describe("persona pseudo login", () => {
       id: "user-1",
       email: "maria-player@habigoal.local",
       name: "Maria Player",
-      role: "athlete"
+      role: "athlete",
+      productSurface: "habigoal"
     });
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
@@ -50,7 +55,11 @@ describe("persona pseudo login", () => {
       id: "user-2",
       email: "coach@example.com",
       name: "coach@example.com",
-      roles: ["athlete", "trainer"]
+      roles: ["athlete", "trainer"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "aiq_member" },
+        athleteIq: { enabled: true, reason: "trainer_assignment" }
+      }
     });
 
     const response = await POST(loginRequest({ identifier: "Coach@Example.com", persona: "trainer", next: "/hu" }));
@@ -64,7 +73,8 @@ describe("persona pseudo login", () => {
       id: "user-2",
       email: "coach@example.com",
       name: "coach@example.com",
-      role: "trainer"
+      role: "trainer",
+      productSurface: "athlete-iq"
     });
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe("http://localhost/hu/athlete-iq");
@@ -75,7 +85,11 @@ describe("persona pseudo login", () => {
       id: "user-3",
       email: "same-user@example.com",
       name: "same-user@example.com",
-      roles: ["athlete", "trainer"]
+      roles: ["athlete", "trainer"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "aiq_member" },
+        athleteIq: { enabled: true, reason: "trainer_assignment" }
+      }
     });
 
     const response = await POST(loginRequest({ identifier: "same-user@example.com", persona: "athlete", next: "/hu" }));
@@ -84,10 +98,30 @@ describe("persona pseudo login", () => {
       id: "user-3",
       email: "same-user@example.com",
       name: "same-user@example.com",
-      role: "athlete"
+      role: "athlete",
+      productSurface: "habigoal"
     });
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
+  });
+
+  it("denies Athlete IQ when explicit professional entitlement is missing", async () => {
+    mockedUpsertPersonaLoginUser.mockResolvedValue({
+      id: "user-4",
+      email: "new-coach@example.com",
+      name: "New Coach",
+      roles: ["trainer"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: false }
+      }
+    });
+
+    const response = await POST(loginRequest({ identifier: "new-coach@example.com", persona: "trainer", next: "/hu/athlete-iq", productSurface: "athlete-iq" }));
+
+    expect(mockedCreateSession).not.toHaveBeenCalled();
+    expect(response.status).toBe(303);
+    expect(response.headers.get("location")).toBe("http://localhost/hu/login?next=%2Fhu%2Fathlete-iq&error=athlete_iq_access_required");
   });
 
   it("returns to the login page when persona is missing", async () => {

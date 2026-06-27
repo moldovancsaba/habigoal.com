@@ -32,7 +32,8 @@ export default async function AthleteIqSurfaceRoute({
     allowedRoles: ["admin", "trainer", "performance_coach", "physio", "analyst", "club_management"],
     locale,
     path: `/${locale}/athlete-iq`,
-    persona: "trainer"
+    persona: "trainer",
+    surface: "athlete-iq"
   });
   const dashboard = await getAthleteIqProductDashboardProjection();
 

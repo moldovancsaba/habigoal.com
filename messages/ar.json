@@ -1149,7 +1149,9 @@
     "errorTitle": "مشكلة في تسجيل الدخول",
     "invalidIdentifier": "أدخل بريداً إلكترونياً أو اسم مستخدم صالحاً.",
     "missingPersona": "اختر رياضي أو مدرب.",
-    "genericError": "تعذر إكمال تسجيل الدخول. حاول مرة أخرى."
+    "genericError": "تعذر إكمال تسجيل الدخول. حاول مرة أخرى.",
+    "athleteIqAccessRequired": "يتطلب Athlete IQ وصول فريق أو مدرب محترف. يمكنك المتابعة في Habigoal إذا كان حسابك يملك وصول Habigoal.",
+    "habigoalAccessRequired": "وصول Habigoal غير مفعّل لهذا الحساب بعد."
   },
   "News": {
     "badge": "أخبار Habigoal",
@@ -1495,7 +1497,9 @@
           "reflect": "تأمل",
           "sleep": "روتين النوم",
           "study": "وقت تعلم"
-        }
+        },
+        "reviewed": "راجعت عادات اليوم",
+        "confirmRequired": "راجع عادات اليوم قبل الحفظ."
       },
       "guidance": {
         "kicker": "الخطوة التالية",
@@ -1527,6 +1531,79 @@
         "profileRequired": "ملف الرياضي غير جاهز بعد. سجّل الدخول مرة أخرى وحاول مجدداً.",
         "sessionExpired": "انتهت الجلسة. سجّل الدخول مرة أخرى للمتابعة.",
         "reference": "المرجع: {correlationId}"
+      },
+      "statusLocked": "تسجيل",
+      "dailyState": {
+        "empty_day": "ابدأ اليوم",
+        "check_in_in_progress": "يلزم تسجيل الحالة",
+        "habits_in_progress": "تلزم العادات",
+        "ready_to_save": "جاهز للحفظ",
+        "saving": "جار الحفظ",
+        "saved_status": "الحالة جاهزة",
+        "save_failed_retryable": "حاول مرة أخرى",
+        "save_failed_blocked": "محظور"
+      },
+      "journey": {
+        "empty_day": {
+          "title": "ابدأ دورة اليوم",
+          "copy": "سجّل حالة اليوم والعادات قبل أن يعرض Habigoal الحالة.",
+          "detail": "لا توجد أنشطة محفوظة اليوم",
+          "nextAction": "ابدأ بتسجيل الحالة.",
+          "aria": "لم يبدأ اليوم بعد"
+        },
+        "check_in_in_progress": {
+          "title": "أكمل تسجيل الحالة أولاً",
+          "copy": "اضبط الإشارات الأربع ثم راجع عادات اليوم.",
+          "detail": "تسجيل الحالة غير مكتمل",
+          "nextAction": "اضبط كل إشارة.",
+          "aria": "تسجيل الحالة غير مكتمل"
+        },
+        "habits_in_progress": {
+          "title": "راجع عادات اليوم",
+          "copy": "حدد العادات المكتملة أو أكد المراجعة قبل الحفظ.",
+          "detail": "تحتاج العادات إلى مراجعة",
+          "nextAction": "راجع وأكد عادات اليوم.",
+          "aria": "مراجعة العادات غير مكتملة"
+        },
+        "ready_to_save": {
+          "title": "راجع واحفظ اليوم",
+          "copy": "تسجيل الحالة والعادات جاهزان. احفظهما لإنشاء حالة اليوم.",
+          "detail": "جاهز للحفظ",
+          "nextAction": "احفظ اليوم لإظهار الحالة.",
+          "aria": "دورة اليوم جاهزة للحفظ"
+        },
+        "saving": {
+          "title": "جار حفظ اليوم",
+          "copy": "يحفظ Habigoal تسجيل الحالة والعادات.",
+          "detail": "الحفظ جار",
+          "nextAction": "ابق على هذه الشاشة أثناء الحفظ.",
+          "aria": "يتم حفظ دورة اليوم"
+        },
+        "saved_status": {
+          "title": "حالة اليوم جاهزة",
+          "copy": "تعتمد حالة اليوم على تسجيل الحالة والعادات المحفوظة.",
+          "detail": "الحالة متاحة",
+          "nextAction": "راجع الخطوة التالية.",
+          "aria": "حالة اليوم جاهزة"
+        },
+        "save_failed_retryable": {
+          "title": "لم يكتمل الحفظ",
+          "copy": "مدخلاتك ما زالت موجودة. حاول الحفظ مرة أخرى.",
+          "detail": "يمكنت إعادة المحاولة",
+          "nextAction": "حاول الحفظ مرة أخرى.",
+          "aria": "يمكن إعادة محاولة حفظ اليوم"
+        },
+        "save_failed_blocked": {
+          "title": "الحفظ محظور",
+          "copy": "حل الرسالة المعروضة قبل حفظ اليوم.",
+          "detail": "الحفظ محظور",
+          "nextAction": "راجع رسالة الحظر.",
+          "aria": "حفظ اليوم محظور"
+        }
+      },
+      "review": {
+        "title": "مراجعة وحفظ",
+        "copy": "تظهر الحالة فقط بعد حفظ تسجيل الحالة وعادات اليوم."
       }
     },
     "athleteIq": {
@@ -1656,7 +1733,19 @@
         "copy": "عرض احترافي كثيف مع تفسير المصدر واستمرارية سير العمل.",
         "loadLabel": "الحمل",
         "mentalLabel": "ذهني",
-        "unassignedTeam": "غير مخصص لفريق"
+        "unassignedTeam": "غير مخصص لفريق",
+        "habigoalLabel": "Habigoal",
+        "habitsLabel": "العادات",
+        "habigoalCompletion": {
+          "missing": "لا يوجد يوم Habigoal محفوظ",
+          "partial": "يوم Habigoal غير مكتمل",
+          "complete": "تم حفظ يوم Habigoal"
+        },
+        "habigoalSource": {
+          "habigoal": "بيانات Habigoal",
+          "athlete_iq": "بيانات Athlete IQ",
+          "mixed": "بيانات مشتركة"
+        }
       },
       "services": {
         "title": "الخدمات والتقارير",

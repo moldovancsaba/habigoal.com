@@ -12,6 +12,7 @@ export type SessionPayload = {
   name: string;
   role: string;
   expires: number;
+  productSurface?: string;
   accessToken?: string;
 };
 
@@ -39,7 +40,7 @@ export async function decrypt(input: string): Promise<SessionPayload | null> {
   }
 }
 
-export async function createSession(user: { id: string; email: string; name: string; role: string; accessToken?: string }) {
+export async function createSession(user: { id: string; email: string; name: string; role: string; productSurface?: string; accessToken?: string }) {
   const expires = Date.now() + SESSION_DURATION;
   const session = await encrypt({ 
     userId: user.id, 
@@ -47,6 +48,7 @@ export async function createSession(user: { id: string; email: string; name: str
     name: user.name, 
     role: user.role, 
     expires,
+    productSurface: user.productSurface,
     accessToken: user.accessToken
   });
 

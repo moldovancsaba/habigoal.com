@@ -1149,7 +1149,9 @@
     "errorTitle": "Belépési probléma",
     "invalidIdentifier": "Adjon meg érvényes e-mail címet vagy felhasználónevet.",
     "missingPersona": "Válassza ki, hogy sportoló vagy edző.",
-    "genericError": "Nem sikerült befejezni a belépést. Kérjük, próbálja újra."
+    "genericError": "Nem sikerült befejezni a belépést. Kérjük, próbálja újra.",
+    "athleteIqAccessRequired": "Az Athlete IQ professzionális csapat- vagy edzői hozzáférést igényel. Habigoallal folytathatod, ha a fiókodhoz Habigoal hozzáférés tartozik.",
+    "habigoalAccessRequired": "A Habigoal hozzáférés még nincs engedélyezve ehhez a fiókhoz."
   },
   "News": {
     "badge": "Habigoal Hírek",
@@ -1495,7 +1497,9 @@
           "reflect": "Reflexió",
           "sleep": "Alvásrutin",
           "study": "Tanulási blokk"
-        }
+        },
+        "reviewed": "Átnéztem a mai szokásokat",
+        "confirmRequired": "Mentés előtt nézd át a mai szokásokat."
       },
       "guidance": {
         "kicker": "Következő lépés",
@@ -1527,6 +1531,79 @@
         "profileRequired": "A sportolói profil még nem áll készen. Lépjen be újra, majd próbálja ismét.",
         "sessionExpired": "A munkamenet lejárt. Jelentkezzen be újra a folytatáshoz.",
         "reference": "Hivatkozás: {correlationId}"
+      },
+      "statusLocked": "Rögzítés",
+      "dailyState": {
+        "empty_day": "Nap indítása",
+        "check_in_in_progress": "Check-in szükséges",
+        "habits_in_progress": "Szokások szükségesek",
+        "ready_to_save": "Mentésre kész",
+        "saving": "Mentés",
+        "saved_status": "Státusz kész",
+        "save_failed_retryable": "Próbáld újra",
+        "save_failed_blocked": "Blokkolva"
+      },
+      "journey": {
+        "empty_day": {
+          "title": "Indítsd el a mai napi kört",
+          "copy": "Rögzítsd a mai check-int és szokásokat, mielőtt a Habigoal státuszt mutat.",
+          "detail": "Ma még nincs mentett aktivitás",
+          "nextAction": "Kezdd a check-innel.",
+          "aria": "A mai nap még nincs elindítva"
+        },
+        "check_in_in_progress": {
+          "title": "Először fejezd be a check-int",
+          "copy": "Állítsd be mind a négy jólléti jelet, majd nézd át a szokásokat.",
+          "detail": "A check-in még hiányos",
+          "nextAction": "Állíts be minden check-in jelet.",
+          "aria": "A check-in hiányos"
+        },
+        "habits_in_progress": {
+          "title": "Nézd át a mai szokásokat",
+          "copy": "Jelöld a teljesített szokásokat, vagy erősítsd meg az áttekintést mentés előtt.",
+          "detail": "A szokások áttekintése hiányzik",
+          "nextAction": "Nézd át és erősítsd meg a szokásokat.",
+          "aria": "A szokásellenőrzés hiányos"
+        },
+        "ready_to_save": {
+          "title": "Áttekintés és mentés",
+          "copy": "A check-in és a szokások készen állnak. Mentsd őket a mai státuszhoz.",
+          "detail": "Mentésre kész",
+          "nextAction": "Mentsd a mai napot a státuszhoz.",
+          "aria": "A napi kör mentésre kész"
+        },
+        "saving": {
+          "title": "Mentés folyamatban",
+          "copy": "A Habigoal menti a check-int és a szokásokat.",
+          "detail": "Mentés folyamatban",
+          "nextAction": "Maradj ezen a képernyőn mentés közben.",
+          "aria": "A napi kör mentése folyamatban"
+        },
+        "saved_status": {
+          "title": "A mai státusz kész",
+          "copy": "A mai státusz a mentett check-in és szokásadatokból készül.",
+          "detail": "Státusz elérhető",
+          "nextAction": "Nézd meg a következő lépést.",
+          "aria": "A napi státusz kész"
+        },
+        "save_failed_retryable": {
+          "title": "A mentés nem fejeződött be",
+          "copy": "A beírt adatok megmaradtak. Próbáld újra.",
+          "detail": "Újrapróbálható",
+          "nextAction": "Próbáld újra a mentést.",
+          "aria": "A napi mentés újrapróbálható"
+        },
+        "save_failed_blocked": {
+          "title": "A mentés blokkolva",
+          "copy": "Oldd meg az üzenetben jelzett problémát mentés előtt.",
+          "detail": "Mentés blokkolva",
+          "nextAction": "Nézd meg a blokkoló üzenetet.",
+          "aria": "A napi mentés blokkolva"
+        }
+      },
+      "review": {
+        "title": "Áttekintés és mentés",
+        "copy": "A státusz csak a mai check-in és szokások mentése után jelenik meg."
       }
     },
     "athleteIq": {
@@ -1656,7 +1733,19 @@
         "copy": "Sűrű professzionális nézet forrásindoklással és folyamatfolytonossággal.",
         "loadLabel": "Terhelés",
         "mentalLabel": "Mentális",
-        "unassignedTeam": "Csapathoz nem rendelve"
+        "unassignedTeam": "Csapathoz nem rendelve",
+        "habigoalLabel": "Habigoal",
+        "habitsLabel": "Szokások",
+        "habigoalCompletion": {
+          "missing": "Nincs mentett Habigoal nap",
+          "partial": "A Habigoal nap hiányos",
+          "complete": "Habigoal nap mentve"
+        },
+        "habigoalSource": {
+          "habigoal": "Habigoal adat",
+          "athlete_iq": "Athlete IQ adat",
+          "mixed": "Közös adat"
+        }
       },
       "services": {
         "title": "Szolgáltatások és riportok",

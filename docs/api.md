@@ -35,6 +35,14 @@ Access rules:
 - Trainers can access athletes through team membership.
 - Admins can access and manage all organization data.
 
+Product surface access is separate from role labels:
+
+- `productEntitlements.habigoal.enabled=true` allows the Habigoal mobile daily app.
+- `productEntitlements.athleteIq.enabled=true` allows the Athlete IQ professional workspace.
+- A self-registered pseudo-login receives Habigoal access by default and does not receive Athlete IQ access unless a professional entitlement is already present or granted later.
+- Habigoal route/API handlers return `PRODUCT_ACCESS_DENIED` when the user lacks Habigoal entitlement.
+- Athlete IQ route/API handlers return `PRODUCT_ACCESS_DENIED` when the user lacks Athlete IQ entitlement.
+
 ## Error Shape
 
 ```json
@@ -71,6 +79,8 @@ Returns service diagnostics:
 
 Returns the canonical phase-1 surface and function split used by the app landing workflow.
 
+The surface relationship is defined in [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md). `includedSurfaceIds: ["habigoal"]` on Athlete IQ means Athlete IQ can consume Habigoal-created athlete history through professional authorization. It does not mean the Athlete IQ UI embeds or copies the Habigoal UI.
+
 Response:
 
 ```json
@@ -93,7 +103,7 @@ Response:
       "name": "Athlete IQ",
       "shortName": "AIQ",
       "headline": "Professional performance operating system",
-      "summary": "The professional layer for athletes, coaches, academies, dashboards, reports, services, CogLeague, GameFlow, and advanced intelligence.",
+      "summary": "The professional layer that includes Habigoal as a daily signal layer, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
       "primaryPath": "/athlete-iq",
       "includedSurfaceIds": ["habigoal"],
       "functionRegistry": []
@@ -297,13 +307,69 @@ Twin Projection uses version `aiq-twin-projection-1260.1`. Full contract, rollba
 
 Starts the DoneIsBetter SSO flow. Accepts optional `next` query parameter for return path.
 
+### `POST /api/auth/login`
+
+Pseudo-login/register entry used before SSO rollout completion.
+
+Payload:
+
+```json
+{
+  "identifier": "user@example.com",
+  "persona": "athlete",
+  "productSurface": "habigoal",
+  "next": "/hu/habigoal"
+}
+```
+
+Rules:
+
+- `identifier` can be an email or a username. Usernames are normalized to a local email identity.
+- `persona` is `athlete` or `trainer` and selects the active session role. It does not grant unavailable product access.
+- `productSurface` is `habigoal` or `athlete-iq`. If omitted, the server derives it from `next` and persona.
+- New users are provisioned empty. No measurements, habits, check-ins, scores, or sample records are created.
+- The server validates product entitlements before creating the session redirect.
+
+Success response for JSON requests:
+
+```json
+{
+  "user": {
+    "email": "user@example.com",
+    "name": "user@example.com",
+    "roles": ["athlete"],
+    "activeRole": "athlete",
+    "primaryRole": "athlete",
+    "productEntitlements": {
+      "habigoal": { "enabled": true, "reason": "self_registered" },
+      "athleteIq": { "enabled": false }
+    },
+    "productSurface": "habigoal"
+  },
+  "redirectTo": "/hu/habigoal"
+}
+```
+
+Denied response:
+
+```json
+{
+  "error": "Product access denied",
+  "code": "athlete_iq_access_required",
+  "productEntitlements": {
+    "habigoal": { "enabled": true, "reason": "self_registered" },
+    "athleteIq": { "enabled": false }
+  }
+}
+```
+
 ### `GET /api/oauth/callback`
 
 Completes the OAuth callback, validates local user authorization, creates the signed session cookie, updates `lastLoginAt`, and redirects by role.
 
 ### `GET /api/auth/me`
 
-Returns the current user session plus local role, primary role, linked athlete id, and team ids.
+Returns the current user session plus local role, primary role, linked athlete id, product entitlements, and team ids.
 
 ### `GET /api/auth/logout`
 

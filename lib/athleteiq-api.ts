@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 export type AthleteIqStructuredErrorCode =
   | "AUTH_REQUIRED"
   | "FORBIDDEN"
+  | "PRODUCT_ACCESS_DENIED"
   | "VALIDATION_ERROR"
   | "MODULE_NOT_FOUND"
   | "FUTURE_MODULE_NOT_ACTIONABLE"

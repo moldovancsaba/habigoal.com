@@ -1149,7 +1149,9 @@
     "errorTitle": "Problema de login",
     "invalidIdentifier": "Introduce un email o usuario valido.",
     "missingPersona": "Elige atleta o entrenador.",
-    "genericError": "No pudimos completar el login. Intentalo de nuevo."
+    "genericError": "No pudimos completar el login. Intentalo de nuevo.",
+    "athleteIqAccessRequired": "Athlete IQ requiere acceso profesional de equipo o entrenador. Puedes continuar con Habigoal si tu cuenta tiene acceso a Habigoal.",
+    "habigoalAccessRequired": "El acceso a Habigoal aun no esta activado para esta cuenta."
   },
   "News": {
     "badge": "Noticias Habigoal",
@@ -1495,7 +1497,9 @@
           "reflect": "Reflexión",
           "sleep": "Rutina de sueño",
           "study": "Bloque de aprendizaje"
-        }
+        },
+        "reviewed": "Revisé los hábitos de hoy",
+        "confirmRequired": "Revisa los hábitos de hoy antes de guardar."
       },
       "guidance": {
         "kicker": "Siguiente paso",
@@ -1527,6 +1531,79 @@
         "profileRequired": "Tu perfil de atleta aún no está listo. Inicia sesión de nuevo y vuelve a intentarlo.",
         "sessionExpired": "Tu sesión expiró. Inicia sesión de nuevo para continuar.",
         "reference": "Referencia: {correlationId}"
+      },
+      "statusLocked": "Registrar",
+      "dailyState": {
+        "empty_day": "Empezar hoy",
+        "check_in_in_progress": "Falta check-in",
+        "habits_in_progress": "Faltan hábitos",
+        "ready_to_save": "Listo para guardar",
+        "saving": "Guardando",
+        "saved_status": "Estado listo",
+        "save_failed_retryable": "Reintentar",
+        "save_failed_blocked": "Bloqueado"
+      },
+      "journey": {
+        "empty_day": {
+          "title": "Empieza el ciclo diario",
+          "copy": "Registra el check-in y los hábitos antes de que Habigoal muestre un estado.",
+          "detail": "Sin actividad guardada hoy",
+          "nextAction": "Empieza con el check-in.",
+          "aria": "El dia aun no ha empezado"
+        },
+        "check_in_in_progress": {
+          "title": "Completa primero el check-in",
+          "copy": "Configura las cuatro señales y luego revisa los hábitos.",
+          "detail": "El check-in esta incompleto",
+          "nextAction": "Configura cada señal del check-in.",
+          "aria": "El check-in esta incompleto"
+        },
+        "habits_in_progress": {
+          "title": "Revisa los hábitos de hoy",
+          "copy": "Marca hábitos completados o confirma la revisión antes de guardar.",
+          "detail": "Falta revisar hábitos",
+          "nextAction": "Revisa y confirma los hábitos.",
+          "aria": "La revisión de hábitos esta incompleta"
+        },
+        "ready_to_save": {
+          "title": "Revisar y guardar",
+          "copy": "El check-in y los hábitos están listos. Guárdalos para crear el estado.",
+          "detail": "Listo para guardar",
+          "nextAction": "Guarda hoy para desbloquear el estado.",
+          "aria": "El ciclo diario esta listo para guardar"
+        },
+        "saving": {
+          "title": "Guardando hoy",
+          "copy": "Habigoal guarda tu check-in y hábitos.",
+          "detail": "Guardado en curso",
+          "nextAction": "Mantén esta pantalla abierta al guardar.",
+          "aria": "El ciclo diario se esta guardando"
+        },
+        "saved_status": {
+          "title": "El estado de hoy esta listo",
+          "copy": "El estado se basa en el check-in y los hábitos guardados.",
+          "detail": "Estado disponible",
+          "nextAction": "Revisa tu siguiente acción.",
+          "aria": "El estado diario esta listo"
+        },
+        "save_failed_retryable": {
+          "title": "El guardado no terminó",
+          "copy": "Tus datos siguen aquí. Intenta de nuevo.",
+          "detail": "Reintento disponible",
+          "nextAction": "Intenta guardar de nuevo.",
+          "aria": "El guardado diario se puede reintentar"
+        },
+        "save_failed_blocked": {
+          "title": "Guardado bloqueado",
+          "copy": "Resuelve el mensaje mostrado antes de guardar.",
+          "detail": "Guardado bloqueado",
+          "nextAction": "Revisa el mensaje de bloqueo.",
+          "aria": "El guardado diario esta bloqueado"
+        }
+      },
+      "review": {
+        "title": "Revisar y guardar",
+        "copy": "El estado aparece solo después de guardar el check-in y los hábitos de hoy."
       }
     },
     "athleteIq": {
@@ -1656,7 +1733,19 @@
         "copy": "Vista profesional densa con razonamiento de fuentes y continuidad de flujo.",
         "loadLabel": "Carga",
         "mentalLabel": "Mental",
-        "unassignedTeam": "Sin equipo asignado"
+        "unassignedTeam": "Sin equipo asignado",
+        "habigoalLabel": "Habigoal",
+        "habitsLabel": "Hábitos",
+        "habigoalCompletion": {
+          "missing": "No hay día de Habigoal guardado",
+          "partial": "Día de Habigoal incompleto",
+          "complete": "Día de Habigoal guardado"
+        },
+        "habigoalSource": {
+          "habigoal": "Datos de Habigoal",
+          "athlete_iq": "Datos de Athlete IQ",
+          "mixed": "Datos compartidos"
+        }
       },
       "services": {
         "title": "Servicios e informes",

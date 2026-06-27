@@ -13,6 +13,10 @@ export async function GET() {
         role: "admin",
         roles: ["admin", "trainer", "athlete"],
         primaryRole: "admin",
+        productEntitlements: {
+          habigoal: { enabled: true, reason: "admin_grant" },
+          athleteIq: { enabled: true, reason: "admin_grant" }
+        },
         teamIds: []
       }
     });
@@ -36,6 +40,7 @@ export async function GET() {
       roles: user.roles,
       primaryRole: user.primaryRole,
       athleteId: user.athleteId,
+      productEntitlements: user.productEntitlements,
       teamIds: user.teamIds
     }
   });

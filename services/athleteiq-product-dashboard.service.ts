@@ -2,9 +2,12 @@ import { listCoachActionsByDate } from "@/repositories/coach-actions.repository"
 import { listChildrenWithMetrics, type ChildProfile } from "@/repositories/child.repository";
 import { getDailyPlanByDate } from "@/repositories/athleteiq-daily-plan.repository";
 import { getLatestDailyIqSnapshot } from "@/repositories/athleteiq-daily-iq.repository";
+import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import { listPainAlertsByAthlete } from "@/repositories/athleteiq-pain-safety.repository";
 import { listTeams } from "@/repositories/team.repository";
 import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
+import { buildHabigoalDailyStatus, type HabigoalDailyStatus } from "@/lib/habigoal-status";
+import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
 import type { CoachActionRecord } from "@/types/coach-action";
 import type { Team } from "@/types/team";
 
@@ -26,6 +29,12 @@ export type AthleteIqDashboardAthlete = {
   openActionCount: number;
   openPainAlertCount: number;
   hasDailyPlan: boolean;
+  habigoalDaily: {
+    completionState: "missing" | "partial" | "complete";
+    habitCompletion: string;
+    source: "habigoal" | "athlete_iq" | "mixed";
+    status: HabigoalDailyStatus | null;
+  };
   missingFields: string[];
 };
 
@@ -108,17 +117,19 @@ export async function getAthleteIqProductDashboardProjection(input: {
   const athleteRows = await Promise.all(
     athletes.map(async (athlete) => {
       const athleteId = getAthleteProfileId(athlete);
-      const [dailyIq, dailyPlan, painAlerts] = await Promise.all([
+      const [dailyIq, dailyPlan, painAlerts, habigoalDaily] = await Promise.all([
         getLatestDailyIqSnapshot({ athleteId, localDate }),
         getDailyPlanByDate(athleteId, localDate),
-        listPainAlertsByAthlete(athleteId)
+        listPainAlertsByAthlete(athleteId),
+        getHabigoalProfessionalDailySource(athleteId, localDate)
       ]);
       const activePainAlerts = painAlerts.filter((alert) => alert.state !== "resolved" && alert.state !== "dismissed");
-      const readiness = scoreFromDailyIq(dailyIq?.dailyIqScore) ?? scoreFromFivePoint(athlete.latestReadiness);
+      const readiness = scoreFromDailyIq(dailyIq?.dailyIqScore) ?? habigoalDaily.score ?? scoreFromFivePoint(athlete.latestReadiness);
       const mental = scoreFromDailyIq(dailyIq?.mentalEdgeScore) ?? scoreFromFivePoint(athlete.latestScores?.mental);
       const load = scoreFromDailyIq(dailyIq?.safeLoadScore);
       const missingFields = collectMissingAthleteFields(athlete, {
         hasDailyIq: Boolean(dailyIq),
+        hasHabigoalDaily: habigoalDaily.completionState === "complete",
         hasTeam: Boolean(teamsByAthleteId.get(athleteId)?.name ?? athlete.teamId),
         hasReadiness: readiness !== null
       });
@@ -141,6 +152,12 @@ export async function getAthleteIqProductDashboardProjection(input: {
         openActionCount,
         openPainAlertCount,
         hasDailyPlan: Boolean(dailyPlan),
+        habigoalDaily: {
+          completionState: habigoalDaily.completionState,
+          habitCompletion: `${habigoalDaily.completedHabits}/${habigoalDaily.totalHabits}`,
+          source: dailyIq && habigoalDaily.completionState !== "missing" ? "mixed" : habigoalDaily.completionState === "missing" ? "athlete_iq" : "habigoal",
+          status: habigoalDaily.status
+        },
         missingFields
       } satisfies AthleteIqDashboardAthlete;
     })
@@ -266,15 +283,52 @@ function scoreFromFivePoint(value: number | null | undefined) {
 
 function collectMissingAthleteFields(
   athlete: ChildProfile,
-  flags: { hasDailyIq: boolean; hasReadiness: boolean; hasTeam: boolean }
+  flags: { hasDailyIq: boolean; hasHabigoalDaily: boolean; hasReadiness: boolean; hasTeam: boolean }
 ) {
   const missing = [];
   if (!athlete.birthDate) missing.push("birthDate");
   if (!athlete.status) missing.push("status");
   if (!flags.hasTeam) missing.push("team");
-  if (!flags.hasDailyIq) missing.push("dailyIq");
+  if (!flags.hasDailyIq && !flags.hasHabigoalDaily) missing.push("dailyStatus");
   if (!flags.hasReadiness) missing.push("readiness");
   return missing;
+}
+
+async function getHabigoalProfessionalDailySource(athleteId: string, localDate: string) {
+  const [checkIn, habitRecord] = await Promise.all([
+    getAthleteIqCheckInSnapshot(athleteId, localDate, "lifestyle"),
+    getHabitRecordByAthleteIdAndDate(athleteId, localDate)
+  ]);
+  const values = {
+    energy: valueOrNull(invert(checkIn?.values.fatigue?.normalizedValue)),
+    soreness: valueOrNull(checkIn?.values.pain?.normalizedValue),
+    mood: valueOrNull(checkIn?.values.mood?.normalizedValue),
+    sleep: valueOrNull(checkIn?.values.sleepQuality?.normalizedValue)
+  };
+  const completedHabits = habitRecord ? Object.values(habitRecord.statuses).filter(Boolean).length : 0;
+  const totalHabits = habitRecord ? Object.keys(habitRecord.statuses).length : 6;
+  const status = buildHabigoalDailyStatus({
+    completedHabitCount: completedHabits,
+    hasLiveCheckIn: Boolean(checkIn),
+    hasLiveHabits: Boolean(habitRecord),
+    totalHabitCount: totalHabits,
+    values
+  });
+  return {
+    completedHabits,
+    completionState: !checkIn && !habitRecord ? "missing" as const : status.score === null ? "partial" as const : "complete" as const,
+    score: status.score,
+    status: status.score === null ? null : status.status,
+    totalHabits
+  };
+}
+
+function valueOrNull(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value) ? Math.round(value) : null;
+}
+
+function invert(value: number | null | undefined) {
+  return typeof value === "number" && Number.isFinite(value) ? 100 - value : null;
 }
 
 function resolveSeverity(input: {

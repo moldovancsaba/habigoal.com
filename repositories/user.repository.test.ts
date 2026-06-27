@@ -22,6 +22,10 @@ describe("user repository persona login", () => {
         email: "same-user@example.com",
         name: "Same User",
         roles: ["athlete"],
+        productEntitlements: {
+          habigoal: { enabled: true, reason: "self_registered" },
+          athleteIq: { enabled: false }
+        },
         athleteId: "athlete-1",
         teamIds: ["team-1"],
         createdAt: "2026-06-27T08:00:00.000Z",
@@ -32,6 +36,10 @@ describe("user repository persona login", () => {
         email: "same-user@example.com",
         name: "Same User",
         roles: ["athlete", "trainer"],
+        productEntitlements: {
+          habigoal: { enabled: true, reason: "self_registered" },
+          athleteIq: { enabled: false }
+        },
         athleteId: "athlete-1",
         teamIds: ["team-1"],
         createdAt: "2026-06-27T08:00:00.000Z",
@@ -56,6 +64,10 @@ describe("user repository persona login", () => {
         $set: expect.objectContaining({
           email: "same-user@example.com",
           name: "Same User",
+          productEntitlements: {
+            habigoal: { enabled: true, reason: "self_registered" },
+            athleteIq: { enabled: false }
+          },
           roles: ["athlete", "trainer"]
         })
       }),

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canAccessAthlete, getAuthUser } from "@/lib/access";
+import { canAccessHabigoalAthlete, canOpenProductSurface, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
 import { buildAthleteIqCheckInSnapshot } from "@/lib/athleteiq-check-in";
 import { createHabigoalCorrelationId, habigoalJsonError, logHabigoalEvent } from "@/lib/habigoal-api";
@@ -29,6 +29,10 @@ export async function POST(request: Request) {
     return habigoalJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true });
   }
 
+  if (!canOpenProductSurface(user, "habigoal")) {
+    return habigoalJsonError("PRODUCT_ACCESS_DENIED", 403, correlationId, { retryable: false });
+  }
+
   logHabigoalEvent("habigoal.daily_operation.start", {
     correlationId,
     operationId,
@@ -49,7 +53,7 @@ export async function POST(request: Request) {
       return fail("VALIDATION_ERROR", 400, correlationId, operationId, startedAt, "athleteId is required");
     }
 
-    if (!(await canAccessAthlete(user, athleteId))) {
+    if (!(await canAccessHabigoalAthlete(user, athleteId))) {
       return fail("FORBIDDEN", 403, correlationId, operationId, startedAt, "athlete access denied");
     }
 

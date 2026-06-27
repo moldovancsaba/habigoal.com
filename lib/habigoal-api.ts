@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 export type HabigoalStructuredErrorCode =
   | "AUTH_REQUIRED"
   | "FORBIDDEN"
+  | "PRODUCT_ACCESS_DENIED"
   | "VALIDATION_ERROR"
   | "PROFILE_REQUIRED"
   | "TIMEOUT"

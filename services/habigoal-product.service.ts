@@ -4,9 +4,9 @@ import { getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
 import { createHabigoalCorrelationId, logHabigoalEvent } from "@/lib/habigoal-api";
 import { buildHabigoalDailyStatus, type HabigoalConfidence, type HabigoalDailyStatus, type HabigoalMetricValues } from "@/lib/habigoal-status";
 import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
-import { createEmptyAthleteProfileForUser, findChildByUserIdentity, getChildById, listChildren } from "@/repositories/child.repository";
+import { getChildById, listChildren } from "@/repositories/child.repository";
 import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
-import { setUserAthleteId } from "@/repositories/user.repository";
+import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 
 export type HabigoalHabitKey = "hydrate" | "move" | "fuel" | "reflect" | "sleep" | "study";
 
@@ -129,19 +129,8 @@ async function resolveHabigoalAthlete(user: AuthUser) {
   if (directId && ObjectId.isValid(directId)) return getChildById(new ObjectId(directId));
 
   if (user.primaryRole === "athlete") {
-    const existing = await findChildByUserIdentity({ email: user.email, userId: user.id });
-    if (existing?._id) {
-      await setUserAthleteId(user.email, existing._id);
-      return existing;
-    }
-
-    const created = await createEmptyAthleteProfileForUser({
-      email: user.email,
-      name: user.name || user.email,
-      userId: user.id
-    });
-    if (created._id) await setUserAthleteId(user.email, created._id);
-    return created;
+    const result = await ensureCanonicalAthleteProfileForUser({ user });
+    return result.athlete;
   }
 
   const allowedIds = await resolveAccessibleAthleteIds(user);

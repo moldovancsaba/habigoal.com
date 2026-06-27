@@ -19,6 +19,7 @@
     "db:migrate-survey-identifiers": "node scripts/migrate-survey-identifiers.mjs",
     "lockfile:check": "node scripts/check-lockfile-sync.mjs",
     "semantic:audit": "node scripts/semantic-audit.mjs",
+    "product-boundary:audit": "node scripts/product-boundary-audit.mjs",
     "version:audit": "node scripts/version-audit.mjs",
     "habigoal:audit": "node scripts/habigoal-production-audit.mjs",
     "habigoal:release-gate": "node scripts/habigoal-release-gate.mjs",

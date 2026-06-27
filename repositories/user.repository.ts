@@ -1,6 +1,12 @@
 import { getDatabase } from "@/lib/mongodb";
 import type { User } from "@/services/user-service";
 import { normalizeRoles } from "@/lib/access";
+import {
+  normalizeProductEntitlements,
+  resolvePersonaLoginEntitlements,
+  resolveProductEntitlements,
+  type ProductEntitlements
+} from "@/lib/product-entitlements";
 
 const collectionName = "users";
 
@@ -12,6 +18,10 @@ function mapUser(doc: any): User {
     roles: normalizeRoles(doc.roles || []),
     athleteId: doc.athleteId,
     parentAthleteIds: doc.parentAthleteIds || [],
+    productEntitlements: resolveProductEntitlements({
+      productEntitlements: doc.productEntitlements,
+      roles: doc.roles || []
+    }),
     teamIds: doc.teamIds || [],
     lastLoginAt: doc.lastLoginAt,
     createdAt: doc.createdAt,
@@ -52,6 +62,7 @@ export async function upsertUser(user: Omit<User, "id">) {
         ...user,
         email: normalizedEmail,
         roles: normalizedRoles,
+        productEntitlements: normalizeProductEntitlements(user.productEntitlements) ?? resolveProductEntitlements({ roles: normalizedRoles }),
         teamIds: user.teamIds || [],
         updatedAt: now
       },
@@ -71,12 +82,18 @@ export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" |
   const now = new Date().toISOString();
   const existing = await db.collection(collectionName).findOne({ email: normalizedEmail });
   const mergedRoles = normalizeRoles([...(Array.isArray(existing?.roles) ? existing.roles : []), ...normalizedRoles]);
+  const productEntitlements = resolvePersonaLoginEntitlements({
+    existingProductEntitlements: existing?.productEntitlements,
+    existingRoles: Array.isArray(existing?.roles) ? existing.roles : [],
+    now
+  });
   await db.collection(collectionName).updateOne(
     { email: normalizedEmail },
     {
       $set: {
         email: normalizedEmail,
         name: user.name || normalizedEmail,
+        productEntitlements,
         roles: mergedRoles,
         updatedAt: now,
         lastLoginAt: now
@@ -89,6 +106,21 @@ export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" |
     { upsert: true }
   );
   return findUserByEmail(normalizedEmail);
+}
+
+export async function setUserProductEntitlements(email: string, productEntitlements: ProductEntitlements) {
+  const db = await getDatabase();
+  const normalizedEmail = email.toLowerCase().trim();
+  const now = new Date().toISOString();
+  await db.collection(collectionName).updateOne(
+    { email: normalizedEmail },
+    {
+      $set: {
+        productEntitlements: normalizeProductEntitlements(productEntitlements),
+        updatedAt: now
+      }
+    }
+  );
 }
 
 export async function setUserAthleteId(email: string, athleteId: string) {

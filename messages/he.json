@@ -1149,7 +1149,9 @@
     "errorTitle": "בעיית התחברות",
     "invalidIdentifier": "הזן אימייל או שם משתמש תקין.",
     "missingPersona": "בחר ספורטאי או מאמן.",
-    "genericError": "לא הצלחנו להשלים את ההתחברות. נסה שוב."
+    "genericError": "לא הצלחנו להשלים את ההתחברות. נסה שוב.",
+    "athleteIqAccessRequired": "Athlete IQ דורשת גישת צוות או מאמן מקצועית. אפשר להמשיך עם Habigoal אם לחשבון יש גישת Habigoal.",
+    "habigoalAccessRequired": "גישת Habigoal עדיין לא מופעלת לחשבון זה."
   },
   "News": {
     "badge": "חדשות Habigoal",
@@ -1495,7 +1497,9 @@
           "reflect": "רפלקציה",
           "sleep": "שגרת שינה",
           "study": "זמן למידה"
-        }
+        },
+        "reviewed": "בדקתי את הרגלי היום",
+        "confirmRequired": "בדוק את הרגלי היום לפני השמירה."
       },
       "guidance": {
         "kicker": "הצעד הבא",
@@ -1527,6 +1531,79 @@
         "profileRequired": "פרופיל הספורטאי עדיין לא מוכן. התחברו שוב ונסו פעם נוספת.",
         "sessionExpired": "פג תוקף ההפעלה. התחברו שוב כדי להמשיך.",
         "reference": "אסמכתא: {correlationId}"
+      },
+      "statusLocked": "רישום",
+      "dailyState": {
+        "empty_day": "להתחיל היום",
+        "check_in_in_progress": "צריך צ׳ק-אין",
+        "habits_in_progress": "צריך הרגלים",
+        "ready_to_save": "מוכן לשמירה",
+        "saving": "שומר",
+        "saved_status": "סטטוס מוכן",
+        "save_failed_retryable": "נסה שוב",
+        "save_failed_blocked": "חסום"
+      },
+      "journey": {
+        "empty_day": {
+          "title": "התחל את המעגל היומי",
+          "copy": "רשום את הצ׳ק-אין וההרגלים לפני ש-Habigoal מציג סטטוס.",
+          "detail": "אין פעילות שמורה היום",
+          "nextAction": "התחל בצ׳ק-אין.",
+          "aria": "היום עדיין לא התחיל"
+        },
+        "check_in_in_progress": {
+          "title": "השלם קודם את הצ׳ק-אין",
+          "copy": "קבע את ארבעת הסימנים ואז בדוק את ההרגלים.",
+          "detail": "הצ׳ק-אין עדיין חלקי",
+          "nextAction": "קבע כל סימן בצ׳ק-אין.",
+          "aria": "הצ׳ק-אין חלקי"
+        },
+        "habits_in_progress": {
+          "title": "בדוק את הרגלי היום",
+          "copy": "סמן הרגלים שהושלמו או אשר שבדקת לפני השמירה.",
+          "detail": "צריך לבדוק הרגלים",
+          "nextAction": "בדוק ואשר את הרגלי היום.",
+          "aria": "בדיקת ההרגלים חלקית"
+        },
+        "ready_to_save": {
+          "title": "בדיקה ושמירה",
+          "copy": "הצ׳ק-אין וההרגלים מוכנים. שמור אותם כדי ליצור סטטוס.",
+          "detail": "מוכן לשמירה",
+          "nextAction": "שמור את היום כדי לפתוח סטטוס.",
+          "aria": "המעגל היומי מוכן לשמירה"
+        },
+        "saving": {
+          "title": "שומר את היום",
+          "copy": "Habigoal שומר את הצ׳ק-אין וההרגלים.",
+          "detail": "השמירה מתבצעת",
+          "nextAction": "השאר את המסך פתוח בזמן השמירה.",
+          "aria": "המעגל היומי נשמר"
+        },
+        "saved_status": {
+          "title": "הסטטוס של היום מוכן",
+          "copy": "הסטטוס מבוסס על הצ׳ק-אין וההרגלים שנשמרו.",
+          "detail": "סטטוס זמין",
+          "nextAction": "בדוק את הפעולה הבאה.",
+          "aria": "הסטטוס היומי מוכן"
+        },
+        "save_failed_retryable": {
+          "title": "השמירה לא הסתיימה",
+          "copy": "הנתונים עדיין כאן. נסה שוב.",
+          "detail": "אפשר לנסות שוב",
+          "nextAction": "נסה לשמור שוב.",
+          "aria": "אפשר לנסות שוב את השמירה היומית"
+        },
+        "save_failed_blocked": {
+          "title": "השמירה חסומה",
+          "copy": "פתור את ההודעה שמוצגת לפני השמירה.",
+          "detail": "השמירה חסומה",
+          "nextAction": "בדוק את הודעת החסימה.",
+          "aria": "השמירה היומית חסומה"
+        }
+      },
+      "review": {
+        "title": "בדיקה ושמירה",
+        "copy": "הסטטוס מופיע רק אחרי שמירת הצ׳ק-אין וההרגלים של היום."
       }
     },
     "athleteIq": {
@@ -1656,7 +1733,19 @@
         "copy": "תצוגה מקצועית צפופה עם נימוק מקור והמשכיות תהליך.",
         "loadLabel": "עומס",
         "mentalLabel": "מנטלי",
-        "unassignedTeam": "לא משויך לקבוצה"
+        "unassignedTeam": "לא משויך לקבוצה",
+        "habigoalLabel": "Habigoal",
+        "habitsLabel": "הרגלים",
+        "habigoalCompletion": {
+          "missing": "אין יום Habigoal שמור",
+          "partial": "יום Habigoal חלקי",
+          "complete": "יום Habigoal נשמר"
+        },
+        "habigoalSource": {
+          "habigoal": "נתוני Habigoal",
+          "athlete_iq": "נתוני Athlete IQ",
+          "mixed": "נתונים משותפים"
+        }
       },
       "services": {
         "title": "שירותים ודוחות",

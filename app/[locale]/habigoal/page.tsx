@@ -32,7 +32,8 @@ export default async function HabigoalSurfaceRoute({
     allowedRoles: ["athlete"],
     locale,
     path: `/${locale}/habigoal`,
-    persona: "athlete"
+    persona: "athlete",
+    surface: "habigoal"
   });
   const projection = await getHabigoalTodayProjection();
 
