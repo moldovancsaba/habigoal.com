@@ -69,6 +69,8 @@ export default function SettingsPage() {
   const [teamAthleteDraft, setTeamAthleteDraft] = useState("");
   const [teamTrainerEmails, setTeamTrainerEmails] = useState<string[]>([]);
   const [teamAthleteIds, setTeamAthleteIds] = useState<string[]>([]);
+  const [teamRosterDraft, setTeamRosterDraft] = useState<Record<string, string>>({});
+  const [savingTeamId, setSavingTeamId] = useState<string | null>(null);
   const [removeUserTarget, setRemoveUserTarget] = useState<User | null>(null);
   const [removingUser, setRemovingUser] = useState(false);
 
@@ -402,6 +404,38 @@ export default function SettingsPage() {
     setMessage(tc("success"));
   }
 
+  // Update an existing team's athlete roster. POSTing with the team's _id updates
+  // it in place (athleteIds is replaced wholesale), which is what drives trainer
+  // visibility (lib/access.resolveAccessibleAthleteIds unions team.athleteIds).
+  async function updateTeamRoster(team: Team, athleteIds: string[]) {
+    if (!team._id) return;
+    setSavingTeamId(team._id);
+    const response = await fetch("/api/teams", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ _id: team._id, name: team.name, trainerEmails: team.trainerEmails, athleteIds })
+    }).catch(() => null);
+    if (response?.ok) {
+      const data = await response.json().catch(() => null);
+      if (data?.team) setTeams((prev) => prev.map((entry) => (entry._id === team._id ? data.team : entry)));
+      setMessage(tc("success"));
+    } else {
+      setMessage(tc("error"));
+    }
+    setSavingTeamId(null);
+  }
+
+  function assignAthleteToTeam(team: Team) {
+    const athleteId = (teamRosterDraft[team._id || ""] || "").trim();
+    if (!athleteId || team.athleteIds.includes(athleteId)) return;
+    void updateTeamRoster(team, [...team.athleteIds, athleteId]);
+    setTeamRosterDraft((prev) => ({ ...prev, [team._id || ""]: "" }));
+  }
+
+  function removeAthleteFromTeam(team: Team, athleteId: string) {
+    void updateTeamRoster(team, team.athleteIds.filter((id) => id !== athleteId));
+  }
+
   if (loading) {
     return (
       <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
@@ -673,16 +707,61 @@ export default function SettingsPage() {
           <Stack gap="sm">
             {teams.map((team) => (
               <Paper key={team._id || team.name} withBorder p="sm">
-                <Group justify="space-between" align="start" wrap="wrap">
-                  <Stack gap={4}>
-                    <Text fw={700}>{team.name}</Text>
-                    <Text size="sm" c="dimmed">Trainers: {team.trainerEmails.join(", ") || "None assigned"}</Text>
-                    <Text size="sm" c="dimmed">
-                      Athletes: {team.athleteIds.map((athleteId) => athletes.find((entry) => entry._id === athleteId)?.name || athleteId).join(", ") || "None assigned"}
-                    </Text>
-                  </Stack>
-                  <SemanticButton action="delete" variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)} />
-                </Group>
+                <Stack gap="sm">
+                  <Group justify="space-between" align="start" wrap="wrap">
+                    <Stack gap={4}>
+                      <Text fw={700}>{team.name}</Text>
+                      <Text size="sm" c="dimmed">Trainers: {team.trainerEmails.join(", ") || "None assigned"}</Text>
+                    </Stack>
+                    <SemanticButton action="delete" variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)} />
+                  </Group>
+                  <Group gap="xs" wrap="wrap">
+                    {team.athleteIds.length === 0 ? <Text size="sm" c="dimmed">No athletes assigned</Text> : null}
+                    {team.athleteIds.map((athleteId) => (
+                      <Badge
+                        key={athleteId}
+                        variant="light"
+                        color="strategy"
+                        rightSection={
+                          canManageUsers ? (
+                            <button
+                              type="button"
+                              aria-label={tc("remove")}
+                              onClick={() => removeAthleteFromTeam(team, athleteId)}
+                              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, lineHeight: 1 }}
+                            >
+                              ×
+                            </button>
+                          ) : undefined
+                        }
+                      >
+                        {athletes.find((entry) => entry._id === athleteId)?.name || athleteId}
+                      </Badge>
+                    ))}
+                  </Group>
+                  {canManageUsers ? (
+                    <Group gap="xs" align="end" wrap="wrap">
+                      <Box style={{ minWidth: 220 }}>
+                        <Select
+                          searchable
+                          label="Assign athlete"
+                          value={teamRosterDraft[team._id || ""] || null}
+                          data={athletes
+                            .filter((athlete) => athlete._id && !team.athleteIds.includes(athlete._id))
+                            .map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
+                          onChange={(value) => setTeamRosterDraft((prev) => ({ ...prev, [team._id || ""]: value || "" }))}
+                        />
+                      </Box>
+                      <SemanticButton
+                        action="add"
+                        variant="default"
+                        loading={savingTeamId === team._id}
+                        disabled={!teamRosterDraft[team._id || ""]}
+                        onClick={() => assignAthleteToTeam(team)}
+                      />
+                    </Group>
+                  ) : null}
+                </Stack>
               </Paper>
             ))}
             {teams.length === 0 ? <Text c="dimmed">No teams created yet.</Text> : null}

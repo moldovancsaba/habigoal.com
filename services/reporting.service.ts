@@ -13,8 +13,10 @@ export interface AthleteReport {
   summary: string;
   keyMetrics: Record<string, number | string>;
   coachNotes: string[];
-  aiCommentary: string;
-  aiGenerated: boolean;
+  // Rule-based engine guidance — NOT model-generated. Named honestly so reports
+  // and exports do not misrepresent templated output as AI (issue #201/RPT-006).
+  guidanceCommentary: string;
+  guidanceSource: "rule_based_engine";
   sourceDataNotes: string[];
 }
 
@@ -52,8 +54,8 @@ export class ReportingService {
       coachNotes: child?.baselineProfile?.coachBaselineNotes
         ? [child.baselineProfile.coachBaselineNotes]
         : [],
-      aiCommentary: `[AI Generated — ${recommendation.modelVersion}] ${recommendation.text}\n\nReason: ${recommendation.reason}\n\n${recommendation.advisoryDisclaimer}`,
-      aiGenerated: true,
+      guidanceCommentary: `[Rule-based readiness guidance — engine ${recommendation.modelVersion}] ${recommendation.text}\n\nReason: ${recommendation.reason}\n\n${recommendation.advisoryDisclaimer}`,
+      guidanceSource: "rule_based_engine",
       sourceDataNotes: [
         `Twin version ${twin.twinVersion}`,
         `Recovery sources: ${(twin.recovery?.sources || []).join(", ") || "none"}`,
