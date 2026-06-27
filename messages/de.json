@@ -1877,6 +1877,49 @@
         },
         "empty": {
           "copy": "Dein Athlete-IQ-Profil ist bereit, aber es gibt noch keine gespeicherten Live-Tagesdaten."
+        },
+        "recorder": {
+          "savedTitle": "Tagesdatensatz gespeichert",
+          "saved": "Der heutige Check-in und die Gewohnheiten sind in Athlete IQ gespeichert.",
+          "reference": "Referenz: {correlationId}",
+          "checkIn": {
+            "energy": "Energie",
+            "mood": "Stimmung",
+            "sleep": "Schlafqualitaet",
+            "soreness": "Muskelmuedigkeit",
+            "unset": "Setzen",
+            "completeAll": "Setze alle vier Check-in-Signale vor dem Speichern."
+          },
+          "habits": {
+            "title": "Taegliche Gewohnheiten",
+            "copy": "Markiere die heute erledigten Gewohnheiten. Derselbe Datensatz ist auch in Habigoal verfuegbar.",
+            "itemLabel": "{label} ({category})",
+            "completion": "Abschluss",
+            "reviewed": "Ich habe die heutigen Gewohnheiten geprueft",
+            "confirmRequired": "Pruefe die heutigen Gewohnheiten vor dem Speichern.",
+            "categories": {
+              "recovery": "Regeneration",
+              "sport": "Sport",
+              "fuel": "Ernaehrung",
+              "mental": "Mental",
+              "life": "Leben"
+            },
+            "items": {
+              "hydrate": "Hydration",
+              "move": "Leichte Bewegung",
+              "fuel": "Ausgewogene Mahlzeit",
+              "reflect": "Reflexion",
+              "sleep": "Schlafroutine",
+              "study": "Lernblock"
+            }
+          },
+          "errors": {
+            "title": "Speichern nicht moeglich",
+            "loadFailed": "Der heutige Datensatz konnte nicht geladen werden. Pruefe die Verbindung und versuche es erneut.",
+            "saveFailed": "Das Speichern wurde nicht abgeschlossen. Pruefe die Verbindung und versuche es erneut.",
+            "profileRequired": "Dieses Athlete-IQ-Profil ist noch nicht fuer die taegliche Erfassung bereit.",
+            "sessionExpired": "Deine Sitzung ist abgelaufen. Melde dich erneut an."
+          }
         }
       },
       "theme": {

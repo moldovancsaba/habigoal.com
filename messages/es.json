@@ -1877,6 +1877,49 @@
         },
         "empty": {
           "copy": "Tu perfil de Athlete IQ esta listo, pero aun no hay registros diarios en vivo guardados."
+        },
+        "recorder": {
+          "savedTitle": "Registro diario guardado",
+          "saved": "El check-in y los habitos de hoy estan guardados en Athlete IQ.",
+          "reference": "Referencia: {correlationId}",
+          "checkIn": {
+            "energy": "Energia",
+            "mood": "Estado de animo",
+            "sleep": "Calidad del sueno",
+            "soreness": "Fatiga muscular",
+            "unset": "Definir",
+            "completeAll": "Define las cuatro senales del check-in antes de guardar."
+          },
+          "habits": {
+            "title": "Habitos diarios",
+            "copy": "Marca los habitos completados hoy. El mismo registro tambien esta disponible en Habigoal.",
+            "itemLabel": "{label} ({category})",
+            "completion": "Cumplimiento",
+            "reviewed": "Revise los habitos de hoy",
+            "confirmRequired": "Revisa los habitos de hoy antes de guardar.",
+            "categories": {
+              "recovery": "Recuperacion",
+              "sport": "Deporte",
+              "fuel": "Nutricion",
+              "mental": "Mental",
+              "life": "Vida"
+            },
+            "items": {
+              "hydrate": "Hidratacion",
+              "move": "Movimiento ligero",
+              "fuel": "Comida equilibrada",
+              "reflect": "Reflexion",
+              "sleep": "Rutina de sueno",
+              "study": "Bloque de aprendizaje"
+            }
+          },
+          "errors": {
+            "title": "No se pudo guardar",
+            "loadFailed": "No se pudo cargar el registro de hoy. Revisa la conexion e intentalo de nuevo.",
+            "saveFailed": "El guardado no termino. Revisa la conexion e intentalo de nuevo.",
+            "profileRequired": "Este perfil de Athlete IQ aun no esta listo para el registro diario.",
+            "sessionExpired": "Tu sesion expiro. Inicia sesion de nuevo para continuar."
+          }
         }
       },
       "theme": {

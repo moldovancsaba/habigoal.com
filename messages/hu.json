@@ -1877,6 +1877,49 @@
         },
         "empty": {
           "copy": "Az Athlete IQ profil készen áll, de még nincs mentett élő napi rekord."
+        },
+        "recorder": {
+          "savedTitle": "Napi rekord mentve",
+          "saved": "A mai check-in és szokások mentve vannak az Athlete IQ-ban.",
+          "reference": "Hivatkozás: {correlationId}",
+          "checkIn": {
+            "energy": "Energia",
+            "mood": "Hangulat",
+            "sleep": "Alvásminőség",
+            "soreness": "Izomfáradtság",
+            "unset": "Beállítás",
+            "completeAll": "Mentés előtt állítsd be mind a négy check-in jelzést."
+          },
+          "habits": {
+            "title": "Napi szokások",
+            "copy": "Jelöld a ma teljesített szokásokat. Ugyanez a rekord a Habigoalban is elérhető.",
+            "itemLabel": "{label} ({category})",
+            "completion": "Teljesítés",
+            "reviewed": "Átnéztem a mai szokásokat",
+            "confirmRequired": "Mentés előtt nézd át a mai szokásokat.",
+            "categories": {
+              "recovery": "Regeneráció",
+              "sport": "Sport",
+              "fuel": "Táplálkozás",
+              "mental": "Mentális",
+              "life": "Élet"
+            },
+            "items": {
+              "hydrate": "Hidratálás",
+              "move": "Könnyű mozgás",
+              "fuel": "Kiegyensúlyozott étkezés",
+              "reflect": "Reflexió",
+              "sleep": "Alvásrutin",
+              "study": "Tanulási blokk"
+            }
+          },
+          "errors": {
+            "title": "Nem sikerült menteni",
+            "loadFailed": "A mai rekord nem tölthető be. Ellenőrizd a kapcsolatot, és próbáld újra.",
+            "saveFailed": "A mentés nem fejeződött be. Ellenőrizd a kapcsolatot, és próbáld újra.",
+            "profileRequired": "Ez az Athlete IQ profil még nem áll készen napi rögzítésre.",
+            "sessionExpired": "A munkamenet lejárt. Jelentkezz be újra a folytatáshoz."
+          }
         }
       },
       "theme": {

@@ -25,6 +25,7 @@ export type SharedDailyStateProjection = {
   };
   habits: {
     completed: HabigoalHabitKey[];
+    recorded: boolean;
     total: number;
   };
   localDate: string;
@@ -97,6 +98,7 @@ export async function getSharedDailyState(input: {
     },
     habits: {
       completed,
+      recorded: Boolean(habitRecord),
       total: HABIT_KEYS.length
     },
     localDate,

@@ -105,8 +105,39 @@ describe("shared daily state bridge", () => {
       soreness: 11
     });
     expect(projection.habits.completed).toEqual(["hydrate", "move", "reflect", "study"]);
+    expect(projection.habits.recorded).toBe(true);
     expect(projection.status.score).not.toBeNull();
     expect(projection.dataFreshness.sourceCollections).toEqual(["athleteiq_checkins", "habit_records"]);
+  });
+
+  it("treats a zero-completion habit record as recorded daily state", async () => {
+    mockedGetHabitRecordByAthleteIdAndDate.mockResolvedValue({
+      _id: "habit-1",
+      athleteId,
+      date: "2026-06-27",
+      statuses: {
+        hydration: false,
+        mobility: false,
+        nutrition: false,
+        recoverySession: false,
+        sleepBeforeMidnight: false,
+        tacticalLearning: false
+      },
+      createdAt: "2026-06-27T06:00:00.000Z",
+      updatedAt: "2026-06-27T06:00:00.000Z"
+    });
+
+    const projection = await getSharedDailyState({
+      athleteId,
+      localDate: "2026-06-27",
+      product: "athlete-iq",
+      timezone: "Europe/Budapest",
+      user: athleteUser()
+    });
+
+    expect(projection.habits.completed).toEqual([]);
+    expect(projection.habits.recorded).toBe(true);
+    expect(projection.status.reasonCodes).toContain("habit_gap");
   });
 
   it("writes daily values into the shared Athlete IQ lifestyle check-in and habit record", async () => {
@@ -171,6 +202,7 @@ describe("shared daily state bridge", () => {
     expect(projection.checkIn).toEqual({ energy: null, mood: null, sleep: null, soreness: null });
     expect(projection.status.score).toBeNull();
     expect(projection.habits.completed).toEqual([]);
+    expect(projection.habits.recorded).toBe(false);
   });
 
   it("blocks access when the selected product entitlement is missing", async () => {

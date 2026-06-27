@@ -1877,6 +1877,49 @@
         },
         "empty": {
           "copy": "Your Athlete IQ profile is ready, but no live daily records are saved yet."
+        },
+        "recorder": {
+          "savedTitle": "Daily record saved",
+          "saved": "Today's check-in and habits are saved in Athlete IQ.",
+          "reference": "Reference: {correlationId}",
+          "checkIn": {
+            "energy": "Energy",
+            "mood": "Mood",
+            "sleep": "Sleep quality",
+            "soreness": "Soreness",
+            "unset": "Set",
+            "completeAll": "Set all four check-in signals before saving."
+          },
+          "habits": {
+            "title": "Daily habits",
+            "copy": "Mark the habits completed today. The same record is available in Habigoal.",
+            "itemLabel": "{label} ({category})",
+            "completion": "Completion",
+            "reviewed": "I reviewed today's habits",
+            "confirmRequired": "Review today's habits before saving.",
+            "categories": {
+              "recovery": "Recovery",
+              "sport": "Sport",
+              "fuel": "Fuel",
+              "mental": "Mental",
+              "life": "Life"
+            },
+            "items": {
+              "hydrate": "Hydration",
+              "move": "Light movement",
+              "fuel": "Balanced meal",
+              "reflect": "Reflection",
+              "sleep": "Sleep routine",
+              "study": "Learning block"
+            }
+          },
+          "errors": {
+            "title": "Could not save",
+            "loadFailed": "Today's record could not be loaded. Check the connection and try again.",
+            "saveFailed": "The save did not finish. Check the connection and try again.",
+            "profileRequired": "This Athlete IQ profile is not ready for daily recording.",
+            "sessionExpired": "Your session expired. Sign in again to continue."
+          }
         }
       },
       "theme": {

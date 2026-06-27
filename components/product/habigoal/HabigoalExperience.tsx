@@ -252,8 +252,17 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
               <StatusSlider label={t("checkIn.soreness")} unsetLabel={t("checkIn.unset")} value={draftValues.soreness} onChange={(value) => setMetric("soreness", value)} inverse />
               <Group gap="sm" wrap="wrap">
                 <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetValues} disabled={saving} />
+                <SemanticButton
+                  action="productSurface:complete"
+                  color="ingress"
+                  vocabularyPacks={[actionPack]}
+                  onClick={completeDailyOperation}
+                  disabled={!canSave}
+                  loading={saving}
+                />
               </Group>
               {!hasCompleteDraft ? <Text size="sm" className="hbg-muted-text">{t("checkIn.completeAll")}</Text> : null}
+              {!hasRecordedHabits ? <Text size="sm" className="hbg-muted-text">{t("habits.confirmRequired")}</Text> : null}
             </Stack>
           </Paper>
 

@@ -1192,6 +1192,36 @@ a {
   background: color-mix(in srgb, var(--gds-vibe-surface, rgba(244, 247, 251, 0.045)) 86%, transparent);
 }
 
+.shared-daily-recorder {
+  min-width: 0;
+}
+
+.shared-daily-recorder-aiq {
+  padding: var(--mantine-spacing-md);
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 22%, transparent);
+  border-radius: var(--mantine-radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 10%, transparent), transparent 46%),
+    color-mix(in srgb, var(--gds-vibe-surface, rgba(16, 24, 42, 0.96)) 90%, #05070b);
+}
+
+.aiq-recorder-slider .mantine-Text-root,
+.shared-daily-recorder-aiq .mantine-Checkbox-label {
+  color: var(--gds-vibe-text, #f4f7fb) !important;
+}
+
+.aiq-recorder-checkbox {
+  min-height: 46px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 18%, transparent);
+  border-radius: var(--mantine-radius-md);
+  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(244, 247, 251, 0.045)) 82%, transparent);
+}
+
+.aiq-recorder-habits {
+  padding-top: var(--mantine-spacing-xs);
+}
+
 .aiq-row-card-muted {
   opacity: 0.64;
 }

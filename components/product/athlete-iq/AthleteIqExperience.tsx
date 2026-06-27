@@ -16,6 +16,7 @@ import type {
   AthleteIqProductDashboardProjection
 } from "@/services/athleteiq-product-dashboard.service";
 import { SectionHeading, SignalCard, SurfaceTopBar } from "../ProductSurfaceShared";
+import { SharedDailyRecorder, type SharedDailyRecorderLabels } from "../SharedDailyRecorder";
 import { createProductSurfaceActionPack, type ProductSurfaceActionPack } from "../productSurfaceActions";
 
 type AiqTranslate = ReturnType<typeof useTranslations>;
@@ -49,7 +50,9 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
       createProductSurfaceActionPack({
         athleteDashboard: tActions("athleteDashboard"),
         acknowledge: tActions("acknowledge"),
+        complete: tActions("complete"),
         report: tActions("report"),
+        reset: tActions("reset"),
         launch: tActions("launch")
       }),
     [tActions]
@@ -343,6 +346,52 @@ function AiqAthleteWorkspace({
   const supportQueue = dashboard.activeQueue;
   const readiness = athlete?.readiness ?? dashboard.averageReadiness;
   const mental = athlete?.mental ?? dashboard.averageMental;
+  const recorderLabels = useMemo<SharedDailyRecorderLabels>(
+    () => ({
+      checkIn: {
+        completeAll: translate("athleteWorkspace.recorder.checkIn.completeAll"),
+        energy: translate("athleteWorkspace.recorder.checkIn.energy"),
+        mood: translate("athleteWorkspace.recorder.checkIn.mood"),
+        sleep: translate("athleteWorkspace.recorder.checkIn.sleep"),
+        soreness: translate("athleteWorkspace.recorder.checkIn.soreness"),
+        unset: translate("athleteWorkspace.recorder.checkIn.unset")
+      },
+      errors: {
+        loadFailed: translate("athleteWorkspace.recorder.errors.loadFailed"),
+        profileRequired: translate("athleteWorkspace.recorder.errors.profileRequired"),
+        saveFailed: translate("athleteWorkspace.recorder.errors.saveFailed"),
+        sessionExpired: translate("athleteWorkspace.recorder.errors.sessionExpired"),
+        title: translate("athleteWorkspace.recorder.errors.title")
+      },
+      habits: {
+        categories: {
+          fuel: translate("athleteWorkspace.recorder.habits.categories.fuel"),
+          life: translate("athleteWorkspace.recorder.habits.categories.life"),
+          mental: translate("athleteWorkspace.recorder.habits.categories.mental"),
+          recovery: translate("athleteWorkspace.recorder.habits.categories.recovery"),
+          sport: translate("athleteWorkspace.recorder.habits.categories.sport")
+        },
+        completion: translate("athleteWorkspace.recorder.habits.completion"),
+        confirmRequired: translate("athleteWorkspace.recorder.habits.confirmRequired"),
+        copy: translate("athleteWorkspace.recorder.habits.copy"),
+        itemLabel: translate("athleteWorkspace.recorder.habits.itemLabel"),
+        items: {
+          fuel: translate("athleteWorkspace.recorder.habits.items.fuel"),
+          hydrate: translate("athleteWorkspace.recorder.habits.items.hydrate"),
+          move: translate("athleteWorkspace.recorder.habits.items.move"),
+          reflect: translate("athleteWorkspace.recorder.habits.items.reflect"),
+          sleep: translate("athleteWorkspace.recorder.habits.items.sleep"),
+          study: translate("athleteWorkspace.recorder.habits.items.study")
+        },
+        reviewed: translate("athleteWorkspace.recorder.habits.reviewed"),
+        title: translate("athleteWorkspace.recorder.habits.title")
+      },
+      reference: translate("athleteWorkspace.recorder.reference", { correlationId: "{correlationId}" }),
+      saved: translate("athleteWorkspace.recorder.saved"),
+      savedTitle: translate("athleteWorkspace.recorder.savedTitle")
+    }),
+    [translate]
+  );
   const habitDetail = athlete
     ? `${translate("athletes.habitsLabel")} ${athlete.habigoalDaily.habitCompletion} · ${translate(`athletes.habigoalCompletion.${athlete.habigoalDaily.completionState}`)}`
     : translate("athleteWorkspace.empty.copy");
@@ -445,6 +494,15 @@ function AiqAthleteWorkspace({
                     <Stack gap="sm">
                       <AiqReadinessRow athlete={athlete} translate={translate} />
                       <SignalCard label={translate("athleteWorkspace.today.teamLabel")} value={athlete.teamName ?? translate("athletes.unassignedTeam")} state={athlete.teamName ? "good" : "watch"} detail={habitDetail} inverse />
+                      <SharedDailyRecorder
+                        actionPack={actionPack}
+                        athleteId={athlete.id}
+                        labels={recorderLabels}
+                        localDate={dashboard.localDate}
+                        product="athlete-iq"
+                        timezone={dashboard.timezone}
+                        variant="aiq"
+                      />
                     </Stack>
                   ) : (
                     <Text className="aiq-muted">{translate("athleteWorkspace.empty.copy")}</Text>

@@ -156,6 +156,8 @@ describe("product surface route boundaries", () => {
     expect(athleteWorkspace).not.toContain("ServiceModuleCard");
     expect(athleteWorkspace).not.toContain("dashboard.services.map");
     expect(athleteWorkspace).toContain("athleteWorkspace.shared");
+    expect(athleteWorkspace).toContain("SharedDailyRecorder");
+    expect(athleteWorkspace).toContain('product="athlete-iq"');
     expect(athleteIqSource).toContain("onOpen={openServiceModule}");
     expect(athleteIqSource).toContain("onClick={() => onOpen(module)}");
     expect(athleteIqSource).toContain("getTrainerServiceRoute");
