@@ -144,6 +144,21 @@ describe("product surface route boundaries", () => {
     expect(ATHLETE_IQ_OS_MODULES.map((module) => module.label)).toContain("Team");
   });
 
+  it("keeps AthleteIQ athlete view free of trainer service cards and keeps service actions wired", () => {
+    const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
+    const athleteWorkspace = athleteIqSource.slice(
+      athleteIqSource.indexOf("function AiqAthleteWorkspace"),
+      athleteIqSource.indexOf("function TeamOperationCard")
+    );
+
+    expect(athleteWorkspace).not.toContain("ServiceModuleCard");
+    expect(athleteWorkspace).not.toContain("dashboard.services.map");
+    expect(athleteWorkspace).toContain("athleteWorkspace.shared");
+    expect(athleteIqSource).toContain("onOpen={openServiceModule}");
+    expect(athleteIqSource).toContain("onClick={() => onOpen(module)}");
+    expect(athleteIqSource).toContain("getTrainerServiceRoute");
+  });
+
   it("matches the AthleteIQ Daily Development OS reference menu", () => {
     const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
     const englishMessages = readJson<Messages>("messages/en.json");

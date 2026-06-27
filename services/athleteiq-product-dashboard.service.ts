@@ -251,7 +251,10 @@ function scopeDashboardData(input: {
     const matchesAccessibleAthlete = team.athleteIds.some((athleteId) => explicitAthleteIds.has(athleteId));
     return matchesAssignedTeam || matchesTrainerEmail || matchesAccessibleAthlete;
   });
-  const scopedAthleteIds = new Set([...explicitAthleteIds, ...teams.flatMap((team) => team.athleteIds)]);
+  const canSeeTeamRoster = input.user.primaryRole !== "athlete" && input.user.primaryRole !== "parent";
+  const scopedAthleteIds = canSeeTeamRoster
+    ? new Set([...explicitAthleteIds, ...teams.flatMap((team) => team.athleteIds)])
+    : explicitAthleteIds;
 
   return {
     actions: input.actions.filter((action) => scopedAthleteIds.has(action.athleteKey)),

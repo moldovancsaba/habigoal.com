@@ -42,6 +42,8 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
   const t = useTranslations("ProductSurfaces.athleteIq");
   const tActions = useTranslations("ProductSurfaces.actions");
   const common = useTranslations("Common");
+  const locale = useLocale() as SupportedLocale;
+  const router = useRouter();
   const actionPack = useMemo(
     () =>
       createProductSurfaceActionPack({
@@ -120,6 +122,10 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
 
   function openAthleteDashboard() {
     document.getElementById("team-club")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function openServiceModule(module: AthleteIqDashboardService) {
+    router.push(getTrainerServiceRoute(module.id), { locale });
   }
 
   if (dashboard.persona === "athlete") {
@@ -288,7 +294,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
                 <Stack gap="md">
                   <SectionHeading icon={<GdsIcons.Record size={18} />} title={t("services.title")} copy={t("services.copy")} inverse />
                   {dashboard.services.map((module) => (
-                    <ServiceModuleCard key={module.id} module={module} actionPack={actionPack} translate={t} />
+                    <ServiceModuleCard key={module.id} module={module} actionPack={actionPack} translate={t} onOpen={openServiceModule} />
                   ))}
                 </Stack>
               </Paper>
@@ -795,7 +801,17 @@ function AiqReadinessRow({ athlete, translate }: { athlete: AthleteIqDashboardAt
   );
 }
 
-function ServiceModuleCard({ actionPack, module, translate }: { actionPack: ProductSurfaceActionPack; module: AthleteIqDashboardService; translate: AiqTranslate }) {
+function ServiceModuleCard({
+  actionPack,
+  module,
+  onOpen,
+  translate
+}: {
+  actionPack: ProductSurfaceActionPack;
+  module: AthleteIqDashboardService;
+  onOpen: (module: AthleteIqDashboardService) => void;
+  translate: AiqTranslate;
+}) {
   const color = module.status === "ready" ? "tactical" : module.status === "missing" ? "gray" : "yellow";
   return (
     <Box className="aiq-row-card">
@@ -815,9 +831,19 @@ function ServiceModuleCard({ actionPack, module, translate }: { actionPack: Prod
           size="sm"
           variant="light"
           vocabularyPacks={[actionPack]}
+          onClick={() => onOpen(module)}
         />
       </Stack>
     </Box>
+  );
+}
+
+function getTrainerServiceRoute(moduleId: AthleteIqDashboardService["id"]) {
+  return (
+    moduleId === "daily-plan-coverage" ? "/dashboard/planning" :
+    moduleId === "daily-iq-coverage" ? "/dashboard/assessment" :
+    moduleId === "coach-action-queue" ? "/dashboard/coach" :
+    "/dashboard/athletes"
   );
 }
 

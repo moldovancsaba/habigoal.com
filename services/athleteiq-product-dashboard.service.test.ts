@@ -152,6 +152,31 @@ describe("Athlete IQ dashboard access scope", () => {
     expect(projection.athletes[0].habigoalDaily.completionState).toBe("missing");
   });
 
+  it("keeps Athlete IQ in athlete persona when the active session role is athlete", async () => {
+    mockedGetAuthUser.mockResolvedValue(athleteUser("athlete@example.com", "athlete-1"));
+    mockedResolveAccessibleAthleteIds.mockResolvedValue(["athlete-1"]);
+    mockedListChildrenWithMetrics.mockResolvedValue([
+      athlete("athlete-1", "Active Athlete"),
+      athlete("athlete-2", "Other Athlete")
+    ]);
+    mockedListTeams.mockResolvedValue([
+      team("team-1", ["coach@example.com"], ["athlete-1", "athlete-2"])
+    ]);
+    mockedListCoachActionsByDate.mockResolvedValue([coachAction("athlete-1"), coachAction("athlete-2")]);
+    mockedGetLatestDailyIqSnapshot.mockResolvedValue({
+      dailyIqScore: 82,
+      mentalEdgeScore: 76,
+      safeLoadScore: 70
+    } as Awaited<ReturnType<typeof getLatestDailyIqSnapshot>>);
+
+    const projection = await getAthleteIqProductDashboardProjection({ localDate: "2026-06-27" });
+
+    expect(projection.persona).toBe("athlete");
+    expect(projection.athleteCount).toBe(1);
+    expect(projection.athletes.map((row) => row.id)).toEqual(["athlete-1"]);
+    expect(projection.activeQueue.map((row) => row.id)).not.toContain("athlete-2");
+  });
+
   it("keeps full dashboard visibility for administrator roles", async () => {
     mockedGetAuthUser.mockResolvedValue(adminUser());
     mockedResolveAccessibleAthleteIds.mockResolvedValue(null);
@@ -193,6 +218,21 @@ function adminUser(): AuthUser {
     },
     roles: ["admin"],
     primaryRole: "admin",
+    teamIds: []
+  };
+}
+
+function athleteUser(email: string, athleteId: string): AuthUser {
+  return {
+    email,
+    name: "Athlete",
+    athleteId,
+    productEntitlements: {
+      habigoal: { enabled: true, reason: "aiq_member" },
+      athleteIq: { enabled: true, reason: "pro_athlete_membership" }
+    },
+    roles: ["athlete"],
+    primaryRole: "athlete",
     teamIds: []
   };
 }
