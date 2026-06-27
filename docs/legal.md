@@ -70,3 +70,11 @@ Older `survey.*` and `messmass.*` references are obsolete and should not be intr
 - Locale-specific pages must not silently fall back to another language for legal text.
 - Footer labels must be localized in every supported locale.
 - Any change to public legal content should be validated with `npm run i18n:audit`, `npm run build`, and a manual route check.
+
+## Athlete data: export & erasure (GDPR)
+
+- The canonical set of athlete-PII collections lives in `lib/athlete-pii-registry.ts` (`ATHLETE_PII_COLLECTIONS` + `ATHLETE_PII_SPECIAL`). `services/privacy.service.ts` drives both export and erase from this registry so a new athlete-keyed collection cannot silently escape either path; `services/privacy.service.test.ts` fails if the registry drifts from the expected set.
+- `GET /api/athletes/:id/export` returns every athlete-PII collection (token fields stripped).
+- `POST /api/athletes/:id/erase` hard-deletes every registry collection plus the profile and assessments, removes the athlete from team rosters (`$pull`), deletes athlete-scoped audit events, and best-effort deletes stored media objects (`deleteAthleteMediaObjects`, graceful no-op when object storage is unconfigured). Erase is idempotent and returns a PII-free receipt of per-collection counts.
+- Collections intentionally excluded (account/org-scoped, not athlete-PII rows) are documented in `ATHLETE_PII_EXCLUDED`: `users`, `onboarding_events`, `settings`, `session_plans`, `team_messages`.
+- Consent withdrawal (`DELETE /api/athletes/:id/consents/:consentId`) is authenticated and access-checked.

@@ -26,7 +26,7 @@ export async function POST(
     action: "athlete.erase",
     resourceType: "athlete",
     resourceId: id,
-    metadata: result,
+    metadata: { erased: result.erased, counts: result.counts, mediaObjectsDeleted: result.mediaObjectsDeleted },
   });
 
   return NextResponse.json({ ok: true, ...result });
