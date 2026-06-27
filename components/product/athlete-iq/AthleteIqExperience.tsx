@@ -18,6 +18,12 @@ import type {
 import { SectionHeading, SignalCard, SurfaceTopBar } from "../ProductSurfaceShared";
 import { SharedDailyRecorder, type SharedDailyRecorderLabels } from "../SharedDailyRecorder";
 import { createProductSurfaceActionPack, type ProductSurfaceActionPack } from "../productSurfaceActions";
+import { AiqDailyPlanPanel } from "./panels/AiqDailyPlanPanel";
+import { AiqMentalEdgePanel } from "./panels/AiqMentalEdgePanel";
+import { AiqReflectionPanel } from "./panels/AiqReflectionPanel";
+import { AiqSessionPanel } from "./panels/AiqSessionPanel";
+import { AiqLiteModulesPanel } from "./panels/AiqLiteModulesPanel";
+import { AiqProgressPanel } from "./panels/AiqProgressPanel";
 
 type AiqTranslate = ReturnType<typeof useTranslations>;
 type CommonTranslate = ReturnType<typeof useTranslations>;
@@ -336,7 +342,12 @@ function AiqAthleteWorkspace({
         items: [
           { anchorId: "home", active: true, labelKey: "home" },
           { anchorId: "checkin", labelKey: "checkin" },
-          { anchorId: "calendar", labelKey: "calendar" },
+          { anchorId: "plan", labelKey: "plan" },
+          { anchorId: "sessions", labelKey: "sessions" },
+          { anchorId: "mental", labelKey: "mental" },
+          { anchorId: "reflection", labelKey: "reflection" },
+          { anchorId: "progress", labelKey: "progress" },
+          { anchorId: "lite", labelKey: "lite" },
           { anchorId: "shared-data", labelKey: "habits" }
         ]
       }
@@ -531,6 +542,54 @@ function AiqAthleteWorkspace({
                 </Stack>
               </Paper>
             </SimpleGrid>
+
+            {athlete ? (
+              <>
+                <Paper id="plan" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                  <Stack gap="md">
+                    <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title={translate("athleteWorkspace.sections.plan.title")} copy={translate("athleteWorkspace.sections.plan.copy")} inverse />
+                    <AiqDailyPlanPanel athleteId={athlete.id} localDate={dashboard.localDate} timezone={dashboard.timezone} />
+                  </Stack>
+                </Paper>
+
+                <Paper id="sessions" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                  <Stack gap="md">
+                    <SectionHeading icon={<GdsIcons.Record size={18} />} title={translate("athleteWorkspace.sections.sessions.title")} copy={translate("athleteWorkspace.sections.sessions.copy")} inverse />
+                    <AiqSessionPanel athleteId={athlete.id} localDate={dashboard.localDate} timezone={dashboard.timezone} />
+                  </Stack>
+                </Paper>
+
+                <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="md">
+                  <Paper id="mental" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                    <Stack gap="md">
+                      <SectionHeading icon={<GdsIcons.Profile size={18} />} title={translate("athleteWorkspace.sections.mental.title")} copy={translate("athleteWorkspace.sections.mental.copy")} inverse />
+                      <AiqMentalEdgePanel athleteId={athlete.id} localDate={dashboard.localDate} timezone={dashboard.timezone} />
+                    </Stack>
+                  </Paper>
+
+                  <Paper id="reflection" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                    <Stack gap="md">
+                      <SectionHeading icon={<GdsIcons.Record size={18} />} title={translate("athleteWorkspace.sections.reflection.title")} copy={translate("athleteWorkspace.sections.reflection.copy")} inverse />
+                      <AiqReflectionPanel athleteId={athlete.id} localDate={dashboard.localDate} />
+                    </Stack>
+                  </Paper>
+                </SimpleGrid>
+
+                <Paper id="progress" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                  <Stack gap="md">
+                    <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title={translate("athleteWorkspace.sections.progress.title")} copy={translate("athleteWorkspace.sections.progress.copy")} inverse />
+                    <AiqProgressPanel athleteId={athlete.id} localDate={dashboard.localDate} timezone={dashboard.timezone} />
+                  </Stack>
+                </Paper>
+
+                <Paper id="lite" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
+                  <Stack gap="md">
+                    <SectionHeading icon={<GdsIcons.Record size={18} />} title={translate("athleteWorkspace.sections.lite.title")} copy={translate("athleteWorkspace.sections.lite.copy")} inverse />
+                    <AiqLiteModulesPanel athleteId={athlete.id} localDate={dashboard.localDate} timezone={dashboard.timezone} />
+                  </Stack>
+                </Paper>
+              </>
+            ) : null}
 
             <Paper id="shared-data" component="section" className="aiq-team-command-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
               <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">

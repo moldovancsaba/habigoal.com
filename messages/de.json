@@ -1140,12 +1140,12 @@
     "identifierLabel": "E-Mail",
     "identifierPlaceholder": "name@example.com",
     "personaLabel": "Persona waehlen",
-  "athletePersonaTitle": "Athlet",
-  "athletePersonaCopy": "Habigoal mobile Wohlbefinden-App oeffnen.",
-  "athleteIqAthletePersonaCopy": "Athlete IQ Athleten-Support-Arbeitsbereich oeffnen.",
-  "trainerPersonaTitle": "Trainer",
-  "trainerPersonaCopy": "Professionellen Athlete IQ Arbeitsbereich oeffnen.",
-  "athleteIqTrainerPersonaCopy": "Athlete IQ Trainer- und Team-Arbeitsbereich oeffnen.",
+    "athletePersonaTitle": "Athlet",
+    "athletePersonaCopy": "Habigoal mobile Wohlbefinden-App oeffnen.",
+    "athleteIqAthletePersonaCopy": "Athlete IQ Athleten-Support-Arbeitsbereich oeffnen.",
+    "trainerPersonaTitle": "Trainer",
+    "trainerPersonaCopy": "Professionellen Athlete IQ Arbeitsbereich oeffnen.",
+    "athleteIqTrainerPersonaCopy": "Athlete IQ Trainer- und Team-Arbeitsbereich oeffnen.",
     "submit": "Weiter",
     "supportingCopy": "Dieselbe E-Mail oeffnet beim naechsten Mal dasselbe gemeinsame Konto.",
     "errorTitle": "Login-Problem",
@@ -1848,7 +1848,11 @@
           "reflection": "Reflexion",
           "habits": "Gewohnheiten",
           "roadmap": "Roadmap",
-          "report": "Bericht"
+          "report": "Bericht",
+          "plan": "Daily plan",
+          "sessions": "Sessions",
+          "progress": "Progress",
+          "lite": "Lite modules"
         }
       },
       "athleteWorkspace": {
@@ -1923,12 +1927,305 @@
             "profileRequired": "Dieses Athlete-IQ-Profil ist noch nicht fuer die taegliche Erfassung bereit.",
             "sessionExpired": "Deine Sitzung ist abgelaufen. Melde dich erneut an."
           }
+        },
+        "sections": {
+          "plan": {
+            "title": "Today's plan",
+            "copy": "Work through the tasks generated from your check-in."
+          },
+          "sessions": {
+            "title": "Training session",
+            "copy": "Build today's session from your plan, run it, and debrief."
+          },
+          "mental": {
+            "title": "Mental edge",
+            "copy": "Short routines to steady focus, mood, and confidence."
+          },
+          "reflection": {
+            "title": "Reflection",
+            "copy": "Capture how today went and choose who can see it."
+          },
+          "progress": {
+            "title": "My progress",
+            "copy": "How your scores are trending over the last 30 days."
+          },
+          "lite": {
+            "title": "Lite modules",
+            "copy": "Log recovery, fuel, learning, and manual wearable data."
+          }
+        },
+        "panels": {
+          "common": {
+            "loading": "Loading…",
+            "loadError": "Could not load this section.",
+            "retry": "Retry",
+            "noData": "No data yet",
+            "actionFailed": "That action could not be completed. Please try again."
+          },
+          "dailyPlan": {
+            "empty": "No plan yet for today.",
+            "generate": "Generate plan",
+            "recommendationTitle": "Recommended session",
+            "openCount": "{count} of {total} tasks open",
+            "complete": "Complete",
+            "dismiss": "Dismiss",
+            "reopen": "Reopen",
+            "intensity": {
+              "normal": "Normal",
+              "moderate": "Moderate",
+              "low": "Low",
+              "recovery": "Recovery",
+              "high": "High"
+            },
+            "sessionType": {
+              "recovery": "Recovery",
+              "controlled": "Controlled",
+              "standard": "Standard",
+              "high_intensity": "High intensity"
+            },
+            "priority": {
+              "critical": "Critical",
+              "high": "High",
+              "medium": "Medium",
+              "low": "Low"
+            },
+            "state": {
+              "completed": "Completed",
+              "dismissed": "Dismissed"
+            },
+            "dueWindow": {
+              "morning": "Morning",
+              "training": "Training",
+              "evening": "Evening",
+              "anytime": "Anytime"
+            }
+          },
+          "mentalEdge": {
+            "trend": {
+              "improving": "Improving",
+              "steady": "Steady",
+              "declining": "Declining",
+              "unknown": "Not enough data"
+            },
+            "risk": {
+              "stable": "Stable",
+              "watch": "Watch",
+              "concern": "Concern",
+              "urgent": "Urgent",
+              "insufficient": "Insufficient data"
+            },
+            "routinesTitle": "Today's routines",
+            "noRoutines": "No routines suggested today.",
+            "completed": "Completed",
+            "minutes": "{minutes} min",
+            "markComplete": "Mark complete"
+          },
+          "reflection": {
+            "bodyLabel": "Reflection",
+            "bodyPlaceholder": "What went well, what was hard, what's next…",
+            "moodLabel": "Mood tag",
+            "moodPlaceholder": "e.g. focused",
+            "visibilityLabel": "Visibility",
+            "visibility": {
+              "private": "Private",
+              "coach_summary": "Coach summary",
+              "parent_summary": "Parent summary"
+            },
+            "save": "Save reflection",
+            "todayTitle": "Today's reflections",
+            "empty": "No reflection saved today."
+          },
+          "session": {
+            "todayTitle": "Today's sessions",
+            "buildFromPlan": "Build from plan",
+            "empty": "No session yet. Build one from today's plan.",
+            "buildError": "Could not build a session. Generate a daily plan first.",
+            "transitionError": "That session change is not allowed right now.",
+            "debriefError": "Could not save the debrief.",
+            "type": {
+              "recovery": "Recovery",
+              "controlled": "Controlled",
+              "standard": "Standard",
+              "high_intensity": "High intensity"
+            },
+            "state": {
+              "draft": "Draft",
+              "active": "Active",
+              "paused": "Paused",
+              "completed": "Completed",
+              "abandoned": "Abandoned"
+            },
+            "block": {
+              "warmup": "Warm-up",
+              "main": "Main",
+              "cooldown": "Cool-down",
+              "recovery": "Recovery"
+            },
+            "blockMinutes": "{minutes} min",
+            "action": {
+              "active": "Start",
+              "paused": "Pause",
+              "completed": "Complete",
+              "abandoned": "Abandon"
+            },
+            "abandonReason": "Reason (required to abandon)",
+            "debriefTitle": "Debrief",
+            "rpe": "RPE (1-10)",
+            "completionPct": "Completion %",
+            "painAfter": "Pain after (1-10)",
+            "moodAfter": "Mood after (1-10)",
+            "notes": "Notes",
+            "recordedLoad": "Recorded load: {load}",
+            "saveDebrief": "Save debrief"
+          },
+          "lite": {
+            "modules": {
+              "recovery": "Recovery",
+              "fuel": "Fuel",
+              "learning": "Learning",
+              "wearable": "Wearable"
+            },
+            "protocol": "Protocol",
+            "protocolPlaceholder": "e.g. cold-shower",
+            "perceivedRecovery": "Perceived recovery (1-5)",
+            "mealTiming": "Meal timing",
+            "hydration": "Hydration",
+            "note": "Note",
+            "fuelStatus": {
+              "on_track": "On track",
+              "late": "Late",
+              "missed": "Missed",
+              "unknown": "Unknown"
+            },
+            "itemId": "Lesson",
+            "itemIdPlaceholder": "e.g. tactical-positioning",
+            "learningStatus": "Status",
+            "learningStatusOption": {
+              "not_started": "Not started",
+              "in_progress": "In progress",
+              "completed": "Completed",
+              "skipped": "Skipped"
+            },
+            "metric": "Metric",
+            "metricOption": {
+              "resting_heart_rate": "Resting heart rate",
+              "hrv_ms": "HRV",
+              "sleep_hours": "Sleep hours",
+              "steps": "Steps",
+              "body_weight_kg": "Body weight",
+              "training_load_au": "Training load"
+            },
+            "value": "Value",
+            "saved": "Saved.",
+            "save": "Save entry",
+            "summaryTitle": "Today's lite modules",
+            "entryCount": "{count} entries today",
+            "confidence": {
+              "medium": "Medium confidence",
+              "low": "Low confidence",
+              "insufficient": "No data"
+            },
+            "cognitiveTitle": "Cognitive profile",
+            "cognitiveProgress": "{completed} of {total} traits",
+            "cognitiveBand": {
+              "strength": "Strength",
+              "stable": "Stable",
+              "watch": "Watch",
+              "missing": "No data"
+            }
+          },
+          "progress": {
+            "metric": {
+              "dailyIq": "Daily IQ",
+              "readiness": "Readiness",
+              "habit": "Habits",
+              "mental": "Mental edge"
+            },
+            "latest": "Latest",
+            "average": "Average",
+            "change": "Change",
+            "points": "Data points",
+            "empty": "No history yet for this metric."
+          }
         }
       },
       "theme": {
         "label": "Theme",
         "name": "Gold Athlete",
         "surfaceTone": "Premium schwarz-goldene Performance-Steuerung"
+      }
+    }
+  },
+  "athleteiq": {
+    "dailyPlan": {
+      "tasks": {
+        "completeCheckIn": {
+          "title": "Complete your check-in",
+          "description": "Log today's readiness so the rest of your plan can adapt."
+        },
+        "painGuardrail": {
+          "title": "Pain safety review",
+          "description": "A pain signal needs review before training intensity is cleared."
+        },
+        "habit": {
+          "description": "Keep your habit streak going today."
+        },
+        "mentalRoutine": {
+          "description": "Run a short mental-edge routine to steady focus."
+        },
+        "liteModule": {
+          "description": "Add a quick manual entry to keep this module current."
+        }
+      }
+    },
+    "mentalEdge": {
+      "routines": {
+        "breathingReset": "Breathing reset",
+        "confidenceNote": "Confidence note",
+        "recoveryReflection": "Recovery reflection",
+        "coachCheckIn": "Coach check-in"
+      },
+      "reasons": {
+        "stress_support": "Helps settle stress.",
+        "confidence_support": "Builds confidence.",
+        "mood_support": "Lifts mood.",
+        "coach_support": "Connect with your coach."
+      }
+    },
+    "sessions": {
+      "blocks": {
+        "warmup": "Warm-up",
+        "main": "Main block",
+        "cooldown": "Cool-down",
+        "recovery": "Recovery"
+      },
+      "safety": {
+        "recoveryOnly": "Recovery only",
+        "standard": "Standard"
+      }
+    },
+    "modules": {
+      "recoveryLite": {
+        "name": "Recovery"
+      },
+      "fuelLite": {
+        "name": "Fuel"
+      },
+      "learningLite": {
+        "name": "Learning"
+      },
+      "wearableManualSync": {
+        "name": "Manual wearable"
+      }
+    },
+    "cognitiveLite": {
+      "trait": {
+        "alertness": "Alertness",
+        "impulse_control": "Impulse control",
+        "attention": "Attention",
+        "risk": "Risk",
+        "reasoning": "Reasoning",
+        "memory_retention": "Memory & retention"
       }
     }
   }
