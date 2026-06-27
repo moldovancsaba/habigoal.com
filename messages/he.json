@@ -1151,7 +1151,21 @@
     "missingPersona": "בחר ספורטאי או מאמן.",
     "genericError": "לא הצלחנו להשלים את ההתחברות. נסה שוב.",
     "athleteIqAccessRequired": "Athlete IQ דורשת גישת צוות או מאמן מקצועית. אפשר להמשיך עם Habigoal אם לחשבון יש גישת Habigoal.",
-    "habigoalAccessRequired": "גישת Habigoal עדיין לא מופעלת לחשבון זה."
+    "habigoalAccessRequired": "גישת Habigoal עדיין לא מופעלת לחשבון זה.",
+    "surfaces": {
+      "habigoal": {
+        "badge": "גישת Habigoal",
+        "title": "המשך אל Habigoal",
+        "subtitle": "יש להזין אימייל או שם משתמש ולפתוח את אפליקציית היום הניידת של Habigoal.",
+        "supportingCopy": "אותו אימייל או שם משתמש יפתחו בפעם הבאה את אותו חשבון Habigoal."
+      },
+      "athleteIq": {
+        "badge": "גישת Athlete IQ",
+        "title": "המשך אל Athlete IQ",
+        "subtitle": "יש להזין אימייל או שם משתמש ולפתוח את סביבת העבודה המקצועית של Athlete IQ.",
+        "supportingCopy": "כניסת מאמן פותחת את Athlete IQ ושומרת על אותה זהות חשבון משותפת."
+      }
+    }
   },
   "News": {
     "badge": "חדשות Habigoal",

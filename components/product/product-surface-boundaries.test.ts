@@ -101,8 +101,12 @@ describe("product surface route boundaries", () => {
 
     expect(landingRoute).toContain("persona=athlete");
     expect(landingRoute).toContain("persona=trainer");
+    expect(landingRoute).toContain("productSurface=habigoal");
+    expect(landingRoute).toContain("productSurface=athlete-iq");
     expect(landingRoute).toContain("encodeURIComponent(habigoalPath)");
     expect(landingRoute).toContain("encodeURIComponent(athleteIqPath)");
+    expect(loginRoute).toContain("ATHLETE_IQ_GOLD_LOGO_SRC");
+    expect(loginRoute).toContain("login-panel-aiq");
     expect(loginRoute).toContain("sanitizePersona");
     expect(loginRoute).toContain('defaultChecked={initialPersona === "athlete"}');
     expect(loginRoute).toContain('defaultChecked={initialPersona === "trainer"}');

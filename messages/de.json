@@ -1151,7 +1151,21 @@
     "missingPersona": "Waehle Athlet oder Trainer.",
     "genericError": "Login konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
     "athleteIqAccessRequired": "Athlete IQ erfordert professionellen Team- oder Trainerzugang. Du kannst mit Habigoal fortfahren, wenn dein Konto Habigoal-Zugriff hat.",
-    "habigoalAccessRequired": "Habigoal-Zugriff ist fuer dieses Konto noch nicht aktiviert."
+    "habigoalAccessRequired": "Habigoal-Zugriff ist fuer dieses Konto noch nicht aktiviert.",
+    "surfaces": {
+      "habigoal": {
+        "badge": "Habigoal-Zugriff",
+        "title": "Weiter zu Habigoal",
+        "subtitle": "Gib deine E-Mail-Adresse oder deinen Benutzernamen ein und öffne die mobile Habigoal Tages-App.",
+        "supportingCopy": "Dieselbe E-Mail oder derselbe Benutzername öffnet beim nächsten Mal dasselbe Habigoal-Konto."
+      },
+      "athleteIq": {
+        "badge": "Athlete-IQ-Zugriff",
+        "title": "Weiter zu Athlete IQ",
+        "subtitle": "Gib deine E-Mail-Adresse oder deinen Benutzernamen ein und öffne den professionellen Athlete-IQ-Arbeitsbereich.",
+        "supportingCopy": "Der Trainer-Login öffnet Athlete IQ und behält dieselbe gemeinsame Kontoidentität."
+      }
+    }
   },
   "News": {
     "badge": "Habigoal News",

@@ -360,9 +360,32 @@ a {
   box-shadow: var(--surface-shadow-elevated);
 }
 
+.login-panel-aiq {
+  color: rgba(244, 247, 251, 0.96);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 207, 79, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(17, 20, 27, 0.98), rgba(8, 10, 14, 0.98)),
+    #090b0f;
+  border-color: rgba(255, 207, 79, 0.34);
+}
+
+.login-brand-logo {
+  display: block;
+  object-fit: contain;
+}
+
+.login-brand-logo-aiq {
+  width: 72px;
+  height: auto;
+}
+
 .login-panel .mantine-Title-root {
   overflow-wrap: anywhere;
   color: var(--text-primary);
+}
+
+.login-panel-aiq .mantine-Title-root {
+  color: rgba(255, 255, 255, 0.96);
 }
 
 .login-panel .mantine-Text-root,
@@ -389,6 +412,10 @@ a {
   height: 18px;
   margin-top: 3px;
   accent-color: var(--brand-cyan);
+}
+
+.login-panel-aiq .login-persona-option > input {
+  accent-color: #f5c542;
 }
 
 .login-persona-option > span {

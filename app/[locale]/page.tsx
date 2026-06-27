@@ -18,8 +18,8 @@ export default async function LandingPage({
   const homeHref = `/${locale}`;
   const habigoalPath = `/${locale}/habigoal`;
   const athleteIqPath = `/${locale}/athlete-iq`;
-  const habigoalHref = `/${locale}/login?next=${encodeURIComponent(habigoalPath)}&persona=athlete`;
-  const athleteIqHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=trainer`;
+  const habigoalHref = `/${locale}/login?next=${encodeURIComponent(habigoalPath)}&persona=athlete&productSurface=habigoal`;
+  const athleteIqHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=trainer&productSurface=athlete-iq`;
   const newsHref = `/${locale}/news`;
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;

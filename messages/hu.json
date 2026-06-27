@@ -1151,7 +1151,21 @@
     "missingPersona": "Válassza ki, hogy sportoló vagy edző.",
     "genericError": "Nem sikerült befejezni a belépést. Kérjük, próbálja újra.",
     "athleteIqAccessRequired": "Az Athlete IQ professzionális csapat- vagy edzői hozzáférést igényel. Habigoallal folytathatod, ha a fiókodhoz Habigoal hozzáférés tartozik.",
-    "habigoalAccessRequired": "A Habigoal hozzáférés még nincs engedélyezve ehhez a fiókhoz."
+    "habigoalAccessRequired": "A Habigoal hozzáférés még nincs engedélyezve ehhez a fiókhoz.",
+    "surfaces": {
+      "habigoal": {
+        "badge": "Habigoal hozzáférés",
+        "title": "Tovább a Habigoalba",
+        "subtitle": "Adja meg az e-mail címét vagy felhasználónevét, és nyissa meg a Habigoal mobil napi appot.",
+        "supportingCopy": "Ugyanez az e-mail vagy felhasználónév legközelebb ugyanazt a Habigoal fiókot nyitja meg."
+      },
+      "athleteIq": {
+        "badge": "Athlete IQ hozzáférés",
+        "title": "Tovább az Athlete IQ-ba",
+        "subtitle": "Adja meg az e-mail címét vagy felhasználónevét, és nyissa meg az Athlete IQ professzionális munkafelületet.",
+        "supportingCopy": "Az edzői belépés az Athlete IQ-t nyitja meg, ugyanazzal a közös fiókazonossággal."
+      }
+    }
   },
   "News": {
     "badge": "Habigoal Hírek",
