@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
 import type { HabigoalDailyStatus } from "@/lib/habigoal-status";
-import type { HabigoalHabitKey, HabigoalTodayProjection } from "@/services/habigoal-product.service";
+import type { HabigoalHabitKey, HabigoalHistory, HabigoalTodayProjection } from "@/services/habigoal-product.service";
 import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
 import { createProductSurfaceActionPack } from "../productSurfaceActions";
 
@@ -43,7 +43,7 @@ const HABIT_PLAN = [
   { id: "study", dbKey: "tacticalLearning", category: "life" }
 ] satisfies HabitItem[];
 
-export function HabigoalExperience({ projection, surface }: { projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
+export function HabigoalExperience({ history, projection, surface }: { history?: HabigoalHistory; projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const router = useRouter();
   const t = useTranslations("ProductSurfaces.habigoal");
   const tActions = useTranslations("ProductSurfaces.actions");
@@ -302,6 +302,54 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
             </Stack>
           </Paper>
 
+          <Paper id="progress" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+            <Stack gap="lg">
+              <SectionHeading icon={<GdsIcons.Habit size={18} />} title={t("progress.title")} copy={t("progress.copy")} />
+              <SimpleGrid cols={{ base: 3 }} spacing="sm">
+                <SignalCard
+                  label={t("progress.currentStreak")}
+                  value={t("progress.days", { count: history?.currentStreak ?? 0 })}
+                  state={(history?.currentStreak ?? 0) > 0 ? "good" : "neutral"}
+                  detail={t("progress.currentStreakDetail")}
+                />
+                <SignalCard
+                  label={t("progress.bestStreak")}
+                  value={t("progress.days", { count: history?.bestStreak ?? 0 })}
+                  state="neutral"
+                  detail={t("progress.bestStreakDetail")}
+                />
+                <SignalCard
+                  label={t("progress.activeDays")}
+                  value={t("progress.activeDaysValue", { count: history?.activeDays ?? 0 })}
+                  state="neutral"
+                  detail={t("progress.activeDaysDetail")}
+                />
+              </SimpleGrid>
+              <Box>
+                <Text fw={800} mb={6}>{t("progress.last7")}</Text>
+                {history && history.last7Days.length > 0 ? (
+                  <Group gap="xs" grow align="flex-end">
+                    {history.last7Days.map((day) => (
+                      <Stack key={day.date} gap={4} align="center">
+                        <Progress
+                          value={day.score}
+                          color={day.score >= 70 ? "tactical" : day.score > 0 ? "yellow" : "gray"}
+                          radius="xl"
+                          size="lg"
+                          style={{ width: "100%" }}
+                          aria-label={t("progress.dayAria", { date: day.date, score: day.score })}
+                        />
+                        <Text size="sm" className="hbg-muted-text">{day.date.slice(8)}</Text>
+                      </Stack>
+                    ))}
+                  </Group>
+                ) : (
+                  <Text size="sm" className="hbg-muted-text">{t("progress.empty")}</Text>
+                )}
+              </Box>
+            </Stack>
+          </Paper>
+
           <Paper id="action" component="section" className="hbg-guidance-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
             <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
               <Stack gap="xs">
@@ -312,6 +360,17 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
               <Box className="hbg-action-card">
                 <Text fw={900} mb={6}>{statusLabel}</Text>
                 <Text>{statusAvailable ? t(`nextAction.${activeProjection.nextActionKey}`) : t(`journey.${dailyUiState}.nextAction`)}</Text>
+                {(() => {
+                  const supportReasons = activeProjection.reasonCodes.filter((code) => t.has(`reasons.${code}`));
+                  return supportReasons.length > 0 ? (
+                    <Stack gap={4} mt="sm">
+                      <Text fw={700} size="sm">{t("reasons.title")}</Text>
+                      {supportReasons.map((code) => (
+                        <Text key={code} size="sm" className="hbg-copy">• {t(`reasons.${code}`)}</Text>
+                      ))}
+                    </Stack>
+                  ) : null;
+                })()}
                 {!statusAvailable ? (
                   <Box mt="md">
                     <SemanticButton
@@ -342,6 +401,10 @@ export function HabigoalExperience({ projection, surface }: { projection: Habigo
           <a href="#habits" className="hbg-bottom-nav-item">
             <GdsIcons.Habit size={18} />
             <span>{t("navigation.habits")}</span>
+          </a>
+          <a href="#progress" className="hbg-bottom-nav-item">
+            <GdsIcons.Record size={18} />
+            <span>{t("navigation.progress")}</span>
           </a>
           <a href="#action" className="hbg-bottom-nav-item">
             <GdsIcons.Check size={18} />
