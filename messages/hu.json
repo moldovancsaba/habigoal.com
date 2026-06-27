@@ -1358,7 +1358,18 @@
     "noAthletes": "Nincs sportoló",
     "noAthletesDesc": "Nincs hozzárendelt sportolód.",
     "concernFlags": "Mai figyelmeztető jelek",
-    "loadError": "A lista betöltése sikertelen"
+    "loadError": "A lista betöltése sikertelen",
+    "teamSquads": "Team squads",
+    "teamAthletes": "{count} athletes",
+    "teamNoData": "No team data available.",
+    "teamSuppressed": "Hidden for privacy (fewer than 3 athletes).",
+    "distGreen": "{count} ready",
+    "distYellow": "{count} watch",
+    "distRed": "{count} at risk",
+    "distIncomplete": "{count} no check-in",
+    "teamFlags": "{count} flags",
+    "concernResolve": "Resolve",
+    "concernResolved": "Resolved"
   },
   "VisionLab": {
     "title": "Kinematikai és vision labor",
@@ -2227,6 +2238,43 @@
         "reasoning": "Reasoning",
         "memory_retention": "Memory & retention"
       }
+    }
+  },
+  "AthleteIntelligence": {
+    "title": "Athlete intelligence",
+    "titleWithName": "{name} — intelligence",
+    "subtitle": "Live digital-twin profile built from recorded data.",
+    "twinDimensions": "Digital twin dimensions",
+    "recommendations": "Coaching guidance",
+    "dataSources": "Data sources",
+    "rebuild": "Rebuild",
+    "loadError": "Could not load the athlete twin.",
+    "retry": "Retry",
+    "confidenceLabel": "Confidence: {confidence}",
+    "updatedLabel": "Updated {date}",
+    "noRecommendations": "No guidance for today.",
+    "noSources": "No sources yet",
+    "notEnoughDimensions": "Not enough scored dimensions to chart yet.",
+    "confidence": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "insufficient": "Insufficient"
+    },
+    "status": {
+      "active": "Active",
+      "lite_manual": "Lite (manual)",
+      "future": "Future",
+      "setup_required": "Setup required",
+      "redacted": "Hidden"
+    },
+    "dimensions": {
+      "readiness": "Readiness",
+      "mental_edge": "Mental edge",
+      "pain_safety": "Pain safety",
+      "habits": "Habits",
+      "daily_plan": "Daily plan",
+      "cognitive_lite": "Cognitive"
     }
   }
 }
