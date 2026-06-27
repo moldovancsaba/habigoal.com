@@ -1,4 +1,4 @@
-export type EventType = "MEDIA_UPLOADED" | "SKELETON_TRACKED" | "METRIC_INGESTED" | "CLUSTER_COMPUTED" | "TWIN_UPDATED";
+export type EventType = "MEDIA_UPLOADED" | "SKELETON_TRACKED" | "METRIC_INGESTED" | "TWIN_UPDATED";
 
 export interface DomainEvent<T = unknown> {
   type: EventType;

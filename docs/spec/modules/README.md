@@ -69,7 +69,7 @@ One-page summaries per implementation module. Full requirements in `../artifacts
 
 **Spec sections:** §14, Phase 4 acceptance criteria.
 
-**Habigoal today:** Queue types, admin retry API, ai-clustering service stub.
+**Habigoal today:** Queue types, admin retry API. (Dead `ai-clustering` sink removed in #361.)
 
 **Gaps:** QUE-001 production queue, worker deployment, monitoring (§34.2).
 
@@ -97,7 +97,7 @@ One-page summaries per implementation module. Full requirements in `../artifacts
 
 **Spec sections:** §17, §38.5, Phase 6 acceptance criteria.
 
-**Habigoal today:** Vision AI event stub, kinematics service, vision dashboard page.
+**Habigoal today:** Vision AI event stub, vision dashboard page. (Mock kinematics service removed in #361; real pose/kinematics tracked under #353.)
 
 **Gaps:** VIS-001–007 — blocked on ADR-006 object storage; no frame extraction or quality gates.
 
