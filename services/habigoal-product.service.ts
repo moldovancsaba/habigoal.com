@@ -1,11 +1,12 @@
 import { ObjectId } from "mongodb";
 import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
 import { getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
+import { getHabitCompletion, getHabitStreak } from "@/lib/athlete-habits";
 import { createHabigoalCorrelationId, logHabigoalEvent } from "@/lib/habigoal-api";
 import { buildHabigoalDailyStatus, type HabigoalConfidence, type HabigoalDailyStatus, type HabigoalMetricValues } from "@/lib/habigoal-status";
 import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import { getChildById, listChildren } from "@/repositories/child.repository";
-import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
+import { getHabitRecordByAthleteIdAndDate, listHabitRecordsByAthleteId } from "@/repositories/habit-records.repository";
 import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 
 export type HabigoalHabitKey = "hydrate" | "move" | "fuel" | "reflect" | "sleep" | "study";
@@ -115,6 +116,81 @@ export async function getHabigoalTodayProjection(input: {
   });
 
   return projection;
+}
+
+export type HabigoalHistoryDay = { date: string; score: number };
+export type HabigoalHistory = {
+  currentStreak: number;
+  bestStreak: number;
+  activeDays: number;
+  last7Days: HabigoalHistoryDay[];
+};
+
+// Recent habit history for the Habigoal "build your habits" view. Habigoal is a
+// white-label of AthleteIQ, so this borrows the AIQ-owned habit functions
+// (lib/athlete-habits) over the shared habit_records store — the same streak and
+// completion math AIQ shows for the same athlete, kept consistent across both apps.
+export async function getHabigoalRecentHistory(input: { timezone?: string; user?: AuthUser | null } = {}): Promise<HabigoalHistory> {
+  const timezone = input.timezone || DEFAULT_TIMEZONE;
+  const localDate = getLocalDateForTimezone(timezone);
+  const user = input.user === undefined ? await getAuthUser() : input.user;
+  const athlete = user ? await resolveHabigoalAthlete(user) : null;
+
+  if (!athlete?._id) {
+    return { currentStreak: 0, bestStreak: 0, activeDays: 0, last7Days: buildLast7Days(localDate, new Map()) };
+  }
+
+  const records = await listHabitRecordsByAthleteId(athlete._id);
+  const byDate = new Map(records.map((record) => [record.date, record]));
+
+  const currentStreak = getHabitStreak(records);
+  const bestStreak = computeBestStreak(records);
+
+  let activeDays = 0;
+  for (let offset = 0; offset < 14; offset += 1) {
+    const record = byDate.get(shiftIsoDate(localDate, -offset));
+    if (record && getHabitCompletion(record.statuses).completed > 0) activeDays += 1;
+  }
+
+  return { currentStreak, bestStreak, activeDays, last7Days: buildLast7Days(localDate, byDate) };
+}
+
+// Best historical streak using the same per-day qualification as the shared
+// getHabitStreak (>=70% of the canonical habit set completed).
+function computeBestStreak(records: Array<{ date: string; statuses: Record<string, boolean> }>): number {
+  const qualifyingDates = records
+    .filter((record) => {
+      const { completed, total } = getHabitCompletion(record.statuses);
+      return completed >= Math.ceil(total * 0.7);
+    })
+    .map((record) => record.date)
+    .sort();
+
+  let best = 0;
+  let run = 0;
+  let previous: string | null = null;
+  for (const date of qualifyingDates) {
+    run = previous && shiftIsoDate(previous, 1) === date ? run + 1 : 1;
+    best = Math.max(best, run);
+    previous = date;
+  }
+  return best;
+}
+
+function buildLast7Days(localDate: string, byDate: Map<string, { statuses: Record<string, boolean> }>): HabigoalHistoryDay[] {
+  const days: HabigoalHistoryDay[] = [];
+  for (let offset = 6; offset >= 0; offset -= 1) {
+    const date = shiftIsoDate(localDate, -offset);
+    const record = byDate.get(date);
+    days.push({ date, score: record ? getHabitCompletion(record.statuses).score : 0 });
+  }
+  return days;
+}
+
+function shiftIsoDate(isoDate: string, days: number): string {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 export function getHabigoalHabitStatuses(completedHabits: HabigoalHabitKey[]) {

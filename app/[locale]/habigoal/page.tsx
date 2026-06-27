@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HabigoalExperience } from "@/components/product/habigoal/HabigoalExperience";
 import { requireProductSession } from "@/lib/product-session";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
-import { getHabigoalTodayProjection } from "@/services/habigoal-product.service";
+import { getHabigoalRecentHistory, getHabigoalTodayProjection } from "@/services/habigoal-product.service";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +35,7 @@ export default async function HabigoalSurfaceRoute({
     persona: "athlete",
     surface: "habigoal"
   });
-  const projection = await getHabigoalTodayProjection();
+  const [projection, history] = await Promise.all([getHabigoalTodayProjection(), getHabigoalRecentHistory()]);
 
-  return <HabigoalExperience projection={projection} surface={getProductSurfaceOrThrow("habigoal")} />;
+  return <HabigoalExperience projection={projection} history={history} surface={getProductSurfaceOrThrow("habigoal")} />;
 }

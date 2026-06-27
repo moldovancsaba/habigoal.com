@@ -1542,7 +1542,8 @@
         "today": "Hoy",
         "checkIn": "Check-in",
         "habits": "Hábitos",
-        "action": "Acción"
+        "action": "Acción",
+        "progress": "Progress"
       },
       "athleteFallback": "Mi día",
       "scorePending": "Iniciar",
@@ -1635,6 +1636,31 @@
       "review": {
         "title": "Revisar y guardar",
         "copy": "El estado aparece solo después de guardar el check-in y los hábitos de hoy."
+      },
+      "progress": {
+        "title": "Build your habits",
+        "copy": "Your streak grows every day you complete at least one habit.",
+        "currentStreak": "Current streak",
+        "currentStreakDetail": "Days in a row",
+        "bestStreak": "Best streak",
+        "bestStreakDetail": "Your record",
+        "activeDays": "Active days",
+        "activeDaysValue": "{count}/14",
+        "activeDaysDetail": "Last two weeks",
+        "days": "{count} days",
+        "last7": "Last 7 days",
+        "empty": "Complete a habit today to start your streak.",
+        "dayAria": "{date}: {score}% habit score"
+      },
+      "reasons": {
+        "title": "Why",
+        "partial_check_in": "A few check-in signals are still missing today.",
+        "missing_habits": "No habits logged yet today.",
+        "high_soreness": "Soreness is high — ease into today and prioritise recovery.",
+        "habit_gap": "You're below your usual habit completion.",
+        "all_daily_signals_present": "Everything's logged — nice work.",
+        "missing_profile": "Finish setting up your profile to start tracking.",
+        "no_daily_data": "No check-in or habits recorded yet today."
       }
     },
     "athleteIq": {
