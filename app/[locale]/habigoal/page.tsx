@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HabigoalExperience } from "@/components/product/habigoal/HabigoalExperience";
+import { requireProductSession } from "@/lib/product-session";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
 import { getHabigoalTodayProjection } from "@/services/habigoal-product.service";
 
@@ -27,6 +28,12 @@ export default async function HabigoalSurfaceRoute({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  await requireProductSession({
+    allowedRoles: ["athlete"],
+    locale,
+    path: `/${locale}/habigoal`,
+    persona: "athlete"
+  });
   const projection = await getHabigoalTodayProjection();
 
   return <HabigoalExperience projection={projection} surface={getProductSurfaceOrThrow("habigoal")} />;

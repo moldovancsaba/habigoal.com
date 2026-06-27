@@ -95,6 +95,31 @@ describe("product surface route boundaries", () => {
     expect(actionSource).not.toContain("productSurface:home");
   });
 
+  it("routes app selector entries through login with the selected product persona", () => {
+    const landingRoute = readSource("app/[locale]/page.tsx");
+    const loginRoute = readSource("app/[locale]/login/page.tsx");
+
+    expect(landingRoute).toContain("persona=athlete");
+    expect(landingRoute).toContain("persona=trainer");
+    expect(landingRoute).toContain("encodeURIComponent(habigoalPath)");
+    expect(landingRoute).toContain("encodeURIComponent(athleteIqPath)");
+    expect(loginRoute).toContain("sanitizePersona");
+    expect(loginRoute).toContain('defaultChecked={initialPersona === "athlete"}');
+    expect(loginRoute).toContain('defaultChecked={initialPersona === "trainer"}');
+  });
+
+  it("requires a matching login session before product app data is loaded", () => {
+    const habigoalRoute = readSource("app/[locale]/habigoal/page.tsx");
+    const athleteIqRoute = readSource("app/[locale]/athlete-iq/page.tsx");
+
+    expect(habigoalRoute.indexOf("requireProductSession")).toBeLessThan(habigoalRoute.indexOf("getHabigoalTodayProjection"));
+    expect(habigoalRoute).toContain('persona: "athlete"');
+    expect(habigoalRoute).toContain('allowedRoles: ["athlete"]');
+    expect(athleteIqRoute.indexOf("requireProductSession")).toBeLessThan(athleteIqRoute.indexOf("getAthleteIqProductDashboardProjection"));
+    expect(athleteIqRoute).toContain('persona: "trainer"');
+    expect(athleteIqRoute).toContain('"club_management"');
+  });
+
   it("keeps AthleteIQ oriented around trainer team and club operations", () => {
     const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
     const athleteIqRoute = readSource("app/[locale]/athlete-iq/page.tsx");

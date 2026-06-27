@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AthleteIqExperience } from "@/components/product/athlete-iq/AthleteIqExperience";
+import { requireProductSession } from "@/lib/product-session";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
 import { getAthleteIqProductDashboardProjection } from "@/services/athleteiq-product-dashboard.service";
 
@@ -27,6 +28,12 @@ export default async function AthleteIqSurfaceRoute({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  await requireProductSession({
+    allowedRoles: ["admin", "trainer", "performance_coach", "physio", "analyst", "club_management"],
+    locale,
+    path: `/${locale}/athlete-iq`,
+    persona: "trainer"
+  });
   const dashboard = await getAthleteIqProductDashboardProjection();
 
   return <AthleteIqExperience dashboard={dashboard} surface={getProductSurfaceOrThrow("athlete-iq")} />;

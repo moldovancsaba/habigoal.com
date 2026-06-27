@@ -16,8 +16,10 @@ export default async function LandingPage({
   const t = await getTranslations({ locale, namespace: "Landing" });
   const { error } = await searchParams;
   const homeHref = `/${locale}`;
-  const habigoalHref = `/${locale}/habigoal`;
-  const athleteIqHref = `/${locale}/athlete-iq`;
+  const habigoalPath = `/${locale}/habigoal`;
+  const athleteIqPath = `/${locale}/athlete-iq`;
+  const habigoalHref = `/${locale}/login?next=${encodeURIComponent(habigoalPath)}&persona=athlete`;
+  const athleteIqHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=trainer`;
   const newsHref = `/${locale}/news`;
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;
