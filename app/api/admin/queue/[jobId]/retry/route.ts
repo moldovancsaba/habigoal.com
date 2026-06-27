@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDatabase } from "@/lib/mongodb";
+import { requireRole } from "@/lib/api";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ jobId: string }> }
 ) {
-  try {
-    // Admin Auth check here
+  const authError = await requireRole(request, ["admin"]);
+  if (authError) return authError;
 
+  try {
     const db = await getDatabase();
     const collection = db.collection("queue_jobs");
     

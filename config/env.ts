@@ -31,6 +31,7 @@ export const env = {
   ssoLogoutUrl: process.env.SSO_LOGOUT_URL,
   authSecret: process.env.AUTH_SECRET,
   trainersIngestApiKey: process.env.TRAINERS_INGEST_API_KEY,
+  cronSecret: process.env.CRON_SECRET,
 };
 
 type StringEnvKey = {
