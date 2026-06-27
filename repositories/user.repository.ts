@@ -85,6 +85,7 @@ export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" |
   const productEntitlements = resolvePersonaLoginEntitlements({
     existingProductEntitlements: existing?.productEntitlements,
     existingRoles: Array.isArray(existing?.roles) ? existing.roles : [],
+    requestedRoles: normalizedRoles,
     now
   });
   await db.collection(collectionName).updateOne(

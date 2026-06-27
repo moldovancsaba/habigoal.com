@@ -79,10 +79,12 @@ type ProductEntitlements = {
 Rules:
 
 - A self-registered user receives Habigoal access by default.
-- A self-registered user does not receive Athlete IQ access by default.
+- A self-registered athlete persona receives Habigoal access by default and does not receive Athlete IQ access.
+- During the pseudo-login phase, selecting the trainer persona provisions Athlete IQ trainer access so the user can enter the professional workspace before SSO is rolled out.
 - Athlete IQ access requires a professional entitlement: team membership, trainer assignment, club staff role, pro-athlete membership, or admin grant.
 - The same email or username can log in to Habigoal and Athlete IQ only when the user has the required entitlement for each surface.
-- Choosing a persona at login selects the requested surface and role context; it must not grant missing access.
+- Choosing the athlete persona must not grant Athlete IQ access.
+- Choosing the trainer persona is treated as a professional onboarding request in pseudo-login and grants the provisional `trainer_assignment` entitlement.
 
 ## Runtime Flow
 
@@ -106,8 +108,8 @@ Rules:
 
 1. User selects Athlete IQ.
 2. Login collects email or username and persona.
-3. Server normalizes identity and resolves professional entitlements.
-4. If the user lacks Athlete IQ access, the server denies entry and offers Habigoal when allowed.
+3. Server normalizes identity and resolves professional entitlements. In pseudo-login, trainer persona creates or preserves `trainer_assignment` access.
+4. If the user still lacks Athlete IQ access, the server denies entry and offers Habigoal when allowed.
 5. If allowed, Athlete IQ loads the professional workspace.
 6. Trainers see only assigned athletes and allowed data.
 7. Athlete IQ dashboards and reports include Habigoal-created history as part of the athlete timeline.

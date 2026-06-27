@@ -23,13 +23,42 @@ describe("product entitlement contract", () => {
     expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
   });
 
-  it("does not upgrade a new trainer persona login to Athlete IQ without explicit professional entitlement", () => {
+  it("keeps an athlete persona login Habigoal-only by default", () => {
     const entitlements = resolvePersonaLoginEntitlements({
       existingRoles: [],
+      requestedRoles: ["athlete"],
       now: "2026-06-27T08:00:00.000Z"
     });
 
     expect(entitlements.habigoal.enabled).toBe(true);
     expect(entitlements.athleteIq.enabled).toBe(false);
+  });
+
+  it("provisions Athlete IQ access when the pseudo-login persona is trainer", () => {
+    const entitlements = resolvePersonaLoginEntitlements({
+      existingRoles: [],
+      requestedRoles: ["trainer"],
+      now: "2026-06-27T08:00:00.000Z"
+    });
+
+    expect(entitlements.habigoal.enabled).toBe(true);
+    expect(entitlements.habigoal.reason).toBe("aiq_member");
+    expect(entitlements.athleteIq.enabled).toBe(true);
+    expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
+  });
+
+  it("upgrades an existing Habigoal-only account when the user selects trainer persona", () => {
+    const entitlements = resolvePersonaLoginEntitlements({
+      existingProductEntitlements: createSelfRegisteredEntitlements("2026-06-27T08:00:00.000Z"),
+      existingRoles: ["athlete"],
+      requestedRoles: ["trainer"],
+      now: "2026-06-27T09:00:00.000Z"
+    });
+
+    expect(entitlements.habigoal.enabled).toBe(true);
+    expect(entitlements.habigoal.reason).toBe("aiq_member");
+    expect(entitlements.athleteIq.enabled).toBe(true);
+    expect(entitlements.athleteIq.grantedAt).toBe("2026-06-27T09:00:00.000Z");
+    expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
   });
 });

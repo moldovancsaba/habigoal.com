@@ -85,12 +85,15 @@ export function resolveProductEntitlements(input: {
 export function resolvePersonaLoginEntitlements(input: {
   existingProductEntitlements?: unknown;
   existingRoles?: string[] | null;
+  requestedRoles?: string[] | null;
   now?: string;
 }): ProductEntitlements {
+  const requestedRoles = normalizeRoleSet(input.requestedRoles);
   const explicit = normalizeProductEntitlements(input.existingProductEntitlements);
-  if (explicit) return explicit;
-  if (input.existingRoles && input.existingRoles.length > 0) {
-    return deriveLegacyProductEntitlements(input.existingRoles, input.now);
+  if (explicit) return grantRequestedProfessionalEntitlement(explicit, requestedRoles, input.now);
+  const combinedRoles = [...normalizeRoleSet(input.existingRoles), ...requestedRoles];
+  if (combinedRoles.length > 0) {
+    return deriveLegacyProductEntitlements(combinedRoles, input.now);
   }
   return createSelfRegisteredEntitlements(input.now);
 }
@@ -102,6 +105,33 @@ export function hasProductEntitlement(entitlements: ProductEntitlements, surface
 function normalizeHabigoalReason(input: unknown): HabigoalEntitlementReason {
   if (input === "aiq_member" || input === "admin_grant" || input === "self_registered") return input;
   return "self_registered";
+}
+
+function normalizeRoleSet(roles: string[] | undefined | null) {
+  return Array.from(new Set((roles || []).map((role) => role.trim().toLowerCase()).filter(Boolean)));
+}
+
+function grantRequestedProfessionalEntitlement(
+  entitlements: ProductEntitlements,
+  requestedRoles: string[],
+  now = new Date().toISOString()
+): ProductEntitlements {
+  const hasRequestedProfessionalRole = requestedRoles.some((role) => PROFESSIONAL_ROLES.has(role));
+  if (!hasRequestedProfessionalRole) return entitlements;
+  const isAdmin = requestedRoles.includes("admin");
+
+  return {
+    habigoal: {
+      enabled: true,
+      grantedAt: entitlements.habigoal.grantedAt ?? now,
+      reason: entitlements.habigoal.reason === "admin_grant" ? "admin_grant" : "aiq_member"
+    },
+    athleteIq: {
+      enabled: true,
+      grantedAt: entitlements.athleteIq.grantedAt ?? now,
+      reason: entitlements.athleteIq.reason ?? (isAdmin ? "admin_grant" : "trainer_assignment")
+    }
+  };
 }
 
 function isRecord(input: unknown): input is Record<string, unknown> {

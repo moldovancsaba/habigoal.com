@@ -37,8 +37,8 @@ describe("user repository persona login", () => {
         name: "Same User",
         roles: ["athlete", "trainer"],
         productEntitlements: {
-          habigoal: { enabled: true, reason: "self_registered" },
-          athleteIq: { enabled: false }
+          habigoal: { enabled: true, reason: "aiq_member" },
+          athleteIq: { enabled: true, reason: "trainer_assignment" }
         },
         athleteId: "athlete-1",
         teamIds: ["team-1"],
@@ -65,8 +65,8 @@ describe("user repository persona login", () => {
           email: "same-user@example.com",
           name: "Same User",
           productEntitlements: {
-            habigoal: { enabled: true, reason: "self_registered" },
-            athleteIq: { enabled: false }
+            habigoal: expect.objectContaining({ enabled: true, reason: "aiq_member", grantedAt: expect.any(String) }),
+            athleteIq: expect.objectContaining({ enabled: true, reason: "trainer_assignment", grantedAt: expect.any(String) })
           },
           roles: ["athlete", "trainer"]
         })

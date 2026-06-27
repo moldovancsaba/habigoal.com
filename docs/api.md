@@ -325,7 +325,9 @@ Payload:
 Rules:
 
 - `identifier` can be an email or a username. Usernames are normalized to a local email identity.
-- `persona` is `athlete` or `trainer` and selects the active session role. It does not grant unavailable product access.
+- `persona` is `athlete` or `trainer` and selects the active session role.
+- `persona=athlete` provisions an empty Habigoal account by default and does not grant Athlete IQ access.
+- `persona=trainer` provisions provisional Athlete IQ trainer access during the pseudo-login phase.
 - `productSurface` is `habigoal` or `athlete-iq`. If omitted, the server derives it from `next` and persona.
 - New users are provisioned empty. No measurements, habits, check-ins, scores, or sample records are created.
 - The server validates product entitlements before creating the session redirect.
