@@ -113,6 +113,8 @@ describe("product surface route boundaries", () => {
     expect(loginRoute).toContain("ATHLETE_IQ_GOLD_LOGO_SRC");
     expect(loginRoute).toContain("login-panel-aiq");
     expect(loginRoute).toContain("sanitizePersona");
+    expect(loginRoute).toContain('!isAthleteIqSurface ? <input type="hidden" name="persona" value="athlete" /> : null');
+    expect(loginRoute).toContain('{isAthleteIqSurface ? (');
     expect(loginRoute).toContain('defaultChecked={initialPersona === "athlete"}');
     expect(loginRoute).toContain('defaultChecked={initialPersona === "trainer"}');
   });

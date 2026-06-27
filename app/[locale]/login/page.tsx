@@ -75,6 +75,7 @@ export default async function LoginPage({
 
             <input type="hidden" name="next" value={nextPath} />
             <input type="hidden" name="productSurface" value={selectedSurface} />
+            {!isAthleteIqSurface ? <input type="hidden" name="persona" value="athlete" /> : null}
             <TextInput
               autoComplete="email"
               label={t("identifierLabel")}
@@ -84,25 +85,27 @@ export default async function LoginPage({
               type="email"
             />
 
-            <Stack gap="xs">
-              <Text fw={700}>{t("personaLabel")}</Text>
-              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm" mt="xs">
-                <label className="login-persona-option">
-                  <input type="radio" name="persona" value="athlete" defaultChecked={initialPersona === "athlete"} required />
-                  <span>
-                    <Text component="span" fw={900}>{t("athletePersonaTitle")}</Text>
-                    <Text component="span" c="dimmed" size="sm">{t(isAthleteIqSurface ? "athleteIqAthletePersonaCopy" : "athletePersonaCopy")}</Text>
-                  </span>
-                </label>
-                <label className="login-persona-option">
-                  <input type="radio" name="persona" value="trainer" defaultChecked={initialPersona === "trainer"} required />
-                  <span>
-                    <Text component="span" fw={900}>{t("trainerPersonaTitle")}</Text>
-                    <Text component="span" c="dimmed" size="sm">{t(isAthleteIqSurface ? "athleteIqTrainerPersonaCopy" : "trainerPersonaCopy")}</Text>
-                  </span>
-                </label>
-              </SimpleGrid>
-            </Stack>
+            {isAthleteIqSurface ? (
+              <Stack gap="xs">
+                <Text fw={700}>{t("personaLabel")}</Text>
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm" mt="xs">
+                  <label className="login-persona-option">
+                    <input type="radio" name="persona" value="athlete" defaultChecked={initialPersona === "athlete"} required />
+                    <span>
+                      <Text component="span" fw={900}>{t("athletePersonaTitle")}</Text>
+                      <Text component="span" c="dimmed" size="sm">{t("athleteIqAthletePersonaCopy")}</Text>
+                    </span>
+                  </label>
+                  <label className="login-persona-option">
+                    <input type="radio" name="persona" value="trainer" defaultChecked={initialPersona === "trainer"} required />
+                    <span>
+                      <Text component="span" fw={900}>{t("trainerPersonaTitle")}</Text>
+                      <Text component="span" c="dimmed" size="sm">{t("athleteIqTrainerPersonaCopy")}</Text>
+                    </span>
+                  </label>
+                </SimpleGrid>
+              </Stack>
+            ) : null}
             <Button fullWidth type="submit" size="md" variant="filled" color={isAthleteIqSurface ? "yellow" : "ingress"}>
               {t("submit")}
             </Button>
