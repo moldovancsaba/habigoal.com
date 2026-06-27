@@ -58,10 +58,12 @@ export async function getSharedDailyState(input: {
   const timezone = input.timezone || DEFAULT_TIMEZONE;
   const localDate = input.localDate || getLocalDateForTimezone(timezone);
   const athlete = await resolveDailyStateAthlete({ athleteId: input.athleteId, product: input.product, user: input.user });
-  const [checkIn, habitRecord] = await Promise.all([
+  const [lifestyleCheckIn, performanceCheckIn, habitRecord] = await Promise.all([
     getAthleteIqCheckInSnapshot(athlete.athleteId, localDate, "lifestyle"),
+    getAthleteIqCheckInSnapshot(athlete.athleteId, localDate, "performance"),
     getHabitRecordByAthleteIdAndDate(athlete.athleteId, localDate)
   ]);
+  const checkIn = lifestyleCheckIn ?? performanceCheckIn;
   const values = {
     energy: valueOrNull(invert(checkIn?.values.fatigue?.normalizedValue)),
     mood: valueOrNull(checkIn?.values.mood?.normalizedValue),

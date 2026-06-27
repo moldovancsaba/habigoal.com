@@ -4,7 +4,7 @@ import { readJson } from "@/lib/api";
 import { logAuditEvent } from "@/lib/audit";
 import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_CHECK_IN_CAPABILITY_KEY, buildAthleteIqCheckInSnapshot } from "@/lib/athleteiq-check-in";
-import { upsertAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
+import { upsertAthleteIqCheckInWithSharedDailyMirror } from "@/services/athleteiq-check-in-persistence.service";
 import { runAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
 import type { AthleteIqCheckInInput } from "@/types/athleteiq-check-in";
 
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       return athleteIqJsonError("FORBIDDEN", 403, correlationId);
     }
 
-    const snapshot = await upsertAthleteIqCheckInSnapshot(result.snapshot);
+    const { snapshot, sharedDailySnapshot } = await upsertAthleteIqCheckInWithSharedDailyMirror(result.snapshot);
     if (result.highPain) {
       await logAuditEvent({
         actorEmail: user.email,
@@ -62,6 +62,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       snapshot,
+      sharedDailySnapshot,
       engineRun,
       highPain: result.highPain,
       correlationId,

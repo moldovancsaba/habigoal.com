@@ -110,6 +110,46 @@ describe("shared daily state bridge", () => {
     expect(projection.dataFreshness.sourceCollections).toEqual(["athleteiq_checkins", "habit_records"]);
   });
 
+  it("falls back to a performance check-in when a lifestyle mirror is not present yet", async () => {
+    mockedGetAthleteIqCheckInSnapshot.mockImplementation(async (_athleteId, _localDate, mode) => {
+      if (mode === "lifestyle") return null;
+      return {
+        athleteId,
+        localDate: "2026-06-27",
+        mode: "performance",
+        timezone: "Europe/Budapest",
+        values: {
+          fatigue: { rawValue: 3, normalizedValue: 22, sourceLabel: "user_input" },
+          mood: { rawValue: 9, normalizedValue: 89, sourceLabel: "user_input" },
+          pain: { rawValue: 2, normalizedValue: 11, sourceLabel: "user_input" },
+          sleepQuality: { rawValue: 8, normalizedValue: 78, sourceLabel: "user_input" }
+        },
+        missingFields: [],
+        sourceLabels: {},
+        submittedAt: "2026-06-27T06:00:00.000Z",
+        updatedAt: "2026-06-27T06:00:00.000Z",
+        auditHistory: []
+      } as Awaited<ReturnType<typeof getAthleteIqCheckInSnapshot>>;
+    });
+
+    const projection = await getSharedDailyState({
+      athleteId,
+      localDate: "2026-06-27",
+      product: "habigoal",
+      timezone: "Europe/Budapest",
+      user: athleteUser()
+    });
+
+    expect(mockedGetAthleteIqCheckInSnapshot.mock.calls.map((call) => call[2])).toEqual(["lifestyle", "performance"]);
+    expect(projection.checkIn).toEqual({
+      energy: 78,
+      mood: 89,
+      sleep: 78,
+      soreness: 11
+    });
+    expect(projection.status.score).not.toBeNull();
+  });
+
   it("treats a zero-completion habit record as recorded daily state", async () => {
     mockedGetHabitRecordByAthleteIdAndDate.mockResolvedValue({
       _id: "habit-1",
