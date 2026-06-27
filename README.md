@@ -205,3 +205,11 @@ The repository includes scripts and config for creating or syncing a project boa
 ```
 
 The board definition lives in `config/gh-project-board.json`.
+
+## Background job queue
+
+Enqueued jobs (twin rebuilds, media/vision processing, etc.) are drained by a scheduled endpoint:
+
+- `GET /api/cron/queue` runs `runQueueWorkerLoop`. It is gated by `CRON_SECRET` (returns 503 when unset, 401 on a bad/missing `Authorization: Bearer <CRON_SECRET>`), and is idempotent/overlap-safe because the queue claims jobs atomically.
+- Vercel Cron triggers it on the schedule in `vercel.json` (default `0 3 * * *`, daily — safe on all plans). On Pro, tighten to e.g. `*/10 * * * *` for near-real-time draining. Vercel automatically sends the `CRON_SECRET` bearer.
+- Manual admin drain remains available via `POST /api/admin/queue/process` (admin-only). The admin queue list (`GET /api/admin/queue`) and per-job retry (`POST /api/admin/queue/:jobId/retry`) are now admin-authenticated.

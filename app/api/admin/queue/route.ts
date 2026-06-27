@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getJobsByStatus } from "@/repositories/queue.repository";
 import { JobStatus } from "@/types/queue";
+import { requireRole } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
+  const authError = await requireRole(request, ["admin"]);
+  if (authError) return authError;
+
   try {
-    // Admin Auth check here
-    
     const searchParams = request.nextUrl.searchParams;
     const status = (searchParams.get("status") || "pending") as JobStatus;
 
