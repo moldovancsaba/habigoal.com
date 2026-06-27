@@ -1,20 +1,24 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { buildAthleteIqCheckInSnapshot } from "@/lib/athleteiq-check-in";
-import { upsertAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
+import { getAthleteIqCheckInSnapshot, upsertAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import {
+  buildPerformanceMirror,
   buildLifestyleMirror,
   upsertAthleteIqCheckInWithSharedDailyMirror
 } from "@/services/athleteiq-check-in-persistence.service";
 
 vi.mock("@/repositories/athleteiq-check-in.repository", () => ({
+  getAthleteIqCheckInSnapshot: vi.fn(),
   upsertAthleteIqCheckInSnapshot: vi.fn()
 }));
 
+const mockedGetAthleteIqCheckInSnapshot = vi.mocked(getAthleteIqCheckInSnapshot);
 const mockedUpsertAthleteIqCheckInSnapshot = vi.mocked(upsertAthleteIqCheckInSnapshot);
 
 describe("Athlete IQ check-in shared daily persistence", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockedGetAthleteIqCheckInSnapshot.mockResolvedValue(null);
     mockedUpsertAthleteIqCheckInSnapshot.mockImplementation(async (snapshot) => ({
       ...snapshot,
       id: `${snapshot.mode}-saved`
@@ -50,14 +54,39 @@ describe("Athlete IQ check-in shared daily persistence", () => {
     expect(saved.sharedDailySnapshot.id).toBe("lifestyle-saved");
   });
 
-  it("does not duplicate writes for lifestyle check-ins", async () => {
+  it("mirrors lifestyle check-ins into performance without losing existing pro fields", async () => {
     const source = lifestyleSnapshot();
+    const existingPerformance = performanceSnapshot();
+    mockedGetAthleteIqCheckInSnapshot.mockResolvedValue(existingPerformance);
+
+    const mirror = buildPerformanceMirror(source, existingPerformance);
+
+    expect(mirror).toMatchObject({
+      athleteId: "athlete-1",
+      localDate: "2026-06-27",
+      mode: "performance",
+      timezone: "Europe/Budapest",
+      idempotencyKey: "life-1:performance"
+    });
+    expect(mirror.values).toMatchObject({
+      sleepQuality: { rawValue: 7 },
+      fatigue: { rawValue: 4 },
+      pain: { rawValue: 1 },
+      stress: { rawValue: 3 },
+      mood: { rawValue: 8 },
+      confidence: { rawValue: 8 },
+      focus: { rawValue: 9 },
+      trainingLoad: { rawValue: 420 }
+    });
 
     const saved = await upsertAthleteIqCheckInWithSharedDailyMirror(source);
 
-    expect(mockedUpsertAthleteIqCheckInSnapshot).toHaveBeenCalledTimes(1);
-    expect(mockedUpsertAthleteIqCheckInSnapshot).toHaveBeenCalledWith(source);
-    expect(saved.snapshot).toBe(saved.sharedDailySnapshot);
+    expect(mockedGetAthleteIqCheckInSnapshot).toHaveBeenCalledWith("athlete-1", "2026-06-27", "performance");
+    expect(mockedUpsertAthleteIqCheckInSnapshot).toHaveBeenCalledTimes(2);
+    expect(mockedUpsertAthleteIqCheckInSnapshot.mock.calls.map((call) => call[0].mode)).toEqual(["lifestyle", "performance"]);
+    expect(saved.snapshot.id).toBe("lifestyle-saved");
+    expect(saved.sharedDailySnapshot.id).toBe("lifestyle-saved");
+    expect(saved.professionalSnapshot.id).toBe("performance-saved");
   });
 });
 

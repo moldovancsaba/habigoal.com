@@ -180,7 +180,7 @@ describe("shared daily state bridge", () => {
     expect(projection.status.reasonCodes).toContain("habit_gap");
   });
 
-  it("writes daily values into the shared Athlete IQ lifestyle check-in and habit record", async () => {
+  it("writes daily values into shared lifestyle, mirrored performance, and habit records", async () => {
     await patchSharedDailyState({
       athleteId,
       habits: ["hydrate", "fuel", "sleep"],
@@ -205,6 +205,20 @@ describe("shared daily state bridge", () => {
       timezone: "Europe/Budapest"
     }));
     expect(mockedUpsertAthleteIqCheckInSnapshot.mock.calls[0]?.[0].values).toMatchObject({
+      fatigue: { rawValue: 3 },
+      mood: { rawValue: 6 },
+      pain: { rawValue: 4 },
+      sleepQuality: { rawValue: 7 },
+      stress: { rawValue: 5 }
+    });
+    expect(mockedUpsertAthleteIqCheckInSnapshot).toHaveBeenCalledWith(expect.objectContaining({
+      athleteId,
+      idempotencyKey: "daily-state-test:performance",
+      localDate: "2026-06-27",
+      mode: "performance",
+      timezone: "Europe/Budapest"
+    }));
+    expect(mockedUpsertAthleteIqCheckInSnapshot.mock.calls[1]?.[0].values).toMatchObject({
       fatigue: { rawValue: 3 },
       mood: { rawValue: 6 },
       pain: { rawValue: 4 },

@@ -152,6 +152,48 @@ describe("Athlete IQ dashboard access scope", () => {
     expect(projection.athletes[0].habigoalDaily.completionState).toBe("missing");
   });
 
+  it("uses performance-only check-ins as Habigoal daily source for older records", async () => {
+    mockedGetAuthUser.mockResolvedValue(trainerUser("coach@example.com"));
+    mockedResolveAccessibleAthleteIds.mockResolvedValue(["athlete-1"]);
+    mockedListChildrenWithMetrics.mockResolvedValue([
+      {
+        ...athlete("athlete-1", "Assigned Athlete"),
+        latestReadiness: undefined,
+        latestScores: undefined
+      }
+    ]);
+    mockedListTeams.mockResolvedValue([team("team-1", ["coach@example.com"], ["athlete-1"])]);
+    mockedGetAthleteIqCheckInSnapshot.mockImplementation(async (_athleteId, _localDate, mode) =>
+      mode === "performance"
+        ? ({
+            athleteId: "athlete-1",
+            localDate: "2026-06-27",
+            mode: "performance",
+            timezone: "Europe/Budapest",
+            values: {
+              fatigue: { rawValue: 3, normalizedValue: 22, sourceLabel: "user_input" },
+              mood: { rawValue: 8, normalizedValue: 78, sourceLabel: "user_input" },
+              pain: { rawValue: 2, normalizedValue: 11, sourceLabel: "user_input" },
+              sleepQuality: { rawValue: 7, normalizedValue: 67, sourceLabel: "user_input" }
+            },
+            missingFields: [],
+            sourceLabels: {},
+            submittedAt: "2026-06-27T08:00:00.000Z",
+            updatedAt: "2026-06-27T08:00:00.000Z",
+            auditHistory: []
+          } as Awaited<ReturnType<typeof getAthleteIqCheckInSnapshot>>)
+        : null
+    );
+
+    const projection = await getAthleteIqProductDashboardProjection({ localDate: "2026-06-27" });
+
+    expect(mockedGetAthleteIqCheckInSnapshot.mock.calls.map((call) => call[2])).toEqual(["lifestyle", "performance"]);
+    expect(projection.athletes[0].habigoalDaily.completionState).toBe("complete");
+    expect(projection.athletes[0].habigoalDaily.status).toBe("balanced");
+    expect(projection.athletes[0].readiness).not.toBeNull();
+    expect(projection.missingData).not.toContain("dailyStatus");
+  });
+
   it("keeps Athlete IQ in athlete persona when the active session role is athlete", async () => {
     mockedGetAuthUser.mockResolvedValue(athleteUser("athlete@example.com", "athlete-1"));
     mockedResolveAccessibleAthleteIds.mockResolvedValue(["athlete-1"]);

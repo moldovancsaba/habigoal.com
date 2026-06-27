@@ -2,9 +2,10 @@ import { ObjectId } from "mongodb";
 import { canAccessAthleteIqAthlete, canAccessHabigoalAthlete, canOpenProductSurface, type AuthUser } from "@/lib/access";
 import { buildAthleteIqCheckInSnapshot, getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
 import { buildHabigoalDailyStatus } from "@/lib/habigoal-status";
-import { getAthleteIqCheckInSnapshot, upsertAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
+import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import { getChildById } from "@/repositories/child.repository";
 import { getHabitRecordByAthleteIdAndDate, upsertHabitRecord } from "@/repositories/habit-records.repository";
+import { upsertAthleteIqCheckInWithSharedDailyMirror } from "@/services/athleteiq-check-in-persistence.service";
 import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 import { getHabigoalHabitStatuses, type HabigoalHabitKey } from "@/services/habigoal-product.service";
 
@@ -135,7 +136,7 @@ export async function patchSharedDailyState(input: SharedDailyStatePatch & { use
     if (!result.snapshot) {
       throw new SharedDailyStateError("VALIDATION_ERROR", result.errors.join(", "));
     }
-    writes.push(upsertAthleteIqCheckInSnapshot({
+    writes.push(upsertAthleteIqCheckInWithSharedDailyMirror({
       ...result.snapshot,
       localDate,
       auditHistory: [...result.snapshot.auditHistory, `shared-daily-state:${input.product}:${new Date().toISOString()}`]

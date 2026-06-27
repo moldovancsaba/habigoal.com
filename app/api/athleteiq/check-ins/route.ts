@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       return athleteIqJsonError("FORBIDDEN", 403, correlationId);
     }
 
-    const { snapshot, sharedDailySnapshot } = await upsertAthleteIqCheckInWithSharedDailyMirror(result.snapshot);
+    const { professionalSnapshot, snapshot, sharedDailySnapshot } = await upsertAthleteIqCheckInWithSharedDailyMirror(result.snapshot);
     if (result.highPain) {
       await logAuditEvent({
         actorEmail: user.email,
@@ -62,6 +62,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       snapshot,
+      professionalSnapshot,
       sharedDailySnapshot,
       engineRun,
       highPain: result.highPain,

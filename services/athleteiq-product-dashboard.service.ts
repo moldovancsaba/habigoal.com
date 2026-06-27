@@ -301,10 +301,12 @@ function collectMissingAthleteFields(
 }
 
 async function getHabigoalProfessionalDailySource(athleteId: string, localDate: string) {
-  const [checkIn, habitRecord] = await Promise.all([
+  const [lifestyleCheckIn, performanceCheckIn, habitRecord] = await Promise.all([
     getAthleteIqCheckInSnapshot(athleteId, localDate, "lifestyle"),
+    getAthleteIqCheckInSnapshot(athleteId, localDate, "performance"),
     getHabitRecordByAthleteIdAndDate(athleteId, localDate)
   ]);
+  const checkIn = lifestyleCheckIn ?? performanceCheckIn;
   const values = {
     energy: valueOrNull(invert(checkIn?.values.fatigue?.normalizedValue)),
     soreness: valueOrNull(checkIn?.values.pain?.normalizedValue),
