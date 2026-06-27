@@ -187,9 +187,14 @@ describe("product surface route boundaries", () => {
     expect(athleteIqSource).toContain("AiqMobileNavigation");
     expect(athleteIqSource).toContain("GdsIcons.Menu");
     expect(athleteIqSource).toContain("aiq-mobile-menu-button");
+    expect(athleteIqSource).toContain("aiq-mobile-language-select");
+    expect(athleteIqSource).toContain("common(\"openDashboard\")");
+    expect(athleteIqSource).toContain("common(\"logout\")");
     expect(styles).toMatch(/\.aiq-desktop-sidebar\s*\{[\s\S]*?display:\s*none/);
+    expect(styles).toMatch(/\.surface-topbar\.aiq-topbar\s*\{[\s\S]*?display:\s*none/);
     expect(styles).toMatch(/\.aiq-mobile-topbar\s*\{[\s\S]*?display:\s*flex/);
     expect(styles).toContain(".aiq-mobile-drawer");
+    expect(styles).toContain(".aiq-mobile-language-select");
     expect(styles).not.toContain(".aiq-nav-code");
   });
 

@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { Badge, Box, Group, Paper, Progress, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme, SemanticButton } from "@doneisbetter/gds/client";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { ATHLETE_IQ_OS_GROUPS } from "@/lib/athlete-iq-os";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
@@ -30,6 +31,8 @@ type AiqNavGroup = {
   id: AiqNavGroupKey;
   items: AiqNavItem[];
 };
+type SupportedLocale = "en" | "hu" | "ar" | "es" | "de" | "he";
+type AiqPersona = AthleteIqProductDashboardProjection["persona"];
 
 const HIDDEN_REFERENCE_NAV_ITEMS = new Set(["habits", "roadmap", "report"]);
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
@@ -154,6 +157,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
           kicker={t("sidebar.kicker")}
           navGroups={visibleNavigationGroups}
           opened={mobileMenuOpened}
+          persona={dashboard.persona}
           productName={t("surfaceName")}
           translate={t}
           onClose={() => setMobileMenuOpened(false)}
@@ -358,6 +362,7 @@ function AiqAthleteWorkspace({
           kicker={translate("athleteWorkspace.sidebarKicker")}
           navGroups={athleteNavigationGroups}
           opened={mobileMenuOpened}
+          persona={dashboard.persona}
           productName={translate("surfaceName")}
           translate={translate}
           onClose={() => setMobileMenuOpened(false)}
@@ -545,6 +550,7 @@ function AiqMobileNavigation({
   navGroups,
   onClose,
   opened,
+  persona,
   productName,
   translate
 }: {
@@ -553,9 +559,29 @@ function AiqMobileNavigation({
   navGroups: AiqNavGroup[];
   onClose: () => void;
   opened: boolean;
+  persona: AiqPersona;
   productName: string;
   translate: AiqTranslate;
 }) {
+  const locale = useLocale() as SupportedLocale;
+  const pathname = usePathname();
+  const router = useRouter();
+  const dashboardHref = persona === "athlete" ? `/${locale}/athletes` : `/${locale}/dashboard`;
+  const languageOptions: Array<{ label: string; value: SupportedLocale }> = [
+    { label: common("languageEnglish"), value: "en" },
+    { label: common("languageHungarian"), value: "hu" },
+    { label: common("languageArabic"), value: "ar" },
+    { label: common("languageSpanish"), value: "es" },
+    { label: common("languageGerman"), value: "de" },
+    { label: common("languageHebrew"), value: "he" }
+  ];
+
+  function switchLocale(nextLocale: SupportedLocale) {
+    const cleanPath = pathname.replace(/^\/(en|hu|ar|es|de|he)(\/|$)/, "/");
+    router.replace(cleanPath, { locale: nextLocale });
+    onClose();
+  }
+
   if (!opened) return null;
 
   return (
@@ -579,6 +605,32 @@ function AiqMobileNavigation({
           {navGroups.map((group) => (
             <AiqNavSection key={group.id} group={group} translate={translate} onNavigate={onClose} />
           ))}
+        </Stack>
+
+        <Stack gap="sm" className="aiq-mobile-utilities">
+          <a href={dashboardHref} className="aiq-mobile-utility-link" onClick={onClose}>
+            <GdsIcons.Dashboard size={16} aria-hidden="true" />
+            <span>{common("openDashboard")}</span>
+          </a>
+          <button type="button" className="aiq-mobile-utility-link" onClick={() => globalThis.location.assign("/api/auth/logout")}>
+            <GdsIcons.Back size={16} aria-hidden="true" />
+            <span>{common("logout")}</span>
+          </button>
+          <label className="aiq-mobile-language-field">
+            <span>{common("languageSelector")}</span>
+            <select
+              value={locale}
+              className="aiq-mobile-language-select"
+              aria-label={common("languageSelector")}
+              onChange={(event) => switchLocale(event.currentTarget.value as SupportedLocale)}
+            >
+              {languageOptions.map((language) => (
+                <option key={language.value} value={language.value}>
+                  {language.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </Stack>
       </Box>
     </>
