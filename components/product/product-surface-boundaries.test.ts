@@ -175,7 +175,22 @@ describe("product surface route boundaries", () => {
     expect(athleteIqSource).not.toContain("AiqModuleGroup");
     expect(athleteIqSource).not.toContain("FunctionDirectory");
     expect(athleteIqSource).not.toContain("<strong>Output:</strong>");
+    expect(athleteIqSource).not.toContain("aiq-nav-code");
     expect(athleteIqSource).toContain("HIDDEN_REFERENCE_NAV_ITEMS");
+  });
+
+  it("keeps AthleteIQ mobile navigation behind a hamburger drawer", () => {
+    const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
+    const styles = readSource("app/globals.css");
+
+    expect(athleteIqSource).toContain("AiqMobileTopBar");
+    expect(athleteIqSource).toContain("AiqMobileNavigation");
+    expect(athleteIqSource).toContain("GdsIcons.Menu");
+    expect(athleteIqSource).toContain("aiq-mobile-menu-button");
+    expect(styles).toMatch(/\.aiq-desktop-sidebar\s*\{[\s\S]*?display:\s*none/);
+    expect(styles).toMatch(/\.aiq-mobile-topbar\s*\{[\s\S]*?display:\s*flex/);
+    expect(styles).toContain(".aiq-mobile-drawer");
+    expect(styles).not.toContain(".aiq-nav-code");
   });
 
   it("localizes the separated product app shells in every supported catalog", () => {

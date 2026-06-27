@@ -620,7 +620,7 @@ a {
 .aiq-nav-link {
   min-height: 48px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   column-gap: 10px;
   padding: 10px 12px;
@@ -1035,6 +1035,102 @@ a {
   scrollbar-color: color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 44%, transparent) transparent;
 }
 
+.aiq-mobile-topbar,
+.aiq-mobile-menu-backdrop,
+.aiq-mobile-drawer {
+  display: none;
+}
+
+.aiq-mobile-topbar {
+  width: 100%;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-md);
+  margin-bottom: var(--mantine-spacing-md);
+  padding: 10px 12px;
+  border: 1px solid var(--gds-vibe-border, rgba(255, 213, 74, 0.18));
+  border-radius: var(--mantine-radius-md);
+  background:
+    linear-gradient(135deg, var(--gds-vibe-glow, rgba(255, 213, 74, 0.08)), transparent 42%),
+    var(--gds-vibe-surface, rgba(16, 24, 42, 0.96));
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.28);
+}
+
+.aiq-mobile-brand {
+  min-width: 0;
+}
+
+.aiq-mobile-logo {
+  width: 54px;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.3));
+}
+
+.aiq-mobile-title {
+  max-width: min(56vw, 260px);
+  overflow: hidden;
+  color: var(--gds-vibe-text, #f4f7fb);
+  font-size: 1.25rem;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aiq-mobile-menu-button {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--gds-vibe-accent, #f1cf86);
+  border: 1px solid var(--gds-vibe-border, rgba(255, 213, 74, 0.24));
+  border-radius: var(--mantine-radius-md);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 16%, transparent), rgba(255, 255, 255, 0.03)),
+    color-mix(in srgb, var(--gds-vibe-surface, rgba(16, 24, 42, 0.96)) 92%, #05070b);
+}
+
+.aiq-mobile-menu-button:focus-visible {
+  outline: 2px solid var(--gds-vibe-accent, #f1cf86);
+  outline-offset: 2px;
+}
+
+.aiq-mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 79;
+  width: 100%;
+  min-height: 100svh;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.48);
+}
+
+.aiq-mobile-drawer {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 80;
+  width: min(88vw, 360px);
+  max-width: calc(100dvw - 24px);
+  min-height: 100svh;
+  padding: max(14px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  color: var(--gds-vibe-text, #f4f7fb);
+  border-inline-start: 1px solid var(--gds-vibe-border, rgba(255, 213, 74, 0.22));
+  background:
+    linear-gradient(135deg, var(--gds-vibe-glow, rgba(255, 213, 74, 0.12)), transparent 46%),
+    var(--gds-vibe-surface, rgba(16, 24, 42, 0.98));
+  box-shadow: -24px 0 64px rgba(0, 0, 0, 0.44);
+}
+
+.aiq-mobile-drawer-header {
+  margin-bottom: var(--mantine-spacing-lg);
+}
+
 .aiq-row-card {
   min-height: 124px;
   padding: var(--mantine-spacing-md);
@@ -1071,12 +1167,6 @@ a {
   color: var(--gds-vibe-accent, #f1cf86);
   font-size: 2.55rem;
   line-height: 0.96;
-}
-
-.aiq-nav-code {
-  color: var(--gds-vibe-muted, rgba(244, 247, 251, 0.58));
-  font-size: 0.74rem;
-  font-weight: 900;
 }
 
 .aiq-module-code {
@@ -1132,9 +1222,23 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .aiq-sidebar-v2 {
-    position: static;
-    max-height: none;
+  .aiq-desktop-sidebar {
+    display: none;
+  }
+
+  .aiq-mobile-topbar {
+    display: flex;
+    position: sticky;
+    top: max(8px, env(safe-area-inset-top));
+    z-index: 30;
+  }
+
+  .aiq-mobile-menu-backdrop {
+    display: block;
+  }
+
+  .aiq-mobile-drawer {
+    display: block;
   }
 
   .aiq-brand-logo {

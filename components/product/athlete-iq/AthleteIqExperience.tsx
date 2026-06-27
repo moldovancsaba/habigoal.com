@@ -5,7 +5,7 @@ import { Badge, Box, Group, Paper, Progress, SegmentedControl, SimpleGrid, Stack
 import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
-import { ATHLETE_IQ_OS_GROUPS, type AthleteIqOsGroup } from "@/lib/athlete-iq-os";
+import { ATHLETE_IQ_OS_GROUPS } from "@/lib/athlete-iq-os";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
 import type {
@@ -18,6 +18,18 @@ import { SectionHeading, SignalCard, SurfaceTopBar } from "../ProductSurfaceShar
 import { createProductSurfaceActionPack, type ProductSurfaceActionPack } from "../productSurfaceActions";
 
 type AiqTranslate = ReturnType<typeof useTranslations>;
+type CommonTranslate = ReturnType<typeof useTranslations>;
+type AiqNavGroupKey = "dailyOs" | "development" | "stakeholders";
+type AiqNavItem = {
+  anchorId: string;
+  active?: boolean;
+  href?: string;
+  labelKey: string;
+};
+type AiqNavGroup = {
+  id: AiqNavGroupKey;
+  items: AiqNavItem[];
+};
 
 const HIDDEN_REFERENCE_NAV_ITEMS = new Set(["habits", "roadmap", "report"]);
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
@@ -26,6 +38,7 @@ const ATHLETE_IQ_THEME_VARIABLES = getGdsVibeThemeCssVariables(ATHLETE_IQ_GDS_TH
 export function AthleteIqExperience({ dashboard, surface }: { dashboard: AthleteIqProductDashboardProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const t = useTranslations("ProductSurfaces.athleteIq");
   const tActions = useTranslations("ProductSurfaces.actions");
+  const common = useTranslations("Common");
   const actionPack = useMemo(
     () =>
       createProductSurfaceActionPack({
@@ -54,11 +67,18 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
   const visibleNavigationGroups = useMemo(
     () =>
       ATHLETE_IQ_OS_GROUPS.map((group) => ({
-        ...group,
-        modules: group.modules.filter((module) => !HIDDEN_REFERENCE_NAV_ITEMS.has(module.anchorId))
-      })).filter((group) => group.modules.length > 0),
+        id: getAiqGroupKey(group.title),
+        items: group.modules
+          .filter((module) => !HIDDEN_REFERENCE_NAV_ITEMS.has(module.anchorId))
+          .map((module) => ({
+            anchorId: module.anchorId,
+            active: module.anchorId === "home",
+            labelKey: module.anchorId
+          }))
+      })).filter((group) => group.items.length > 0),
     []
   );
+  const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
   const [roleView, setRoleView] = useState<"coach" | "academy" | "services">("coach");
   const [modeView, setModeView] = useState<"lifestyle" | "performance">("performance");
   const [acknowledged, setAcknowledged] = useState<string[]>([]);
@@ -122,9 +142,25 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
     >
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
         <SurfaceTopBar surface={surface} />
+        <AiqMobileTopBar
+          common={common}
+          kicker={t("sidebar.kicker")}
+          menuOpened={mobileMenuOpened}
+          productName={t("surfaceName")}
+          onToggleMenu={() => setMobileMenuOpened((opened) => !opened)}
+        />
+        <AiqMobileNavigation
+          common={common}
+          kicker={t("sidebar.kicker")}
+          navGroups={visibleNavigationGroups}
+          opened={mobileMenuOpened}
+          productName={t("surfaceName")}
+          translate={t}
+          onClose={() => setMobileMenuOpened(false)}
+        />
 
         <Box className="aiq-command-layout">
-          <Paper component="aside" className="aiq-sidebar-v2 surface-outline" withBorder radius="md" p="lg">
+          <Paper component="aside" className="aiq-sidebar-v2 aiq-desktop-sidebar surface-outline" withBorder radius="md" p="lg">
             <Stack gap="xl">
               <Group gap="md" wrap="nowrap">
                 <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={88} height={78} priority className="aiq-brand-logo" />
@@ -136,7 +172,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
 
               <Stack gap="lg">
                 {visibleNavigationGroups.map((group) => (
-                  <AiqNavSection key={group.title} group={group} translate={t} />
+                  <AiqNavSection key={group.id} group={group} translate={t} />
                 ))}
                 <AiqDailyScoreCard mode={modeView} score={formatScore(dailyIq, false)} translate={t} />
                 <Paper className="aiq-mode-card surface-outline" withBorder radius="md" p="md">
@@ -278,6 +314,22 @@ function AiqAthleteWorkspace({
   translate: AiqTranslate;
 }) {
   const athlete = dashboard.athletes[0] ?? null;
+  const common = useTranslations("Common");
+  const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
+  const athleteNavigationGroups = useMemo<AiqNavGroup[]>(
+    () => [
+      {
+        id: "dailyOs",
+        items: [
+          { anchorId: "home", active: true, labelKey: "home" },
+          { anchorId: "checkin", labelKey: "checkin" },
+          { anchorId: "calendar", labelKey: "calendar" },
+          { anchorId: "shared-data", labelKey: "habits" }
+        ]
+      }
+    ],
+    []
+  );
   const supportQueue = dashboard.activeQueue;
   const readiness = athlete?.readiness ?? dashboard.averageReadiness;
   const mental = athlete?.mental ?? dashboard.averageMental;
@@ -294,9 +346,25 @@ function AiqAthleteWorkspace({
     >
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
         <SurfaceTopBar surface={surface} />
+        <AiqMobileTopBar
+          common={common}
+          kicker={translate("athleteWorkspace.sidebarKicker")}
+          menuOpened={mobileMenuOpened}
+          productName={translate("surfaceName")}
+          onToggleMenu={() => setMobileMenuOpened((opened) => !opened)}
+        />
+        <AiqMobileNavigation
+          common={common}
+          kicker={translate("athleteWorkspace.sidebarKicker")}
+          navGroups={athleteNavigationGroups}
+          opened={mobileMenuOpened}
+          productName={translate("surfaceName")}
+          translate={translate}
+          onClose={() => setMobileMenuOpened(false)}
+        />
 
         <Box className="aiq-command-layout">
-          <Paper component="aside" className="aiq-sidebar-v2 surface-outline" withBorder radius="md" p="lg">
+          <Paper component="aside" className="aiq-sidebar-v2 aiq-desktop-sidebar surface-outline" withBorder radius="md" p="lg">
             <Stack gap="xl">
               <Group gap="md" wrap="nowrap">
                 <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={88} height={78} priority className="aiq-brand-logo" />
@@ -306,10 +374,9 @@ function AiqAthleteWorkspace({
                 </Stack>
               </Group>
               <Stack gap={6}>
-                {["home", "checkin", "calendar", "habits"].map((id, index) => (
-                  <a key={id} href={`#${id === "habits" ? "shared-data" : id}`} className={index === 0 ? "aiq-nav-link aiq-nav-link-active" : "aiq-nav-link"}>
-                    <span>{translate(`nav.modules.${id}`)}</span>
-                    <span className="aiq-nav-code">{index + 1}</span>
+                {athleteNavigationGroups[0].items.map((item) => (
+                  <a key={item.anchorId} href={`#${item.anchorId}`} className={item.active ? "aiq-nav-link aiq-nav-link-active" : "aiq-nav-link"}>
+                    <span>{translate(`nav.modules.${item.labelKey}`)}</span>
                   </a>
                 ))}
               </Stack>
@@ -434,15 +501,98 @@ function TeamOperationCard({ operation, translate }: { operation: AthleteIqDashb
   );
 }
 
-function AiqNavSection({ group, translate }: { group: AthleteIqOsGroup; translate: AiqTranslate }) {
+function AiqMobileTopBar({
+  common,
+  kicker,
+  menuOpened,
+  productName,
+  onToggleMenu
+}: {
+  common: CommonTranslate;
+  kicker: string;
+  menuOpened: boolean;
+  productName: string;
+  onToggleMenu: () => void;
+}) {
+  const Icon = menuOpened ? GdsIcons.Close : GdsIcons.Menu;
+  return (
+    <Box className="aiq-mobile-topbar">
+      <Group gap="sm" wrap="nowrap" className="aiq-mobile-brand">
+        <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={54} height={48} priority className="aiq-mobile-logo" />
+        <Stack gap={0}>
+          <Text fw={950} className="aiq-mobile-title">{productName}</Text>
+          <Text className="aiq-letter-label">{kicker}</Text>
+        </Stack>
+      </Group>
+      <button
+        type="button"
+        className="aiq-mobile-menu-button"
+        aria-controls="aiq-mobile-navigation"
+        aria-expanded={menuOpened}
+        aria-label={common("menu")}
+        title={common("menu")}
+        onClick={onToggleMenu}
+      >
+        <Icon size={22} aria-hidden="true" />
+      </button>
+    </Box>
+  );
+}
+
+function AiqMobileNavigation({
+  common,
+  kicker,
+  navGroups,
+  onClose,
+  opened,
+  productName,
+  translate
+}: {
+  common: CommonTranslate;
+  kicker: string;
+  navGroups: AiqNavGroup[];
+  onClose: () => void;
+  opened: boolean;
+  productName: string;
+  translate: AiqTranslate;
+}) {
+  if (!opened) return null;
+
+  return (
+    <>
+      <button type="button" className="aiq-mobile-menu-backdrop" aria-label={common("cancel")} onClick={onClose} />
+      <Box id="aiq-mobile-navigation" component="aside" className="aiq-mobile-drawer" aria-label={common("menu")}>
+        <Group justify="space-between" align="flex-start" gap="md" wrap="nowrap" className="aiq-mobile-drawer-header">
+          <Group gap="sm" wrap="nowrap">
+            <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={58} height={52} priority className="aiq-mobile-logo" />
+            <Stack gap={0}>
+              <Text fw={950} className="aiq-mobile-title">{productName}</Text>
+              <Text className="aiq-letter-label">{kicker}</Text>
+            </Stack>
+          </Group>
+          <button type="button" className="aiq-mobile-menu-button" aria-label={common("cancel")} onClick={onClose}>
+            <GdsIcons.Close size={22} aria-hidden="true" />
+          </button>
+        </Group>
+
+        <Stack gap="lg" component="nav" aria-label={common("menu")}>
+          {navGroups.map((group) => (
+            <AiqNavSection key={group.id} group={group} translate={translate} onNavigate={onClose} />
+          ))}
+        </Stack>
+      </Box>
+    </>
+  );
+}
+
+function AiqNavSection({ group, onNavigate, translate }: { group: AiqNavGroup; onNavigate?: () => void; translate: AiqTranslate }) {
   return (
     <Stack gap="xs">
-      <Text className="aiq-letter-label">{translate(`nav.groups.${getAiqGroupKey(group.title)}`)}</Text>
+      <Text className="aiq-letter-label">{translate(`nav.groups.${group.id}`)}</Text>
       <Stack gap={6}>
-        {group.modules.map((module) => (
-          <a key={module.anchorId} href={`#${module.anchorId}`} className={module.anchorId === "home" ? "aiq-nav-link aiq-nav-link-active" : "aiq-nav-link"}>
-            <span>{translate(`nav.modules.${module.anchorId}`)}</span>
-            <span className="aiq-nav-code">{module.code}</span>
+        {group.items.map((item) => (
+          <a key={item.anchorId} href={item.href ?? `#${item.anchorId}`} className={item.active ? "aiq-nav-link aiq-nav-link-active" : "aiq-nav-link"} onClick={onNavigate}>
+            <span>{translate(`nav.modules.${item.labelKey}`)}</span>
           </a>
         ))}
       </Stack>
@@ -450,7 +600,7 @@ function AiqNavSection({ group, translate }: { group: AthleteIqOsGroup; translat
   );
 }
 
-function getAiqGroupKey(group: AthleteIqOsGroup["title"]) {
+function getAiqGroupKey(group: string): AiqNavGroupKey {
   if (group === "Daily OS") return "dailyOs";
   if (group === "Stakeholders") return "stakeholders";
   return "development";
