@@ -476,9 +476,33 @@ function AiqAthleteWorkspace({
                   <Text className="aiq-command-copy">{translate("athleteWorkspace.shared.copy")}</Text>
                 </Stack>
                 <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                  {dashboard.services.map((module) => (
-                    <ServiceModuleCard key={module.id} module={module} actionPack={actionPack} translate={translate} />
-                  ))}
+                  {athlete ? (
+                    <>
+                      <SignalCard
+                        label={translate("athletes.habigoalLabel")}
+                        value={translate(`athletes.habigoalCompletion.${athlete.habigoalDaily.completionState}`)}
+                        state={athlete.habigoalDaily.completionState === "complete" ? "good" : athlete.habigoalDaily.completionState === "partial" ? "watch" : "neutral"}
+                        detail={`${translate("athletes.habitsLabel")} ${athlete.habigoalDaily.habitCompletion} · ${translate(`athletes.habigoalSource.${athlete.habigoalDaily.source}`)}`}
+                        inverse
+                      />
+                      <SignalCard
+                        label={translate("athleteWorkspace.today.teamLabel")}
+                        value={athlete.teamName ?? translate("athletes.unassignedTeam")}
+                        state={athlete.teamName ? "good" : "watch"}
+                        detail={translate(`states.${athlete.severity}`)}
+                        inverse
+                      />
+                      <SignalCard
+                        label={translate("metrics.readiness")}
+                        value={formatScore(readiness)}
+                        state={readiness === null ? "neutral" : readiness >= 75 ? "good" : readiness >= 60 ? "watch" : "risk"}
+                        detail={translate("athleteWorkspace.metrics.ownReadiness")}
+                        inverse
+                      />
+                    </>
+                  ) : (
+                    <Text className="aiq-muted">{translate("athleteWorkspace.empty.copy")}</Text>
+                  )}
                 </SimpleGrid>
               </SimpleGrid>
             </Paper>

@@ -1871,9 +1871,9 @@
           "empty": "Nincs nyitott támogatási elem élő rekordok alapján."
         },
         "shared": {
-          "kicker": "Közös adatréteg",
-          "title": "A Habigoal és az Athlete IQ egy profilt használ",
-          "copy": "Bármelyik appban rögzített napi szokás és check-in ugyanazt a sportolói történetet frissíti, a professzionális mezők csak Athlete IQ-ban jelennek meg."
+          "kicker": "Napi szokások",
+          "title": "Mai Habigoal rögzítés",
+          "copy": "A mai szokásteljesítésed, csapatod és readiness állapotod."
         },
         "empty": {
           "copy": "Az Athlete IQ profil készen áll, de még nincs mentett élő napi rekord."

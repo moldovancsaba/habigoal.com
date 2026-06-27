@@ -1871,9 +1871,9 @@
           "empty": "Keine offenen Support-Punkte aus Live-Daten."
         },
         "shared": {
-          "kicker": "Gemeinsame Datenschicht",
-          "title": "Habigoal und Athlete IQ nutzen ein Profil",
-          "copy": "Taegliche Gewohnheiten und Check-ins aus beiden Apps aktualisieren dieselbe Athletenhistorie; professionelle Felder erscheinen nur in Athlete IQ."
+          "kicker": "Taegliche Gewohnheiten",
+          "title": "Heutiger Habigoal-Eintrag",
+          "copy": "Deine heutige Gewohnheitserfuellung, dein Teamkontext und dein Readiness-Status."
         },
         "empty": {
           "copy": "Dein Athlete-IQ-Profil ist bereit, aber es gibt noch keine gespeicherten Live-Tagesdaten."

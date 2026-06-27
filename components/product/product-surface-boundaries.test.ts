@@ -201,13 +201,27 @@ describe("product surface route boundaries", () => {
   it("localizes the separated product app shells in every supported catalog", () => {
     const locales = ["en", "hu", "de", "es", "ar", "he"];
     const englishMessages = readJson<Messages>("messages/en.json");
+    const blockedUserFacingArchitectureCopy = [
+      "Shared data layer",
+      "Közös adatréteg",
+      "Gemeinsame Datenschicht",
+      "Capa de datos compartida",
+      "Habigoal and Athlete IQ use one profile",
+      "A Habigoal és az Athlete IQ egy profilt használ",
+      "Habigoal und Athlete IQ nutzen ein Profil",
+      "Habigoal y Athlete IQ usan un perfil"
+    ];
 
     for (const locale of locales) {
       const messages = readJson<Messages>(`messages/${locale}.json`);
+      const athleteIqMessages = JSON.stringify(messages.ProductSurfaces.athleteIq);
 
       expect(messages.ProductSurfaces.habigoal.headline).toBeTruthy();
       expect(messages.ProductSurfaces.athleteIq.teamCommand.title).toBeTruthy();
       expect(messages.ProductSurfaces.athleteIq.hero.title).toBeTruthy();
+      for (const blockedCopy of blockedUserFacingArchitectureCopy) {
+        expect(athleteIqMessages).not.toContain(blockedCopy);
+      }
     }
 
     for (const locale of locales.filter((item) => item !== "en")) {

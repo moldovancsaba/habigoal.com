@@ -1871,9 +1871,9 @@
           "empty": "No hay elementos de soporte abiertos desde registros en vivo."
         },
         "shared": {
-          "kicker": "Capa de datos compartida",
-          "title": "Habigoal y Athlete IQ usan un perfil",
-          "copy": "Los habitos y check-ins diarios registrados en cualquiera de las apps actualizan el mismo historial del atleta; los campos profesionales solo se muestran en Athlete IQ."
+          "kicker": "Habitos diarios",
+          "title": "Registro Habigoal de hoy",
+          "copy": "Tu cumplimiento de habitos, contexto de equipo y estado de readiness de hoy."
         },
         "empty": {
           "copy": "Tu perfil de Athlete IQ esta listo, pero aun no hay registros diarios en vivo guardados."

@@ -1871,9 +1871,9 @@
           "empty": "No open support items from live records."
         },
         "shared": {
-          "kicker": "Shared data layer",
-          "title": "Habigoal and Athlete IQ use one profile",
-          "copy": "Daily habits and check-ins recorded in either app update the same athlete history, with professional fields shown only inside Athlete IQ."
+          "kicker": "Daily habits",
+          "title": "Today's Habigoal record",
+          "copy": "Your saved habit completion, team context, and readiness status for today."
         },
         "empty": {
           "copy": "Your Athlete IQ profile is ready, but no live daily records are saved yet."
