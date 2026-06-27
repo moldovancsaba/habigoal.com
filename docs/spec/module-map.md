@@ -11,9 +11,9 @@ Maps document sections to implementation modules, delivery phases, and Habigoal 
 | **M2** | Training & Load | §38.3, Phase 1 | 1 | `repositories/session-plans.repository.ts`, `lib/training-load.ts`, `app/api/session-plans/` | Session plans + RPE done; microcycle and planned-vs-actual load partial |
 | **M3** | Wearable Ecosystem | §12.3, §38.4, Phase 2 | 2 | `services/connectors/`, `lib/wearable-ingestion.ts`, `types/canonical-metric.ts` | Garmin/Whoop connected; Polar/Apple Health UI only; normalisation partial |
 | **M4** | Digital Twin | §10, §40, Phase 3 | 3 | `types/athlete-twin.ts`, `lib/twin-updater.ts`, `repositories/athlete-twin.repository.ts` | 5-dimension schema done; not all sources wired to updater |
-| **M5** | Local AI Cluster | §14, Phase 4 | 4 | `types/queue.ts`, `app/api/admin/queue/`, `services/ai-clustering.service.ts` | Queue stub; no Mac mini cluster deployment |
+| **M5** | Local AI Cluster | §14, Phase 4 | 4 | `types/queue.ts`, `app/api/admin/queue/` | Queue stub; no Mac mini cluster deployment. (`ai-clustering.service` removed in #361 — it was a dead sink; real clustering tracked under M6/AI work.) |
 | **M6** | AI Intelligence | §16, §38.6, §41, Phase 5 | 5 | `lib/engines/*.ts`, `lib/engines/recommendation.engine.ts` | 5 engines exist; explainability, override audit, model registry missing |
-| **M7** | Athlete Vision | §17, §38.5, Phase 6 | 6 | `services/vision-ai.service.ts`, `services/media/kinematics.service.ts` | Event stub only; no production vision pipeline |
+| **M7** | Athlete Vision | §17, §38.5, Phase 6 | 6 | `services/vision-ai.service.ts` | Event stub only; no production vision pipeline. (Mock `services/media/kinematics.service.ts` removed in #361; real pose/kinematics tracked under #353.) |
 | **M8** | Performance Lab | §18, Phase 7 | 7 | `services/connectors/gps.connector.ts` | GPS connector early; BlazePod/FITLIGHT/force plates not started |
 | **M9** | Dashboards & Portal | §19–20, §38.7, Phase 8 | 8 | `app/[locale]/dashboard/`, `components/dashboard/MainDashboard.tsx` | Coach/athlete dashboards partial; dedicated mobile PWA incomplete |
 | **M10** | Injury Prevention | §20, Phase 9 | 9 | `lib/engines/injury-risk.engine.ts`, `app/dashboard/injury-hub/fms/page.tsx` | Risk engine + FMS page early; full hub not built |

@@ -29,6 +29,5 @@ export function ensurePlatformInitialised(): void {
   );
 
   // Side-effect imports start event listeners
-  void import("@/services/ai-clustering.service");
   void import("@/services/vision-ai.service");
 }
