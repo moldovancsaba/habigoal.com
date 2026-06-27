@@ -67,6 +67,7 @@ describe("product surface route boundaries", () => {
     const localeLayout = readSource("app/[locale]/layout.tsx");
     const manifest = readSource("app/manifest.ts");
     const habigoalSource = readSource("components/product/habigoal/HabigoalExperience.tsx");
+    const styles = readSource("app/globals.css");
 
     expect(localeLayout).toContain("userScalable: false");
     expect(localeLayout).toContain("manifest: \"/manifest.webmanifest\"");
@@ -74,6 +75,10 @@ describe("product surface route boundaries", () => {
     expect(manifest).toContain("orientation: \"portrait\"");
     expect(habigoalSource).toContain("hbg-app-frame");
     expect(habigoalSource).toContain("hbg-bottom-nav");
+    expect(styles).toContain("touch-action: pan-y");
+    expect(styles).toContain("width: 100dvw");
+    expect(styles).toMatch(/\.hbg-bottom-nav\s*\{[\s\S]*?position:\s*fixed/);
+    expect(styles).toMatch(/\.hbg-main-grid\s*\{[\s\S]*?scroll-padding-bottom/);
   });
 
   it("keeps product apps isolated from selector and cross-app navigation", () => {

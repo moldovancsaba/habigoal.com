@@ -78,6 +78,9 @@ body {
   min-height: 100%;
   margin: 0;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   background:
     radial-gradient(circle at 18% 20%, var(--blob-2), transparent 28%),
     radial-gradient(circle at 78% 14%, var(--blob-1), transparent 34%),
@@ -88,6 +91,10 @@ body {
   font-family: var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  touch-action: pan-y;
 }
 
 body {
@@ -683,6 +690,12 @@ a {
   --hbg-coral: #e86658;
   min-height: 100vh;
   min-height: 100svh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
   color: var(--hbg-ink);
   background:
     linear-gradient(120deg, rgba(15, 159, 143, 0.14), transparent 34%),
@@ -690,11 +703,13 @@ a {
 }
 
 .hbg-app-frame {
-  width: 100%;
-  max-width: 480px;
+  width: min(100%, 480px);
+  max-width: 100%;
   min-height: 100vh;
   min-height: 100svh;
+  min-height: 100dvh;
   position: relative;
+  overflow-x: clip;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(247, 253, 252, 0.9)),
     var(--hbg-elevated);
@@ -747,8 +762,9 @@ a {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--mantine-spacing-sm);
-  padding-bottom: calc(82px + env(safe-area-inset-bottom));
+  padding-bottom: calc(112px + env(safe-area-inset-bottom));
   scroll-padding-top: calc(76px + env(safe-area-inset-top));
+  scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom));
 }
 
 .hbg-main-grid > * {
@@ -903,9 +919,13 @@ a {
 }
 
 .hbg-bottom-nav {
-  position: sticky;
+  position: fixed;
+  left: 50%;
   bottom: 0;
+  transform: translateX(-50%);
   z-index: 35;
+  width: min(100dvw, 480px);
+  max-width: 100dvw;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
@@ -1132,6 +1152,8 @@ a {
     overflow-x: hidden;
     overscroll-behavior-x: none;
     overscroll-behavior-y: none;
+    max-width: 100dvw;
+    touch-action: pan-y;
   }
 
   .landing-selector-container {
@@ -1209,12 +1231,31 @@ a {
   }
 
   .habigoal-product-shell {
+    width: 100dvw;
+    max-width: 100dvw;
+    min-height: 100dvh;
     background: var(--hbg-elevated);
   }
 
   .hbg-app-frame {
-    max-width: none;
+    width: 100dvw;
+    max-width: 100dvw;
+    min-height: 100dvh;
+    margin-inline: 0 !important;
     box-shadow: none;
+  }
+
+  .hbg-main-grid {
+    padding-bottom: calc(118px + env(safe-area-inset-bottom));
+  }
+
+  .hbg-score-ring {
+    width: min(224px, 64dvw);
+  }
+
+  .hbg-bottom-nav {
+    width: 100dvw;
+    max-width: 100dvw;
   }
 
   .hbg-hero-panel,
