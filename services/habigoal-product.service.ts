@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
-import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
+import { getAuthUser, type AuthUser } from "@/lib/access";
 import { getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
 import { atLeastOneHabitCompleted, computeBestStreak, computeCurrentStreak, getHabitCompletion } from "@/lib/athlete-habits";
 import { createHabigoalCorrelationId, logHabigoalEvent } from "@/lib/habigoal-api";
 import { buildHabigoalDailyStatus, type HabigoalConfidence, type HabigoalDailyStatus, type HabigoalMetricValues } from "@/lib/habigoal-status";
 import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
-import { getChildById, listChildren } from "@/repositories/child.repository";
+import { getChildById } from "@/repositories/child.repository";
 import { getHabitRecordByAthleteIdAndDate, listHabitRecordsByAthleteId } from "@/repositories/habit-records.repository";
 import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 
@@ -184,7 +184,18 @@ export function getHabigoalHabitStatuses(completedHabits: HabigoalHabitKey[]) {
 }
 
 async function resolveHabigoalAthlete(user: AuthUser) {
-  const directId = user.primaryRole === "athlete" ? user.athleteId : user.primaryRole === "parent" ? user.parentAthleteIds?.[0] : undefined;
+  // Habigoal is the consumer surface: it must resolve ONLY the signed-in
+  // athlete's own profile (or a parent's own child). It must never fall back to
+  // an arbitrary athlete — the previous "first of all athletes" fallback for
+  // open-access roles (admin/analyst/club_management) rendered another person's
+  // name and data on the consumer surface, a cross-tenant PII leak (#432).
+  // Non-consumer roles (trainer/admin/analyst) get the empty/missing_profile
+  // projection; they manage athletes from the professional AIQ surface instead.
+  const directId = user.primaryRole === "athlete"
+    ? user.athleteId
+    : user.primaryRole === "parent"
+      ? user.parentAthleteIds?.[0]
+      : undefined;
   if (directId && ObjectId.isValid(directId)) return getChildById(new ObjectId(directId));
 
   if (user.primaryRole === "athlete") {
@@ -192,10 +203,7 @@ async function resolveHabigoalAthlete(user: AuthUser) {
     return result.athlete;
   }
 
-  const allowedIds = await resolveAccessibleAthleteIds(user);
-  const children = await listChildren();
-  if (allowedIds === null) return children[0] ?? null;
-  return children.find((child) => child._id && allowedIds.includes(child._id)) ?? null;
+  return null;
 }
 
 function emptyProjection(input: {
