@@ -26,7 +26,7 @@ export function ProductEntryCard({
 }: ProductEntryCardProps) {
   return (
     <Paper component="article" withBorder radius="md" p={{ base: "lg", md: "xl" }} className={tone === "pro" ? "selector-card selector-card-pro surface-outline" : "selector-card selector-card-home surface-outline"}>
-      <Anchor href={href} underline="never" c="inherit" aria-label={ariaLabel}>
+      <Anchor className="selector-card-link" href={href} underline="never" c="inherit" aria-label={ariaLabel}>
         <Stack gap="lg" h="100%">
           <Group justify="space-between" align="flex-start" gap="md">
             <Badge variant="light" color={tone === "home" ? "ingress" : "yellow"} w="fit-content" className={tone === "home" ? "selector-home-badge" : "selector-pro-badge"}>
@@ -45,7 +45,7 @@ export function ProductEntryCard({
             <Text className={tone === "pro" ? "selector-card-body-pro" : "selector-card-body-home"} size="lg">{body}</Text>
           </Stack>
           {tone === "home" ? <HabigoalSelectorPreview /> : <AthleteIqSelectorPreview />}
-          <Group gap="xs" mt="auto" wrap="nowrap">
+          <Group className="selector-card-action" gap="xs" mt="auto" wrap="nowrap">
             <Text fw={800}>{action}</Text>
             <GdsIcons.Launch size={16} aria-hidden="true" />
           </Group>

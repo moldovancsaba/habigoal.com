@@ -229,6 +229,29 @@ docs, rebase-merge on green.
 - Tests: boundary test asserts the selector uses a neutral preset (not
   `athlete-gold`, not the Habigoal teal) and that card+footer share one radius.
 
+### Reference implementation (#403, shipped)
+
+The selector is the canonical example of the two-axis model — copy its shape
+when adapting any surface:
+
+- **Width channel → layout.** `SimpleGrid cols={{ base: 1, sm: 2 }}` is the only
+  thing that decides the column count: one thumb-friendly column below `sm`, a
+  comfortable two-up at/above `sm` (tablet portrait and up). No capability query
+  ever touches the column count.
+- **Capability channel → affordances.** The hover lift lives in
+  `@media (hover: hover) and (pointer: fine)` so only a genuinely hovering fine
+  pointer gets it; touch devices never inherit a stuck hover state. Width is
+  never used as an input proxy here.
+- **Tokens → sizing.** `.selector-card` corner radius comes from
+  `--surface-radius`; the primary action row (`.selector-card-action`) is floored
+  at `var(--target-size)` so it grows from 24/32px (precise) to 44–48px (coarse).
+- **Accessibility.** Each card is a single real `<a>` (`.selector-card-link`)
+  with an `aria-label`, a `:focus-visible` ring drawn in `currentColor` (high
+  contrast on both the light home card and the dark pro card), and a
+  `prefers-reduced-motion: reduce` guard that removes the lift entirely.
+
+Guarded by `tests/selector-responsive.test.ts`.
+
 ## Phase 3 — Façade components (§E)
 
 - Build `<AdaptiveDialog>`, `<OverflowMenu>`, `<Disclosure>`, `<DataView>` in
