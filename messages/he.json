@@ -1695,6 +1695,35 @@
         "all_daily_signals_present": "הכול תועד — עבודה יפה.",
         "missing_profile": "השלימו את הגדרת הפרופיל כדי להתחיל לעקוב.",
         "no_daily_data": "עדיין לא תועדו היום צ'ק-אין או הרגלים."
+      },
+      "flow": {
+        "stepLabel": "שלב {current} מתוך {total}",
+        "continue": "המשך",
+        "back": "חזרה",
+        "saving": "שומר…",
+        "saveDay": "שמירת היום",
+        "steps": {
+          "checkin": {
+            "title": "איך אתה מרגיש היום?",
+            "copy": "הגדר כל מדד באמצעות המחוון."
+          },
+          "habits": {
+            "title": "ההרגלים של היום",
+            "copy": "הקש על כל הרגל שהשלמת."
+          },
+          "review": {
+            "title": "סקירה ושמירה",
+            "copy": "בדוק את היום שלך ושמור."
+          }
+        },
+        "review": {
+          "habitsValue": "{done} מתוך {total} הושלמו"
+        },
+        "result": {
+          "title": "היום נרשם",
+          "updateDay": "עדכון היום",
+          "viewProgress": "צפייה בהתקדמות"
+        }
       }
     },
     "athleteIq": {

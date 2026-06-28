@@ -1695,6 +1695,35 @@
         "all_daily_signals_present": "تم تسجيل كل شيء — عمل رائع.",
         "missing_profile": "أكمل إعداد ملفك الشخصي لبدء التتبع.",
         "no_daily_data": "لم يُسجَّل أي تسجيل دخول أو عادات بعد اليوم."
+      },
+      "flow": {
+        "stepLabel": "الخطوة {current} من {total}",
+        "continue": "متابعة",
+        "back": "رجوع",
+        "saving": "جارٍ الحفظ…",
+        "saveDay": "حفظ يومي",
+        "steps": {
+          "checkin": {
+            "title": "كيف حالك اليوم؟",
+            "copy": "اضبط كل مؤشر باستخدام المنزلق."
+          },
+          "habits": {
+            "title": "عادات اليوم",
+            "copy": "انقر على كل عادة أكملتها."
+          },
+          "review": {
+            "title": "المراجعة والحفظ",
+            "copy": "راجع يومك ثم احفظه."
+          }
+        },
+        "review": {
+          "habitsValue": "{done} من {total} مكتملة"
+        },
+        "result": {
+          "title": "تم تسجيل اليوم",
+          "updateDay": "تحديث اليوم",
+          "viewProgress": "عرض التقدم"
+        }
       }
     },
     "athleteIq": {

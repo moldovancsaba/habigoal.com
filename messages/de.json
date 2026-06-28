@@ -1695,6 +1695,35 @@
         "all_daily_signals_present": "Alles erfasst — gute Arbeit.",
         "missing_profile": "Richte dein Profil fertig ein, um mit dem Tracking zu beginnen.",
         "no_daily_data": "Heute wurden noch kein Check-in und keine Gewohnheiten erfasst."
+      },
+      "flow": {
+        "stepLabel": "Schritt {current} von {total}",
+        "continue": "Weiter",
+        "back": "Zurück",
+        "saving": "Speichern…",
+        "saveDay": "Tag speichern",
+        "steps": {
+          "checkin": {
+            "title": "Wie geht es dir heute?",
+            "copy": "Stelle jedes Signal mit dem Regler ein."
+          },
+          "habits": {
+            "title": "Heutige Gewohnheiten",
+            "copy": "Tippe jede erledigte Gewohnheit an."
+          },
+          "review": {
+            "title": "Prüfen & speichern",
+            "copy": "Prüfe deinen Tag und speichere."
+          }
+        },
+        "review": {
+          "habitsValue": "{done} von {total} erledigt"
+        },
+        "result": {
+          "title": "Heute ist erfasst",
+          "updateDay": "Heute aktualisieren",
+          "viewProgress": "Fortschritt ansehen"
+        }
       }
     },
     "athleteIq": {

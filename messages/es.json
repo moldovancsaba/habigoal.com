@@ -1695,6 +1695,35 @@
         "all_daily_signals_present": "Todo registrado: buen trabajo.",
         "missing_profile": "Termina de configurar tu perfil para empezar a hacer seguimiento.",
         "no_daily_data": "Aún no se ha registrado ningún check-in ni hábito hoy."
+      },
+      "flow": {
+        "stepLabel": "Paso {current} de {total}",
+        "continue": "Continuar",
+        "back": "Atrás",
+        "saving": "Guardando…",
+        "saveDay": "Guardar mi día",
+        "steps": {
+          "checkin": {
+            "title": "¿Cómo estás hoy?",
+            "copy": "Ajusta cada señal con el control deslizante."
+          },
+          "habits": {
+            "title": "Hábitos de hoy",
+            "copy": "Toca cada hábito que completaste."
+          },
+          "review": {
+            "title": "Revisar y guardar",
+            "copy": "Revisa tu día y guárdalo."
+          }
+        },
+        "review": {
+          "habitsValue": "{done} de {total} hechos"
+        },
+        "result": {
+          "title": "Hoy está registrado",
+          "updateDay": "Actualizar hoy",
+          "viewProgress": "Ver progreso"
+        }
       }
     },
     "athleteIq": {
