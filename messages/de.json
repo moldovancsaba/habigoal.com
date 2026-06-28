@@ -2565,5 +2565,26 @@
         "desc": "Demnächst."
       }
     }
+  },
+  "TeamInvitations": {
+    "title": "Team-Einladungen",
+    "pendingTitle": "Deine Einladungen",
+    "roleAthlete": "Athlet",
+    "roleTrainer": "Trainer",
+    "accept": "Annehmen",
+    "accepting": "Beitritt…",
+    "inviteHeading": "Zu einem Team einladen",
+    "teamLabel": "Team",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "name@email.com",
+    "roleLabel": "Rolle",
+    "send": "Einladung senden",
+    "sending": "Senden…",
+    "sent": "Einladung gesendet",
+    "pendingForTeam": "Offene Einladungen",
+    "revoke": "Zurückziehen",
+    "none": "Keine offenen Einladungen",
+    "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "athleteProfileRequired": "Erstelle dein Athletenprofil, bevor du einem Team beitrittst."
   }
 }

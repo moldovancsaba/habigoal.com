@@ -2565,5 +2565,26 @@
         "desc": "قريبًا."
       }
     }
+  },
+  "TeamInvitations": {
+    "title": "دعوات الفريق",
+    "pendingTitle": "دعواتك",
+    "roleAthlete": "رياضي",
+    "roleTrainer": "مدرب",
+    "accept": "قبول",
+    "accepting": "جارٍ الانضمام…",
+    "inviteHeading": "الدعوة إلى فريق",
+    "teamLabel": "الفريق",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "name@email.com",
+    "roleLabel": "الدور",
+    "send": "إرسال الدعوة",
+    "sending": "جارٍ الإرسال…",
+    "sent": "تم إرسال الدعوة",
+    "pendingForTeam": "الدعوات المعلقة",
+    "revoke": "إلغاء",
+    "none": "لا توجد دعوات معلقة",
+    "error": "حدث خطأ ما. حاول مرة أخرى.",
+    "athleteProfileRequired": "أنشئ ملفك الرياضي قبل الانضمام إلى فريق."
   }
 }

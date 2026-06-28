@@ -2565,5 +2565,26 @@
         "desc": "בקרוב."
       }
     }
+  },
+  "TeamInvitations": {
+    "title": "הזמנות צוות",
+    "pendingTitle": "ההזמנות שלך",
+    "roleAthlete": "ספורטאי",
+    "roleTrainer": "מאמן",
+    "accept": "קבלה",
+    "accepting": "מצטרף…",
+    "inviteHeading": "הזמנה לצוות",
+    "teamLabel": "צוות",
+    "emailLabel": "אימייל",
+    "emailPlaceholder": "name@email.com",
+    "roleLabel": "תפקיד",
+    "send": "שליחת הזמנה",
+    "sending": "שולח…",
+    "sent": "ההזמנה נשלחה",
+    "pendingForTeam": "הזמנות ממתינות",
+    "revoke": "ביטול",
+    "none": "אין הזמנות ממתינות",
+    "error": "משהו השתבש. נסה שוב.",
+    "athleteProfileRequired": "צור פרופיל ספורטאי לפני ההצטרפות לצוות."
   }
 }

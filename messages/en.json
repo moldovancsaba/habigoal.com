@@ -2565,5 +2565,26 @@
         "desc": "Coming soon."
       }
     }
+  },
+  "TeamInvitations": {
+    "title": "Team invitations",
+    "pendingTitle": "Your invitations",
+    "roleAthlete": "Athlete",
+    "roleTrainer": "Trainer",
+    "accept": "Accept",
+    "accepting": "Joining…",
+    "inviteHeading": "Invite to a team",
+    "teamLabel": "Team",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@email.com",
+    "roleLabel": "Role",
+    "send": "Send invitation",
+    "sending": "Sending…",
+    "sent": "Invitation sent",
+    "pendingForTeam": "Pending invitations",
+    "revoke": "Revoke",
+    "none": "No pending invitations",
+    "error": "Something went wrong. Please try again.",
+    "athleteProfileRequired": "Create your athlete profile before joining a team."
   }
 }
