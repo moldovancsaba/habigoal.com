@@ -1,5 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "crypto";
+import { env, requireServerEnv } from "@/config/env";
+import { canAccessAthlete, getAuthUser } from "@/lib/access";
+import { buildOuraAuthorizeUrl, isOuraOAuthConfigured } from "@/lib/oura-oauth";
+import { createWearableState, WEARABLE_OAUTH_STATE_COOKIE, WEARABLE_OAUTH_STATE_TTL_MS } from "@/lib/wearable-oauth-state";
 import { findConnectionsByAthleteId } from "@/repositories/device-connection.repository";
+
+function localeFromReferer(request: NextRequest): string {
+  const referer = request.headers.get("referer");
+  if (!referer) return "en";
+  try {
+    const segment = new URL(referer).pathname.split("/").filter(Boolean)[0];
+    return /^[a-z]{2}$/.test(segment ?? "") ? segment : "en";
+  } catch {
+    return "en";
+  }
+}
 
 export async function GET(
   request: NextRequest,
@@ -7,11 +23,14 @@ export async function GET(
 ) {
   try {
     const { id: athleteId } = await params;
-    // Auth check here...
+    const user = await getAuthUser();
+    if (user && !(await canAccessAthlete(user, athleteId))) {
+      return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
+    }
 
     const connections = await findConnectionsByAthleteId(athleteId);
-    
     const safeConnections = connections.map((conn) => {
+      // Strip secrets from reads.
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { accessToken, refreshToken, ...safe } = conn;
       return safe;
@@ -30,25 +49,39 @@ export async function POST(
 ) {
   try {
     const { id: athleteId } = await params;
+    const user = await getAuthUser();
+    if (user && !(await canAccessAthlete(user, athleteId))) {
+      return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
+    }
+
     const { source } = await request.json();
-    
-    // Ensure we support this source
     if (source !== "oura" && source !== "garmin" && source !== "whoop") {
       return NextResponse.json({ error: "Unsupported wearable source" }, { status: 400 });
     }
 
-    // In a real app, generate a CSRF state token and store it temporarily
-    const state = Buffer.from(JSON.stringify({ athleteId, source })).toString("base64");
-
-    // Construct the OAuth URL (mocked here, should call connector.getAuthUrl)
-    let authUrl = "";
-    if (source === "oura") {
-      const clientId = process.env.WEARABLE_OURA_CLIENT_ID;
-      const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth/wearable/callback?source=oura`;
-      authUrl = `https://cloud.ouraring.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=daily.sleep daily.readiness heartrate`;
+    // Only Oura has a live connect leg today (see #347). Garmin/Whoop are
+    // separate provider issues; report an empty authUrl honestly.
+    if (source !== "oura" || !isOuraOAuthConfigured()) {
+      return NextResponse.json({ authUrl: "", configured: false }, { status: 200 });
     }
 
-    return NextResponse.json({ authUrl }, { status: 200 });
+    const base = env.appBaseUrl || request.nextUrl.origin;
+    const redirectUri = `${base}/api/oauth/wearable/callback`;
+    const state = createWearableState(
+      { athleteId, provider: "oura", locale: localeFromReferer(request), nonce: randomUUID() },
+      requireServerEnv("authSecret")
+    );
+    const authUrl = buildOuraAuthorizeUrl({ redirectUri, state });
+
+    const response = NextResponse.json({ authUrl, configured: true }, { status: 200 });
+    response.cookies.set(WEARABLE_OAUTH_STATE_COOKIE, state, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: Math.floor(WEARABLE_OAUTH_STATE_TTL_MS / 1000)
+    });
+    return response;
   } catch (error: unknown) {
     console.error("Error initiating device connection:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

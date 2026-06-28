@@ -1,8 +1,15 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { PageHeader, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
 import { SimpleGrid, Group, Box, Text, Avatar, Paper, Loader } from "@mantine/core";
+
+const CONNECT_ERROR_MESSAGES: Record<string, string> = {
+  consent_denied: "Connection was cancelled before authorisation completed.",
+  exchange_failed: "We couldn't complete the connection with the provider. Please try again.",
+  invalid_state: "The connection link expired. Please start again."
+};
 
 type WearableStatus = "disconnected" | "connecting" | "connected" | "error" | "active";
 
@@ -23,6 +30,9 @@ const SUPPORTED = [
 ];
 
 export default function WearablesConnectFlow() {
+  const searchParams = useSearchParams();
+  const connectedProvider = searchParams.get("connected");
+  const connectError = searchParams.get("error");
   const [connections, setConnections] = useState<DeviceConnection[]>([]);
   const [loading, setLoading] = useState(true);
   const [athleteId, setAthleteId] = useState<string | null>(null);
@@ -104,6 +114,16 @@ export default function WearablesConnectFlow() {
         title="Wearable Ecosystem"
         subtitle="Connect devices for daily telemetry ingestion into your Athlete Digital Twin"
       />
+      {connectedProvider && (
+        <Box mt="md" role="status">
+          <StateBlock variant="success" title="Device connected" description={`${connectedProvider} is now connected and will sync telemetry.`} />
+        </Box>
+      )}
+      {connectError && (
+        <Box mt="md" role="alert">
+          <StateBlock variant="error" title="Connection failed" description={CONNECT_ERROR_MESSAGES[connectError] ?? "Connection could not be completed."} />
+        </Box>
+      )}
       {error && (
         <Box mt="md">
           <StateBlock variant="info" title="Notice" description={error} />
