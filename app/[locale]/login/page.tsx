@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Alert, Anchor, Badge, Button, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
+import { KeepFocusedFieldVisible } from "@/components/a11y/KeepFocusedFieldVisible";
 
 function sanitizeNext(input: string | undefined, locale: string) {
   if (!input) return `/${locale}`;
@@ -58,6 +59,7 @@ export default async function LoginPage({
     <main className={isAthleteIqSurface ? "login-page-container login-page-container-aiq" : "login-page-container login-page-container-habigoal"}>
       <Paper className={isAthleteIqSurface ? "login-panel login-panel-aiq surface-outline" : "login-panel login-panel-habigoal surface-outline"} withBorder radius="md" p={{ base: "lg", md: "xl" }}>
         <form action="/api/auth/login" method="post">
+          <KeepFocusedFieldVisible />
           <Stack gap="lg">
             <Stack gap="sm" align="flex-start">
               <Image src={logoSrc} alt="" width={logoWidth} height={logoHeight} priority className={isAthleteIqSurface ? "login-brand-logo login-brand-logo-aiq" : "login-brand-logo login-brand-logo-habigoal"} />
@@ -76,6 +78,8 @@ export default async function LoginPage({
             {!isAthleteIqSurface ? <input type="hidden" name="persona" value="athlete" /> : null}
             <TextInput
               autoComplete="email"
+              enterKeyHint="go"
+              inputMode="email"
               label={t("identifierLabel")}
               name="identifier"
               placeholder={t("identifierPlaceholder")}

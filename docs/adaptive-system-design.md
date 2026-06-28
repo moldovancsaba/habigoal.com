@@ -189,6 +189,31 @@ Same components, different **defaults + route maps**:
   field; expect the late-`resize` jump quirk. Inputs: correct `type`/`inputmode`/
   `enterkeyhint`, font ≥16px.
 
+### VKB implementation (#412, shipped foundation)
+
+Conventions to reuse on every touch form:
+
+- **No scale lock.** `app/[locale]/layout.tsx` deliberately omits
+  `maximum-scale`/`user-scalable` so pinch-zoom stays available (WCAG 1.4.4).
+  iOS focus-zoom is prevented by font size, not by disabling zoom.
+- **≥16px inputs, capability-gated.** `app/globals.css` forces `font-size: 16px`
+  on all fields under `@media (any-pointer: coarse)` — including the Mantine
+  input classes (`.mantine-Input-input` etc.), which out-specify a bare `input`
+  rule. Gated on the input channel so a touch tablet wider than 48em is covered.
+- **Keep the focused field visible.** `lib/use-keep-focused-field-visible.ts`
+  exposes pure, unit-tested geometry (`computeKeyboardInset`,
+  `isFocusedFieldObscured`) plus `useKeepFocusedFieldVisible()`, which watches the
+  VisualViewport (`resize`/`scroll`, rAF-debounced for the iOS late event) and
+  `scrollIntoView({ block: "center" })`s an obscured field — instant under
+  `prefers-reduced-motion`. Mount via `<KeepFocusedFieldVisible />`
+  (`components/a11y/`), e.g. in the login form.
+- **Input semantics.** Set `type`/`inputMode`/`enterKeyHint` per field (login
+  email: `type="email"` + `inputMode="email"` + `enterKeyHint="go"`).
+
+Guarded by `tests/vkb-safety.test.ts` and `lib/use-keep-focused-field-visible.test.ts`.
+The consumer mobile/tablet shell (#411) and remaining dashboard inputs adopt
+these utilities as they land.
+
 ---
 
 # PART 2 — IMPLEMENTATION PLAN (phased, file-by-file)

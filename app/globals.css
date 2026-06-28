@@ -156,6 +156,28 @@ label {
   font-family: var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif;
 }
 
+/* iOS Safari zooms the page when a focused field's font is < 16px. Now that the
+   viewport no longer locks scale (#412, WCAG 1.4.4), guarantee ≥16px on every
+   field wherever a coarse pointer is attached — gated on input CAPABILITY, not
+   width, so a touch tablet wider than 48em is covered too. The Mantine class
+   selectors are needed because `.mantine-Input-input` (specificity 0,1,0)
+   overrides a bare `input` element rule (0,0,1). */
+@media (any-pointer: coarse) {
+  input,
+  textarea,
+  select,
+  .mantine-Input-input,
+  .mantine-InputBase-input,
+  .mantine-TextInput-input,
+  .mantine-Textarea-input,
+  .mantine-NativeSelect-input,
+  .mantine-Select-input,
+  .mantine-NumberInput-input,
+  .mantine-PasswordInput-innerInput {
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 48em) {
   input,
   textarea,
