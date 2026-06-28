@@ -2429,5 +2429,72 @@
       "teamTitle": "Teambericht",
       "athleteCount": "Sportler"
     }
+  },
+  "Wearables": {
+    "title": "Wearable-Ökosystem",
+    "subtitle": "Verbinde Geräte für die tägliche Telemetrie in deinen Athleten-Digital-Twin.",
+    "devices": "Geräte",
+    "noAthlete": "Kein Sportlerprofil",
+    "noAthleteHelp": "Mit diesem Konto ist kein Sportlerprofil verknüpft.",
+    "loadError": "Geräte konnten nicht geladen werden",
+    "retry": "Erneut versuchen",
+    "lastSync": "Letzte Synchronisierung: {time}",
+    "neverSynced": "Noch nicht synchronisiert",
+    "noMetrics": "Noch keine Telemetrie — führe eine Synchronisierung durch.",
+    "syncNow": "Jetzt synchronisieren",
+    "disconnect": "Trennen",
+    "connect": "Verbinden",
+    "reconnect": "Neu verbinden",
+    "comingSoon": "Demnächst",
+    "syncError": "Synchronisierung fehlgeschlagen. Bitte erneut versuchen.",
+    "connectedNotice": {
+      "title": "Gerät verbunden",
+      "body": "{provider} ist verbunden und synchronisiert nun Telemetrie."
+    },
+    "connectFailed": {
+      "title": "Verbindung fehlgeschlagen",
+      "consent_denied": "Die Verbindung wurde vor Abschluss der Autorisierung abgebrochen.",
+      "exchange_failed": "Die Verbindung mit dem Anbieter konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
+      "invalid_state": "Der Verbindungslink ist abgelaufen. Bitte erneut starten."
+    },
+    "status": {
+      "connected": "Verbunden",
+      "stale": "Veraltet",
+      "error": "Fehler",
+      "needs_reauth": "Neu verbinden nötig",
+      "never": "Wartet auf erste Synchronisierung"
+    },
+    "metricLabel": {
+      "hrv_rmssd_ms": "HRV",
+      "resting_heart_rate_bpm": "Ruhepuls",
+      "sleep_duration_minutes": "Schlaf",
+      "sleep_quality_score": "Schlafqualität",
+      "sleep_efficiency_percentage": "Schlafeffizienz",
+      "energy_score": "Readiness",
+      "total_distance_meters": "Distanz",
+      "internal_load_points": "Belastung"
+    },
+    "providers": {
+      "oura": {
+        "name": "Oura Ring",
+        "desc": "Readiness- und Schlafdaten synchronisieren."
+      },
+      "whoop": {
+        "name": "Whoop",
+        "desc": "Erholung, Strain und Schlaf synchronisieren."
+      },
+      "garmin": {
+        "name": "Garmin Connect",
+        "desc": "Trainingsbelastung, HRV und Schlaf synchronisieren."
+      },
+      "polar": {
+        "name": "Polar Flow",
+        "desc": "Demnächst."
+      },
+      "apple_health": {
+        "name": "Apple Health",
+        "desc": "Demnächst."
+      }
+    }
   }
 }

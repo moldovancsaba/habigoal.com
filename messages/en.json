@@ -2429,5 +2429,72 @@
       "teamTitle": "Team report",
       "athleteCount": "Athletes"
     }
+  },
+  "Wearables": {
+    "title": "Wearable Ecosystem",
+    "subtitle": "Connect devices for daily telemetry into your Athlete Digital Twin.",
+    "devices": "Devices",
+    "noAthlete": "No athlete profile",
+    "noAthleteHelp": "No athlete profile is linked to this account.",
+    "loadError": "Failed to load devices",
+    "retry": "Try again",
+    "lastSync": "Last sync: {time}",
+    "neverSynced": "Not synced yet",
+    "noMetrics": "No telemetry yet — run a sync.",
+    "syncNow": "Sync now",
+    "disconnect": "Disconnect",
+    "connect": "Connect",
+    "reconnect": "Reconnect",
+    "comingSoon": "Coming soon",
+    "syncError": "Sync failed. Please try again.",
+    "connectedNotice": {
+      "title": "Device connected",
+      "body": "{provider} is connected and will sync telemetry."
+    },
+    "connectFailed": {
+      "title": "Connection failed",
+      "consent_denied": "Connection was cancelled before authorisation completed.",
+      "exchange_failed": "We couldn't complete the connection with the provider. Please try again.",
+      "invalid_state": "The connection link expired. Please start again."
+    },
+    "status": {
+      "connected": "Connected",
+      "stale": "Stale",
+      "error": "Error",
+      "needs_reauth": "Reconnect needed",
+      "never": "Awaiting first sync"
+    },
+    "metricLabel": {
+      "hrv_rmssd_ms": "HRV",
+      "resting_heart_rate_bpm": "Resting HR",
+      "sleep_duration_minutes": "Sleep",
+      "sleep_quality_score": "Sleep quality",
+      "sleep_efficiency_percentage": "Sleep efficiency",
+      "energy_score": "Readiness",
+      "total_distance_meters": "Distance",
+      "internal_load_points": "Load"
+    },
+    "providers": {
+      "oura": {
+        "name": "Oura Ring",
+        "desc": "Sync readiness and sleep data."
+      },
+      "whoop": {
+        "name": "Whoop",
+        "desc": "Sync recovery, strain, and sleep."
+      },
+      "garmin": {
+        "name": "Garmin Connect",
+        "desc": "Sync training load, HRV, and sleep."
+      },
+      "polar": {
+        "name": "Polar Flow",
+        "desc": "Coming soon."
+      },
+      "apple_health": {
+        "name": "Apple Health",
+        "desc": "Coming soon."
+      }
+    }
   }
 }

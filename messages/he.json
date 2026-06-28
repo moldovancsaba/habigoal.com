@@ -2429,5 +2429,72 @@
       "teamTitle": "דוח קבוצה",
       "athleteCount": "ספורטאים"
     }
+  },
+  "Wearables": {
+    "title": "מערכת המתלבשים",
+    "subtitle": "חברו מכשירים לטלמטריה יומית אל התאום הדיגיטלי של הספורטאי.",
+    "devices": "מכשירים",
+    "noAthlete": "אין פרופיל ספורטאי",
+    "noAthleteHelp": "אין פרופיל ספורטאי המקושר לחשבון זה.",
+    "loadError": "טעינת המכשירים נכשלה",
+    "retry": "נסו שוב",
+    "lastSync": "סנכרון אחרון: {time}",
+    "neverSynced": "עדיין לא סונכרן",
+    "noMetrics": "אין עדיין טלמטריה — הריצו סנכרון.",
+    "syncNow": "סנכרון עכשיו",
+    "disconnect": "ניתוק",
+    "connect": "חיבור",
+    "reconnect": "חיבור מחדש",
+    "comingSoon": "בקרוב",
+    "syncError": "הסנכרון נכשל. נסו שוב.",
+    "connectedNotice": {
+      "title": "המכשיר חובר",
+      "body": "{provider} מחובר וכעת יסנכרן טלמטריה."
+    },
+    "connectFailed": {
+      "title": "החיבור נכשל",
+      "consent_denied": "החיבור בוטל לפני השלמת ההרשאה.",
+      "exchange_failed": "לא הצלחנו להשלים את החיבור עם הספק. נסו שוב.",
+      "invalid_state": "קישור החיבור פג. התחילו מחדש."
+    },
+    "status": {
+      "connected": "מחובר",
+      "stale": "מיושן",
+      "error": "שגיאה",
+      "needs_reauth": "נדרש חיבור מחדש",
+      "never": "ממתין לסנכרון הראשון"
+    },
+    "metricLabel": {
+      "hrv_rmssd_ms": "HRV",
+      "resting_heart_rate_bpm": "דופק מנוחה",
+      "sleep_duration_minutes": "שינה",
+      "sleep_quality_score": "איכות שינה",
+      "sleep_efficiency_percentage": "יעילות שינה",
+      "energy_score": "מוכנוּת",
+      "total_distance_meters": "מרחק",
+      "internal_load_points": "עומס"
+    },
+    "providers": {
+      "oura": {
+        "name": "Oura Ring",
+        "desc": "סנכרון נתוני מוכנוּת ושינה."
+      },
+      "whoop": {
+        "name": "Whoop",
+        "desc": "סנכרון התאוששות, מאמץ ושינה."
+      },
+      "garmin": {
+        "name": "Garmin Connect",
+        "desc": "סנכרון עומס אימון, HRV ושינה."
+      },
+      "polar": {
+        "name": "Polar Flow",
+        "desc": "בקרוב."
+      },
+      "apple_health": {
+        "name": "Apple Health",
+        "desc": "בקרוב."
+      }
+    }
   }
 }
