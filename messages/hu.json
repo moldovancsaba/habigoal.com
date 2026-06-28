@@ -1752,7 +1752,7 @@
         },
         "team-readiness": {
           "label": "Csapat readiness",
-          "detail": "Csapatátlag Habigoal napi státuszból és Athlete IQ tervezési adatokból."
+          "detail": "Csapatátlag a napi státuszból és a tervezési adatokból."
         },
         "club-services": {
           "label": "Klubszolgáltatások",
@@ -1783,7 +1783,7 @@
             "squad": "U16 teljesítmény",
             "reason": "Magas terhelés alacsonyabb readiness mellett két kemény nap után.",
             "action": "Válts alacsony terhelésű technikai tervre, és ellenőrizd az izomfáradtságot.",
-            "source": "Habigoal napi státusz + edzésterhelés"
+            "source": "Napi státusz + edzésterhelés"
           },
           "mate": {
             "squad": "Akadémiai sprint",
@@ -1825,15 +1825,15 @@
         "loadLabel": "Terhelés",
         "mentalLabel": "Mentális",
         "unassignedTeam": "Csapathoz nem rendelve",
-        "habigoalLabel": "Habigoal",
+        "habigoalLabel": "Napi szokások",
         "habitsLabel": "Szokások",
         "habigoalCompletion": {
-          "missing": "Nincs mentett Habigoal nap",
-          "partial": "A Habigoal nap hiányos",
-          "complete": "Habigoal nap mentve"
+          "missing": "Nincs mentett napi rekord",
+          "partial": "A napi rekord hiányos",
+          "complete": "Napi rekord mentve"
         },
         "habigoalSource": {
-          "habigoal": "Habigoal adat",
+          "habigoal": "Napi szokásadatok",
           "athlete_iq": "Athlete IQ adat",
           "mixed": "Közös adat"
         }
@@ -1931,8 +1931,8 @@
         "summaryAria": "Athlete IQ sportolói összefoglaló",
         "hero": {
           "title": "Sportolói támogatási munkafelület",
-          "subtitle": "Professzionális napi nézet readinesshez, edzéskontextushoz, támogatási műveletekhez és közös Habigoal szokásadatokhoz.",
-          "copy": "Az Athlete IQ-ban láthatod azokat az adatokat, amelyekkel az edződ dolgozhat, miközben a Habigoal gyors napi szokásrögzítésre is elérhető."
+          "subtitle": "Professzionális napi nézet readinesshez, edzéskontextushoz, támogatási műveletekhez és közös szokásadatokhoz.",
+          "copy": "Tekintsd át az adatokat, amelyekkel az edződ dolgozhat; a gyors napi szokásrögzítés is elérhető marad."
         },
         "metrics": {
           "ownReadiness": "Saját readiness",
@@ -1940,7 +1940,7 @@
         },
         "today": {
           "title": "Mai állapot",
-          "copy": "Mentett napi jelzések, csapatkontextus, Habigoal szokásteljesítés és támogatási státusz.",
+          "copy": "Olvasd el a mentett napi jelzéseidet, a csapatkontextust, a szokások teljesítését és a támogatási állapotot.",
           "teamLabel": "Csapat"
         },
         "support": {
@@ -1950,7 +1950,7 @@
         },
         "shared": {
           "kicker": "Napi szokások",
-          "title": "Mai Habigoal rögzítés",
+          "title": "A mai szokásrekord",
           "copy": "A mai szokásteljesítésed, csapatod és readiness állapotod."
         },
         "empty": {
@@ -1970,7 +1970,7 @@
           },
           "habits": {
             "title": "Napi szokások",
-            "copy": "Jelöld a ma teljesített szokásokat. Ugyanez a rekord a Habigoalban is elérhető.",
+            "copy": "Jelöld be a ma teljesített szokásokat.",
             "itemLabel": "{label} ({category})",
             "completion": "Teljesítés",
             "reviewed": "Átnéztem a mai szokásokat",
