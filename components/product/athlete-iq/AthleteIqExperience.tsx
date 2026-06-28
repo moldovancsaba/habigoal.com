@@ -6,7 +6,6 @@ import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme,
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { ATHLETE_IQ_OS_GROUPS } from "@/lib/athlete-iq-os";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
 import type {
@@ -27,7 +26,7 @@ import { AiqProgressPanel } from "./panels/AiqProgressPanel";
 
 type AiqTranslate = ReturnType<typeof useTranslations>;
 type CommonTranslate = ReturnType<typeof useTranslations>;
-type AiqNavGroupKey = "dailyOs" | "development" | "stakeholders";
+type AiqNavGroupKey = "dailyOs" | "development" | "stakeholders" | "workspace";
 type AiqNavItem = {
   anchorId: string;
   active?: boolean;
@@ -41,7 +40,6 @@ type AiqNavGroup = {
 type SupportedLocale = "en" | "hu" | "ar" | "es" | "de" | "he";
 type AiqPersona = AthleteIqProductDashboardProjection["persona"];
 
-const HIDDEN_REFERENCE_NAV_ITEMS = new Set(["habits", "roadmap", "report"]);
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
 const ATHLETE_IQ_THEME_VARIABLES = getGdsVibeThemeCssVariables(ATHLETE_IQ_GDS_THEME_PRESET, "dark") as CSSProperties;
 
@@ -78,18 +76,22 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
     ],
     [t]
   );
-  const visibleNavigationGroups = useMemo(
-    () =>
-      ATHLETE_IQ_OS_GROUPS.map((group) => ({
-        id: getAiqGroupKey(group.title),
-        items: group.modules
-          .filter((module) => !HIDDEN_REFERENCE_NAV_ITEMS.has(module.anchorId))
-          .map((module) => ({
-            anchorId: module.anchorId,
-            active: module.anchorId === "home",
-            labelKey: module.anchorId
-          }))
-      })).filter((group) => group.items.length > 0),
+  // The coach workspace renders five real sections; the sidebar links must
+  // target those anchors (not the aspirational OS module catalogue) so the menu
+  // actually scrolls.
+  const visibleNavigationGroups = useMemo<AiqNavGroup[]>(
+    () => [
+      {
+        id: "workspace",
+        items: [
+          { anchorId: "home", active: true, labelKey: "home" },
+          { anchorId: "team-club", labelKey: "teamCommand" },
+          { anchorId: "priority", labelKey: "priorityQueue" },
+          { anchorId: "athletes", labelKey: "athleteCommand" },
+          { anchorId: "services", labelKey: "services" }
+        ]
+      }
+    ],
     []
   );
   const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
@@ -797,12 +799,6 @@ function AiqNavSection({ group, onNavigate, translate }: { group: AiqNavGroup; o
       </Stack>
     </Stack>
   );
-}
-
-function getAiqGroupKey(group: string): AiqNavGroupKey {
-  if (group === "Daily OS") return "dailyOs";
-  if (group === "Stakeholders") return "stakeholders";
-  return "development";
 }
 
 function AiqDailyScoreCard({ mode, score, translate }: { mode: "lifestyle" | "performance"; score: string; translate: AiqTranslate }) {

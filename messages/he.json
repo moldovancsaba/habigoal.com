@@ -1900,7 +1900,8 @@
         "groups": {
           "dailyOs": "Daily OS",
           "stakeholders": "בעלי עניין",
-          "development": "פיתוח"
+          "development": "פיתוח",
+          "workspace": "סביבת עבודה"
         },
         "modules": {
           "home": "בית",
@@ -1923,7 +1924,11 @@
           "plan": "תוכנית יומית",
           "sessions": "אימונים",
           "progress": "התקדמות",
-          "lite": "מודולי לייט"
+          "lite": "מודולי לייט",
+          "teamCommand": "צוות ומועדון",
+          "priorityQueue": "תור עדיפויות",
+          "athleteCommand": "ספורטאים",
+          "services": "שירותים"
         }
       },
       "athleteWorkspace": {

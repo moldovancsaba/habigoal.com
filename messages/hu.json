@@ -1900,7 +1900,8 @@
         "groups": {
           "dailyOs": "Daily OS",
           "stakeholders": "Stakeholderek",
-          "development": "Fejlesztés"
+          "development": "Fejlesztés",
+          "workspace": "Munkaterület"
         },
         "modules": {
           "home": "Kezdőlap",
@@ -1923,7 +1924,11 @@
           "plan": "Napi terv",
           "sessions": "Edzések",
           "progress": "Haladás",
-          "lite": "Lite modulok"
+          "lite": "Lite modulok",
+          "teamCommand": "Csapat és klub",
+          "priorityQueue": "Prioritási sor",
+          "athleteCommand": "Sportolók",
+          "services": "Szolgáltatások"
         }
       },
       "athleteWorkspace": {

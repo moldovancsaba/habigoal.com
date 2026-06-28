@@ -1900,7 +1900,8 @@
         "groups": {
           "dailyOs": "Daily OS",
           "stakeholders": "Stakeholders",
-          "development": "Development"
+          "development": "Development",
+          "workspace": "Workspace"
         },
         "modules": {
           "home": "Home",
@@ -1923,7 +1924,11 @@
           "plan": "Daily plan",
           "sessions": "Sessions",
           "progress": "Progress",
-          "lite": "Lite modules"
+          "lite": "Lite modules",
+          "teamCommand": "Team & club",
+          "priorityQueue": "Priority queue",
+          "athleteCommand": "Athletes",
+          "services": "Services"
         }
       },
       "athleteWorkspace": {

@@ -967,6 +967,24 @@ a {
   min-height: 100svh;
   color: var(--gds-vibe-text, #f4f7fb);
   background: var(--gds-vibe-gradient, #070c18);
+
+  /* Accent buttons inside the professional surface use Mantine's `yellow`,
+     which renders as amber. Retint the yellow palette to the brand gold
+     (the same accent used by the active nav state and the mobile surface)
+     so the whole surface shares one gold. Scoped to the AIQ shell only. */
+  --aiq-gold: var(--gds-vibe-accent, var(--accent-gold));
+  --mantine-color-yellow-filled: var(--aiq-gold);
+  --mantine-color-yellow-filled-hover: color-mix(in srgb, var(--aiq-gold) 86%, #000 14%);
+  --mantine-color-yellow-light: color-mix(in srgb, var(--aiq-gold) 16%, transparent);
+  --mantine-color-yellow-light-hover: color-mix(in srgb, var(--aiq-gold) 26%, transparent);
+  --mantine-color-yellow-light-color: var(--aiq-gold);
+  --mantine-color-yellow-outline: var(--aiq-gold);
+  --mantine-color-yellow-outline-hover: color-mix(in srgb, var(--aiq-gold) 14%, transparent);
+}
+
+/* Brand gold is light, so filled gold buttons need dark text for contrast. */
+.aiq-product-shell .mantine-Button-root[data-variant="filled"] {
+  color: #1b1403;
 }
 
 .aiq-workspace {
