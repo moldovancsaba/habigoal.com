@@ -1160,14 +1160,16 @@
       "habigoal": {
         "badge": "Habigoal hozzáférés",
         "title": "Tovább a Habigoalba",
-        "subtitle": "Adja meg az Athlete IQ-ban már regisztrált e-mail címét, és nyissa meg a Habigoal mobil napi appot.",
-        "supportingCopy": "A Habigoal ugyanazt az Athlete IQ-ban létrehozott e-mail fiókot használja."
+        "subtitle": "Adja meg a regisztrált e-mail címét, és nyissa meg a Habigoal mobil napi appot.",
+        "supportingCopy": "A Habigoal a meglévő fiók e-mail címével nyílik meg.",
+        "backLink": "Habigoal"
       },
       "athleteIq": {
         "badge": "Athlete IQ hozzáférés",
         "title": "Tovább az Athlete IQ-ba",
         "subtitle": "Adja meg az e-mail címét, és nyissa meg az Athlete IQ professzionális munkafelületet.",
-        "supportingCopy": "Az edzői belépés az Athlete IQ-t nyitja meg, ugyanazzal a közös fiókazonossággal."
+        "supportingCopy": "Az edzői belépés az Athlete IQ-t nyitja meg, ugyanazzal a közös fiókazonossággal.",
+        "backLink": "Athlete IQ"
       }
     }
   },
