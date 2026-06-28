@@ -305,6 +305,30 @@ a {
   overflow: hidden;
 }
 
+/* Neutral GDS-themed selector shell (#399): the SelectorThemeShell wrapper sets
+   --gds-vibe-* from the neutral `skyline` preset; the chrome consumes them so the
+   selector reads as its own neutral surface, distinct from Habigoal and AIQ.
+   --surface-radius (#398) is the single source of truth for the selector's
+   card/footer corner radius. */
+.landing-selector-vibe {
+  --surface-radius: var(--mantine-radius-md);
+  min-height: 100vh;
+  min-height: 100svh;
+  color: var(--gds-vibe-text, var(--text-primary));
+  background: var(--gds-vibe-gradient, var(--app-bg));
+}
+
+.landing-selector-vibe .landing-news-link,
+.landing-selector-vibe .landing-selector-container .mantine-Title-root {
+  color: var(--gds-vibe-text, var(--text-primary));
+}
+
+.landing-selector-vibe .landing-footer {
+  border-radius: var(--surface-radius);
+  background: var(--gds-vibe-surface, var(--surface-base));
+  border-color: var(--gds-vibe-border, var(--border-primary));
+}
+
 .landing-brand-link {
   flex: 1 1 auto;
   text-decoration: none;
