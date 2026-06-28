@@ -5,7 +5,7 @@ import { env } from "@/config/env";
 import { createSession } from "@/lib/session";
 import { canOpenProductSurface } from "@/lib/access";
 import type { ProductSurfaceId } from "@/lib/product-entitlements";
-import { findUserByEmail, upsertPersonaLoginUser } from "@/repositories/user.repository";
+import { upsertPersonaLoginUser } from "@/repositories/user.repository";
 
 function sanitizeReturnTo(input: string | null, fallbackLocale: string) {
   if (!input) return `/${fallbackLocale}/dashboard`;
@@ -139,18 +139,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.redirect(loginPageUrl(request, locale, next, !identity ? "invalid_identifier" : "missing_persona"), 303);
   }
 
-  const existingUser = await findUserByEmail(identity.email);
-  if (productSurface === "habigoal" && !existingUser) {
-    const code = "athlete_iq_registration_required";
-    if (acceptsJson) {
-      return NextResponse.json({
-        error: "Athlete IQ registration required",
-        code
-      }, { status: 403 });
-    }
-    return NextResponse.redirect(loginPageUrl(request, locale, next, code), 303);
-  }
-
+  // Habigoal is a standalone white-label product (#424): a new email may register
+  // and use Habigoal directly, with no prior Athlete IQ registration. Self-
+  // registration provisioning (upsertPersonaLoginUser → createSelfRegisteredEntitlements)
+  // grants the Habigoal entitlement; AIQ linkage is an internal, hidden concern,
+  // never a precondition for the consumer.
   const localUser = await upsertPersonaLoginUser({
     email: identity.email,
     name: identity.name,
