@@ -1,5 +1,5 @@
 import { getDatabase } from "@/lib/mongodb";
-import { DeviceConnection, WearableConnector } from "../types/wearable-connector";
+import { DeviceConnection } from "../types/wearable-connector";
 import { MetricSource } from "../types/canonical-metric";
 
 const COLLECTION_NAME = "device_connections";
@@ -52,7 +52,7 @@ export async function updateTokens(
   const db = await getDatabase();
   const collection = db.collection<DeviceConnection>(COLLECTION_NAME);
 
-  const updateDoc: any = {
+  const updateDoc: Record<string, unknown> = {
     accessToken,
     updatedAt: new Date().toISOString(),
   };
@@ -80,7 +80,7 @@ export async function updateConnectionStatus(
   const db = await getDatabase();
   const collection = db.collection(COLLECTION_NAME);
 
-  const updateDoc: any = {
+  const updateDoc: Record<string, unknown> = {
     status,
     updatedAt: new Date().toISOString(),
   };
@@ -93,4 +93,36 @@ export async function updateConnectionStatus(
   }
 
   await collection.updateOne({ connectionId }, { $set: updateDoc });
+}
+
+// Records the outcome of a sync run. On success, stamps lastSyncAt and clears
+// any prior error; on failure, records the error but keeps the prior lastSyncAt.
+export async function recordSyncResult(
+  connectionId: string,
+  status: "ok" | "error",
+  syncedAt: string,
+  errorMsg?: string
+): Promise<void> {
+  const db = await getDatabase();
+  const collection = db.collection(COLLECTION_NAME);
+
+  const updateDoc: Record<string, unknown> = {
+    lastSyncStatus: status,
+    updatedAt: new Date().toISOString(),
+  };
+  if (status === "ok") {
+    updateDoc.lastSyncAt = syncedAt;
+    updateDoc.lastSyncError = null;
+  } else {
+    updateDoc.lastSyncError = errorMsg ?? "sync failed";
+  }
+
+  await collection.updateOne({ connectionId }, { $set: updateDoc });
+}
+
+// Active connections eligible for scheduled syncing.
+export async function listSyncableConnections(): Promise<DeviceConnection[]> {
+  const db = await getDatabase();
+  const collection = db.collection<DeviceConnection>(COLLECTION_NAME);
+  return await collection.find({ status: "active" }).toArray();
 }
