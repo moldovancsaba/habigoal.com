@@ -1752,7 +1752,7 @@
         },
         "team-readiness": {
           "label": "Readiness del equipo",
-          "detail": "Promedio del equipo desde el estado diario de Habigoal y datos de planificacion de Athlete IQ."
+          "detail": "Promedio del equipo a partir del estado diario y los datos de planificación."
         },
         "club-services": {
           "label": "Servicios del club",
@@ -1783,7 +1783,7 @@
             "squad": "Rendimiento U16",
             "reason": "Carga alta con readiness menor despues de dos dias duros.",
             "action": "Cambiar a plan tecnico de bajo impacto y revisar molestia muscular.",
-            "source": "Estado diario Habigoal + carga de entrenamiento"
+            "source": "Estado diario + carga de entrenamiento"
           },
           "mate": {
             "squad": "Sprint academia",
@@ -1825,15 +1825,15 @@
         "loadLabel": "Carga",
         "mentalLabel": "Mental",
         "unassignedTeam": "Sin equipo asignado",
-        "habigoalLabel": "Habigoal",
+        "habigoalLabel": "Hábitos diarios",
         "habitsLabel": "Hábitos",
         "habigoalCompletion": {
-          "missing": "No hay día de Habigoal guardado",
-          "partial": "Día de Habigoal incompleto",
-          "complete": "Día de Habigoal guardado"
+          "missing": "Ningún registro diario guardado",
+          "partial": "Registro diario incompleto",
+          "complete": "Registro diario guardado"
         },
         "habigoalSource": {
-          "habigoal": "Datos de Habigoal",
+          "habigoal": "Datos de hábitos diarios",
           "athlete_iq": "Datos de Athlete IQ",
           "mixed": "Datos compartidos"
         }
@@ -1931,8 +1931,8 @@
         "summaryAria": "Resumen de atleta en Athlete IQ",
         "hero": {
           "title": "Espacio de soporte del atleta",
-          "subtitle": "Tu vista diaria profesional para readiness, contexto de entrenamiento, acciones de soporte y datos compartidos de habitos de Habigoal.",
-          "copy": "Usa Athlete IQ para revisar los datos que tu entrenador puede utilizar, mientras Habigoal sigue disponible para capturar habitos diarios rapidamente."
+          "subtitle": "Tu vista diaria profesional para preparación, contexto de entrenamiento, acciones de apoyo y datos de hábitos compartidos.",
+          "copy": "Revisa los datos sobre los que tu entrenador puede actuar; la captura rápida de hábitos diarios también sigue disponible."
         },
         "metrics": {
           "ownReadiness": "Tu readiness",
@@ -1940,7 +1940,7 @@
         },
         "today": {
           "title": "Hoy y estado actual",
-          "copy": "Senales diarias guardadas, contexto de equipo, habitos de Habigoal y estado de soporte.",
+          "copy": "Consulta tus señales diarias guardadas, el contexto del equipo, el cumplimiento de hábitos y el estado de apoyo.",
           "teamLabel": "Equipo"
         },
         "support": {
@@ -1950,7 +1950,7 @@
         },
         "shared": {
           "kicker": "Habitos diarios",
-          "title": "Registro Habigoal de hoy",
+          "title": "Registro de hábitos de hoy",
           "copy": "Tu cumplimiento de habitos, contexto de equipo y estado de readiness de hoy."
         },
         "empty": {
@@ -1970,7 +1970,7 @@
           },
           "habits": {
             "title": "Habitos diarios",
-            "copy": "Marca los habitos completados hoy. El mismo registro tambien esta disponible en Habigoal.",
+            "copy": "Marca los hábitos completados hoy.",
             "itemLabel": "{label} ({category})",
             "completion": "Cumplimiento",
             "reviewed": "Revise los habitos de hoy",

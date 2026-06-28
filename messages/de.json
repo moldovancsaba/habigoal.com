@@ -1752,7 +1752,7 @@
         },
         "team-readiness": {
           "label": "Team-Readiness",
-          "detail": "Teamdurchschnitt aus Habigoal Tagesstatus und Athlete IQ Planungsdaten."
+          "detail": "Teamdurchschnitt aus täglichem Status und Planungsdaten."
         },
         "club-services": {
           "label": "Club-Services",
@@ -1783,7 +1783,7 @@
             "squad": "U16 Performance",
             "reason": "Hohe Last mit niedrigerer Readiness nach zwei harten Tagen.",
             "action": "Auf einen low-impact Technikplan wechseln und Muskelmuedigkeit pruefen.",
-            "source": "Habigoal Tagesstatus + Trainingslast"
+            "source": "Täglicher Status + Trainingsbelastung"
           },
           "mate": {
             "squad": "Akademie Sprint",
@@ -1825,15 +1825,15 @@
         "loadLabel": "Load",
         "mentalLabel": "Mental",
         "unassignedTeam": "Keinem Team zugeordnet",
-        "habigoalLabel": "Habigoal",
+        "habigoalLabel": "Tägliche Gewohnheiten",
         "habitsLabel": "Gewohnheiten",
         "habigoalCompletion": {
-          "missing": "Kein Habigoal-Tag gespeichert",
-          "partial": "Habigoal-Tag unvollständig",
-          "complete": "Habigoal-Tag gespeichert"
+          "missing": "Kein Tagesdatensatz gespeichert",
+          "partial": "Tagesdatensatz unvollständig",
+          "complete": "Tagesdatensatz gespeichert"
         },
         "habigoalSource": {
-          "habigoal": "Habigoal-Daten",
+          "habigoal": "Tägliche Gewohnheitsdaten",
           "athlete_iq": "Athlete-IQ-Daten",
           "mixed": "Gemeinsame Daten"
         }
@@ -1931,8 +1931,8 @@
         "summaryAria": "Athlete IQ Athletenuebersicht",
         "hero": {
           "title": "Athleten-Support-Arbeitsbereich",
-          "subtitle": "Deine professionelle Tagesansicht fuer Readiness, Trainingskontext, Support-Aktionen und geteilte Habigoal-Gewohnheitsdaten.",
-          "copy": "Nutze Athlete IQ fuer die Daten, mit denen dein Trainer arbeiten kann, waehrend Habigoal fuer schnelle taegliche Gewohnheitserfassung verfuegbar bleibt."
+          "subtitle": "Deine professionelle Tagesansicht für Readiness, Trainingskontext, Unterstützungsaktionen und gemeinsame Gewohnheitsdaten.",
+          "copy": "Sieh dir die Daten an, mit denen dein Trainer arbeiten kann; die schnelle tägliche Gewohnheitserfassung bleibt ebenfalls verfügbar."
         },
         "metrics": {
           "ownReadiness": "Deine Readiness",
@@ -1940,7 +1940,7 @@
         },
         "today": {
           "title": "Heute und aktueller Status",
-          "copy": "Gespeicherte Tagessignale, Teamkontext, Habigoal-Gewohnheiten und Support-Status.",
+          "copy": "Lies deine gespeicherten täglichen Signale, den Teamkontext, die Gewohnheitserfüllung und den Unterstützungsstatus.",
           "teamLabel": "Team"
         },
         "support": {
@@ -1950,7 +1950,7 @@
         },
         "shared": {
           "kicker": "Taegliche Gewohnheiten",
-          "title": "Heutiger Habigoal-Eintrag",
+          "title": "Heutiger Gewohnheitsdatensatz",
           "copy": "Deine heutige Gewohnheitserfuellung, dein Teamkontext und dein Readiness-Status."
         },
         "empty": {
@@ -1970,7 +1970,7 @@
           },
           "habits": {
             "title": "Taegliche Gewohnheiten",
-            "copy": "Markiere die heute erledigten Gewohnheiten. Derselbe Datensatz ist auch in Habigoal verfuegbar.",
+            "copy": "Markiere die heute erledigten Gewohnheiten.",
             "itemLabel": "{label} ({category})",
             "completion": "Abschluss",
             "reviewed": "Ich habe die heutigen Gewohnheiten geprueft",

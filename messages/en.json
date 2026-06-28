@@ -1752,7 +1752,7 @@
         },
         "team-readiness": {
           "label": "Team readiness",
-          "detail": "Team average from Habigoal daily status and Athlete IQ planning data."
+          "detail": "Team average from daily status and planning data."
         },
         "club-services": {
           "label": "Club services",
@@ -1783,7 +1783,7 @@
             "squad": "U16 performance",
             "reason": "High load with lower readiness after two hard days.",
             "action": "Move to low-impact technical plan and check soreness.",
-            "source": "Habigoal daily status + training load"
+            "source": "Daily status + training load"
           },
           "mate": {
             "squad": "Academy sprint",
@@ -1825,15 +1825,15 @@
         "loadLabel": "Load",
         "mentalLabel": "Mental",
         "unassignedTeam": "Unassigned team",
-        "habigoalLabel": "Habigoal",
+        "habigoalLabel": "Daily habits",
         "habitsLabel": "Habits",
         "habigoalCompletion": {
-          "missing": "No Habigoal day saved",
-          "partial": "Habigoal day incomplete",
-          "complete": "Habigoal day saved"
+          "missing": "No daily record saved",
+          "partial": "Daily record incomplete",
+          "complete": "Daily record saved"
         },
         "habigoalSource": {
-          "habigoal": "Habigoal data",
+          "habigoal": "Daily habit data",
           "athlete_iq": "Athlete IQ data",
           "mixed": "Shared data"
         }
@@ -1931,8 +1931,8 @@
         "summaryAria": "Athlete IQ athlete summary",
         "hero": {
           "title": "Athlete support workspace",
-          "subtitle": "Your professional daily view for readiness, training context, support actions, and shared Habigoal habit data.",
-          "copy": "Use Athlete IQ to review the data your trainer can act on, while Habigoal stays available for fast daily habit capture."
+          "subtitle": "Your professional daily view for readiness, training context, support actions, and shared habit data.",
+          "copy": "Review the data your trainer can act on; fast daily habit capture stays available too."
         },
         "metrics": {
           "ownReadiness": "Your readiness",
@@ -1940,7 +1940,7 @@
         },
         "today": {
           "title": "Today and current status",
-          "copy": "Read your saved daily signals, team context, Habigoal habit completion, and support status.",
+          "copy": "Read your saved daily signals, team context, habit completion, and support status.",
           "teamLabel": "Team"
         },
         "support": {
@@ -1950,7 +1950,7 @@
         },
         "shared": {
           "kicker": "Daily habits",
-          "title": "Today's Habigoal record",
+          "title": "Today's habit record",
           "copy": "Your saved habit completion, team context, and readiness status for today."
         },
         "empty": {
@@ -1970,7 +1970,7 @@
           },
           "habits": {
             "title": "Daily habits",
-            "copy": "Mark the habits completed today. The same record is available in Habigoal.",
+            "copy": "Mark the habits completed today.",
             "itemLabel": "{label} ({category})",
             "completion": "Completion",
             "reviewed": "I reviewed today's habits",
