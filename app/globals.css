@@ -807,6 +807,11 @@ a {
   --hbg-mint: #0f9f8f;
   --hbg-sky: #1687d9;
   --hbg-coral: #e86658;
+  /* Single source of truth for the space the fixed bottom nav (and the device
+     home indicator) occupy, so scroll containers can reserve it and never let
+     the nav cover content (#425). The fixed nav is ~72px tall; the extra gives
+     breathing room above it. */
+  --hbg-bottom-nav-reserve: calc(112px + env(safe-area-inset-bottom));
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
@@ -881,9 +886,9 @@ a {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--mantine-spacing-sm);
-  padding-bottom: calc(112px + env(safe-area-inset-bottom));
+  padding-bottom: var(--hbg-bottom-nav-reserve);
   scroll-padding-top: calc(76px + env(safe-area-inset-top));
-  scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom));
+  scroll-padding-bottom: var(--hbg-bottom-nav-reserve);
 }
 
 .hbg-main-grid > * {
@@ -1753,8 +1758,9 @@ a {
     box-shadow: none;
   }
 
-  .hbg-main-grid {
-    padding-bottom: calc(118px + env(safe-area-inset-bottom));
+  /* Slightly larger reserve on phones (override the single token). */
+  .habigoal-product-shell {
+    --hbg-bottom-nav-reserve: calc(118px + env(safe-area-inset-bottom));
   }
 
   .hbg-score-ring {

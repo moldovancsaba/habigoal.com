@@ -211,7 +211,11 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
           ) : null}
         </Box>
 
-        <Box component="main" className="hbg-main-grid" pb="xl">
+        {/* No `pb` here: the bottom-inset that clears the fixed bottom nav is
+            owned by `.hbg-main-grid` in CSS (nav height + safe-area). A Mantine
+            `pb` prop would inline-override that reserve and let the nav cover
+            the last card (#425). */}
+        <Box component="main" className="hbg-main-grid">
           {feedback ? (
             <Alert color={feedback.kind === "success" ? "tactical" : "red"} title={feedback.kind === "success" ? t("savedTitle") : t("errors.title")} role={feedback.kind === "success" ? "status" : "alert"}>
               <Stack gap={4}>
