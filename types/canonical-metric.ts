@@ -6,6 +6,7 @@ export type MetricUnit =
   | 'ms'
   | 'minutes'
   | 'meters'
+  | 'centimeters'
   | 'km_per_hour'
   | 'watts'
   | 'newtons'
