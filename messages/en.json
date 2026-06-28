@@ -569,7 +569,8 @@
     "athleteBaselineSupportShortFeedback": "Short feedback",
     "athleteBaselineSupportReminders": "Check-in reminders",
     "athleteBaselineSupportRecovery": "Recovery guidance",
-    "athleteBaselineSupportPlanning": "Training plan context"
+    "athleteBaselineSupportPlanning": "Training plan context",
+    "injuryHub": "Injury Hub"
   },
   "Assessment": {
     "saved": "Check-in saved.",
@@ -2349,6 +2350,44 @@
       "habits": "Habits",
       "daily_plan": "Daily plan",
       "cognitive_lite": "Cognitive"
+    }
+  },
+  "InjuryHubFms": {
+    "title": "Functional Movement Screen",
+    "subtitle": "Record movement mechanics to feed injury-risk and the athlete twin.",
+    "athlete": "Athlete",
+    "selectAthlete": "Select athlete",
+    "noAthletes": "No athletes available",
+    "noAthletesHelp": "You don't have access to any athletes yet.",
+    "screenTitle": "New screen",
+    "scoreLabel": "Score",
+    "scoreOption": {
+      "0": "0 — Unable / pain",
+      "1": "1 — Limited",
+      "2": "2 — Compensation",
+      "3": "3 — Clean"
+    },
+    "painLabel": "Pain on this test (scores 0)",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Optional observations",
+    "savedTitle": "Screen saved",
+    "compositeValue": "Composite {value}/21",
+    "saveError": "Couldn't save the screen. Please try again.",
+    "save": "Save screen",
+    "historyTitle": "History",
+    "historyLoading": "Loading history…",
+    "historyEmpty": "No screens yet",
+    "historyEmptyHelp": "Saved screens for this athlete will appear here.",
+    "loadError": "Failed to load athletes",
+    "retry": "Try again",
+    "subtests": {
+      "deepSquat": "Deep Squat",
+      "hurdleStep": "Hurdle Step",
+      "inlineLunge": "Inline Lunge",
+      "shoulderMobility": "Shoulder Mobility",
+      "activeStraightLegRaise": "Active Straight-Leg Raise",
+      "trunkStabilityPushup": "Trunk Stability Push-up",
+      "rotaryStability": "Rotary Stability"
     }
   }
 }

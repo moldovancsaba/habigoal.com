@@ -1,4 +1,5 @@
 import { AthleteTwin } from "./athlete-twin";
+import { FmsScreen } from "./athleteiq-fms";
 
 export type ConfidenceLevel = "high" | "medium" | "low";
 
@@ -16,6 +17,9 @@ export interface EngineContext {
   athleteId: string;
   twin: AthleteTwin;
   organisationId: string;
+  // Latest Functional Movement Screen for the athlete, when available. Optional
+  // so callers that don't supply it keep prior behaviour (FMS marked missing).
+  latestFms?: FmsScreen | null;
   // Future expansion: organisation-level thresholds
 }
 

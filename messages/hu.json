@@ -569,7 +569,8 @@
     "athleteBaselineSupportShortFeedback": "Rövid visszajelzés",
     "athleteBaselineSupportReminders": "Check-in emlékeztetők",
     "athleteBaselineSupportRecovery": "Regenerációs útmutatás",
-    "athleteBaselineSupportPlanning": "Edzésterv kontextus"
+    "athleteBaselineSupportPlanning": "Edzésterv kontextus",
+    "injuryHub": "Sérülésközpont"
   },
   "Assessment": {
     "saved": "Check-in elmentve.",
@@ -2349,6 +2350,44 @@
       "habits": "Habits",
       "daily_plan": "Daily plan",
       "cognitive_lite": "Cognitive"
+    }
+  },
+  "InjuryHubFms": {
+    "title": "Funkcionális mozgásvizsgálat (FMS)",
+    "subtitle": "Rögzítse a mozgásmechanikát a sérüléskockázathoz és a sportoló ikerprofiljához.",
+    "athlete": "Sportoló",
+    "selectAthlete": "Sportoló kiválasztása",
+    "noAthletes": "Nincs elérhető sportoló",
+    "noAthletesHelp": "Egyelőre nincs hozzáférése sportolóhoz.",
+    "screenTitle": "Új vizsgálat",
+    "scoreLabel": "Pontszám",
+    "scoreOption": {
+      "0": "0 — Nem képes / fájdalom",
+      "1": "1 — Korlátozott",
+      "2": "2 — Kompenzáció",
+      "3": "3 — Tiszta"
+    },
+    "painLabel": "Fájdalom ennél a tesztnél (0 pont)",
+    "notesLabel": "Megjegyzések",
+    "notesPlaceholder": "Opcionális észrevételek",
+    "savedTitle": "Vizsgálat mentve",
+    "compositeValue": "Összpontszám {value}/21",
+    "saveError": "A vizsgálatot nem sikerült menteni. Kérjük, próbálja újra.",
+    "save": "Vizsgálat mentése",
+    "historyTitle": "Előzmények",
+    "historyLoading": "Előzmények betöltése…",
+    "historyEmpty": "Még nincs vizsgálat",
+    "historyEmptyHelp": "A sportoló mentett vizsgálatai itt jelennek meg.",
+    "loadError": "A sportolók betöltése nem sikerült",
+    "retry": "Próbálja újra",
+    "subtests": {
+      "deepSquat": "Mély guggolás",
+      "hurdleStep": "Gátlépés",
+      "inlineLunge": "Kitörés vonalban",
+      "shoulderMobility": "Vállmobilitás",
+      "activeStraightLegRaise": "Aktív nyújtott lábemelés",
+      "trunkStabilityPushup": "Törzsstabilitási fekvőtámasz",
+      "rotaryStability": "Rotációs stabilitás"
     }
   }
 }

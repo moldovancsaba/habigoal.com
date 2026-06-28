@@ -569,7 +569,8 @@
     "athleteBaselineSupportShortFeedback": "Kurzes Feedback",
     "athleteBaselineSupportReminders": "Check-in-Erinnerungen",
     "athleteBaselineSupportRecovery": "Regenerationshinweise",
-    "athleteBaselineSupportPlanning": "Trainingsplan-Kontext"
+    "athleteBaselineSupportPlanning": "Trainingsplan-Kontext",
+    "injuryHub": "Verletzungszentrum"
   },
   "Assessment": {
     "saved": "Check-in gespeichert.",
@@ -2349,6 +2350,44 @@
       "habits": "Habits",
       "daily_plan": "Daily plan",
       "cognitive_lite": "Cognitive"
+    }
+  },
+  "InjuryHubFms": {
+    "title": "Functional Movement Screen (FMS)",
+    "subtitle": "Bewegungsmechanik erfassen, um Verletzungsrisiko und Athleten-Twin zu speisen.",
+    "athlete": "Sportler",
+    "selectAthlete": "Sportler auswählen",
+    "noAthletes": "Keine Sportler verfügbar",
+    "noAthletesHelp": "Sie haben noch keinen Zugriff auf Sportler.",
+    "screenTitle": "Neuer Screen",
+    "scoreLabel": "Wert",
+    "scoreOption": {
+      "0": "0 — Nicht möglich / Schmerz",
+      "1": "1 — Eingeschränkt",
+      "2": "2 — Kompensation",
+      "3": "3 — Sauber"
+    },
+    "painLabel": "Schmerz bei diesem Test (Wert 0)",
+    "notesLabel": "Notizen",
+    "notesPlaceholder": "Optionale Beobachtungen",
+    "savedTitle": "Screen gespeichert",
+    "compositeValue": "Gesamtwert {value}/21",
+    "saveError": "Screen konnte nicht gespeichert werden. Bitte erneut versuchen.",
+    "save": "Screen speichern",
+    "historyTitle": "Verlauf",
+    "historyLoading": "Verlauf wird geladen…",
+    "historyEmpty": "Noch keine Screens",
+    "historyEmptyHelp": "Gespeicherte Screens dieses Sportlers erscheinen hier.",
+    "loadError": "Sportler konnten nicht geladen werden",
+    "retry": "Erneut versuchen",
+    "subtests": {
+      "deepSquat": "Tiefe Kniebeuge",
+      "hurdleStep": "Hürdenschritt",
+      "inlineLunge": "Ausfallschritt in Linie",
+      "shoulderMobility": "Schultermobilität",
+      "activeStraightLegRaise": "Aktives Anheben des gestreckten Beins",
+      "trunkStabilityPushup": "Rumpfstabilitäts-Liegestütz",
+      "rotaryStability": "Rotationsstabilität"
     }
   }
 }

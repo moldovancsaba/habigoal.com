@@ -74,6 +74,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { href: "/dashboard/athletes", label: t("children"), action: "users" as const },
       { href: "/dashboard/reports", label: t("reports"), action: "dashboard" as const },
       { href: "/dashboard/wearables", label: t("wearables"), action: "dashboard" as const },
+      { href: "/dashboard/injury-hub/fms", label: t("injuryHub"), action: "record" as const },
       { href: "/dashboard/assessment", label: t("survey"), action: "record" as const }
     ] : []),
     ...(primaryRole === "admin" ? [{ href: "/dashboard/settings", label: t("settings"), action: "settings" as const }] : [])

@@ -4,6 +4,7 @@ import { computeReadiness } from "@/lib/engines/readiness.engine";
 import { computeRecovery } from "@/lib/engines/recovery.engine";
 import { computeInjuryRisk } from "@/lib/engines/injury-risk.engine";
 import { getChildById } from "@/repositories/child.repository";
+import { getLatestFms } from "@/services/athleteiq-fms.service";
 import { ObjectId } from "mongodb";
 
 export interface AthleteReport {
@@ -30,7 +31,8 @@ export class ReportingService {
     const from = options?.from ?? to;
     const child = ObjectId.isValid(athleteId) ? await getChildById(new ObjectId(athleteId)) : null;
 
-    const context = { athleteId, twin, organisationId: twin.organisationId };
+    const latestFms = await getLatestFms(athleteId);
+    const context = { athleteId, twin, organisationId: twin.organisationId, latestFms };
     const [readiness, recovery, injuryRisk] = await Promise.all([
       computeReadiness(context),
       computeRecovery(context),

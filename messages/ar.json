@@ -569,7 +569,8 @@
     "athleteBaselineSupportShortFeedback": "ملاحظات قصيرة",
     "athleteBaselineSupportReminders": "تذكيرات تسجيل الحالة",
     "athleteBaselineSupportRecovery": "إرشادات التعافي",
-    "athleteBaselineSupportPlanning": "سياق خطة التدريب"
+    "athleteBaselineSupportPlanning": "سياق خطة التدريب",
+    "injuryHub": "مركز الإصابات"
   },
   "Assessment": {
     "saved": "تم حفظ التسجيل.",
@@ -2349,6 +2350,44 @@
       "habits": "Habits",
       "daily_plan": "Daily plan",
       "cognitive_lite": "Cognitive"
+    }
+  },
+  "InjuryHubFms": {
+    "title": "فحص الحركة الوظيفية (FMS)",
+    "subtitle": "سجّل ميكانيكا الحركة لتغذية خطر الإصابة والتوأم الرقمي للرياضي.",
+    "athlete": "الرياضي",
+    "selectAthlete": "اختر الرياضي",
+    "noAthletes": "لا يوجد رياضيون متاحون",
+    "noAthletesHelp": "ليس لديك صلاحية الوصول إلى أي رياضي بعد.",
+    "screenTitle": "فحص جديد",
+    "scoreLabel": "النتيجة",
+    "scoreOption": {
+      "0": "0 — غير قادر / ألم",
+      "1": "1 — محدود",
+      "2": "2 — تعويض",
+      "3": "3 — نظيف"
+    },
+    "painLabel": "ألم في هذا الاختبار (النتيجة 0)",
+    "notesLabel": "ملاحظات",
+    "notesPlaceholder": "ملاحظات اختيارية",
+    "savedTitle": "تم حفظ الفحص",
+    "compositeValue": "المجموع {value}/21",
+    "saveError": "تعذر حفظ الفحص. يرجى المحاولة مرة أخرى.",
+    "save": "حفظ الفحص",
+    "historyTitle": "السجل",
+    "historyLoading": "جارٍ تحميل السجل…",
+    "historyEmpty": "لا توجد فحوصات بعد",
+    "historyEmptyHelp": "ستظهر الفحوصات المحفوظة لهذا الرياضي هنا.",
+    "loadError": "تعذر تحميل الرياضيين",
+    "retry": "حاول مرة أخرى",
+    "subtests": {
+      "deepSquat": "القرفصاء العميق",
+      "hurdleStep": "خطوة الحاجز",
+      "inlineLunge": "الاندفاع على خط مستقيم",
+      "shoulderMobility": "حركية الكتف",
+      "activeStraightLegRaise": "رفع الساق المستقيمة النشط",
+      "trunkStabilityPushup": "تمرين ثبات الجذع (الضغط)",
+      "rotaryStability": "الثبات الدوراني"
     }
   }
 }

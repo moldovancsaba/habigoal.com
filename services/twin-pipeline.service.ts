@@ -8,6 +8,7 @@ import { resolveCheckInConfig } from "@/lib/check-in-config";
 import { computeReadiness } from "@/lib/engines/readiness.engine";
 import { computeRecovery } from "@/lib/engines/recovery.engine";
 import { computeInjuryRisk } from "@/lib/engines/injury-risk.engine";
+import { getLatestFms } from "@/services/athleteiq-fms.service";
 import { buildRecommendation } from "@/lib/engines/recommendation.engine";
 import { findTwinByAthleteId } from "@/repositories/athlete-twin.repository";
 import { globalEventBus } from "@/lib/events/event-bus";
@@ -55,7 +56,8 @@ export async function processCheckInToTwin(
   const twin = (await findTwinByAthleteId(athleteId))!;
   if (!twin) return;
 
-  const context = { athleteId, twin, organisationId };
+  const latestFms = await getLatestFms(athleteId);
+  const context = { athleteId, twin, organisationId, latestFms };
   const [readiness, recovery, injuryRisk] = await Promise.all([
     computeReadiness(context),
     computeRecovery(context),

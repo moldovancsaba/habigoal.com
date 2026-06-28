@@ -569,7 +569,8 @@
     "athleteBaselineSupportShortFeedback": "משוב קצר",
     "athleteBaselineSupportReminders": "תזכורות צ׳ק-אין",
     "athleteBaselineSupportRecovery": "הנחיות התאוששות",
-    "athleteBaselineSupportPlanning": "הקשר לתוכנית האימון"
+    "athleteBaselineSupportPlanning": "הקשר לתוכנית האימון",
+    "injuryHub": "מרכז פציעות"
   },
   "Assessment": {
     "saved": "הצק-אין נשמר.",
@@ -2349,6 +2350,44 @@
       "habits": "Habits",
       "daily_plan": "Daily plan",
       "cognitive_lite": "Cognitive"
+    }
+  },
+  "InjuryHubFms": {
+    "title": "סקר תנועה פונקציונלי (FMS)",
+    "subtitle": "תעדו את מכניקת התנועה כדי להזין את סיכון הפציעה ואת התאום של הספורטאי.",
+    "athlete": "ספורטאי",
+    "selectAthlete": "בחר ספורטאי",
+    "noAthletes": "אין ספורטאים זמינים",
+    "noAthletesHelp": "אין לך עדיין גישה לאף ספורטאי.",
+    "screenTitle": "סקר חדש",
+    "scoreLabel": "ציון",
+    "scoreOption": {
+      "0": "0 — לא מסוגל / כאב",
+      "1": "1 — מוגבל",
+      "2": "2 — פיצוי",
+      "3": "3 — נקי"
+    },
+    "painLabel": "כאב בבדיקה זו (ציון 0)",
+    "notesLabel": "הערות",
+    "notesPlaceholder": "תצפיות אופציונליות",
+    "savedTitle": "הסקר נשמר",
+    "compositeValue": "ציון כולל {value}/21",
+    "saveError": "לא ניתן לשמור את הסקר. נסו שוב.",
+    "save": "שמירת סקר",
+    "historyTitle": "היסטוריה",
+    "historyLoading": "טוען היסטוריה…",
+    "historyEmpty": "אין עדיין סקרים",
+    "historyEmptyHelp": "סקרים שמורים של ספורטאי זה יופיעו כאן.",
+    "loadError": "טעינת הספורטאים נכשלה",
+    "retry": "נסה שוב",
+    "subtests": {
+      "deepSquat": "סקוואט עמוק",
+      "hurdleStep": "צעד מעל מכשול",
+      "inlineLunge": "לאנג' בקו ישר",
+      "shoulderMobility": "ניידות כתף",
+      "activeStraightLegRaise": "הרמת רגל ישרה אקטיבית",
+      "trunkStabilityPushup": "שכיבת סמיכה ליציבות הגו",
+      "rotaryStability": "יציבות סיבובית"
     }
   }
 }
