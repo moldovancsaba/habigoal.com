@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { env } from "@/config/env";
 import { authorizeCronRequest } from "@/lib/cron-auth";
 import { runQueueWorkerLoop } from "@/lib/queue-worker";
+import { track } from "@/lib/telemetry";
 
 const MAX_JOBS_PER_RUN = 50;
 
@@ -20,5 +21,7 @@ export async function GET(request: NextRequest) {
 
   const startedAt = Date.now();
   const processed = await runQueueWorkerLoop(MAX_JOBS_PER_RUN);
-  return NextResponse.json({ ok: true, processed, durationMs: Date.now() - startedAt });
+  const durationMs = Date.now() - startedAt;
+  await track("jobs.drain", { props: { processed, durationMs } });
+  return NextResponse.json({ ok: true, processed, durationMs });
 }
