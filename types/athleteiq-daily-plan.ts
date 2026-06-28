@@ -1,5 +1,6 @@
 import type { PainTrainingIntensity } from "@/types/athleteiq-pain-safety";
 import type { LiteModuleDailySummary } from "@/types/athleteiq-lite-modules";
+import type { DailyIqScoreConfidence } from "@/types/athleteiq-daily-iq";
 
 export type DailyPlanStatus = "active" | "stale" | "superseded";
 export type DailyTaskCategory = "safety" | "mental" | "habit" | "setup" | "coach";
@@ -23,6 +24,7 @@ export type SessionRecommendation = {
   durationRange: string;
   rationale: string[];
   blockedByPainGuardrail: boolean;
+  confidence: DailyIqScoreConfidence;
 };
 
 export type DailyPlan = {

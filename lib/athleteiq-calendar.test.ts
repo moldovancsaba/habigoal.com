@@ -121,7 +121,8 @@ function dailyPlan(): DailyPlan {
       type: "standard",
       durationRange: "20-30",
       rationale: [],
-      blockedByPainGuardrail: false
+      blockedByPainGuardrail: false,
+      confidence: "medium"
     },
     dataUsed: [],
     missingData: [],
@@ -144,7 +145,8 @@ function session(): AthleteIqSession {
       type: "standard",
       durationRange: "20-30",
       rationale: [],
-      blockedByPainGuardrail: false
+      blockedByPainGuardrail: false,
+      confidence: "medium"
     },
     painGuardrail: {
       state: "none",

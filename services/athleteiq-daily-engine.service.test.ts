@@ -191,7 +191,7 @@ function dailyPlan(input: { criticalTasks?: number } = {}): DailyPlan {
       dueWindow: "training",
       completionState: "open"
     })),
-    recommendation: { intensity: "low", type: "controlled", durationRange: "20-30", rationale: [], blockedByPainGuardrail: false },
+    recommendation: { intensity: "low", type: "controlled", durationRange: "20-30", rationale: [], blockedByPainGuardrail: false, confidence: "medium" },
     dataUsed: ["daily_iq"],
     missingData: [],
     generatedAt: "2026-06-26T12:00:00.000Z",

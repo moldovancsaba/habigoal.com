@@ -101,7 +101,8 @@ function dailyPlan(intensity: DailyPlan["recommendation"]["intensity"], duration
       type: "standard",
       durationRange,
       rationale: ["test"],
-      blockedByPainGuardrail: false
+      blockedByPainGuardrail: false,
+      confidence: "medium"
     },
     dataUsed: ["daily_iq"],
     missingData: [],

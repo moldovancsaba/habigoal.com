@@ -2098,7 +2098,15 @@
               "training": "Edzés",
               "evening": "Este",
               "anytime": "Bármikor"
-            }
+            },
+            "confidenceLabel": "Megbízhatóság",
+            "confidence": {
+              "high": "Magas",
+              "medium": "Közepes",
+              "low": "Alacsony",
+              "insufficient": "Nincs elég adat"
+            },
+            "whyTitle": "Miért ez a terv"
           },
           "mentalEdge": {
             "trend": {

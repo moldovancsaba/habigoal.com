@@ -99,20 +99,21 @@ function buildTasks(input: {
 
 function buildSessionRecommendation(dailyIq: DailyIqSnapshot | null, painGuardrail: PainGuardrail): SessionRecommendation {
   const rationale = [...painGuardrail.reasonCodes];
+  const confidence = dailyIq?.confidence ?? "insufficient";
   if (!dailyIq || dailyIq.confidence === "insufficient" || dailyIq.confidence === "low") {
     rationale.push("low_confidence_daily_iq");
   }
 
   if (painGuardrail.dailyIqCap !== null || painGuardrail.maxTrainingIntensity === "recovery") {
-    return { intensity: "recovery", type: "recovery", durationRange: "15-30", rationale, blockedByPainGuardrail: true };
+    return { intensity: "recovery", type: "recovery", durationRange: "15-30", rationale, blockedByPainGuardrail: true, confidence };
   }
 
-  if (!dailyIq) return { intensity: "low", type: "recovery", durationRange: "20-35", rationale, blockedByPainGuardrail: false };
+  if (!dailyIq) return { intensity: "low", type: "recovery", durationRange: "20-35", rationale, blockedByPainGuardrail: false, confidence };
   const score = dailyIq.dailyIqScore;
-  if (score === null || dailyIq.confidence === "low") return { intensity: "low", type: "recovery", durationRange: "20-35", rationale, blockedByPainGuardrail: false };
-  if (score >= 80 && dailyIq.confidence === "high") return { intensity: "high", type: "high_intensity", durationRange: "45-75", rationale: [...rationale, "high_daily_iq"], blockedByPainGuardrail: false };
-  if (score >= 60) return { intensity: "moderate", type: "controlled", durationRange: "35-60", rationale: [...rationale, "moderate_daily_iq"], blockedByPainGuardrail: false };
-  return { intensity: "low", type: "recovery", durationRange: "20-40", rationale: [...rationale, "low_daily_iq"], blockedByPainGuardrail: false };
+  if (score === null || dailyIq.confidence === "low") return { intensity: "low", type: "recovery", durationRange: "20-35", rationale, blockedByPainGuardrail: false, confidence };
+  if (score >= 80 && dailyIq.confidence === "high") return { intensity: "high", type: "high_intensity", durationRange: "45-75", rationale: [...rationale, "high_daily_iq"], blockedByPainGuardrail: false, confidence };
+  if (score >= 60) return { intensity: "moderate", type: "controlled", durationRange: "35-60", rationale: [...rationale, "moderate_daily_iq"], blockedByPainGuardrail: false, confidence };
+  return { intensity: "low", type: "recovery", durationRange: "20-40", rationale: [...rationale, "low_daily_iq"], blockedByPainGuardrail: false, confidence };
 }
 
 function task(id: DailyTask["id"], category: DailyTask["category"], titleKey: string, descriptionKey: string, priority: DailyTaskPriority, sourceReasonCodes: string[], dueWindow: DailyTask["dueWindow"]): DailyTask {

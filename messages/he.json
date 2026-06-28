@@ -2098,7 +2098,15 @@
               "training": "אימון",
               "evening": "ערב",
               "anytime": "בכל עת"
-            }
+            },
+            "confidenceLabel": "מהימנות",
+            "confidence": {
+              "high": "גבוהה",
+              "medium": "בינונית",
+              "low": "נמוכה",
+              "insufficient": "אין מספיק נתונים"
+            },
+            "whyTitle": "למה התוכנית הזו"
           },
           "mentalEdge": {
             "trend": {
