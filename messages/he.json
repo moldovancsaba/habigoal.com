@@ -1572,10 +1572,10 @@
       "navigation": {
         "aria": "ניווט אפליקציית Habigoal",
         "today": "היום",
-        "checkIn": "צ׳ק-אין",
+        "checkIn": "צ'ק-אין",
         "habits": "הרגלים",
         "action": "פעולה",
-        "progress": "Progress"
+        "progress": "התקדמות"
       },
       "athleteFallback": "היום שלי",
       "scorePending": "התחלה",
@@ -1670,29 +1670,29 @@
         "copy": "הסטטוס מופיע רק אחרי שמירת הצ׳ק-אין וההרגלים של היום."
       },
       "progress": {
-        "title": "Build your habits",
-        "copy": "Your streak grows every day you complete at least one habit.",
-        "currentStreak": "Current streak",
-        "currentStreakDetail": "Days in a row",
-        "bestStreak": "Best streak",
-        "bestStreakDetail": "Your record",
-        "activeDays": "Active days",
+        "title": "בנו את ההרגלים שלכם",
+        "copy": "הרצף שלכם גדל בכל יום שבו אתם משלימים לפחות הרגל אחד.",
+        "currentStreak": "רצף נוכחי",
+        "currentStreakDetail": "ימים ברציפות",
+        "bestStreak": "הרצף הטוב ביותר",
+        "bestStreakDetail": "השיא שלכם",
+        "activeDays": "ימים פעילים",
         "activeDaysValue": "{count}/14",
-        "activeDaysDetail": "Last two weeks",
-        "days": "{count} days",
-        "last7": "Last 7 days",
-        "empty": "Complete a habit today to start your streak.",
-        "dayAria": "{date}: {score}% habit score"
+        "activeDaysDetail": "השבועיים האחרונים",
+        "days": "{count} ימים",
+        "last7": "7 הימים האחרונים",
+        "empty": "השלימו הרגל היום כדי להתחיל את הרצף שלכם.",
+        "dayAria": "{date}: {score}% ציון הרגלים"
       },
       "reasons": {
-        "title": "Why",
-        "partial_check_in": "A few check-in signals are still missing today.",
-        "missing_habits": "No habits logged yet today.",
-        "high_soreness": "Soreness is high — ease into today and prioritise recovery.",
-        "habit_gap": "You're below your usual habit completion.",
-        "all_daily_signals_present": "Everything's logged — nice work.",
-        "missing_profile": "Finish setting up your profile to start tracking.",
-        "no_daily_data": "No check-in or habits recorded yet today."
+        "title": "למה",
+        "partial_check_in": "עדיין חסרים היום כמה אותות צ'ק-אין.",
+        "missing_habits": "עדיין לא תועדו היום הרגלים.",
+        "high_soreness": "כאב השרירים גבוה — התחילו את היום בנחת ותנו עדיפות להתאוששות.",
+        "habit_gap": "אתם מתחת לרמת השלמת ההרגלים הרגילה שלכם.",
+        "all_daily_signals_present": "הכול תועד — עבודה יפה.",
+        "missing_profile": "השלימו את הגדרת הפרופיל כדי להתחיל לעקוב.",
+        "no_daily_data": "עדיין לא תועדו היום צ'ק-אין או הרגלים."
       }
     },
     "athleteIq": {
@@ -2388,6 +2388,44 @@
       "activeStraightLegRaise": "הרמת רגל ישרה אקטיבית",
       "trunkStabilityPushup": "שכיבת סמיכה ליציבות הגו",
       "rotaryStability": "יציבות סיבובית"
+    }
+  },
+  "Reports": {
+    "title": "מרכז הדוחות",
+    "subtitle": "הדוחות כוללים טווח תאריכים, הערות על מקורות הנתונים והנחיות מנוע מבוססות־כללים (לא נוצרו על ידי בינה מלאכותית).",
+    "generateAthleteTitle": "הפקת דוח ספורטאי",
+    "selectAthlete": "בחר ספורטאי",
+    "selectAthletePlaceholder": "בחרו ספורטאי",
+    "generate": "הפקת דוח",
+    "teamTitle": "דוח קבוצה",
+    "teamHeading": "דוח תפעולי ברמת הקבוצה",
+    "teamMeta": "{count} ספורטאים · הופק ב-{date}",
+    "teamEmpty": "הפיקו דוח על כל הספורטאים שיש לכם גישה אליהם.",
+    "generateTeam": "הפקת דוח קבוצה",
+    "recentTitle": "דוחות ספורטאים אחרונים",
+    "rowMeta": "{type} • {date} • כולל הנחיות מבוססות־כללים",
+    "ready": "מוכן",
+    "empty": "אין עדיין דוחות",
+    "emptyHelp": "הפיקו את הדוח הראשון שלכם למעלה.",
+    "reportType": "תאום דיגיטלי מלא",
+    "athleteFallback": "ספורטאי",
+    "csv": "CSV",
+    "json": "JSON",
+    "pdf": {
+      "button": "PDF",
+      "title": "דוח ספורטאי",
+      "generatedAt": "הופק",
+      "dateRange": "טווח תאריכים",
+      "summary": "סיכום",
+      "keyMetrics": "מדדים מרכזיים",
+      "metric": "מדד",
+      "value": "ערך",
+      "guidance": "הנחיות מבוססות־כללים",
+      "coachNotes": "הערות מאמן",
+      "sources": "מקורות נתונים",
+      "none": "אין",
+      "teamTitle": "דוח קבוצה",
+      "athleteCount": "ספורטאים"
     }
   }
 }

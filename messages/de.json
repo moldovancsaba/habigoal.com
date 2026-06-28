@@ -1575,7 +1575,7 @@
         "checkIn": "Check-in",
         "habits": "Gewohnheiten",
         "action": "Aktion",
-        "progress": "Progress"
+        "progress": "Fortschritt"
       },
       "athleteFallback": "Mein Tag",
       "scorePending": "Start",
@@ -1670,29 +1670,29 @@
         "copy": "Der Status erscheint erst, nachdem Check-in und Gewohnheiten gespeichert wurden."
       },
       "progress": {
-        "title": "Build your habits",
-        "copy": "Your streak grows every day you complete at least one habit.",
-        "currentStreak": "Current streak",
-        "currentStreakDetail": "Days in a row",
-        "bestStreak": "Best streak",
-        "bestStreakDetail": "Your record",
-        "activeDays": "Active days",
+        "title": "Baue deine Gewohnheiten auf",
+        "copy": "Deine Serie wächst an jedem Tag, an dem du mindestens eine Gewohnheit erfüllst.",
+        "currentStreak": "Aktuelle Serie",
+        "currentStreakDetail": "Tage in Folge",
+        "bestStreak": "Beste Serie",
+        "bestStreakDetail": "Dein Rekord",
+        "activeDays": "Aktive Tage",
         "activeDaysValue": "{count}/14",
-        "activeDaysDetail": "Last two weeks",
-        "days": "{count} days",
-        "last7": "Last 7 days",
-        "empty": "Complete a habit today to start your streak.",
-        "dayAria": "{date}: {score}% habit score"
+        "activeDaysDetail": "Letzte zwei Wochen",
+        "days": "{count} Tage",
+        "last7": "Letzte 7 Tage",
+        "empty": "Erfülle heute eine Gewohnheit, um deine Serie zu starten.",
+        "dayAria": "{date}: {score}% Gewohnheits-Score"
       },
       "reasons": {
-        "title": "Why",
-        "partial_check_in": "A few check-in signals are still missing today.",
-        "missing_habits": "No habits logged yet today.",
-        "high_soreness": "Soreness is high — ease into today and prioritise recovery.",
-        "habit_gap": "You're below your usual habit completion.",
-        "all_daily_signals_present": "Everything's logged — nice work.",
-        "missing_profile": "Finish setting up your profile to start tracking.",
-        "no_daily_data": "No check-in or habits recorded yet today."
+        "title": "Warum",
+        "partial_check_in": "Heute fehlen noch ein paar Check-in-Signale.",
+        "missing_habits": "Heute wurden noch keine Gewohnheiten erfasst.",
+        "high_soreness": "Der Muskelkater ist hoch — geh es heute ruhig an und priorisiere die Erholung.",
+        "habit_gap": "Du liegst unter deiner üblichen Gewohnheitserfüllung.",
+        "all_daily_signals_present": "Alles erfasst — gute Arbeit.",
+        "missing_profile": "Richte dein Profil fertig ein, um mit dem Tracking zu beginnen.",
+        "no_daily_data": "Heute wurden noch kein Check-in und keine Gewohnheiten erfasst."
       }
     },
     "athleteIq": {
@@ -2388,6 +2388,44 @@
       "activeStraightLegRaise": "Aktives Anheben des gestreckten Beins",
       "trunkStabilityPushup": "Rumpfstabilitäts-Liegestütz",
       "rotaryStability": "Rotationsstabilität"
+    }
+  },
+  "Reports": {
+    "title": "Berichtszentrale",
+    "subtitle": "Berichte enthalten den Zeitraum, Hinweise zu Datenquellen und regelbasierte Engine-Hinweise (nicht KI-generiert).",
+    "generateAthleteTitle": "Sportlerbericht erstellen",
+    "selectAthlete": "Sportler auswählen",
+    "selectAthletePlaceholder": "Sportler auswählen",
+    "generate": "Bericht erstellen",
+    "teamTitle": "Teambericht",
+    "teamHeading": "Teamweiter Betriebsbericht",
+    "teamMeta": "{count} Sportler · erstellt {date}",
+    "teamEmpty": "Erstellen Sie einen Bericht über alle für Sie zugänglichen Sportler.",
+    "generateTeam": "Teambericht erstellen",
+    "recentTitle": "Aktuelle Sportlerberichte",
+    "rowMeta": "{type} • {date} • mit regelbasierten Hinweisen",
+    "ready": "Bereit",
+    "empty": "Noch keine Berichte",
+    "emptyHelp": "Erstellen Sie oben Ihren ersten Bericht.",
+    "reportType": "Vollständiger digitaler Zwilling",
+    "athleteFallback": "Sportler",
+    "csv": "CSV",
+    "json": "JSON",
+    "pdf": {
+      "button": "PDF",
+      "title": "Sportlerbericht",
+      "generatedAt": "Erstellt",
+      "dateRange": "Zeitraum",
+      "summary": "Zusammenfassung",
+      "keyMetrics": "Kennzahlen",
+      "metric": "Kennzahl",
+      "value": "Wert",
+      "guidance": "Regelbasierte Hinweise",
+      "coachNotes": "Trainernotizen",
+      "sources": "Datenquellen",
+      "none": "Keine",
+      "teamTitle": "Teambericht",
+      "athleteCount": "Sportler"
     }
   }
 }
