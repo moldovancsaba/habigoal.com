@@ -41,11 +41,16 @@ export interface InjuryRiskResult {
   loadReductionRecommended: boolean;
 }
 
+export type RecommendationDelivery = "direct" | "awaiting_review";
+
 export interface RecommendationResult {
   text: string;
   reason: string;
   confidence: ConfidenceLevel;
   humanReviewRequired: boolean;
+  /** "awaiting_review" when humanReviewRequired — end-user surfaces must withhold
+   *  the raw text until a coach approves (#441). Coach/admin surfaces see it. */
+  delivery: RecommendationDelivery;
   advisoryDisclaimer: string;
   modelVersion: string;
 }

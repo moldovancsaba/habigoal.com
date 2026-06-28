@@ -73,6 +73,7 @@ export function buildRecommendation(
     reason,
     confidence,
     humanReviewRequired,
+    delivery: humanReviewRequired ? "awaiting_review" : "direct",
     advisoryDisclaimer: ADVISORY_DISCLAIMER,
     modelVersion: getModelByEngine("recommendation")?.version ?? "1.0.0",
   };
