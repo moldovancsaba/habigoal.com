@@ -2589,5 +2589,11 @@
     "none": "No pending invitations",
     "error": "Something went wrong. Please try again.",
     "athleteProfileRequired": "Create your athlete profile before joining a team."
+  },
+  "Reminders": {
+    "title": "Today’s reminders",
+    "checkin": "Complete your check-in",
+    "habits": "Record today’s habits",
+    "reflection": "Add today’s reflection"
   }
 }
