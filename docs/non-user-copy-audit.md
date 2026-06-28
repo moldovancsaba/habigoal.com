@@ -20,39 +20,29 @@ capability keys, P0/P1, stub, digital twin, projection, orchestration).
   your Athlete Digital Twin" → "Connect your devices so daily readings flow into
   your performance profile." (all 6 locales).
 
-## Remaining hits — clear-cut (rewrite, no decision needed)
+## Resolved (per owner rulings)
 
-| Surface (key) | Current | Proposed |
-|---|---|---|
-| `Landing.subtitle` / `footerTitle` / `previewTitle` | "shared backend / separated product apps" | delete the unused keys |
-| `Reports.rowMeta` | "{type} • {date} • rule-based guidance included" | "{type} • {date}" |
-| `Reports.pdf.guidance` | "Rule-based guidance" | "Coach guidance" |
-| `Dashboard.nextBestActionsSubtitle` | "Rule-based coach recommendations generated from today's check-in state and support pressure" | "Coach recommendations based on today's check-in." |
-
-## Remaining hits — judgment call (need your ruling)
-
-These use product terminology that may be intentional brand language rather than
-jargon. Flagging rather than guessing:
-
-- **"Digital Twin"** — appears as a user-facing feature name in `Dashboard`,
-  `ParentPortal`, `AthleteIntelligence.twinDimensions`, `Reports.reportType`
-  ("Full Digital Twin"), and the Wearables area. Options: (a) keep as the product
-  feature name, or (b) rename to something plainer ("performance profile",
-  "athlete profile"). Recommend (b) for parents/athletes, keep (a) only in
-  trainer/pro contexts if desired.
-- **"rule-based" / "not AI-generated" disclosures** (`Reports.subtitle`) — this is
-  honest non-AI/non-medical disclosure, which has compliance value. Recommend
-  keeping the *meaning* ("not a medical diagnosis") but dropping the engineering
-  phrase "rule-based engine" → "coach guidance, not a medical diagnosis".
+- **Dead Landing keys deleted** (`subtitle`, `footerTitle`, `previewTitle`,
+  `ssoNote`, `brandSubtitle`) from all 6 locales.
+- **"Digital Twin" — keep for pros only.** `ParentPortal.digitalTwin` →
+  "Performance profile" (athlete/parent-facing). Kept as the feature name on the
+  pro surfaces (`Dashboard.digitalTwin`, `AthleteIntelligence.twinDimensions`,
+  `Reports.reportType` "Full Digital Twin"). The athlete (AIQ) workspace never
+  used the term.
+- **AI / rule-based disclosure — removed entirely** from user copy:
+  - `CoachHub.subtitle` — dropped "AI-generated".
+  - `Reports.subtitle` — dropped "rule-based engine guidance (not AI-generated)".
+  - `Reports.rowMeta` → "{type} • {date}" (allowlisted as identical-OK).
+  - `Reports.pdf.guidance` → "Guidance".
+  - `Dashboard.nextBestActionsSubtitle` — dropped "rule-based".
+- **Wearables.subtitle** — dropped "telemetry / Athlete Digital Twin".
 
 ## Not jargon (keep)
 
 - `Schema.testsema.title` "Body schema awareness" — sports-science term, not code.
 
-## How to finish
+## Future guard (optional)
 
-1. Apply the clear-cut rewrites above (6 locales each) + delete the dead Landing
-   keys.
-2. Get a ruling on "Digital Twin" and the "rule-based" disclosures, then apply.
-3. Add a lint/i18n guard: extend `scripts/i18n-audit.mjs` with a deny-list of
-   engineering terms in user-facing namespaces so this cannot regress.
+Extend `scripts/i18n-audit.mjs` with a scoped deny-list of engineering terms in
+user-facing namespaces (excluding the allowed pro "Digital Twin" and
+"body schema") so this cannot regress. Deferred to avoid false positives in CI.
