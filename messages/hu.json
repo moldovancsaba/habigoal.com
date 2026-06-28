@@ -1695,6 +1695,35 @@
         "all_daily_signals_present": "Minden rögzítve — szép munka.",
         "missing_profile": "Fejezd be a profilod beállítását a követés megkezdéséhez.",
         "no_daily_data": "Ma még nincs rögzített bejelentkezés vagy szokás."
+      },
+      "flow": {
+        "stepLabel": "{current}. lépés / {total}",
+        "continue": "Tovább",
+        "back": "Vissza",
+        "saving": "Mentés…",
+        "saveDay": "Nap mentése",
+        "steps": {
+          "checkin": {
+            "title": "Hogy vagy ma?",
+            "copy": "Állítsd be a csúszkával minden jelet."
+          },
+          "habits": {
+            "title": "Mai szokások",
+            "copy": "Koppints minden teljesített szokásra."
+          },
+          "review": {
+            "title": "Áttekintés és mentés",
+            "copy": "Nézd át a napod, majd mentsd."
+          }
+        },
+        "review": {
+          "habitsValue": "{done} / {total} kész"
+        },
+        "result": {
+          "title": "A mai nap rögzítve",
+          "updateDay": "Mai nap módosítása",
+          "viewProgress": "Haladás megtekintése"
+        }
       }
     },
     "athleteIq": {

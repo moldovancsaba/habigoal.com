@@ -955,6 +955,146 @@ a {
   background: rgba(15, 159, 143, 0.1);
 }
 
+/* Bottom nav items can be <button> (tab switch) — reset UA chrome. */
+.hbg-bottom-nav-item {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  min-height: 56px;
+}
+
+.hbg-bottom-nav-item:not(.hbg-bottom-nav-item-active) {
+  background: transparent;
+}
+
+/* Two-tab bottom nav (Today / Progress). */
+.hbg-bottom-nav-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Primary / secondary actions — full width, thumb-friendly (>= 52px). */
+.hbg-primary-button,
+.hbg-secondary-button {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.05s ease, filter 0.15s ease;
+}
+
+.hbg-primary-button {
+  border: 0;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--hbg-mint), var(--hbg-sky));
+  box-shadow: 0 14px 30px rgba(15, 109, 101, 0.22);
+}
+
+.hbg-primary-button:active {
+  transform: translateY(1px);
+}
+
+.hbg-primary-button:disabled {
+  opacity: 0.5;
+  filter: grayscale(0.3);
+  cursor: not-allowed;
+}
+
+.hbg-secondary-button {
+  color: var(--hbg-ink);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--hbg-line);
+}
+
+.hbg-primary-button:focus-visible,
+.hbg-secondary-button:focus-visible,
+.hbg-habit-toggle:focus-visible,
+.hbg-bottom-nav-item:focus-visible {
+  outline: 2px solid var(--hbg-mint);
+  outline-offset: 2px;
+}
+
+/* Habit toggle — the whole card is the control, not a small checkbox. */
+.hbg-habit-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 60px;
+  padding: 14px 16px;
+  text-align: start;
+  border-radius: 14px;
+  border: 1px solid var(--hbg-line);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--hbg-ink);
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.hbg-habit-toggle-on {
+  border-color: var(--hbg-mint);
+  background: rgba(15, 159, 143, 0.12);
+}
+
+.hbg-habit-check {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px solid var(--hbg-line);
+  color: #ffffff;
+}
+
+.hbg-habit-toggle-on .hbg-habit-check {
+  border-color: var(--hbg-mint);
+  background: var(--hbg-mint);
+}
+
+.hbg-habit-label {
+  min-width: 0;
+  line-height: 1.2;
+}
+
+/* Stepped slider — larger handle + visible marks for thumb input. */
+.hbg-slider-field {
+  padding-block: 4px;
+}
+
+.hbg-slider .mantine-Slider-track {
+  height: 8px;
+}
+
+.hbg-slider .mantine-Slider-markLabel {
+  font-size: 0.72rem;
+}
+
+.hbg-slider .mantine-Slider-thumb {
+  border-width: 3px;
+  box-shadow: 0 4px 12px rgba(15, 109, 101, 0.28);
+}
+
+.hbg-step-panel .hbg-headline {
+  font-size: 1.4rem;
+}
+
+.hbg-review-row {
+  padding: 12px 14px;
+  border: 1px solid var(--hbg-line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
 .hbg-failure-pill,
 .aiq-failure-pill {
   border-radius: var(--mantine-radius-md);

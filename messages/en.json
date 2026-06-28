@@ -1695,6 +1695,35 @@
         "all_daily_signals_present": "Everything's logged — nice work.",
         "missing_profile": "Finish setting up your profile to start tracking.",
         "no_daily_data": "No check-in or habits recorded yet today."
+      },
+      "flow": {
+        "stepLabel": "Step {current} of {total}",
+        "continue": "Continue",
+        "back": "Back",
+        "saving": "Saving…",
+        "saveDay": "Save my day",
+        "steps": {
+          "checkin": {
+            "title": "How are you today?",
+            "copy": "Set each signal with the slider."
+          },
+          "habits": {
+            "title": "Today’s habits",
+            "copy": "Tap each habit you completed."
+          },
+          "review": {
+            "title": "Review & save",
+            "copy": "Check your day, then save."
+          }
+        },
+        "review": {
+          "habitsValue": "{done} of {total} done"
+        },
+        "result": {
+          "title": "Today is recorded",
+          "updateDay": "Update today",
+          "viewProgress": "View progress"
+        }
       }
     },
     "athleteIq": {

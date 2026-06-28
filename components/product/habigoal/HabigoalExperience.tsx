@@ -2,15 +2,14 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Alert, Badge, Box, Checkbox, Group, Paper, Progress, SimpleGrid, Slider, Stack, Text, Title } from "@mantine/core";
-import { GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
+import { Alert, Box, Group, Paper, Progress, SimpleGrid, Slider, Stack, Text, Title } from "@mantine/core";
+import { GdsIcons } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
 import type { HabigoalDailyStatus } from "@/lib/habigoal-status";
 import type { HabigoalHabitKey, HabigoalHistory, HabigoalTodayProjection } from "@/services/habigoal-product.service";
 import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
-import { createProductSurfaceActionPack } from "../productSurfaceActions";
 
 type HabitItem = {
   id: HabigoalHabitKey;
@@ -24,15 +23,10 @@ type FeedbackState = {
   kind: "error" | "success";
   messageKey: string;
 };
-type HabigoalDailyUiState =
-  | "empty_day"
-  | "check_in_in_progress"
-  | "habits_in_progress"
-  | "ready_to_save"
-  | "saving"
-  | "saved_status"
-  | "save_failed_retryable"
-  | "save_failed_blocked";
+type HabigoalView = "flow" | "progress";
+type WizardStep = "checkin" | "habits" | "review";
+
+const WIZARD_STEPS: WizardStep[] = ["checkin", "habits", "review"];
 
 const HABIT_PLAN = [
   { id: "hydrate", dbKey: "hydration", category: "recovery" },
@@ -43,65 +37,96 @@ const HABIT_PLAN = [
   { id: "study", dbKey: "tacticalLearning", category: "life" }
 ] satisfies HabitItem[];
 
+// Stepped slider stops: coarse enough that a value cannot be nudged by accident
+// while scrolling, with visible marks so the control reads as discrete stages.
+const SLIDER_STEP = 10;
+const SLIDER_MARKS = [0, 20, 40, 60, 80, 100].map((value) => ({ value }));
+
+type Translate = ReturnType<typeof useTranslations>;
+
+type DailyWizardProps = {
+  canSave: boolean;
+  completedHabits: HabigoalHabitKey[];
+  draftValues: MetricDraft;
+  habitScore: number;
+  hasCompleteDraft: boolean;
+  onBack: () => void;
+  onContinue: () => void;
+  onContinueHabits: () => void;
+  onSave: () => void;
+  onSetMetric: (key: keyof MetricDraft, value: number) => void;
+  onToggleHabit: (id: HabigoalHabitKey) => void;
+  saving: boolean;
+  step: WizardStep;
+  stepIndex: number;
+  translate: Translate;
+};
+
+type ResultPanelProps = {
+  completed: number;
+  habitTotal: number;
+  nextAction: string;
+  onUpdate: () => void;
+  onViewProgress: () => void;
+  reasons: string[];
+  reasonsTitle: string;
+  score: number;
+  scoreAria: string;
+  scoreText: string;
+  state: SurfaceSignalState;
+  statusLabel: string;
+  translate: Translate;
+};
+
 export function HabigoalExperience({ history, projection, surface }: { history?: HabigoalHistory; projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const router = useRouter();
   const t = useTranslations("ProductSurfaces.habigoal");
-  const tActions = useTranslations("ProductSurfaces.actions");
-  const actionPack = useMemo(
-    () =>
-      createProductSurfaceActionPack({
-        reset: tActions("reset"),
-        complete: tActions("complete")
-      }),
-    [tActions]
-  );
   const [activeProjection, setActiveProjection] = useState(projection);
   const [draftValues, setDraftValues] = useState<MetricDraft>(projection.values);
   const [completedHabits, setCompletedHabits] = useState<HabigoalHabitKey[]>(projection.completedHabits);
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const [habitsReviewed, setHabitsReviewed] = useState(projection.hasLiveHabits);
   const [saving, setSaving] = useState(false);
+  const [view, setView] = useState<HabigoalView>("flow");
+  const [stepIndex, setStepIndex] = useState(0);
 
   const habitScore = Math.round((completedHabits.length / HABIT_PLAN.length) * 100);
   const hasCompleteDraft = Object.values(draftValues).every((value) => typeof value === "number" && Number.isFinite(value));
   const hasRecordedHabits = habitsReviewed || activeProjection.hasLiveHabits;
   const statusAvailable = activeProjection.hasLiveCheckIn && activeProjection.hasLiveHabits && activeProjection.score !== null;
-  const dailyUiState = resolveDailyUiState({
-    hasCompleteDraft,
-    hasRecordedHabits,
-    hasProfile: Boolean(activeProjection.athleteId),
-    saving,
-    statusAvailable
-  });
   const score = statusAvailable ? activeProjection.score : null;
   const statusState = statusAvailable ? surfaceStateFromStatus(activeProjection.status) : "neutral";
-  const statusLabel = statusAvailable ? t(`states.${activeProjection.status}`) : t(`dailyState.${dailyUiState}`);
+  const statusLabel = statusAvailable ? t(`states.${activeProjection.status}`) : t("statusLocked");
   const scoreText = statusAvailable && score !== null ? String(score) : t("statusLocked");
   const scoreAria = statusAvailable && score !== null ? t("scoreAria", { score }) : t("scorePendingAria");
   const canSave = Boolean(activeProjection.athleteId) && hasCompleteDraft && hasRecordedHabits && !saving;
-  const progressSteps = [
-    hasCompleteDraft,
-    hasRecordedHabits,
-    statusAvailable
-  ].filter(Boolean).length;
-  const dailyProgress = Math.round((progressSteps / 3) * 100);
+  const step = WIZARD_STEPS[stepIndex];
 
   function setMetric(key: keyof MetricDraft, value: number) {
     setDraftValues((current) => ({ ...current, [key]: value }));
     setFeedback(null);
   }
 
-  function toggleHabit(id: HabigoalHabitKey, checked: boolean) {
-    setCompletedHabits((current) => checked ? [...new Set([...current, id])] : current.filter((item) => item !== id));
+  function toggleHabit(id: HabigoalHabitKey) {
+    setCompletedHabits((current) => current.includes(id) ? current.filter((item) => item !== id) : [...new Set([...current, id])]);
     setHabitsReviewed(true);
     setFeedback(null);
   }
 
-  function resetValues() {
-    setDraftValues(activeProjection.values);
-    setCompletedHabits(activeProjection.completedHabits);
-    setHabitsReviewed(activeProjection.hasLiveHabits);
+  function goToStep(next: number) {
+    setStepIndex(Math.max(0, Math.min(WIZARD_STEPS.length - 1, next)));
     setFeedback(null);
+  }
+
+  function advanceFromHabits() {
+    setHabitsReviewed(true);
+    goToStep(stepIndex + 1);
+  }
+
+  function startUpdate() {
+    setStepIndex(0);
+    setFeedback(null);
+    setView("flow");
   }
 
   async function completeDailyOperation() {
@@ -153,6 +178,7 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
       setDraftValues(payload.projection.values);
       setCompletedHabits(payload.projection.completedHabits);
       setHabitsReviewed(payload.projection.hasLiveHabits);
+      setStepIndex(0);
       setFeedback({ correlationId: payload.correlationId, kind: "success", messageKey: "saved" });
       router.refresh();
     } catch {
@@ -161,6 +187,9 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
       setSaving(false);
     }
   }
+
+  const showResult = view === "flow" && statusAvailable;
+  const showWizard = view === "flow" && !statusAvailable;
 
   return (
     <Box className="habigoal-product-shell">
@@ -177,52 +206,12 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
               <Text fw={900}>Habigoal</Text>
             </Stack>
           </Group>
-          <Box className={statusAvailable ? "hbg-score-pill" : "hbg-score-pill hbg-score-pill-empty"} aria-label={scoreAria}>{scoreText}</Box>
+          {statusAvailable ? (
+            <Box className="hbg-score-pill" aria-label={scoreAria}>{scoreText}</Box>
+          ) : null}
         </Box>
 
         <Box component="main" className="hbg-main-grid" pb="xl">
-          <Paper id="today" component="section" className="hbg-hero-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
-            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-              <Stack gap="md">
-                <Group gap="sm" wrap="nowrap">
-                  <Image src="/images/habigoal_logo.png" alt="" width={42} height={42} priority />
-                  <Stack gap={0}>
-                    <Text className="hbg-kicker">{activeProjection.athleteName || t("athleteFallback")}</Text>
-                    <Title order={1} className="hbg-title">Habigoal</Title>
-                  </Stack>
-                </Group>
-
-                <Stack gap="xs">
-                  <Title order={2} className="hbg-headline">{statusAvailable ? t("headline") : t(`journey.${dailyUiState}.title`)}</Title>
-                  <Text className="hbg-copy">{statusAvailable ? t("promise") : t(`journey.${dailyUiState}.copy`)}</Text>
-                </Stack>
-
-                <Group gap="sm" wrap="wrap">
-                  <Badge className="hbg-soft-badge">{t("badges.checkIn")}</Badge>
-                  <Badge className="hbg-soft-badge">{t("badges.habits")}</Badge>
-                  <Badge className="hbg-soft-badge">{t("badges.action")}</Badge>
-                </Group>
-              </Stack>
-
-              <Stack gap="sm" align="center" justify="center">
-                {statusAvailable ? (
-                  <Box className="hbg-score-ring" style={{ "--score": `${score ?? 0}%` } as CSSProperties} aria-label={scoreAria}>
-                    <Stack gap={0} align="center">
-                      <Text className="hbg-score-label">{t("todayLabel")}</Text>
-                      <Title order={2} className="hbg-score-value">{scoreText}</Title>
-                      <Text className="hbg-score-state">{statusLabel}</Text>
-                    </Stack>
-                  </Box>
-                ) : (
-                  <JourneyProgress progress={dailyProgress} state={dailyUiState} translate={t} />
-                )}
-                <Text ta="center" className="hbg-copy" maw={360}>
-                  {statusAvailable ? t("scoreExplanation") : t("scoreEmptyExplanation")}
-                </Text>
-              </Stack>
-            </SimpleGrid>
-          </Paper>
-
           {feedback ? (
             <Alert color={feedback.kind === "success" ? "tactical" : "red"} title={feedback.kind === "success" ? t("savedTitle") : t("errors.title")} role={feedback.kind === "success" ? "status" : "alert"}>
               <Stack gap={4}>
@@ -232,187 +221,293 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
             </Alert>
           ) : null}
 
-          <SimpleGrid className="hbg-signal-strip" cols={{ base: 1, xs: 3 }} spacing="sm">
-            <SignalCard label={t("signals.status.label")} value={statusAvailable && score !== null ? `${score}%` : t("scoreUnavailable")} state={statusState} detail={statusAvailable ? t(`signals.status.detail.${activeProjection.confidence}`) : t(`journey.${dailyUiState}.detail`)} />
-            <SignalCard label={t("signals.habitLoop.label")} value={`${completedHabits.length}/${HABIT_PLAN.length}`} state="neutral" detail={t("signals.habitLoop.detail")} />
-            <SignalCard
-              label={t("signals.nextAction.label")}
-              value={statusLabel}
+          {view === "progress" ? (
+            <ProgressPanel history={history} translate={t} />
+          ) : null}
+
+          {showResult ? (
+            <ResultPanel
+              completed={completedHabits.length}
+              habitTotal={HABIT_PLAN.length}
+              nextAction={t(`nextAction.${activeProjection.nextActionKey}`)}
+              onUpdate={startUpdate}
+              onViewProgress={() => setView("progress")}
+              reasons={activeProjection.reasonCodes.filter((code) => t.has(`reasons.${code}`)).map((code) => t(`reasons.${code}`))}
+              reasonsTitle={t("reasons.title")}
+              score={score ?? 0}
+              scoreAria={scoreAria}
+              scoreText={scoreText}
               state={statusState}
-              detail={statusAvailable ? t(`nextAction.${activeProjection.nextActionKey}`) : t(`journey.${dailyUiState}.nextAction`)}
+              statusLabel={statusLabel}
+              translate={t}
             />
-          </SimpleGrid>
+          ) : null}
 
-          <Paper id="check-in" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
-            <Stack gap="lg">
-              <SectionHeading icon={<GdsIcons.Profile size={18} />} title={t("checkIn.title")} copy={t("checkIn.copy")} />
-              <StatusSlider label={t("checkIn.energy")} unsetLabel={t("checkIn.unset")} value={draftValues.energy} onChange={(value) => setMetric("energy", value)} />
-              <StatusSlider label={t("checkIn.mood")} unsetLabel={t("checkIn.unset")} value={draftValues.mood} onChange={(value) => setMetric("mood", value)} />
-              <StatusSlider label={t("checkIn.sleep")} unsetLabel={t("checkIn.unset")} value={draftValues.sleep} onChange={(value) => setMetric("sleep", value)} />
-              <StatusSlider label={t("checkIn.soreness")} unsetLabel={t("checkIn.unset")} value={draftValues.soreness} onChange={(value) => setMetric("soreness", value)} inverse />
-              <Group gap="sm" wrap="wrap">
-                <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetValues} disabled={saving} />
-                <SemanticButton
-                  action="productSurface:complete"
-                  color="ingress"
-                  vocabularyPacks={[actionPack]}
-                  onClick={completeDailyOperation}
-                  disabled={!canSave}
-                  loading={saving}
-                />
-              </Group>
-              {!hasCompleteDraft ? <Text size="sm" className="hbg-muted-text">{t("checkIn.completeAll")}</Text> : null}
-              {!hasRecordedHabits ? <Text size="sm" className="hbg-muted-text">{t("habits.confirmRequired")}</Text> : null}
-            </Stack>
-          </Paper>
-
-          <Paper id="habits" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
-            <Stack gap="lg">
-              <SectionHeading icon={<GdsIcons.Habit size={18} />} title={t("habits.title")} copy={t("habits.copy")} />
-              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                {HABIT_PLAN.map((habit) => (
-                  <Checkbox
-                    key={habit.id}
-                    checked={completedHabits.includes(habit.id)}
-                    label={t("habits.itemLabel", {
-                      category: t(`habits.categories.${habit.category}`),
-                      label: t(`habits.items.${habit.id}`)
-                    })}
-                    onChange={(event) => toggleHabit(habit.id, event.currentTarget.checked)}
-                    className="hbg-checkbox"
-                  />
-                ))}
-              </SimpleGrid>
-              <Checkbox
-                checked={habitsReviewed}
-                label={t("habits.reviewed")}
-                onChange={(event) => {
-                  setHabitsReviewed(event.currentTarget.checked);
-                  setFeedback(null);
-                }}
-                className="hbg-checkbox"
-              />
-              <Box>
-                <Group justify="space-between" mb={6}>
-                  <Text fw={800}>{t("habits.completion")}</Text>
-                  <Text fw={800}>{habitScore}%</Text>
-                </Group>
-                <Progress value={habitScore} color={habitScore >= 70 ? "tactical" : "yellow"} radius="xl" size="lg" />
-              </Box>
-            </Stack>
-          </Paper>
-
-          <Paper id="progress" component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
-            <Stack gap="lg">
-              <SectionHeading icon={<GdsIcons.Habit size={18} />} title={t("progress.title")} copy={t("progress.copy")} />
-              <SimpleGrid cols={{ base: 3 }} spacing="sm">
-                <SignalCard
-                  label={t("progress.currentStreak")}
-                  value={t("progress.days", { count: history?.currentStreak ?? 0 })}
-                  state={(history?.currentStreak ?? 0) > 0 ? "good" : "neutral"}
-                  detail={t("progress.currentStreakDetail")}
-                />
-                <SignalCard
-                  label={t("progress.bestStreak")}
-                  value={t("progress.days", { count: history?.bestStreak ?? 0 })}
-                  state="neutral"
-                  detail={t("progress.bestStreakDetail")}
-                />
-                <SignalCard
-                  label={t("progress.activeDays")}
-                  value={t("progress.activeDaysValue", { count: history?.activeDays ?? 0 })}
-                  state="neutral"
-                  detail={t("progress.activeDaysDetail")}
-                />
-              </SimpleGrid>
-              <Box>
-                <Text fw={800} mb={6}>{t("progress.last7")}</Text>
-                {history && history.last7Days.length > 0 ? (
-                  <Group gap="xs" grow align="flex-end">
-                    {history.last7Days.map((day) => (
-                      <Stack key={day.date} gap={4} align="center">
-                        <Progress
-                          value={day.score}
-                          color={day.score >= 70 ? "tactical" : day.score > 0 ? "yellow" : "gray"}
-                          radius="xl"
-                          size="lg"
-                          style={{ width: "100%" }}
-                          aria-label={t("progress.dayAria", { date: day.date, score: day.score })}
-                        />
-                        <Text size="sm" className="hbg-muted-text">{day.date.slice(8)}</Text>
-                      </Stack>
-                    ))}
-                  </Group>
-                ) : (
-                  <Text size="sm" className="hbg-muted-text">{t("progress.empty")}</Text>
-                )}
-              </Box>
-            </Stack>
-          </Paper>
-
-          <Paper id="action" component="section" className="hbg-guidance-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-              <Stack gap="xs">
-                <Text className="hbg-kicker">{t("guidance.kicker")}</Text>
-                <Title order={2}>{statusAvailable ? t("guidance.title") : t("review.title")}</Title>
-                <Text className="hbg-copy">{statusAvailable ? t("guidance.copy") : t("review.copy")}</Text>
-              </Stack>
-              <Box className="hbg-action-card">
-                <Text fw={900} mb={6}>{statusLabel}</Text>
-                <Text>{statusAvailable ? t(`nextAction.${activeProjection.nextActionKey}`) : t(`journey.${dailyUiState}.nextAction`)}</Text>
-                {(() => {
-                  const supportReasons = activeProjection.reasonCodes.filter((code) => t.has(`reasons.${code}`));
-                  return supportReasons.length > 0 ? (
-                    <Stack gap={4} mt="sm">
-                      <Text fw={700} size="sm">{t("reasons.title")}</Text>
-                      {supportReasons.map((code) => (
-                        <Text key={code} size="sm" className="hbg-copy">• {t(`reasons.${code}`)}</Text>
-                      ))}
-                    </Stack>
-                  ) : null;
-                })()}
-                {!statusAvailable ? (
-                  <Box mt="md">
-                    <SemanticButton
-                      action="productSurface:complete"
-                      color="ingress"
-                      vocabularyPacks={[actionPack]}
-                      onClick={completeDailyOperation}
-                      disabled={!canSave}
-                      loading={saving}
-                    />
-                    {!hasRecordedHabits ? <Text size="sm" mt="xs" className="hbg-muted-text">{t("habits.confirmRequired")}</Text> : null}
-                  </Box>
-                ) : null}
-              </Box>
-            </SimpleGrid>
-          </Paper>
+          {showWizard ? (
+            <DailyWizard
+              canSave={canSave}
+              completedHabits={completedHabits}
+              draftValues={draftValues}
+              habitScore={habitScore}
+              hasCompleteDraft={hasCompleteDraft}
+              onBack={() => goToStep(stepIndex - 1)}
+              onContinue={() => goToStep(stepIndex + 1)}
+              onContinueHabits={advanceFromHabits}
+              onSave={completeDailyOperation}
+              onSetMetric={setMetric}
+              onToggleHabit={toggleHabit}
+              saving={saving}
+              step={step}
+              stepIndex={stepIndex}
+              translate={t}
+            />
+          ) : null}
         </Box>
 
-        <nav className="hbg-bottom-nav" aria-label={t("navigation.aria")}>
-          <a href="#today" className="hbg-bottom-nav-item hbg-bottom-nav-item-active">
-            <GdsIcons.Profile size={18} />
+        <nav className="hbg-bottom-nav hbg-bottom-nav-2" aria-label={t("navigation.aria")}>
+          <button
+            type="button"
+            className={view === "flow" ? "hbg-bottom-nav-item hbg-bottom-nav-item-active" : "hbg-bottom-nav-item"}
+            aria-current={view === "flow" ? "page" : undefined}
+            onClick={() => setView("flow")}
+          >
+            <GdsIcons.Profile size={20} />
             <span>{t("navigation.today")}</span>
-          </a>
-          <a href="#check-in" className="hbg-bottom-nav-item">
-            <GdsIcons.Dashboard size={18} />
-            <span>{t("navigation.checkIn")}</span>
-          </a>
-          <a href="#habits" className="hbg-bottom-nav-item">
-            <GdsIcons.Habit size={18} />
-            <span>{t("navigation.habits")}</span>
-          </a>
-          <a href="#progress" className="hbg-bottom-nav-item">
-            <GdsIcons.Record size={18} />
+          </button>
+          <button
+            type="button"
+            className={view === "progress" ? "hbg-bottom-nav-item hbg-bottom-nav-item-active" : "hbg-bottom-nav-item"}
+            aria-current={view === "progress" ? "page" : undefined}
+            onClick={() => setView("progress")}
+          >
+            <GdsIcons.Record size={20} />
             <span>{t("navigation.progress")}</span>
-          </a>
-          <a href="#action" className="hbg-bottom-nav-item">
-            <GdsIcons.Check size={18} />
-            <span>{t("navigation.action")}</span>
-          </a>
+          </button>
         </nav>
       </Box>
     </Box>
+  );
+}
+
+function DailyWizard({
+  canSave,
+  completedHabits,
+  draftValues,
+  habitScore,
+  hasCompleteDraft,
+  onBack,
+  onContinue,
+  onContinueHabits,
+  onSave,
+  onSetMetric,
+  onToggleHabit,
+  saving,
+  step,
+  stepIndex,
+  translate
+}: DailyWizardProps) {
+  const total = WIZARD_STEPS.length;
+  const progress = Math.round(((stepIndex + 1) / total) * 100);
+
+  return (
+    <Paper component="section" className="hbg-panel hbg-step-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+      <Stack gap="lg">
+        <Stack gap={8}>
+          <Group justify="space-between" wrap="nowrap">
+            <Text className="hbg-kicker">{translate("flow.stepLabel", { current: stepIndex + 1, total })}</Text>
+            <Text className="hbg-kicker">{progress}%</Text>
+          </Group>
+          <Progress value={progress} color="tactical" radius="xl" size="md" aria-hidden />
+          <Title order={2} className="hbg-headline">{translate(`flow.steps.${step}.title`)}</Title>
+          <Text className="hbg-copy">{translate(`flow.steps.${step}.copy`)}</Text>
+        </Stack>
+
+        {step === "checkin" ? (
+          <Stack gap="lg">
+            <StatusSlider label={translate("checkIn.energy")} unsetLabel={translate("checkIn.unset")} value={draftValues.energy} onChange={(value) => onSetMetric("energy", value)} />
+            <StatusSlider label={translate("checkIn.mood")} unsetLabel={translate("checkIn.unset")} value={draftValues.mood} onChange={(value) => onSetMetric("mood", value)} />
+            <StatusSlider label={translate("checkIn.sleep")} unsetLabel={translate("checkIn.unset")} value={draftValues.sleep} onChange={(value) => onSetMetric("sleep", value)} />
+            <StatusSlider label={translate("checkIn.soreness")} unsetLabel={translate("checkIn.unset")} value={draftValues.soreness} onChange={(value) => onSetMetric("soreness", value)} inverse />
+            {!hasCompleteDraft ? <Text size="sm" className="hbg-muted-text">{translate("checkIn.completeAll")}</Text> : null}
+            <button type="button" className="hbg-primary-button" onClick={onContinue} disabled={!hasCompleteDraft}>
+              {translate("flow.continue")}
+            </button>
+          </Stack>
+        ) : null}
+
+        {step === "habits" ? (
+          <Stack gap="md">
+            <Stack gap="sm">
+              {HABIT_PLAN.map((habit) => {
+                const checked = completedHabits.includes(habit.id);
+                return (
+                  <button
+                    key={habit.id}
+                    type="button"
+                    className={checked ? "hbg-habit-toggle hbg-habit-toggle-on" : "hbg-habit-toggle"}
+                    aria-pressed={checked}
+                    onClick={() => onToggleHabit(habit.id)}
+                  >
+                    <span className="hbg-habit-check" aria-hidden>{checked ? <GdsIcons.Check size={18} /> : null}</span>
+                    <span className="hbg-habit-label">
+                      {translate("habits.itemLabel", {
+                        category: translate(`habits.categories.${habit.category}`),
+                        label: translate(`habits.items.${habit.id}`)
+                      })}
+                    </span>
+                  </button>
+                );
+              })}
+            </Stack>
+            <Box>
+              <Group justify="space-between" mb={6}>
+                <Text fw={800}>{translate("habits.completion")}</Text>
+                <Text fw={800}>{habitScore}%</Text>
+              </Group>
+              <Progress value={habitScore} color={habitScore >= 70 ? "tactical" : "yellow"} radius="xl" size="lg" />
+            </Box>
+            <Group gap="sm" grow>
+              <button type="button" className="hbg-secondary-button" onClick={onBack}>{translate("flow.back")}</button>
+              <button type="button" className="hbg-primary-button" onClick={onContinueHabits}>{translate("flow.continue")}</button>
+            </Group>
+          </Stack>
+        ) : null}
+
+        {step === "review" ? (
+          <Stack gap="md">
+            <Stack gap="sm">
+              <ReviewRow label={translate("checkIn.energy")} value={formatMetric(draftValues.energy)} />
+              <ReviewRow label={translate("checkIn.mood")} value={formatMetric(draftValues.mood)} />
+              <ReviewRow label={translate("checkIn.sleep")} value={formatMetric(draftValues.sleep)} />
+              <ReviewRow label={translate("checkIn.soreness")} value={formatMetric(draftValues.soreness)} />
+              <ReviewRow label={translate("habits.title")} value={translate("flow.review.habitsValue", { done: completedHabits.length, total: HABIT_PLAN.length })} />
+            </Stack>
+            <Group gap="sm" grow>
+              <button type="button" className="hbg-secondary-button" onClick={onBack}>{translate("flow.back")}</button>
+              <button type="button" className="hbg-primary-button" onClick={onSave} disabled={!canSave}>
+                {saving ? translate("flow.saving") : translate("flow.saveDay")}
+              </button>
+            </Group>
+          </Stack>
+        ) : null}
+      </Stack>
+    </Paper>
+  );
+}
+
+function ReviewRow({ label, value }: { label: string; value: string }) {
+  return (
+    <Group justify="space-between" className="hbg-review-row" wrap="nowrap">
+      <Text fw={700}>{label}</Text>
+      <Text fw={900}>{value}</Text>
+    </Group>
+  );
+}
+
+function ResultPanel({
+  completed,
+  habitTotal,
+  nextAction,
+  onUpdate,
+  onViewProgress,
+  reasons,
+  reasonsTitle,
+  score,
+  scoreAria,
+  scoreText,
+  state,
+  statusLabel,
+  translate
+}: ResultPanelProps) {
+  return (
+    <Stack gap="sm">
+      <Paper component="section" className="hbg-hero-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+        <Stack gap="md" align="center">
+          <Text className="hbg-kicker">{translate("flow.result.title")}</Text>
+          <Box className="hbg-score-ring" style={{ "--score": `${score}%` } as CSSProperties} aria-label={scoreAria}>
+            <Stack gap={0} align="center">
+              <Text className="hbg-score-label">{translate("todayLabel")}</Text>
+              <Title order={2} className="hbg-score-value">{scoreText}</Title>
+              <Text className="hbg-score-state">{statusLabel}</Text>
+            </Stack>
+          </Box>
+          <Text ta="center" className="hbg-copy" maw={360}>{translate("scoreExplanation")}</Text>
+        </Stack>
+      </Paper>
+
+      <SimpleGrid cols={2} spacing="sm">
+        <SignalCard label={translate("signals.habitLoop.label")} value={`${completed}/${habitTotal}`} state="neutral" detail={translate("signals.habitLoop.detail")} />
+        <SignalCard label={translate("signals.nextAction.label")} value={statusLabel} state={state} detail={nextAction} />
+      </SimpleGrid>
+
+      {reasons.length > 0 ? (
+        <Paper component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "lg" }}>
+          <Stack gap={6}>
+            <Text fw={800} size="sm">{reasonsTitle}</Text>
+            {reasons.map((reason) => (
+              <Text key={reason} size="sm" className="hbg-copy">• {reason}</Text>
+            ))}
+          </Stack>
+        </Paper>
+      ) : null}
+
+      <Group gap="sm" grow>
+        <button type="button" className="hbg-secondary-button" onClick={onUpdate}>{translate("flow.result.updateDay")}</button>
+        <button type="button" className="hbg-primary-button" onClick={onViewProgress}>{translate("flow.result.viewProgress")}</button>
+      </Group>
+    </Stack>
+  );
+}
+
+function ProgressPanel({ history, translate }: { history?: HabigoalHistory; translate: Translate }) {
+  return (
+    <Paper component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
+      <Stack gap="lg">
+        <SectionHeading icon={<GdsIcons.Habit size={18} />} title={translate("progress.title")} copy={translate("progress.copy")} />
+        <SimpleGrid cols={{ base: 3 }} spacing="sm">
+          <SignalCard
+            label={translate("progress.currentStreak")}
+            value={translate("progress.days", { count: history?.currentStreak ?? 0 })}
+            state={(history?.currentStreak ?? 0) > 0 ? "good" : "neutral"}
+            detail={translate("progress.currentStreakDetail")}
+          />
+          <SignalCard
+            label={translate("progress.bestStreak")}
+            value={translate("progress.days", { count: history?.bestStreak ?? 0 })}
+            state="neutral"
+            detail={translate("progress.bestStreakDetail")}
+          />
+          <SignalCard
+            label={translate("progress.activeDays")}
+            value={translate("progress.activeDaysValue", { count: history?.activeDays ?? 0 })}
+            state="neutral"
+            detail={translate("progress.activeDaysDetail")}
+          />
+        </SimpleGrid>
+        <Box>
+          <Text fw={800} mb={6}>{translate("progress.last7")}</Text>
+          {history && history.last7Days.length > 0 ? (
+            <Group gap="xs" grow align="flex-end">
+              {history.last7Days.map((day) => (
+                <Stack key={day.date} gap={4} align="center">
+                  <Progress
+                    value={day.score}
+                    color={day.score >= 70 ? "tactical" : day.score > 0 ? "yellow" : "gray"}
+                    radius="xl"
+                    size="lg"
+                    style={{ width: "100%" }}
+                    aria-label={translate("progress.dayAria", { date: day.date, score: day.score })}
+                  />
+                  <Text size="sm" className="hbg-muted-text">{day.date.slice(8)}</Text>
+                </Stack>
+              ))}
+            </Group>
+          ) : (
+            <Text size="sm" className="hbg-muted-text">{translate("progress.empty")}</Text>
+          )}
+        </Box>
+      </Stack>
+    </Paper>
   );
 }
 
@@ -423,39 +518,8 @@ function surfaceStateFromStatus(status: HabigoalDailyStatus): SurfaceSignalState
   return "watch";
 }
 
-function resolveDailyUiState(input: {
-  hasCompleteDraft: boolean;
-  hasProfile: boolean;
-  hasRecordedHabits: boolean;
-  saving: boolean;
-  statusAvailable: boolean;
-}): HabigoalDailyUiState {
-  if (!input.hasProfile) return "empty_day";
-  if (input.saving) return "saving";
-  if (input.statusAvailable) return "saved_status";
-  if (!input.hasCompleteDraft) return "check_in_in_progress";
-  if (!input.hasRecordedHabits) return "habits_in_progress";
-  return "ready_to_save";
-}
-
-function JourneyProgress({
-  progress,
-  state,
-  translate
-}: {
-  progress: number;
-  state: HabigoalDailyUiState;
-  translate: ReturnType<typeof useTranslations>;
-}) {
-  return (
-    <Box className="hbg-score-ring hbg-score-ring-empty" style={{ "--score": `${progress}%` } as CSSProperties} aria-label={translate(`journey.${state}.aria`)}>
-      <Stack gap={4} align="center">
-        <Text className="hbg-score-label">{translate("todayLabel")}</Text>
-        <Title order={2} className="hbg-score-value">{progress}%</Title>
-        <Text className="hbg-score-state">{translate(`dailyState.${state}`)}</Text>
-      </Stack>
-    </Box>
-  );
+function formatMetric(value: number | null) {
+  return value === null ? "—" : `${value}%`;
 }
 
 function StatusSlider({
@@ -473,7 +537,7 @@ function StatusSlider({
 }) {
   const sliderValue = value ?? 50;
   return (
-    <Stack gap={6}>
+    <Stack gap={8} className="hbg-slider-field">
       <Group justify="space-between">
         <Text fw={800}>{label}</Text>
         <Text fw={800}>{value === null ? unsetLabel : `${value}%`}</Text>
@@ -483,10 +547,13 @@ function StatusSlider({
         onChange={onChange}
         min={0}
         max={100}
-        step={1}
+        step={SLIDER_STEP}
+        marks={SLIDER_MARKS}
+        thumbSize={30}
         color={inverse ? "review" : "ingress"}
         label={(current) => `${current}%`}
         aria-label={label}
+        className="hbg-slider"
       />
     </Stack>
   );
