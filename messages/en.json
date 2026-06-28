@@ -2389,5 +2389,43 @@
       "trunkStabilityPushup": "Trunk Stability Push-up",
       "rotaryStability": "Rotary Stability"
     }
+  },
+  "Reports": {
+    "title": "Reporting Hub",
+    "subtitle": "Reports include date range, data source notes, and rule-based engine guidance (not AI-generated).",
+    "generateAthleteTitle": "Generate Athlete Report",
+    "selectAthlete": "Select Athlete",
+    "selectAthletePlaceholder": "Choose an athlete",
+    "generate": "Generate Report",
+    "teamTitle": "Team Report",
+    "teamHeading": "Squad-wide operating report",
+    "teamMeta": "{count} athletes · generated {date}",
+    "teamEmpty": "Generate a report across all athletes you can access.",
+    "generateTeam": "Generate Team Report",
+    "recentTitle": "Recent Athlete Reports",
+    "rowMeta": "{type} • {date} • rule-based guidance included",
+    "ready": "Ready",
+    "empty": "No reports yet",
+    "emptyHelp": "Generate your first report above.",
+    "reportType": "Full Digital Twin",
+    "athleteFallback": "Athlete",
+    "csv": "CSV",
+    "json": "JSON",
+    "pdf": {
+      "button": "PDF",
+      "title": "Athlete report",
+      "generatedAt": "Generated",
+      "dateRange": "Date range",
+      "summary": "Summary",
+      "keyMetrics": "Key metrics",
+      "metric": "Metric",
+      "value": "Value",
+      "guidance": "Rule-based guidance",
+      "coachNotes": "Coach notes",
+      "sources": "Data sources",
+      "none": "None",
+      "teamTitle": "Team report",
+      "athleteCount": "Athletes"
+    }
   }
 }

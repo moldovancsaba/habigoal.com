@@ -1570,12 +1570,12 @@
         "copy": "استخدم الحالة المحفوظة لاختيار الخطوة الآمنة التالية اليوم."
       },
       "navigation": {
-        "aria": "تنقل تطبيق Habigoal",
+        "aria": "تنقّل تطبيق Habigoal",
         "today": "اليوم",
-        "checkIn": "تسجيل",
-        "habits": "عادات",
+        "checkIn": "تسجيل الدخول",
+        "habits": "العادات",
         "action": "إجراء",
-        "progress": "Progress"
+        "progress": "التقدّم"
       },
       "athleteFallback": "يومي",
       "scorePending": "ابدأ",
@@ -1670,29 +1670,29 @@
         "copy": "تظهر الحالة فقط بعد حفظ تسجيل الحالة وعادات اليوم."
       },
       "progress": {
-        "title": "Build your habits",
-        "copy": "Your streak grows every day you complete at least one habit.",
-        "currentStreak": "Current streak",
-        "currentStreakDetail": "Days in a row",
-        "bestStreak": "Best streak",
-        "bestStreakDetail": "Your record",
-        "activeDays": "Active days",
+        "title": "ابنِ عاداتك",
+        "copy": "تنمو سلسلتك كل يوم تُكمل فيه عادة واحدة على الأقل.",
+        "currentStreak": "السلسلة الحالية",
+        "currentStreakDetail": "أيام متتالية",
+        "bestStreak": "أفضل سلسلة",
+        "bestStreakDetail": "رقمك القياسي",
+        "activeDays": "الأيام النشطة",
         "activeDaysValue": "{count}/14",
-        "activeDaysDetail": "Last two weeks",
-        "days": "{count} days",
-        "last7": "Last 7 days",
-        "empty": "Complete a habit today to start your streak.",
-        "dayAria": "{date}: {score}% habit score"
+        "activeDaysDetail": "الأسبوعان الماضيان",
+        "days": "{count} يوم",
+        "last7": "آخر 7 أيام",
+        "empty": "أكمل عادة اليوم لبدء سلسلتك.",
+        "dayAria": "{date}: {score}% نتيجة العادات"
       },
       "reasons": {
-        "title": "Why",
-        "partial_check_in": "A few check-in signals are still missing today.",
-        "missing_habits": "No habits logged yet today.",
-        "high_soreness": "Soreness is high — ease into today and prioritise recovery.",
-        "habit_gap": "You're below your usual habit completion.",
-        "all_daily_signals_present": "Everything's logged — nice work.",
-        "missing_profile": "Finish setting up your profile to start tracking.",
-        "no_daily_data": "No check-in or habits recorded yet today."
+        "title": "لماذا",
+        "partial_check_in": "لا تزال بعض إشارات تسجيل الدخول ناقصة اليوم.",
+        "missing_habits": "لم تُسجَّل أي عادات بعد اليوم.",
+        "high_soreness": "آلام العضلات مرتفعة — ابدأ يومك بهدوء وأعطِ الأولوية للتعافي.",
+        "habit_gap": "أنت دون معدل إكمال عاداتك المعتاد.",
+        "all_daily_signals_present": "تم تسجيل كل شيء — عمل رائع.",
+        "missing_profile": "أكمل إعداد ملفك الشخصي لبدء التتبع.",
+        "no_daily_data": "لم يُسجَّل أي تسجيل دخول أو عادات بعد اليوم."
       }
     },
     "athleteIq": {
@@ -2388,6 +2388,44 @@
       "activeStraightLegRaise": "رفع الساق المستقيمة النشط",
       "trunkStabilityPushup": "تمرين ثبات الجذع (الضغط)",
       "rotaryStability": "الثبات الدوراني"
+    }
+  },
+  "Reports": {
+    "title": "مركز التقارير",
+    "subtitle": "تتضمن التقارير النطاق الزمني وملاحظات مصادر البيانات وإرشادات المحرك القائمة على القواعد (ليست منشأة بالذكاء الاصطناعي).",
+    "generateAthleteTitle": "إنشاء تقرير الرياضي",
+    "selectAthlete": "اختر الرياضي",
+    "selectAthletePlaceholder": "اختر رياضيًا",
+    "generate": "إنشاء التقرير",
+    "teamTitle": "تقرير الفريق",
+    "teamHeading": "تقرير تشغيلي على مستوى الفريق",
+    "teamMeta": "{count} رياضي · أُنشئ في {date}",
+    "teamEmpty": "أنشئ تقريرًا لجميع الرياضيين الذين يمكنك الوصول إليهم.",
+    "generateTeam": "إنشاء تقرير الفريق",
+    "recentTitle": "أحدث تقارير الرياضيين",
+    "rowMeta": "{type} • {date} • مع إرشادات قائمة على القواعد",
+    "ready": "جاهز",
+    "empty": "لا توجد تقارير بعد",
+    "emptyHelp": "أنشئ تقريرك الأول أعلاه.",
+    "reportType": "التوأم الرقمي الكامل",
+    "athleteFallback": "رياضي",
+    "csv": "CSV",
+    "json": "JSON",
+    "pdf": {
+      "button": "PDF",
+      "title": "تقرير الرياضي",
+      "generatedAt": "أُنشئ",
+      "dateRange": "النطاق الزمني",
+      "summary": "ملخص",
+      "keyMetrics": "المؤشرات الرئيسية",
+      "metric": "المؤشر",
+      "value": "القيمة",
+      "guidance": "إرشادات قائمة على القواعد",
+      "coachNotes": "ملاحظات المدرب",
+      "sources": "مصادر البيانات",
+      "none": "لا شيء",
+      "teamTitle": "تقرير الفريق",
+      "athleteCount": "الرياضيون"
     }
   }
 }

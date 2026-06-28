@@ -3,27 +3,10 @@
 import { useState, useEffect } from "react";
 import { Stack, Text, Group, Select, Box, Paper } from "@mantine/core";
 import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { useTranslations } from "next-intl";
 import type { AthleteProfile } from "@/types/athlete";
 import type { AthleteReport } from "@/services/reporting.service";
 import { PdfService, type TwinReportLabels } from "@/lib/pdf-service";
-
-// English labels (consistent with this page's current copy; localization tracked
-// in #346). Passed to PdfService so the PDF renderer stays locale-agnostic.
-const PDF_LABELS: TwinReportLabels = {
-  title: "Athlete report",
-  generatedAt: "Generated",
-  dateRange: "Date range",
-  summary: "Summary",
-  keyMetrics: "Key metrics",
-  metric: "Metric",
-  value: "Value",
-  guidance: "Rule-based guidance",
-  coachNotes: "Coach notes",
-  sources: "Data sources",
-  none: "None",
-  teamTitle: "Team report",
-  athleteCount: "Athletes",
-};
 
 interface ReportRow {
   id: string;
@@ -36,12 +19,31 @@ interface ReportRow {
 type TeamReport = { generatedAt: string; athleteCount: number; reports: AthleteReport[] };
 
 export default function ReportsHubPage() {
+  const t = useTranslations("Reports");
   const [athletes, setAthletes] = useState<AthleteProfile[]>([]);
   const [selectedAthlete, setSelectedAthlete] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [generatingTeam, setGeneratingTeam] = useState(false);
   const [reports, setReports] = useState<ReportRow[]>([]);
   const [teamReport, setTeamReport] = useState<TeamReport | null>(null);
+
+  // PDF labels are presentation copy — localized here and passed to PdfService
+  // so the renderer itself stays locale-agnostic.
+  const pdfLabels: TwinReportLabels = {
+    title: t("pdf.title"),
+    generatedAt: t("pdf.generatedAt"),
+    dateRange: t("pdf.dateRange"),
+    summary: t("pdf.summary"),
+    keyMetrics: t("pdf.keyMetrics"),
+    metric: t("pdf.metric"),
+    value: t("pdf.value"),
+    guidance: t("pdf.guidance"),
+    coachNotes: t("pdf.coachNotes"),
+    sources: t("pdf.sources"),
+    none: t("pdf.none"),
+    teamTitle: t("pdf.teamTitle"),
+    athleteCount: t("pdf.athleteCount")
+  };
 
   useEffect(() => {
     fetch("/api/athletes")
@@ -60,9 +62,9 @@ export default function ReportsHubPage() {
       setReports([
         {
           id: `${selectedAthlete}-${report.reportDate}`,
-          athleteName: athlete?.name ?? "Athlete",
+          athleteName: athlete?.name ?? t("athleteFallback"),
           date: report.reportDate.slice(0, 10),
-          type: "Full Digital Twin",
+          type: t("reportType"),
           report
         },
         ...reports
@@ -93,67 +95,64 @@ export default function ReportsHubPage() {
 
   return (
     <Stack gap="xl" pb="xl">
-      <PageHeader
-        title="Reporting Hub"
-        subtitle="Reports include date range, data source notes, and rule-based engine guidance (not AI-generated)."
-      />
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
-      <SectionPanel title="Generate Athlete Report">
+      <SectionPanel title={t("generateAthleteTitle")}>
         <Paper withBorder p="md">
           <Group align="flex-end" grow>
             <Select
-              label="Select Athlete"
-              placeholder="Choose an athlete"
+              label={t("selectAthlete")}
+              placeholder={t("selectAthletePlaceholder")}
               data={athletes.map((a) => ({ value: a._id || "", label: a.name }))}
               value={selectedAthlete}
               onChange={setSelectedAthlete}
             />
             <Box style={{ flexGrow: 0 }}>
               <SemanticButton action="start" onClick={handleGenerate} loading={generating} disabled={!selectedAthlete}>
-                Generate Report
+                {t("generate")}
               </SemanticButton>
             </Box>
           </Group>
         </Paper>
       </SectionPanel>
 
-      <SectionPanel title="Team Report">
+      <SectionPanel title={t("teamTitle")}>
         <Paper withBorder p="md">
           <Group justify="space-between" align="center">
             <Box>
-              <Text fw={600}>Squad-wide operating report</Text>
+              <Text fw={600}>{t("teamHeading")}</Text>
               <Text size="sm" c="dimmed">
                 {teamReport
-                  ? `${teamReport.athleteCount} athletes · generated ${teamReport.generatedAt.slice(0, 10)}`
-                  : "Generate a report across all athletes you can access."}
+                  ? t("teamMeta", { count: teamReport.athleteCount, date: teamReport.generatedAt.slice(0, 10) })
+                  : t("teamEmpty")}
               </Text>
             </Box>
             <Group>
               <SemanticButton action="start" onClick={handleGenerateTeam} loading={generatingTeam}>
-                Generate Team Report
+                {t("generateTeam")}
               </SemanticButton>
               {teamReport ? (
                 <>
                   <SemanticButton
                     action="download"
                     variant="outline"
-                    onClick={() => void PdfService.generateTeamTwinReport(teamReport, PDF_LABELS, nameById())}
+                    onClick={() => void PdfService.generateTeamTwinReport(teamReport, pdfLabels, nameById())}
                   >
-                    PDF
+                    {t("pdf.button")}
                   </SemanticButton>
                   <SemanticButton
                     action="download"
                     variant="outline"
                     onClick={() => downloadCsv(teamReport.reports, `team-report-${Date.now()}.csv`)}
                   >
-                    CSV
+                    {t("csv")}
                   </SemanticButton>
                   <SemanticButton
                     action="download"
                     variant="outline"
                     onClick={() => downloadJson(teamReport, `team-report-${Date.now()}.json`)}
                   >
-                    JSON
+                    {t("json")}
                   </SemanticButton>
                 </>
               ) : null}
@@ -162,34 +161,32 @@ export default function ReportsHubPage() {
         </Paper>
       </SectionPanel>
 
-      <SectionPanel title="Recent Athlete Reports">
+      <SectionPanel title={t("recentTitle")}>
         <Stack gap="md">
           {reports.map((row) => (
             <Paper withBorder key={row.id} p="md">
               <Group justify="space-between">
                 <Box>
                   <Text fw={700} size="md">{row.athleteName}</Text>
-                  <Text size="sm" c="dimmed">
-                    {row.type} • {row.date} • rule-based guidance included
-                  </Text>
+                  <Text size="sm" c="dimmed">{t("rowMeta", { type: row.type, date: row.date })}</Text>
                 </Box>
                 <Group>
-                  <StateBlock variant="success" title="Ready" />
-                  <SemanticButton action="download" variant="outline" onClick={() => void PdfService.generateTwinReport(row.report, PDF_LABELS, row.athleteName)}>
-                    PDF
+                  <StateBlock variant="success" title={t("ready")} />
+                  <SemanticButton action="download" variant="outline" onClick={() => void PdfService.generateTwinReport(row.report, pdfLabels, row.athleteName)}>
+                    {t("pdf.button")}
                   </SemanticButton>
                   <SemanticButton action="download" variant="outline" onClick={() => downloadCsv([row.report], `report-${row.id}.csv`)}>
-                    CSV
+                    {t("csv")}
                   </SemanticButton>
                   <SemanticButton action="download" variant="outline" onClick={() => downloadJson(row.report, `report-${row.id}.json`)}>
-                    JSON
+                    {t("json")}
                   </SemanticButton>
                 </Group>
               </Group>
             </Paper>
           ))}
           {reports.length === 0 && (
-            <StateBlock variant="info" title="No reports yet" description="Generate your first report above." />
+            <StateBlock variant="info" title={t("empty")} description={t("emptyHelp")} />
           )}
         </Stack>
       </SectionPanel>

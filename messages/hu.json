@@ -1570,12 +1570,12 @@
         "copy": "A mentett státusz alapján válassza ki a mai biztonságos következő lépést."
       },
       "navigation": {
-        "aria": "Habigoal app navigáció",
+        "aria": "Habigoal alkalmazás navigáció",
         "today": "Ma",
-        "checkIn": "Check-in",
+        "checkIn": "Bejelentkezés",
         "habits": "Szokások",
         "action": "Művelet",
-        "progress": "Progress"
+        "progress": "Haladás"
       },
       "athleteFallback": "Mai napom",
       "scorePending": "Indítás",
@@ -1670,29 +1670,29 @@
         "copy": "A státusz csak a mai check-in és szokások mentése után jelenik meg."
       },
       "progress": {
-        "title": "Build your habits",
-        "copy": "Your streak grows every day you complete at least one habit.",
-        "currentStreak": "Current streak",
-        "currentStreakDetail": "Days in a row",
-        "bestStreak": "Best streak",
-        "bestStreakDetail": "Your record",
-        "activeDays": "Active days",
+        "title": "Építsd a szokásaidat",
+        "copy": "A sorozatod minden nap nő, amikor legalább egy szokást teljesítesz.",
+        "currentStreak": "Jelenlegi sorozat",
+        "currentStreakDetail": "Egymást követő napok",
+        "bestStreak": "Legjobb sorozat",
+        "bestStreakDetail": "A rekordod",
+        "activeDays": "Aktív napok",
         "activeDaysValue": "{count}/14",
-        "activeDaysDetail": "Last two weeks",
-        "days": "{count} days",
-        "last7": "Last 7 days",
-        "empty": "Complete a habit today to start your streak.",
-        "dayAria": "{date}: {score}% habit score"
+        "activeDaysDetail": "Az elmúlt két hét",
+        "days": "{count} nap",
+        "last7": "Utolsó 7 nap",
+        "empty": "Teljesíts egy szokást ma a sorozatod elindításához.",
+        "dayAria": "{date}: {score}% szokáspontszám"
       },
       "reasons": {
-        "title": "Why",
-        "partial_check_in": "A few check-in signals are still missing today.",
-        "missing_habits": "No habits logged yet today.",
-        "high_soreness": "Soreness is high — ease into today and prioritise recovery.",
-        "habit_gap": "You're below your usual habit completion.",
-        "all_daily_signals_present": "Everything's logged — nice work.",
-        "missing_profile": "Finish setting up your profile to start tracking.",
-        "no_daily_data": "No check-in or habits recorded yet today."
+        "title": "Miért",
+        "partial_check_in": "Néhány bejelentkezési jel még hiányzik ma.",
+        "missing_habits": "Ma még nincs rögzített szokás.",
+        "high_soreness": "Az izomláz magas — kezdd lazán a napot, és helyezd előtérbe a regenerálódást.",
+        "habit_gap": "A szokásos szokásteljesítésed alatt vagy.",
+        "all_daily_signals_present": "Minden rögzítve — szép munka.",
+        "missing_profile": "Fejezd be a profilod beállítását a követés megkezdéséhez.",
+        "no_daily_data": "Ma még nincs rögzített bejelentkezés vagy szokás."
       }
     },
     "athleteIq": {
@@ -2388,6 +2388,44 @@
       "activeStraightLegRaise": "Aktív nyújtott lábemelés",
       "trunkStabilityPushup": "Törzsstabilitási fekvőtámasz",
       "rotaryStability": "Rotációs stabilitás"
+    }
+  },
+  "Reports": {
+    "title": "Jelentésközpont",
+    "subtitle": "A jelentések tartalmazzák a dátumtartományt, az adatforrás-megjegyzéseket és a szabályalapú motor útmutatását (nem mesterséges intelligencia által generált).",
+    "generateAthleteTitle": "Sportolói jelentés készítése",
+    "selectAthlete": "Sportoló kiválasztása",
+    "selectAthletePlaceholder": "Válasszon sportolót",
+    "generate": "Jelentés készítése",
+    "teamTitle": "Csapatjelentés",
+    "teamHeading": "Csapatszintű működési jelentés",
+    "teamMeta": "{count} sportoló · készült: {date}",
+    "teamEmpty": "Készítsen jelentést az összes elérhető sportolóról.",
+    "generateTeam": "Csapatjelentés készítése",
+    "recentTitle": "Legutóbbi sportolói jelentések",
+    "rowMeta": "{type} • {date} • szabályalapú útmutatással",
+    "ready": "Kész",
+    "empty": "Még nincs jelentés",
+    "emptyHelp": "Készítse el az első jelentését fent.",
+    "reportType": "Teljes digitális iker",
+    "athleteFallback": "Sportoló",
+    "csv": "CSV",
+    "json": "JSON",
+    "pdf": {
+      "button": "PDF",
+      "title": "Sportolói jelentés",
+      "generatedAt": "Készült",
+      "dateRange": "Dátumtartomány",
+      "summary": "Összefoglaló",
+      "keyMetrics": "Fő mutatók",
+      "metric": "Mutató",
+      "value": "Érték",
+      "guidance": "Szabályalapú útmutatás",
+      "coachNotes": "Edzői megjegyzések",
+      "sources": "Adatforrások",
+      "none": "Nincs",
+      "teamTitle": "Csapatjelentés",
+      "athleteCount": "Sportolók"
     }
   }
 }

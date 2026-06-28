@@ -1572,10 +1572,10 @@
       "navigation": {
         "aria": "Navegación de la app Habigoal",
         "today": "Hoy",
-        "checkIn": "Check-in",
+        "checkIn": "Registro",
         "habits": "Hábitos",
         "action": "Acción",
-        "progress": "Progress"
+        "progress": "Progreso"
       },
       "athleteFallback": "Mi día",
       "scorePending": "Iniciar",
@@ -1670,29 +1670,29 @@
         "copy": "El estado aparece solo después de guardar el check-in y los hábitos de hoy."
       },
       "progress": {
-        "title": "Build your habits",
-        "copy": "Your streak grows every day you complete at least one habit.",
-        "currentStreak": "Current streak",
-        "currentStreakDetail": "Days in a row",
-        "bestStreak": "Best streak",
-        "bestStreakDetail": "Your record",
-        "activeDays": "Active days",
+        "title": "Construye tus hábitos",
+        "copy": "Tu racha crece cada día que completas al menos un hábito.",
+        "currentStreak": "Racha actual",
+        "currentStreakDetail": "Días seguidos",
+        "bestStreak": "Mejor racha",
+        "bestStreakDetail": "Tu récord",
+        "activeDays": "Días activos",
         "activeDaysValue": "{count}/14",
-        "activeDaysDetail": "Last two weeks",
-        "days": "{count} days",
-        "last7": "Last 7 days",
-        "empty": "Complete a habit today to start your streak.",
-        "dayAria": "{date}: {score}% habit score"
+        "activeDaysDetail": "Últimas dos semanas",
+        "days": "{count} días",
+        "last7": "Últimos 7 días",
+        "empty": "Completa un hábito hoy para empezar tu racha.",
+        "dayAria": "{date}: {score}% de puntuación de hábitos"
       },
       "reasons": {
-        "title": "Why",
-        "partial_check_in": "A few check-in signals are still missing today.",
-        "missing_habits": "No habits logged yet today.",
-        "high_soreness": "Soreness is high — ease into today and prioritise recovery.",
-        "habit_gap": "You're below your usual habit completion.",
-        "all_daily_signals_present": "Everything's logged — nice work.",
-        "missing_profile": "Finish setting up your profile to start tracking.",
-        "no_daily_data": "No check-in or habits recorded yet today."
+        "title": "Por qué",
+        "partial_check_in": "Hoy todavía faltan algunas señales del registro.",
+        "missing_habits": "Aún no se han registrado hábitos hoy.",
+        "high_soreness": "Las agujetas son altas: tómate el día con calma y prioriza la recuperación.",
+        "habit_gap": "Estás por debajo de tu cumplimiento habitual de hábitos.",
+        "all_daily_signals_present": "Todo registrado: buen trabajo.",
+        "missing_profile": "Termina de configurar tu perfil para empezar a hacer seguimiento.",
+        "no_daily_data": "Aún no se ha registrado ningún check-in ni hábito hoy."
       }
     },
     "athleteIq": {
@@ -2388,6 +2388,44 @@
       "activeStraightLegRaise": "Elevación activa de pierna recta",
       "trunkStabilityPushup": "Flexión de estabilidad del tronco",
       "rotaryStability": "Estabilidad rotacional"
+    }
+  },
+  "Reports": {
+    "title": "Centro de informes",
+    "subtitle": "Los informes incluyen el rango de fechas, notas sobre las fuentes de datos y orientación del motor basada en reglas (no generada por IA).",
+    "generateAthleteTitle": "Generar informe del deportista",
+    "selectAthlete": "Seleccionar deportista",
+    "selectAthletePlaceholder": "Elija un deportista",
+    "generate": "Generar informe",
+    "teamTitle": "Informe del equipo",
+    "teamHeading": "Informe operativo de todo el equipo",
+    "teamMeta": "{count} deportistas · generado {date}",
+    "teamEmpty": "Genere un informe de todos los deportistas a los que tiene acceso.",
+    "generateTeam": "Generar informe del equipo",
+    "recentTitle": "Informes recientes de deportistas",
+    "rowMeta": "{type} • {date} • con orientación basada en reglas",
+    "ready": "Listo",
+    "empty": "Aún no hay informes",
+    "emptyHelp": "Genere su primer informe arriba.",
+    "reportType": "Gemelo digital completo",
+    "athleteFallback": "Deportista",
+    "csv": "CSV",
+    "json": "JSON",
+    "pdf": {
+      "button": "PDF",
+      "title": "Informe del deportista",
+      "generatedAt": "Generado",
+      "dateRange": "Rango de fechas",
+      "summary": "Resumen",
+      "keyMetrics": "Métricas clave",
+      "metric": "Métrica",
+      "value": "Valor",
+      "guidance": "Orientación basada en reglas",
+      "coachNotes": "Notas del entrenador",
+      "sources": "Fuentes de datos",
+      "none": "Ninguna",
+      "teamTitle": "Informe del equipo",
+      "athleteCount": "Deportistas"
     }
   }
 }
