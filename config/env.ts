@@ -45,6 +45,8 @@ export const env = {
   garminTokenUrl: process.env.GARMIN_TOKEN_URL || "https://diauth.garmin.com/di-oauth2-service/oauth/token",
   garminApiBaseUrl: process.env.GARMIN_API_BASE_URL || "https://apis.garmin.com",
   valdWebhookSecret: process.env.VALD_WEBHOOK_SECRET,
+  // Privacy-safe product telemetry (#88). Default OFF; emits nothing until enabled.
+  telemetryEnabled: readBooleanEnv(process.env.TELEMETRY_ENABLED, false),
   // Capability flags (#440). Default OFF: a capability is only ON once its real
   // implementation exists. UI uses these to render real features or an honest
   // "not available yet" state — never fabricated data.
