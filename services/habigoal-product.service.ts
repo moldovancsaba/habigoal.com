@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
 import { getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
-import { getHabitCompletion, getHabitStreak } from "@/lib/athlete-habits";
+import { atLeastOneHabitCompleted, computeBestStreak, computeCurrentStreak, getHabitCompletion } from "@/lib/athlete-habits";
 import { createHabigoalCorrelationId, logHabigoalEvent } from "@/lib/habigoal-api";
 import { buildHabigoalDailyStatus, type HabigoalConfidence, type HabigoalDailyStatus, type HabigoalMetricValues } from "@/lib/habigoal-status";
 import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
@@ -143,8 +143,13 @@ export async function getHabigoalRecentHistory(input: { timezone?: string; user?
   const records = await listHabitRecordsByAthleteId(athlete._id);
   const byDate = new Map(records.map((record) => [record.date, record]));
 
-  const currentStreak = getHabitStreak(records);
-  const bestStreak = computeBestStreak(records);
+  // Habigoal's streak rule matches its copy and the last-7-days chart: a day
+  // counts when at least one habit is completed, over consecutive calendar days
+  // anchored to today (#426). The previous >=70%-of-9 rule was unreachable for
+  // the 6-habit Habigoal set, so the streak was always 0 while the chart showed
+  // active days.
+  const currentStreak = computeCurrentStreak(records, localDate, atLeastOneHabitCompleted);
+  const bestStreak = computeBestStreak(records, atLeastOneHabitCompleted);
 
   let activeDays = 0;
   for (let offset = 0; offset < 14; offset += 1) {
@@ -153,28 +158,6 @@ export async function getHabigoalRecentHistory(input: { timezone?: string; user?
   }
 
   return { currentStreak, bestStreak, activeDays, last7Days: buildLast7Days(localDate, byDate) };
-}
-
-// Best historical streak using the same per-day qualification as the shared
-// getHabitStreak (>=70% of the canonical habit set completed).
-function computeBestStreak(records: Array<{ date: string; statuses: Record<string, boolean> }>): number {
-  const qualifyingDates = records
-    .filter((record) => {
-      const { completed, total } = getHabitCompletion(record.statuses);
-      return completed >= Math.ceil(total * 0.7);
-    })
-    .map((record) => record.date)
-    .sort();
-
-  let best = 0;
-  let run = 0;
-  let previous: string | null = null;
-  for (const date of qualifyingDates) {
-    run = previous && shiftIsoDate(previous, 1) === date ? run + 1 : 1;
-    best = Math.max(best, run);
-    previous = date;
-  }
-  return best;
 }
 
 function buildLast7Days(localDate: string, byDate: Map<string, { statuses: Record<string, boolean> }>): HabigoalHistoryDay[] {

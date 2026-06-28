@@ -141,6 +141,78 @@ export function getHabitStreak(records: Array<{ date: string; statuses: Record<s
   return streak;
 }
 
+// --- Canonical, calendar-correct streak helpers (#426) ---------------------
+// The legacy getHabitStreak above counts newest-first and breaks only on a
+// *present* non-qualifying record, so it ignores calendar gaps and isn't anchored
+// to today; it also hard-codes the >=70%-of-9 rule, which a 6-habit product can
+// never satisfy. These helpers take an explicit qualifier so each surface picks
+// its own rule, and they walk consecutive calendar days so "streak" means
+// "days in a row".
+
+export type DayRecordLike = { date: string; statuses: Record<string, boolean> };
+export type StreakQualifier = (record: DayRecordLike) => boolean;
+
+/** A day counts if at least one habit was completed (matches the consumer copy
+ *  "your streak grows every day you complete at least one habit"). */
+export const atLeastOneHabitCompleted: StreakQualifier = (record) =>
+  getHabitCompletion(record.statuses).completed > 0;
+
+/** A day counts if a majority (>=70%) of the canonical habit set was completed. */
+export const majorityHabitsCompleted: StreakQualifier = (record) => {
+  const { completed, total } = getHabitCompletion(record.statuses);
+  return completed >= Math.ceil(total * 0.7);
+};
+
+function shiftIsoDay(isoDate: string, days: number): string {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Current streak = consecutive qualifying calendar days ending at `today`. If
+ * today is not yet logged (or doesn't qualify), the count anchors at yesterday
+ * so an un-started day doesn't reset a live streak. Breaks on the first missing
+ * or non-qualifying day.
+ */
+export function computeCurrentStreak(
+  records: DayRecordLike[],
+  today: string,
+  qualifies: StreakQualifier = atLeastOneHabitCompleted
+): number {
+  const byDate = new Map<string, DayRecordLike>();
+  for (const record of records) byDate.set(record.date, record);
+
+  const todayRecord = byDate.get(today);
+  let cursor = todayRecord && qualifies(todayRecord) ? today : shiftIsoDay(today, -1);
+
+  let streak = 0;
+  for (;;) {
+    const record = byDate.get(cursor);
+    if (!record || !qualifies(record)) break;
+    streak += 1;
+    cursor = shiftIsoDay(cursor, -1);
+  }
+  return streak;
+}
+
+/** Longest run of consecutive qualifying calendar days in the history. */
+export function computeBestStreak(
+  records: DayRecordLike[],
+  qualifies: StreakQualifier = atLeastOneHabitCompleted
+): number {
+  const dates = records.filter(qualifies).map((record) => record.date).sort();
+  let best = 0;
+  let run = 0;
+  let previous: string | null = null;
+  for (const date of dates) {
+    run = previous && shiftIsoDay(previous, 1) === date ? run + 1 : 1;
+    best = Math.max(best, run);
+    previous = date;
+  }
+  return best;
+}
+
 function roundHabitScore(value: number) {
   return Number(value.toFixed(1));
 }
