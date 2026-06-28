@@ -350,6 +350,7 @@ const IDENTICAL_OK = new Set([
   "Reports.csv",
   "Reports.json",
   "Reports.pdf.button",
+  "Reports.rowMeta",
   "athleteiq.sessions.safety.standard",
 ]);
 
