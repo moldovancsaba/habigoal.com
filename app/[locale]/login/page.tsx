@@ -63,7 +63,6 @@ export default async function LoginPage({
               <Image src={logoSrc} alt="" width={logoWidth} height={logoHeight} priority className={isAthleteIqSurface ? "login-brand-logo login-brand-logo-aiq" : "login-brand-logo login-brand-logo-habigoal"} />
               <Badge variant="light" color={isAthleteIqSurface ? "yellow" : "ingress"}>{t(`surfaces.${surfaceKey}.badge`)}</Badge>
               <Title order={1}>{t(`surfaces.${surfaceKey}.title`)}</Title>
-              <Text c="dimmed">{t(`surfaces.${surfaceKey}.subtitle`)}</Text>
             </Stack>
 
             {error ? (
@@ -86,8 +85,7 @@ export default async function LoginPage({
 
             {isAthleteIqSurface ? (
               <Stack gap="xs">
-                <Text fw={700}>{t("personaLabel")}</Text>
-                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm" mt="xs">
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm" aria-label={t("personaLabel")}>
                   <label className="login-persona-option">
                     <input type="radio" name="persona" value="athlete" defaultChecked={initialPersona === "athlete"} required />
                     <span>
@@ -109,9 +107,6 @@ export default async function LoginPage({
               {t("submit")}
             </Button>
 
-            <Text c="dimmed" size="sm">
-              {t(`surfaces.${surfaceKey}.supportingCopy`)}
-            </Text>
             <Anchor href={isAthleteIqSurface ? `/${locale}/athlete-iq` : `/${locale}/habigoal`} fw={700}>{t(`surfaces.${surfaceKey}.backLink`)}</Anchor>
           </Stack>
         </form>
