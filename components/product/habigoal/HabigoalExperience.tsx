@@ -435,7 +435,7 @@ function ResultPanel({
         </Stack>
       </Paper>
 
-      <SimpleGrid cols={2} spacing="sm">
+      <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="sm">
         <SignalCard label={translate("signals.habitLoop.label")} value={`${completed}/${habitTotal}`} state="neutral" detail={translate("signals.habitLoop.detail")} />
         <SignalCard label={translate("signals.nextAction.label")} value={statusLabel} state={state} detail={nextAction} />
       </SimpleGrid>
@@ -464,7 +464,7 @@ function ProgressPanel({ history, translate }: { history?: HabigoalHistory; tran
     <Paper component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
       <Stack gap="lg">
         <SectionHeading icon={<GdsIcons.Habit size={18} />} title={translate("progress.title")} copy={translate("progress.copy")} />
-        <SimpleGrid cols={{ base: 3 }} spacing="sm">
+        <SimpleGrid cols={{ base: 1, xs: 3 }} spacing="sm">
           <SignalCard
             label={translate("progress.currentStreak")}
             value={translate("progress.days", { count: history?.currentStreak ?? 0 })}
