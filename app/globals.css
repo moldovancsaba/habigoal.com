@@ -1576,8 +1576,13 @@ a {
 }
 
 @media (max-width: 62em) {
+  /* Collapsed single-column tracks must use minmax(0, 1fr), not `1fr`. A bare
+     `1fr` track carries an implicit `auto` minimum, so the column refuses to
+     shrink below its content's min-content width — on a phone that overflows the
+     viewport and the shell's `overflow-x: clip` then hides the spill (clipped
+     cards/sliders). minmax(0, …) lets the column shrink so content wraps. */
   .aiq-layout-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .aiq-sidebar {
@@ -1585,7 +1590,14 @@ a {
   }
 
   .aiq-command-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Grid/flex children default to min-width: auto; force 0 so the wrap above
+     cascades all the way down to the recorder and panels. */
+  .aiq-command-layout > *,
+  .aiq-layout-grid > * {
+    min-width: 0;
   }
 
   .surface-topbar.aiq-topbar {
