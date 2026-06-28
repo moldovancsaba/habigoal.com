@@ -1,48 +1,49 @@
 import { WearableConnector, DeviceConnection } from "../../types/wearable-connector";
 import { RawPayload } from "../../types/canonical-metric";
+import { getCapabilities } from "@/lib/capabilities";
 
-export class CatapultConnector implements WearableConnector {
-  source = 'catapult' as const;
+// GPS / team-tracking connectors (Catapult, STATSports) — #350.
+//
+// These previously returned HARDCODED session metrics (a fixed distance / high-
+// speed-running figure), presenting fabricated data as real ingestion. That is
+// removed. Until a real
+// provider integration exists — gated by the `gpsIngestion` capability (#440)
+// AND a credentialed, active connection — these honestly return NO data and
+// report unhealthy, never invented numbers. The real CSV/API parsing lands when
+// the integration is built; this is the honest-state scaffold.
 
-  async fetchMetrics(connection: DeviceConnection, from: string, to: string): Promise<RawPayload[]> {
-    console.log(`Fetching Catapult metrics for ${connection.connectionId}`);
-    return [{
-      payloadId: `${connection.athleteId}:${from}:catapult:session`,
-      athleteId: connection.athleteId,
-      source: 'catapult',
-      receivedAt: new Date().toISOString(),
-      payload: {
-        total_distance: 7500,
-        high_speed_running: 850
-      },
-      normalised: false
-    }];
-  }
-
-  async refreshTokenIfNeeded(connection: DeviceConnection): Promise<DeviceConnection> { return connection; }
-  async healthCheck(connection: DeviceConnection): Promise<boolean> { return true; }
-  async revokeAccess(connection: DeviceConnection): Promise<void> {}
+function gpsReady(connection: DeviceConnection): boolean {
+  return (
+    getCapabilities().gpsIngestion &&
+    connection.status === "active" &&
+    Boolean(connection.accessToken)
+  );
 }
 
-export class StatSportsConnector implements WearableConnector {
-  source = 'statsports' as const;
+abstract class BaseGpsConnector implements WearableConnector {
+  abstract source: "catapult" | "statsports";
 
-  async fetchMetrics(connection: DeviceConnection, from: string, to: string): Promise<RawPayload[]> {
-    console.log(`Fetching STATSports metrics for ${connection.connectionId}`);
-    return [{
-      payloadId: `${connection.athleteId}:${from}:statsports:session`,
-      athleteId: connection.athleteId,
-      source: 'statsports',
-      receivedAt: new Date().toISOString(),
-      payload: {
-        total_distance: 7200,
-        high_speed_running: 910
-      },
-      normalised: false
-    }];
+  async fetchMetrics(_connection: DeviceConnection, _from: string, _to: string): Promise<RawPayload[]> {
+    // No fabricated data. Real provider ingestion is added behind `gpsIngestion`;
+    // until then there is genuinely nothing to return.
+    return [];
   }
 
-  async refreshTokenIfNeeded(connection: DeviceConnection): Promise<DeviceConnection> { return connection; }
-  async healthCheck(connection: DeviceConnection): Promise<boolean> { return true; }
-  async revokeAccess(connection: DeviceConnection): Promise<void> {}
+  async refreshTokenIfNeeded(connection: DeviceConnection): Promise<DeviceConnection> {
+    return connection;
+  }
+
+  async healthCheck(connection: DeviceConnection): Promise<boolean> {
+    return gpsReady(connection);
+  }
+
+  async revokeAccess(_connection: DeviceConnection): Promise<void> {}
+}
+
+export class CatapultConnector extends BaseGpsConnector {
+  source = "catapult" as const;
+}
+
+export class StatSportsConnector extends BaseGpsConnector {
+  source = "statsports" as const;
 }
