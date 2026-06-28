@@ -2589,5 +2589,11 @@
     "none": "Nincs függő meghívó",
     "error": "Hiba történt. Próbáld újra.",
     "athleteProfileRequired": "Hozd létre a sportolói profilodat a csatlakozás előtt."
+  },
+  "Reminders": {
+    "title": "Mai emlékeztetők",
+    "checkin": "Végezd el a bejelentkezést",
+    "habits": "Rögzítsd a mai szokásaidat",
+    "reflection": "Add hozzá a mai reflexiódat"
   }
 }

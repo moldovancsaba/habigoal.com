@@ -2589,5 +2589,11 @@
     "none": "Keine offenen Einladungen",
     "error": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
     "athleteProfileRequired": "Erstelle dein Athletenprofil, bevor du einem Team beitrittst."
+  },
+  "Reminders": {
+    "title": "Heutige Erinnerungen",
+    "checkin": "Schließe deinen Check-in ab",
+    "habits": "Erfasse die heutigen Gewohnheiten",
+    "reflection": "Füge die heutige Reflexion hinzu"
   }
 }

@@ -2589,5 +2589,11 @@
     "none": "Sin invitaciones pendientes",
     "error": "Algo salió mal. Inténtalo de nuevo.",
     "athleteProfileRequired": "Crea tu perfil de atleta antes de unirte a un equipo."
+  },
+  "Reminders": {
+    "title": "Recordatorios de hoy",
+    "checkin": "Completa tu check-in",
+    "habits": "Registra tus hábitos de hoy",
+    "reflection": "Añade tu reflexión de hoy"
   }
 }
