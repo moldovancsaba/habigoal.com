@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { PageHeader, SectionPanel, StateBlock } from "@doneisbetter/gds/client";
 import { SimpleGrid, Box, Stack, Group, Text, Progress, Paper, Loader } from "@mantine/core";
 import type { AthleteTwin } from "@/types/athlete-twin";
@@ -11,6 +12,7 @@ function dimScore(value?: number): number {
 }
 
 export default function DigitalTwinDashboard() {
+  const t = useTranslations("DigitalTwin");
   const [twin, setTwin] = useState<AthleteTwin | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,44 +23,44 @@ export default function DigitalTwinDashboard() {
       .then(async (me) => {
         const athleteId = me?.athleteId ?? me?.user?.athleteId;
         if (!athleteId) {
-          setError("No athlete linked to this account.");
+          setError(t("errorNoAthlete"));
           setLoading(false);
           return;
         }
         const res = await fetch(`/api/athletes/${athleteId}/twin`);
-        if (!res.ok) throw new Error("Twin not found");
+        if (!res.ok) throw new Error("twin_load_failed");
         setTwin(await res.json());
       })
-      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load twin"))
+      .catch(() => setError(t("errorLoadFailed")))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   if (loading) return <Box p="xl"><Loader /></Box>;
   if (error || !twin) {
     return (
       <Box p="xl">
-        <StateBlock variant="info" title="Digital Twin" description={error ?? "No twin data yet. Complete a daily check-in to initialise."} />
+        <StateBlock variant="info" title={t("emptyTitle")} description={error ?? t("emptyDescription")} />
       </Box>
     );
   }
 
   const dimensions = [
-    { label: "Physical Capacity", value: dimScore(twin.physical?.restingHeartRateBpm ? 100 - twin.physical.restingHeartRateBpm : undefined), sources: twin.physical?.sources },
-    { label: "Performance State", value: dimScore(twin.recovery?.recoveryReadinessScore), sources: twin.performance?.sources },
-    { label: "Technical Execution", value: dimScore(twin.technical?.movementSymmetryIndex ? twin.technical.movementSymmetryIndex * 100 : undefined), sources: twin.technical?.sources },
-    { label: "Recovery & Sleep", value: dimScore(twin.recovery?.sleepQualityScore7d), sources: twin.recovery?.sources },
-    { label: "Cognitive Load", value: dimScore(twin.cognitive?.moodTrend7d ? twin.cognitive.moodTrend7d * 10 : undefined), sources: twin.cognitive?.sources },
+    { label: t("dimPhysical"), value: dimScore(twin.physical?.restingHeartRateBpm ? 100 - twin.physical.restingHeartRateBpm : undefined), sources: twin.physical?.sources },
+    { label: t("dimPerformance"), value: dimScore(twin.recovery?.recoveryReadinessScore), sources: twin.performance?.sources },
+    { label: t("dimTechnical"), value: dimScore(twin.technical?.movementSymmetryIndex ? twin.technical.movementSymmetryIndex * 100 : undefined), sources: twin.technical?.sources },
+    { label: t("dimRecovery"), value: dimScore(twin.recovery?.sleepQualityScore7d), sources: twin.recovery?.sources },
+    { label: t("dimCognitive"), value: dimScore(twin.cognitive?.moodTrend7d ? twin.cognitive.moodTrend7d * 10 : undefined), sources: twin.cognitive?.sources },
   ];
 
   return (
     <Box className="digital-twin-dashboard" pb="xl">
       <PageHeader
-        title="Unified Digital Twin"
-        subtitle={`Schema v${twin.schemaVersion} • Twin v${twin.twinVersion} • Updated ${new Date(twin.lastUpdatedAt).toLocaleString()}`}
+        title={t("title")}
+        subtitle={t("metaSubtitle", { schema: twin.schemaVersion, twin: twin.twinVersion, updated: new Date(twin.lastUpdatedAt).toLocaleString() })}
       />
       <Box mt="xl">
         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
-          <SectionPanel title="5-Dimension Status">
+          <SectionPanel title={t("dimensionsTitle")}>
             <Stack gap="md">
               {dimensions.map((d) => (
                 <Paper key={d.label} withBorder p="md">
@@ -67,26 +69,26 @@ export default function DigitalTwinDashboard() {
                     <Text fw={700}>{d.value}%</Text>
                   </Group>
                   <Progress value={d.value} color={d.value >= 70 ? "green" : d.value >= 50 ? "yellow" : "red"} size="md" radius="xl" />
-                  <Text size="sm" c="dimmed" mt="xs">Sources: {(d.sources ?? []).join(", ") || "none"}</Text>
+                  <Text size="sm" c="dimmed" mt="xs">{t("sourcesLabel", { sources: (d.sources ?? []).join(", ") || t("sourcesNone") })}</Text>
                 </Paper>
               ))}
             </Stack>
           </SectionPanel>
           <Stack gap="lg">
-            <SectionPanel title="Twin Metadata">
+            <SectionPanel title={t("metadataTitle")}>
               <StateBlock
                 variant="info"
-                title={`Confidence: ${twin.recovery?.confidence ?? "low"}`}
-                description={`History entries: ${twin.history?.length ?? 0}. Organisation: ${twin.organisationId}.`}
+                title={t("confidenceTitle", { confidence: twin.recovery?.confidence ?? "low" })}
+                description={t("historyDescription", { count: twin.history?.length ?? 0, org: twin.organisationId })}
               />
             </SectionPanel>
-            <SectionPanel title="Synced Sources">
+            <SectionPanel title={t("syncedSourcesTitle")}>
               <Group gap="xs">
                 {[...new Set(dimensions.flatMap((d) => d.sources ?? []))].map((s) => (
                   <StateBlock key={s} variant="info" title={s} />
                 ))}
                 {dimensions.every((d) => !(d.sources ?? []).length) && (
-                  <Text size="sm" c="dimmed">Complete check-in or connect a wearable to populate sources.</Text>
+                  <Text size="sm" c="dimmed">{t("syncedSourcesEmpty")}</Text>
                 )}
               </Group>
             </SectionPanel>

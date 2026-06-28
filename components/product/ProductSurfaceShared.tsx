@@ -85,11 +85,12 @@ export function SharedFoundationSection({
   relatedSurface?: ProductSurface;
   surface: ProductSurface;
 }) {
+  const t = useTranslations("ProductSurfaces");
   const title = relatedSurface ? `${surface.shortName} and ${relatedSurface.shortName} shared foundation` : `${surface.shortName} shared foundation`;
   return (
     <SectionPanel
       title={title}
-      description="Both products use the same feature directory, data contracts, guidance audit trail, and backend capabilities. Product filtering changes the UI and permissions, not the source truth."
+      description={t("sharedFoundationDescription")}
     >
       <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
         {surface.sharedDataContracts.map((contract) => (
@@ -98,7 +99,7 @@ export function SharedFoundationSection({
               <Badge variant="light" color={inverse ? "yellow" : "ingress"} w="fit-content">{contract.owner}</Badge>
               <Title order={3} size="h4">{contract.name}</Title>
               <Text size="sm" className={inverse ? "aiq-muted" : "hbg-muted-text"}>{contract.description}</Text>
-              <Text size="sm"><strong>Sync:</strong> {contract.syncBehavior}</Text>
+              <Text size="sm"><strong>{t("syncLabel")}</strong> {contract.syncBehavior}</Text>
             </Stack>
           </Paper>
         ))}
@@ -116,12 +117,13 @@ export function FunctionDirectory({
   featuredFunctions?: ProductFunction[];
   surface: ProductSurface;
 }) {
+  const t = useTranslations("ProductSurfaces");
   const functions = featuredFunctions ?? surface.functionRegistry;
 
   return (
     <SectionPanel
       title={`${surface.shortName} function directory`}
-      description={surface.id === "habigoal" ? "Only client-safe support functions render in Habigoal." : "AthleteIQ includes every Habigoal function and adds professional-only modules."}
+      description={surface.id === "habigoal" ? t("habigoalDirectoryDescription") : t("athleteIqDirectoryDescription")}
     >
       <SimpleGrid cols={{ base: 1, lg: compact ? 2 : 3 }} spacing="md">
         {functions.map((item) => (
@@ -133,6 +135,7 @@ export function FunctionDirectory({
 }
 
 function FunctionCard({ item, productId }: { item: ProductFunction; productId: ProductSurfaceId }) {
+  const t = useTranslations("ProductSurfaces");
   const pro = productId === "athlete-iq";
   return (
     <Paper component="article" className={pro ? "aiq-function-card surface-outline" : "hbg-function-card surface-outline"} withBorder radius="md" p="lg">
@@ -150,9 +153,9 @@ function FunctionCard({ item, productId }: { item: ProductFunction; productId: P
           <Badge variant="light" color={item.status === "planned" ? "gray" : pro ? "yellow" : "ingress"}>{item.status}</Badge>
         </Group>
         <AudienceBadges audience={item.audience} pro={pro} />
-        <DetailList title="Runtime flow" items={item.runtimeFlow.slice(0, 3)} pro={pro} />
+        <DetailList title={t("runtimeFlowTitle")} items={item.runtimeFlow.slice(0, 3)} pro={pro} />
         <Box className={pro ? "aiq-failure-pill" : "hbg-failure-pill"} px="sm" py="xs">
-          <Text size="sm"><strong>Failure mode:</strong> {item.failureMode}</Text>
+          <Text size="sm"><strong>{t("failureModeLabel")}</strong> {item.failureMode}</Text>
         </Box>
       </Stack>
     </Paper>
