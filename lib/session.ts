@@ -4,7 +4,11 @@ import { requireServerEnv } from "@/config/env";
 
 const SESSION_COOKIE_NAME = "habigoal_session";
 const LEGACY_SESSION_COOKIE_NAMES = ["survey_session", "kidex_session"];
-const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
+// Persistent pseudo session: a long absolute lifetime plus sliding refresh
+// (middleware) keeps an active user signed in until explicit logout.
+// Configurable via SESSION_DURATION_DAYS (default 30).
+export const SESSION_DURATION_DAYS = Number(process.env.SESSION_DURATION_DAYS) > 0 ? Number(process.env.SESSION_DURATION_DAYS) : 30;
+const SESSION_DURATION = SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000;
 
 export type SessionPayload = {
   userId: string;
@@ -25,7 +29,7 @@ export async function encrypt(payload: SessionPayload) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(`${SESSION_DURATION_DAYS}d`)
     .sign(getSecretKey());
 }
 

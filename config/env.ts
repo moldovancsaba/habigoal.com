@@ -30,6 +30,7 @@ export const env = {
   ssoRedirectUri: process.env.SSO_REDIRECT_URI || (appBaseUrl ? `${appBaseUrl}/api/oauth/callback` : undefined),
   ssoLogoutUrl: process.env.SSO_LOGOUT_URL,
   authSecret: process.env.AUTH_SECRET,
+  sessionDurationDays: Number(process.env.SESSION_DURATION_DAYS) > 0 ? Number(process.env.SESSION_DURATION_DAYS) : 30,
   trainersIngestApiKey: process.env.TRAINERS_INGEST_API_KEY,
   cronSecret: process.env.CRON_SECRET,
   ouraClientId: process.env.OURA_CLIENT_ID,
