@@ -1123,6 +1123,24 @@ a {
   --mantine-color-yellow-light-color: var(--aiq-gold);
   --mantine-color-yellow-outline: var(--aiq-gold);
   --mantine-color-yellow-outline-hover: color-mix(in srgb, var(--aiq-gold) 14%, transparent);
+
+  /* The Mantine Paper/Card/input defaults paint the global navy surface, which
+     leaks the old blue look into the professional surface. Remap the shared
+     surface/border/text tokens to the athlete-gold vibe inside the AIQ shell so
+     every Mantine surface adopts the premium black-gold theme, not just the
+     header and nav. Scoped to .aiq-product-shell only. */
+  --surface-base: var(--gds-vibe-surface, rgba(21, 24, 31, 0.88));
+  --surface-elevated: color-mix(in srgb, var(--gds-vibe-surface, rgba(21, 24, 31, 0.92)) 90%, #000);
+  --surface-gradient-top: rgba(255, 215, 106, 0.06);
+  --surface-gradient-bottom: rgba(0, 0, 0, 0.14);
+  --surface-hover-top: rgba(255, 215, 106, 0.10);
+  --surface-hover-bottom: rgba(0, 0, 0, 0.06);
+  --border-primary: var(--gds-vibe-border, rgba(240, 182, 66, 0.30));
+  --surface-icon-border: var(--gds-vibe-border, rgba(240, 182, 66, 0.24));
+  --surface-section-border: var(--gds-vibe-border, rgba(240, 182, 66, 0.22));
+  --surface-shadow-elevated: 0 24px 64px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 215, 106, 0.06);
+  --text-primary: var(--gds-vibe-text, #fff9e8);
+  --text-secondary: var(--gds-vibe-muted, #d8c8a8);
 }
 
 /* Brand gold is light, so filled gold buttons need dark text for contrast. */
