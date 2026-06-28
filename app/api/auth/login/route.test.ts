@@ -47,7 +47,6 @@ describe("persona pseudo login", () => {
 
     const response = await POST(loginRequest({ identifier: "Coach@Example.com", persona: "trainer", next: "/hu" }));
 
-    expect(mockedFindUserByEmail).toHaveBeenCalledWith("coach@example.com");
     expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
       email: "coach@example.com",
       name: "Coach@Example.com",
@@ -80,7 +79,6 @@ describe("persona pseudo login", () => {
 
     const response = await POST(loginRequest({ identifier: "Athlete@Example.com", persona: "athlete", next: "/hu/athlete-iq", productSurface: "athlete-iq" }));
 
-    expect(mockedFindUserByEmail).toHaveBeenCalledWith("athlete@example.com");
     expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
       email: "athlete@example.com",
       name: "Athlete@Example.com",
@@ -139,15 +137,31 @@ describe("persona pseudo login", () => {
     expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
   });
 
-  it("blocks Habigoal-first registration when the email has not registered through Athlete IQ", async () => {
+  it("allows Habigoal-first self-registration without any prior Athlete IQ account (#424)", async () => {
+    // No pre-existing user — standalone consumer signup.
     mockedFindUserByEmail.mockResolvedValue(null);
+    mockedUpsertPersonaLoginUser.mockResolvedValue({
+      id: "user-new",
+      email: "new-athlete@example.com",
+      name: "new-athlete@example.com",
+      roles: ["athlete"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: false }
+      }
+    });
 
     const response = await POST(loginRequest({ identifier: "new-athlete@example.com", persona: "athlete", next: "/hu/habigoal", productSurface: "habigoal" }));
 
-    expect(mockedUpsertPersonaLoginUser).not.toHaveBeenCalled();
-    expect(mockedCreateSession).not.toHaveBeenCalled();
+    expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
+      email: "new-athlete@example.com",
+      name: "new-athlete@example.com",
+      productSurface: "habigoal",
+      roles: ["athlete"]
+    });
+    expect(mockedCreateSession).toHaveBeenCalled();
     expect(response.status).toBe(303);
-    expect(response.headers.get("location")).toBe("http://localhost/hu/login?next=%2Fhu%2Fhabigoal&error=athlete_iq_registration_required");
+    expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
   });
 
   it("denies Athlete IQ when explicit professional entitlement is missing", async () => {
