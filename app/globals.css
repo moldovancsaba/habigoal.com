@@ -689,10 +689,14 @@ a {
 
 .habigoal-home-shell {
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
 }
 
 .aiq-pro-shell {
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   background:
     linear-gradient(180deg, rgba(255, 213, 74, 0.05), transparent 28%),
     linear-gradient(135deg, rgba(0, 63, 206, 0.14), transparent 42%),
