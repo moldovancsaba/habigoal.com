@@ -47,7 +47,7 @@ export default async function LandingPage({
               <Title order={1}>{t("selectorTitle")}</Title>
             </Stack>
 
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
+            <SimpleGrid className="selector-grid" cols={{ base: 1, sm: 2 }} spacing={{ base: "md", sm: "lg", md: "xl" }}>
               <ProductEntryCard
                 badge={t("habigoalBadge")}
                 title={t("habigoalTitle")}
