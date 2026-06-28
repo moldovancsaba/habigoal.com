@@ -2290,6 +2290,41 @@
         },
         "liteModule": {
           "description": "Füge einen schnellen manuellen Eintrag hinzu, damit dieses Modul aktuell bleibt."
+        },
+        "recovery_lite": {
+          "title": "Erholung erfassen"
+        },
+        "fuel_lite": {
+          "title": "Ernährung erfassen"
+        }
+      },
+      "habits": {
+        "extraTouches": {
+          "title": "Extra Ballkontakte"
+        },
+        "weakFoot": {
+          "title": "Schwacher-Fuß-Training"
+        },
+        "tacticalLearning": {
+          "title": "Taktiklernen"
+        },
+        "stretching": {
+          "title": "Dehnen"
+        },
+        "mobility": {
+          "title": "Mobilität"
+        },
+        "recoverySession": {
+          "title": "Regenerationseinheit"
+        },
+        "hydration": {
+          "title": "Flüssigkeitszufuhr"
+        },
+        "nutrition": {
+          "title": "Ernährung"
+        },
+        "sleepBeforeMidnight": {
+          "title": "Schlaf vor Mitternacht"
         }
       }
     },

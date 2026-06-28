@@ -1105,6 +1105,9 @@ a {
 .aiq-product-shell {
   min-height: 100vh;
   min-height: 100svh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   color: var(--gds-vibe-text, #f4f7fb);
   background: var(--gds-vibe-gradient, #070c18);
 
@@ -1348,6 +1351,13 @@ a {
   border: 1px solid var(--gds-vibe-border, rgba(255, 213, 74, 0.14));
   border-radius: var(--mantine-radius-md);
   background: color-mix(in srgb, var(--gds-vibe-surface, rgba(244, 247, 251, 0.045)) 86%, transparent);
+  overflow-wrap: anywhere;
+}
+
+/* Let the title/badge row shrink so the priority badge never clips off-screen. */
+.aiq-row-card > .mantine-Stack-root,
+.aiq-row-card .mantine-Group-root {
+  min-width: 0;
 }
 
 .shared-daily-recorder {

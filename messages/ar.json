@@ -2290,6 +2290,41 @@
         },
         "liteModule": {
           "description": "أضف إدخالًا يدويًا سريعًا للحفاظ على تحديث هذه الوحدة."
+        },
+        "recovery_lite": {
+          "title": "تسجيل التعافي"
+        },
+        "fuel_lite": {
+          "title": "تسجيل التغذية"
+        }
+      },
+      "habits": {
+        "extraTouches": {
+          "title": "لمسات إضافية"
+        },
+        "weakFoot": {
+          "title": "تدريب القدم الأضعف"
+        },
+        "tacticalLearning": {
+          "title": "تعلم تكتيكي"
+        },
+        "stretching": {
+          "title": "تمطيط"
+        },
+        "mobility": {
+          "title": "حركة ومفاصل"
+        },
+        "recoverySession": {
+          "title": "جلسة تعافٍ"
+        },
+        "hydration": {
+          "title": "ترطيب"
+        },
+        "nutrition": {
+          "title": "تغذية"
+        },
+        "sleepBeforeMidnight": {
+          "title": "النوم قبل منتصف الليل"
         }
       }
     },
