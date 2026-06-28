@@ -2151,7 +2151,8 @@
               "recovery": "Recovery",
               "fuel": "Fuel",
               "learning": "Learning",
-              "wearable": "Wearable"
+              "wearable": "Wearable",
+              "cognitive": "إدراكي"
             },
             "protocol": "Protocol",
             "protocolPlaceholder": "e.g. cold-shower",
@@ -2200,6 +2201,15 @@
               "stable": "Stable",
               "watch": "Watch",
               "missing": "No data"
+            },
+            "cognitiveTrait": "السمة",
+            "cognitiveScore": "النتيجة (0–100)",
+            "cognitiveEmpty": "لا توجد نتائج إدراكية بعد. أدخل نتيجة سمة أعلاه للبدء.",
+            "cognitiveEntered": "{count} مُدخَلة",
+            "cognitiveProvenance": {
+              "entered": "مُدخَل",
+              "derived": "مُشتق",
+              "missing": "لا توجد بيانات"
             }
           },
           "progress": {

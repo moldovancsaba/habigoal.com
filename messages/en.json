@@ -2151,7 +2151,8 @@
               "recovery": "Recovery",
               "fuel": "Fuel",
               "learning": "Learning",
-              "wearable": "Wearable"
+              "wearable": "Wearable",
+              "cognitive": "Cognitive"
             },
             "protocol": "Protocol",
             "protocolPlaceholder": "e.g. cold-shower",
@@ -2199,6 +2200,15 @@
               "strength": "Strength",
               "stable": "Stable",
               "watch": "Watch",
+              "missing": "No data"
+            },
+            "cognitiveTrait": "Trait",
+            "cognitiveScore": "Score (0–100)",
+            "cognitiveEmpty": "No cognitive results yet. Submit a trait score above to begin.",
+            "cognitiveEntered": "{count} entered",
+            "cognitiveProvenance": {
+              "entered": "Entered",
+              "derived": "Derived",
               "missing": "No data"
             }
           },

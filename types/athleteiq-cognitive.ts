@@ -2,7 +2,24 @@ import type { AthleteIqModuleClaimBoundary, AthleteIqModuleMaturity } from "@/li
 
 export type CognitiveTrait = "alertness" | "impulse_control" | "attention" | "risk" | "reasoning" | "memory_retention";
 export type CognitiveTraitBand = "strength" | "stable" | "watch" | "missing";
-export type CognitiveLiteSource = "local_profile" | "missing_local_profile";
+export type CognitiveLiteSource = "manual_entry" | "local_profile" | "missing_local_profile";
+// Where a trait score came from. `entered` = an athlete submitted a manual
+// result; `derived` = computed from the baseline profile (fallback); `missing`
+// = no entry and no baseline (no fabricated score).
+export type CognitiveProvenance = "entered" | "derived" | "missing";
+
+// Persisted manual cognitive result. Idempotent per (athleteId, trait,
+// localDate): a same-day re-entry overwrites the stored score.
+export type CognitiveTraitEntry = {
+  id?: string;
+  athleteId: string;
+  trait: CognitiveTrait;
+  localDate: string;
+  score: number;
+  source: "manual_entry";
+  enteredAt: string;
+  actorEmail?: string;
+};
 export type CogLeagueTournamentStatus = "disabled_partner_future" | "planned_partner_contract" | "active";
 export type CogLeagueCheckpointStatus = "not_available" | "locked_attempt_limit" | "eligible_future";
 
@@ -14,6 +31,8 @@ export type CognitiveTraitResult = {
   signatureKey: string;
   improvementTipKey: string;
   source: CognitiveLiteSource;
+  provenance: CognitiveProvenance;
+  enteredAt: string | null;
   sourceLabelKey: string;
   benchmarkStatus: "non_benchmark";
   claimBoundary: AthleteIqModuleClaimBoundary;
@@ -30,6 +49,7 @@ export type CognitiveLiteJourney = {
   benchmarkStatus: "non_benchmark";
   traitResults: CognitiveTraitResult[];
   completedTraitCount: number;
+  enteredTraitCount: number;
   totalTraitCount: number;
   isComplete: boolean;
   dataUsed: string[];

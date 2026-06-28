@@ -5,6 +5,7 @@ import { SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
+import { COGNITIVE_TRAITS } from "@/lib/athleteiq-cognitive";
 import type { CognitiveLiteJourney } from "@/types/athleteiq-cognitive";
 import type { LiteModuleDailySummary, LiteModuleGatewaySummary } from "@/types/athleteiq-lite-modules";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
@@ -12,7 +13,7 @@ import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 type GatewayResponse = { summary: LiteModuleGatewaySummary | null };
 type CognitiveResponse = { journey: CognitiveLiteJourney };
 
-type EntryModule = "recovery" | "fuel" | "learning" | "wearable";
+type EntryModule = "recovery" | "fuel" | "learning" | "wearable" | "cognitive";
 const FUEL_STATUSES = ["on_track", "late", "missed", "unknown"] as const;
 const LEARNING_STATUSES = ["not_started", "in_progress", "completed", "skipped"] as const;
 const WEARABLE_METRICS: Record<string, string> = {
@@ -44,6 +45,8 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
   const [learningStatus, setLearningStatus] = useState<string>("in_progress");
   const [metricKey, setMetricKey] = useState<string>("resting_heart_rate");
   const [metricValue, setMetricValue] = useState<number>(60);
+  const [cognitiveTrait, setCognitiveTrait] = useState<string>(COGNITIVE_TRAITS[0]);
+  const [cognitiveScore, setCognitiveScore] = useState<number>(50);
 
   const fetchAll = useCallback(
     () => {
@@ -77,7 +80,8 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
       { value: "recovery", label: t("lite.modules.recovery") },
       { value: "fuel", label: t("lite.modules.fuel") },
       { value: "learning", label: t("lite.modules.learning") },
-      { value: "wearable", label: t("lite.modules.wearable") }
+      { value: "wearable", label: t("lite.modules.wearable") },
+      { value: "cognitive", label: t("lite.modules.cognitive") }
     ],
     [t]
   );
@@ -98,9 +102,12 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
     } else if (entryModule === "learning") {
       endpoint = "/api/athleteiq/learning/progress";
       payload = { ...payload, itemId: itemId.trim(), status: learningStatus, ...(learningStatus === "completed" ? { completedAt: nowIso } : {}) };
-    } else {
+    } else if (entryModule === "wearable") {
       endpoint = "/api/athleteiq/wearables/manual-entry";
       payload = { ...payload, metricKey, value: metricValue, unit: WEARABLE_METRICS[metricKey], measuredAt: nowIso };
+    } else {
+      endpoint = "/api/athleteiq/cognitive-lite/results";
+      payload = { athleteId, localDate, trait: cognitiveTrait, score: cognitiveScore };
     }
 
     const result = await athleteIqRequest(endpoint, athleteIqJsonInit(payload));
@@ -164,6 +171,25 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
             </Group>
           ) : null}
 
+          {entryModule === "cognitive" ? (
+            <Group grow align="flex-end">
+              <Select
+                label={t("lite.cognitiveTrait")}
+                data={COGNITIVE_TRAITS.map((value) => ({ value, label: domain(`athleteiq.cognitiveLite.trait.${value}`) }))}
+                value={cognitiveTrait}
+                onChange={(value) => setCognitiveTrait(value ?? COGNITIVE_TRAITS[0])}
+                allowDeselect={false}
+              />
+              <NumberInput
+                label={t("lite.cognitiveScore")}
+                value={cognitiveScore}
+                min={0}
+                max={100}
+                onChange={(value) => setCognitiveScore(clampNumber(value, 0, 100, 0))}
+              />
+            </Group>
+          ) : null}
+
           {feedback === "saved" ? <Text size="sm" style={{ color: "var(--status-success)" }}>{t("lite.saved")}</Text> : null}
           {feedback === "error" ? <Text size="sm" style={{ color: "var(--status-error)" }}>{t("common.actionFailed")}</Text> : null}
 
@@ -218,23 +244,35 @@ function CognitiveSummary({
   domain: (key: string) => string;
   t: ReturnType<typeof useTranslations>;
 }) {
+  const hasAnyData = journey.traitResults.some((trait) => trait.score !== null);
   return (
     <Stack gap="xs">
       <Text size="sm" className="aiq-muted-soft">{t("lite.cognitiveTitle")}</Text>
       <Box className="aiq-row-card">
         <Stack gap="xs">
-          <Text size="sm" className="aiq-muted-faint">{t("lite.cognitiveProgress", { completed: journey.completedTraitCount, total: journey.totalTraitCount })}</Text>
-          {journey.traitResults.map((trait) => (
-            <Group key={trait.trait} justify="space-between" gap="sm">
-              <Text size="sm">{domain(`athleteiq.cognitiveLite.trait.${trait.trait}`)}</Text>
-              <Group gap="xs">
-                <Text size="sm" fw={700}>{trait.score === null ? "-" : trait.score}</Text>
-                <Badge size="sm" variant="light" color={trait.band === "strength" ? "tactical" : trait.band === "stable" ? "yellow" : trait.band === "watch" ? "orange" : "gray"}>
-                  {t(`lite.cognitiveBand.${trait.band}`)}
-                </Badge>
+          <Text size="sm" className="aiq-muted-faint">
+            {t("lite.cognitiveProgress", { completed: journey.completedTraitCount, total: journey.totalTraitCount })}
+            {" · "}
+            {t("lite.cognitiveEntered", { count: journey.enteredTraitCount })}
+          </Text>
+          {!hasAnyData ? (
+            <Text size="sm" className="aiq-muted-faint">{t("lite.cognitiveEmpty")}</Text>
+          ) : (
+            journey.traitResults.map((trait) => (
+              <Group key={trait.trait} justify="space-between" gap="sm">
+                <Text size="sm">{domain(`athleteiq.cognitiveLite.trait.${trait.trait}`)}</Text>
+                <Group gap="xs">
+                  <Badge size="sm" variant="outline" color={trait.provenance === "entered" ? "tactical" : "gray"}>
+                    {t(`lite.cognitiveProvenance.${trait.provenance}`)}
+                  </Badge>
+                  <Text size="sm" fw={700}>{trait.score === null ? "-" : trait.score}</Text>
+                  <Badge size="sm" variant="light" color={trait.band === "strength" ? "tactical" : trait.band === "stable" ? "yellow" : trait.band === "watch" ? "orange" : "gray"}>
+                    {t(`lite.cognitiveBand.${trait.band}`)}
+                  </Badge>
+                </Group>
               </Group>
-            </Group>
-          ))}
+            ))
+          )}
         </Stack>
       </Box>
     </Stack>

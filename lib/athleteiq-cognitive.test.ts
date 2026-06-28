@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { GET as getCognitiveResults } from "@/app/api/athleteiq/cognitive-lite/results/route";
 import { GET as getCogLeagueTournaments } from "@/app/api/athleteiq/cogleague/tournaments/route";
-import { buildCognitiveLiteJourney, buildCogLeagueBoundary, buildCogLeagueCheckpointContract, validateCogLeagueBoundary } from "@/lib/athleteiq-cognitive";
+import { buildCognitiveLiteJourney, buildCogLeagueBoundary, buildCogLeagueCheckpointContract, validateCogLeagueBoundary, validateCognitiveTraitEntry } from "@/lib/athleteiq-cognitive";
 import type { ChildProfile } from "@/repositories/child.repository";
+import type { CognitiveTraitEntry } from "@/types/athleteiq-cognitive";
 
 describe("AthleteIQ Cognitive Lite boundary", () => {
   it("renders local non-benchmark trait results from profile baselines", () => {
@@ -14,6 +15,52 @@ describe("AthleteIQ Cognitive Lite boundary", () => {
     expect(journey.traitResults.every((result) => result.score === null || (result.score >= 0 && result.score <= 100))).toBe(true);
     expect(journey.traitResults.every((result) => result.source === "local_profile")).toBe(true);
     expect(journey.dataUsed).toContain("profile_baseline:reasoning");
+  });
+
+  it("treats an entered trait result as manual-entry-backed and authoritative", () => {
+    const entries: CognitiveTraitEntry[] = [
+      { athleteId: "athlete-1", trait: "attention", localDate: "2026-06-26", score: 88, source: "manual_entry", enteredAt: "2026-06-26T08:00:00.000Z" }
+    ];
+    const journey = buildCognitiveLiteJourney({ athleteId: "athlete-1", athlete: athleteProfile(), entries, now: new Date("2026-06-26T12:00:00.000Z") });
+
+    const attention = journey.traitResults.find((result) => result.trait === "attention");
+    expect(attention?.provenance).toBe("entered");
+    expect(attention?.source).toBe("manual_entry");
+    expect(attention?.score).toBe(88);
+    expect(attention?.dataUsed).toContain("manual_entry:attention");
+    expect(journey.enteredTraitCount).toBe(1);
+
+    // Other traits remain derived from the baseline.
+    const reasoning = journey.traitResults.find((result) => result.trait === "reasoning");
+    expect(reasoning?.provenance).toBe("derived");
+  });
+
+  it("prefers the most recent entry per trait", () => {
+    const entries: CognitiveTraitEntry[] = [
+      { athleteId: "athlete-1", trait: "memory_retention", localDate: "2026-06-25", score: 40, source: "manual_entry", enteredAt: "2026-06-25T08:00:00.000Z" },
+      { athleteId: "athlete-1", trait: "memory_retention", localDate: "2026-06-26", score: 90, source: "manual_entry", enteredAt: "2026-06-26T08:00:00.000Z" }
+    ];
+    const journey = buildCognitiveLiteJourney({ athleteId: "athlete-1", athlete: null, entries });
+    const memory = journey.traitResults.find((result) => result.trait === "memory_retention");
+    expect(memory?.score).toBe(90);
+    expect(memory?.provenance).toBe("entered");
+  });
+
+  it("marks traits with neither entry nor baseline as missing (no fabricated score)", () => {
+    const journey = buildCognitiveLiteJourney({ athleteId: "athlete-1", athlete: null, entries: [] });
+    expect(journey.enteredTraitCount).toBe(0);
+    expect(journey.completedTraitCount).toBe(0);
+    expect(journey.traitResults.every((result) => result.provenance === "missing")).toBe(true);
+    expect(journey.traitResults.every((result) => result.score === null)).toBe(true);
+  });
+
+  it("clamps an out-of-range entered score into the 0..100 band", () => {
+    const entries: CognitiveTraitEntry[] = [
+      { athleteId: "athlete-1", trait: "risk", localDate: "2026-06-26", score: 140, source: "manual_entry", enteredAt: "2026-06-26T08:00:00.000Z" }
+    ];
+    const journey = buildCognitiveLiteJourney({ athleteId: "athlete-1", athlete: null, entries });
+    const risk = journey.traitResults.find((result) => result.trait === "risk");
+    expect(risk?.score).toBe(100);
   });
 
   it("keeps partial cognitive journeys explicit", () => {
@@ -45,6 +92,24 @@ describe("AthleteIQ Cognitive Lite boundary", () => {
     expect(checkpoint.status).toBe("locked_attempt_limit");
     expect(checkpoint.lockReason).toBe("attempt_limit_exceeded");
     expect(checkpoint.missingData).toContain("ranking_tie_breakers");
+  });
+});
+
+describe("validateCognitiveTraitEntry", () => {
+  it("accepts a known trait and an in-range score", () => {
+    expect(validateCognitiveTraitEntry({ trait: "attention", score: 75 })).toEqual([]);
+    expect(validateCognitiveTraitEntry({ trait: "risk", score: 0 })).toEqual([]);
+    expect(validateCognitiveTraitEntry({ trait: "risk", score: 100 })).toEqual([]);
+  });
+
+  it("rejects an unknown trait", () => {
+    expect(validateCognitiveTraitEntry({ trait: "speed", score: 50 })).toContain("trait must be one of: alertness, impulse_control, attention, risk, reasoning, memory_retention");
+  });
+
+  it("rejects a non-numeric or out-of-range score", () => {
+    expect(validateCognitiveTraitEntry({ trait: "attention", score: "high" }).some((error) => error.includes("score must be a number"))).toBe(true);
+    expect(validateCognitiveTraitEntry({ trait: "attention", score: 101 }).some((error) => error.includes("between 0 and 100"))).toBe(true);
+    expect(validateCognitiveTraitEntry({ trait: "attention", score: -1 }).some((error) => error.includes("between 0 and 100"))).toBe(true);
   });
 });
 
