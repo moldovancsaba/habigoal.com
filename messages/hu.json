@@ -1901,27 +1901,27 @@
           "development": "Fejlesztés"
         },
         "modules": {
-          "home": "Home",
+          "home": "Kezdőlap",
           "profile": "Felhasználói profil",
-          "checkin": "Check-in",
+          "checkin": "Bejelentkezés",
           "session": "Élő edzés",
           "calendar": "Naptár",
-          "coach": "Coach",
+          "coach": "Edző",
           "parent": "Szülő",
           "team": "Csapat",
-          "pillars": "Pillér státusz",
+          "pillars": "Pillér állapot",
           "recovery": "Regeneráció",
-          "fuel": "Fuel",
+          "fuel": "Táplálkozás",
           "mental": "Mentális",
-          "cognitive": "Cognitive Lite",
+          "cognitive": "Kognitív Lite",
           "reflection": "Reflexió",
           "habits": "Szokások",
-          "roadmap": "Roadmap",
-          "report": "Riport",
-          "plan": "Daily plan",
-          "sessions": "Sessions",
-          "progress": "Progress",
-          "lite": "Lite modules"
+          "roadmap": "Ütemterv",
+          "report": "Jelentés",
+          "plan": "Napi terv",
+          "sessions": "Edzések",
+          "progress": "Haladás",
+          "lite": "Lite modulok"
         }
       },
       "athleteWorkspace": {
@@ -1999,209 +1999,209 @@
         },
         "sections": {
           "plan": {
-            "title": "Today's plan",
-            "copy": "Work through the tasks generated from your check-in."
+            "title": "Mai terv",
+            "copy": "Dolgozd végig a bejelentkezésedből generált feladatokat."
           },
           "sessions": {
-            "title": "Training session",
-            "copy": "Build today's session from your plan, run it, and debrief."
+            "title": "Edzés",
+            "copy": "Építsd fel a mai edzést a tervedből, futtasd le, és értékeld."
           },
           "mental": {
-            "title": "Mental edge",
-            "copy": "Short routines to steady focus, mood, and confidence."
+            "title": "Mentális előny",
+            "copy": "Rövid rutinok a fókusz, a hangulat és az önbizalom stabilizálására."
           },
           "reflection": {
-            "title": "Reflection",
-            "copy": "Capture how today went and choose who can see it."
+            "title": "Reflexió",
+            "copy": "Rögzítsd, hogyan telt a mai nap, és válaszd ki, ki láthatja."
           },
           "progress": {
-            "title": "My progress",
-            "copy": "How your scores are trending over the last 30 days."
+            "title": "Haladásom",
+            "copy": "Hogyan alakulnak a pontszámaid az elmúlt 30 napban."
           },
           "lite": {
-            "title": "Lite modules",
-            "copy": "Log recovery, fuel, learning, and manual wearable data."
+            "title": "Lite modulok",
+            "copy": "Rögzítsd a regenerációt, táplálkozást, tanulást és kézi viselhető adatokat."
           }
         },
         "panels": {
           "common": {
-            "loading": "Loading…",
-            "loadError": "Could not load this section.",
-            "retry": "Retry",
-            "noData": "No data yet",
-            "actionFailed": "That action could not be completed. Please try again."
+            "loading": "Betöltés…",
+            "loadError": "Ezt a szakaszt nem sikerült betölteni.",
+            "retry": "Újra",
+            "noData": "Még nincs adat",
+            "actionFailed": "A művelet nem sikerült. Kérjük, próbáld újra."
           },
           "dailyPlan": {
-            "empty": "No plan yet for today.",
-            "generate": "Generate plan",
-            "recommendationTitle": "Recommended session",
-            "openCount": "{count} of {total} tasks open",
-            "complete": "Complete",
-            "dismiss": "Dismiss",
-            "reopen": "Reopen",
+            "empty": "Mára még nincs terv.",
+            "generate": "Terv készítése",
+            "recommendationTitle": "Ajánlott edzés",
+            "openCount": "{count}/{total} feladat nyitva",
+            "complete": "Kész",
+            "dismiss": "Elvetés",
+            "reopen": "Újranyitás",
             "intensity": {
-              "normal": "Normal",
-              "moderate": "Moderate",
-              "low": "Low",
-              "recovery": "Recovery",
-              "high": "High"
+              "normal": "Normál",
+              "moderate": "Mérsékelt",
+              "low": "Alacsony",
+              "recovery": "Regeneráció",
+              "high": "Magas"
             },
             "sessionType": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "Regeneráció",
+              "controlled": "Kontrollált",
+              "standard": "Normál",
+              "high_intensity": "Nagy intenzitás"
             },
             "priority": {
-              "critical": "Critical",
-              "high": "High",
-              "medium": "Medium",
-              "low": "Low"
+              "critical": "Kritikus",
+              "high": "Magas",
+              "medium": "Közepes",
+              "low": "Alacsony"
             },
             "state": {
-              "completed": "Completed",
-              "dismissed": "Dismissed"
+              "completed": "Befejezve",
+              "dismissed": "Elvetve"
             },
             "dueWindow": {
-              "morning": "Morning",
-              "training": "Training",
-              "evening": "Evening",
-              "anytime": "Anytime"
+              "morning": "Reggel",
+              "training": "Edzés",
+              "evening": "Este",
+              "anytime": "Bármikor"
             }
           },
           "mentalEdge": {
             "trend": {
-              "improving": "Improving",
-              "steady": "Steady",
-              "declining": "Declining",
-              "unknown": "Not enough data"
+              "improving": "Javuló",
+              "steady": "Stabil",
+              "declining": "Romló",
+              "unknown": "Nincs elég adat"
             },
             "risk": {
-              "stable": "Stable",
-              "watch": "Watch",
-              "concern": "Concern",
-              "urgent": "Urgent",
-              "insufficient": "Insufficient data"
+              "stable": "Stabil",
+              "watch": "Figyelendő",
+              "concern": "Aggályos",
+              "urgent": "Sürgős",
+              "insufficient": "Nincs elég adat"
             },
-            "routinesTitle": "Today's routines",
-            "noRoutines": "No routines suggested today.",
-            "completed": "Completed",
-            "minutes": "{minutes} min",
-            "markComplete": "Mark complete"
+            "routinesTitle": "Mai rutinok",
+            "noRoutines": "Ma nincs javasolt rutin.",
+            "completed": "Befejezve",
+            "minutes": "{minutes} perc",
+            "markComplete": "Késznek jelöl"
           },
           "reflection": {
-            "bodyLabel": "Reflection",
-            "bodyPlaceholder": "What went well, what was hard, what's next…",
-            "moodLabel": "Mood tag",
-            "moodPlaceholder": "e.g. focused",
-            "visibilityLabel": "Visibility",
+            "bodyLabel": "Reflexió",
+            "bodyPlaceholder": "Mi ment jól, mi volt nehéz, mi a következő…",
+            "moodLabel": "Hangulatcímke",
+            "moodPlaceholder": "pl. fókuszált",
+            "visibilityLabel": "Láthatóság",
             "visibility": {
-              "private": "Private",
-              "coach_summary": "Coach summary",
-              "parent_summary": "Parent summary"
+              "private": "Privát",
+              "coach_summary": "Edzői összefoglaló",
+              "parent_summary": "Szülői összefoglaló"
             },
-            "save": "Save reflection",
-            "todayTitle": "Today's reflections",
-            "empty": "No reflection saved today."
+            "save": "Reflexió mentése",
+            "todayTitle": "Mai reflexiók",
+            "empty": "Ma nincs mentett reflexió."
           },
           "session": {
-            "todayTitle": "Today's sessions",
-            "buildFromPlan": "Build from plan",
-            "empty": "No session yet. Build one from today's plan.",
-            "buildError": "Could not build a session. Generate a daily plan first.",
-            "transitionError": "That session change is not allowed right now.",
-            "debriefError": "Could not save the debrief.",
+            "todayTitle": "Mai edzések",
+            "buildFromPlan": "Tervből építés",
+            "empty": "Még nincs edzés. Építs egyet a mai tervből.",
+            "buildError": "Az edzést nem sikerült felépíteni. Először készíts napi tervet.",
+            "transitionError": "Ez az edzésváltás most nem engedélyezett.",
+            "debriefError": "Az értékelést nem sikerült menteni.",
             "type": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "Regeneráció",
+              "controlled": "Kontrollált",
+              "standard": "Normál",
+              "high_intensity": "Nagy intenzitás"
             },
             "state": {
-              "draft": "Draft",
-              "active": "Active",
-              "paused": "Paused",
-              "completed": "Completed",
-              "abandoned": "Abandoned"
+              "draft": "Vázlat",
+              "active": "Aktív",
+              "paused": "Szüneteltetve",
+              "completed": "Befejezve",
+              "abandoned": "Megszakítva"
             },
             "block": {
-              "warmup": "Warm-up",
-              "main": "Main",
-              "cooldown": "Cool-down",
-              "recovery": "Recovery"
+              "warmup": "Bemelegítés",
+              "main": "Fő rész",
+              "cooldown": "Levezetés",
+              "recovery": "Regeneráció"
             },
-            "blockMinutes": "{minutes} min",
+            "blockMinutes": "{minutes} perc",
             "action": {
-              "active": "Start",
-              "paused": "Pause",
-              "completed": "Complete",
-              "abandoned": "Abandon"
+              "active": "Indítás",
+              "paused": "Szünet",
+              "completed": "Befejezés",
+              "abandoned": "Megszakítás"
             },
-            "abandonReason": "Reason (required to abandon)",
-            "debriefTitle": "Debrief",
-            "rpe": "RPE (1-10)",
-            "completionPct": "Completion %",
-            "painAfter": "Pain after (1-10)",
-            "moodAfter": "Mood after (1-10)",
-            "notes": "Notes",
-            "recordedLoad": "Recorded load: {load}",
-            "saveDebrief": "Save debrief"
+            "abandonReason": "Indok (megszakításhoz kötelező)",
+            "debriefTitle": "Értékelés",
+            "rpe": "RPE (1–10)",
+            "completionPct": "Teljesítés %",
+            "painAfter": "Fájdalom utána (1–10)",
+            "moodAfter": "Hangulat utána (1–10)",
+            "notes": "Megjegyzések",
+            "recordedLoad": "Rögzített terhelés: {load}",
+            "saveDebrief": "Értékelés mentése"
           },
           "lite": {
             "modules": {
-              "recovery": "Recovery",
-              "fuel": "Fuel",
-              "learning": "Learning",
-              "wearable": "Wearable",
+              "recovery": "Regeneráció",
+              "fuel": "Táplálkozás",
+              "learning": "Tanulás",
+              "wearable": "Viselhető",
               "cognitive": "Kognitív"
             },
-            "protocol": "Protocol",
-            "protocolPlaceholder": "e.g. cold-shower",
-            "perceivedRecovery": "Perceived recovery (1-5)",
-            "mealTiming": "Meal timing",
-            "hydration": "Hydration",
-            "note": "Note",
+            "protocol": "Protokoll",
+            "protocolPlaceholder": "pl. hidegzuhany",
+            "perceivedRecovery": "Érzékelt regeneráció (1–5)",
+            "mealTiming": "Étkezés időzítése",
+            "hydration": "Hidratáció",
+            "note": "Megjegyzés",
             "fuelStatus": {
-              "on_track": "On track",
-              "late": "Late",
-              "missed": "Missed",
-              "unknown": "Unknown"
+              "on_track": "Időben",
+              "late": "Késve",
+              "missed": "Kihagyva",
+              "unknown": "Ismeretlen"
             },
-            "itemId": "Lesson",
-            "itemIdPlaceholder": "e.g. tactical-positioning",
-            "learningStatus": "Status",
+            "itemId": "Lecke",
+            "itemIdPlaceholder": "pl. taktikai-helyezkedés",
+            "learningStatus": "Állapot",
             "learningStatusOption": {
-              "not_started": "Not started",
-              "in_progress": "In progress",
-              "completed": "Completed",
-              "skipped": "Skipped"
+              "not_started": "Nem kezdődött el",
+              "in_progress": "Folyamatban",
+              "completed": "Befejezve",
+              "skipped": "Kihagyva"
             },
-            "metric": "Metric",
+            "metric": "Mutató",
             "metricOption": {
-              "resting_heart_rate": "Resting heart rate",
+              "resting_heart_rate": "Nyugalmi pulzus",
               "hrv_ms": "HRV",
-              "sleep_hours": "Sleep hours",
-              "steps": "Steps",
-              "body_weight_kg": "Body weight",
-              "training_load_au": "Training load"
+              "sleep_hours": "Alvásórák",
+              "steps": "Lépések",
+              "body_weight_kg": "Testsúly",
+              "training_load_au": "Edzésterhelés"
             },
-            "value": "Value",
-            "saved": "Saved.",
-            "save": "Save entry",
-            "summaryTitle": "Today's lite modules",
-            "entryCount": "{count} entries today",
+            "value": "Érték",
+            "saved": "Mentve.",
+            "save": "Bejegyzés mentése",
+            "summaryTitle": "Mai lite modulok",
+            "entryCount": "{count} bejegyzés ma",
             "confidence": {
-              "medium": "Medium confidence",
-              "low": "Low confidence",
-              "insufficient": "No data"
+              "medium": "Közepes megbízhatóság",
+              "low": "Alacsony megbízhatóság",
+              "insufficient": "Nincs adat"
             },
-            "cognitiveTitle": "Cognitive profile",
-            "cognitiveProgress": "{completed} of {total} traits",
+            "cognitiveTitle": "Kognitív profil",
+            "cognitiveProgress": "{completed}/{total} tulajdonság",
             "cognitiveBand": {
-              "strength": "Strength",
-              "stable": "Stable",
-              "watch": "Watch",
-              "missing": "No data"
+              "strength": "Erősség",
+              "stable": "Stabil",
+              "watch": "Figyelendő",
+              "missing": "Nincs adat"
             },
             "cognitiveTrait": "Tulajdonság",
             "cognitiveScore": "Pontszám (0–100)",
@@ -2216,15 +2216,15 @@
           "progress": {
             "metric": {
               "dailyIq": "Daily IQ",
-              "readiness": "Readiness",
-              "habit": "Habits",
-              "mental": "Mental edge"
+              "readiness": "Felkészültség",
+              "habit": "Szokások",
+              "mental": "Mentális előny"
             },
-            "latest": "Latest",
-            "average": "Average",
-            "change": "Change",
-            "points": "Data points",
-            "empty": "No history yet for this metric."
+            "latest": "Legutóbbi",
+            "average": "Átlag",
+            "change": "Változás",
+            "points": "Adatpontok",
+            "empty": "Ehhez a mutatóhoz még nincs előzmény."
           }
         }
       },
@@ -2239,72 +2239,72 @@
     "dailyPlan": {
       "tasks": {
         "completeCheckIn": {
-          "title": "Complete your check-in",
-          "description": "Log today's readiness so the rest of your plan can adapt."
+          "title": "Végezd el a bejelentkezést",
+          "description": "Rögzítsd a mai felkészültséged, hogy a terved többi része alkalmazkodhasson."
         },
         "painGuardrail": {
-          "title": "Pain safety review",
-          "description": "A pain signal needs review before training intensity is cleared."
+          "title": "Fájdalombiztonsági ellenőrzés",
+          "description": "Egy fájdalomjelzést felül kell vizsgálni, mielőtt az edzésintenzitás engedélyezhető."
         },
         "habit": {
-          "description": "Keep your habit streak going today."
+          "description": "Tartsd életben a szokássorozatodat ma."
         },
         "mentalRoutine": {
-          "description": "Run a short mental-edge routine to steady focus."
+          "description": "Futtass egy rövid mentális rutint a fókusz stabilizálásához."
         },
         "liteModule": {
-          "description": "Add a quick manual entry to keep this module current."
+          "description": "Adj hozzá egy gyors kézi bejegyzést, hogy ez a modul naprakész maradjon."
         }
       }
     },
     "mentalEdge": {
       "routines": {
-        "breathingReset": "Breathing reset",
-        "confidenceNote": "Confidence note",
-        "recoveryReflection": "Recovery reflection",
-        "coachCheckIn": "Coach check-in"
+        "breathingReset": "Légzési visszaállítás",
+        "confidenceNote": "Önbizalom-jegyzet",
+        "recoveryReflection": "Regenerációs reflexió",
+        "coachCheckIn": "Edzői egyeztetés"
       },
       "reasons": {
-        "stress_support": "Helps settle stress.",
-        "confidence_support": "Builds confidence.",
-        "mood_support": "Lifts mood.",
-        "coach_support": "Connect with your coach."
+        "stress_support": "Segít csökkenteni a stresszt.",
+        "confidence_support": "Növeli az önbizalmat.",
+        "mood_support": "Javítja a hangulatot.",
+        "coach_support": "Lépj kapcsolatba az edződdel."
       }
     },
     "sessions": {
       "blocks": {
-        "warmup": "Warm-up",
-        "main": "Main block",
-        "cooldown": "Cool-down",
-        "recovery": "Recovery"
+        "warmup": "Bemelegítés",
+        "main": "Fő rész",
+        "cooldown": "Levezetés",
+        "recovery": "Regeneráció"
       },
       "safety": {
-        "recoveryOnly": "Recovery only",
-        "standard": "Standard"
+        "recoveryOnly": "Csak regeneráció",
+        "standard": "Normál"
       }
     },
     "modules": {
       "recoveryLite": {
-        "name": "Recovery"
+        "name": "Regeneráció"
       },
       "fuelLite": {
-        "name": "Fuel"
+        "name": "Táplálkozás"
       },
       "learningLite": {
-        "name": "Learning"
+        "name": "Tanulás"
       },
       "wearableManualSync": {
-        "name": "Manual wearable"
+        "name": "Kézi viselhető"
       }
     },
     "cognitiveLite": {
       "trait": {
-        "alertness": "Alertness",
-        "impulse_control": "Impulse control",
-        "attention": "Attention",
-        "risk": "Risk",
-        "reasoning": "Reasoning",
-        "memory_retention": "Memory & retention"
+        "alertness": "Éberség",
+        "impulse_control": "Impulzuskontroll",
+        "attention": "Figyelem",
+        "risk": "Kockázat",
+        "reasoning": "Érvelés",
+        "memory_retention": "Memória és megtartás"
       }
     },
     "parents": {

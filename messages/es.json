@@ -1903,25 +1903,25 @@
         "modules": {
           "home": "Inicio",
           "profile": "Perfil de usuario",
-          "checkin": "Check-in",
-          "session": "Sesion en vivo",
+          "checkin": "Registro",
+          "session": "Sesión en vivo",
           "calendar": "Calendario",
-          "coach": "Coach",
-          "parent": "Padre",
+          "coach": "Entrenador",
+          "parent": "Padre/Madre",
           "team": "Equipo",
           "pillars": "Estado de pilares",
-          "recovery": "Recuperacion",
-          "fuel": "Fuel",
+          "recovery": "Recuperación",
+          "fuel": "Nutrición",
           "mental": "Mental",
-          "cognitive": "Cognitive Lite",
-          "reflection": "Reflexion",
-          "habits": "Habitos",
-          "roadmap": "Roadmap",
+          "cognitive": "Cognitivo Lite",
+          "reflection": "Reflexión",
+          "habits": "Hábitos",
+          "roadmap": "Hoja de ruta",
           "report": "Informe",
-          "plan": "Daily plan",
-          "sessions": "Sessions",
-          "progress": "Progress",
-          "lite": "Lite modules"
+          "plan": "Plan diario",
+          "sessions": "Sesiones",
+          "progress": "Progreso",
+          "lite": "Módulos lite"
         }
       },
       "athleteWorkspace": {
@@ -1999,209 +1999,209 @@
         },
         "sections": {
           "plan": {
-            "title": "Today's plan",
-            "copy": "Work through the tasks generated from your check-in."
+            "title": "Plan de hoy",
+            "copy": "Avanza por las tareas generadas a partir de tu registro."
           },
           "sessions": {
-            "title": "Training session",
-            "copy": "Build today's session from your plan, run it, and debrief."
+            "title": "Sesión de entrenamiento",
+            "copy": "Crea la sesión de hoy desde tu plan, realízala y analízala."
           },
           "mental": {
-            "title": "Mental edge",
-            "copy": "Short routines to steady focus, mood, and confidence."
+            "title": "Ventaja mental",
+            "copy": "Rutinas breves para estabilizar la concentración, el ánimo y la confianza."
           },
           "reflection": {
-            "title": "Reflection",
-            "copy": "Capture how today went and choose who can see it."
+            "title": "Reflexión",
+            "copy": "Registra cómo fue el día y elige quién puede verlo."
           },
           "progress": {
-            "title": "My progress",
-            "copy": "How your scores are trending over the last 30 days."
+            "title": "Mi progreso",
+            "copy": "Cómo evolucionan tus puntuaciones en los últimos 30 días."
           },
           "lite": {
-            "title": "Lite modules",
-            "copy": "Log recovery, fuel, learning, and manual wearable data."
+            "title": "Módulos lite",
+            "copy": "Registra recuperación, nutrición, aprendizaje y datos manuales de wearables."
           }
         },
         "panels": {
           "common": {
-            "loading": "Loading…",
-            "loadError": "Could not load this section.",
-            "retry": "Retry",
-            "noData": "No data yet",
-            "actionFailed": "That action could not be completed. Please try again."
+            "loading": "Cargando…",
+            "loadError": "No se pudo cargar esta sección.",
+            "retry": "Reintentar",
+            "noData": "Aún no hay datos",
+            "actionFailed": "No se pudo completar esa acción. Inténtalo de nuevo."
           },
           "dailyPlan": {
-            "empty": "No plan yet for today.",
-            "generate": "Generate plan",
-            "recommendationTitle": "Recommended session",
-            "openCount": "{count} of {total} tasks open",
-            "complete": "Complete",
-            "dismiss": "Dismiss",
-            "reopen": "Reopen",
+            "empty": "Aún no hay plan para hoy.",
+            "generate": "Generar plan",
+            "recommendationTitle": "Sesión recomendada",
+            "openCount": "{count} de {total} tareas abiertas",
+            "complete": "Completar",
+            "dismiss": "Descartar",
+            "reopen": "Reabrir",
             "intensity": {
               "normal": "Normal",
-              "moderate": "Moderate",
-              "low": "Low",
-              "recovery": "Recovery",
-              "high": "High"
+              "moderate": "Moderada",
+              "low": "Baja",
+              "recovery": "Recuperación",
+              "high": "Alta"
             },
             "sessionType": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "Recuperación",
+              "controlled": "Controlada",
+              "standard": "Estándar",
+              "high_intensity": "Alta intensidad"
             },
             "priority": {
-              "critical": "Critical",
-              "high": "High",
-              "medium": "Medium",
-              "low": "Low"
+              "critical": "Crítica",
+              "high": "Alta",
+              "medium": "Media",
+              "low": "Baja"
             },
             "state": {
-              "completed": "Completed",
-              "dismissed": "Dismissed"
+              "completed": "Completada",
+              "dismissed": "Descartada"
             },
             "dueWindow": {
-              "morning": "Morning",
-              "training": "Training",
-              "evening": "Evening",
-              "anytime": "Anytime"
+              "morning": "Mañana",
+              "training": "Entrenamiento",
+              "evening": "Tarde",
+              "anytime": "Cualquier momento"
             }
           },
           "mentalEdge": {
             "trend": {
-              "improving": "Improving",
-              "steady": "Steady",
-              "declining": "Declining",
-              "unknown": "Not enough data"
+              "improving": "Mejorando",
+              "steady": "Estable",
+              "declining": "Empeorando",
+              "unknown": "Datos insuficientes"
             },
             "risk": {
-              "stable": "Stable",
-              "watch": "Watch",
-              "concern": "Concern",
-              "urgent": "Urgent",
-              "insufficient": "Insufficient data"
+              "stable": "Estable",
+              "watch": "Observar",
+              "concern": "Preocupación",
+              "urgent": "Urgente",
+              "insufficient": "Datos insuficientes"
             },
-            "routinesTitle": "Today's routines",
-            "noRoutines": "No routines suggested today.",
-            "completed": "Completed",
+            "routinesTitle": "Rutinas de hoy",
+            "noRoutines": "Hoy no se sugieren rutinas.",
+            "completed": "Completada",
             "minutes": "{minutes} min",
-            "markComplete": "Mark complete"
+            "markComplete": "Marcar como hecha"
           },
           "reflection": {
-            "bodyLabel": "Reflection",
-            "bodyPlaceholder": "What went well, what was hard, what's next…",
-            "moodLabel": "Mood tag",
-            "moodPlaceholder": "e.g. focused",
-            "visibilityLabel": "Visibility",
+            "bodyLabel": "Reflexión",
+            "bodyPlaceholder": "Qué fue bien, qué costó, qué sigue…",
+            "moodLabel": "Etiqueta de ánimo",
+            "moodPlaceholder": "p. ej. concentrado",
+            "visibilityLabel": "Visibilidad",
             "visibility": {
-              "private": "Private",
-              "coach_summary": "Coach summary",
-              "parent_summary": "Parent summary"
+              "private": "Privada",
+              "coach_summary": "Resumen para el entrenador",
+              "parent_summary": "Resumen para los padres"
             },
-            "save": "Save reflection",
-            "todayTitle": "Today's reflections",
-            "empty": "No reflection saved today."
+            "save": "Guardar reflexión",
+            "todayTitle": "Reflexiones de hoy",
+            "empty": "Hoy no se guardó ninguna reflexión."
           },
           "session": {
-            "todayTitle": "Today's sessions",
-            "buildFromPlan": "Build from plan",
-            "empty": "No session yet. Build one from today's plan.",
-            "buildError": "Could not build a session. Generate a daily plan first.",
-            "transitionError": "That session change is not allowed right now.",
-            "debriefError": "Could not save the debrief.",
+            "todayTitle": "Sesiones de hoy",
+            "buildFromPlan": "Crear desde el plan",
+            "empty": "Aún no hay sesión. Crea una desde el plan de hoy.",
+            "buildError": "No se pudo crear una sesión. Genera primero un plan diario.",
+            "transitionError": "Ese cambio de sesión no está permitido ahora.",
+            "debriefError": "No se pudo guardar el análisis.",
             "type": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "Recuperación",
+              "controlled": "Controlada",
+              "standard": "Estándar",
+              "high_intensity": "Alta intensidad"
             },
             "state": {
-              "draft": "Draft",
-              "active": "Active",
-              "paused": "Paused",
-              "completed": "Completed",
-              "abandoned": "Abandoned"
+              "draft": "Borrador",
+              "active": "Activa",
+              "paused": "En pausa",
+              "completed": "Completada",
+              "abandoned": "Abandonada"
             },
             "block": {
-              "warmup": "Warm-up",
-              "main": "Main",
-              "cooldown": "Cool-down",
-              "recovery": "Recovery"
+              "warmup": "Calentamiento",
+              "main": "Principal",
+              "cooldown": "Enfriamiento",
+              "recovery": "Recuperación"
             },
             "blockMinutes": "{minutes} min",
             "action": {
-              "active": "Start",
-              "paused": "Pause",
-              "completed": "Complete",
-              "abandoned": "Abandon"
+              "active": "Iniciar",
+              "paused": "Pausar",
+              "completed": "Completar",
+              "abandoned": "Abandonar"
             },
-            "abandonReason": "Reason (required to abandon)",
-            "debriefTitle": "Debrief",
-            "rpe": "RPE (1-10)",
-            "completionPct": "Completion %",
-            "painAfter": "Pain after (1-10)",
-            "moodAfter": "Mood after (1-10)",
-            "notes": "Notes",
-            "recordedLoad": "Recorded load: {load}",
-            "saveDebrief": "Save debrief"
+            "abandonReason": "Motivo (obligatorio para abandonar)",
+            "debriefTitle": "Análisis",
+            "rpe": "RPE (1–10)",
+            "completionPct": "% de finalización",
+            "painAfter": "Dolor después (1–10)",
+            "moodAfter": "Ánimo después (1–10)",
+            "notes": "Notas",
+            "recordedLoad": "Carga registrada: {load}",
+            "saveDebrief": "Guardar análisis"
           },
           "lite": {
             "modules": {
-              "recovery": "Recovery",
-              "fuel": "Fuel",
-              "learning": "Learning",
+              "recovery": "Recuperación",
+              "fuel": "Nutrición",
+              "learning": "Aprendizaje",
               "wearable": "Wearable",
               "cognitive": "Cognitivo"
             },
-            "protocol": "Protocol",
-            "protocolPlaceholder": "e.g. cold-shower",
-            "perceivedRecovery": "Perceived recovery (1-5)",
-            "mealTiming": "Meal timing",
-            "hydration": "Hydration",
-            "note": "Note",
+            "protocol": "Protocolo",
+            "protocolPlaceholder": "p. ej. ducha-fría",
+            "perceivedRecovery": "Recuperación percibida (1–5)",
+            "mealTiming": "Horario de comidas",
+            "hydration": "Hidratación",
+            "note": "Nota",
             "fuelStatus": {
-              "on_track": "On track",
-              "late": "Late",
-              "missed": "Missed",
-              "unknown": "Unknown"
+              "on_track": "En orden",
+              "late": "Tarde",
+              "missed": "Omitida",
+              "unknown": "Desconocido"
             },
-            "itemId": "Lesson",
-            "itemIdPlaceholder": "e.g. tactical-positioning",
-            "learningStatus": "Status",
+            "itemId": "Lección",
+            "itemIdPlaceholder": "p. ej. posicionamiento-táctico",
+            "learningStatus": "Estado",
             "learningStatusOption": {
-              "not_started": "Not started",
-              "in_progress": "In progress",
-              "completed": "Completed",
-              "skipped": "Skipped"
+              "not_started": "Sin empezar",
+              "in_progress": "En progreso",
+              "completed": "Completada",
+              "skipped": "Omitida"
             },
-            "metric": "Metric",
+            "metric": "Métrica",
             "metricOption": {
-              "resting_heart_rate": "Resting heart rate",
+              "resting_heart_rate": "Frecuencia cardíaca en reposo",
               "hrv_ms": "HRV",
-              "sleep_hours": "Sleep hours",
-              "steps": "Steps",
-              "body_weight_kg": "Body weight",
-              "training_load_au": "Training load"
+              "sleep_hours": "Horas de sueño",
+              "steps": "Pasos",
+              "body_weight_kg": "Peso corporal",
+              "training_load_au": "Carga de entrenamiento"
             },
-            "value": "Value",
-            "saved": "Saved.",
-            "save": "Save entry",
-            "summaryTitle": "Today's lite modules",
-            "entryCount": "{count} entries today",
+            "value": "Valor",
+            "saved": "Guardado.",
+            "save": "Guardar entrada",
+            "summaryTitle": "Módulos lite de hoy",
+            "entryCount": "{count} entradas hoy",
             "confidence": {
-              "medium": "Medium confidence",
-              "low": "Low confidence",
-              "insufficient": "No data"
+              "medium": "Confianza media",
+              "low": "Confianza baja",
+              "insufficient": "Sin datos"
             },
-            "cognitiveTitle": "Cognitive profile",
-            "cognitiveProgress": "{completed} of {total} traits",
+            "cognitiveTitle": "Perfil cognitivo",
+            "cognitiveProgress": "{completed} de {total} rasgos",
             "cognitiveBand": {
-              "strength": "Strength",
-              "stable": "Stable",
-              "watch": "Watch",
-              "missing": "No data"
+              "strength": "Fortaleza",
+              "stable": "Estable",
+              "watch": "Observar",
+              "missing": "Sin datos"
             },
             "cognitiveTrait": "Rasgo",
             "cognitiveScore": "Puntuación (0–100)",
@@ -2216,15 +2216,15 @@
           "progress": {
             "metric": {
               "dailyIq": "Daily IQ",
-              "readiness": "Readiness",
-              "habit": "Habits",
-              "mental": "Mental edge"
+              "readiness": "Preparación",
+              "habit": "Hábitos",
+              "mental": "Ventaja mental"
             },
-            "latest": "Latest",
-            "average": "Average",
-            "change": "Change",
-            "points": "Data points",
-            "empty": "No history yet for this metric."
+            "latest": "Último",
+            "average": "Promedio",
+            "change": "Cambio",
+            "points": "Puntos de datos",
+            "empty": "Aún no hay historial para esta métrica."
           }
         }
       },
@@ -2239,72 +2239,72 @@
     "dailyPlan": {
       "tasks": {
         "completeCheckIn": {
-          "title": "Complete your check-in",
-          "description": "Log today's readiness so the rest of your plan can adapt."
+          "title": "Completa tu registro",
+          "description": "Registra tu preparación de hoy para que el resto de tu plan pueda adaptarse."
         },
         "painGuardrail": {
-          "title": "Pain safety review",
-          "description": "A pain signal needs review before training intensity is cleared."
+          "title": "Revisión de seguridad ante el dolor",
+          "description": "Una señal de dolor debe revisarse antes de autorizar la intensidad del entrenamiento."
         },
         "habit": {
-          "description": "Keep your habit streak going today."
+          "description": "Mantén viva tu racha de hábitos hoy."
         },
         "mentalRoutine": {
-          "description": "Run a short mental-edge routine to steady focus."
+          "description": "Realiza una rutina mental breve para estabilizar la concentración."
         },
         "liteModule": {
-          "description": "Add a quick manual entry to keep this module current."
+          "description": "Añade una entrada manual rápida para mantener este módulo al día."
         }
       }
     },
     "mentalEdge": {
       "routines": {
-        "breathingReset": "Breathing reset",
-        "confidenceNote": "Confidence note",
-        "recoveryReflection": "Recovery reflection",
-        "coachCheckIn": "Coach check-in"
+        "breathingReset": "Reinicio respiratorio",
+        "confidenceNote": "Nota de confianza",
+        "recoveryReflection": "Reflexión de recuperación",
+        "coachCheckIn": "Contacto con el entrenador"
       },
       "reasons": {
-        "stress_support": "Helps settle stress.",
-        "confidence_support": "Builds confidence.",
-        "mood_support": "Lifts mood.",
-        "coach_support": "Connect with your coach."
+        "stress_support": "Ayuda a calmar el estrés.",
+        "confidence_support": "Aumenta la confianza.",
+        "mood_support": "Mejora el ánimo.",
+        "coach_support": "Conecta con tu entrenador."
       }
     },
     "sessions": {
       "blocks": {
-        "warmup": "Warm-up",
-        "main": "Main block",
-        "cooldown": "Cool-down",
-        "recovery": "Recovery"
+        "warmup": "Calentamiento",
+        "main": "Bloque principal",
+        "cooldown": "Enfriamiento",
+        "recovery": "Recuperación"
       },
       "safety": {
-        "recoveryOnly": "Recovery only",
-        "standard": "Standard"
+        "recoveryOnly": "Solo recuperación",
+        "standard": "Estándar"
       }
     },
     "modules": {
       "recoveryLite": {
-        "name": "Recovery"
+        "name": "Recuperación"
       },
       "fuelLite": {
-        "name": "Fuel"
+        "name": "Nutrición"
       },
       "learningLite": {
-        "name": "Learning"
+        "name": "Aprendizaje"
       },
       "wearableManualSync": {
-        "name": "Manual wearable"
+        "name": "Wearable manual"
       }
     },
     "cognitiveLite": {
       "trait": {
-        "alertness": "Alertness",
-        "impulse_control": "Impulse control",
-        "attention": "Attention",
-        "risk": "Risk",
-        "reasoning": "Reasoning",
-        "memory_retention": "Memory & retention"
+        "alertness": "Alerta",
+        "impulse_control": "Control de impulsos",
+        "attention": "Atención",
+        "risk": "Riesgo",
+        "reasoning": "Razonamiento",
+        "memory_retention": "Memoria y retención"
       }
     },
     "parents": {

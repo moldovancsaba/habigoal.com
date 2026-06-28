@@ -303,12 +303,94 @@ function getPath(value, dottedPath) {
   return dottedPath.split(".").reduce((current, key) => current?.[key], value);
 }
 
+// Namespaces whose every key must carry a real, non-English translation in each
+// non-English locale. Guards production UI surfaces against English leaking in
+// behind key+placeholder parity (which the catalog audit alone would pass).
+const MUST_TRANSLATE_NAMESPACES = [
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels",
+  "ProductSurfaces.athleteIq.athleteWorkspace.sections",
+  "ProductSurfaces.athleteIq.nav.modules",
+  "athleteiq",
+  "CoachHub",
+  "AthleteIntelligence",
+  "ProductSurfaces.habigoal.progress",
+  "ProductSurfaces.habigoal.reasons",
+  "ProductSurfaces.habigoal.navigation",
+  "Reports",
+];
+
+// Keys that are intentionally identical to English in every locale: units,
+// brand/metric names, ICU-only format strings, and loanwords the target
+// languages genuinely use as-is (e.g. German "Training"/"Standard"/"Team").
+const IDENTICAL_OK = new Set([
+  "AthleteIntelligence.dimensions.readiness",
+  "AthleteIntelligence.status.lite_manual",
+  "CoachHub.intelligence",
+  "CoachHub.messages.selectTeam",
+  "CoachHub.readinessValue",
+  "CoachHub.vision",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.dailyPlan.dueWindow.training",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.dailyPlan.intensity.normal",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.dailyPlan.sessionType.standard",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.lite.learningStatus",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.lite.metricOption.hrv_ms",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.lite.modules.wearable",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.mentalEdge.minutes",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.progress.metric.dailyIq",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.progress.metric.readiness",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.session.blockMinutes",
+  "ProductSurfaces.athleteIq.athleteWorkspace.panels.session.type.standard",
+  "ProductSurfaces.athleteIq.nav.modules.checkin",
+  "ProductSurfaces.athleteIq.nav.modules.cognitive",
+  "ProductSurfaces.athleteIq.nav.modules.mental",
+  "ProductSurfaces.athleteIq.nav.modules.roadmap",
+  "ProductSurfaces.athleteIq.nav.modules.team",
+  "ProductSurfaces.habigoal.navigation.checkIn",
+  "ProductSurfaces.habigoal.progress.activeDaysValue",
+  "Reports.csv",
+  "Reports.json",
+  "Reports.pdf.button",
+  "athleteiq.sessions.safety.standard",
+]);
+
+function underMustTranslate(key) {
+  return MUST_TRANSLATE_NAMESPACES.some((ns) => key === ns || key.startsWith(`${ns}.`));
+}
+
+function auditMustTranslateNamespaces() {
+  const canonical = flatten(readJson(path.join(messagesDir, "en.json")));
+
+  for (const locale of supportedLocales.filter((item) => item !== "en")) {
+    const localized = flatten(readJson(path.join(messagesDir, `${locale}.json`)));
+    const untranslated = [];
+
+    for (const [key, englishValue] of canonical.entries()) {
+      if (!underMustTranslate(key) || typeof englishValue !== "string" || englishValue.trim() === "") {
+        continue;
+      }
+      if (IDENTICAL_OK.has(key)) {
+        continue;
+      }
+      if (localized.get(key) === englishValue) {
+        untranslated.push(key);
+      }
+    }
+
+    if (untranslated.length > 0) {
+      failures.push(
+        `messages/${locale}.json has ${untranslated.length} untranslated key(s) in must-translate namespaces: ${formatList(untranslated.sort())}`,
+      );
+    }
+  }
+}
+
 function main() {
   auditMessageCatalogs();
   auditNewsPosts();
   auditKnownCopyLeaks();
   auditCriticalHardcodedUiCopy();
   auditProductSurfaceCatalogQuality();
+  auditMustTranslateNamespaces();
 
   if (warnings.length > 0) {
     console.warn("i18n audit warnings:");

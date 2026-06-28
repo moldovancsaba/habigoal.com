@@ -1903,25 +1903,25 @@
         "modules": {
           "home": "בית",
           "profile": "פרופיל משתמש",
-          "checkin": "צק-אין",
+          "checkin": "צ'ק-אין",
           "session": "אימון חי",
-          "calendar": "לוח שנה",
+          "calendar": "יומן",
           "coach": "מאמן",
           "parent": "הורה",
           "team": "קבוצה",
-          "pillars": "סטטוס עמודים",
+          "pillars": "סטטוס עמודי תווך",
           "recovery": "התאוששות",
           "fuel": "תזונה",
           "mental": "מנטלי",
-          "cognitive": "Cognitive Lite",
+          "cognitive": "קוגניטיבי לייט",
           "reflection": "רפלקציה",
           "habits": "הרגלים",
           "roadmap": "מפת דרכים",
           "report": "דוח",
-          "plan": "Daily plan",
-          "sessions": "Sessions",
-          "progress": "Progress",
-          "lite": "Lite modules"
+          "plan": "תוכנית יומית",
+          "sessions": "אימונים",
+          "progress": "התקדמות",
+          "lite": "מודולי לייט"
         }
       },
       "athleteWorkspace": {
@@ -1999,209 +1999,209 @@
         },
         "sections": {
           "plan": {
-            "title": "Today's plan",
-            "copy": "Work through the tasks generated from your check-in."
+            "title": "התוכנית של היום",
+            "copy": "התקדמו במשימות שנוצרו מהצ'ק-אין שלכם."
           },
           "sessions": {
-            "title": "Training session",
-            "copy": "Build today's session from your plan, run it, and debrief."
+            "title": "אימון",
+            "copy": "בנו את האימון של היום מהתוכנית שלכם, בצעו אותו ותחקרו."
           },
           "mental": {
-            "title": "Mental edge",
-            "copy": "Short routines to steady focus, mood, and confidence."
+            "title": "יתרון מנטלי",
+            "copy": "שגרות קצרות לייצוב הריכוז, מצב הרוח והביטחון."
           },
           "reflection": {
-            "title": "Reflection",
-            "copy": "Capture how today went and choose who can see it."
+            "title": "רפלקציה",
+            "copy": "תעדו איך עבר היום ובחרו מי יכול לראות זאת."
           },
           "progress": {
-            "title": "My progress",
-            "copy": "How your scores are trending over the last 30 days."
+            "title": "ההתקדמות שלי",
+            "copy": "כיצד הציונים שלכם מתפתחים ב-30 הימים האחרונים."
           },
           "lite": {
-            "title": "Lite modules",
-            "copy": "Log recovery, fuel, learning, and manual wearable data."
+            "title": "מודולי לייט",
+            "copy": "תעדו התאוששות, תזונה, למידה ונתוני מתלבשים ידניים."
           }
         },
         "panels": {
           "common": {
-            "loading": "Loading…",
-            "loadError": "Could not load this section.",
-            "retry": "Retry",
-            "noData": "No data yet",
-            "actionFailed": "That action could not be completed. Please try again."
+            "loading": "טוען…",
+            "loadError": "לא ניתן לטעון את הקטע הזה.",
+            "retry": "נסו שוב",
+            "noData": "אין עדיין נתונים",
+            "actionFailed": "לא ניתן היה להשלים את הפעולה. נסו שוב."
           },
           "dailyPlan": {
-            "empty": "No plan yet for today.",
-            "generate": "Generate plan",
-            "recommendationTitle": "Recommended session",
-            "openCount": "{count} of {total} tasks open",
-            "complete": "Complete",
-            "dismiss": "Dismiss",
-            "reopen": "Reopen",
+            "empty": "אין עדיין תוכנית להיום.",
+            "generate": "יצירת תוכנית",
+            "recommendationTitle": "אימון מומלץ",
+            "openCount": "{count} מתוך {total} משימות פתוחות",
+            "complete": "השלמה",
+            "dismiss": "ביטול",
+            "reopen": "פתיחה מחדש",
             "intensity": {
-              "normal": "Normal",
-              "moderate": "Moderate",
-              "low": "Low",
-              "recovery": "Recovery",
-              "high": "High"
+              "normal": "רגיל",
+              "moderate": "בינוני",
+              "low": "נמוך",
+              "recovery": "התאוששות",
+              "high": "גבוה"
             },
             "sessionType": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "התאוששות",
+              "controlled": "מבוקר",
+              "standard": "רגיל",
+              "high_intensity": "עצימות גבוהה"
             },
             "priority": {
-              "critical": "Critical",
-              "high": "High",
-              "medium": "Medium",
-              "low": "Low"
+              "critical": "קריטי",
+              "high": "גבוה",
+              "medium": "בינוני",
+              "low": "נמוך"
             },
             "state": {
-              "completed": "Completed",
-              "dismissed": "Dismissed"
+              "completed": "הושלם",
+              "dismissed": "בוטל"
             },
             "dueWindow": {
-              "morning": "Morning",
-              "training": "Training",
-              "evening": "Evening",
-              "anytime": "Anytime"
+              "morning": "בוקר",
+              "training": "אימון",
+              "evening": "ערב",
+              "anytime": "בכל עת"
             }
           },
           "mentalEdge": {
             "trend": {
-              "improving": "Improving",
-              "steady": "Steady",
-              "declining": "Declining",
-              "unknown": "Not enough data"
+              "improving": "משתפר",
+              "steady": "יציב",
+              "declining": "יורד",
+              "unknown": "אין מספיק נתונים"
             },
             "risk": {
-              "stable": "Stable",
-              "watch": "Watch",
-              "concern": "Concern",
-              "urgent": "Urgent",
-              "insufficient": "Insufficient data"
+              "stable": "יציב",
+              "watch": "למעקב",
+              "concern": "דאגה",
+              "urgent": "דחוף",
+              "insufficient": "נתונים לא מספיקים"
             },
-            "routinesTitle": "Today's routines",
-            "noRoutines": "No routines suggested today.",
-            "completed": "Completed",
-            "minutes": "{minutes} min",
-            "markComplete": "Mark complete"
+            "routinesTitle": "השגרות של היום",
+            "noRoutines": "לא הוצעו שגרות היום.",
+            "completed": "הושלם",
+            "minutes": "{minutes} דק׳",
+            "markComplete": "סמנו כהושלם"
           },
           "reflection": {
-            "bodyLabel": "Reflection",
-            "bodyPlaceholder": "What went well, what was hard, what's next…",
-            "moodLabel": "Mood tag",
-            "moodPlaceholder": "e.g. focused",
-            "visibilityLabel": "Visibility",
+            "bodyLabel": "רפלקציה",
+            "bodyPlaceholder": "מה הלך טוב, מה היה קשה, מה הלאה…",
+            "moodLabel": "תגית מצב רוח",
+            "moodPlaceholder": "למשל מרוכז",
+            "visibilityLabel": "נראוּת",
             "visibility": {
-              "private": "Private",
-              "coach_summary": "Coach summary",
-              "parent_summary": "Parent summary"
+              "private": "פרטי",
+              "coach_summary": "סיכום למאמן",
+              "parent_summary": "סיכום להורים"
             },
-            "save": "Save reflection",
-            "todayTitle": "Today's reflections",
-            "empty": "No reflection saved today."
+            "save": "שמירת רפלקציה",
+            "todayTitle": "הרפלקציות של היום",
+            "empty": "לא נשמרה רפלקציה היום."
           },
           "session": {
-            "todayTitle": "Today's sessions",
-            "buildFromPlan": "Build from plan",
-            "empty": "No session yet. Build one from today's plan.",
-            "buildError": "Could not build a session. Generate a daily plan first.",
-            "transitionError": "That session change is not allowed right now.",
-            "debriefError": "Could not save the debrief.",
+            "todayTitle": "האימונים של היום",
+            "buildFromPlan": "בנייה מהתוכנית",
+            "empty": "אין עדיין אימון. בנו אחד מהתוכנית של היום.",
+            "buildError": "לא ניתן לבנות אימון. צרו קודם תוכנית יומית.",
+            "transitionError": "שינוי האימון הזה אינו מותר כעת.",
+            "debriefError": "לא ניתן לשמור את התחקיר.",
             "type": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "התאוששות",
+              "controlled": "מבוקר",
+              "standard": "רגיל",
+              "high_intensity": "עצימות גבוהה"
             },
             "state": {
-              "draft": "Draft",
-              "active": "Active",
-              "paused": "Paused",
-              "completed": "Completed",
-              "abandoned": "Abandoned"
+              "draft": "טיוטה",
+              "active": "פעיל",
+              "paused": "מושהה",
+              "completed": "הושלם",
+              "abandoned": "ננטש"
             },
             "block": {
-              "warmup": "Warm-up",
-              "main": "Main",
-              "cooldown": "Cool-down",
-              "recovery": "Recovery"
+              "warmup": "חימום",
+              "main": "עיקרי",
+              "cooldown": "שחרור",
+              "recovery": "התאוששות"
             },
-            "blockMinutes": "{minutes} min",
+            "blockMinutes": "{minutes} דק׳",
             "action": {
-              "active": "Start",
-              "paused": "Pause",
-              "completed": "Complete",
-              "abandoned": "Abandon"
+              "active": "התחלה",
+              "paused": "השהיה",
+              "completed": "השלמה",
+              "abandoned": "נטישה"
             },
-            "abandonReason": "Reason (required to abandon)",
-            "debriefTitle": "Debrief",
-            "rpe": "RPE (1-10)",
-            "completionPct": "Completion %",
-            "painAfter": "Pain after (1-10)",
-            "moodAfter": "Mood after (1-10)",
-            "notes": "Notes",
-            "recordedLoad": "Recorded load: {load}",
-            "saveDebrief": "Save debrief"
+            "abandonReason": "סיבה (נדרשת לנטישה)",
+            "debriefTitle": "תחקיר",
+            "rpe": "RPE (1–10)",
+            "completionPct": "% השלמה",
+            "painAfter": "כאב לאחר מכן (1–10)",
+            "moodAfter": "מצב רוח לאחר מכן (1–10)",
+            "notes": "הערות",
+            "recordedLoad": "עומס שנרשם: {load}",
+            "saveDebrief": "שמירת תחקיר"
           },
           "lite": {
             "modules": {
-              "recovery": "Recovery",
-              "fuel": "Fuel",
-              "learning": "Learning",
-              "wearable": "Wearable",
+              "recovery": "התאוששות",
+              "fuel": "תזונה",
+              "learning": "למידה",
+              "wearable": "מתלבש",
               "cognitive": "קוגניטיבי"
             },
-            "protocol": "Protocol",
-            "protocolPlaceholder": "e.g. cold-shower",
-            "perceivedRecovery": "Perceived recovery (1-5)",
-            "mealTiming": "Meal timing",
-            "hydration": "Hydration",
-            "note": "Note",
+            "protocol": "פרוטוקול",
+            "protocolPlaceholder": "למשל מקלחת-קרה",
+            "perceivedRecovery": "התאוששות מורגשת (1–5)",
+            "mealTiming": "תזמון ארוחות",
+            "hydration": "הידרציה",
+            "note": "הערה",
             "fuelStatus": {
-              "on_track": "On track",
-              "late": "Late",
-              "missed": "Missed",
-              "unknown": "Unknown"
+              "on_track": "במסלול",
+              "late": "באיחור",
+              "missed": "הוחמץ",
+              "unknown": "לא ידוע"
             },
-            "itemId": "Lesson",
-            "itemIdPlaceholder": "e.g. tactical-positioning",
-            "learningStatus": "Status",
+            "itemId": "שיעור",
+            "itemIdPlaceholder": "למשל מיקום-טקטי",
+            "learningStatus": "סטטוס",
             "learningStatusOption": {
-              "not_started": "Not started",
-              "in_progress": "In progress",
-              "completed": "Completed",
-              "skipped": "Skipped"
+              "not_started": "לא התחיל",
+              "in_progress": "בתהליך",
+              "completed": "הושלם",
+              "skipped": "דולג"
             },
-            "metric": "Metric",
+            "metric": "מדד",
             "metricOption": {
-              "resting_heart_rate": "Resting heart rate",
+              "resting_heart_rate": "דופק במנוחה",
               "hrv_ms": "HRV",
-              "sleep_hours": "Sleep hours",
-              "steps": "Steps",
-              "body_weight_kg": "Body weight",
-              "training_load_au": "Training load"
+              "sleep_hours": "שעות שינה",
+              "steps": "צעדים",
+              "body_weight_kg": "משקל גוף",
+              "training_load_au": "עומס אימון"
             },
-            "value": "Value",
-            "saved": "Saved.",
-            "save": "Save entry",
-            "summaryTitle": "Today's lite modules",
-            "entryCount": "{count} entries today",
+            "value": "ערך",
+            "saved": "נשמר.",
+            "save": "שמירת רשומה",
+            "summaryTitle": "מודולי לייט של היום",
+            "entryCount": "{count} רשומות היום",
             "confidence": {
-              "medium": "Medium confidence",
-              "low": "Low confidence",
-              "insufficient": "No data"
+              "medium": "ודאות בינונית",
+              "low": "ודאות נמוכה",
+              "insufficient": "אין נתונים"
             },
-            "cognitiveTitle": "Cognitive profile",
-            "cognitiveProgress": "{completed} of {total} traits",
+            "cognitiveTitle": "פרופיל קוגניטיבי",
+            "cognitiveProgress": "{completed} מתוך {total} תכונות",
             "cognitiveBand": {
-              "strength": "Strength",
-              "stable": "Stable",
-              "watch": "Watch",
-              "missing": "No data"
+              "strength": "חוזק",
+              "stable": "יציב",
+              "watch": "למעקב",
+              "missing": "אין נתונים"
             },
             "cognitiveTrait": "תכונה",
             "cognitiveScore": "ציון (0–100)",
@@ -2216,15 +2216,15 @@
           "progress": {
             "metric": {
               "dailyIq": "Daily IQ",
-              "readiness": "Readiness",
-              "habit": "Habits",
-              "mental": "Mental edge"
+              "readiness": "מוכנוּת",
+              "habit": "הרגלים",
+              "mental": "יתרון מנטלי"
             },
-            "latest": "Latest",
-            "average": "Average",
-            "change": "Change",
-            "points": "Data points",
-            "empty": "No history yet for this metric."
+            "latest": "אחרון",
+            "average": "ממוצע",
+            "change": "שינוי",
+            "points": "נקודות נתונים",
+            "empty": "אין עדיין היסטוריה למדד הזה."
           }
         }
       },
@@ -2239,72 +2239,72 @@
     "dailyPlan": {
       "tasks": {
         "completeCheckIn": {
-          "title": "Complete your check-in",
-          "description": "Log today's readiness so the rest of your plan can adapt."
+          "title": "השלימו את הצ'ק-אין שלכם",
+          "description": "תעדו את המוכנוּת של היום כדי ששאר התוכנית תוכל להסתגל."
         },
         "painGuardrail": {
-          "title": "Pain safety review",
-          "description": "A pain signal needs review before training intensity is cleared."
+          "title": "בדיקת בטיחות כאב",
+          "description": "יש לבחון אות כאב לפני אישור עצימות האימון."
         },
         "habit": {
-          "description": "Keep your habit streak going today."
+          "description": "שמרו על רצף ההרגלים שלכם היום."
         },
         "mentalRoutine": {
-          "description": "Run a short mental-edge routine to steady focus."
+          "description": "בצעו שגרה מנטלית קצרה לייצוב הריכוז."
         },
         "liteModule": {
-          "description": "Add a quick manual entry to keep this module current."
+          "description": "הוסיפו רשומה ידנית מהירה כדי לשמור על מודול זה מעודכן."
         }
       }
     },
     "mentalEdge": {
       "routines": {
-        "breathingReset": "Breathing reset",
-        "confidenceNote": "Confidence note",
-        "recoveryReflection": "Recovery reflection",
-        "coachCheckIn": "Coach check-in"
+        "breathingReset": "איפוס נשימה",
+        "confidenceNote": "פתק ביטחון",
+        "recoveryReflection": "רפלקציית התאוששות",
+        "coachCheckIn": "צ'ק-אין עם המאמן"
       },
       "reasons": {
-        "stress_support": "Helps settle stress.",
-        "confidence_support": "Builds confidence.",
-        "mood_support": "Lifts mood.",
-        "coach_support": "Connect with your coach."
+        "stress_support": "עוזר להרגיע מתח.",
+        "confidence_support": "בונה ביטחון.",
+        "mood_support": "מרים את מצב הרוח.",
+        "coach_support": "צרו קשר עם המאמן שלכם."
       }
     },
     "sessions": {
       "blocks": {
-        "warmup": "Warm-up",
-        "main": "Main block",
-        "cooldown": "Cool-down",
-        "recovery": "Recovery"
+        "warmup": "חימום",
+        "main": "בלוק עיקרי",
+        "cooldown": "שחרור",
+        "recovery": "התאוששות"
       },
       "safety": {
-        "recoveryOnly": "Recovery only",
-        "standard": "Standard"
+        "recoveryOnly": "התאוששות בלבד",
+        "standard": "רגיל"
       }
     },
     "modules": {
       "recoveryLite": {
-        "name": "Recovery"
+        "name": "התאוששות"
       },
       "fuelLite": {
-        "name": "Fuel"
+        "name": "תזונה"
       },
       "learningLite": {
-        "name": "Learning"
+        "name": "למידה"
       },
       "wearableManualSync": {
-        "name": "Manual wearable"
+        "name": "מתלבש ידני"
       }
     },
     "cognitiveLite": {
       "trait": {
-        "alertness": "Alertness",
-        "impulse_control": "Impulse control",
-        "attention": "Attention",
-        "risk": "Risk",
-        "reasoning": "Reasoning",
-        "memory_retention": "Memory & retention"
+        "alertness": "ערנות",
+        "impulse_control": "שליטה בדחפים",
+        "attention": "קשב",
+        "risk": "סיכון",
+        "reasoning": "הסקה",
+        "memory_retention": "זיכרון ושימור"
       }
     },
     "parents": {
