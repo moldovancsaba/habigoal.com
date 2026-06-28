@@ -2501,7 +2501,7 @@
   },
   "Wearables": {
     "title": "Wearable-Ökosystem",
-    "subtitle": "Verbinde Geräte für die tägliche Telemetrie in deinen Athleten-Digital-Twin.",
+    "subtitle": "Verbinde deine Geräte, damit tägliche Messwerte in dein Leistungsprofil einfließen.",
     "devices": "Geräte",
     "noAthlete": "Kein Sportlerprofil",
     "noAthleteHelp": "Mit diesem Konto ist kein Sportlerprofil verknüpft.",

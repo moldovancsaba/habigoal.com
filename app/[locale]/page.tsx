@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductEntryCard } from "@/components/landing/ProductEntryCard";
@@ -15,7 +14,6 @@ export default async function LandingPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Landing" });
   const { error } = await searchParams;
-  const homeHref = `/${locale}`;
   const habigoalPath = `/${locale}/habigoal`;
   const athleteIqPath = `/${locale}/athlete-iq`;
   const habigoalHref = `/${locale}/login?next=${encodeURIComponent(habigoalPath)}&persona=athlete&productSurface=habigoal`;
@@ -23,18 +21,11 @@ export default async function LandingPage({
   const newsHref = `/${locale}/news`;
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;
-  const brand = (
-    <Group className="landing-brand" gap="sm" wrap="nowrap">
-      <Image className="landing-brand-logo" src="/images/habigoal_logo.png" alt="" width={40} height={40} priority />
-      <Text className="landing-brand-text" fw={800}>{t("brandSubtitle")}</Text>
-    </Group>
-  );
 
   return (
     <Container className="landing-selector-container" size="md" py="xl">
       <Stack gap="xl">
-        <Group className="landing-topbar" justify="space-between" wrap="wrap">
-          <Anchor className="landing-brand-link" href={homeHref} underline="never" c="inherit">{brand}</Anchor>
+        <Group className="landing-topbar" justify="flex-end" wrap="wrap">
           <Group className="landing-top-actions" gap="sm" wrap="wrap">
             <Anchor className="landing-news-link" href={newsHref} fw={700}>{t("whatsNew")}</Anchor>
             <PublicAppControls mobileNewsHref={newsHref} mobileNewsLabel={t("whatsNew")} />
@@ -80,22 +71,11 @@ export default async function LandingPage({
           </Stack>
         </Box>
 
-      <Text c="dimmed" size="sm">
-        {t("ssoNote")}
-      </Text>
-
         <Paper component="footer" withBorder radius="xl" p="lg">
-          <Stack gap="sm">
-            <Title order={4}>{t("footerTitle")}</Title>
-            <Text c="dimmed">{t("subtitle")}</Text>
-            <Group gap="lg" wrap="wrap">
-              <Anchor href={termsHref}>{t("termsOfService")}</Anchor>
-              <Anchor href={privacyHref}>{t("privacyPolicy")}</Anchor>
-              <Anchor href={newsHref}>{t("whatsNew")}</Anchor>
-              <Anchor href={habigoalHref}>{t("habigoalBadge")}</Anchor>
-              <Anchor href={athleteIqHref}>{t("athleteIqBadge")}</Anchor>
-            </Group>
-          </Stack>
+          <Group gap="lg" wrap="wrap" justify="center">
+            <Anchor href={termsHref}>{t("termsOfService")}</Anchor>
+            <Anchor href={privacyHref}>{t("privacyPolicy")}</Anchor>
+          </Group>
         </Paper>
       </Stack>
     </Container>

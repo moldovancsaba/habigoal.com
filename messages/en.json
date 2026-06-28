@@ -2501,7 +2501,7 @@
   },
   "Wearables": {
     "title": "Wearable Ecosystem",
-    "subtitle": "Connect devices for daily telemetry into your Athlete Digital Twin.",
+    "subtitle": "Connect your devices so daily readings flow into your performance profile.",
     "devices": "Devices",
     "noAthlete": "No athlete profile",
     "noAthleteHelp": "No athlete profile is linked to this account.",

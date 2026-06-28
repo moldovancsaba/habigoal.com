@@ -2501,7 +2501,7 @@
   },
   "Wearables": {
     "title": "Ecosistema de wearables",
-    "subtitle": "Conecta dispositivos para la telemetría diaria en tu gemelo digital del deportista.",
+    "subtitle": "Conecta tus dispositivos para que las lecturas diarias entren en tu perfil de rendimiento.",
     "devices": "Dispositivos",
     "noAthlete": "Sin perfil de deportista",
     "noAthleteHelp": "No hay ningún perfil de deportista vinculado a esta cuenta.",
