@@ -1,7 +1,8 @@
-import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductEntryCard } from "@/components/landing/ProductEntryCard";
 import { PublicAppControls } from "@/components/layout/PublicAppControls";
+import { SelectorThemeShell } from "@/components/landing/SelectorThemeShell";
 
 export default async function LandingPage({
   params,
@@ -23,6 +24,7 @@ export default async function LandingPage({
   const privacyHref = `/${locale}/legal/privacy`;
 
   return (
+    <SelectorThemeShell>
     <Container className="landing-selector-container" size="md" py="xl">
       <Stack gap="xl">
         <Group className="landing-topbar" justify="flex-end" wrap="wrap">
@@ -43,9 +45,6 @@ export default async function LandingPage({
             <Stack gap="sm">
               <Badge variant="light" color="ingress" w="fit-content">{t("selectorBadge")}</Badge>
               <Title order={1}>{t("selectorTitle")}</Title>
-              <Text size="lg" c="dimmed">
-                {t("selectorSubtitle")}
-              </Text>
             </Stack>
 
             <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
@@ -71,7 +70,7 @@ export default async function LandingPage({
           </Stack>
         </Box>
 
-        <Paper component="footer" withBorder radius="xl" p="lg">
+        <Paper component="footer" className="landing-footer" withBorder radius="md" p="lg">
           <Group gap="lg" wrap="wrap" justify="center">
             <Anchor href={termsHref}>{t("termsOfService")}</Anchor>
             <Anchor href={privacyHref}>{t("privacyPolicy")}</Anchor>
@@ -79,5 +78,6 @@ export default async function LandingPage({
         </Paper>
       </Stack>
     </Container>
+    </SelectorThemeShell>
   );
 }
