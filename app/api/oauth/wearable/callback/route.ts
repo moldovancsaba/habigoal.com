@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     const redirectUri = `${base}/api/oauth/wearable/callback`;
     let tokens;
     try {
-      tokens = await oauth.exchangeAuthCode(code, redirectUri);
+      tokens = await oauth.exchangeAuthCode(code, redirectUri, binding.codeVerifier);
     } catch (error) {
       logEvent("wearable.oauth.exchange.failed", { correlationId, provider: binding.provider, reason: (error as Error).message });
       return redirectResult(base, locale, "error=exchange_failed");

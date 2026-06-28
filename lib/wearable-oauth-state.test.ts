@@ -31,6 +31,11 @@ describe("wearable OAuth state", () => {
     expect(verifyWearableState(token, secret, later)).toBeNull();
   });
 
+  it("round-trips an optional PKCE code verifier", () => {
+    const token = createWearableState({ athleteId: "a1", provider: "garmin", locale: "en", nonce: "n1", codeVerifier: "verifier-123" }, secret, now);
+    expect(verifyWearableState(token, secret, now)?.codeVerifier).toBe("verifier-123");
+  });
+
   it("rejects malformed / empty tokens", () => {
     expect(verifyWearableState(undefined, secret, now)).toBeNull();
     expect(verifyWearableState("", secret, now)).toBeNull();

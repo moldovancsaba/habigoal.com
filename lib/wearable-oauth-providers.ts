@@ -4,16 +4,21 @@
 
 import { buildOuraAuthorizeUrl, exchangeOuraAuthCode, isOuraOAuthConfigured } from "@/lib/oura-oauth";
 import { buildWhoopAuthorizeUrl, exchangeWhoopAuthCode, isWhoopOAuthConfigured, type WearableTokenResponse } from "@/lib/whoop-oauth";
+import { buildGarminAuthorizeUrl, createGarminPkce, exchangeGarminAuthCode, isGarminOAuthConfigured } from "@/lib/garmin-oauth";
 
 export type WearableOAuthProvider = {
   isConfigured: () => boolean;
-  buildAuthorizeUrl: (input: { redirectUri: string; state: string }) => string;
-  exchangeAuthCode: (code: string, redirectUri: string) => Promise<WearableTokenResponse>;
+  buildAuthorizeUrl: (input: { redirectUri: string; state: string; codeChallenge?: string }) => string;
+  exchangeAuthCode: (code: string, redirectUri: string, codeVerifier?: string) => Promise<WearableTokenResponse>;
+  // PKCE providers expose a verifier/challenge generator; the verifier is stored
+  // in the signed state and the challenge is sent on the authorize URL.
+  createPkce?: () => { verifier: string; challenge: string };
 };
 
 const PROVIDERS: Record<string, WearableOAuthProvider> = {
   oura: { isConfigured: isOuraOAuthConfigured, buildAuthorizeUrl: buildOuraAuthorizeUrl, exchangeAuthCode: exchangeOuraAuthCode },
-  whoop: { isConfigured: isWhoopOAuthConfigured, buildAuthorizeUrl: buildWhoopAuthorizeUrl, exchangeAuthCode: exchangeWhoopAuthCode }
+  whoop: { isConfigured: isWhoopOAuthConfigured, buildAuthorizeUrl: buildWhoopAuthorizeUrl, exchangeAuthCode: exchangeWhoopAuthCode },
+  garmin: { isConfigured: isGarminOAuthConfigured, buildAuthorizeUrl: buildGarminAuthorizeUrl, exchangeAuthCode: exchangeGarminAuthCode, createPkce: createGarminPkce }
 };
 
 export function getWearableOAuthProvider(provider: string): WearableOAuthProvider | null {
