@@ -14,6 +14,7 @@ export interface DeviceConnection {
   tokenExpiresAt?: string;
   lastSyncAt?: string;
   lastSyncError?: string;
+  lastSyncStatus?: 'ok' | 'error' | 'never';
   syncIntervalHours: number;
   createdAt: string;
   updatedAt: string;

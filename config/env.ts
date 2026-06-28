@@ -32,6 +32,9 @@ export const env = {
   authSecret: process.env.AUTH_SECRET,
   trainersIngestApiKey: process.env.TRAINERS_INGEST_API_KEY,
   cronSecret: process.env.CRON_SECRET,
+  ouraClientId: process.env.OURA_CLIENT_ID,
+  ouraClientSecret: process.env.OURA_CLIENT_SECRET,
+  ouraApiBaseUrl: process.env.OURA_API_BASE_URL || "https://api.ouraring.com",
 };
 
 type StringEnvKey = {
