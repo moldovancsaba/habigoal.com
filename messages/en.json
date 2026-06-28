@@ -1369,7 +1369,22 @@
     "distIncomplete": "{count} no check-in",
     "teamFlags": "{count} flags",
     "concernResolve": "Resolve",
-    "concernResolved": "Resolved"
+    "concernResolved": "Resolved",
+    "messages": {
+      "title": "Team messages",
+      "selectTeam": "Team",
+      "selectRecipient": "Athlete",
+      "pickTeam": "Choose a team",
+      "pickRecipient": "Choose an athlete",
+      "pickRecipientFirst": "Select a team and athlete to view and send messages.",
+      "composeLabel": "Message",
+      "composePlaceholder": "Write a message…",
+      "send": "Send",
+      "loadError": "Could not load or send messages. Please try again.",
+      "loading": "Loading messages…",
+      "empty": "No messages yet.",
+      "loadOlder": "Load older"
+    }
   },
   "VisionLab": {
     "title": "Kinematics & Vision Lab",
