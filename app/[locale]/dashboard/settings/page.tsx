@@ -471,14 +471,14 @@ export default function SettingsPage() {
         <Stack gap="md">
           {!canManageUsers ? (
             <Alert color="yellow">
-              Only admins can approve users, assign roles, or remove access.
+              {t("settingsUsersAdminOnly")}
             </Alert>
           ) : null}
           <Group gap="xs" wrap="wrap">
-            <Badge variant="light" color="ingress">Admins: {adminCount}</Badge>
-            <Badge variant="light" color="knowmore">Trainers: {trainerCount}</Badge>
-            <Badge variant="light" color="strategy">Athletes: {athleteCount}</Badge>
-            <Badge variant="light" color="gray">Approved users: {users.length}</Badge>
+            <Badge variant="light" color="ingress">{t("settingsAdminsCount", { count: adminCount })}</Badge>
+            <Badge variant="light" color="knowmore">{t("settingsTrainersCount", { count: trainerCount })}</Badge>
+            <Badge variant="light" color="strategy">{t("settingsAthletesCount", { count: athleteCount })}</Badge>
+            <Badge variant="light" color="gray">{t("settingsApprovedUsersCount", { count: users.length })}</Badge>
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
@@ -500,7 +500,7 @@ export default function SettingsPage() {
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
               label={t("email")}
-              placeholder="user@example.com"
+              placeholder={t("settingsEmailPlaceholder")}
               value={userDraft}
               onChange={(event) => setUserDraft(event.target.value)}
               style={{ minWidth: 280 }}
@@ -536,9 +536,9 @@ export default function SettingsPage() {
                       value={user.roles[0] || "athlete"}
                       disabled={!canManageUsers}
                       data={[
-                        { value: "athlete", label: "Athlete" },
-                        { value: "trainer", label: "Trainer" },
-                        { value: "admin", label: "Admin" }
+                        { value: "athlete", label: t("roleAthlete") },
+                        { value: "trainer", label: t("roleTrainer") },
+                        { value: "admin", label: t("roleAdmin") }
                       ]}
                       onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
                     />
@@ -610,9 +610,9 @@ export default function SettingsPage() {
                           value={user.roles[0] || "athlete"}
                           disabled={!canManageUsers}
                           data={[
-                            { value: "athlete", label: "Athlete" },
-                            { value: "trainer", label: "Trainer" },
-                            { value: "admin", label: "Admin" }
+                            { value: "athlete", label: t("roleAthlete") },
+                            { value: "trainer", label: t("roleTrainer") },
+                            { value: "admin", label: t("roleAdmin") }
                           ]}
                           onChange={(value) => value && void setUserRole(user, value as "admin" | "trainer" | "athlete")}
                           w={160}
@@ -657,17 +657,17 @@ export default function SettingsPage() {
         </Stack>
       </SectionPanel>
 
-      <SectionPanel title="Teams">
+      <SectionPanel title={t("teamsTitle")}>
         <Stack gap="md">
           {!canManageUsers ? (
             <Alert color="yellow">
-              Only admins can create teams and assign trainers or athletes.
+              {t("teamsAdminOnly")}
             </Alert>
           ) : null}
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
-              label="Team name"
-              placeholder="U13 Blue"
+              label={t("teamNameLabel")}
+              placeholder={t("teamNamePlaceholder")}
               value={teamNameDraft}
               onChange={(event) => setTeamNameDraft(event.currentTarget.value)}
               style={{ minWidth: 220 }}
@@ -676,7 +676,7 @@ export default function SettingsPage() {
             <Box style={{ minWidth: 240 }}>
               <Select
                 searchable
-                label="Add trainer"
+                label={t("addTrainerLabel")}
                 value={teamTrainerDraft || null}
                 data={users.filter((user) => user.roles.includes("trainer") || user.roles.includes("admin")).map((user) => ({ value: user.email, label: user.name || user.email }))}
                 onChange={(value) => setTeamTrainerDraft(value || "")}
@@ -688,7 +688,7 @@ export default function SettingsPage() {
             <Box style={{ minWidth: 240 }}>
               <Select
                 searchable
-                label="Add athlete"
+                label={t("addAthleteLabel")}
                 value={teamAthleteDraft || null}
                 data={athletes.map((athlete) => ({ value: athlete._id || "", label: athlete.name }))}
                 onChange={(value) => setTeamAthleteDraft(value || "")}
@@ -711,12 +711,12 @@ export default function SettingsPage() {
                   <Group justify="space-between" align="start" wrap="wrap">
                     <Stack gap={4}>
                       <Text fw={700}>{team.name}</Text>
-                      <Text size="sm" c="dimmed">Trainers: {team.trainerEmails.join(", ") || "None assigned"}</Text>
+                      <Text size="sm" c="dimmed">{t("teamTrainersList", { trainers: team.trainerEmails.join(", ") || t("noneAssigned") })}</Text>
                     </Stack>
                     <SemanticButton action="delete" variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)} />
                   </Group>
                   <Group gap="xs" wrap="wrap">
-                    {team.athleteIds.length === 0 ? <Text size="sm" c="dimmed">No athletes assigned</Text> : null}
+                    {team.athleteIds.length === 0 ? <Text size="sm" c="dimmed">{t("noAthletesAssigned")}</Text> : null}
                     {team.athleteIds.map((athleteId) => (
                       <Badge
                         key={athleteId}
@@ -744,7 +744,7 @@ export default function SettingsPage() {
                       <Box style={{ minWidth: 220 }}>
                         <Select
                           searchable
-                          label="Assign athlete"
+                          label={t("assignAthleteLabel")}
                           value={teamRosterDraft[team._id || ""] || null}
                           data={athletes
                             .filter((athlete) => athlete._id && !team.athleteIds.includes(athlete._id))
@@ -764,7 +764,7 @@ export default function SettingsPage() {
                 </Stack>
               </Paper>
             ))}
-            {teams.length === 0 ? <Text c="dimmed">No teams created yet.</Text> : null}
+            {teams.length === 0 ? <Text c="dimmed">{t("noTeamsYet")}</Text> : null}
           </Stack>
         </Stack>
       </SectionPanel>
@@ -907,7 +907,7 @@ export default function SettingsPage() {
         </Stack>
       </SectionPanel>
 
-      <SectionPanel title="Standards Version Manager">
+      <SectionPanel title={t("standardsVersionTitle")}>
         <Stack gap="md">
           <Select
             label={t("standardsActiveVersion")}
@@ -934,7 +934,7 @@ export default function SettingsPage() {
             <Paper withBorder p="sm">
               <Stack gap="sm" mb="sm">
                 <TextInput
-                  label="Version notes"
+                  label={t("versionNotesLabel")}
                   value={versionNotesDraft || currentVersionMeta().notes || ""}
                   onChange={(e) => {
                     const v = e.currentTarget.value;

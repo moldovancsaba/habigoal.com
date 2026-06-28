@@ -396,10 +396,10 @@ export default function ChildrenListPage() {
                   <Text size="sm" fw={500} mb="xs">{t("athleteReadinessRangeLabel", { min: readinessRange[0], max: readinessRange[1] })}</Text>
                   <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm">
                   {[
-                      { label: "All", value: [0, 5] as [number, number] },
-                      { label: "Support", value: [0, 2.9] as [number, number] },
-                      { label: "Watch", value: [3, 3.9] as [number, number] },
-                      { label: "Ready", value: [4, 5] as [number, number] }
+                      { label: ta("rangeAll"), value: [0, 5] as [number, number] },
+                      { label: ta("rangeSupport"), value: [0, 2.9] as [number, number] },
+                      { label: ta("rangeWatch"), value: [3, 3.9] as [number, number] },
+                      { label: ta("rangeReady"), value: [4, 5] as [number, number] }
                     ].map((preset) => {
                       const active = readinessRange[0] === preset.value[0] && readinessRange[1] === preset.value[1];
                       return (
@@ -414,18 +414,18 @@ export default function ChildrenListPage() {
                   </SimpleGrid>
                   <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="md" mt="sm">
                     <Select
-                      label="Min score"
+                      label={ta("minScoreLabel")}
                       value={String(readinessRange[0])}
-                      data={["0", "1", "2", "3", "4", "5"].map((value) => ({ value, label: `Min ${value}` }))}
+                      data={["0", "1", "2", "3", "4", "5"].map((value) => ({ value, label: ta("minScoreOption", { value }) }))}
                       onChange={(value) => {
                         const nextMin = Number(value ?? readinessRange[0]);
                         setReadinessRange(([, max]) => [Math.min(nextMin, max), max]);
                       }}
                     />
                     <Select
-                      label="Max score"
+                      label={ta("maxScoreLabel")}
                       value={String(readinessRange[1])}
-                      data={["0", "1", "2", "3", "4", "5"].map((value) => ({ value, label: `Max ${value}` }))}
+                      data={["0", "1", "2", "3", "4", "5"].map((value) => ({ value, label: ta("maxScoreOption", { value }) }))}
                       onChange={(value) => {
                         const nextMax = Number(value ?? readinessRange[1]);
                         setReadinessRange(([min]) => [min, Math.max(nextMax, min)]);
@@ -560,22 +560,22 @@ export default function ChildrenListPage() {
             />
             <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
             <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
-            <Divider label="Baseline profile (optional)" labelPosition="left" />
+            <Divider label={ta("baselineSection")} labelPosition="left" />
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-              <NumberInput label="Height (cm)" value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
-              <NumberInput label="Weight (kg)" value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
-              <NumberInput label="Wingspan (cm)" value={draftBaseline.wingspanCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, wingspanCm: typeof value === "number" ? value : undefined }))} min={50} max={300} />
-              <NumberInput label="Resting heart rate" value={draftBaseline.restingHeartRate} onChange={(value) => setDraftBaseline((current) => ({ ...current, restingHeartRate: typeof value === "number" ? value : undefined }))} min={20} max={220} />
-              <NumberInput label="Sleep target (hours)" value={draftBaseline.sleepTargetHours} onChange={(value) => setDraftBaseline((current) => ({ ...current, sleepTargetHours: typeof value === "number" ? value : undefined }))} min={4} max={14} decimalScale={1} />
-              <NumberInput label="Measured IQ / cognitive score" value={draftBaseline.cognitiveScore} onChange={(value) => setDraftBaseline((current) => ({ ...current, cognitiveScore: typeof value === "number" ? value : undefined }))} min={40} max={200} />
-              <NumberInput label="Confidence baseline (1-10)" value={draftBaseline.confidenceBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, confidenceBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
-              <NumberInput label="Focus baseline (1-10)" value={draftBaseline.focusBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, focusBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
-              <NumberInput label="Motivation baseline (1-10)" value={draftBaseline.motivationBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, motivationBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
-              <NumberInput label="Stress baseline (1-10)" value={draftBaseline.stressBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, stressBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+              <NumberInput label={ta("baselineHeight")} value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
+              <NumberInput label={ta("baselineWeight")} value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
+              <NumberInput label={ta("baselineWingspan")} value={draftBaseline.wingspanCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, wingspanCm: typeof value === "number" ? value : undefined }))} min={50} max={300} />
+              <NumberInput label={ta("baselineRestingHeartRate")} value={draftBaseline.restingHeartRate} onChange={(value) => setDraftBaseline((current) => ({ ...current, restingHeartRate: typeof value === "number" ? value : undefined }))} min={20} max={220} />
+              <NumberInput label={ta("baselineSleepTarget")} value={draftBaseline.sleepTargetHours} onChange={(value) => setDraftBaseline((current) => ({ ...current, sleepTargetHours: typeof value === "number" ? value : undefined }))} min={4} max={14} decimalScale={1} />
+              <NumberInput label={ta("baselineCognitiveScore")} value={draftBaseline.cognitiveScore} onChange={(value) => setDraftBaseline((current) => ({ ...current, cognitiveScore: typeof value === "number" ? value : undefined }))} min={40} max={200} />
+              <NumberInput label={ta("baselineConfidence")} value={draftBaseline.confidenceBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, confidenceBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+              <NumberInput label={ta("baselineFocus")} value={draftBaseline.focusBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, focusBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+              <NumberInput label={ta("baselineMotivation")} value={draftBaseline.motivationBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, motivationBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+              <NumberInput label={ta("baselineStress")} value={draftBaseline.stressBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, stressBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
             </SimpleGrid>
-            <Textarea label="Injury history" value={draftBaseline.injuryNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, injuryNotes: event.target.value }))} minRows={2} />
-            <Textarea label="Medical notes" value={draftBaseline.medicalNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, medicalNotes: event.target.value }))} minRows={2} />
-            <Textarea label="Coach baseline notes" value={draftBaseline.coachBaselineNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, coachBaselineNotes: event.target.value }))} minRows={2} />
+            <Textarea label={ta("baselineInjuryHistory")} value={draftBaseline.injuryNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, injuryNotes: event.target.value }))} minRows={2} />
+            <Textarea label={ta("baselineMedicalNotes")} value={draftBaseline.medicalNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, medicalNotes: event.target.value }))} minRows={2} />
+            <Textarea label={ta("baselineCoachNotes")} value={draftBaseline.coachBaselineNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, coachBaselineNotes: event.target.value }))} minRows={2} />
             <Group>
               <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
               <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
@@ -592,22 +592,22 @@ export default function ChildrenListPage() {
           <TextInput label={ta("birthDate")} type="date" value={draftBirthDate} onChange={(event) => setDraftBirthDate(event.target.value)} />
           <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
           <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
-          <Divider label="Baseline profile (optional)" labelPosition="left" />
+          <Divider label={ta("baselineSection")} labelPosition="left" />
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            <NumberInput label="Height (cm)" value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
-            <NumberInput label="Weight (kg)" value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
-            <NumberInput label="Wingspan (cm)" value={draftBaseline.wingspanCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, wingspanCm: typeof value === "number" ? value : undefined }))} min={50} max={300} />
-            <NumberInput label="Resting heart rate" value={draftBaseline.restingHeartRate} onChange={(value) => setDraftBaseline((current) => ({ ...current, restingHeartRate: typeof value === "number" ? value : undefined }))} min={20} max={220} />
-            <NumberInput label="Sleep target (hours)" value={draftBaseline.sleepTargetHours} onChange={(value) => setDraftBaseline((current) => ({ ...current, sleepTargetHours: typeof value === "number" ? value : undefined }))} min={4} max={14} decimalScale={1} />
-            <NumberInput label="Measured IQ / cognitive score" value={draftBaseline.cognitiveScore} onChange={(value) => setDraftBaseline((current) => ({ ...current, cognitiveScore: typeof value === "number" ? value : undefined }))} min={40} max={200} />
-            <NumberInput label="Confidence baseline (1-10)" value={draftBaseline.confidenceBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, confidenceBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
-            <NumberInput label="Focus baseline (1-10)" value={draftBaseline.focusBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, focusBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
-            <NumberInput label="Motivation baseline (1-10)" value={draftBaseline.motivationBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, motivationBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
-            <NumberInput label="Stress baseline (1-10)" value={draftBaseline.stressBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, stressBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            <NumberInput label={ta("baselineHeight")} value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
+            <NumberInput label={ta("baselineWeight")} value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
+            <NumberInput label={ta("baselineWingspan")} value={draftBaseline.wingspanCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, wingspanCm: typeof value === "number" ? value : undefined }))} min={50} max={300} />
+            <NumberInput label={ta("baselineRestingHeartRate")} value={draftBaseline.restingHeartRate} onChange={(value) => setDraftBaseline((current) => ({ ...current, restingHeartRate: typeof value === "number" ? value : undefined }))} min={20} max={220} />
+            <NumberInput label={ta("baselineSleepTarget")} value={draftBaseline.sleepTargetHours} onChange={(value) => setDraftBaseline((current) => ({ ...current, sleepTargetHours: typeof value === "number" ? value : undefined }))} min={4} max={14} decimalScale={1} />
+            <NumberInput label={ta("baselineCognitiveScore")} value={draftBaseline.cognitiveScore} onChange={(value) => setDraftBaseline((current) => ({ ...current, cognitiveScore: typeof value === "number" ? value : undefined }))} min={40} max={200} />
+            <NumberInput label={ta("baselineConfidence")} value={draftBaseline.confidenceBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, confidenceBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            <NumberInput label={ta("baselineFocus")} value={draftBaseline.focusBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, focusBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            <NumberInput label={ta("baselineMotivation")} value={draftBaseline.motivationBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, motivationBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
+            <NumberInput label={ta("baselineStress")} value={draftBaseline.stressBaseline} onChange={(value) => setDraftBaseline((current) => ({ ...current, stressBaseline: typeof value === "number" ? value : undefined }))} min={1} max={10} />
           </SimpleGrid>
-          <Textarea label="Injury history" value={draftBaseline.injuryNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, injuryNotes: event.target.value }))} minRows={2} />
-          <Textarea label="Medical notes" value={draftBaseline.medicalNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, medicalNotes: event.target.value }))} minRows={2} />
-          <Textarea label="Coach baseline notes" value={draftBaseline.coachBaselineNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, coachBaselineNotes: event.target.value }))} minRows={2} />
+          <Textarea label={ta("baselineInjuryHistory")} value={draftBaseline.injuryNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, injuryNotes: event.target.value }))} minRows={2} />
+          <Textarea label={ta("baselineMedicalNotes")} value={draftBaseline.medicalNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, medicalNotes: event.target.value }))} minRows={2} />
+          <Textarea label={ta("baselineCoachNotes")} value={draftBaseline.coachBaselineNotes} onChange={(event) => setDraftBaseline((current) => ({ ...current, coachBaselineNotes: event.target.value }))} minRows={2} />
           <Group>
             <Checkbox label={ta("consentPhoto")} checked={draftConsentPhoto} onChange={(event) => setDraftConsentPhoto(event.currentTarget.checked)} />
             <Checkbox label={ta("consentReport")} checked={draftConsentReport} onChange={(event) => setDraftConsentReport(event.currentTarget.checked)} />
