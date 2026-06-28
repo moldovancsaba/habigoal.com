@@ -1902,26 +1902,26 @@
         },
         "modules": {
           "home": "الرئيسية",
-          "profile": "ملف المستخدم",
-          "checkin": "تسجيل",
+          "profile": "الملف الشخصي للمستخدم",
+          "checkin": "تسجيل الدخول",
           "session": "جلسة مباشرة",
           "calendar": "التقويم",
           "coach": "المدرب",
-          "parent": "الوالد",
+          "parent": "ولي الأمر",
           "team": "الفريق",
           "pillars": "حالة الركائز",
-          "recovery": "الاستشفاء",
+          "recovery": "التعافي",
           "fuel": "التغذية",
           "mental": "ذهني",
-          "cognitive": "Cognitive Lite",
-          "reflection": "تأمل",
-          "habits": "عادات",
+          "cognitive": "إدراكي لايت",
+          "reflection": "التأمل",
+          "habits": "العادات",
           "roadmap": "خارطة الطريق",
-          "report": "تقرير",
-          "plan": "Daily plan",
-          "sessions": "Sessions",
-          "progress": "Progress",
-          "lite": "Lite modules"
+          "report": "التقرير",
+          "plan": "الخطة اليومية",
+          "sessions": "الجلسات",
+          "progress": "التقدّم",
+          "lite": "وحدات لايت"
         }
       },
       "athleteWorkspace": {
@@ -1999,209 +1999,209 @@
         },
         "sections": {
           "plan": {
-            "title": "Today's plan",
-            "copy": "Work through the tasks generated from your check-in."
+            "title": "خطة اليوم",
+            "copy": "أنجز المهام التي أُنشئت من تسجيل دخولك."
           },
           "sessions": {
-            "title": "Training session",
-            "copy": "Build today's session from your plan, run it, and debrief."
+            "title": "جلسة التدريب",
+            "copy": "أنشئ جلسة اليوم من خطتك، ونفّذها، ثم قيّمها."
           },
           "mental": {
-            "title": "Mental edge",
-            "copy": "Short routines to steady focus, mood, and confidence."
+            "title": "التفوق الذهني",
+            "copy": "روتينات قصيرة لتثبيت التركيز والمزاج والثقة."
           },
           "reflection": {
-            "title": "Reflection",
-            "copy": "Capture how today went and choose who can see it."
+            "title": "التأمل",
+            "copy": "سجّل كيف سار يومك واختر من يمكنه الاطلاع عليه."
           },
           "progress": {
-            "title": "My progress",
-            "copy": "How your scores are trending over the last 30 days."
+            "title": "تقدّمي",
+            "copy": "كيف تتجه نتائجك خلال آخر 30 يومًا."
           },
           "lite": {
-            "title": "Lite modules",
-            "copy": "Log recovery, fuel, learning, and manual wearable data."
+            "title": "وحدات لايت",
+            "copy": "سجّل التعافي والتغذية والتعلّم وبيانات الأجهزة القابلة للارتداء يدويًا."
           }
         },
         "panels": {
           "common": {
-            "loading": "Loading…",
-            "loadError": "Could not load this section.",
-            "retry": "Retry",
-            "noData": "No data yet",
-            "actionFailed": "That action could not be completed. Please try again."
+            "loading": "جارٍ التحميل…",
+            "loadError": "تعذر تحميل هذا القسم.",
+            "retry": "إعادة المحاولة",
+            "noData": "لا توجد بيانات بعد",
+            "actionFailed": "تعذر إكمال هذا الإجراء. يرجى المحاولة مرة أخرى."
           },
           "dailyPlan": {
-            "empty": "No plan yet for today.",
-            "generate": "Generate plan",
-            "recommendationTitle": "Recommended session",
-            "openCount": "{count} of {total} tasks open",
-            "complete": "Complete",
-            "dismiss": "Dismiss",
-            "reopen": "Reopen",
+            "empty": "لا توجد خطة لليوم بعد.",
+            "generate": "إنشاء خطة",
+            "recommendationTitle": "الجلسة الموصى بها",
+            "openCount": "{count} من {total} مهام مفتوحة",
+            "complete": "إكمال",
+            "dismiss": "تجاهل",
+            "reopen": "إعادة فتح",
             "intensity": {
-              "normal": "Normal",
-              "moderate": "Moderate",
-              "low": "Low",
-              "recovery": "Recovery",
-              "high": "High"
+              "normal": "عادية",
+              "moderate": "معتدلة",
+              "low": "منخفضة",
+              "recovery": "تعافٍ",
+              "high": "عالية"
             },
             "sessionType": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "تعافٍ",
+              "controlled": "مُتحكَّم بها",
+              "standard": "قياسية",
+              "high_intensity": "شدة عالية"
             },
             "priority": {
-              "critical": "Critical",
-              "high": "High",
-              "medium": "Medium",
-              "low": "Low"
+              "critical": "حرجة",
+              "high": "عالية",
+              "medium": "متوسطة",
+              "low": "منخفضة"
             },
             "state": {
-              "completed": "Completed",
-              "dismissed": "Dismissed"
+              "completed": "مكتملة",
+              "dismissed": "متجاهَلة"
             },
             "dueWindow": {
-              "morning": "Morning",
-              "training": "Training",
-              "evening": "Evening",
-              "anytime": "Anytime"
+              "morning": "الصباح",
+              "training": "التدريب",
+              "evening": "المساء",
+              "anytime": "أي وقت"
             }
           },
           "mentalEdge": {
             "trend": {
-              "improving": "Improving",
-              "steady": "Steady",
-              "declining": "Declining",
-              "unknown": "Not enough data"
+              "improving": "في تحسّن",
+              "steady": "ثابت",
+              "declining": "في تراجع",
+              "unknown": "بيانات غير كافية"
             },
             "risk": {
-              "stable": "Stable",
-              "watch": "Watch",
-              "concern": "Concern",
-              "urgent": "Urgent",
-              "insufficient": "Insufficient data"
+              "stable": "مستقر",
+              "watch": "للمراقبة",
+              "concern": "مقلق",
+              "urgent": "عاجل",
+              "insufficient": "بيانات غير كافية"
             },
-            "routinesTitle": "Today's routines",
-            "noRoutines": "No routines suggested today.",
-            "completed": "Completed",
-            "minutes": "{minutes} min",
-            "markComplete": "Mark complete"
+            "routinesTitle": "روتين اليوم",
+            "noRoutines": "لا يوجد روتين مقترح اليوم.",
+            "completed": "مكتمل",
+            "minutes": "{minutes} دقيقة",
+            "markComplete": "وضع علامة كمكتمل"
           },
           "reflection": {
-            "bodyLabel": "Reflection",
-            "bodyPlaceholder": "What went well, what was hard, what's next…",
-            "moodLabel": "Mood tag",
-            "moodPlaceholder": "e.g. focused",
-            "visibilityLabel": "Visibility",
+            "bodyLabel": "تأمل",
+            "bodyPlaceholder": "ما الذي سار جيدًا، وما الذي كان صعبًا، وما التالي…",
+            "moodLabel": "وسم المزاج",
+            "moodPlaceholder": "مثال: مُركّز",
+            "visibilityLabel": "الظهور",
             "visibility": {
-              "private": "Private",
-              "coach_summary": "Coach summary",
-              "parent_summary": "Parent summary"
+              "private": "خاص",
+              "coach_summary": "ملخص للمدرب",
+              "parent_summary": "ملخص لولي الأمر"
             },
-            "save": "Save reflection",
-            "todayTitle": "Today's reflections",
-            "empty": "No reflection saved today."
+            "save": "حفظ التأمل",
+            "todayTitle": "تأملات اليوم",
+            "empty": "لم يُحفظ أي تأمل اليوم."
           },
           "session": {
-            "todayTitle": "Today's sessions",
-            "buildFromPlan": "Build from plan",
-            "empty": "No session yet. Build one from today's plan.",
-            "buildError": "Could not build a session. Generate a daily plan first.",
-            "transitionError": "That session change is not allowed right now.",
-            "debriefError": "Could not save the debrief.",
+            "todayTitle": "جلسات اليوم",
+            "buildFromPlan": "إنشاء من الخطة",
+            "empty": "لا توجد جلسة بعد. أنشئ واحدة من خطة اليوم.",
+            "buildError": "تعذر إنشاء جلسة. أنشئ خطة يومية أولًا.",
+            "transitionError": "تغيير الجلسة هذا غير مسموح به الآن.",
+            "debriefError": "تعذر حفظ التقييم.",
             "type": {
-              "recovery": "Recovery",
-              "controlled": "Controlled",
-              "standard": "Standard",
-              "high_intensity": "High intensity"
+              "recovery": "تعافٍ",
+              "controlled": "مُتحكَّم بها",
+              "standard": "قياسية",
+              "high_intensity": "شدة عالية"
             },
             "state": {
-              "draft": "Draft",
-              "active": "Active",
-              "paused": "Paused",
-              "completed": "Completed",
-              "abandoned": "Abandoned"
+              "draft": "مسودة",
+              "active": "نشطة",
+              "paused": "متوقفة مؤقتًا",
+              "completed": "مكتملة",
+              "abandoned": "متروكة"
             },
             "block": {
-              "warmup": "Warm-up",
-              "main": "Main",
-              "cooldown": "Cool-down",
-              "recovery": "Recovery"
+              "warmup": "إحماء",
+              "main": "الجزء الرئيسي",
+              "cooldown": "تهدئة",
+              "recovery": "تعافٍ"
             },
-            "blockMinutes": "{minutes} min",
+            "blockMinutes": "{minutes} دقيقة",
             "action": {
-              "active": "Start",
-              "paused": "Pause",
-              "completed": "Complete",
-              "abandoned": "Abandon"
+              "active": "بدء",
+              "paused": "إيقاف مؤقت",
+              "completed": "إكمال",
+              "abandoned": "ترك"
             },
-            "abandonReason": "Reason (required to abandon)",
-            "debriefTitle": "Debrief",
-            "rpe": "RPE (1-10)",
-            "completionPct": "Completion %",
-            "painAfter": "Pain after (1-10)",
-            "moodAfter": "Mood after (1-10)",
-            "notes": "Notes",
-            "recordedLoad": "Recorded load: {load}",
-            "saveDebrief": "Save debrief"
+            "abandonReason": "السبب (مطلوب للترك)",
+            "debriefTitle": "التقييم",
+            "rpe": "RPE (1–10)",
+            "completionPct": "نسبة الإكمال %",
+            "painAfter": "الألم بعدها (1–10)",
+            "moodAfter": "المزاج بعدها (1–10)",
+            "notes": "ملاحظات",
+            "recordedLoad": "الحمل المسجَّل: {load}",
+            "saveDebrief": "حفظ التقييم"
           },
           "lite": {
             "modules": {
-              "recovery": "Recovery",
-              "fuel": "Fuel",
-              "learning": "Learning",
-              "wearable": "Wearable",
+              "recovery": "التعافي",
+              "fuel": "التغذية",
+              "learning": "التعلّم",
+              "wearable": "جهاز قابل للارتداء",
               "cognitive": "إدراكي"
             },
-            "protocol": "Protocol",
-            "protocolPlaceholder": "e.g. cold-shower",
-            "perceivedRecovery": "Perceived recovery (1-5)",
-            "mealTiming": "Meal timing",
-            "hydration": "Hydration",
-            "note": "Note",
+            "protocol": "البروتوكول",
+            "protocolPlaceholder": "مثال: دش-بارد",
+            "perceivedRecovery": "التعافي المُدرَك (1–5)",
+            "mealTiming": "توقيت الوجبات",
+            "hydration": "الترطيب",
+            "note": "ملاحظة",
             "fuelStatus": {
-              "on_track": "On track",
-              "late": "Late",
-              "missed": "Missed",
-              "unknown": "Unknown"
+              "on_track": "على المسار",
+              "late": "متأخر",
+              "missed": "فائت",
+              "unknown": "غير معروف"
             },
-            "itemId": "Lesson",
-            "itemIdPlaceholder": "e.g. tactical-positioning",
-            "learningStatus": "Status",
+            "itemId": "الدرس",
+            "itemIdPlaceholder": "مثال: التموضع-التكتيكي",
+            "learningStatus": "الحالة",
             "learningStatusOption": {
-              "not_started": "Not started",
-              "in_progress": "In progress",
-              "completed": "Completed",
-              "skipped": "Skipped"
+              "not_started": "لم يبدأ",
+              "in_progress": "قيد التقدم",
+              "completed": "مكتمل",
+              "skipped": "تم تخطّيه"
             },
-            "metric": "Metric",
+            "metric": "المؤشر",
             "metricOption": {
-              "resting_heart_rate": "Resting heart rate",
+              "resting_heart_rate": "معدل ضربات القلب أثناء الراحة",
               "hrv_ms": "HRV",
-              "sleep_hours": "Sleep hours",
-              "steps": "Steps",
-              "body_weight_kg": "Body weight",
-              "training_load_au": "Training load"
+              "sleep_hours": "ساعات النوم",
+              "steps": "الخطوات",
+              "body_weight_kg": "وزن الجسم",
+              "training_load_au": "حمل التدريب"
             },
-            "value": "Value",
-            "saved": "Saved.",
-            "save": "Save entry",
-            "summaryTitle": "Today's lite modules",
-            "entryCount": "{count} entries today",
+            "value": "القيمة",
+            "saved": "تم الحفظ.",
+            "save": "حفظ الإدخال",
+            "summaryTitle": "وحدات لايت اليوم",
+            "entryCount": "{count} إدخالات اليوم",
             "confidence": {
-              "medium": "Medium confidence",
-              "low": "Low confidence",
-              "insufficient": "No data"
+              "medium": "ثقة متوسطة",
+              "low": "ثقة منخفضة",
+              "insufficient": "لا توجد بيانات"
             },
-            "cognitiveTitle": "Cognitive profile",
-            "cognitiveProgress": "{completed} of {total} traits",
+            "cognitiveTitle": "الملف الإدراكي",
+            "cognitiveProgress": "{completed} من {total} سمات",
             "cognitiveBand": {
-              "strength": "Strength",
-              "stable": "Stable",
-              "watch": "Watch",
-              "missing": "No data"
+              "strength": "قوة",
+              "stable": "مستقر",
+              "watch": "للمراقبة",
+              "missing": "لا توجد بيانات"
             },
             "cognitiveTrait": "السمة",
             "cognitiveScore": "النتيجة (0–100)",
@@ -2216,15 +2216,15 @@
           "progress": {
             "metric": {
               "dailyIq": "Daily IQ",
-              "readiness": "Readiness",
-              "habit": "Habits",
-              "mental": "Mental edge"
+              "readiness": "الجاهزية",
+              "habit": "العادات",
+              "mental": "التفوق الذهني"
             },
-            "latest": "Latest",
-            "average": "Average",
-            "change": "Change",
-            "points": "Data points",
-            "empty": "No history yet for this metric."
+            "latest": "الأحدث",
+            "average": "المتوسط",
+            "change": "التغيّر",
+            "points": "نقاط البيانات",
+            "empty": "لا يوجد سجل لهذا المؤشر بعد."
           }
         }
       },
@@ -2239,72 +2239,72 @@
     "dailyPlan": {
       "tasks": {
         "completeCheckIn": {
-          "title": "Complete your check-in",
-          "description": "Log today's readiness so the rest of your plan can adapt."
+          "title": "أكمل تسجيل دخولك",
+          "description": "سجّل جاهزيتك اليوم حتى تتكيف بقية خطتك."
         },
         "painGuardrail": {
-          "title": "Pain safety review",
-          "description": "A pain signal needs review before training intensity is cleared."
+          "title": "مراجعة السلامة من الألم",
+          "description": "يجب مراجعة إشارة ألم قبل اعتماد شدة التدريب."
         },
         "habit": {
-          "description": "Keep your habit streak going today."
+          "description": "حافظ على سلسلة عاداتك اليوم."
         },
         "mentalRoutine": {
-          "description": "Run a short mental-edge routine to steady focus."
+          "description": "نفّذ روتينًا ذهنيًا قصيرًا لتثبيت التركيز."
         },
         "liteModule": {
-          "description": "Add a quick manual entry to keep this module current."
+          "description": "أضف إدخالًا يدويًا سريعًا للحفاظ على تحديث هذه الوحدة."
         }
       }
     },
     "mentalEdge": {
       "routines": {
-        "breathingReset": "Breathing reset",
-        "confidenceNote": "Confidence note",
-        "recoveryReflection": "Recovery reflection",
-        "coachCheckIn": "Coach check-in"
+        "breathingReset": "إعادة ضبط التنفس",
+        "confidenceNote": "ملاحظة ثقة",
+        "recoveryReflection": "تأمل التعافي",
+        "coachCheckIn": "تواصل مع المدرب"
       },
       "reasons": {
-        "stress_support": "Helps settle stress.",
-        "confidence_support": "Builds confidence.",
-        "mood_support": "Lifts mood.",
-        "coach_support": "Connect with your coach."
+        "stress_support": "يساعد على تهدئة التوتر.",
+        "confidence_support": "يبني الثقة.",
+        "mood_support": "يحسّن المزاج.",
+        "coach_support": "تواصل مع مدربك."
       }
     },
     "sessions": {
       "blocks": {
-        "warmup": "Warm-up",
-        "main": "Main block",
-        "cooldown": "Cool-down",
-        "recovery": "Recovery"
+        "warmup": "إحماء",
+        "main": "الجزء الرئيسي",
+        "cooldown": "تهدئة",
+        "recovery": "تعافٍ"
       },
       "safety": {
-        "recoveryOnly": "Recovery only",
-        "standard": "Standard"
+        "recoveryOnly": "تعافٍ فقط",
+        "standard": "قياسي"
       }
     },
     "modules": {
       "recoveryLite": {
-        "name": "Recovery"
+        "name": "التعافي"
       },
       "fuelLite": {
-        "name": "Fuel"
+        "name": "التغذية"
       },
       "learningLite": {
-        "name": "Learning"
+        "name": "التعلّم"
       },
       "wearableManualSync": {
-        "name": "Manual wearable"
+        "name": "جهاز قابل للارتداء يدوي"
       }
     },
     "cognitiveLite": {
       "trait": {
-        "alertness": "Alertness",
-        "impulse_control": "Impulse control",
-        "attention": "Attention",
-        "risk": "Risk",
-        "reasoning": "Reasoning",
-        "memory_retention": "Memory & retention"
+        "alertness": "اليقظة",
+        "impulse_control": "ضبط الاندفاع",
+        "attention": "الانتباه",
+        "risk": "المخاطرة",
+        "reasoning": "الاستدلال",
+        "memory_retention": "الذاكرة والاحتفاظ"
       }
     },
     "parents": {
