@@ -10,6 +10,7 @@ import { AppShell as GdsAppShell, SidebarNav, SidebarNavItem } from "@doneisbett
 import { APP_LAYOUT } from "@/theme/tokens";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
 import { OnboardingProvider } from "@/components/onboarding/OnboardingPrompt";
+import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
@@ -103,7 +104,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   const brandHeader = (
     <Group gap="sm" wrap="nowrap">
-      <Image src="/images/habigoal_logo.png" alt="" width={36} height={36} priority />
+      <Image src={ATHLETE_IQ_GOLD_LOGO_SRC} alt="" width={36} height={36} priority />
       <span>{t("brandName")}</span>
     </Group>
   );
