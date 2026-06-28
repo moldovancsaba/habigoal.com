@@ -1407,7 +1407,23 @@
     "noLinked": "لا يوجد رياضيون مرتبطون.",
     "reports": "التقارير",
     "digitalTwin": "التوأم الرقمي",
-    "loadError": "فشل التحميل"
+    "loadError": "فشل التحميل",
+    "retry": "حاول مرة أخرى",
+    "noLinkedHelp": "اطلب من مدرب الرياضي أو النادي ربط حسابك حتى تتمكن من رؤية الملخص.",
+    "selectChild": "اختر الرياضي",
+    "summaryTitle": "الملخص اليومي — {name}",
+    "summaryLoading": "جارٍ تحميل الملخص…",
+    "summaryError": "تعذر تحميل الملخص",
+    "summaryErrorHelp": "يرجى المحاولة مرة أخرى بعد لحظات.",
+    "statusTitle": "حالة اليوم",
+    "tasksTitle": "المهام المكتملة",
+    "tasksDone": "اكتمل {count} اليوم",
+    "notesTitle": "ملاحظات لأولياء الأمور",
+    "supportTitle": "كيف يمكنك تقديم الدعم",
+    "privacyTitle": "الخصوصية محمية",
+    "privacyHelp": "تبقى بعض التفاصيل خاصة بالرياضي — ترى ملخصًا مناسبًا لأولياء الأمور فقط.",
+    "noSummary": "لا يوجد ملخص بعد",
+    "noSummaryHelp": "لا يوجد تسجيل لهذا اليوم بعد. تحقق لاحقًا."
   },
   "PlanningDashboard": {
     "title": "مخطط الجلسات والدورات",
@@ -2278,6 +2294,13 @@
         "risk": "Risk",
         "reasoning": "Reasoning",
         "memory_retention": "Memory & retention"
+      }
+    },
+    "parents": {
+      "actions": {
+        "encourageRecovery": "شجّع على الراحة والتعافي اليوم.",
+        "remindCheckIn": "تذكير لطيف بإكمال تسجيل اليوم يساعد كثيرًا.",
+        "keepRoutine": "حافظوا على الروتين المعتاد — كل شيء يسير على ما يرام."
       }
     }
   },

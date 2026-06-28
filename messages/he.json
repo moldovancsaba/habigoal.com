@@ -1407,7 +1407,23 @@
     "noLinked": "אין ספורטאים מקושרים.",
     "reports": "דוחות",
     "digitalTwin": "תאום דיגיטלי",
-    "loadError": "טעינה נכשלה"
+    "loadError": "טעינה נכשלה",
+    "retry": "נסה שוב",
+    "noLinkedHelp": "בקשו מהמאמן או מהמועדון של הספורטאי לקשר את החשבון שלכם כדי לראות את הסיכום.",
+    "selectChild": "בחר ספורטאי",
+    "summaryTitle": "סיכום יומי — {name}",
+    "summaryLoading": "טוען סיכום…",
+    "summaryError": "לא ניתן לטעון את הסיכום",
+    "summaryErrorHelp": "אנא נסו שוב בעוד רגע.",
+    "statusTitle": "מצב היום",
+    "tasksTitle": "משימות שהושלמו",
+    "tasksDone": "{count} הושלמו היום",
+    "notesTitle": "הערות להורים",
+    "supportTitle": "כיצד תוכלו לתמוך",
+    "privacyTitle": "הפרטיות מוגנת",
+    "privacyHelp": "חלק מהפרטים נשמרים פרטיים לספורטאי — אתם רואים סיכום המתאים להורים בלבד.",
+    "noSummary": "אין סיכום עדיין",
+    "noSummaryHelp": "אין צ'ק-אין להיום עדיין. בדקו שוב מאוחר יותר."
   },
   "PlanningDashboard": {
     "title": "מתכנן אימונים ומיקרו-מחזורים",
@@ -2278,6 +2294,13 @@
         "risk": "Risk",
         "reasoning": "Reasoning",
         "memory_retention": "Memory & retention"
+      }
+    },
+    "parents": {
+      "actions": {
+        "encourageRecovery": "עודדו מנוחה והתאוששות היום.",
+        "remindCheckIn": "תזכורת עדינה להשלים את הצ'ק-אין של היום עוזרת.",
+        "keepRoutine": "שמרו על השגרה הרגילה — הכול נראה תקין."
       }
     }
   },

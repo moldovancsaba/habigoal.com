@@ -1407,7 +1407,23 @@
     "noLinked": "Sin atletas vinculados.",
     "reports": "Informes",
     "digitalTwin": "Gemelo digital",
-    "loadError": "Error al cargar"
+    "loadError": "Error al cargar",
+    "retry": "Intentar de nuevo",
+    "noLinkedHelp": "Pida al entrenador o al club del deportista que vincule su cuenta para poder ver el resumen.",
+    "selectChild": "Seleccionar deportista",
+    "summaryTitle": "Resumen diario — {name}",
+    "summaryLoading": "Cargando resumen…",
+    "summaryError": "No se pudo cargar el resumen",
+    "summaryErrorHelp": "Inténtelo de nuevo en un momento.",
+    "statusTitle": "Estado de hoy",
+    "tasksTitle": "Tareas completadas",
+    "tasksDone": "{count} completadas hoy",
+    "notesTitle": "Notas para padres",
+    "supportTitle": "Cómo puede ayudar",
+    "privacyTitle": "Privacidad protegida",
+    "privacyHelp": "Algunos detalles se mantienen privados para el deportista; usted solo ve un resumen apto para padres.",
+    "noSummary": "Aún no hay resumen",
+    "noSummaryHelp": "Todavía no hay registro de hoy. Vuelva más tarde."
   },
   "PlanningDashboard": {
     "title": "Planificador y microciclos",
@@ -2278,6 +2294,13 @@
         "risk": "Risk",
         "reasoning": "Reasoning",
         "memory_retention": "Memory & retention"
+      }
+    },
+    "parents": {
+      "actions": {
+        "encourageRecovery": "Anime al descanso y la recuperación hoy.",
+        "remindCheckIn": "Un recordatorio amable para completar el registro de hoy ayuda.",
+        "keepRoutine": "Mantengan la rutina habitual: todo va por buen camino."
       }
     }
   },

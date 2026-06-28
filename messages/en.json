@@ -1407,7 +1407,23 @@
     "noLinked": "No linked athletes found.",
     "reports": "Reports",
     "digitalTwin": "Digital Twin",
-    "loadError": "Failed to load linked athletes"
+    "loadError": "Failed to load linked athletes",
+    "retry": "Try again",
+    "noLinkedHelp": "Ask your athlete's coach or club to link your account so you can see their summary.",
+    "selectChild": "Select athlete",
+    "summaryTitle": "Daily summary — {name}",
+    "summaryLoading": "Loading summary…",
+    "summaryError": "Couldn't load the summary",
+    "summaryErrorHelp": "Please try again in a moment.",
+    "statusTitle": "Today's status",
+    "tasksTitle": "Tasks completed",
+    "tasksDone": "{count} completed today",
+    "notesTitle": "Parent-safe notes",
+    "supportTitle": "How you can support",
+    "privacyTitle": "Privacy protected",
+    "privacyHelp": "Some detail is kept private to your athlete — you see a parent-safe summary only.",
+    "noSummary": "No summary yet",
+    "noSummaryHelp": "There's no check-in for today yet. Check back later."
   },
   "PlanningDashboard": {
     "title": "Session Planner & Microcycles",
@@ -2278,6 +2294,13 @@
         "risk": "Risk",
         "reasoning": "Reasoning",
         "memory_retention": "Memory & retention"
+      }
+    },
+    "parents": {
+      "actions": {
+        "encourageRecovery": "Encourage rest and recovery today.",
+        "remindCheckIn": "A gentle reminder to complete today's check-in helps.",
+        "keepRoutine": "Keep up the usual routine — things look on track."
       }
     }
   },

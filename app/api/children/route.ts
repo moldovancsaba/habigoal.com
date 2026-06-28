@@ -6,7 +6,9 @@ import { getAuthUser, resolveAccessibleAthleteIds } from "@/lib/access";
 import { parseChildPayload } from "@/lib/validations";
 
 export async function GET(request: Request) {
-  const authError = await requireRole(request, ["admin", "trainer", "athlete"]);
+  // Parents are scoped down to their linked athletes below via
+  // resolveAccessibleAthleteIds (parentAthleteIds); they may list those.
+  const authError = await requireRole(request, ["admin", "trainer", "athlete", "parent"]);
   if (authError) return authError;
 
   try {
