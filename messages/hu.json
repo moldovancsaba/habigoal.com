@@ -2151,7 +2151,8 @@
               "recovery": "Recovery",
               "fuel": "Fuel",
               "learning": "Learning",
-              "wearable": "Wearable"
+              "wearable": "Wearable",
+              "cognitive": "Kognitív"
             },
             "protocol": "Protocol",
             "protocolPlaceholder": "e.g. cold-shower",
@@ -2200,6 +2201,15 @@
               "stable": "Stable",
               "watch": "Watch",
               "missing": "No data"
+            },
+            "cognitiveTrait": "Tulajdonság",
+            "cognitiveScore": "Pontszám (0–100)",
+            "cognitiveEmpty": "Még nincs kognitív eredmény. Adjon meg egy pontszámot fent a kezdéshez.",
+            "cognitiveEntered": "{count} megadva",
+            "cognitiveProvenance": {
+              "entered": "Megadva",
+              "derived": "Származtatott",
+              "missing": "Nincs adat"
             }
           },
           "progress": {

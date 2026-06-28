@@ -2151,7 +2151,8 @@
               "recovery": "Recovery",
               "fuel": "Fuel",
               "learning": "Learning",
-              "wearable": "Wearable"
+              "wearable": "Wearable",
+              "cognitive": "קוגניטיבי"
             },
             "protocol": "Protocol",
             "protocolPlaceholder": "e.g. cold-shower",
@@ -2200,6 +2201,15 @@
               "stable": "Stable",
               "watch": "Watch",
               "missing": "No data"
+            },
+            "cognitiveTrait": "תכונה",
+            "cognitiveScore": "ציון (0–100)",
+            "cognitiveEmpty": "אין עדיין תוצאות קוגניטיביות. הזינו ציון תכונה למעלה כדי להתחיל.",
+            "cognitiveEntered": "{count} הוזנו",
+            "cognitiveProvenance": {
+              "entered": "הוזן",
+              "derived": "נגזר",
+              "missing": "אין נתונים"
             }
           },
           "progress": {

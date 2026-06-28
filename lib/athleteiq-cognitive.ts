@@ -4,6 +4,7 @@ import type {
   CognitiveLiteJourney,
   CognitiveTrait,
   CognitiveTraitBand,
+  CognitiveTraitEntry,
   CognitiveTraitResult,
   CogLeagueBoundary,
   CogLeagueCheckpoint,
@@ -14,13 +15,38 @@ export const ATHLETEIQ_COGNITIVE_CAPABILITY_KEY = "AIQ-1330";
 export const ATHLETEIQ_COGNITIVE_VERSION = "aiq-cognitive-boundary-1330.1";
 export const ATHLETEIQ_COGNITIVE_TIMEOUT_MS = 2500;
 
-const cognitiveTraits: CognitiveTrait[] = ["alertness", "impulse_control", "attention", "risk", "reasoning", "memory_retention"];
+export const COGNITIVE_TRAITS: CognitiveTrait[] = ["alertness", "impulse_control", "attention", "risk", "reasoning", "memory_retention"];
+export const COGNITIVE_SCORE_MIN = 0;
+export const COGNITIVE_SCORE_MAX = 100;
 
-export function buildCognitiveLiteJourney(input: { athleteId: string; athlete: ChildProfile | null; now?: Date }): CognitiveLiteJourney {
+// Validates a manual cognitive entry: trait must be a known trait and score a
+// finite number within [0, 100]. Returns an empty array when the input is valid.
+export function validateCognitiveTraitEntry(input: { trait?: unknown; score?: unknown }): string[] {
+  const errors: string[] = [];
+  if (typeof input.trait !== "string" || !COGNITIVE_TRAITS.includes(input.trait as CognitiveTrait)) {
+    errors.push(`trait must be one of: ${COGNITIVE_TRAITS.join(", ")}`);
+  }
+  if (typeof input.score !== "number" || !Number.isFinite(input.score)) {
+    errors.push("score must be a number");
+  } else if (input.score < COGNITIVE_SCORE_MIN || input.score > COGNITIVE_SCORE_MAX) {
+    errors.push(`score must be between ${COGNITIVE_SCORE_MIN} and ${COGNITIVE_SCORE_MAX}`);
+  }
+  return errors;
+}
+
+export function buildCognitiveLiteJourney(input: { athleteId: string; athlete: ChildProfile | null; entries?: CognitiveTraitEntry[]; now?: Date }): CognitiveLiteJourney {
   const moduleDefinition = getAthleteIqModule("cognitive_lite");
   if (!moduleDefinition || moduleDefinition.maturity !== "lite_manual") throw new Error("cognitive_lite must remain lite_manual");
-  const traitResults = cognitiveTraits.map((trait) => buildTraitResult(trait, input.athlete));
+  // Latest entered result per trait wins; absent that, fall back to a derived
+  // (baseline) value, clearly labeled as derived.
+  const enteredByTrait = new Map<CognitiveTrait, CognitiveTraitEntry>();
+  for (const entry of input.entries ?? []) {
+    const current = enteredByTrait.get(entry.trait);
+    if (!current || entry.enteredAt > current.enteredAt) enteredByTrait.set(entry.trait, entry);
+  }
+  const traitResults = COGNITIVE_TRAITS.map((trait) => buildTraitResult(trait, input.athlete, enteredByTrait.get(trait) ?? null));
   const completedTraitCount = traitResults.filter((result) => result.score !== null).length;
+  const enteredTraitCount = traitResults.filter((result) => result.provenance === "entered").length;
 
   return {
     athleteId: input.athleteId,
@@ -30,8 +56,9 @@ export function buildCognitiveLiteJourney(input: { athleteId: string; athlete: C
     benchmarkStatus: "non_benchmark",
     traitResults,
     completedTraitCount,
-    totalTraitCount: cognitiveTraits.length,
-    isComplete: completedTraitCount === cognitiveTraits.length,
+    enteredTraitCount,
+    totalTraitCount: COGNITIVE_TRAITS.length,
+    isComplete: completedTraitCount === COGNITIVE_TRAITS.length,
     dataUsed: Array.from(new Set(traitResults.flatMap((result) => result.dataUsed))),
     missingData: Array.from(new Set(traitResults.flatMap((result) => result.missingData))),
     sourceLabels: Array.from(new Set(traitResults.map((result) => result.sourceLabelKey))),
@@ -109,7 +136,31 @@ export function withCognitiveTimeout<T>(operation: Promise<T>, timeoutMs = ATHLE
   ]);
 }
 
-function buildTraitResult(trait: CognitiveTrait, athlete: ChildProfile | null): CognitiveTraitResult {
+function buildTraitResult(trait: CognitiveTrait, athlete: ChildProfile | null, entry: CognitiveTraitEntry | null): CognitiveTraitResult {
+  // An entered result is authoritative and makes the manual-entry claim true.
+  if (entry) {
+    const score = clampTraitScore(entry.score);
+    return {
+      trait,
+      score,
+      band: bandForScore(score),
+      explanationKey: `athleteiq.cognitiveLite.explanation.${trait}`,
+      signatureKey: `athleteiq.cognitiveLite.signature.${trait}`,
+      improvementTipKey: `athleteiq.cognitiveLite.tip.${trait}`,
+      source: "manual_entry",
+      provenance: "entered",
+      enteredAt: entry.enteredAt,
+      sourceLabelKey: "athleteiq.sources.manualEntry",
+      benchmarkStatus: "non_benchmark",
+      claimBoundary: "backed_by_manual_entry",
+      moduleMaturity: "lite_manual",
+      dataUsed: [`manual_entry:${trait}`],
+      missingData: []
+    };
+  }
+
+  // Fallback: derive from the baseline profile, clearly labeled as derived. With
+  // neither entry nor baseline, the score is null (missing) — never fabricated.
   const score = normalizeTraitScore(trait, athlete);
   const missingData = score === null ? [`profile_baseline:${trait}`] : [];
   return {
@@ -120,6 +171,8 @@ function buildTraitResult(trait: CognitiveTrait, athlete: ChildProfile | null): 
     signatureKey: `athleteiq.cognitiveLite.signature.${trait}`,
     improvementTipKey: `athleteiq.cognitiveLite.tip.${trait}`,
     source: score === null ? "missing_local_profile" : "local_profile",
+    provenance: score === null ? "missing" : "derived",
+    enteredAt: null,
     sourceLabelKey: score === null ? "athleteiq.sources.missing.profileBaseline" : "athleteiq.sources.localProfileBaseline",
     benchmarkStatus: "non_benchmark",
     claimBoundary: "backed_by_manual_entry",
@@ -127,6 +180,10 @@ function buildTraitResult(trait: CognitiveTrait, athlete: ChildProfile | null): 
     dataUsed: score === null ? [] : [`profile_baseline:${trait}`],
     missingData
   };
+}
+
+function clampTraitScore(score: number): number {
+  return Math.max(COGNITIVE_SCORE_MIN, Math.min(COGNITIVE_SCORE_MAX, Math.round(score)));
 }
 
 function normalizeTraitScore(trait: CognitiveTrait, athlete: ChildProfile | null) {
