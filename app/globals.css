@@ -36,6 +36,33 @@
   --blob-2: rgba(0, 174, 239, 0.22);
   --blob-3: rgba(199, 240, 54, 0.16);
   --grid-line: rgba(44, 59, 87, 0.34);
+  /* Adaptive tokens (#400). --target-size is driven by INPUT CAPABILITY (see the
+     any-pointer media block below), NOT viewport width: 32px for precise
+     pointers, 48px when any coarse pointer is present (Apple 44pt / Material
+     48dp / WCAG 2.5.8 floor of 24px always met). --surface-radius is the single
+     source of truth for card/sheet/footer corners. */
+  --target-size: 32px;
+  --surface-radius: 12px;
+  --density-row-height: max(40px, var(--target-size));
+}
+
+/* Capability channel: any coarse pointer present → touch-grade targets. Uses the
+   union (any-pointer) so hybrids (touch laptop, iPad+trackpad) get the safe
+   larger target. Width is intentionally NOT used here. */
+@media (any-pointer: coarse) {
+  :root {
+    --target-size: 48px;
+  }
+}
+
+/* Density is an explicit, opt-in axis for data-dense professional views, always
+   floored at the capability-correct target size. */
+[data-density="comfortable"] {
+  --density-row-height: max(44px, var(--target-size));
+}
+
+[data-density="compact"] {
+  --density-row-height: max(36px, var(--target-size));
 }
 
 [data-theme="light"] {
