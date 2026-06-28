@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { env, requireServerEnv } from "@/config/env";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
-import { buildOuraAuthorizeUrl, isOuraOAuthConfigured } from "@/lib/oura-oauth";
+import { getWearableOAuthProvider } from "@/lib/wearable-oauth-providers";
 import { createWearableState, WEARABLE_OAUTH_STATE_COOKIE, WEARABLE_OAUTH_STATE_TTL_MS } from "@/lib/wearable-oauth-state";
 import { findConnectionsByAthleteId } from "@/repositories/device-connection.repository";
 
@@ -59,19 +59,20 @@ export async function POST(
       return NextResponse.json({ error: "Unsupported wearable source" }, { status: 400 });
     }
 
-    // Only Oura has a live connect leg today (see #347). Garmin/Whoop are
-    // separate provider issues; report an empty authUrl honestly.
-    if (source !== "oura" || !isOuraOAuthConfigured()) {
+    // Each provider with a configured OAuth client gets a live connect leg;
+    // others report an empty authUrl honestly.
+    const oauth = getWearableOAuthProvider(source);
+    if (!oauth || !oauth.isConfigured()) {
       return NextResponse.json({ authUrl: "", configured: false }, { status: 200 });
     }
 
     const base = env.appBaseUrl || request.nextUrl.origin;
     const redirectUri = `${base}/api/oauth/wearable/callback`;
     const state = createWearableState(
-      { athleteId, provider: "oura", locale: localeFromReferer(request), nonce: randomUUID() },
+      { athleteId, provider: source, locale: localeFromReferer(request), nonce: randomUUID() },
       requireServerEnv("authSecret")
     );
-    const authUrl = buildOuraAuthorizeUrl({ redirectUri, state });
+    const authUrl = oauth.buildAuthorizeUrl({ redirectUri, state });
 
     const response = NextResponse.json({ authUrl, configured: true }, { status: 200 });
     response.cookies.set(WEARABLE_OAUTH_STATE_COOKIE, state, {

@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { env, requireServerEnv } from "@/config/env";
 import { encryptToken } from "@/lib/wearable-token-crypto";
-import { computeExpiryIso, exchangeOuraAuthCode, isOuraOAuthConfigured } from "@/lib/oura-oauth";
+import { computeExpiryIso, getWearableOAuthProvider } from "@/lib/wearable-oauth-providers";
 import { verifyWearableState, WEARABLE_OAUTH_STATE_COOKIE } from "@/lib/wearable-oauth-state";
+import type { MetricSource } from "@/types/canonical-metric";
 import { findConnectionByAthleteAndSource, upsertDeviceConnection } from "@/repositories/device-connection.repository";
 
 function logEvent(event: string, fields: Record<string, unknown>) {
@@ -23,11 +24,6 @@ export async function GET(request: NextRequest) {
   const base = env.appBaseUrl || request.nextUrl.origin;
 
   try {
-    // Config gap (not a crash): connect flow not wired without credentials.
-    if (!isOuraOAuthConfigured()) {
-      return NextResponse.json({ error: "Wearable OAuth is not configured for live provider exchange." }, { status: 501 });
-    }
-
     const sp = request.nextUrl.searchParams;
     const providerError = sp.get("error");
     const code = sp.get("code");
@@ -54,24 +50,31 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Invalid or expired state" }, { status: 403 });
     }
 
+    // Dispatch on the provider carried in the signed state.
+    const oauth = getWearableOAuthProvider(binding.provider);
+    if (!oauth || !oauth.isConfigured()) {
+      return NextResponse.json({ error: "Wearable OAuth is not configured for this provider." }, { status: 501 });
+    }
+
     logEvent("wearable.oauth.exchange.started", { correlationId, provider: binding.provider, athleteId: binding.athleteId });
 
     const redirectUri = `${base}/api/oauth/wearable/callback`;
     let tokens;
     try {
-      tokens = await exchangeOuraAuthCode(code, redirectUri);
+      tokens = await oauth.exchangeAuthCode(code, redirectUri);
     } catch (error) {
       logEvent("wearable.oauth.exchange.failed", { correlationId, provider: binding.provider, reason: (error as Error).message });
       return redirectResult(base, locale, "error=exchange_failed");
     }
 
-    const existing = await findConnectionByAthleteAndSource(binding.athleteId, "oura");
+    const source = binding.provider as MetricSource;
+    const existing = await findConnectionByAthleteAndSource(binding.athleteId, source);
     const nowIso = new Date().toISOString();
     await upsertDeviceConnection({
       connectionId: existing?.connectionId ?? randomUUID(),
       athleteId: binding.athleteId,
       organisationId: existing?.organisationId ?? "default",
-      source: "oura",
+      source,
       status: "active",
       externalUserId: existing?.externalUserId ?? "",
       scopes: tokens.scope ? tokens.scope.split(" ").filter(Boolean) : [],
@@ -85,7 +88,7 @@ export async function GET(request: NextRequest) {
     });
 
     logEvent("wearable.oauth.exchange.succeeded", { correlationId, provider: binding.provider, athleteId: binding.athleteId });
-    return redirectResult(base, locale, "connected=oura");
+    return redirectResult(base, locale, `connected=${binding.provider}`);
   } catch (error) {
     logEvent("wearable.oauth.exchange.failed", { correlationId, reason: "internal_error", detail: (error as Error).message });
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
