@@ -29,8 +29,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Pinch-zoom must stay available (WCAG 1.4.4 / #412). We rely on ≥16px inputs
+  // on coarse pointers to avoid iOS focus-zoom instead of locking scale, so we
+  // deliberately do NOT set maximum-scale/user-scalable.
   viewportFit: "cover",
   themeColor: mobileThemeColor,
   colorScheme: "light dark",
