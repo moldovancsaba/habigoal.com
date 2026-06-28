@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SESSION_DURATION_MS, buildRefreshedClaims, shouldRefreshSession } from "@/lib/session-refresh";
 
 const SESSION_COOKIE_NAME = "habigoal_session";
 const LEGACY_SESSION_COOKIE_NAMES = ["survey_session", "kidex_session"];
@@ -7,6 +8,8 @@ const localePattern = /^\/(hu|en|ar|es|de|he)(\/|$)/;
 type SessionPayload = {
   role?: string;
   exp?: number;
+  iat?: number;
+  [key: string]: unknown;
 };
 
 function base64UrlToUint8Array(value: string) {
@@ -14,6 +17,50 @@ function base64UrlToUint8Array(value: string) {
   const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
   const binary = atob(padded);
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+}
+
+function bytesToBase64Url(bytes: Uint8Array) {
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function base64UrlEncode(value: string) {
+  return bytesToBase64Url(new TextEncoder().encode(value));
+}
+
+// Edge-safe HS256 JWT signing (middleware runs on the edge runtime, so it cannot
+// use lib/session, which depends on next/headers). Mirrors verifyHs256Jwt.
+async function signHs256Jwt(claims: Record<string, unknown>, secret: string): Promise<string> {
+  const header = base64UrlEncode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+  const payload = base64UrlEncode(JSON.stringify(claims));
+  const data = `${header}.${payload}`;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(data));
+  return `${data}.${bytesToBase64Url(new Uint8Array(signature))}`;
+}
+
+async function applySlidingRefresh(response: NextResponse, session: SessionPayload) {
+  const secret = process.env.AUTH_SECRET;
+  if (!secret || !shouldRefreshSession(session)) return;
+  try {
+    const token = await signHs256Jwt(buildRefreshedClaims(session), secret);
+    response.cookies.set(SESSION_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      expires: new Date(Date.now() + SESSION_DURATION_MS)
+    });
+  } catch {
+    // Never let a refresh failure block the request; the existing cookie remains valid.
+  }
 }
 
 async function verifyHs256Jwt(token: string, secret: string): Promise<SessionPayload | null> {
@@ -147,7 +194,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/`, request.url));
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  await applySlidingRefresh(response, session);
+  return response;
 }
 
 export const config = {
