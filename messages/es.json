@@ -569,7 +569,8 @@
     "athleteBaselineSupportShortFeedback": "Feedback breve",
     "athleteBaselineSupportReminders": "Recordatorios de check-in",
     "athleteBaselineSupportRecovery": "Guía de recuperación",
-    "athleteBaselineSupportPlanning": "Contexto del plan de entrenamiento"
+    "athleteBaselineSupportPlanning": "Contexto del plan de entrenamiento",
+    "injuryHub": "Centro de lesiones"
   },
   "Assessment": {
     "saved": "Registro guardado.",
@@ -2349,6 +2350,44 @@
       "habits": "Habits",
       "daily_plan": "Daily plan",
       "cognitive_lite": "Cognitive"
+    }
+  },
+  "InjuryHubFms": {
+    "title": "Pantalla de movimiento funcional (FMS)",
+    "subtitle": "Registre la mecánica del movimiento para alimentar el riesgo de lesión y el gemelo del deportista.",
+    "athlete": "Deportista",
+    "selectAthlete": "Seleccionar deportista",
+    "noAthletes": "No hay deportistas disponibles",
+    "noAthletesHelp": "Aún no tiene acceso a ningún deportista.",
+    "screenTitle": "Nueva evaluación",
+    "scoreLabel": "Puntuación",
+    "scoreOption": {
+      "0": "0 — No puede / dolor",
+      "1": "1 — Limitado",
+      "2": "2 — Compensación",
+      "3": "3 — Limpio"
+    },
+    "painLabel": "Dolor en esta prueba (puntúa 0)",
+    "notesLabel": "Notas",
+    "notesPlaceholder": "Observaciones opcionales",
+    "savedTitle": "Evaluación guardada",
+    "compositeValue": "Puntuación total {value}/21",
+    "saveError": "No se pudo guardar la evaluación. Inténtelo de nuevo.",
+    "save": "Guardar evaluación",
+    "historyTitle": "Historial",
+    "historyLoading": "Cargando historial…",
+    "historyEmpty": "Aún no hay evaluaciones",
+    "historyEmptyHelp": "Las evaluaciones guardadas de este deportista aparecerán aquí.",
+    "loadError": "No se pudieron cargar los deportistas",
+    "retry": "Intentar de nuevo",
+    "subtests": {
+      "deepSquat": "Sentadilla profunda",
+      "hurdleStep": "Paso de valla",
+      "inlineLunge": "Zancada en línea",
+      "shoulderMobility": "Movilidad de hombro",
+      "activeStraightLegRaise": "Elevación activa de pierna recta",
+      "trunkStabilityPushup": "Flexión de estabilidad del tronco",
+      "rotaryStability": "Estabilidad rotacional"
     }
   }
 }

@@ -1,10 +1,12 @@
 import { EngineContext, EngineOutput, InjuryRiskResult } from "../../types/ai-engine";
+import { FMS_COMPOSITE_MAX, FMS_RISK_COMPOSITE_THRESHOLD, hasAnyPainFlag } from "../athleteiq-fms";
 
 export async function computeInjuryRisk(context: EngineContext): Promise<EngineOutput<InjuryRiskResult>> {
-  const { twin } = context;
+  const { twin, latestFms } = context;
   const factors: string[] = [];
   const missing: string[] = [];
   let confidence: "high" | "medium" | "low" = "high";
+  let humanReviewFromInputs = false;
 
   let riskScore = 0;
 
@@ -32,6 +34,23 @@ export async function computeInjuryRisk(context: EngineContext): Promise<EngineO
     if (confidence === "medium") confidence = "low";
   }
 
+  // Check Functional Movement Screen (composite + pain). A composite at/below
+  // the established FMS cutoff (14/21) is an elevated-risk signal; any recorded
+  // pain flag adds risk and warrants human review.
+  if (latestFms) {
+    if (latestFms.composite <= FMS_RISK_COMPOSITE_THRESHOLD) {
+      riskScore += 2;
+      factors.push(`FMS composite below threshold (${latestFms.composite}/${FMS_COMPOSITE_MAX})`);
+    }
+    if (hasAnyPainFlag(latestFms.painFlags)) {
+      riskScore += 2;
+      humanReviewFromInputs = true;
+      factors.push("FMS pain flag recorded on a movement sub-test");
+    }
+  } else {
+    missing.push("fms");
+  }
+
   let riskLevel: InjuryRiskResult["riskLevel"] = "low";
   let loadReductionRecommended = false;
   let humanReview = false;
@@ -44,6 +63,8 @@ export async function computeInjuryRisk(context: EngineContext): Promise<EngineO
     riskLevel = "elevated";
     loadReductionRecommended = true;
   }
+
+  if (humanReviewFromInputs) humanReview = true;
 
   return {
     result: {

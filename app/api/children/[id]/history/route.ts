@@ -10,6 +10,7 @@ import { findTwinByAthleteId } from "@/repositories/athlete-twin.repository";
 import { computeReadiness } from "@/lib/engines/readiness.engine";
 import { computeRecovery } from "@/lib/engines/recovery.engine";
 import { computeInjuryRisk } from "@/lib/engines/injury-risk.engine";
+import { getLatestFms } from "@/services/athleteiq-fms.service";
 
 export async function GET(
   request: Request,
@@ -50,7 +51,8 @@ export async function GET(
     try {
       const twin = await findTwinByAthleteId(athleteIdStr);
       if (twin) {
-        const context = { athleteId: athleteIdStr, twin, organisationId: "default" };
+        const latestFms = await getLatestFms(athleteIdStr);
+        const context = { athleteId: athleteIdStr, twin, organisationId: "default", latestFms };
         const [readiness, recovery, injuryRisk] = await Promise.all([
           computeReadiness(context),
           computeRecovery(context),

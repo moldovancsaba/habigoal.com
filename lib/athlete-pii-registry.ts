@@ -29,6 +29,8 @@ export const ATHLETE_PII_COLLECTIONS: AthletePiiCollection[] = [
   { collection: "athleteiq_daily_plans", keyField: "athleteId", strategy: "deleteMany" },
   { collection: "athleteiq_daily_reports", keyField: "athleteId", strategy: "deleteMany" },
   { collection: "athleteiq_lite_module_entries", keyField: "athleteId", strategy: "deleteMany" },
+  { collection: "athleteiq_cognitive_entries", keyField: "athleteId", strategy: "deleteMany" },
+  { collection: "fms_screens", keyField: "athleteId", strategy: "deleteMany", note: "FMS injury-screen health data" },
   { collection: "athleteiq_mental_routine_completions", keyField: "athleteId", strategy: "deleteMany" },
   { collection: "athleteiq_pain_alerts", keyField: "athleteId", strategy: "deleteMany" },
   { collection: "athleteiq_readiness_routes", keyField: "athleteId", strategy: "deleteMany" },
