@@ -2290,6 +2290,41 @@
         },
         "liteModule": {
           "description": "Add a quick manual entry to keep this module current."
+        },
+        "recovery_lite": {
+          "title": "Log recovery"
+        },
+        "fuel_lite": {
+          "title": "Log fuel"
+        }
+      },
+      "habits": {
+        "extraTouches": {
+          "title": "Extra touches"
+        },
+        "weakFoot": {
+          "title": "Weak-foot work"
+        },
+        "tacticalLearning": {
+          "title": "Tactical learning"
+        },
+        "stretching": {
+          "title": "Stretching"
+        },
+        "mobility": {
+          "title": "Mobility"
+        },
+        "recoverySession": {
+          "title": "Recovery session"
+        },
+        "hydration": {
+          "title": "Hydration"
+        },
+        "nutrition": {
+          "title": "Nutrition"
+        },
+        "sleepBeforeMidnight": {
+          "title": "Sleep before midnight"
         }
       }
     },

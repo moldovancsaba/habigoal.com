@@ -1,7 +1,6 @@
 "use client";
 
-import { Badge, Box, Group, Stack, Text } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Badge, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
@@ -88,9 +87,9 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("common.loadError")}</Text>
-        <SemanticButton action="refresh" variant="light" color="yellow" size="sm" onClick={reload}>
+        <Button variant="light" color="yellow" size="sm" onClick={reload}>
           {t("common.retry")}
-        </SemanticButton>
+        </Button>
       </Stack>
     );
   }
@@ -99,9 +98,9 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("dailyPlan.empty")}</Text>
-        <SemanticButton action="start" color="yellow" size="sm" loading={busy === "generate"} onClick={() => void generatePlan()}>
+        <Button color="yellow" size="sm" loading={busy === "generate"} onClick={() => void generatePlan()}>
           {t("dailyPlan.generate")}
-        </SemanticButton>
+        </Button>
       </Stack>
     );
   }
@@ -143,17 +142,17 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
             <Group gap="xs">
               {task.completionState === "open" ? (
                 <>
-                  <SemanticButton action="save" color="yellow" size="sm" variant="light" loading={busy === task.id} onClick={() => void setTaskState(task, "completed")}>
+                  <Button color="yellow" size="sm" variant="light" loading={busy === task.id} onClick={() => void setTaskState(task, "completed")}>
                     {t("dailyPlan.complete")}
-                  </SemanticButton>
-                  <SemanticButton action="edit" size="sm" variant="default" disabled={busy === task.id} onClick={() => void setTaskState(task, "dismissed")}>
+                  </Button>
+                  <Button size="sm" variant="default" disabled={busy === task.id} onClick={() => void setTaskState(task, "dismissed")}>
                     {t("dailyPlan.dismiss")}
-                  </SemanticButton>
+                  </Button>
                 </>
               ) : (
-                <SemanticButton action="refresh" size="sm" variant="default" loading={busy === task.id} onClick={() => void setTaskState(task, "open")}>
+                <Button size="sm" variant="default" loading={busy === task.id} onClick={() => void setTaskState(task, "open")}>
                   {t("dailyPlan.reopen")}
-                </SemanticButton>
+                </Button>
               )}
             </Group>
           </Stack>

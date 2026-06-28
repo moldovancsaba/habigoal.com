@@ -1,7 +1,6 @@
 "use client";
 
-import { Badge, Box, Group, Stack, Text } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Badge, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
@@ -84,9 +83,9 @@ export function AiqMentalEdgePanel({ athleteId, localDate, timezone }: { athlete
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("common.loadError")}</Text>
-        <SemanticButton action="refresh" variant="light" color="yellow" size="sm" onClick={reload}>
+        <Button variant="light" color="yellow" size="sm" onClick={reload}>
           {t("common.retry")}
-        </SemanticButton>
+        </Button>
       </Stack>
     );
   }
@@ -117,8 +116,7 @@ export function AiqMentalEdgePanel({ athleteId, localDate, timezone }: { athlete
               </Badge>
             </Group>
             <Text size="sm" className="aiq-muted-faint">{domain(`athleteiq.mentalEdge.reasons.${routine.reasonCode}`)}</Text>
-            <SemanticButton
-              action="save"
+            <Button
               color="yellow"
               size="sm"
               variant="light"
@@ -127,7 +125,7 @@ export function AiqMentalEdgePanel({ athleteId, localDate, timezone }: { athlete
               onClick={() => void completeRoutine(routine)}
             >
               {routine.completed ? t("mentalEdge.completed") : t("mentalEdge.markComplete")}
-            </SemanticButton>
+            </Button>
           </Stack>
         </Box>
       ))}

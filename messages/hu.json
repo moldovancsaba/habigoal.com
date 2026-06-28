@@ -2290,6 +2290,41 @@
         },
         "liteModule": {
           "description": "Adj hozzá egy gyors kézi bejegyzést, hogy ez a modul naprakész maradjon."
+        },
+        "recovery_lite": {
+          "title": "Regeneráció rögzítése"
+        },
+        "fuel_lite": {
+          "title": "Táplálkozás rögzítése"
+        }
+      },
+      "habits": {
+        "extraTouches": {
+          "title": "Extra labdaérintések"
+        },
+        "weakFoot": {
+          "title": "Gyengébb láb gyakorlása"
+        },
+        "tacticalLearning": {
+          "title": "Taktikai tanulás"
+        },
+        "stretching": {
+          "title": "Nyújtás"
+        },
+        "mobility": {
+          "title": "Mobilitás"
+        },
+        "recoverySession": {
+          "title": "Regenerációs blokk"
+        },
+        "hydration": {
+          "title": "Hidratálás"
+        },
+        "nutrition": {
+          "title": "Táplálkozás"
+        },
+        "sleepBeforeMidnight": {
+          "title": "Éjfél előtti alvás"
         }
       }
     },

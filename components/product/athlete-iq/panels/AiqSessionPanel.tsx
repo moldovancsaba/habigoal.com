@@ -1,7 +1,6 @@
 "use client";
 
-import { Badge, Box, Group, NumberInput, Stack, Text, TextInput } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Badge, Box, Button, Group, NumberInput, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
@@ -123,9 +122,9 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
     <Stack gap="md">
       <Group justify="space-between" gap="sm">
         <Text size="sm" className="aiq-muted-soft">{t("session.todayTitle")}</Text>
-        <SemanticButton action="start" color="yellow" size="sm" variant="light" loading={busy === "from-plan"} onClick={() => void buildFromPlan()}>
+        <Button color="yellow" size="sm" variant="light" loading={busy === "from-plan"} onClick={() => void buildFromPlan()}>
           {t("session.buildFromPlan")}
-        </SemanticButton>
+        </Button>
       </Group>
 
       {feedback ? <Text size="sm" style={{ color: "var(--status-error)" }}>{feedback}</Text> : null}
@@ -157,9 +156,8 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
                 <Stack gap="xs">
                   <Group gap="xs">
                     {NEXT_STATES[session.state].map((state) => (
-                      <SemanticButton
+                      <Button
                         key={state}
-                        action={state === "abandoned" ? "delete" : state === "completed" ? "save" : "start"}
                         color={state === "abandoned" ? "red" : "yellow"}
                         size="sm"
                         variant={state === "abandoned" ? "default" : "light"}
@@ -168,7 +166,7 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
                         onClick={() => void transition(session, state)}
                       >
                         {t(`session.action.${state}`)}
-                      </SemanticButton>
+                      </Button>
                     ))}
                   </Group>
                   <TextInput
@@ -197,9 +195,9 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
                       <Text size="sm" className="aiq-muted-faint">{t("session.recordedLoad", { load: session.log.estimatedLoadPoints })}</Text>
                     ) : null}
                     <Group justify="flex-end">
-                      <SemanticButton action="save" color="yellow" size="sm" loading={busy === `${session.sessionId}:debrief`} onClick={() => void submitDebrief(session)}>
+                      <Button color="yellow" size="sm" loading={busy === `${session.sessionId}:debrief`} onClick={() => void submitDebrief(session)}>
                         {t("session.saveDebrief")}
-                      </SemanticButton>
+                      </Button>
                     </Group>
                   </Stack>
                 </Box>

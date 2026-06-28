@@ -1,7 +1,6 @@
 "use client";
 
-import { Badge, Box, Group, NumberInput, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Badge, Box, Button, Group, NumberInput, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
@@ -194,9 +193,9 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
           {feedback === "error" ? <Text size="sm" style={{ color: "var(--status-error)" }}>{t("common.actionFailed")}</Text> : null}
 
           <Group justify="flex-end">
-            <SemanticButton action="save" color="yellow" size="sm" loading={busy} disabled={submitDisabled} onClick={() => void submit()}>
+            <Button color="yellow" size="sm" loading={busy} disabled={submitDisabled} onClick={() => void submit()}>
               {t("lite.save")}
-            </SemanticButton>
+            </Button>
           </Group>
         </Stack>
       </Box>

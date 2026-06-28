@@ -1,7 +1,6 @@
 "use client";
 
-import { Group, SegmentedControl, SimpleGrid, Stack, Text } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Button, Group, SegmentedControl, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
@@ -85,9 +84,9 @@ export function AiqProgressPanel({ athleteId, localDate, timezone }: { athleteId
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("common.loadError")}</Text>
-        <SemanticButton action="refresh" variant="light" color="yellow" size="sm" onClick={reload}>
+        <Button variant="light" color="yellow" size="sm" onClick={reload}>
           {t("common.retry")}
-        </SemanticButton>
+        </Button>
       </Stack>
     );
   }

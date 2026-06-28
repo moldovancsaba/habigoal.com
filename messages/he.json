@@ -2290,6 +2290,41 @@
         },
         "liteModule": {
           "description": "הוסיפו רשומה ידנית מהירה כדי לשמור על מודול זה מעודכן."
+        },
+        "recovery_lite": {
+          "title": "רישום התאוששות"
+        },
+        "fuel_lite": {
+          "title": "רישום תזונה"
+        }
+      },
+      "habits": {
+        "extraTouches": {
+          "title": "נגיעות נוספות"
+        },
+        "weakFoot": {
+          "title": "עבודה על הרגל החלשה"
+        },
+        "tacticalLearning": {
+          "title": "למידה טקטית"
+        },
+        "stretching": {
+          "title": "מתיחות"
+        },
+        "mobility": {
+          "title": "ניידות"
+        },
+        "recoverySession": {
+          "title": "יחידת התאוששות"
+        },
+        "hydration": {
+          "title": "הידרציה"
+        },
+        "nutrition": {
+          "title": "תזונה"
+        },
+        "sleepBeforeMidnight": {
+          "title": "שינה לפני חצות"
         }
       }
     },

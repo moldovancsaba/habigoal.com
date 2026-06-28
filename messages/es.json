@@ -2290,6 +2290,41 @@
         },
         "liteModule": {
           "description": "Añade una entrada manual rápida para mantener este módulo al día."
+        },
+        "recovery_lite": {
+          "title": "Registrar recuperación"
+        },
+        "fuel_lite": {
+          "title": "Registrar nutrición"
+        }
+      },
+      "habits": {
+        "extraTouches": {
+          "title": "Toques extra"
+        },
+        "weakFoot": {
+          "title": "Trabajo de pie débil"
+        },
+        "tacticalLearning": {
+          "title": "Aprendizaje táctico"
+        },
+        "stretching": {
+          "title": "Estiramientos"
+        },
+        "mobility": {
+          "title": "Movilidad"
+        },
+        "recoverySession": {
+          "title": "Sesión de recuperación"
+        },
+        "hydration": {
+          "title": "Hidratación"
+        },
+        "nutrition": {
+          "title": "Nutrición"
+        },
+        "sleepBeforeMidnight": {
+          "title": "Dormir antes de medianoche"
         }
       }
     },
