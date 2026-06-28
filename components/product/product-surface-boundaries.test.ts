@@ -195,7 +195,13 @@ describe("product surface route boundaries", () => {
     expect(athleteIqSource).not.toContain("FunctionDirectory");
     expect(athleteIqSource).not.toContain("<strong>Output:</strong>");
     expect(athleteIqSource).not.toContain("aiq-nav-code");
-    expect(athleteIqSource).toContain("HIDDEN_REFERENCE_NAV_ITEMS");
+    // The coach sidebar links must target the sections that actually render
+    // (home, team-club, priority, athletes, services) so every menu entry
+    // scrolls, rather than the aspirational OS module catalogue.
+    expect(athleteIqSource).toContain('anchorId: "team-club"');
+    expect(athleteIqSource).toContain('anchorId: "priority"');
+    expect(athleteIqSource).toContain('anchorId: "services"');
+    expect(athleteIqSource).not.toContain("HIDDEN_REFERENCE_NAV_ITEMS");
   });
 
   it("keeps AthleteIQ mobile navigation behind a hamburger drawer", () => {

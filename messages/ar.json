@@ -1900,7 +1900,8 @@
         "groups": {
           "dailyOs": "Daily OS",
           "stakeholders": "أصحاب المصلحة",
-          "development": "التطوير"
+          "development": "التطوير",
+          "workspace": "مساحة العمل"
         },
         "modules": {
           "home": "الرئيسية",
@@ -1923,7 +1924,11 @@
           "plan": "الخطة اليومية",
           "sessions": "الجلسات",
           "progress": "التقدّم",
-          "lite": "وحدات لايت"
+          "lite": "وحدات لايت",
+          "teamCommand": "الفريق والنادي",
+          "priorityQueue": "قائمة الأولويات",
+          "athleteCommand": "الرياضيون",
+          "services": "الخدمات"
         }
       },
       "athleteWorkspace": {
