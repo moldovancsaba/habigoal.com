@@ -120,6 +120,14 @@ export async function recordSyncResult(
   await collection.updateOne({ connectionId }, { $set: updateDoc });
 }
 
+// Reverse lookup: provider external user id → internal connection. Used to map
+// inbound webhook events (e.g. VALD) to an athlete.
+export async function findConnectionByExternalUser(source: MetricSource, externalUserId: string): Promise<DeviceConnection | null> {
+  const db = await getDatabase();
+  const collection = db.collection<DeviceConnection>(COLLECTION_NAME);
+  return await collection.findOne({ source, externalUserId });
+}
+
 // Active connections eligible for scheduled syncing.
 export async function listSyncableConnections(): Promise<DeviceConnection[]> {
   const db = await getDatabase();

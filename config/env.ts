@@ -43,6 +43,7 @@ export const env = {
   garminAuthorizeUrl: process.env.GARMIN_AUTHORIZE_URL || "https://connect.garmin.com/oauth2Confirm",
   garminTokenUrl: process.env.GARMIN_TOKEN_URL || "https://diauth.garmin.com/di-oauth2-service/oauth/token",
   garminApiBaseUrl: process.env.GARMIN_API_BASE_URL || "https://apis.garmin.com",
+  valdWebhookSecret: process.env.VALD_WEBHOOK_SECRET,
 };
 
 type StringEnvKey = {
