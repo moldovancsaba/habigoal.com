@@ -44,7 +44,6 @@ export default async function LoginPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Login" });
-  const landing = await getTranslations({ locale, namespace: "Landing" });
   const { error, next, persona, productSurface } = await searchParams;
   const nextPath = sanitizeNext(next, locale);
   const selectedSurface = sanitizeProductSurface(productSurface, nextPath);
@@ -113,7 +112,7 @@ export default async function LoginPage({
             <Text c="dimmed" size="sm">
               {t(`surfaces.${surfaceKey}.supportingCopy`)}
             </Text>
-            <Anchor href={`/${locale}`} fw={700}>{landing("brandSubtitle")}</Anchor>
+            <Anchor href={isAthleteIqSurface ? `/${locale}/athlete-iq` : `/${locale}/habigoal`} fw={700}>{t(`surfaces.${surfaceKey}.backLink`)}</Anchor>
           </Stack>
         </form>
       </Paper>

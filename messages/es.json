@@ -1160,14 +1160,16 @@
       "habigoal": {
         "badge": "Acceso Habigoal",
         "title": "Continuar a Habigoal",
-        "subtitle": "Ingresa el email ya registrado en Athlete IQ y abre la app diaria móvil de Habigoal.",
-        "supportingCopy": "Habigoal usa la misma cuenta de email creada desde Athlete IQ."
+        "subtitle": "Ingresa tu email registrado y abre la app diaria móvil de Habigoal.",
+        "supportingCopy": "Habigoal se abre con el email de tu cuenta existente.",
+        "backLink": "Habigoal"
       },
       "athleteIq": {
         "badge": "Acceso Athlete IQ",
         "title": "Continuar a Athlete IQ",
         "subtitle": "Ingresa tu email y abre el espacio profesional de Athlete IQ.",
-        "supportingCopy": "El acceso de entrenador abre Athlete IQ y conserva la misma identidad de cuenta compartida."
+        "supportingCopy": "El acceso de entrenador abre Athlete IQ y conserva la misma identidad de cuenta compartida.",
+        "backLink": "Athlete IQ"
       }
     }
   },

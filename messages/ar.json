@@ -1160,14 +1160,16 @@
       "habigoal": {
         "badge": "وصول Habigoal",
         "title": "المتابعة إلى Habigoal",
-        "subtitle": "أدخل البريد الإلكتروني المسجل مسبقاً في Athlete IQ وافتح تطبيق Habigoal اليومي على الهاتف.",
-        "supportingCopy": "يستخدم Habigoal حساب البريد الإلكتروني نفسه الذي تم إنشاؤه عبر Athlete IQ."
+        "subtitle": "أدخل بريدك الإلكتروني المسجل وافتح تطبيق Habigoal اليومي على الهاتف.",
+        "supportingCopy": "يفتح Habigoal باستخدام بريد حسابك الحالي.",
+        "backLink": "Habigoal"
       },
       "athleteIq": {
         "badge": "وصول Athlete IQ",
         "title": "المتابعة إلى Athlete IQ",
         "subtitle": "أدخل بريدك الإلكتروني وافتح مساحة عمل Athlete IQ الاحترافية.",
-        "supportingCopy": "يفتح تسجيل دخول المدرب Athlete IQ مع الحفاظ على هوية الحساب المشتركة نفسها."
+        "supportingCopy": "يفتح تسجيل دخول المدرب Athlete IQ مع الحفاظ على هوية الحساب المشتركة نفسها.",
+        "backLink": "Athlete IQ"
       }
     }
   },

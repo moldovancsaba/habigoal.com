@@ -1160,14 +1160,16 @@
       "habigoal": {
         "badge": "גישת Habigoal",
         "title": "המשך אל Habigoal",
-        "subtitle": "יש להזין את האימייל שכבר נרשם ב-Athlete IQ ולפתוח את אפליקציית היום הניידת של Habigoal.",
-        "supportingCopy": "Habigoal משתמש באותו חשבון אימייל שנוצר דרך Athlete IQ."
+        "subtitle": "הזינו את האימייל הרשום שלכם ופתחו את אפליקציית היום הניידת של Habigoal.",
+        "supportingCopy": "Habigoal נפתח עם אימייל החשבון הקיים שלכם.",
+        "backLink": "Habigoal"
       },
       "athleteIq": {
         "badge": "גישת Athlete IQ",
         "title": "המשך אל Athlete IQ",
         "subtitle": "יש להזין אימייל ולפתוח את סביבת העבודה המקצועית של Athlete IQ.",
-        "supportingCopy": "כניסת מאמן פותחת את Athlete IQ ושומרת על אותה זהות חשבון משותפת."
+        "supportingCopy": "כניסת מאמן פותחת את Athlete IQ ושומרת על אותה זהות חשבון משותפת.",
+        "backLink": "Athlete IQ"
       }
     }
   },
