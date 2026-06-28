@@ -2429,5 +2429,72 @@
       "teamTitle": "Csapatjelentés",
       "athleteCount": "Sportolók"
     }
+  },
+  "Wearables": {
+    "title": "Viselhető ökoszisztéma",
+    "subtitle": "Csatlakoztass eszközöket a napi telemetriához a sportoló digitális ikerprofiljába.",
+    "devices": "Eszközök",
+    "noAthlete": "Nincs sportolói profil",
+    "noAthleteHelp": "Ehhez a fiókhoz nincs sportolói profil kapcsolva.",
+    "loadError": "Az eszközök betöltése nem sikerült",
+    "retry": "Újra",
+    "lastSync": "Utolsó szinkron: {time}",
+    "neverSynced": "Még nincs szinkronizálva",
+    "noMetrics": "Még nincs telemetria — futtass szinkronizálást.",
+    "syncNow": "Szinkronizálás most",
+    "disconnect": "Leválasztás",
+    "connect": "Csatlakoztatás",
+    "reconnect": "Újracsatlakozás",
+    "comingSoon": "Hamarosan",
+    "syncError": "A szinkronizálás nem sikerült. Kérjük, próbáld újra.",
+    "connectedNotice": {
+      "title": "Eszköz csatlakoztatva",
+      "body": "A(z) {provider} csatlakoztatva van, és szinkronizálni fogja a telemetriát."
+    },
+    "connectFailed": {
+      "title": "A csatlakozás nem sikerült",
+      "consent_denied": "A csatlakozást megszakították a jóváhagyás befejezése előtt.",
+      "exchange_failed": "Nem sikerült befejezni a csatlakozást a szolgáltatóval. Kérjük, próbáld újra.",
+      "invalid_state": "A csatlakozási hivatkozás lejárt. Kérjük, kezdd újra."
+    },
+    "status": {
+      "connected": "Csatlakoztatva",
+      "stale": "Elavult",
+      "error": "Hiba",
+      "needs_reauth": "Újracsatlakozás szükséges",
+      "never": "Első szinkronra vár"
+    },
+    "metricLabel": {
+      "hrv_rmssd_ms": "HRV",
+      "resting_heart_rate_bpm": "Nyugalmi pulzus",
+      "sleep_duration_minutes": "Alvás",
+      "sleep_quality_score": "Alvásminőség",
+      "sleep_efficiency_percentage": "Alváshatékonyság",
+      "energy_score": "Felkészültség",
+      "total_distance_meters": "Távolság",
+      "internal_load_points": "Terhelés"
+    },
+    "providers": {
+      "oura": {
+        "name": "Oura Ring",
+        "desc": "Felkészültségi és alvásadatok szinkronizálása."
+      },
+      "whoop": {
+        "name": "Whoop",
+        "desc": "Regeneráció, terhelés és alvás szinkronizálása."
+      },
+      "garmin": {
+        "name": "Garmin Connect",
+        "desc": "Edzésterhelés, HRV és alvás szinkronizálása."
+      },
+      "polar": {
+        "name": "Polar Flow",
+        "desc": "Hamarosan."
+      },
+      "apple_health": {
+        "name": "Apple Health",
+        "desc": "Hamarosan."
+      }
+    }
   }
 }

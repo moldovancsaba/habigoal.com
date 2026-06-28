@@ -2429,5 +2429,72 @@
       "teamTitle": "تقرير الفريق",
       "athleteCount": "الرياضيون"
     }
+  },
+  "Wearables": {
+    "title": "منظومة الأجهزة القابلة للارتداء",
+    "subtitle": "اربط الأجهزة لقياس البيانات اليومية في التوأم الرقمي للرياضي.",
+    "devices": "الأجهزة",
+    "noAthlete": "لا يوجد ملف رياضي",
+    "noAthleteHelp": "لا يوجد ملف رياضي مرتبط بهذا الحساب.",
+    "loadError": "تعذر تحميل الأجهزة",
+    "retry": "إعادة المحاولة",
+    "lastSync": "آخر مزامنة: {time}",
+    "neverSynced": "لم تتم المزامنة بعد",
+    "noMetrics": "لا توجد بيانات بعد — قم بإجراء مزامنة.",
+    "syncNow": "المزامنة الآن",
+    "disconnect": "قطع الاتصال",
+    "connect": "ربط",
+    "reconnect": "إعادة الربط",
+    "comingSoon": "قريبًا",
+    "syncError": "فشلت المزامنة. يرجى المحاولة مرة أخرى.",
+    "connectedNotice": {
+      "title": "تم ربط الجهاز",
+      "body": "{provider} مرتبط الآن وسيقوم بمزامنة البيانات."
+    },
+    "connectFailed": {
+      "title": "فشل الربط",
+      "consent_denied": "تم إلغاء الربط قبل اكتمال التفويض.",
+      "exchange_failed": "تعذر إكمال الربط مع المزوّد. يرجى المحاولة مرة أخرى.",
+      "invalid_state": "انتهت صلاحية رابط الربط. يرجى البدء من جديد."
+    },
+    "status": {
+      "connected": "متصل",
+      "stale": "قديم",
+      "error": "خطأ",
+      "needs_reauth": "يلزم إعادة الربط",
+      "never": "بانتظار أول مزامنة"
+    },
+    "metricLabel": {
+      "hrv_rmssd_ms": "HRV",
+      "resting_heart_rate_bpm": "نبض الراحة",
+      "sleep_duration_minutes": "النوم",
+      "sleep_quality_score": "جودة النوم",
+      "sleep_efficiency_percentage": "كفاءة النوم",
+      "energy_score": "الجاهزية",
+      "total_distance_meters": "المسافة",
+      "internal_load_points": "الحِمل"
+    },
+    "providers": {
+      "oura": {
+        "name": "Oura Ring",
+        "desc": "مزامنة بيانات الجاهزية والنوم."
+      },
+      "whoop": {
+        "name": "Whoop",
+        "desc": "مزامنة التعافي والجهد والنوم."
+      },
+      "garmin": {
+        "name": "Garmin Connect",
+        "desc": "مزامنة حمل التدريب وHRV والنوم."
+      },
+      "polar": {
+        "name": "Polar Flow",
+        "desc": "قريبًا."
+      },
+      "apple_health": {
+        "name": "Apple Health",
+        "desc": "قريبًا."
+      }
+    }
   }
 }
