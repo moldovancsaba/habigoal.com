@@ -5,6 +5,25 @@ import { Stack, Text, Group, Select, Box, Paper } from "@mantine/core";
 import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
 import type { AthleteProfile } from "@/types/athlete";
 import type { AthleteReport } from "@/services/reporting.service";
+import { PdfService, type TwinReportLabels } from "@/lib/pdf-service";
+
+// English labels (consistent with this page's current copy; localization tracked
+// in #346). Passed to PdfService so the PDF renderer stays locale-agnostic.
+const PDF_LABELS: TwinReportLabels = {
+  title: "Athlete report",
+  generatedAt: "Generated",
+  dateRange: "Date range",
+  summary: "Summary",
+  keyMetrics: "Key metrics",
+  metric: "Metric",
+  value: "Value",
+  guidance: "Rule-based guidance",
+  coachNotes: "Coach notes",
+  sources: "Data sources",
+  none: "None",
+  teamTitle: "Team report",
+  athleteCount: "Athletes",
+};
 
 interface ReportRow {
   id: string;
@@ -69,6 +88,9 @@ export default function ReportsHubPage() {
     }
   };
 
+  const nameById = (): Record<string, string> =>
+    Object.fromEntries(athletes.filter((a) => a._id).map((a) => [a._id as string, a.name]));
+
   return (
     <Stack gap="xl" pb="xl">
       <PageHeader
@@ -115,6 +137,13 @@ export default function ReportsHubPage() {
                   <SemanticButton
                     action="download"
                     variant="outline"
+                    onClick={() => void PdfService.generateTeamTwinReport(teamReport, PDF_LABELS, nameById())}
+                  >
+                    PDF
+                  </SemanticButton>
+                  <SemanticButton
+                    action="download"
+                    variant="outline"
                     onClick={() => downloadCsv(teamReport.reports, `team-report-${Date.now()}.csv`)}
                   >
                     CSV
@@ -146,6 +175,9 @@ export default function ReportsHubPage() {
                 </Box>
                 <Group>
                   <StateBlock variant="success" title="Ready" />
+                  <SemanticButton action="download" variant="outline" onClick={() => void PdfService.generateTwinReport(row.report, PDF_LABELS, row.athleteName)}>
+                    PDF
+                  </SemanticButton>
                   <SemanticButton action="download" variant="outline" onClick={() => downloadCsv([row.report], `report-${row.id}.csv`)}>
                     CSV
                   </SemanticButton>

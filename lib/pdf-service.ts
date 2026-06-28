@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import type { AthleteReport } from "@/services/reporting.service";
 import type { AssessmentRecord } from "@/types/assessment";
 import type { HabitRecord } from "@/types/habit-record";
 import { athleteIqPillars, getCoachRecommendation, getReadinessMode, readinessChecklist } from "@/lib/readiness-model";
@@ -15,6 +16,24 @@ interface JsPDFWithAutoTable extends jsPDF {
 
 type TFunction = (key: string, values?: Record<string, string | number>) => string;
 type PillarKey = (typeof athleteIqPillars)[number]["key"];
+
+// Localized labels for the twin-based reports (provided by the caller so the
+// PdfService stays locale-agnostic). Guidance is labelled as rule-based, never AI.
+export type TwinReportLabels = {
+  title: string;
+  generatedAt: string;
+  dateRange: string;
+  summary: string;
+  keyMetrics: string;
+  metric: string;
+  value: string;
+  guidance: string;
+  coachNotes: string;
+  sources: string;
+  none: string;
+  teamTitle: string;
+  athleteCount: string;
+};
 
 type Palette = {
   ink: [number, number, number];
@@ -155,6 +174,88 @@ export const PdfService = {
 
     const safeName = (latest.child.name || "athlete").replace(/[^\w-]+/g, "_");
     doc.save(`${safeName}_${tr("fileStem")}.pdf`);
+  },
+
+  // Twin-based athlete report (services/reporting.service AthleteReport shape).
+  async generateTwinReport(report: AthleteReport, labels: TwinReportLabels, athleteName?: string): Promise<void> {
+    const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
+    await this.ensureUnicodeFont(doc);
+    await this.ensureBrandImage();
+    this.drawTwinReportSection(doc, report, labels, athleteName ?? report.athleteId, true);
+    this.drawFooters(doc);
+    const safe = (athleteName ?? report.athleteId).replace(/[^\w-]+/g, "_");
+    doc.save(`${safe}_${report.reportDate.slice(0, 10)}.pdf`);
+  },
+
+  // Twin-based team report: cover page + one section per athlete.
+  async generateTeamTwinReport(
+    team: { generatedAt: string; athleteCount: number; reports: AthleteReport[] },
+    labels: TwinReportLabels,
+    nameById: Record<string, string> = {}
+  ): Promise<void> {
+    const doc = new jsPDF({ unit: "mm", format: "a4" }) as JsPDFWithAutoTable;
+    await this.ensureUnicodeFont(doc);
+    await this.ensureBrandImage();
+
+    this.drawPageHeader(doc, labels.teamTitle, "");
+    this.drawContextGrid(doc, 20, 40, [
+      [labels.generatedAt, team.generatedAt.slice(0, 10)],
+      [labels.athleteCount, String(team.athleteCount)],
+    ]);
+
+    for (const report of team.reports) {
+      this.drawTwinReportSection(doc, report, labels, nameById[report.athleteId] ?? report.athleteId, false);
+    }
+    this.drawFooters(doc);
+    doc.save(`team-report_${team.generatedAt.slice(0, 10)}.pdf`);
+  },
+
+  drawTwinReportSection(
+    doc: JsPDFWithAutoTable,
+    report: AthleteReport,
+    labels: TwinReportLabels,
+    athleteName: string,
+    isFirst: boolean
+  ) {
+    if (!isFirst) doc.addPage();
+    this.drawPageHeader(doc, labels.title, athleteName);
+    let y = 40;
+
+    this.drawContextGrid(doc, 20, y, [
+      [labels.generatedAt, report.reportDate.slice(0, 10)],
+      [labels.dateRange, `${report.dateRange.from} – ${report.dateRange.to}`],
+      [labels.summary, report.summary],
+    ]);
+    y = (doc.lastAutoTable?.finalY ?? y) + 8;
+
+    this.drawSectionTitle(doc, 20, y, labels.keyMetrics);
+    y += 6;
+    autoTable(doc, {
+      startY: y,
+      margin: { left: 20, right: 20 },
+      head: [[labels.metric, labels.value]],
+      body: Object.entries(report.keyMetrics).map(([key, val]) => [key, String(val)]),
+      styles: { font: "ArialUnicode", fontSize: 9, textColor: palette.ink, cellPadding: 2.5 },
+      headStyles: { fillColor: palette.panel, textColor: palette.ink, lineColor: palette.line, lineWidth: 0.2 },
+      bodyStyles: { lineColor: palette.line, lineWidth: 0.2 },
+    });
+    y = (doc.lastAutoTable?.finalY ?? y) + 8;
+
+    y = this.drawTwinNarrative(doc, y, 170, labels.guidance, report.guidanceCommentary, labels);
+    y = this.drawTwinNarrative(doc, y, 170, labels.coachNotes, report.coachNotes.length ? report.coachNotes.join("\n") : labels.none, labels);
+    this.drawTwinNarrative(doc, y, 170, labels.sources, report.sourceDataNotes.length ? report.sourceDataNotes.join("\n") : labels.none, labels);
+  },
+
+  drawTwinNarrative(doc: JsPDFWithAutoTable, y: number, w: number, label: string, body: string, labels: TwinReportLabels): number {
+    const lines = doc.splitTextToSize(body || labels.none, w - 8) as string[];
+    const height = Math.max(20, 14 + lines.length * 4.4);
+    if (y + height > 280) {
+      doc.addPage();
+      this.drawPageHeader(doc, labels.title, "");
+      y = 40;
+    }
+    this.drawNarrativeBlock(doc, 20, y, w, height, label, body || labels.none);
+    return y + height + 6;
   },
 
   drawCoverPage(doc: jsPDF, record: AssessmentRecord, tc: TFunction, tr: TFunction, sessionCount: number, readinessChecks: number, readinessTotal: number) {
