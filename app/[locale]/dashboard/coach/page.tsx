@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
 import { TeamMessagesPanel } from "@/components/dashboard/TeamMessagesPanel";
+import { TeamInvitationsManager } from "@/components/teams/TeamInvitationsManager";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord } from "@/types/coach-action";
 import type { Team } from "@/types/team";
@@ -173,6 +174,8 @@ export default function CoachDashboardPage() {
           />
         </SimpleGrid>
       </SectionPanel>
+
+      <TeamInvitationsManager teams={teams} />
 
       {teamOverviews.length > 0 && (
         <SectionPanel title={t("teamSquads")}>

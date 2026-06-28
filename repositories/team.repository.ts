@@ -73,6 +73,28 @@ export async function upsertTeam(input: Omit<Team, "_id" | "createdAt" | "update
   };
 }
 
+export async function addAthleteToTeam(teamId: string, athleteId: string): Promise<Team | null> {
+  if (!ObjectId.isValid(teamId)) return null;
+  const db = await getDatabase();
+  const result = await db.collection(collectionName).findOneAndUpdate(
+    { _id: new ObjectId(teamId) },
+    { $addToSet: { athleteIds: athleteId.trim() }, $set: { updatedAt: new Date().toISOString() } },
+    { returnDocument: "after" }
+  );
+  return result ? normalizeTeam(result as Record<string, unknown>) : null;
+}
+
+export async function addTrainerToTeam(teamId: string, email: string): Promise<Team | null> {
+  if (!ObjectId.isValid(teamId)) return null;
+  const db = await getDatabase();
+  const result = await db.collection(collectionName).findOneAndUpdate(
+    { _id: new ObjectId(teamId) },
+    { $addToSet: { trainerEmails: email.toLowerCase().trim() }, $set: { updatedAt: new Date().toISOString() } },
+    { returnDocument: "after" }
+  );
+  return result ? normalizeTeam(result as Record<string, unknown>) : null;
+}
+
 export async function deleteTeamById(id: string) {
   if (!ObjectId.isValid(id)) return false;
   const db = await getDatabase();

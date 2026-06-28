@@ -2565,5 +2565,26 @@
         "desc": "Hamarosan."
       }
     }
+  },
+  "TeamInvitations": {
+    "title": "Csapatmeghívók",
+    "pendingTitle": "A meghívóid",
+    "roleAthlete": "Sportoló",
+    "roleTrainer": "Edző",
+    "accept": "Elfogadás",
+    "accepting": "Csatlakozás…",
+    "inviteHeading": "Meghívás csapatba",
+    "teamLabel": "Csapat",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "nev@email.com",
+    "roleLabel": "Szerep",
+    "send": "Meghívó küldése",
+    "sending": "Küldés…",
+    "sent": "Meghívó elküldve",
+    "pendingForTeam": "Függő meghívók",
+    "revoke": "Visszavonás",
+    "none": "Nincs függő meghívó",
+    "error": "Hiba történt. Próbáld újra.",
+    "athleteProfileRequired": "Hozd létre a sportolói profilodat a csatlakozás előtt."
   }
 }

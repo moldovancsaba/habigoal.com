@@ -10,6 +10,7 @@ import { AppShell as GdsAppShell, SidebarNav, SidebarNavItem } from "@doneisbett
 import { APP_LAYOUT } from "@/theme/tokens";
 import { useThemeMode } from "@/components/theme/ThemeModeContext";
 import { OnboardingProvider } from "@/components/onboarding/OnboardingPrompt";
+import { PendingInvitations } from "@/components/teams/PendingInvitations";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -164,6 +165,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
             pt={{ base: 8, sm: 24 }}
           >
+            {routeBlocked ? null : <PendingInvitations />}
             <OnboardingProvider>{children}</OnboardingProvider>
           </Box>
         </Box>
