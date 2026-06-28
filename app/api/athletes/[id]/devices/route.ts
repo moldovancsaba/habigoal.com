@@ -68,11 +68,14 @@ export async function POST(
 
     const base = env.appBaseUrl || request.nextUrl.origin;
     const redirectUri = `${base}/api/oauth/wearable/callback`;
+    // PKCE providers (e.g. Garmin) generate a verifier stored in the signed
+    // state cookie; its challenge is sent on the authorize URL.
+    const pkce = oauth.createPkce?.();
     const state = createWearableState(
-      { athleteId, provider: source, locale: localeFromReferer(request), nonce: randomUUID() },
+      { athleteId, provider: source, locale: localeFromReferer(request), nonce: randomUUID(), codeVerifier: pkce?.verifier },
       requireServerEnv("authSecret")
     );
-    const authUrl = oauth.buildAuthorizeUrl({ redirectUri, state });
+    const authUrl = oauth.buildAuthorizeUrl({ redirectUri, state, codeChallenge: pkce?.challenge });
 
     const response = NextResponse.json({ authUrl, configured: true }, { status: 200 });
     response.cookies.set(WEARABLE_OAUTH_STATE_COOKIE, state, {

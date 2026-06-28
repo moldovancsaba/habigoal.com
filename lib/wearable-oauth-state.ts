@@ -17,6 +17,9 @@ export type WearableOAuthBinding = {
   locale: string;
   nonce: string;
   exp: number; // epoch ms
+  // PKCE code_verifier for providers that require it (e.g. Garmin). Carried in
+  // the signed, httpOnly state cookie only — never exposed to the browser/URL.
+  codeVerifier?: string;
 };
 
 function base64url(input: Buffer | string): string {
@@ -33,12 +36,12 @@ export function signWearableState(binding: WearableOAuthBinding, secret: string)
 }
 
 export function createWearableState(
-  input: { athleteId: string; provider: string; locale: string; nonce: string },
+  input: { athleteId: string; provider: string; locale: string; nonce: string; codeVerifier?: string },
   secret: string,
   now: Date = new Date()
 ): string {
   return signWearableState(
-    { athleteId: input.athleteId, provider: input.provider, locale: input.locale, nonce: input.nonce, exp: now.getTime() + WEARABLE_OAUTH_STATE_TTL_MS },
+    { athleteId: input.athleteId, provider: input.provider, locale: input.locale, nonce: input.nonce, exp: now.getTime() + WEARABLE_OAUTH_STATE_TTL_MS, codeVerifier: input.codeVerifier },
     secret
   );
 }

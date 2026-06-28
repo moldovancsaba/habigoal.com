@@ -15,8 +15,10 @@ import type { DeviceConnection, WearableConnector } from "@/types/wearable-conne
 import type { CanonicalMetric, MetricSource, RawPayload } from "@/types/canonical-metric";
 import { normalizeOuraPayloads, OURA_NORMALISATION_VERSION } from "@/lib/oura-normalize";
 import { normalizeWhoopPayloads, WHOOP_NORMALISATION_VERSION } from "@/lib/whoop-normalize";
+import { normalizeGarminPayloads, GARMIN_NORMALISATION_VERSION } from "@/lib/garmin-normalize";
 import { OuraConnector } from "@/services/connectors/oura.connector";
 import { WhoopConnector } from "@/services/connectors/whoop.connector";
+import { GarminConnector } from "@/services/connectors/garmin.connector";
 import { upsertManyCanonicalMetrics } from "@/repositories/canonical-metric.repository";
 import { upsertManyRawPayloads } from "@/repositories/raw-payload.repository";
 import { listSyncableConnections, recordSyncResult } from "@/repositories/device-connection.repository";
@@ -28,17 +30,20 @@ type Normalizer = (payloads: RawPayload[], connection: { athleteId: string; orga
 
 const CONNECTOR_FACTORIES: Partial<Record<MetricSource, () => WearableConnector>> = {
   oura: () => new OuraConnector(),
-  whoop: () => new WhoopConnector()
+  whoop: () => new WhoopConnector(),
+  garmin: () => new GarminConnector()
 };
 
 const NORMALIZERS: Partial<Record<MetricSource, Normalizer>> = {
   oura: normalizeOuraPayloads,
-  whoop: normalizeWhoopPayloads
+  whoop: normalizeWhoopPayloads,
+  garmin: normalizeGarminPayloads
 };
 
 export const NORMALISATION_VERSIONS: Partial<Record<MetricSource, string>> = {
   oura: OURA_NORMALISATION_VERSION,
-  whoop: WHOOP_NORMALISATION_VERSION
+  whoop: WHOOP_NORMALISATION_VERSION,
+  garmin: GARMIN_NORMALISATION_VERSION
 };
 
 export type SyncDeps = {

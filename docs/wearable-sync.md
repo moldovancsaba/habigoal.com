@@ -51,6 +51,22 @@ rather than duplicating.
 
 No engine changes are required.
 
+## Garmin canonical mapping (Health API)
+
+Garmin uses **OAuth2 with PKCE**: the connect leg generates a code_verifier
+(stored in the signed, httpOnly state cookie) and sends its S256 code_challenge;
+the callback exchanges code + verifier for tokens. Gated on
+`GARMIN_CLIENT_ID`/`GARMIN_CLIENT_SECRET`.
+
+| Garmin resource | Field                                | Canonical key            | Unit          |
+|-----------------|--------------------------------------|--------------------------|---------------|
+| `dailies`       | `restingHeartRateInBeatsPerMinute`   | `resting_heart_rate_bpm` | `bpm`         |
+| `dailies`       | `averageStressLevel`                 | `stress_score`           | `score_0_100` |
+| `dailies`       | `bodyBatteryHighestValue`            | `energy_score`           | `score_0_100` |
+| `hrv`           | `lastNightAvgHrvInMs`                | `hrv_rmssd_ms`           | `ms`          |
+| `sleep`         | `durationInSeconds`                  | `sleep_duration_minutes` | `minutes`     |
+| `sleep`         | `sleepScore`                         | `sleep_quality_score`    | `score_0_100` |
+
 ## Whoop canonical mapping (API v1)
 
 | Whoop resource | Field                          | Canonical key            | Unit          |

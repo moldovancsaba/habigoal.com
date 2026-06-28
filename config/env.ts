@@ -38,6 +38,11 @@ export const env = {
   whoopClientId: process.env.WHOOP_CLIENT_ID,
   whoopClientSecret: process.env.WHOOP_CLIENT_SECRET,
   whoopApiBaseUrl: process.env.WHOOP_API_BASE_URL || "https://api.prod.whoop.com",
+  garminClientId: process.env.GARMIN_CLIENT_ID,
+  garminClientSecret: process.env.GARMIN_CLIENT_SECRET,
+  garminAuthorizeUrl: process.env.GARMIN_AUTHORIZE_URL || "https://connect.garmin.com/oauth2Confirm",
+  garminTokenUrl: process.env.GARMIN_TOKEN_URL || "https://diauth.garmin.com/di-oauth2-service/oauth/token",
+  garminApiBaseUrl: process.env.GARMIN_API_BASE_URL || "https://apis.garmin.com",
 };
 
 type StringEnvKey = {
