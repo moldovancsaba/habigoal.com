@@ -40,7 +40,9 @@
     "languageSelector": "Sprache waehlen",
     "goHome": "Zur Startseite",
     "openDashboard": "Dashboard oeffnen",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "featureUnavailableTitle": "Noch nicht verfügbar",
+    "featureUnavailableBody": "Diese Funktion ist noch nicht verfügbar. Sie erscheint hier, sobald sie bereit ist."
   },
   "Dashboard": {
     "title": "Dashboard",

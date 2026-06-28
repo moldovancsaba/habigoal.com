@@ -40,7 +40,9 @@
     "languageSelector": "اختيار اللغة",
     "goHome": "العودة إلى الصفحة الرئيسية",
     "openDashboard": "فتح لوحة التحكم",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "featureUnavailableTitle": "غير متاح بعد",
+    "featureUnavailableBody": "هذه الميزة غير متاحة بعد. ستظهر هنا بمجرد أن تصبح جاهزة."
   },
   "Dashboard": {
     "title": "لوحة التحكم",
