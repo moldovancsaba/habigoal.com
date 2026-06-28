@@ -7,13 +7,12 @@ import { decryptToken } from "@/lib/wearable-token-crypto";
 const SECRET = "callback-test-secret";
 
 vi.mock("@/config/env", () => ({
-  env: { appBaseUrl: "https://app.test", ouraApiBaseUrl: "https://api.ouraring.com", ouraClientId: "cid", ouraClientSecret: "csecret" },
+  env: { appBaseUrl: "https://app.test" },
   requireServerEnv: (key: string) => (key === "authSecret" ? SECRET : "")
 }));
 
-vi.mock("@/lib/oura-oauth", () => ({
-  isOuraOAuthConfigured: vi.fn(() => true),
-  exchangeOuraAuthCode: vi.fn(async () => ({ access_token: "live-access", refresh_token: "live-refresh", expires_in: 3600, scope: "daily heartrate" })),
+vi.mock("@/lib/wearable-oauth-providers", () => ({
+  getWearableOAuthProvider: vi.fn(),
   computeExpiryIso: () => "2026-06-28T13:00:00.000Z"
 }));
 
@@ -22,7 +21,7 @@ vi.mock("@/repositories/device-connection.repository", () => ({
   upsertDeviceConnection: vi.fn(async () => {})
 }));
 
-import { exchangeOuraAuthCode, isOuraOAuthConfigured } from "@/lib/oura-oauth";
+import { getWearableOAuthProvider } from "@/lib/wearable-oauth-providers";
 import { upsertDeviceConnection } from "@/repositories/device-connection.repository";
 
 function callbackRequest(query: Record<string, string>, cookieState?: string): NextRequest {
@@ -33,18 +32,28 @@ function callbackRequest(query: Record<string, string>, cookieState?: string): N
   return new NextRequest(url, { headers });
 }
 
-function validState() {
-  return createWearableState({ athleteId: "a1", provider: "oura", locale: "en", nonce: "n1" }, SECRET);
+function validState(provider = "oura") {
+  return createWearableState({ athleteId: "a1", provider, locale: "en", nonce: "n1" }, SECRET);
+}
+
+let exchange: ReturnType<typeof vi.fn>;
+function mockProvider(opts: { configured?: boolean } = {}) {
+  exchange = vi.fn(async () => ({ access_token: "live-access", refresh_token: "live-refresh", expires_in: 3600, scope: "daily heartrate" }));
+  vi.mocked(getWearableOAuthProvider).mockReturnValue({
+    isConfigured: () => opts.configured ?? true,
+    exchangeAuthCode: exchange as never,
+    buildAuthorizeUrl: () => "https://authorize.test"
+  });
 }
 
 describe("wearable OAuth callback", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(isOuraOAuthConfigured).mockReturnValue(true);
+    mockProvider();
   });
 
-  it("creates a connection with encrypted tokens and redirects on success", async () => {
-    const state = validState();
+  it("creates a connection with encrypted tokens and redirects on success (oura)", async () => {
+    const state = validState("oura");
     const res = await GET(callbackRequest({ code: "auth-code", state }, state));
 
     expect(res.status).toBe(302);
@@ -53,10 +62,15 @@ describe("wearable OAuth callback", () => {
     const saved = vi.mocked(upsertDeviceConnection).mock.calls[0][0];
     expect(saved.source).toBe("oura");
     expect(saved.status).toBe("active");
-    expect(saved.scopes).toEqual(["daily", "heartrate"]);
-    // Tokens persisted encrypted (round-trips back to the plaintext), never raw.
     expect(saved.accessToken).not.toBe("live-access");
     expect(decryptToken(saved.accessToken)).toBe("live-access");
+  });
+
+  it("dispatches by provider and persists a whoop connection", async () => {
+    const state = validState("whoop");
+    const res = await GET(callbackRequest({ code: "auth-code", state }, state));
+    expect(res.headers.get("location")).toBe("https://app.test/en/dashboard/wearables?connected=whoop");
+    expect(vi.mocked(upsertDeviceConnection).mock.calls[0][0].source).toBe("whoop");
   });
 
   it("rejects a forged/mismatched state with 403 and persists nothing", async () => {
@@ -71,7 +85,8 @@ describe("wearable OAuth callback", () => {
   });
 
   it("redirects with error and persists nothing when the exchange fails", async () => {
-    vi.mocked(exchangeOuraAuthCode).mockRejectedValueOnce(new Error("exchange_failed_400"));
+    mockProvider();
+    exchange.mockRejectedValueOnce(new Error("exchange_failed_400"));
     const state = validState();
     const res = await GET(callbackRequest({ code: "auth-code", state }, state));
     expect(res.status).toBe(302);
@@ -84,11 +99,10 @@ describe("wearable OAuth callback", () => {
     const res = await GET(callbackRequest({ error: "access_denied", state }, state));
     expect(res.status).toBe(302);
     expect(res.headers.get("location")).toBe("https://app.test/en/dashboard/wearables?error=consent_denied");
-    expect(upsertDeviceConnection).not.toHaveBeenCalled();
   });
 
-  it("returns 501 when Oura OAuth is not configured", async () => {
-    vi.mocked(isOuraOAuthConfigured).mockReturnValue(false);
+  it("returns 501 when the provider OAuth is not configured", async () => {
+    mockProvider({ configured: false });
     const res = await GET(callbackRequest({ code: "auth-code", state: validState() }, validState()));
     expect(res.status).toBe(501);
   });

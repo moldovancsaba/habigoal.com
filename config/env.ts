@@ -35,6 +35,9 @@ export const env = {
   ouraClientId: process.env.OURA_CLIENT_ID,
   ouraClientSecret: process.env.OURA_CLIENT_SECRET,
   ouraApiBaseUrl: process.env.OURA_API_BASE_URL || "https://api.ouraring.com",
+  whoopClientId: process.env.WHOOP_CLIENT_ID,
+  whoopClientSecret: process.env.WHOOP_CLIENT_SECRET,
+  whoopApiBaseUrl: process.env.WHOOP_API_BASE_URL || "https://api.prod.whoop.com",
 };
 
 type StringEnvKey = {

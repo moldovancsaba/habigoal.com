@@ -51,6 +51,20 @@ rather than duplicating.
 
 No engine changes are required.
 
+## Whoop canonical mapping (API v1)
+
+| Whoop resource | Field                          | Canonical key            | Unit          |
+|----------------|--------------------------------|--------------------------|---------------|
+| `recovery`     | `recovery_score`               | `energy_score`           | `score_0_100` |
+| `recovery`     | `resting_heart_rate`           | `resting_heart_rate_bpm` | `bpm`         |
+| `recovery`     | `hrv_rmssd_milli`              | `hrv_rmssd_ms`           | `ms`          |
+| `sleep`        | `sleep_performance_percentage` | `sleep_quality_score`    | `score_0_100` |
+| `sleep`        | `total_sleep_minutes`          | `sleep_duration_minutes` | `minutes`     |
+
+Whoop OAuth + connector are gated on `WHOOP_CLIENT_ID`/`WHOOP_CLIENT_SECRET`
+(see `docs/wearable-oauth.md`); they report "not configured" until set. The
+connect flow dispatches by provider via `lib/wearable-oauth-providers.ts`.
+
 ## Oura canonical mapping (API v2)
 
 | Oura resource    | Field                  | Canonical key                 | Unit         | Transform |

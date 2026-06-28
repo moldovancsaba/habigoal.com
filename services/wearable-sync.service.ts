@@ -14,7 +14,9 @@
 import type { DeviceConnection, WearableConnector } from "@/types/wearable-connector";
 import type { CanonicalMetric, MetricSource, RawPayload } from "@/types/canonical-metric";
 import { normalizeOuraPayloads, OURA_NORMALISATION_VERSION } from "@/lib/oura-normalize";
+import { normalizeWhoopPayloads, WHOOP_NORMALISATION_VERSION } from "@/lib/whoop-normalize";
 import { OuraConnector } from "@/services/connectors/oura.connector";
+import { WhoopConnector } from "@/services/connectors/whoop.connector";
 import { upsertManyCanonicalMetrics } from "@/repositories/canonical-metric.repository";
 import { upsertManyRawPayloads } from "@/repositories/raw-payload.repository";
 import { listSyncableConnections, recordSyncResult } from "@/repositories/device-connection.repository";
@@ -25,15 +27,18 @@ export const TOKEN_REFRESH_SKEW_MS = 5 * 60 * 1000; // refresh slightly early
 type Normalizer = (payloads: RawPayload[], connection: { athleteId: string; organisationId: string }, now: Date) => CanonicalMetric[];
 
 const CONNECTOR_FACTORIES: Partial<Record<MetricSource, () => WearableConnector>> = {
-  oura: () => new OuraConnector()
+  oura: () => new OuraConnector(),
+  whoop: () => new WhoopConnector()
 };
 
 const NORMALIZERS: Partial<Record<MetricSource, Normalizer>> = {
-  oura: normalizeOuraPayloads
+  oura: normalizeOuraPayloads,
+  whoop: normalizeWhoopPayloads
 };
 
 export const NORMALISATION_VERSIONS: Partial<Record<MetricSource, string>> = {
-  oura: OURA_NORMALISATION_VERSION
+  oura: OURA_NORMALISATION_VERSION,
+  whoop: WHOOP_NORMALISATION_VERSION
 };
 
 export type SyncDeps = {
