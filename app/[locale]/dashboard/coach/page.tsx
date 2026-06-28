@@ -6,6 +6,7 @@ import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbet
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
+import { TeamMessagesPanel } from "@/components/dashboard/TeamMessagesPanel";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord } from "@/types/coach-action";
 import type { Team } from "@/types/team";
@@ -43,6 +44,7 @@ export default function CoachDashboardPage() {
   const [concerns, setConcerns] = useState<ConcernItem[]>([]);
   const [coachActions, setCoachActions] = useState<CoachActionRecord[]>([]);
   const [teamOverviews, setTeamOverviews] = useState<TeamOverview[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [resolving, setResolving] = useState<string | null>(null);
@@ -61,6 +63,7 @@ export default function CoachDashboardPage() {
         setConcerns(concernData?.concerns ?? []);
         setCoachActions(Array.isArray(actionData?.actions) ? actionData.actions : []);
         const teams: Team[] = Array.isArray(teamData?.teams) ? teamData.teams : [];
+        setTeams(teams);
         return Promise.all(
           teams
             .filter((team) => team._id)
@@ -202,6 +205,12 @@ export default function CoachDashboardPage() {
               </Paper>
             ))}
           </SimpleGrid>
+        </SectionPanel>
+      )}
+
+      {teams.length > 0 && (
+        <SectionPanel title={t("messages.title")}>
+          <TeamMessagesPanel teams={teams} athletes={athletes} />
         </SectionPanel>
       )}
 
