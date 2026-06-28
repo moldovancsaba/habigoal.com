@@ -1407,7 +1407,23 @@
     "noLinked": "Keine verknuepften Athleten.",
     "reports": "Berichte",
     "digitalTwin": "Digitaler Zwilling",
-    "loadError": "Verknuepfte Athleten konnten nicht geladen werden"
+    "loadError": "Verknuepfte Athleten konnten nicht geladen werden",
+    "retry": "Erneut versuchen",
+    "noLinkedHelp": "Bitten Sie den Trainer oder Verein des Sportlers, Ihr Konto zu verknüpfen, damit Sie die Zusammenfassung sehen können.",
+    "selectChild": "Sportler auswählen",
+    "summaryTitle": "Tageszusammenfassung — {name}",
+    "summaryLoading": "Zusammenfassung wird geladen…",
+    "summaryError": "Zusammenfassung konnte nicht geladen werden",
+    "summaryErrorHelp": "Bitte versuchen Sie es in einem Moment erneut.",
+    "statusTitle": "Heutiger Status",
+    "tasksTitle": "Erledigte Aufgaben",
+    "tasksDone": "Heute {count} erledigt",
+    "notesTitle": "Hinweise für Eltern",
+    "supportTitle": "So können Sie unterstützen",
+    "privacyTitle": "Privatsphäre geschützt",
+    "privacyHelp": "Einige Details bleiben dem Sportler vorbehalten — Sie sehen nur eine für Eltern geeignete Zusammenfassung.",
+    "noSummary": "Noch keine Zusammenfassung",
+    "noSummaryHelp": "Für heute gibt es noch keinen Check-in. Schauen Sie später wieder vorbei."
   },
   "PlanningDashboard": {
     "title": "Session-Planer und Mikrozyklen",
@@ -2278,6 +2294,13 @@
         "risk": "Risk",
         "reasoning": "Reasoning",
         "memory_retention": "Memory & retention"
+      }
+    },
+    "parents": {
+      "actions": {
+        "encourageRecovery": "Ermutigen Sie heute zu Ruhe und Erholung.",
+        "remindCheckIn": "Eine freundliche Erinnerung an den heutigen Check-in hilft.",
+        "keepRoutine": "Behalten Sie die gewohnte Routine bei — es läuft alles gut."
       }
     }
   },

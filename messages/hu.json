@@ -1407,7 +1407,23 @@
     "noLinked": "Nincs kapcsolt sportoló.",
     "reports": "Riportok",
     "digitalTwin": "Digitális ikertestvér",
-    "loadError": "A kapcsolt sportolók betöltése sikertelen"
+    "loadError": "A kapcsolt sportolók betöltése sikertelen",
+    "retry": "Próbálja újra",
+    "noLinkedHelp": "Kérje meg a sportoló edzőjét vagy klubját, hogy kösse össze a fiókját, így láthatja az összefoglalót.",
+    "selectChild": "Sportoló kiválasztása",
+    "summaryTitle": "Napi összefoglaló — {name}",
+    "summaryLoading": "Összefoglaló betöltése…",
+    "summaryError": "Az összefoglalót nem sikerült betölteni",
+    "summaryErrorHelp": "Kérjük, próbálja újra egy pillanat múlva.",
+    "statusTitle": "Mai állapot",
+    "tasksTitle": "Elvégzett feladatok",
+    "tasksDone": "Ma {count} elvégezve",
+    "notesTitle": "Szülőknek szóló megjegyzések",
+    "supportTitle": "Hogyan segíthet",
+    "privacyTitle": "Adatvédelem",
+    "privacyHelp": "Bizonyos részletek a sportoló számára maradnak — Ön csak a szülőknek szóló összefoglalót látja.",
+    "noSummary": "Még nincs összefoglaló",
+    "noSummaryHelp": "Mára még nincs bejelentkezés. Nézzen vissza később."
   },
   "PlanningDashboard": {
     "title": "Edzéstervező és mikrociklusok",
@@ -2278,6 +2294,13 @@
         "risk": "Risk",
         "reasoning": "Reasoning",
         "memory_retention": "Memory & retention"
+      }
+    },
+    "parents": {
+      "actions": {
+        "encourageRecovery": "Bátorítsa a pihenést és a regenerálódást ma.",
+        "remindCheckIn": "Egy kedves emlékeztető a mai bejelentkezés elvégzésére sokat segít.",
+        "keepRoutine": "Tartsák a megszokott rutint — minden rendben halad."
       }
     }
   },
