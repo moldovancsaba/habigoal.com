@@ -2098,7 +2098,15 @@
               "training": "Training",
               "evening": "Evening",
               "anytime": "Anytime"
-            }
+            },
+            "confidenceLabel": "Confidence",
+            "confidence": {
+              "high": "High",
+              "medium": "Medium",
+              "low": "Low",
+              "insufficient": "Not enough data"
+            },
+            "whyTitle": "Why this plan"
           },
           "mentalEdge": {
             "trend": {

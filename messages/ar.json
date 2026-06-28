@@ -2098,7 +2098,15 @@
               "training": "التدريب",
               "evening": "المساء",
               "anytime": "أي وقت"
-            }
+            },
+            "confidenceLabel": "الثقة",
+            "confidence": {
+              "high": "عالية",
+              "medium": "متوسطة",
+              "low": "منخفضة",
+              "insufficient": "بيانات غير كافية"
+            },
+            "whyTitle": "لماذا هذه الخطة"
           },
           "mentalEdge": {
             "trend": {

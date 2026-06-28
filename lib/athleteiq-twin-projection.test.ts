@@ -164,7 +164,7 @@ function dailyPlan(): DailyPlan {
     timezone: "UTC",
     status: "active",
     tasks: [],
-    recommendation: { intensity: "moderate", type: "controlled", durationRange: "35-60", rationale: [], blockedByPainGuardrail: false },
+    recommendation: { intensity: "moderate", type: "controlled", durationRange: "35-60", rationale: [], blockedByPainGuardrail: false, confidence: "medium" },
     dataUsed: ["daily_iq"],
     missingData: [],
     generatedAt: "2026-06-26T12:00:00.000Z",

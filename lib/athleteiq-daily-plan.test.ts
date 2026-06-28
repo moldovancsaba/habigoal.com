@@ -67,6 +67,30 @@ describe("AthleteIQ daily plan contract", () => {
     expect(plan.recommendation.intensity).toBe("low");
     expect(plan.missingData).toContain("daily_iq");
   });
+
+  it("carries the Daily IQ confidence onto the session recommendation", () => {
+    const high = buildDailyPlan({
+      athleteId: "athlete-1",
+      localDate: "2026-06-26",
+      timezone: "UTC",
+      dailyIq: dailyIq(85, "high"),
+      mentalEdge: mentalEdge(),
+      painGuardrail: painGuardrail("none"),
+      habitRecord: null
+    });
+    expect(high.recommendation.confidence).toBe("high");
+
+    const noData = buildDailyPlan({
+      athleteId: "athlete-1",
+      localDate: "2026-06-26",
+      timezone: "UTC",
+      dailyIq: null,
+      mentalEdge: null,
+      painGuardrail: painGuardrail("none"),
+      habitRecord: null
+    });
+    expect(noData.recommendation.confidence).toBe("insufficient");
+  });
 });
 
 describe("AthleteIQ daily plan API validation", () => {

@@ -17,6 +17,13 @@ const PRIORITY_COLOR: Record<DailyTask["priority"], string> = {
   low: "tactical"
 };
 
+function confidenceColor(confidence: DailyPlan["recommendation"]["confidence"]): string {
+  if (confidence === "high") return "tactical";
+  if (confidence === "medium") return "yellow";
+  if (confidence === "low") return "orange";
+  return "gray";
+}
+
 export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteId: string; localDate: string; timezone: string }) {
   const t = useTranslations("ProductSurfaces.athleteIq.athleteWorkspace.panels");
   const domain = useAthleteIqDomainCopy();
@@ -111,18 +118,28 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
     <Stack gap="md">
       <Box className="aiq-row-card">
         <Stack gap={4}>
-          <Group justify="space-between" gap="sm">
+          <Group justify="space-between" gap="sm" wrap="nowrap">
             <Text fw={900}>{t("dailyPlan.recommendationTitle")}</Text>
-            <Badge color={plan.recommendation.blockedByPainGuardrail ? "red" : "tactical"} variant="light">
-              {t(`dailyPlan.intensity.${plan.recommendation.intensity}`)}
-            </Badge>
+            <Group gap={6} wrap="nowrap">
+              <Badge color={confidenceColor(plan.recommendation.confidence)} variant="light" title={t("dailyPlan.confidenceLabel")}>
+                {t("dailyPlan.confidenceLabel")}: {t(`dailyPlan.confidence.${plan.recommendation.confidence}`)}
+              </Badge>
+              <Badge color={plan.recommendation.blockedByPainGuardrail ? "red" : "tactical"} variant="light">
+                {t(`dailyPlan.intensity.${plan.recommendation.intensity}`)}
+              </Badge>
+            </Group>
           </Group>
           <Text size="sm" className="aiq-muted">
             {t(`dailyPlan.sessionType.${plan.recommendation.type}`)} · {plan.recommendation.durationRange}
           </Text>
-          {plan.recommendation.rationale.map((code) => (
-            <Text key={code} size="sm" className="aiq-muted-soft">{domain(code)}</Text>
-          ))}
+          {plan.recommendation.rationale.length > 0 ? (
+            <>
+              <Text size="sm" fw={700} className="aiq-muted-soft">{t("dailyPlan.whyTitle")}</Text>
+              {plan.recommendation.rationale.map((code) => (
+                <Text key={code} size="sm" className="aiq-muted-soft">• {domain(code)}</Text>
+              ))}
+            </>
+          ) : null}
         </Stack>
       </Box>
 
