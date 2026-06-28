@@ -202,7 +202,6 @@ function flattenReport(report: AthleteReport): Record<string, string> {
     to: report.dateRange.to,
     summary: report.summary,
     coachNotes: report.coachNotes.join(" | "),
-    guidanceSource: report.guidanceSource,
     guidanceCommentary: report.guidanceCommentary.replace(/\s+/g, " ").trim(),
     sourceDataNotes: report.sourceDataNotes.join(" | ")
   };
