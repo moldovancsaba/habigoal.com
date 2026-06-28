@@ -40,7 +40,9 @@
     "languageSelector": "Select language",
     "goHome": "Go to home",
     "openDashboard": "Open dashboard",
-    "logout": "Log out"
+    "logout": "Log out",
+    "featureUnavailableTitle": "Not available yet",
+    "featureUnavailableBody": "This feature isn't available yet. It will appear here once it's ready."
   },
   "Dashboard": {
     "title": "Dashboard",

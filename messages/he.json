@@ -40,7 +40,9 @@
     "languageSelector": "בחר שפה",
     "goHome": "עבור לדף הבית",
     "openDashboard": "פתח לוח בקרה",
-    "logout": "התנתק"
+    "logout": "התנתק",
+    "featureUnavailableTitle": "עדיין לא זמין",
+    "featureUnavailableBody": "התכונה הזו עדיין אינה זמינה. היא תופיע כאן ברגע שתהיה מוכנה."
   },
   "Dashboard": {
     "title": "לוח בקרה",

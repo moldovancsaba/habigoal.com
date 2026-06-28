@@ -40,7 +40,9 @@
     "languageSelector": "Nyelv kiválasztása",
     "goHome": "Vissza a kezdőlapra",
     "openDashboard": "Vezérlőpult megnyitása",
-    "logout": "Kijelentkezés"
+    "logout": "Kijelentkezés",
+    "featureUnavailableTitle": "Még nem elérhető",
+    "featureUnavailableBody": "Ez a funkció még nem érhető el. Amint elkészül, itt fog megjelenni."
   },
   "Dashboard": {
     "title": "Vezérlőpult",

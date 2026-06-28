@@ -40,7 +40,9 @@
     "languageSelector": "Seleccionar idioma",
     "goHome": "Ir al inicio",
     "openDashboard": "Abrir panel",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "featureUnavailableTitle": "Aún no disponible",
+    "featureUnavailableBody": "Esta función aún no está disponible. Aparecerá aquí cuando esté lista."
   },
   "Dashboard": {
     "title": "Panel",
