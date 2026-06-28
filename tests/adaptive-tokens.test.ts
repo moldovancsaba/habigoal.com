@@ -28,4 +28,9 @@ describe("adaptive tokens", () => {
     const block = css.match(/@media\s*\(any-pointer:\s*coarse\)\s*\{[\s\S]*?--target-size:\s*48px[\s\S]*?\}/);
     expect(block).not.toBeNull();
   });
+
+  it("migrates interactive primitives to the target-size token (#402)", () => {
+    const tokenMins = css.match(/min-height:\s*max\(var\(--target-size\),/g) || [];
+    expect(tokenMins.length).toBeGreaterThanOrEqual(12);
+  });
 });

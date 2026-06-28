@@ -164,7 +164,7 @@ label {
   }
 
   button {
-    min-height: 44px;
+    min-height: max(var(--target-size), 44px);
   }
 
   .mobile-actions-stack {
@@ -669,7 +669,7 @@ a {
 }
 
 .aiq-nav-link {
-  min-height: 48px;
+  min-height: max(var(--target-size), 48px);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: center;
@@ -926,7 +926,7 @@ a {
 }
 
 .hbg-checkbox {
-  min-height: 44px;
+  min-height: max(var(--target-size), 44px);
   padding: 12px;
   border: 1px solid var(--hbg-line);
   border-radius: var(--mantine-radius-md);
@@ -988,7 +988,7 @@ a {
 }
 
 .hbg-bottom-nav-item {
-  min-height: 54px;
+  min-height: max(var(--target-size), 54px);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -1013,7 +1013,7 @@ a {
   border: 0;
   font-family: inherit;
   cursor: pointer;
-  min-height: 56px;
+  min-height: max(var(--target-size), 56px);
 }
 
 .hbg-bottom-nav-item:not(.hbg-bottom-nav-item-active) {
@@ -1030,7 +1030,7 @@ a {
 .hbg-primary-button,
 .hbg-secondary-button {
   width: 100%;
-  min-height: 52px;
+  min-height: max(var(--target-size), 52px);
   padding: 14px 18px;
   border-radius: 14px;
   font-family: inherit;
@@ -1077,7 +1077,7 @@ a {
   align-items: center;
   gap: 12px;
   width: 100%;
-  min-height: 60px;
+  min-height: max(var(--target-size), 60px);
   padding: 14px 16px;
   text-align: start;
   border-radius: 14px;
@@ -1368,7 +1368,7 @@ a {
 }
 
 .aiq-mobile-utility-link {
-  min-height: 44px;
+  min-height: max(var(--target-size), 44px);
   width: 100%;
   display: flex;
   align-items: center;
@@ -1401,7 +1401,7 @@ a {
 
 .aiq-mobile-language-select {
   width: 100%;
-  min-height: 46px;
+  min-height: max(var(--target-size), 46px);
   padding: 0 42px 0 12px;
   color: var(--gds-vibe-text, #f4f7fb);
   border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 28%, transparent);
@@ -1448,7 +1448,7 @@ a {
 }
 
 .aiq-recorder-checkbox {
-  min-height: 46px;
+  min-height: max(var(--target-size), 46px);
   padding: 12px;
   border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 18%, transparent);
   border-radius: var(--mantine-radius-md);
@@ -1570,7 +1570,7 @@ a {
   }
 
   .aiq-sidebar-v2 .aiq-nav-link {
-    min-height: 44px;
+    min-height: max(var(--target-size), 44px);
   }
 }
 
@@ -1697,7 +1697,7 @@ a {
 
   .hbg-panel .mantine-Button-root,
   .hbg-guidance-panel .mantine-Button-root {
-    min-height: 48px;
+    min-height: max(var(--target-size), 48px);
   }
 
   .aiq-workspace {
