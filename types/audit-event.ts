@@ -19,7 +19,8 @@ export type AuditAction =
   | "device.sync"
   | "report.generate"
   | "settings.update"
-  | "queue.retry";
+  | "queue.retry"
+  | "admin.governance";
 
 export interface AuditEvent {
   _id?: string;

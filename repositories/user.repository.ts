@@ -164,6 +164,25 @@ export async function setUserAthleteId(email: string, athleteId: string) {
   );
 }
 
+// Replace a user's role set wholesale (used by admin governance actions, #152).
+// Roles are normalized so aliases and duplicates can't leak in.
+export async function setUserRoles(email: string, roles: string[]) {
+  const db = await getDatabase();
+  const normalizedEmail = email.toLowerCase().trim();
+  const normalizedRoles = normalizeRoles(roles);
+  const now = new Date().toISOString();
+  await db.collection(collectionName).updateOne(
+    { $or: [{ normalizedEmail }, { email: normalizedEmail }] },
+    {
+      $set: {
+        roles: normalizedRoles,
+        normalizedEmail,
+        updatedAt: now
+      }
+    }
+  );
+}
+
 export async function deleteUserByEmail(email: string) {
   const db = await getDatabase();
   await db.collection(collectionName).deleteOne({ email: email.toLowerCase().trim() });
