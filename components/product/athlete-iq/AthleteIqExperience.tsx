@@ -44,7 +44,7 @@ type AiqPersona = AthleteIqProductDashboardProjection["persona"];
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
 const ATHLETE_IQ_THEME_VARIABLES = getGdsVibeThemeCssVariables(ATHLETE_IQ_GDS_THEME_PRESET, "dark") as CSSProperties;
 
-export function AthleteIqExperience({ dashboard, surface }: { dashboard: AthleteIqProductDashboardProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
+export function AthleteIqExperience({ dashboard, surface, embedded = false }: { dashboard: AthleteIqProductDashboardProjection; relatedSurface?: ProductSurface; surface: ProductSurface; embedded?: boolean }) {
   const t = useTranslations("ProductSurfaces.athleteIq");
   const tActions = useTranslations("ProductSurfaces.actions");
   const common = useTranslations("Common");
@@ -162,26 +162,34 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
       style={ATHLETE_IQ_THEME_VARIABLES}
     >
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
-        <SurfaceTopBar surface={surface} />
-        <AiqMobileTopBar
-          common={common}
-          kicker={t("sidebar.kicker")}
-          menuOpened={mobileMenuOpened}
-          productName={t("surfaceName")}
-          onToggleMenu={() => setMobileMenuOpened((opened) => !opened)}
-        />
-        <AiqMobileNavigation
-          common={common}
-          kicker={t("sidebar.kicker")}
-          navGroups={visibleNavigationGroups}
-          opened={mobileMenuOpened}
-          persona={dashboard.persona}
-          productName={t("surfaceName")}
-          translate={t}
-          onClose={() => setMobileMenuOpened(false)}
-        />
+        {/* When embedded inside the shared shell (DashboardShell), that shell owns
+            the single persona menu — so suppress this surface's own top bars,
+            mobile drawer, and desktop sidebar to avoid a second menu (#unify-nav). */}
+        {!embedded && <SurfaceTopBar surface={surface} />}
+        {!embedded && (
+          <AiqMobileTopBar
+            common={common}
+            kicker={t("sidebar.kicker")}
+            menuOpened={mobileMenuOpened}
+            productName={t("surfaceName")}
+            onToggleMenu={() => setMobileMenuOpened((opened) => !opened)}
+          />
+        )}
+        {!embedded && (
+          <AiqMobileNavigation
+            common={common}
+            kicker={t("sidebar.kicker")}
+            navGroups={visibleNavigationGroups}
+            opened={mobileMenuOpened}
+            persona={dashboard.persona}
+            productName={t("surfaceName")}
+            translate={t}
+            onClose={() => setMobileMenuOpened(false)}
+          />
+        )}
 
-        <Box className="aiq-command-layout">
+        <Box className={embedded ? "aiq-command-layout aiq-command-layout-embedded" : "aiq-command-layout"}>
+          {!embedded && (
           <Paper component="aside" className="aiq-sidebar-v2 aiq-desktop-sidebar surface-outline" withBorder radius="md" p="lg">
             <Stack gap="xl">
               <Group gap="md" wrap="nowrap">
@@ -213,6 +221,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
               </Stack>
             </Stack>
           </Paper>
+          )}
 
           <Stack gap="md" component="main">
             <Paper id="home" component="section" className="aiq-hero-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
