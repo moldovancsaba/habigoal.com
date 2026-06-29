@@ -1461,7 +1461,13 @@
     "concernScoreLine": "Wert {score}/5 · auf oder unter {threshold}",
     "concernViewAthlete": "Athlet öffnen",
     "concernAllClear": "Keine offenen Hinweise",
-    "concernAllClearDesc": "Jeder markierte Check-in wurde nachverfolgt."
+    "concernAllClearDesc": "Jeder markierte Check-in wurde nachverfolgt.",
+    "teamRoster": "Kader",
+    "teamRosterEmpty": "Noch keine Athleten zugewiesen",
+    "teamManage": "Team verwalten",
+    "teamUnassigned": "Nicht zugewiesene Athleten",
+    "teamUnassignedDesc": "{count} Athleten sind noch in keinem Team.",
+    "teamUnassignedManage": "In den Einstellungen zuweisen"
   },
   "VisionLab": {
     "title": "Kinematik- und Vision-Labor",

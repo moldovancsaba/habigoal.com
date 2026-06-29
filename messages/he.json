@@ -1461,7 +1461,13 @@
     "concernScoreLine": "ציון {score}/5 · ב-{threshold} או מתחת",
     "concernViewAthlete": "פתח ספורטאי",
     "concernAllClear": "אין התראות פתוחות",
-    "concernAllClearDesc": "בוצע מעקב אחר כל צ׳ק-אין שסומן."
+    "concernAllClearDesc": "בוצע מעקב אחר כל צ׳ק-אין שסומן.",
+    "teamRoster": "סגל",
+    "teamRosterEmpty": "טרם הוקצו ספורטאים",
+    "teamManage": "נהל קבוצה",
+    "teamUnassigned": "ספורטאים לא משויכים",
+    "teamUnassignedDesc": "{count} ספורטאים עדיין לא בקבוצה.",
+    "teamUnassignedManage": "הקצאה בהגדרות"
   },
   "VisionLab": {
     "title": "מעבדת קinematics ו-vision",

@@ -1461,7 +1461,13 @@
     "concernScoreLine": "Pontszám {score}/5 · {threshold} alatt vagy azon",
     "concernViewAthlete": "Sportoló megnyitása",
     "concernAllClear": "Nincs nyitott figyelmeztetés",
-    "concernAllClearDesc": "Minden megjelölt bejelentkezést követtek."
+    "concernAllClearDesc": "Minden megjelölt bejelentkezést követtek.",
+    "teamRoster": "Keret",
+    "teamRosterEmpty": "Még nincs hozzárendelt sportoló",
+    "teamManage": "Csapat kezelése",
+    "teamUnassigned": "Hozzá nem rendelt sportolók",
+    "teamUnassignedDesc": "{count} sportoló még egyik csapatban sincs.",
+    "teamUnassignedManage": "Hozzárendelés a beállításokban"
   },
   "VisionLab": {
     "title": "Kinematikai és vision labor",

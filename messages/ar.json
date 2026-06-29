@@ -1461,7 +1461,13 @@
     "concernScoreLine": "النتيجة {score}/5 · عند {threshold} أو أقل",
     "concernViewAthlete": "فتح الرياضي",
     "concernAllClear": "لا توجد تنبيهات مفتوحة",
-    "concernAllClearDesc": "تمت متابعة كل تسجيل وصول مُعلَّم."
+    "concernAllClearDesc": "تمت متابعة كل تسجيل وصول مُعلَّم.",
+    "teamRoster": "القائمة",
+    "teamRosterEmpty": "لا يوجد رياضيون معينون بعد",
+    "teamManage": "إدارة الفريق",
+    "teamUnassigned": "رياضيون غير معينين",
+    "teamUnassignedDesc": "{count} رياضيين ليسوا في أي فريق بعد.",
+    "teamUnassignedManage": "التعيين في الإعدادات"
   },
   "VisionLab": {
     "title": "مختبر الحركة والرؤية",
