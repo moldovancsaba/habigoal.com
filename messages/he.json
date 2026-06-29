@@ -1525,7 +1525,15 @@
     "loadPoints": "{points} נק׳",
     "weeklyLoadSummary": "עומס מתוכנן: {points} נק׳ · {count} אימונים",
     "createCycle": "צור מיקרו-מחזור",
-    "cycleHint": "מקבץ את האימונים האחרונים שלך למחזור של 7 ימים."
+    "cycleHint": "מקבץ את האימונים האחרונים שלך למחזור של 7 ימים.",
+    "categories": {
+      "strength": "כוח",
+      "tactical": "טקטי",
+      "endurance": "סיבולת",
+      "speed": "מהירות",
+      "recovery": "התאוששות",
+      "match": "משחק"
+    }
   },
   "AthleteProfileAdmin": {
     "pageTitle": "ניהול פרופיל ספורטאי",

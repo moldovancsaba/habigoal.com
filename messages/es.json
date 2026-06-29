@@ -1525,7 +1525,15 @@
     "loadPoints": "{points} pts",
     "weeklyLoadSummary": "Carga planificada: {points} pts · {count} sesiones",
     "createCycle": "Crear microciclo",
-    "cycleHint": "Agrupa tus sesiones más recientes en un ciclo de 7 días."
+    "cycleHint": "Agrupa tus sesiones más recientes en un ciclo de 7 días.",
+    "categories": {
+      "strength": "Fuerza",
+      "tactical": "Táctico",
+      "endurance": "Resistencia",
+      "speed": "Velocidad",
+      "recovery": "Recuperación",
+      "match": "Partido"
+    }
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Admin perfil atleta",

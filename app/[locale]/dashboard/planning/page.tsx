@@ -125,7 +125,7 @@ export default function SessionPlannerPage() {
             />
             <Select
               label={t("category")}
-              data={CATEGORIES.map((c) => ({ value: c, label: t(`category.${c}`) }))}
+              data={CATEGORIES.map((c) => ({ value: c, label: t(`categories.${c}`) }))}
               value={draftCategory}
               onChange={(v) => setDraftCategory((v as SessionCategory) ?? "tactical")}
             />
@@ -154,7 +154,7 @@ export default function SessionPlannerPage() {
                     <Text size="sm" c="dimmed">{t("dateLabel", { date: session.date })}</Text>
                   </Box>
                   <Group>
-                    <Badge color="ingress" variant="light">{t(`category.${session.category}`)}</Badge>
+                    <Badge color="ingress" variant="light">{t(`categories.${session.category}`)}</Badge>
                     <Badge color="gray" variant="filled">{t("loadPoints", { points: session.plannedLoadPoints })}</Badge>
                   </Group>
                 </Group>
