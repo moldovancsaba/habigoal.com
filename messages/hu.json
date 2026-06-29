@@ -2680,5 +2680,11 @@
     "historyDescription": "Előzménybejegyzések: {count}. Szervezet: {org}.",
     "syncedSourcesTitle": "Szinkronizált források",
     "syncedSourcesEmpty": "Végezz el egy bejelentkezést, vagy csatlakoztass egy viselhető eszközt a források feltöltéséhez."
+  },
+  "Recovery": {
+    "trendImproving": "A regeneráció javuló tendenciát mutat az elmúlt napokban.",
+    "trendStable": "A regeneráció stabil maradt az elmúlt napokban.",
+    "trendDeclining": "A regeneráció romló tendenciát mutat – érdemes mérsékelni a terhelést.",
+    "trendInsufficient": "Még nincs elég regenerációs adat a tendencia megjelenítéséhez."
   }
 }

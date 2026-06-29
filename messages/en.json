@@ -2680,5 +2680,11 @@
     "historyDescription": "History entries: {count}. Organisation: {org}.",
     "syncedSourcesTitle": "Synced Sources",
     "syncedSourcesEmpty": "Complete check-in or connect a wearable to populate sources."
+  },
+  "Recovery": {
+    "trendImproving": "Recovery is trending upward over recent days.",
+    "trendStable": "Recovery has held steady over recent days.",
+    "trendDeclining": "Recovery is trending downward — consider lighter load.",
+    "trendInsufficient": "Not enough recovery data yet to show a trend."
   }
 }

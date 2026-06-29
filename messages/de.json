@@ -2680,5 +2680,11 @@
     "historyDescription": "Verlaufseinträge: {count}. Organisation: {org}.",
     "syncedSourcesTitle": "Synchronisierte Quellen",
     "syncedSourcesEmpty": "Führe ein Check-in durch oder verbinde ein Wearable, um Quellen zu befüllen."
+  },
+  "Recovery": {
+    "trendImproving": "Die Erholung zeigt in den letzten Tagen einen Aufwärtstrend.",
+    "trendStable": "Die Erholung ist in den letzten Tagen stabil geblieben.",
+    "trendDeclining": "Die Erholung zeigt einen Abwärtstrend – Belastung ggf. reduzieren.",
+    "trendInsufficient": "Noch nicht genügend Erholungsdaten, um einen Trend zu zeigen."
   }
 }

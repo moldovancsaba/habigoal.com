@@ -2680,5 +2680,11 @@
     "historyDescription": "רשומות היסטוריה: {count}. ארגון: {org}.",
     "syncedSourcesTitle": "מקורות מסונכרנים",
     "syncedSourcesEmpty": "השלם צ׳ק-אין או חבר התקן לביש כדי לאכלס מקורות."
+  },
+  "Recovery": {
+    "trendImproving": "ההתאוששות במגמת עלייה בימים האחרונים.",
+    "trendStable": "ההתאוששות נשארה יציבה בימים האחרונים.",
+    "trendDeclining": "ההתאוששות במגמת ירידה — כדאי להפחית עומס.",
+    "trendInsufficient": "אין עדיין מספיק נתוני התאוששות להצגת מגמה."
   }
 }
