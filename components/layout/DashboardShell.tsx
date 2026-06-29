@@ -23,7 +23,12 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const [authResolved, setAuthResolved] = useState(false);
 
   useEffect(() => {
-    fetch("/api/auth/me")
+    // Tell /api/auth/me which surface we are on so it scopes the entitlement
+    // payload to the active surface (consumer Habigoal vs professional Athlete
+    // IQ). This shell wraps both, so a professional user opening /habigoal must
+    // still receive the consumer-only projection (#432).
+    const activeSurface = pathname.startsWith("/habigoal") ? "habigoal" : "athlete-iq";
+    fetch(`/api/auth/me?surface=${activeSurface}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.user) {
@@ -32,7 +37,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       })
       .catch(() => {})
       .finally(() => setAuthResolved(true));
-  }, []);
+    // Re-fetch on surface change so switching between products re-scopes the payload.
+  }, [pathname]);
 
   useEffect(() => {
     if (!authResolved || !user) return;
