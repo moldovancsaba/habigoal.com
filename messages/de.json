@@ -2732,5 +2732,21 @@
     "trendStable": "Die Erholung ist in den letzten Tagen stabil geblieben.",
     "trendDeclining": "Die Erholung zeigt einen Abwärtstrend – Belastung ggf. reduzieren.",
     "trendInsufficient": "Noch nicht genügend Erholungsdaten, um einen Trend zu zeigen."
+  },
+  "DataConfidence": {
+    "band": {
+      "high": "Hohe Zuverlässigkeit",
+      "medium": "Mittlere Zuverlässigkeit",
+      "low": "Geringe Zuverlässigkeit",
+      "none": "Keine Daten"
+    },
+    "reasons": {
+      "missingData": "Noch keine Daten erfasst",
+      "lowSample": "Wenige Datenpunkte",
+      "singleSource": "Einzelne Quelle",
+      "multiSource": "Mehrere Quellen",
+      "stale": "Daten sind veraltet",
+      "fresh": "Kürzlich aktualisiert"
+    }
   }
 }
