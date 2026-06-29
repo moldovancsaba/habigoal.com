@@ -19,6 +19,13 @@ export async function POST(
     return jsonError("Forbidden", 403, "FORBIDDEN");
   }
 
+  // Irreversible GDPR erasure: require an explicit confirm keyword in the body so
+  // it can never be triggered accidentally (#205).
+  const body = (await request.json().catch(() => null)) as { confirm?: string } | null;
+  if (body?.confirm !== "ERASE") {
+    return jsonError('Erasure requires { "confirm": "ERASE" }', 400, "CONFIRMATION_REQUIRED");
+  }
+
   const result = await eraseAthleteData(id);
   await logAuditEvent({
     actorEmail: user.email,
