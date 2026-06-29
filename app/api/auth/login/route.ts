@@ -4,8 +4,10 @@ import { cookies } from "next/headers";
 import { env } from "@/config/env";
 import { createSession } from "@/lib/session";
 import { canOpenProductSurface } from "@/lib/access";
+import type { AuthUser } from "@/lib/access";
 import type { ProductSurfaceId } from "@/lib/product-entitlements";
 import { upsertPersonaLoginUser } from "@/repositories/user.repository";
+import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 
 function sanitizeReturnTo(input: string | null, fallbackLocale: string) {
   if (!input) return `/${fallbackLocale}/dashboard`;
@@ -159,6 +161,23 @@ export async function POST(request: NextRequest) {
   }
 
   const name = localUser.name || identity.name;
+
+  // Provision the athlete's own profile on first login so every athlete surface
+  // (Habigoal recorder, athlete dashboard, check-in shell) has an athleteId to
+  // attach to immediately. Without this a freshly registered athlete has no
+  // profile, so data surfaces resolve empty and the athlete-only routes redirect
+  // them away — leaving them with nothing to record against. Idempotent
+  // (find-or-create), and best-effort so a provisioning hiccup never blocks login.
+  if (persona === "athlete" && !localUser.athleteId) {
+    try {
+      await ensureCanonicalAthleteProfileForUser({
+        user: { email: localUser.email, id: localUser.id, name } as AuthUser,
+        locale
+      });
+    } catch (error) {
+      console.error("Athlete profile provisioning failed during login:", error);
+    }
+  }
 
   if (!canOpenProductSurface(localUser as Parameters<typeof canOpenProductSurface>[0], productSurface)) {
     const code = productSurface === "athlete-iq" ? "athlete_iq_access_required" : "habigoal_access_required";

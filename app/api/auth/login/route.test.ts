@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createSession } from "@/lib/session";
 import { findUserByEmail, upsertPersonaLoginUser } from "@/repositories/user.repository";
+import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 import { POST } from "./route";
 
 vi.mock("@/lib/session", () => ({
@@ -13,9 +14,14 @@ vi.mock("@/repositories/user.repository", () => ({
   upsertPersonaLoginUser: vi.fn()
 }));
 
+vi.mock("@/services/shared-athlete-profile.service", () => ({
+  ensureCanonicalAthleteProfileForUser: vi.fn()
+}));
+
 const mockedCreateSession = vi.mocked(createSession);
 const mockedFindUserByEmail = vi.mocked(findUserByEmail);
 const mockedUpsertPersonaLoginUser = vi.mocked(upsertPersonaLoginUser);
+const mockedEnsureAthlete = vi.mocked(ensureCanonicalAthleteProfileForUser);
 
 describe("persona pseudo login", () => {
   beforeEach(() => {
@@ -94,6 +100,29 @@ describe("persona pseudo login", () => {
     });
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe("http://localhost/hu/athlete-iq");
+    // A freshly registered athlete (no athleteId) gets their own profile
+    // provisioned so every athlete surface has data to attach to.
+    expect(mockedEnsureAthlete).toHaveBeenCalledWith(
+      expect.objectContaining({ user: expect.objectContaining({ email: "athlete@example.com" }) })
+    );
+  });
+
+  it("does not provision an athlete profile for a trainer login", async () => {
+    mockedFindUserByEmail.mockResolvedValue(null);
+    mockedUpsertPersonaLoginUser.mockResolvedValue({
+      id: "user-coach-only",
+      email: "coachonly@example.com",
+      name: "coachonly@example.com",
+      roles: ["trainer"],
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "aiq_member" },
+        athleteIq: { enabled: true, reason: "trainer_assignment" }
+      }
+    });
+
+    await POST(loginRequest({ identifier: "coachonly@example.com", persona: "trainer", next: "/hu/athlete-iq", productSurface: "athlete-iq" }));
+
+    expect(mockedEnsureAthlete).not.toHaveBeenCalled();
   });
 
   it("keeps the selected athlete persona active when the same user has both roles", async () => {
