@@ -1445,7 +1445,23 @@
       "loading": "טוען הודעות…",
       "empty": "אין עדיין הודעות.",
       "loadOlder": "טעינת ישנות יותר"
-    }
+    },
+    "concernMetric": {
+      "sleep_hours": "שעות שינה",
+      "sleep_quality": "איכות שינה",
+      "energy_level": "אנרגיה",
+      "body_feel": "כאבי שרירים",
+      "fuel_hydration": "תדלוק והידרציה",
+      "mood_state": "מצב רוח",
+      "stress_load": "עומס לחץ",
+      "confidence_level": "ביטחון",
+      "focus_level": "מיקוד",
+      "readiness_ski": "מוכנות כללית"
+    },
+    "concernScoreLine": "ציון {score}/5 · ב-{threshold} או מתחת",
+    "concernViewAthlete": "פתח ספורטאי",
+    "concernAllClear": "אין התראות פתוחות",
+    "concernAllClearDesc": "בוצע מעקב אחר כל צ׳ק-אין שסומן."
   },
   "VisionLab": {
     "title": "מעבדת קinematics ו-vision",

@@ -1445,7 +1445,23 @@
       "loading": "Loading messages…",
       "empty": "No messages yet.",
       "loadOlder": "Load older"
-    }
+    },
+    "concernMetric": {
+      "sleep_hours": "Sleep hours",
+      "sleep_quality": "Sleep quality",
+      "energy_level": "Energy",
+      "body_feel": "Body soreness",
+      "fuel_hydration": "Fuel & hydration",
+      "mood_state": "Mood",
+      "stress_load": "Stress load",
+      "confidence_level": "Confidence",
+      "focus_level": "Focus",
+      "readiness_ski": "Overall readiness"
+    },
+    "concernScoreLine": "Score {score}/5 · at or below {threshold}",
+    "concernViewAthlete": "Open athlete",
+    "concernAllClear": "No open concern flags",
+    "concernAllClearDesc": "Every flagged check-in has been followed up."
   },
   "VisionLab": {
     "title": "Kinematics & Vision Lab",

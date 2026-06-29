@@ -28,7 +28,15 @@ interface ConcernItem {
   date?: string;
   questionKey: string;
   score: number;
+  threshold?: number;
   severity: "watch" | "support";
+}
+
+// Concern question keys (e.g. `energy_level`, `readiness_ski`) are not
+// coach-readable on their own. Map known keys to a short localized label and
+// humanize anything custom so the triage list always reads in plain language.
+function humanizeConcernKey(key: string): string {
+  return key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 type TeamOverview = { teamId: string; teamName: string; projection: TeamProjection | null };
@@ -170,7 +178,13 @@ export default function CoachDashboardPage() {
             variant="error"
             title={t("actionItems")}
             description={t("actionItemsDesc", { count: openConcerns.length })}
-            action={<SemanticButton action="dashboard" variant="outline">{t("viewDetails")}</SemanticButton>}
+            action={
+              openConcerns.length > 0 ? (
+                <a href="#coach-concern-flags" style={{ textDecoration: "none" }}>
+                  <SemanticButton action="dashboard" variant="outline">{t("viewDetails")}</SemanticButton>
+                </a>
+              ) : undefined
+            }
           />
         </SimpleGrid>
       </SectionPanel>
@@ -257,42 +271,59 @@ export default function CoachDashboardPage() {
         </Stack>
       </SectionPanel>
 
-      {concerns.length > 0 && (
+      <Box id="coach-concern-flags">
         <SectionPanel title={t("concernFlags")}>
-          <Stack gap="sm">
-            {concerns.map((concern, index) => {
-              const resolved = isResolved(concern);
-              const key = `${concern.athleteId}-${concern.questionKey}`;
-              return (
-                <Paper key={`${key}-${index}`} withBorder p="md">
-                  <Group justify="space-between">
-                    <Box>
-                      <Text fw={600}>{concern.athleteName ?? concern.athleteId}</Text>
-                      <Text size="sm" c="dimmed">{concern.questionKey}: score {concern.score}</Text>
-                    </Box>
-                    <Group gap="sm">
-                      <Badge color={resolved ? "gray" : concern.severity === "support" ? "red" : "yellow"} variant="light">
-                        {resolved ? t("concernResolved") : concern.severity}
-                      </Badge>
-                      {!resolved ? (
-                        <SemanticButton
-                          action="save"
-                          variant="light"
-                          color="ingress"
-                          loading={resolving === key}
-                          onClick={() => void resolveConcern(concern)}
-                        >
-                          {t("concernResolve")}
-                        </SemanticButton>
-                      ) : null}
-                    </Group>
-                  </Group>
-                </Paper>
-              );
-            })}
-          </Stack>
+          {openConcerns.length === 0 ? (
+            <StateBlock variant="success" title={t("concernAllClear")} description={t("concernAllClearDesc")} />
+          ) : (
+            <Stack gap="sm">
+              {/* Open concerns first so the coach acts on what still needs follow-up. */}
+              {[...concerns]
+                .sort((a, b) => Number(isResolved(a)) - Number(isResolved(b)))
+                .map((concern, index) => {
+                  const resolved = isResolved(concern);
+                  const key = `${concern.athleteId}-${concern.questionKey}`;
+                  const metricLabel = t.has(`concernMetric.${concern.questionKey}`)
+                    ? t(`concernMetric.${concern.questionKey}`)
+                    : humanizeConcernKey(concern.questionKey);
+                  return (
+                    <Paper key={`${key}-${index}`} withBorder p="md">
+                      <Group justify="space-between" wrap="wrap">
+                        <Box>
+                          <Text fw={600}>{concern.athleteName ?? concern.athleteId}</Text>
+                          <Text size="sm" c="dimmed">
+                            {metricLabel} · {t("concernScoreLine", { score: concern.score, threshold: concern.threshold ?? concern.score })}
+                          </Text>
+                        </Box>
+                        <Group gap="sm">
+                          <Badge color={resolved ? "gray" : concern.severity === "support" ? "red" : "yellow"} variant="light">
+                            {resolved ? t("concernResolved") : concern.severity}
+                          </Badge>
+                          {concern.athleteId ? (
+                            <Link href={`/dashboard/athletes/${concern.athleteId}`} style={{ textDecoration: "none" }}>
+                              <SemanticButton action="dashboard" variant="outline">{t("concernViewAthlete")}</SemanticButton>
+                            </Link>
+                          ) : null}
+                          {!resolved ? (
+                            <SemanticButton
+                              action="save"
+                              variant="light"
+                              color="ingress"
+                              loading={resolving === key}
+                              onClick={() => void resolveConcern(concern)}
+                            >
+                              {t("concernResolve")}
+                            </SemanticButton>
+                          ) : null}
+                        </Group>
+                      </Group>
+                    </Paper>
+                  );
+                })}
+            </Stack>
+          )}
         </SectionPanel>
-      )}
+      </Box>
     </Stack>
   );
 }
