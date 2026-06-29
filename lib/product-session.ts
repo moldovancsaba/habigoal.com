@@ -14,10 +14,19 @@ export async function requireProductSession(input: {
 }) {
   const session = await getSession();
   const user = await getAuthUser();
-  const activeRoles = normalizeRoles(session?.role?.split(",") ?? []);
-  const hasAllowedRole = input.allowedRoles.some((role) => activeRoles.includes(role));
 
-  if (!session?.email || !user || !hasAllowedRole) {
+  if (!session?.email || !user) {
+    redirect(`/${input.locale}/login?next=${encodeURIComponent(input.path)}&persona=${input.persona}`);
+  }
+
+  // Single sign-in across both products: authorize against the user's ACTUAL
+  // roles, not the persona they happened to pick at login. Otherwise a trainer
+  // (who is also an athlete) gets bounced back to the login screen when they open
+  // Habigoal, and an athlete when they open Athlete IQ — i.e. "I'm logged in but
+  // have to log in again for the other app". Entitlement is still enforced below.
+  const userRoles = normalizeRoles(user.roles);
+  const hasAllowedRole = input.allowedRoles.some((role) => userRoles.includes(role));
+  if (!hasAllowedRole) {
     redirect(`/${input.locale}/login?next=${encodeURIComponent(input.path)}&persona=${input.persona}`);
   }
 
