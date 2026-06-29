@@ -1688,7 +1688,7 @@
           "title": "Review and save today",
           "copy": "Your check-in and habits are ready. Save them to create today’s status.",
           "detail": "Ready to save today",
-          "nextAction": "Save today to unlock status.",
+          "nextAction": "Save today to see your status.",
           "aria": "Daily loop is ready to save"
         },
         "saving": {
@@ -1838,7 +1838,7 @@
         },
         "club-services": {
           "label": "Club services",
-          "detail": "Reports, service packages, lab modules, and stakeholder delivery."
+          "detail": "Reports, service packages, lab modules, and delivery to coaches and clubs."
         }
       },
       "signals": {
@@ -2567,7 +2567,7 @@
     }
   },
   "Wearables": {
-    "title": "Wearable Ecosystem",
+    "title": "Connected wearables",
     "subtitle": "Connect your devices so daily readings flow into your performance profile.",
     "devices": "Devices",
     "noAthlete": "No athlete profile",
