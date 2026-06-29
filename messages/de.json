@@ -610,7 +610,8 @@
     "trainingLogSuccessBody": "Deine Lastpunkte wurden aktualisiert.",
     "navAthleteToday": "Heute",
     "navAthleteIq": "Athlete IQ",
-    "navAthleteProgress": "Fortschritt"
+    "navAthleteProgress": "Fortschritt",
+    "chartNoData": "Noch keine Diagrammdaten — füge einen Check-in hinzu."
   },
   "Assessment": {
     "saved": "Check-in gespeichert.",

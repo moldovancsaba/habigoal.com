@@ -3,6 +3,7 @@
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Box, Paper, Text } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
+import { ChartEmptyState } from "./ChartEmptyState";
 
 interface BenchmarkData {
   subject: string;
@@ -17,12 +18,14 @@ interface BenchmarkChartProps {
     individual: string;
     average: string;
   };
+  emptyLabel?: string;
 }
 
-export function BenchmarkChart({ 
-  title, 
+export function BenchmarkChart({
+  title,
   data,
-  labels = { individual: "Individual", average: "Age Group Avg" }
+  labels = { individual: "Individual", average: "Age Group Avg" },
+  emptyLabel = "No data yet"
 }: BenchmarkChartProps) {
   return (
     <Paper withBorder p="md" radius="md">
@@ -31,6 +34,9 @@ export function BenchmarkChart({
           {title}
         </Text>
       )}
+      {data.length === 0 ? (
+        <ChartEmptyState label={emptyLabel} />
+      ) : (
       <Box style={{ width: "100%", height: ANALYTICS_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={ANALYTICS_CONFIG.margins} barGap={8}>
@@ -87,6 +93,7 @@ export function BenchmarkChart({
           </BarChart>
         </ResponsiveContainer>
       </Box>
+      )}
     </Paper>
   );
 }

@@ -610,7 +610,8 @@
     "trainingLogSuccessBody": "Your load points have been updated.",
     "navAthleteToday": "Today",
     "navAthleteIq": "Athlete IQ",
-    "navAthleteProgress": "Progress"
+    "navAthleteProgress": "Progress",
+    "chartNoData": "No data to chart yet — add a check-in to see this."
   },
   "Assessment": {
     "saved": "Check-in saved.",

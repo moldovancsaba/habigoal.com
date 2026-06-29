@@ -610,7 +610,8 @@
     "trainingLogSuccessBody": "تم تحديث نقاط الحمل الخاصة بك.",
     "navAthleteToday": "اليوم",
     "navAthleteIq": "Athlete IQ",
-    "navAthleteProgress": "التقدم"
+    "navAthleteProgress": "التقدم",
+    "chartNoData": "لا توجد بيانات للرسم البياني بعد — أضف تسجيل وصول."
   },
   "Assessment": {
     "saved": "تم حفظ التسجيل.",

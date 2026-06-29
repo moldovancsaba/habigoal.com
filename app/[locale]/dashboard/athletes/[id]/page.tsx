@@ -746,6 +746,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   <LongitudinalChart
                     title={td("athleteHabitTrendTitle")}
                     data={habitTrendData}
+                    emptyLabel={td("chartNoData")}
                     color="var(--mantine-color-ingress-6)"
                     yDomain={[0, 5]}
                   />
@@ -870,6 +871,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 <LongitudinalChart
                   title={td("athleteLoadTrendTitle")}
                   data={loadTimeline.map((entry) => ({ date: entry.date, value: entry.value as number }))}
+                  emptyLabel={td("chartNoData")}
                   color="var(--mantine-color-review-6)"
                   yDomain={[0, Math.max(...loadTimeline.map((entry) => entry.value as number), 100)]}
                 />
@@ -966,6 +968,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   <LongitudinalChart
                     title={td("athleteTrendChartTitle", { metric: trendMetricLabel })}
                     data={trendSeries}
+                    emptyLabel={td("chartNoData")}
                     color={getTrendMetricColor(trendMetric)}
                     yDomain={[0, 5]}
                   />
@@ -988,6 +991,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               <BenchmarkChart
                 title={td("athleteLatestVsBaselineTitle")}
                 data={benchmarkData}
+                emptyLabel={td("chartNoData")}
                 labels={{
                   individual: td("currentAssessment"),
                   average: td("baselineAssessment")
@@ -1012,6 +1016,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 <LongitudinalChart
                   title={td("athleteReadinessTimelineTitle")}
                   data={readinessTimeline}
+                  emptyLabel={td("chartNoData")}
                   color="var(--mantine-color-knowmore-6)"
                   yDomain={[0, 5]}
                 />
@@ -1036,6 +1041,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   key={pillar.key}
                   title={pillar.translatedTitle}
                   data={pillar.trend}
+                  emptyLabel={td("chartNoData")}
                   color={PILLAR_COLORS[pillar.key]}
                 />
               ))}
