@@ -2766,5 +2766,13 @@
       "prioritiseRecovery": "Helyezd előtérbe a regenerációt és a támogatást",
       "addInjuryPrevention": "Adj hozzá sérülésmegelőző munkát"
     }
+  },
+  "ParentSafeReport": {
+    "encouragement": {
+      "building": "Még csak épül a teljes kép — folytasd a bejelentkezést.",
+      "steady": "Egyenletes, következetes haladás a héten.",
+      "strong": "Erős, következetes hét — kiváló elköteleződés."
+    },
+    "coachOnlyNote": "Egyes teljesítmény- és egészségügyi részleteket bizalmasan megosztunk az edzővel."
   }
 }
