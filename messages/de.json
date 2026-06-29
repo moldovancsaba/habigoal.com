@@ -1481,7 +1481,9 @@
     "mediaLabel": "Medium {id}",
     "accepted": "Akzeptiert",
     "rejected": "Abgelehnt",
-    "uploadFailed": "Upload fehlgeschlagen"
+    "uploadFailed": "Upload fehlgeschlagen",
+    "previewNotice": "Automatische Analyse noch nicht verfügbar",
+    "previewNoticeDesc": "Du kannst jetzt Medien hochladen, die sicher gespeichert werden, aber die validierte Haltungs- und Bewegungsanalyse ist noch nicht aktiv. Bis dahin werden keine aus der Analyse abgeleiteten Werte in das Athletenprofil geschrieben."
   },
   "ParentPortal": {
     "title": "Elternportal",

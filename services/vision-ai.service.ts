@@ -5,6 +5,7 @@ import { updateTechnicalFromVision, createEmptyTwin } from "@/lib/twin-updater";
 import { findTwinByAthleteId, upsertTwin } from "@/repositories/athlete-twin.repository";
 import { saveVisionAnalysis, updateMediaAssetStatus } from "@/repositories/media-asset.repository";
 import { extractFrameTimestamps, estimateDurationFromFileSize } from "@/lib/vision/frame-extraction";
+import { env } from "@/config/env";
 
 export interface SkeletonTrackingResult {
   mediaId: string;
@@ -43,6 +44,42 @@ export class VisionAiService {
   }
 
   async runTrackingPipeline(media: MediaUploadPayload): Promise<VisionAnalysisResult> {
+    // Honest gating (#188-194): real pose/kinematics analysis does not exist yet.
+    // Until env.capabilities.visionRealPipeline is enabled we must NOT present
+    // heuristic numbers as validated analysis, and must NOT write them into the
+    // athlete's digital twin. Store the upload and record an explicit
+    // not-yet-available state instead of fabricating skeleton/form metrics.
+    if (!env.capabilities.visionRealPipeline) {
+      const now = new Date().toISOString();
+      const result: VisionAnalysisResult = {
+        mediaId: media.mediaId,
+        athleteId: media.athleteId,
+        jointsCount: 0,
+        anomalyScore: 0,
+        confidence: "low",
+        limitations: ["Automated pose and kinematics analysis is not yet available. This upload is stored for future processing and is not a validated result."],
+        qualityAccepted: false,
+      };
+      await saveVisionAnalysis({
+        mediaId: media.mediaId,
+        athleteId: media.athleteId,
+        jointsCount: result.jointsCount,
+        anomalyScore: result.anomalyScore,
+        confidence: result.confidence,
+        limitations: result.limitations,
+        qualityAccepted: result.qualityAccepted,
+        frameTimestampsMs: [],
+        createdAt: now,
+      });
+      await updateMediaAssetStatus(media.mediaId, {
+        status: "uploaded",
+        confidence: result.confidence,
+        limitations: result.limitations,
+        updatedAt: now,
+      });
+      return result;
+    }
+
     const limitations: string[] = [];
     let confidence: "high" | "medium" | "low" = "high";
     let qualityAccepted = true;

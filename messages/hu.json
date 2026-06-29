@@ -1481,7 +1481,9 @@
     "mediaLabel": "Média {id}",
     "accepted": "Elfogadva",
     "rejected": "Elutasítva",
-    "uploadFailed": "Feltöltés sikertelen"
+    "uploadFailed": "Feltöltés sikertelen",
+    "previewNotice": "Az automatikus elemzés még nem érhető el",
+    "previewNoticeDesc": "Most feltölthetsz médiát, amelyet biztonságosan tárolunk, de a hitelesített testtartás- és mozgáselemzés még nem aktív. Addig nem írunk látáson alapuló mutatókat a sportolói profilba."
   },
   "ParentPortal": {
     "title": "Szülői portál",

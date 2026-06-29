@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Box, Stack, Text, Paper, Group, Badge, Loader } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
 
 interface MediaItem {
   mediaId: string;
@@ -30,6 +30,7 @@ export default function VisionPage() {
   const [uploading, setUploading] = useState(false);
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [analyses, setAnalyses] = useState<AnalysisItem[]>([]);
+  const [realPipeline, setRealPipeline] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -40,6 +41,7 @@ export default function VisionPage() {
       const json = await res.json();
       setMedia(json.media ?? []);
       setAnalyses(json.analyses ?? []);
+      setRealPipeline(json.realPipeline !== false);
     }
   }, [athleteId]);
 
@@ -79,6 +81,10 @@ export default function VisionPage() {
   return (
     <Stack gap="md">
       <PageHeader title={t("title")} />
+
+      {!realPipeline && (
+        <StateBlock variant="info" title={t("previewNotice")} description={t("previewNoticeDesc")} />
+      )}
 
       <SectionPanel title={t("uploadTitle")}>
         <Paper withBorder p="xl" radius="md" style={{ textAlign: "center", borderStyle: "dashed" }}>

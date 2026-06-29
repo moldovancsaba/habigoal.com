@@ -52,6 +52,12 @@ export const env = {
   // turned OFF per-environment by setting its CAPABILITY_* env var to "false".
   capabilities: {
     visionAi: readBooleanEnv(process.env.CAPABILITY_VISION_AI, true),
+    // The vision FEATURE surface (upload/preview) stays visible via visionAi, but
+    // real pose/kinematics analysis does not exist yet (#188-194). This flag gates
+    // whether analysis results are treated as VALIDATED and allowed to write into
+    // the athlete's digital twin. Default OFF so the product never presents
+    // fabricated/heuristic vision metrics as real, validated data.
+    visionRealPipeline: readBooleanEnv(process.env.CAPABILITY_VISION_REAL_PIPELINE, false),
     gpsIngestion: readBooleanEnv(process.env.CAPABILITY_GPS_INGESTION, true),
     forecasting: readBooleanEnv(process.env.CAPABILITY_FORECASTING, true),
     aiCoachNudges: readBooleanEnv(process.env.CAPABILITY_AI_COACH_NUDGES, true),
