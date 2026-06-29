@@ -2748,5 +2748,23 @@
       "stale": "Daten sind veraltet",
       "fresh": "Kürzlich aktualisiert"
     }
+  },
+  "Explainability": {
+    "rules": {
+      "readinessMissingData": "Einige Check-in-Signale fehlen",
+      "readinessGood": "Bereitschaft im guten Bereich (70+)",
+      "readinessModerate": "Bereitschaft ist mäßig (50-69)",
+      "readinessFatigued": "Bereitschaft ist niedrig (30-49)",
+      "readinessCompromised": "Bereitschaft ist beeinträchtigt (unter 30)",
+      "injuryRiskElevated": "Verletzungsrisiko ist erhöht"
+    },
+    "outputs": {
+      "completeCheckIn": "Check-in für ein vollständiges Bild abschließen",
+      "proceedAsPlanned": "Mit der geplanten Einheit fortfahren",
+      "monitorLoad": "Last beobachten und bei Bedarf anpassen",
+      "reduceLoad": "Trainingslast reduzieren",
+      "prioritiseRecovery": "Erholung und Unterstützung priorisieren",
+      "addInjuryPrevention": "Verletzungsprävention ergänzen"
+    }
   }
 }

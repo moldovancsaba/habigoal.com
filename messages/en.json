@@ -2748,5 +2748,23 @@
       "stale": "Data is out of date",
       "fresh": "Recently updated"
     }
+  },
+  "Explainability": {
+    "rules": {
+      "readinessMissingData": "Some check-in signals are missing",
+      "readinessGood": "Readiness is in the good zone (70+)",
+      "readinessModerate": "Readiness is moderate (50-69)",
+      "readinessFatigued": "Readiness is low (30-49)",
+      "readinessCompromised": "Readiness is compromised (below 30)",
+      "injuryRiskElevated": "Injury risk is elevated"
+    },
+    "outputs": {
+      "completeCheckIn": "Complete the check-in for a full picture",
+      "proceedAsPlanned": "Proceed with the planned session",
+      "monitorLoad": "Monitor load and adjust if needed",
+      "reduceLoad": "Reduce training load",
+      "prioritiseRecovery": "Prioritise recovery and support",
+      "addInjuryPrevention": "Add injury-prevention work"
+    }
   }
 }

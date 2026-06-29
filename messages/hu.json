@@ -2748,5 +2748,23 @@
       "stale": "Az adat elavult",
       "fresh": "Nemrég frissítve"
     }
+  },
+  "Explainability": {
+    "rules": {
+      "readinessMissingData": "Néhány bejelentkezési jel hiányzik",
+      "readinessGood": "A készenlét jó zónában van (70+)",
+      "readinessModerate": "A készenlét közepes (50-69)",
+      "readinessFatigued": "A készenlét alacsony (30-49)",
+      "readinessCompromised": "A készenlét veszélyeztetett (30 alatt)",
+      "injuryRiskElevated": "A sérülés kockázata emelkedett"
+    },
+    "outputs": {
+      "completeCheckIn": "Töltsd ki a bejelentkezést a teljes képért",
+      "proceedAsPlanned": "Folytasd a tervezett edzést",
+      "monitorLoad": "Kövesd a terhelést, és szükség esetén módosíts",
+      "reduceLoad": "Csökkentsd az edzésterhelést",
+      "prioritiseRecovery": "Helyezd előtérbe a regenerációt és a támogatást",
+      "addInjuryPrevention": "Adj hozzá sérülésmegelőző munkát"
+    }
   }
 }

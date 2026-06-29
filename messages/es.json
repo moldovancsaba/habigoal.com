@@ -2748,5 +2748,23 @@
       "stale": "Los datos están desactualizados",
       "fresh": "Actualizado recientemente"
     }
+  },
+  "Explainability": {
+    "rules": {
+      "readinessMissingData": "Faltan algunas señales del check-in",
+      "readinessGood": "La preparación está en zona buena (70+)",
+      "readinessModerate": "La preparación es moderada (50-69)",
+      "readinessFatigued": "La preparación es baja (30-49)",
+      "readinessCompromised": "La preparación está comprometida (menos de 30)",
+      "injuryRiskElevated": "El riesgo de lesión es elevado"
+    },
+    "outputs": {
+      "completeCheckIn": "Completa el check-in para una visión completa",
+      "proceedAsPlanned": "Continúa con la sesión planificada",
+      "monitorLoad": "Vigila la carga y ajusta si es necesario",
+      "reduceLoad": "Reduce la carga de entrenamiento",
+      "prioritiseRecovery": "Prioriza la recuperación y el apoyo",
+      "addInjuryPrevention": "Añade trabajo de prevención de lesiones"
+    }
   }
 }
