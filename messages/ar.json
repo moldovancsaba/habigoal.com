@@ -1445,7 +1445,23 @@
       "loading": "جارٍ تحميل الرسائل…",
       "empty": "لا توجد رسائل بعد.",
       "loadOlder": "تحميل الأقدم"
-    }
+    },
+    "concernMetric": {
+      "sleep_hours": "ساعات النوم",
+      "sleep_quality": "جودة النوم",
+      "energy_level": "الطاقة",
+      "body_feel": "آلام العضلات",
+      "fuel_hydration": "التغذية والترطيب",
+      "mood_state": "المزاج",
+      "stress_load": "مستوى التوتر",
+      "confidence_level": "الثقة",
+      "focus_level": "التركيز",
+      "readiness_ski": "الجاهزية العامة"
+    },
+    "concernScoreLine": "النتيجة {score}/5 · عند {threshold} أو أقل",
+    "concernViewAthlete": "فتح الرياضي",
+    "concernAllClear": "لا توجد تنبيهات مفتوحة",
+    "concernAllClearDesc": "تمت متابعة كل تسجيل وصول مُعلَّم."
   },
   "VisionLab": {
     "title": "مختبر الحركة والرؤية",

@@ -1445,7 +1445,23 @@
       "loading": "Üzenetek betöltése…",
       "empty": "Még nincsenek üzenetek.",
       "loadOlder": "Korábbiak betöltése"
-    }
+    },
+    "concernMetric": {
+      "sleep_hours": "Alvásórák",
+      "sleep_quality": "Alvásminőség",
+      "energy_level": "Energia",
+      "body_feel": "Izomfájdalom",
+      "fuel_hydration": "Tankolás és hidratálás",
+      "mood_state": "Hangulat",
+      "stress_load": "Stresszterhelés",
+      "confidence_level": "Önbizalom",
+      "focus_level": "Fókusz",
+      "readiness_ski": "Általános készenlét"
+    },
+    "concernScoreLine": "Pontszám {score}/5 · {threshold} alatt vagy azon",
+    "concernViewAthlete": "Sportoló megnyitása",
+    "concernAllClear": "Nincs nyitott figyelmeztetés",
+    "concernAllClearDesc": "Minden megjelölt bejelentkezést követtek."
   },
   "VisionLab": {
     "title": "Kinematikai és vision labor",

@@ -1445,7 +1445,23 @@
       "loading": "Nachrichten werden geladen…",
       "empty": "Noch keine Nachrichten.",
       "loadOlder": "Ältere laden"
-    }
+    },
+    "concernMetric": {
+      "sleep_hours": "Schlafstunden",
+      "sleep_quality": "Schlafqualität",
+      "energy_level": "Energie",
+      "body_feel": "Muskelkater",
+      "fuel_hydration": "Energie & Flüssigkeit",
+      "mood_state": "Stimmung",
+      "stress_load": "Stressbelastung",
+      "confidence_level": "Selbstvertrauen",
+      "focus_level": "Fokus",
+      "readiness_ski": "Gesamtbereitschaft"
+    },
+    "concernScoreLine": "Wert {score}/5 · auf oder unter {threshold}",
+    "concernViewAthlete": "Athlet öffnen",
+    "concernAllClear": "Keine offenen Hinweise",
+    "concernAllClearDesc": "Jeder markierte Check-in wurde nachverfolgt."
   },
   "VisionLab": {
     "title": "Kinematik- und Vision-Labor",
