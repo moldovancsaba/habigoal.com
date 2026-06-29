@@ -2603,7 +2603,12 @@
       "none": "אין",
       "teamTitle": "דוח קבוצה",
       "athleteCount": "ספורטאים"
-    }
+    },
+    "exportLabel": "ייצוא",
+    "teamSubject": "דוח קבוצה",
+    "exportPdfAria": "ייצוא {subject} כ-PDF",
+    "exportCsvAria": "ייצוא {subject} כ-CSV",
+    "exportJsonAria": "ייצוא {subject} כ-JSON"
   },
   "Wearables": {
     "title": "התקנים לבישים מחוברים",

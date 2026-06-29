@@ -2603,7 +2603,12 @@
       "none": "لا شيء",
       "teamTitle": "تقرير الفريق",
       "athleteCount": "الرياضيون"
-    }
+    },
+    "exportLabel": "تصدير",
+    "teamSubject": "تقرير الفريق",
+    "exportPdfAria": "تصدير {subject} بصيغة PDF",
+    "exportCsvAria": "تصدير {subject} بصيغة CSV",
+    "exportJsonAria": "تصدير {subject} بصيغة JSON"
   },
   "Wearables": {
     "title": "الأجهزة القابلة للارتداء المتصلة",

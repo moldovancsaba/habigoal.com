@@ -133,9 +133,12 @@ export default function ReportsHubPage() {
               </SemanticButton>
               {teamReport ? (
                 <>
+                  <Text size="sm" c="dimmed">{t("exportLabel")}</Text>
                   <SemanticButton
                     action="download"
                     variant="outline"
+                    aria-label={t("exportPdfAria", { subject: t("teamSubject") })}
+                    title={t("exportPdfAria", { subject: t("teamSubject") })}
                     onClick={() => void PdfService.generateTeamTwinReport(teamReport, pdfLabels, nameById())}
                   >
                     {t("pdf.button")}
@@ -143,6 +146,8 @@ export default function ReportsHubPage() {
                   <SemanticButton
                     action="download"
                     variant="outline"
+                    aria-label={t("exportCsvAria", { subject: t("teamSubject") })}
+                    title={t("exportCsvAria", { subject: t("teamSubject") })}
                     onClick={() => downloadCsv(teamReport.reports, `team-report-${Date.now()}.csv`)}
                   >
                     {t("csv")}
@@ -150,6 +155,8 @@ export default function ReportsHubPage() {
                   <SemanticButton
                     action="download"
                     variant="outline"
+                    aria-label={t("exportJsonAria", { subject: t("teamSubject") })}
+                    title={t("exportJsonAria", { subject: t("teamSubject") })}
                     onClick={() => downloadJson(teamReport, `team-report-${Date.now()}.json`)}
                   >
                     {t("json")}
@@ -172,13 +179,32 @@ export default function ReportsHubPage() {
                 </Box>
                 <Group>
                   <StateBlock variant="success" title={t("ready")} />
-                  <SemanticButton action="download" variant="outline" onClick={() => void PdfService.generateTwinReport(row.report, pdfLabels, row.athleteName)}>
+                  <Text size="sm" c="dimmed">{t("exportLabel")}</Text>
+                  <SemanticButton
+                    action="download"
+                    variant="outline"
+                    aria-label={t("exportPdfAria", { subject: row.athleteName })}
+                    title={t("exportPdfAria", { subject: row.athleteName })}
+                    onClick={() => void PdfService.generateTwinReport(row.report, pdfLabels, row.athleteName)}
+                  >
                     {t("pdf.button")}
                   </SemanticButton>
-                  <SemanticButton action="download" variant="outline" onClick={() => downloadCsv([row.report], `report-${row.id}.csv`)}>
+                  <SemanticButton
+                    action="download"
+                    variant="outline"
+                    aria-label={t("exportCsvAria", { subject: row.athleteName })}
+                    title={t("exportCsvAria", { subject: row.athleteName })}
+                    onClick={() => downloadCsv([row.report], `report-${row.id}.csv`)}
+                  >
                     {t("csv")}
                   </SemanticButton>
-                  <SemanticButton action="download" variant="outline" onClick={() => downloadJson(row.report, `report-${row.id}.json`)}>
+                  <SemanticButton
+                    action="download"
+                    variant="outline"
+                    aria-label={t("exportJsonAria", { subject: row.athleteName })}
+                    title={t("exportJsonAria", { subject: row.athleteName })}
+                    onClick={() => downloadJson(row.report, `report-${row.id}.json`)}
+                  >
                     {t("json")}
                   </SemanticButton>
                 </Group>
