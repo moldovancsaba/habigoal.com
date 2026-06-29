@@ -106,6 +106,32 @@ export function hasProductEntitlement(entitlements: ProductEntitlements, surface
   return surface === "habigoal" ? entitlements.habigoal.enabled : entitlements.athleteIq.enabled;
 }
 
+// What a given product surface's CLIENT is allowed to see of a user's
+// entitlements. The consumer (Habigoal) surface must never receive the
+// professional product's entitlement or any reason codes
+// (e.g. trainer_assignment, pro_athlete_membership) — that is a product-boundary
+// leak (#432). Reason codes and grant timestamps are server-only concerns and
+// are dropped for BOTH surfaces; the consumer additionally never sees the
+// athleteIq key at all. Accepts the broad shape returned by lib/access so callers
+// don't have to normalize first.
+export type SurfaceScopedEntitlements =
+  | { habigoal: { enabled: boolean } }
+  | { habigoal: { enabled: boolean }; athleteIq: { enabled: boolean } };
+
+export function projectEntitlementsForSurface(
+  entitlements: Pick<ProductEntitlements, "habigoal" | "athleteIq"> | undefined | null,
+  surface: ProductSurfaceId
+): SurfaceScopedEntitlements {
+  const habigoalEnabled = Boolean(entitlements?.habigoal?.enabled);
+  if (surface === "habigoal") {
+    return { habigoal: { enabled: habigoalEnabled } };
+  }
+  return {
+    habigoal: { enabled: habigoalEnabled },
+    athleteIq: { enabled: Boolean(entitlements?.athleteIq?.enabled) }
+  };
+}
+
 function normalizeHabigoalReason(input: unknown): HabigoalEntitlementReason {
   if (input === "aiq_member" || input === "admin_grant" || input === "self_registered") return input;
   return "self_registered";

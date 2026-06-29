@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 
-// The real athlete experience lives at the localized `/athlete-iq` surface.
-// This legacy route previously rendered a hardcoded mock (static readiness score
-// and a placeholder radar); redirect to the live surface so there is a single
-// source of truth for the athlete view.
+// Legacy, non-localized route that previously rendered a hardcoded athlete mock.
+// It must not push everyone unconditionally into the professional `/athlete-iq`
+// surface (a product-boundary leak, #432) — and a non-localized target bypasses
+// the locale middleware anyway. Redirect to the root so the locale middleware
+// routes to the localized landing/selector, where the visitor chooses a surface.
 export default function AthletePortalPage() {
-  redirect("/athlete-iq");
+  redirect("/");
 }

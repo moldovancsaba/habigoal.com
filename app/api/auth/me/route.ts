@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { env } from "@/config/env";
 import { getAuthUser } from "@/lib/access";
+import { projectEntitlementsForSurface } from "@/lib/product-entitlements";
+import type { ProductSurfaceId } from "@/lib/product-entitlements";
 
 export async function GET() {
   if (!env.habigoalEnforceAuth) {
@@ -32,6 +34,12 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  // Scope the entitlement view to the surface this session signed in through, so
+  // a consumer (Habigoal) session never receives the professional product's
+  // entitlement or its reason codes (#432). Default to the most restrictive
+  // (consumer) projection when the session predates surface tracking.
+  const sessionSurface: ProductSurfaceId = session.productSurface === "athlete-iq" ? "athlete-iq" : "habigoal";
+
   return NextResponse.json({
     user: {
       ...session,
@@ -40,7 +48,7 @@ export async function GET() {
       roles: user.roles,
       primaryRole: user.primaryRole,
       athleteId: user.athleteId,
-      productEntitlements: user.productEntitlements,
+      productEntitlements: projectEntitlementsForSurface(user.productEntitlements, sessionSurface),
       teamIds: user.teamIds
     }
   });
