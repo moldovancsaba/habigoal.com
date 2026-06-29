@@ -2766,5 +2766,13 @@
       "prioritiseRecovery": "Prioriza la recuperación y el apoyo",
       "addInjuryPrevention": "Añade trabajo de prevención de lesiones"
     }
+  },
+  "ParentSafeReport": {
+    "encouragement": {
+      "building": "Aún estamos formando una imagen completa: sigue registrando.",
+      "steady": "Progreso constante y estable esta semana.",
+      "strong": "Una semana fuerte y constante: gran implicación."
+    },
+    "coachOnlyNote": "Algunos detalles de rendimiento y salud se comparten en privado con el entrenador."
   }
 }

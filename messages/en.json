@@ -2766,5 +2766,13 @@
       "prioritiseRecovery": "Prioritise recovery and support",
       "addInjuryPrevention": "Add injury-prevention work"
     }
+  },
+  "ParentSafeReport": {
+    "encouragement": {
+      "building": "We are still building a full picture — keep checking in.",
+      "steady": "Steady, consistent progress this week.",
+      "strong": "A strong, consistent week — great engagement."
+    },
+    "coachOnlyNote": "Some performance and health details are shared privately with the coach."
   }
 }
