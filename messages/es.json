@@ -1521,7 +1521,11 @@
     "microcyclesTitle": "Microciclos",
     "cycleGoal": "Objetivo",
     "cycleGoalPlaceholder": "ej. Base aerobica",
-    "newSessionDefault": "Nueva sesion"
+    "newSessionDefault": "Nueva sesion",
+    "loadPoints": "{points} pts",
+    "weeklyLoadSummary": "Carga planificada: {points} pts · {count} sesiones",
+    "createCycle": "Crear microciclo",
+    "cycleHint": "Agrupa tus sesiones más recientes en un ciclo de 7 días."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Admin perfil atleta",

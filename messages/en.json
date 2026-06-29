@@ -1521,7 +1521,11 @@
     "microcyclesTitle": "Microcycles",
     "cycleGoal": "Cycle Goal",
     "cycleGoalPlaceholder": "e.g. Build aerobic base",
-    "newSessionDefault": "New Session"
+    "newSessionDefault": "New Session",
+    "loadPoints": "{points} pts",
+    "weeklyLoadSummary": "Planned load: {points} pts · {count} sessions",
+    "createCycle": "Create microcycle",
+    "cycleHint": "Groups your most recent sessions into a 7-day cycle."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Athlete profile administration",

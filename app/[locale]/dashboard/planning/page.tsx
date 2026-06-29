@@ -125,7 +125,7 @@ export default function SessionPlannerPage() {
             />
             <Select
               label={t("category")}
-              data={CATEGORIES.map((c) => ({ value: c, label: c }))}
+              data={CATEGORIES.map((c) => ({ value: c, label: t(`category.${c}`) }))}
               value={draftCategory}
               onChange={(v) => setDraftCategory((v as SessionCategory) ?? "tactical")}
             />
@@ -138,6 +138,14 @@ export default function SessionPlannerPage() {
         <SectionPanel title={t("upcomingSessions")}>
           <Stack gap="md">
             {sessions.length === 0 && <Text c="dimmed">{t("noSessions")}</Text>}
+            {sessions.length > 0 && (
+              <Text size="sm" c="dimmed">
+                {t("weeklyLoadSummary", {
+                  points: sessions.reduce((sum, session) => sum + (session.plannedLoadPoints || 0), 0),
+                  count: sessions.length
+                })}
+              </Text>
+            )}
             {sessions.map((session) => (
               <Paper key={session.sessionId} withBorder p="md" radius="md">
                 <Group justify="space-between">
@@ -146,8 +154,8 @@ export default function SessionPlannerPage() {
                     <Text size="sm" c="dimmed">{t("dateLabel", { date: session.date })}</Text>
                   </Box>
                   <Group>
-                    <Badge color="ingress" variant="light">{session.category}</Badge>
-                    <Badge color="gray" variant="filled">{session.plannedLoadPoints} Pts</Badge>
+                    <Badge color="ingress" variant="light">{t(`category.${session.category}`)}</Badge>
+                    <Badge color="gray" variant="filled">{t("loadPoints", { points: session.plannedLoadPoints })}</Badge>
                   </Group>
                 </Group>
               </Paper>
@@ -163,7 +171,12 @@ export default function SessionPlannerPage() {
             onChange={(e) => setCycleGoal(e.currentTarget.value)}
             placeholder={t("cycleGoalPlaceholder")}
           />
-          <SemanticButton action="add" onClick={handleCreateMicrocycle} loading={saving} />
+          <Text size="sm" c="dimmed">{t("cycleHint")}</Text>
+          <Group justify="flex-start">
+            <SemanticButton action="add" color="ingress" onClick={handleCreateMicrocycle} loading={saving} disabled={sessions.length === 0}>
+              {t("createCycle")}
+            </SemanticButton>
+          </Group>
           {microcycles.map((cycle) => (
             <Paper key={cycle.microcycleId} withBorder p="md">
               <Text fw={600}>{cycle.goal}</Text>
