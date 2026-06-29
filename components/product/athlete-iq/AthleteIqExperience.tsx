@@ -145,6 +145,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
       <AiqAthleteWorkspace
         actionPack={actionPack}
         dashboard={dashboard}
+        embedded={embedded}
         modeOptions={modeOptions}
         modeView={modeView}
         setModeView={setModeView}
@@ -330,6 +331,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
 function AiqAthleteWorkspace({
   actionPack,
   dashboard,
+  embedded = false,
   modeOptions,
   modeView,
   setModeView,
@@ -338,6 +340,7 @@ function AiqAthleteWorkspace({
 }: {
   actionPack: ProductSurfaceActionPack;
   dashboard: AthleteIqProductDashboardProjection;
+  embedded?: boolean;
   modeOptions: Array<{ label: string; value: string }>;
   modeView: "lifestyle" | "performance";
   setModeView: (value: "lifestyle" | "performance") => void;
@@ -427,26 +430,34 @@ function AiqAthleteWorkspace({
       style={ATHLETE_IQ_THEME_VARIABLES}
     >
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
-        <SurfaceTopBar surface={surface} />
-        <AiqMobileTopBar
-          common={common}
-          kicker={translate("athleteWorkspace.sidebarKicker")}
-          menuOpened={mobileMenuOpened}
-          productName={translate("surfaceName")}
-          onToggleMenu={() => setMobileMenuOpened((opened) => !opened)}
-        />
-        <AiqMobileNavigation
-          common={common}
-          kicker={translate("athleteWorkspace.sidebarKicker")}
-          navGroups={athleteNavigationGroups}
-          opened={mobileMenuOpened}
-          persona={dashboard.persona}
-          productName={translate("surfaceName")}
-          translate={translate}
-          onClose={() => setMobileMenuOpened(false)}
-        />
+        {/* When embedded inside the shared shell (DashboardShell), that shell owns
+            the single persona menu — so suppress this surface's own top bars,
+            mobile drawer, and desktop sidebar to avoid a second menu (#unify-nav). */}
+        {!embedded && <SurfaceTopBar surface={surface} />}
+        {!embedded && (
+          <AiqMobileTopBar
+            common={common}
+            kicker={translate("athleteWorkspace.sidebarKicker")}
+            menuOpened={mobileMenuOpened}
+            productName={translate("surfaceName")}
+            onToggleMenu={() => setMobileMenuOpened((opened) => !opened)}
+          />
+        )}
+        {!embedded && (
+          <AiqMobileNavigation
+            common={common}
+            kicker={translate("athleteWorkspace.sidebarKicker")}
+            navGroups={athleteNavigationGroups}
+            opened={mobileMenuOpened}
+            persona={dashboard.persona}
+            productName={translate("surfaceName")}
+            translate={translate}
+            onClose={() => setMobileMenuOpened(false)}
+          />
+        )}
 
-        <Box className="aiq-command-layout">
+        <Box className={embedded ? "aiq-command-layout aiq-command-layout-embedded" : "aiq-command-layout"}>
+          {!embedded && (
           <Paper component="aside" className="aiq-sidebar-v2 aiq-desktop-sidebar surface-outline" withBorder radius="md" p="lg">
             <Stack gap="xl">
               <Group gap="md" wrap="nowrap">
@@ -478,6 +489,7 @@ function AiqAthleteWorkspace({
               </Paper>
             </Stack>
           </Paper>
+          )}
 
           <Stack gap="md" component="main">
             <DailyReminders />

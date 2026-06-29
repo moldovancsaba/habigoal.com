@@ -1308,6 +1308,52 @@ a {
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* Embedded mode: Habigoal rendered inside the shared DashboardShell. The shell
+   owns the page chrome, width, and the single persona menu — so drop the
+   standalone phone-frame sizing/background, remove the fixed-nav bottom reserve,
+   and let the surface fill the shell's content column. The descendant selector
+   keeps these overrides ahead of the mobile `.hbg-app-frame` media query. */
+.habigoal-product-shell .hbg-app-frame-embedded {
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.hbg-app-frame-embedded .hbg-main-grid {
+  padding-bottom: var(--mantine-spacing-md);
+  scroll-padding-bottom: var(--mantine-spacing-md);
+}
+
+.hbg-embedded-viewswitch {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  margin-bottom: var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
+  background: var(--surface-muted, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--surface-outline-color, rgba(255, 255, 255, 0.08));
+}
+
+.hbg-viewswitch-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--mantine-radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hbg-viewswitch-tab-active {
+  background: var(--mantine-color-tactical-filled, #1f6feb);
+  color: #fff;
+}
+
 .aiq-sidebar-v2,
 .aiq-hero-panel,
 .aiq-panel,

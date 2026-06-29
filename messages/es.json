@@ -607,7 +607,10 @@
     "trainingLogCalculatedLoad": "Carga calculada:",
     "trainingLogPoints": "{points} puntos",
     "trainingLogSuccessTitle": "¡Sesión registrada!",
-    "trainingLogSuccessBody": "Tus puntos de carga se han actualizado."
+    "trainingLogSuccessBody": "Tus puntos de carga se han actualizado.",
+    "navAthleteToday": "Hoy",
+    "navAthleteIq": "Athlete IQ",
+    "navAthleteProgress": "Progreso"
   },
   "Assessment": {
     "saved": "Registro guardado.",

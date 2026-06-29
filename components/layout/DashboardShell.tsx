@@ -70,6 +70,15 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { href: "/dashboard/parent", label: t("parentPortal"), action: "users" as const },
       { href: "/dashboard/reports", label: t("reports"), action: "dashboard" as const },
     ] : []),
+    // Athletes get their own persona menu in the SAME shared shell — every athlete
+    // surface (Habigoal daily flow, the Athlete IQ workspace, their history, and the
+    // assessment) is reachable from one menu rather than a separate per-app drawer.
+    ...(primaryRole === "athlete" ? [
+      { href: "/habigoal", label: t("navAthleteToday"), action: "record" as const },
+      { href: "/athlete-iq", label: t("navAthleteIq"), action: "dashboard" as const },
+      ...(user?.athleteId ? [{ href: `/athletes/${user.athleteId}`, label: t("navAthleteProgress"), action: "dashboard" as const }] : []),
+      { href: "/dashboard/assessment", label: t("survey"), action: "record" as const },
+    ] : []),
     ...(primaryRole === "admin" || primaryRole === "trainer" || primaryRole === "performance_coach" || primaryRole === "physio" ? [
       { href: "/dashboard", label: t("overview") },
       { href: "/dashboard/coach", label: t("coachHub"), action: "dashboard" as const },

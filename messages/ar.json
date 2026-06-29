@@ -607,7 +607,10 @@
     "trainingLogCalculatedLoad": "الحمل المحسوب:",
     "trainingLogPoints": "{points} نقطة",
     "trainingLogSuccessTitle": "تم تسجيل الجلسة!",
-    "trainingLogSuccessBody": "تم تحديث نقاط الحمل الخاصة بك."
+    "trainingLogSuccessBody": "تم تحديث نقاط الحمل الخاصة بك.",
+    "navAthleteToday": "اليوم",
+    "navAthleteIq": "Athlete IQ",
+    "navAthleteProgress": "التقدم"
   },
   "Assessment": {
     "saved": "تم حفظ التسجيل.",

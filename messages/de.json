@@ -607,7 +607,10 @@
     "trainingLogCalculatedLoad": "Berechnete Last:",
     "trainingLogPoints": "{points} Punkte",
     "trainingLogSuccessTitle": "Einheit erfasst!",
-    "trainingLogSuccessBody": "Deine Lastpunkte wurden aktualisiert."
+    "trainingLogSuccessBody": "Deine Lastpunkte wurden aktualisiert.",
+    "navAthleteToday": "Heute",
+    "navAthleteIq": "Athlete IQ",
+    "navAthleteProgress": "Fortschritt"
   },
   "Assessment": {
     "saved": "Check-in gespeichert.",
