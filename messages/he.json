@@ -293,7 +293,7 @@
     "athleteCompletionLabel": "שלמות",
     "athleteProfileShapeLabel": "צורת פרופיל",
     "performanceOverviewSubtitle": "לוח מעקב יומי לספורטאים המתמקד בהתאוששות, איזון תמיכה ותגובה למגמות.",
-    "commandCenterTitle": "Coach command center",
+    "commandCenterTitle": "לוח הבקרה של המאמן",
     "commandCenterSubtitle": "Start the day with the athletes who need the fastest follow-up.",
     "todayCheckInsLabel": "Checked in today",
     "missedCheckInsLabel": "Missed today",
@@ -1183,14 +1183,14 @@
     "habigoalAria": "פתח את אפליקציית המובייל לרווחה של Habigoal",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "סביבת ביצועים מקצועית לספורטאים",
-    "athleteIqBody": "משטח פיקוד כהה וזהוב למאמנים, קבוצות, מועדונים, לוחות, דוחות, שירותים ותפעול ביצועים.",
+    "athleteIqBody": "השכבה המקצועית למאמנים, קבוצות ומועדונים: לוחות בקרה, דוחות והעבודה היומית על הביצועים.",
     "athleteIqAction": "פתח Athlete IQ",
     "athleteIqAria": "פתח את אפליקציית הביצועים המקצועית Athlete IQ"
   },
   "Login": {
     "badge": "גישה באימייל",
     "title": "המשך לאפליקציה שלך",
-    "subtitle": "הזן אימייל, בחר פרסונה ופתח את ממשק האפליקציה המתאים.",
+    "subtitle": "הזן את האימייל שלך, בחר את התפקיד שלך ופתח את האפליקציה המתאימה.",
     "identifierLabel": "אימייל",
     "identifierPlaceholder": "name@example.com",
     "personaLabel": "בחר פרסונה",
@@ -1242,7 +1242,7 @@
   "Onboarding": {
     "defaults": {
       "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
+      "moduleBody": "מבוא קצר שיעזור לך להתחיל.",
       "checklistTitle": "Onboarding checklist",
       "checklistBody": "Follow these steps to get started."
     },
@@ -1781,13 +1781,13 @@
     },
     "athleteIq": {
       "metadata": {
-        "title": "Athlete IQ | מערכת הפעלה מקצועית לביצועים",
+        "title": "Athlete IQ | פלטפורמת ביצועים מקצועית למאמנים ולקבוצות",
         "description": "Athlete IQ היא שכבת הביצועים המקצועית לספורטאים, מאמנים, קבוצות, מועדונים, לוחות בקרה, דוחות ושירותים."
       },
       "surfaceName": "Athlete IQ",
       "operatingMode": "תפעול מקצועי למאמן, קבוצה, מועדון ושירותים",
       "sidebar": {
-        "kicker": "פיקוד ביצועים"
+        "kicker": "ביצועים"
       },
       "controls": {
         "role": {
@@ -1798,7 +1798,7 @@
         },
         "mode": {
           "label": "מצב",
-          "aria": "מצב פעולה Athlete IQ",
+          "aria": "מצב Athlete IQ",
           "lifestyle": "אורח חיים",
           "performance": "ביצועים"
         }
@@ -1806,7 +1806,7 @@
       "hero": {
         "dateLabel": "היום - {date}",
         "title": "Athlete IQ Daily Development OS",
-        "subtitle": "משטח תפעול מקצועי לספורטאים, מאמנים, קבוצות, מועדונים והחלטות ביצועים.",
+        "subtitle": "מרחב עבודה מקצועי אחד לספורטאים, מאמנים, קבוצות ומועדונים.",
         "copy": "מוכנות, מצב מנטלי, עומס אימון, פעולות צוות ודוחות נשארים בסביבת מאמן ממוקדת אחת.",
         "summaryAria": "סיכום תפעולי Athlete IQ"
       },
@@ -1820,8 +1820,8 @@
         "priorityAthletes": "ספורטאים בעדיפות"
       },
       "teamCommand": {
-        "title": "פיקוד מאמן, קבוצה ומועדון",
-        "copy": "שכבת תפעול desktop-first לניהול סגלים, פעולות, שירותים ומסירה ברמת מועדון."
+        "title": "ניהול קבוצות ומועדונים",
+        "copy": "נהל סגלים, משימות יומיות ועבודת מועדון מתצוגה אחת שמותאמת למחשב."
       },
       "operations": {
         "club-load": {
@@ -1901,9 +1901,9 @@
         }
       },
       "athletes": {
-        "title": "פיקוד ספורטאי",
+        "title": "ספורטאים",
         "academyTitle": "סיכום אקדמיה",
-        "copy": "תצוגה מקצועית צפופה עם נימוק מקור והמשכיות תהליך.",
+        "copy": "תצוגה מקצועית וממוקדת של כל ספורטאי: מוכנות, התאוששות ועומס, עם הנתונים שמאחורי כל מספר.",
         "loadLabel": "עומס",
         "mentalLabel": "מנטלי",
         "unassignedTeam": "לא משויך לקבוצה",
@@ -2576,7 +2576,7 @@
     "retry": "נסו שוב",
     "lastSync": "סנכרון אחרון: {time}",
     "neverSynced": "עדיין לא סונכרן",
-    "noMetrics": "אין עדיין טלמטריה — הריצו סנכרון.",
+    "noMetrics": "אין עדיין נתוני מכשיר — הפעל סנכרון.",
     "syncNow": "סנכרון עכשיו",
     "disconnect": "ניתוק",
     "connect": "חיבור",
@@ -2585,7 +2585,7 @@
     "syncError": "הסנכרון נכשל. נסו שוב.",
     "connectedNotice": {
       "title": "המכשיר חובר",
-      "body": "{provider} מחובר וכעת יסנכרן טלמטריה."
+      "body": "{provider} מחובר ויסנכרן את הנתונים שלך."
     },
     "connectFailed": {
       "title": "החיבור נכשל",

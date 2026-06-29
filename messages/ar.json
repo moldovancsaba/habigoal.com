@@ -293,7 +293,7 @@
     "athleteCompletionLabel": "الإكمال",
     "athleteProfileShapeLabel": "شكل الملف",
     "performanceOverviewSubtitle": "لوحة متابعة يومية للرياضيين تتمحور حول التعافي وتوازن الدعم واتجاه الاستجابة.",
-    "commandCenterTitle": "Coach command center",
+    "commandCenterTitle": "لوحة تحكم المدرب",
     "commandCenterSubtitle": "Start the day with the athletes who need the fastest follow-up.",
     "todayCheckInsLabel": "Checked in today",
     "missedCheckInsLabel": "Missed today",
@@ -1183,14 +1183,14 @@
     "habigoalAria": "فتح تطبيق Habigoal للرفاه على الجوال",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "مساحة احترافية لأداء الرياضيين",
-    "athleteIqBody": "واجهة قيادة داكنة وذهبية للمدربين والفرق والأندية واللوحات والتقارير والخدمات وعمليات الأداء.",
+    "athleteIqBody": "الطبقة الاحترافية للمدربين والفرق والأندية: لوحات التحكم والتقارير والعمل اليومي على الأداء.",
     "athleteIqAction": "فتح Athlete IQ",
     "athleteIqAria": "فتح تطبيق Athlete IQ الاحترافي للأداء"
   },
   "Login": {
     "badge": "دخول بالبريد الإلكتروني",
     "title": "المتابعة إلى تطبيقك",
-    "subtitle": "أدخل بريدك الإلكتروني، اختر الشخصية، وافتح واجهة التطبيق المناسبة.",
+    "subtitle": "أدخل بريدك الإلكتروني، واختر دورك، وافتح التطبيق المناسب.",
     "identifierLabel": "البريد الإلكتروني",
     "identifierPlaceholder": "name@example.com",
     "personaLabel": "اختر الشخصية",
@@ -1242,7 +1242,7 @@
   "Onboarding": {
     "defaults": {
       "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
+      "moduleBody": "مقدمة قصيرة لمساعدتك على البدء.",
       "checklistTitle": "Onboarding checklist",
       "checklistBody": "Follow these steps to get started."
     },
@@ -1781,13 +1781,13 @@
     },
     "athleteIq": {
       "metadata": {
-        "title": "Athlete IQ | نظام تشغيل احترافي للأداء",
+        "title": "Athlete IQ | منصة أداء احترافية للمدربين والفرق",
         "description": "Athlete IQ هو طبقة الأداء الاحترافية للرياضيين والمدربين والفرق والأندية ولوحات المعلومات والتقارير والخدمات."
       },
       "surfaceName": "Athlete IQ",
       "operatingMode": "عمليات احترافية للمدرب والفريق والنادي والخدمات",
       "sidebar": {
-        "kicker": "قيادة الأداء"
+        "kicker": "الأداء"
       },
       "controls": {
         "role": {
@@ -1798,7 +1798,7 @@
         },
         "mode": {
           "label": "الوضع",
-          "aria": "وضع تشغيل Athlete IQ",
+          "aria": "وضع Athlete IQ",
           "lifestyle": "نمط الحياة",
           "performance": "الأداء"
         }
@@ -1806,7 +1806,7 @@
       "hero": {
         "dateLabel": "اليوم - {date}",
         "title": "Athlete IQ Daily Development OS",
-        "subtitle": "واجهة تشغيل احترافية للرياضيين والمدربين والفرق والأندية وقرارات الأداء.",
+        "subtitle": "مساحة عمل احترافية واحدة للرياضيين والمدربين والفرق والأندية.",
         "copy": "تبقى الجاهزية والحالة الذهنية وحمل التدريب وإجراءات الفريق والتقارير في مساحة مدرب مركزة واحدة.",
         "summaryAria": "ملخص تشغيل Athlete IQ"
       },
@@ -1820,8 +1820,8 @@
         "priorityAthletes": "الرياضيون ذوو الأولوية"
       },
       "teamCommand": {
-        "title": "قيادة المدرب والفريق والنادي",
-        "copy": "طبقة تشغيل موجهة لسطح المكتب لإدارة المجموعات والإجراءات والخدمات والتسليم على مستوى النادي."
+        "title": "إدارة الفرق والأندية",
+        "copy": "أدِر القوائم والمهام اليومية وأعمال النادي من عرض واحد مُهيَّأ لسطح المكتب."
       },
       "operations": {
         "club-load": {
@@ -1901,9 +1901,9 @@
         }
       },
       "athletes": {
-        "title": "قيادة الرياضي",
+        "title": "الرياضيون",
         "academyTitle": "ملخص الأكاديمية",
-        "copy": "عرض احترافي كثيف مع تفسير المصدر واستمرارية سير العمل.",
+        "copy": "عرض احترافي ومركّز لكل رياضي: الجاهزية والتعافي والحِمل، مع البيانات وراء كل رقم.",
         "loadLabel": "الحمل",
         "mentalLabel": "ذهني",
         "unassignedTeam": "غير مخصص لفريق",
@@ -2576,7 +2576,7 @@
     "retry": "إعادة المحاولة",
     "lastSync": "آخر مزامنة: {time}",
     "neverSynced": "لم تتم المزامنة بعد",
-    "noMetrics": "لا توجد بيانات بعد — قم بإجراء مزامنة.",
+    "noMetrics": "لا توجد بيانات من الجهاز بعد — شغّل المزامنة.",
     "syncNow": "المزامنة الآن",
     "disconnect": "قطع الاتصال",
     "connect": "ربط",
@@ -2585,7 +2585,7 @@
     "syncError": "فشلت المزامنة. يرجى المحاولة مرة أخرى.",
     "connectedNotice": {
       "title": "تم ربط الجهاز",
-      "body": "{provider} مرتبط الآن وسيقوم بمزامنة البيانات."
+      "body": "تم توصيل {provider} وسيقوم بمزامنة بياناتك."
     },
     "connectFailed": {
       "title": "فشل الربط",

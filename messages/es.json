@@ -293,7 +293,7 @@
     "athleteCompletionLabel": "Completado",
     "athleteProfileShapeLabel": "Forma del perfil",
     "performanceOverviewSubtitle": "Panel diario de seguimiento de atletas centrado en recuperacion, equilibrio de apoyo y respuesta de tendencias.",
-    "commandCenterTitle": "Coach command center",
+    "commandCenterTitle": "Panel del entrenador",
     "commandCenterSubtitle": "Start the day with the athletes who need the fastest follow-up.",
     "todayCheckInsLabel": "Checked in today",
     "missedCheckInsLabel": "Missed today",
@@ -1183,14 +1183,14 @@
     "habigoalAria": "Abrir la app movil de bienestar Habigoal",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "Espacio profesional de rendimiento deportivo",
-    "athleteIqBody": "Una superficie de mando oscura y dorada para entrenadores, equipos, clubes, paneles, informes, servicios y operaciones de rendimiento.",
+    "athleteIqBody": "La capa profesional para entrenadores, equipos y clubes: paneles, informes y el trabajo diario de rendimiento.",
     "athleteIqAction": "Abrir Athlete IQ",
     "athleteIqAria": "Abrir la app profesional de rendimiento Athlete IQ"
   },
   "Login": {
     "badge": "Acceso por email",
     "title": "Continuar a tu app",
-    "subtitle": "Introduce tu email, elige tu perfil y abre la superficie de app correspondiente.",
+    "subtitle": "Introduce tu correo, elige tu rol y abre la aplicación adecuada.",
     "identifierLabel": "Email",
     "identifierPlaceholder": "nombre@example.com",
     "personaLabel": "Elegir perfil",
@@ -1242,7 +1242,7 @@
   "Onboarding": {
     "defaults": {
       "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
+      "moduleBody": "Una breve introducción para empezar.",
       "checklistTitle": "Onboarding checklist",
       "checklistBody": "Follow these steps to get started."
     },
@@ -1781,13 +1781,13 @@
     },
     "athleteIq": {
       "metadata": {
-        "title": "Athlete IQ | Sistema operativo profesional de rendimiento",
+        "title": "Athlete IQ | Plataforma profesional de rendimiento para entrenadores y equipos",
         "description": "Athlete IQ es la capa profesional de rendimiento para atletas, entrenadores, equipos, clubes, paneles, informes y servicios."
       },
       "surfaceName": "Athlete IQ",
       "operatingMode": "Operaciones profesionales de entrenador, equipo, club y servicios",
       "sidebar": {
-        "kicker": "Comando de rendimiento"
+        "kicker": "Rendimiento"
       },
       "controls": {
         "role": {
@@ -1798,7 +1798,7 @@
         },
         "mode": {
           "label": "Modo",
-          "aria": "Modo operativo de Athlete IQ",
+          "aria": "Modo Athlete IQ",
           "lifestyle": "Estilo de vida",
           "performance": "Rendimiento"
         }
@@ -1806,7 +1806,7 @@
       "hero": {
         "dateLabel": "Hoy - {date}",
         "title": "Athlete IQ Daily Development OS",
-        "subtitle": "Una superficie operativa profesional para atletas, entrenadores, equipos, clubes y decisiones de rendimiento.",
+        "subtitle": "Un espacio de trabajo profesional para atletas, entrenadores, equipos y clubes.",
         "copy": "Readiness, estado mental, carga de entrenamiento, acciones de equipo e informes permanecen en un espacio enfocado para el entrenador.",
         "summaryAria": "Resumen operativo de Athlete IQ"
       },
@@ -1820,8 +1820,8 @@
         "priorityAthletes": "Atletas prioritarios"
       },
       "teamCommand": {
-        "title": "Comando de entrenador, equipo y club",
-        "copy": "Una capa operativa desktop-first para gestionar plantillas, acciones, servicios y entrega a nivel de club."
+        "title": "Gestión de equipos y clubes",
+        "copy": "Gestiona plantillas, tareas diarias y trabajo de club desde una sola vista pensada para escritorio."
       },
       "operations": {
         "club-load": {
@@ -1901,9 +1901,9 @@
         }
       },
       "athletes": {
-        "title": "Comando de atleta",
+        "title": "Atletas",
         "academyTitle": "Resumen de academia",
-        "copy": "Vista profesional densa con razonamiento de fuentes y continuidad de flujo.",
+        "copy": "Una vista profesional y enfocada de cada atleta: preparación, recuperación y carga, con los datos detrás de cada cifra.",
         "loadLabel": "Carga",
         "mentalLabel": "Mental",
         "unassignedTeam": "Sin equipo asignado",
@@ -2576,7 +2576,7 @@
     "retry": "Intentar de nuevo",
     "lastSync": "Última sincronización: {time}",
     "neverSynced": "Aún no sincronizado",
-    "noMetrics": "Aún no hay telemetría: ejecuta una sincronización.",
+    "noMetrics": "Aún no hay datos del dispositivo: ejecuta una sincronización.",
     "syncNow": "Sincronizar ahora",
     "disconnect": "Desconectar",
     "connect": "Conectar",
@@ -2585,7 +2585,7 @@
     "syncError": "La sincronización falló. Inténtalo de nuevo.",
     "connectedNotice": {
       "title": "Dispositivo conectado",
-      "body": "{provider} está conectado y sincronizará la telemetría."
+      "body": "{provider} está conectado y sincronizará tus datos."
     },
     "connectFailed": {
       "title": "Conexión fallida",
