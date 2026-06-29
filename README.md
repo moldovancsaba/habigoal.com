@@ -41,7 +41,6 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - Soft-delete and restore workflows for athletes and check-ins.
 - Multilingual UI for `en`, `hu`, `es`, `de`, `ar`, and `he`, including RTL layout support for Arabic and Hebrew.
 - Critical athlete check-in copy is message-catalog driven and covered by the i18n audit hardcoded-copy gate.
-- Codex automation control plane under `.codex/` for audit, planning, implementation, and documentation loops.
 
 ## Documentation
 
@@ -77,7 +76,6 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Product Roadmap](ROADMAP.md)
 - [Athlete IQ Gap Analysis](docs/athlete-iq-gap-analysis-2026-05-25.md)
 - [I18n Audit](docs/i18n-audit-2026-05-12.md)
-- [Codex Automation Architecture](.codex/memory/architecture.md)
 
 ## Technology
 
@@ -180,14 +178,11 @@ SSO identifies the person. Habigoal authorizes the person through the local `use
 
 Middleware protects personal-data pages when `HABIGOAL_ENFORCE_AUTH=true`. Public pages are limited to the landing page, news, and legal pages.
 
-## Codex Automation
-
-The repository includes a Codex-first automation control plane under `.codex/`.
+## Delivery Workflow
 
 - GitHub stores source control, issues, pull requests, and project state.
-- Codex handles audit, planning, implementation, and documentation loops.
-- Autonomous loops use branch and PR delivery.
-- Direct autonomous pushes to `main` are not part of the unattended automation policy.
+- Changes are delivered through feature branches and pull requests; CI (`CI / web`) and human review gate merge.
+- Direct pushes to `main` are reserved for explicit human-directed work; no force pushes or shared-history rewrites.
 
 ## Documentation Maintenance Rules
 

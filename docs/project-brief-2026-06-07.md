@@ -88,7 +88,6 @@ Primary directories:
 - `messages`: locale catalogs for `en`, `hu`, `es`, `de`, `ar`, and `he`
 - `content/news`: localized public news content
 - `docs`: project, architecture, deployment, design, user, and governance documentation
-- `.codex`: Codex automation control plane, memory, agents, policies, and heartbeat specs
 
 Important data collections:
 

@@ -49,7 +49,7 @@ Rejected interpretations:
 - No offline data fallback.
 - No bypass of production auth/data rules.
 - No legacy scoring compatibility requirement unless legally or operationally required.
-- No extra release checklist when the existing Definition of Done, validation commands, documentation, and Codex control plane are stronger.
+- No extra release checklist when the existing Definition of Done, validation commands, and documentation are stronger.
 
 The useful gaps are product/domain contracts:
 

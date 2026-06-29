@@ -183,7 +183,7 @@ Canonical docs:
 - `docs/gds-verification-matrix.md`: GDS route and accessibility verification matrix
 - `docs/dod.md`: definition of done
 - `ROADMAP.md`: current roadmap
-- `.codex/memory/architecture.md`: Codex automation architecture and operating constraints
+- `docs/architecture.md`: architecture, operating surfaces, and access model
 
 ## Current Risks
 

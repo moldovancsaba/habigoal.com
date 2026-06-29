@@ -69,7 +69,7 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 ## Git And Automation
 
 - Human-directed direct pushes to `main` are allowed when explicitly requested.
-- Autonomous Codex loops use branch and PR delivery.
+- Automated and AI-assisted changes use branch and PR delivery.
 - Do not force push.
 - Do not rewrite unrelated user changes.
 - Commit only the scoped files needed for the task.
