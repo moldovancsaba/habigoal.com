@@ -610,7 +610,8 @@
     "trainingLogSuccessBody": "Tus puntos de carga se han actualizado.",
     "navAthleteToday": "Hoy",
     "navAthleteIq": "Athlete IQ",
-    "navAthleteProgress": "Progreso"
+    "navAthleteProgress": "Progreso",
+    "chartNoData": "Aún no hay datos para el gráfico — añade un check-in."
   },
   "Assessment": {
     "saved": "Registro guardado.",

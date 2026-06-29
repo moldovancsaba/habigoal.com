@@ -4,6 +4,7 @@ import { useId } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Box, Paper, Text, useMantineTheme } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
+import { ChartEmptyState } from "./ChartEmptyState";
 
 interface DataPoint {
   date: string;
@@ -16,13 +17,15 @@ interface LongitudinalChartProps {
   data: DataPoint[];
   color?: string;
   yDomain?: [number, number];
+  emptyLabel?: string;
 }
 
-export function LongitudinalChart({ 
-  title, 
-  data, 
+export function LongitudinalChart({
+  title,
+  data,
   color = ANALYTICS_CONFIG.colors.primary,
-  yDomain = [0, 5]
+  yDomain = [0, 5],
+  emptyLabel = "No data yet"
 }: LongitudinalChartProps) {
   const theme = useMantineTheme();
   const gradientId = useId().replace(/[:]/g, "");
@@ -34,6 +37,9 @@ export function LongitudinalChart({
           {title}
         </Text>
       )}
+      {data.length === 0 ? (
+        <ChartEmptyState label={emptyLabel} />
+      ) : (
       <Box style={{ width: "100%", height: ANALYTICS_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={ANALYTICS_CONFIG.margins}>
@@ -82,6 +88,7 @@ export function LongitudinalChart({
           </AreaChart>
         </ResponsiveContainer>
       </Box>
+      )}
     </Paper>
   );
 }

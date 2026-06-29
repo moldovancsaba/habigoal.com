@@ -610,7 +610,8 @@
     "trainingLogSuccessBody": "נקודות העומס שלך עודכנו.",
     "navAthleteToday": "היום",
     "navAthleteIq": "Athlete IQ",
-    "navAthleteProgress": "התקדמות"
+    "navAthleteProgress": "התקדמות",
+    "chartNoData": "אין עדיין נתונים לתרשים — הוסף צ׳ק-אין."
   },
   "Assessment": {
     "saved": "הצק-אין נשמר.",

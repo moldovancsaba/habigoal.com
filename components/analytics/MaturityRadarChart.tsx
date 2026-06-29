@@ -3,6 +3,7 @@
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Box, Paper, Text } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
+import { ChartEmptyState } from "./ChartEmptyState";
 
 interface RadarPoint {
   subject: string;
@@ -18,12 +19,14 @@ interface MaturityRadarChartProps {
     A: string;
     B?: string;
   };
+  emptyLabel?: string;
 }
 
-export function MaturityRadarChart({ 
-  title, 
+export function MaturityRadarChart({
+  title,
   data,
-  labels = { A: "Current" }
+  labels = { A: "Current" },
+  emptyLabel = "No data yet"
 }: MaturityRadarChartProps) {
   return (
     <Paper withBorder p="md" radius="md">
@@ -32,6 +35,9 @@ export function MaturityRadarChart({
           {title}
         </Text>
       )}
+      {data.length === 0 ? (
+        <ChartEmptyState label={emptyLabel} />
+      ) : (
       <Box style={{ width: "100%", height: ANALYTICS_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius={ANALYTICS_CONFIG.radarOuterRadius} data={data}>
@@ -86,6 +92,7 @@ export function MaturityRadarChart({
           </RadarChart>
         </ResponsiveContainer>
       </Box>
+      )}
     </Paper>
   );
 }

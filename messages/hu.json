@@ -610,7 +610,8 @@
     "trainingLogSuccessBody": "A terhelési pontjaid frissültek.",
     "navAthleteToday": "Ma",
     "navAthleteIq": "Athlete IQ",
-    "navAthleteProgress": "Haladás"
+    "navAthleteProgress": "Haladás",
+    "chartNoData": "Még nincs adat a diagramhoz — adj hozzá egy bejelentkezést."
   },
   "Assessment": {
     "saved": "Check-in elmentve.",

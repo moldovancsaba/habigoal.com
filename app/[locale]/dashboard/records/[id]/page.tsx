@@ -219,6 +219,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               <MaturityRadarChart 
                 title={td("deltaProfile")}
                 data={deltaRadarData}
+                emptyLabel={td("chartNoData")}
                 labels={{
                   A: td("currentAssessment"),
                   B: history.length > 1 ? td("baselineAssessment") : undefined

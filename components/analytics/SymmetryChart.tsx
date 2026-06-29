@@ -3,6 +3,7 @@
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Box, Paper, Text } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
+import { ChartEmptyState } from "./ChartEmptyState";
 
 interface SymmetryData {
   domain: string;
@@ -12,9 +13,10 @@ interface SymmetryData {
 interface SymmetryChartProps {
   title?: string;
   data: SymmetryData[];
+  emptyLabel?: string;
 }
 
-export function SymmetryChart({ title, data }: SymmetryChartProps) {
+export function SymmetryChart({ title, data, emptyLabel = "No data yet" }: SymmetryChartProps) {
   return (
     <Paper withBorder p="md" radius="md">
       {title && (
@@ -22,6 +24,9 @@ export function SymmetryChart({ title, data }: SymmetryChartProps) {
           {title}
         </Text>
       )}
+      {data.length === 0 ? (
+        <ChartEmptyState label={emptyLabel} />
+      ) : (
       <Box style={{ width: "100%", height: ANALYTICS_CONFIG.chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius={ANALYTICS_CONFIG.radarOuterRadius} data={data}>
@@ -51,6 +56,7 @@ export function SymmetryChart({ title, data }: SymmetryChartProps) {
           </RadarChart>
         </ResponsiveContainer>
       </Box>
+      )}
     </Paper>
   );
 }
