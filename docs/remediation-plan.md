@@ -103,6 +103,7 @@ These are cross-cutting and unblock everything else. Highest priority because th
 
 ## B5. Reports  (fixes #34, #86, #198–201)
 - ✅ #199 delivered: report routes respect per-athlete access. `POST /api/reports/team` now scopes the caller-supplied `athleteIds` through `resolveAccessibleAthleteIds` (matching the GET path) and returns 403 when none are accessible — a coach can no longer pull a team report over athletes outside their scope. Covered by `app/api/reports/team/route.test.ts`.
+- ✅ #198 delivered: team reports now include a `aggregate` rollup. `aggregateTeamReports(reports)` (pure, in `services/reporting.service.ts`) tallies readiness-zone / recovery-status / injury-risk distributions, averages readiness, and lists `flaggedAthleteIds` (high injury risk or under-recovered) — derived only from values already in each per-athlete report (no extra data dependency, no fabrication). `generateTeamReport` returns it alongside `reports`. Covered by `services/reporting.service.test.ts`.
 - **Weekly snapshots (#34/#86):** `weekly_snapshot` job (A1) builds `WeeklyAthleteSnapshot` (collection + repo) every Monday; versioned; export in PDF/CSV/JSON. **AI labelling (#201)** via A3. Team-report depth (#198) — sub-team/position breakdowns; consistent role checks (#199).
 
 ## B6. Notifications  (fixes #257)
