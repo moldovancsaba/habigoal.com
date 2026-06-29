@@ -541,7 +541,7 @@ a {
 }
 
 .login-panel-aiq .login-persona-option > input {
-  accent-color: #f5c542;
+  accent-color: var(--accent-gold);
 }
 
 .login-persona-option > span {
@@ -584,7 +584,7 @@ a {
 }
 
 .selector-card .selector-pro-badge {
-  color: #ffd54a !important;
+  color: var(--accent-gold) !important;
   background: rgba(255, 213, 74, 0.1) !important;
   border: 1px solid rgba(255, 213, 74, 0.18) !important;
 }
@@ -623,8 +623,8 @@ a {
   height: 54px;
   flex: 0 0 54px;
   border: 8px solid rgba(0, 129, 112, 0.16);
-  border-top-color: #00b894;
-  border-right-color: #00aeef;
+  border-top-color: var(--brand-teal);
+  border-right-color: var(--brand-cyan);
   border-radius: 50%;
   box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.9);
 }
@@ -766,7 +766,7 @@ a {
 .aiq-nav-link-active {
   color: var(--gds-vibe-accent, var(--accent-gold));
   border-color: var(--gds-vibe-border, rgba(255, 213, 74, 0.22));
-  background: linear-gradient(90deg, color-mix(in srgb, var(--gds-vibe-primary, #ffd54a) 18%, transparent), transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--gds-vibe-primary, var(--accent-gold)) 18%, transparent), transparent);
 }
 
 .aiq-nav-dot {
@@ -1109,7 +1109,7 @@ a {
   width: 100%;
   min-height: max(var(--target-size), 52px);
   padding: 14px 18px;
-  border-radius: 14px;
+  border-radius: var(--surface-radius);
   font-family: inherit;
   font-size: 1rem;
   font-weight: 900;
@@ -1157,7 +1157,7 @@ a {
   min-height: max(var(--target-size), 60px);
   padding: 14px 16px;
   text-align: start;
-  border-radius: 14px;
+  border-radius: var(--surface-radius);
   border: 1px solid var(--hbg-line);
   background: rgba(255, 255, 255, 0.78);
   color: var(--hbg-ink);
@@ -1179,7 +1179,7 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--mantine-radius-sm);
   border: 2px solid var(--hbg-line);
   color: #ffffff;
 }
@@ -1219,7 +1219,7 @@ a {
 .hbg-review-row {
   padding: 12px 14px;
   border: 1px solid var(--hbg-line);
-  border-radius: 12px;
+  border-radius: var(--surface-radius);
   background: rgba(255, 255, 255, 0.7);
 }
 
@@ -1624,7 +1624,7 @@ a {
   align-items: center;
   justify-content: center;
   border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 38%, transparent);
-  border-radius: 10px;
+  border-radius: var(--mantine-radius-sm);
   color: var(--gds-vibe-accent, #f1cf86);
   background: color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 10%, transparent);
   font-size: 0.76rem;
@@ -1857,7 +1857,7 @@ a {
   .aiq-os-map-panel,
   .aiq-truth-banner,
   .aiq-includes-panel {
-    border-radius: 14px;
+    border-radius: var(--surface-radius);
   }
 
   .aiq-metric-card {

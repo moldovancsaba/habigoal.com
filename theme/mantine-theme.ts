@@ -116,7 +116,8 @@ export function getHabigoalMantineTheme(mode: ThemeMode, direction: Direction = 
         },
         styles: {
           root: {
-            borderRadius: 10
+            // Single radius source of truth across both shells (#430).
+            borderRadius: "var(--surface-radius)"
           },
           label: {
             fontFamily,
