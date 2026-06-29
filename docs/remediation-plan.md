@@ -103,6 +103,7 @@ These are cross-cutting and unblock everything else. Highest priority because th
 
 ## B6. Notifications  (fixes #257)
 - Wire session/reflection reminder types into `reminders.service.ts` + `reminder_dispatch` job (A1) + the `DailyReminders` UI; per-type enable in settings.
+- ✅ delivered (policy layer): `reminders.service.ts` now applies a deterministic, timezone-aware delivery policy before surfacing nudges — `isWithinQuietHours` (quiet-hours window, wraps midnight), `applyReminderPolicy` (quiet-hours suppression + `maxConcurrent` cadence cap), and `localHourInTimezone`. `ReminderPreferences` typed in `types/reminder.ts`. Defaults are a no-op so the lite derive-on-read behaviour is preserved; covered by `reminders.service.test.ts`. **Future (active/lite/future truth model):** push/email transport via the `reminder_dispatch` job, preference persistence in settings UI, and the broader session/recovery/learning categories + coach escalation remain to be wired.
 
 ## B7. Forms & platform hygiene  (fixes #150, #152, #153, #156, #334; closes #54–61)
 - Migrate admin/profile forms onto the central form contract (#150/#152); enforce server+client validation parity gate (#153) in a shared `validateCentralForm` middleware on all POST handlers; finish athlete-only check-in route split + deprecate legacy (#156); remove remaining placeholder data (#334). **Close #54–61 as superseded by the delivered #147–156.**
