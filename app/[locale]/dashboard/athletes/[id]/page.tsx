@@ -345,12 +345,18 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
   const benchmarkData = useMemo(
     () =>
-      pillarSeries.map((pillar) => ({
-        subject: pillar.translatedTitle,
-        individual: pillar.current,
-        average: pillar.baseline
-      })),
-    [pillarSeries]
+      // pillarSeries always has one row per pillar (with 0s) even when the
+      // selected window excludes every assessment; pass an empty array in that
+      // case so the benchmark chart shows the empty state instead of zero bars
+      // (matches the adjacent timelines). (#475 review)
+      filteredAssessments.length === 0
+        ? []
+        : pillarSeries.map((pillar) => ({
+            subject: pillar.translatedTitle,
+            individual: pillar.current,
+            average: pillar.baseline
+          })),
+    [filteredAssessments, pillarSeries]
   );
 
   const strongestPillar = useMemo(() => getStrongestPillar(pillarSeries, emptyValue), [emptyValue, pillarSeries]);
