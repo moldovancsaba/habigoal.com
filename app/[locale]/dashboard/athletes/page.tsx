@@ -519,15 +519,15 @@ export default function ChildrenListPage() {
                         {child.latestRecordId && (
                           <SemanticButton
                             action="download"
-                            variant="outline" 
-                            color="ingress" 
+                            variant="outline"
+                            color="ingress"
                             size="sm"
-                            onClick={(e) => { 
-                              e.stopPropagation(); 
-                              void downloadLatestMap(child._id, child.latestRecordId); 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void downloadLatestMap(child._id, child.latestRecordId);
                             }}
                             loading={downloadingId === child._id}
-                          />
+                          >{t("exportReportPdf")}</SemanticButton>
                         )}
                         {!showDeleted ? (
                           <Link href={`/dashboard/athletes/${child._id}`} style={{ textDecoration: "none" }} onClick={(e) => e.stopPropagation()}>

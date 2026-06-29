@@ -466,7 +466,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 <Link href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"} style={{ textDecoration: "none" }}>
                   <SemanticButton action="edit" variant="default" disabled={data.assessments.length === 0} />
                 </Link>
-                <SemanticButton action="download" color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0} />
+                <SemanticButton action="download" color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>{td("exportReportPdf")}</SemanticButton>
                 <SemanticButton action="delete" color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0} />
               </>
             )}
