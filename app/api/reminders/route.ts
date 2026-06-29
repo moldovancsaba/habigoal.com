@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   try {
     const timezone = new URL(request.url).searchParams.get("timezone") || undefined;
-    const reminders = await getDueReminders(user, timezone);
+    const reminders = await getDueReminders(user, { timezone });
     return NextResponse.json({ reminders });
   } catch {
     return NextResponse.json({ reminders: [] });
