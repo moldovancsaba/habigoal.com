@@ -154,6 +154,21 @@ export default function CoachDashboardPage() {
     : null;
   const openConcerns = concerns.filter((concern) => !isResolved(concern));
 
+  // Team rosters (#2): join the team membership ids with the loaded athlete
+  // profiles so each squad card can show who is on it, and surface athletes who
+  // are not on any team yet so the coach can assign them.
+  const athletesById = new Map(athletes.filter((athlete) => athlete._id).map((athlete) => [String(athlete._id), athlete]));
+  const assignedAthleteIds = new Set(teams.flatMap((team) => team.athleteIds ?? []).map(String));
+  const unassignedAthletes = athletes.filter((athlete) => athlete._id && !assignedAthleteIds.has(String(athlete._id)));
+  const rosterByTeamId = new Map(
+    teams
+      .filter((team) => team._id)
+      .map((team) => [
+        String(team._id),
+        (team.athleteIds ?? []).map((id) => athletesById.get(String(id))).filter((athlete): athlete is AthleteProfile => Boolean(athlete))
+      ])
+  );
+
   return (
     <Stack gap="xl" pb="xl">
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
@@ -218,10 +233,56 @@ export default function CoachDashboardPage() {
                       <Text size="sm" c="dimmed">{t("teamFlags", { count: overview.projection.flagsCount })}</Text>
                     </>
                   )}
+
+                  {/* Roster (#2): show who is on the squad with their readiness, and a path to manage it. */}
+                  <Box>
+                    <Text size="sm" fw={700} tt="uppercase" c="dimmed" mb={4}>{t("teamRoster")}</Text>
+                    {(rosterByTeamId.get(overview.teamId) ?? []).length === 0 ? (
+                      <Text size="sm" c="dimmed">{t("teamRosterEmpty")}</Text>
+                    ) : (
+                      <Stack gap={4}>
+                        {(rosterByTeamId.get(overview.teamId) ?? []).map((member) => (
+                          <Group key={member._id} justify="space-between" gap="xs" wrap="nowrap">
+                            <Link href={`/dashboard/athletes/${member._id}`} style={{ textDecoration: "none", minWidth: 0 }}>
+                              <Text size="sm" truncate>{member.name}</Text>
+                            </Link>
+                            {typeof member.latestReadiness === "number" ? (
+                              <Badge size="sm" color={readinessTone(member.latestReadiness)} variant="light">
+                                {formatScore(member.latestReadiness)}
+                              </Badge>
+                            ) : (
+                              <Badge size="sm" color="gray" variant="light">{t("readinessPending")}</Badge>
+                            )}
+                          </Group>
+                        ))}
+                      </Stack>
+                    )}
+                  </Box>
+                  <Link href="/dashboard/settings" style={{ textDecoration: "none" }}>
+                    <SemanticButton action="settings" variant="subtle" size="sm">{t("teamManage")}</SemanticButton>
+                  </Link>
                 </Stack>
               </Paper>
             ))}
           </SimpleGrid>
+        </SectionPanel>
+      )}
+
+      {teams.length > 0 && unassignedAthletes.length > 0 && (
+        <SectionPanel title={t("teamUnassigned")}>
+          <Stack gap="sm">
+            <Text size="sm" c="dimmed">{t("teamUnassignedDesc", { count: unassignedAthletes.length })}</Text>
+            <Group gap="xs">
+              {unassignedAthletes.map((athlete) => (
+                <Link key={athlete._id} href={`/dashboard/athletes/${athlete._id}`} style={{ textDecoration: "none" }}>
+                  <Badge variant="outline" color="gray" style={{ cursor: "pointer" }}>{athlete.name}</Badge>
+                </Link>
+              ))}
+            </Group>
+            <Link href="/dashboard/settings" style={{ textDecoration: "none" }}>
+              <SemanticButton action="settings" variant="light" color="ingress" size="sm">{t("teamUnassignedManage")}</SemanticButton>
+            </Link>
+          </Stack>
         </SectionPanel>
       )}
 

@@ -1461,7 +1461,13 @@
     "concernScoreLine": "Score {score}/5 · at or below {threshold}",
     "concernViewAthlete": "Open athlete",
     "concernAllClear": "No open concern flags",
-    "concernAllClearDesc": "Every flagged check-in has been followed up."
+    "concernAllClearDesc": "Every flagged check-in has been followed up.",
+    "teamRoster": "Roster",
+    "teamRosterEmpty": "No athletes assigned yet",
+    "teamManage": "Manage team",
+    "teamUnassigned": "Unassigned athletes",
+    "teamUnassignedDesc": "{count} athletes are not on any team yet.",
+    "teamUnassignedManage": "Assign in settings"
   },
   "VisionLab": {
     "title": "Kinematics & Vision Lab",

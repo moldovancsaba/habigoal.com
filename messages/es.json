@@ -1461,7 +1461,13 @@
     "concernScoreLine": "Puntuación {score}/5 · igual o por debajo de {threshold}",
     "concernViewAthlete": "Abrir atleta",
     "concernAllClear": "Sin alertas abiertas",
-    "concernAllClearDesc": "Se ha hecho seguimiento de cada check-in marcado."
+    "concernAllClearDesc": "Se ha hecho seguimiento de cada check-in marcado.",
+    "teamRoster": "Plantilla",
+    "teamRosterEmpty": "Aún no hay atletas asignados",
+    "teamManage": "Gestionar equipo",
+    "teamUnassigned": "Atletas sin asignar",
+    "teamUnassignedDesc": "{count} atletas aún no están en ningún equipo.",
+    "teamUnassignedManage": "Asignar en ajustes"
   },
   "VisionLab": {
     "title": "Laboratorio de vision",
