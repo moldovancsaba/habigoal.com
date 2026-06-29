@@ -293,7 +293,7 @@
     "athleteCompletionLabel": "Completion",
     "athleteProfileShapeLabel": "Profile shape",
     "performanceOverviewSubtitle": "Daily athlete monitoring dashboard centered on recovery, support balance, and trend response.",
-    "commandCenterTitle": "Coach command center",
+    "commandCenterTitle": "Coach dashboard",
     "commandCenterSubtitle": "Start the day with the athletes who need the fastest follow-up.",
     "todayCheckInsLabel": "Checked in today",
     "missedCheckInsLabel": "Missed today",
@@ -1183,14 +1183,14 @@
     "habigoalAria": "Open the Habigoal mobile wellbeing app",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "Professional athlete performance workspace",
-    "athleteIqBody": "A dark gold command surface for trainers, teams, clubs, dashboards, reports, services, and performance operations.",
+    "athleteIqBody": "The professional layer for trainers, teams, and clubs — dashboards, reports, and everyday performance work.",
     "athleteIqAction": "Open Athlete IQ",
     "athleteIqAria": "Open the Athlete IQ professional performance app"
   },
   "Login": {
     "badge": "Email access",
     "title": "Continue to your app",
-    "subtitle": "Enter your email, choose your persona, and open the matching app surface.",
+    "subtitle": "Enter your email, choose your role, and open the right app.",
     "identifierLabel": "Email",
     "identifierPlaceholder": "name@example.com",
     "personaLabel": "Choose persona",
@@ -1242,7 +1242,7 @@
   "Onboarding": {
     "defaults": {
       "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
+      "moduleBody": "A short introduction to get you started.",
       "checklistTitle": "Onboarding checklist",
       "checklistBody": "Follow these steps to get started."
     },
@@ -1781,13 +1781,13 @@
     },
     "athleteIq": {
       "metadata": {
-        "title": "Athlete IQ | Professional performance operating system",
+        "title": "Athlete IQ | Professional performance platform for trainers and teams",
         "description": "Athlete IQ is the professional performance layer for athletes, trainers, teams, clubs, dashboards, reports, and services."
       },
       "surfaceName": "Athlete IQ",
       "operatingMode": "Professional trainer, team, club, and service operations",
       "sidebar": {
-        "kicker": "Performance command"
+        "kicker": "Performance"
       },
       "controls": {
         "role": {
@@ -1798,7 +1798,7 @@
         },
         "mode": {
           "label": "Mode",
-          "aria": "Athlete IQ operating mode",
+          "aria": "Athlete IQ mode",
           "lifestyle": "Lifestyle",
           "performance": "Performance"
         }
@@ -1806,7 +1806,7 @@
       "hero": {
         "dateLabel": "Today - {date}",
         "title": "Athlete IQ Daily Development OS",
-        "subtitle": "A professional operating surface for athletes, trainers, teams, clubs, and performance decisions.",
+        "subtitle": "One professional workspace for athletes, trainers, teams, and clubs.",
         "copy": "Readiness, mental state, training load, team actions, and reports stay in one focused trainer workspace.",
         "summaryAria": "Athlete IQ operational summary"
       },
@@ -1820,8 +1820,8 @@
         "priorityAthletes": "Priority athletes"
       },
       "teamCommand": {
-        "title": "Trainer team and club command",
-        "copy": "A desktop-first operating layer for managing squads, actions, services, and club-level delivery."
+        "title": "Team & club management",
+        "copy": "Manage squads, daily actions, and club-level work from one desktop-first view."
       },
       "operations": {
         "club-load": {
@@ -1901,9 +1901,9 @@
         }
       },
       "athletes": {
-        "title": "Athlete command",
+        "title": "Athletes",
         "academyTitle": "Academy rollup",
-        "copy": "Dense professional view with source rationale and workflow continuity.",
+        "copy": "A focused professional view of every athlete — readiness, recovery, and load, with the data behind each number.",
         "loadLabel": "Load",
         "mentalLabel": "Mental",
         "unassignedTeam": "Unassigned team",
@@ -2576,7 +2576,7 @@
     "retry": "Try again",
     "lastSync": "Last sync: {time}",
     "neverSynced": "Not synced yet",
-    "noMetrics": "No telemetry yet — run a sync.",
+    "noMetrics": "No device data yet — run a sync.",
     "syncNow": "Sync now",
     "disconnect": "Disconnect",
     "connect": "Connect",
@@ -2585,7 +2585,7 @@
     "syncError": "Sync failed. Please try again.",
     "connectedNotice": {
       "title": "Device connected",
-      "body": "{provider} is connected and will sync telemetry."
+      "body": "{provider} is connected and will sync your data."
     },
     "connectFailed": {
       "title": "Connection failed",

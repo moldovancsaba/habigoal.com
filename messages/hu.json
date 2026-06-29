@@ -293,7 +293,7 @@
     "athleteCompletionLabel": "Teljesség",
     "athleteProfileShapeLabel": "Profilalak",
     "performanceOverviewSubtitle": "Napi sportolói monitoring vezérlőpult regenerációra, támogatási egyensúlyra és trendválaszra építve.",
-    "commandCenterTitle": "Edzői irányítóközpont",
+    "commandCenterTitle": "Edzői irányítópult",
     "commandCenterSubtitle": "Indítsd a napot azokkal a sportolókkal, akiknél a leggyorsabb utánkövetésre van szükség.",
     "todayCheckInsLabel": "Ma kitöltötte",
     "missedCheckInsLabel": "Ma még hiányzik",
@@ -1183,14 +1183,14 @@
     "habigoalAria": "Habigoal mobil jólléti alkalmazás megnyitása",
     "athleteIqBadge": "Athlete IQ",
     "athleteIqTitle": "Professzionális sportolói teljesítmény munkafelület",
-    "athleteIqBody": "Sötét arany parancsfelület edzőknek, csapatoknak, kluboknak, dashboardoknak, riportoknak, szolgáltatásoknak és teljesítménymunkához.",
+    "athleteIqBody": "A professzionális réteg edzőknek, csapatoknak és kluboknak – irányítópultok, riportok és a napi teljesítménymunka.",
     "athleteIqAction": "Athlete IQ megnyitása",
     "athleteIqAria": "Athlete IQ professzionális teljesítmény alkalmazás megnyitása"
   },
   "Login": {
     "badge": "E-mail hozzáférés",
     "title": "Tovább a saját appba",
-    "subtitle": "Adja meg az e-mail címét, válasszon szerepet, és nyissa meg a hozzá tartozó appfelületet.",
+    "subtitle": "Add meg az e-mail-címed, válaszd ki a szereped, és nyisd meg a megfelelő alkalmazást.",
     "identifierLabel": "E-mail",
     "identifierPlaceholder": "nev@example.com",
     "personaLabel": "Szerep kiválasztása",
@@ -1242,7 +1242,7 @@
   "Onboarding": {
     "defaults": {
       "moduleTitle": "Getting started",
-      "moduleBody": "This surface has a short onboarding introduction.",
+      "moduleBody": "Rövid bevezető az induláshoz.",
       "checklistTitle": "Onboarding checklist",
       "checklistBody": "Follow these steps to get started."
     },
@@ -1781,13 +1781,13 @@
     },
     "athleteIq": {
       "metadata": {
-        "title": "Athlete IQ | Professzionális teljesítmény operációs rendszer",
+        "title": "Athlete IQ | Professzionális teljesítményplatform edzőknek és csapatoknak",
         "description": "Az Athlete IQ professzionális teljesítményréteg sportolóknak, edzőknek, csapatoknak, kluboknak, dashboardoknak, riportoknak és szolgáltatásoknak."
       },
       "surfaceName": "Athlete IQ",
       "operatingMode": "Professzionális edzői, csapat-, klub- és szolgáltatásoperáció",
       "sidebar": {
-        "kicker": "Teljesítmény parancsfelület"
+        "kicker": "Teljesítmény"
       },
       "controls": {
         "role": {
@@ -1798,7 +1798,7 @@
         },
         "mode": {
           "label": "Mód",
-          "aria": "Athlete IQ működési mód",
+          "aria": "Athlete IQ mód",
           "lifestyle": "Életmód",
           "performance": "Teljesítmény"
         }
@@ -1806,7 +1806,7 @@
       "hero": {
         "dateLabel": "Ma - {date}",
         "title": "Athlete IQ Daily Development OS",
-        "subtitle": "Professzionális operációs felület sportolóknak, edzőknek, csapatoknak, kluboknak és teljesítménydöntéseknek.",
+        "subtitle": "Egységes professzionális munkafelület sportolóknak, edzőknek, csapatoknak és kluboknak.",
         "copy": "Readiness, mentális állapot, edzésterhelés, csapatműveletek és riportok egy fókuszált edzői munkatérben maradnak.",
         "summaryAria": "Athlete IQ operációs összefoglaló"
       },
@@ -1820,8 +1820,8 @@
         "priorityAthletes": "Prioritásos sportolók"
       },
       "teamCommand": {
-        "title": "Edzői csapat- és klubirányítás",
-        "copy": "Desktop-first operációs réteg keretek, műveletek, szolgáltatások és klubszintű teljesítés kezeléséhez."
+        "title": "Csapat- és klubkezelés",
+        "copy": "Kezeld a kereteket, a napi teendőket és a klubszintű munkát egyetlen, asztali nézetből."
       },
       "operations": {
         "club-load": {
@@ -1901,9 +1901,9 @@
         }
       },
       "athletes": {
-        "title": "Sportolói parancsnézet",
+        "title": "Sportolók",
         "academyTitle": "Akadémiai összesítés",
-        "copy": "Sűrű professzionális nézet forrásindoklással és folyamatfolytonossággal.",
+        "copy": "Áttekinthető, professzionális nézet minden sportolóról – készenlét, regeneráció és terhelés, az egyes számok mögötti adatokkal.",
         "loadLabel": "Terhelés",
         "mentalLabel": "Mentális",
         "unassignedTeam": "Csapathoz nem rendelve",
@@ -2576,7 +2576,7 @@
     "retry": "Újra",
     "lastSync": "Utolsó szinkron: {time}",
     "neverSynced": "Még nincs szinkronizálva",
-    "noMetrics": "Még nincs telemetria — futtass szinkronizálást.",
+    "noMetrics": "Még nincs eszközadat – indíts egy szinkronizálást.",
     "syncNow": "Szinkronizálás most",
     "disconnect": "Leválasztás",
     "connect": "Csatlakoztatás",
@@ -2585,7 +2585,7 @@
     "syncError": "A szinkronizálás nem sikerült. Kérjük, próbáld újra.",
     "connectedNotice": {
       "title": "Eszköz csatlakoztatva",
-      "body": "A(z) {provider} csatlakoztatva van, és szinkronizálni fogja a telemetriát."
+      "body": "A(z) {provider} csatlakoztatva van, és szinkronizálja az adataidat."
     },
     "connectFailed": {
       "title": "A csatlakozás nem sikerült",
