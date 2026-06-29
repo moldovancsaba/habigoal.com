@@ -42,7 +42,8 @@
     "openDashboard": "Open dashboard",
     "logout": "Log out",
     "featureUnavailableTitle": "Not available yet",
-    "featureUnavailableBody": "This feature isn't available yet. It will appear here once it's ready."
+    "featureUnavailableBody": "This feature isn't available yet. It will appear here once it's ready.",
+    "cookieRejectNonEssential": "Essential only"
   },
   "Dashboard": {
     "title": "Dashboard",

@@ -42,7 +42,8 @@
     "openDashboard": "Abrir panel",
     "logout": "Cerrar sesión",
     "featureUnavailableTitle": "Aún no disponible",
-    "featureUnavailableBody": "Esta función aún no está disponible. Aparecerá aquí cuando esté lista."
+    "featureUnavailableBody": "Esta función aún no está disponible. Aparecerá aquí cuando esté lista.",
+    "cookieRejectNonEssential": "Solo esenciales"
   },
   "Dashboard": {
     "title": "Panel",

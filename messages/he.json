@@ -42,7 +42,8 @@
     "openDashboard": "פתח לוח בקרה",
     "logout": "התנתק",
     "featureUnavailableTitle": "עדיין לא זמין",
-    "featureUnavailableBody": "התכונה הזו עדיין אינה זמינה. היא תופיע כאן ברגע שתהיה מוכנה."
+    "featureUnavailableBody": "התכונה הזו עדיין אינה זמינה. היא תופיע כאן ברגע שתהיה מוכנה.",
+    "cookieRejectNonEssential": "חיוניות בלבד"
   },
   "Dashboard": {
     "title": "לוח בקרה",
