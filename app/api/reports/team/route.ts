@@ -44,9 +44,19 @@ export async function POST(request: Request) {
   if (authError) return authError;
 
   const body = (await readJson(request)) as { athleteIds?: string[] } | null;
-  const athleteIds = Array.isArray(body?.athleteIds) ? body.athleteIds.filter((id) => typeof id === "string") : [];
-  if (athleteIds.length === 0) {
+  const requestedIds = Array.isArray(body?.athleteIds) ? body.athleteIds.filter((id) => typeof id === "string") : [];
+  if (requestedIds.length === 0) {
     return jsonError("athleteIds required", 400, "VALIDATION_ERROR");
+  }
+
+  // RPT-004 (#199): scope the caller-supplied athleteIds to those the user may
+  // access. The GET path already filters by accessibility; the POST must too, so
+  // a coach cannot pull a team report over athletes outside their scope.
+  const authUser = await getAuthUser();
+  const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
+  const athleteIds = allowedIds === null ? requestedIds : requestedIds.filter((id) => allowedIds.includes(id));
+  if (athleteIds.length === 0) {
+    return jsonError("No accessible athletes in request", 403, "FORBIDDEN");
   }
 
   const twins = await Promise.all(athleteIds.map((id) => findTwinByAthleteId(id)));
