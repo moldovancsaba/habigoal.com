@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { jsonError, requireRole } from "@/lib/api";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { listMediaByAthlete, listVisionAnalyses } from "@/repositories/media-asset.repository";
+import { env } from "@/config/env";
 
 export async function GET(
   request: Request,
@@ -21,5 +22,5 @@ export async function GET(
     listVisionAnalyses(athleteId),
   ]);
 
-  return NextResponse.json({ media, analyses });
+  return NextResponse.json({ media, analyses, realPipeline: env.capabilities.visionRealPipeline });
 }

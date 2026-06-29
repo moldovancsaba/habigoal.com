@@ -1481,7 +1481,9 @@
     "mediaLabel": "Medio {id}",
     "accepted": "Aceptado",
     "rejected": "Rechazado",
-    "uploadFailed": "Error al subir"
+    "uploadFailed": "Error al subir",
+    "previewNotice": "El análisis automático aún no está disponible",
+    "previewNoticeDesc": "Puedes subir contenido ahora y se almacena de forma segura, pero el análisis validado de postura y cinemática aún no está activo. Hasta entonces no se escriben métricas derivadas de visión en el perfil del atleta."
   },
   "ParentPortal": {
     "title": "Portal de padres",

@@ -1481,7 +1481,9 @@
     "mediaLabel": "Media {id}",
     "accepted": "Accepted",
     "rejected": "Rejected",
-    "uploadFailed": "Upload failed"
+    "uploadFailed": "Upload failed",
+    "previewNotice": "Automated analysis not yet available",
+    "previewNoticeDesc": "You can upload media now and it is stored securely, but validated pose and kinematics analysis is not live yet. No vision-derived metrics are written to the athlete profile until it is."
   },
   "ParentPortal": {
     "title": "Parent Portal",
