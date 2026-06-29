@@ -33,6 +33,30 @@ npm run db:seed-haho-ecosystem
 - **Manifest:** each run records a `haho_seed_manifests` entry with counts and a
   validation block (`expectedTrainerCount: 5`, `expectedAthleteCount: 25`).
 
+## Seeding production without DB access (ops endpoint)
+
+When you can't run Node against Atlas directly (e.g. the data must be created in
+the deployed environment), use the guarded ops endpoint, which runs the same
+`runHahoSeed` routine against the app's live connection:
+
+1. Set `OPS_SEED_TOKEN` to a strong secret in the deployment environment
+   (Vercel) and redeploy. While this var is unset the endpoint returns 404, so it
+   is inert by default.
+2. Trigger it once:
+
+```
+curl -X POST "https://<app-host>/api/ops/seed-haho-ecosystem" \
+  -H "x-ops-token: $OPS_SEED_TOKEN"
+```
+
+   - Optional `?days=N` (clamped to 120) seeds a shorter window if the function
+     times out on a large history.
+   - Idempotent — safe to call again; it returns the manifest.
+
+The endpoint shares the exact seed logic with the CLI (`runHahoSeed`), so both
+paths produce the same roster and history. Guarded by
+`app/api/ops/seed-haho-ecosystem/route.test.ts`.
+
 ## Verify
 
 After seeding, sign in as e.g. `athlete11@haho.ai` (Habigoal) or

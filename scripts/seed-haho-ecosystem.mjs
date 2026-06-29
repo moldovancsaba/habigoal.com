@@ -29,11 +29,6 @@ loadEnvFile(".env.local");
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || "habigoal";
 
-if (!uri) {
-  console.error("MONGODB_URI is missing. Add the Atlas connection string before running this script.");
-  process.exit(1);
-}
-
 const trainerProfiles = Array.from({ length: 5 }, (_, index) => {
   const number = index + 1;
   return {
@@ -270,32 +265,26 @@ async function flushBulk(collection, operations) {
   return collection.bulkWrite(operations, { ordered: false });
 }
 
-const client = new MongoClient(uri, {
-  appName: process.env.MONGODB_APP_NAME || "haho-ecosystem-seed",
-  maxPoolSize: 5,
-  serverSelectionTimeoutMS: 10000
-});
-
-try {
-  await client.connect();
-  const db = client.db(dbName);
+// Core seed routine. Accepts an existing Mongo `db` so it can run both from the
+// CLI and from the in-app ops endpoint (which uses the app's connection). Returns
+// the manifest instead of printing/exiting, so it is import-safe.
+export async function runHahoSeed(db, options = {}) {
+  const days = options.days ?? DAYS;
   await ensureIndexes(db);
 
   if (rollback || resetSeededRecords) {
     if (dryRun) {
-      console.log(JSON.stringify({ ok: true, dryRun, rollback, wouldDeleteSource: GENERATED_BY }, null, 2));
-      if (rollback) process.exit(0);
+      if (rollback) return { ok: true, dryRun, rollback, wouldDeleteSource: GENERATED_BY };
     } else {
       const deleted = await deleteSeededRecords(db);
       if (rollback) {
-        console.log(JSON.stringify({ ok: true, rollback: true, generatedBy: GENERATED_BY, deleted }, null, 2));
-        process.exit(0);
+        return { ok: true, rollback: true, generatedBy: GENERATED_BY, deleted };
       }
     }
   }
 
   const today = localDate();
-  const dates = Array.from({ length: DAYS }, (_, index) => shiftDate(today, index - (DAYS - 1)));
+  const dates = Array.from({ length: days }, (_, index) => shiftDate(today, index - (days - 1)));
   const now = new Date().toISOString();
   const users = db.collection("users");
   const children = db.collection("children");
@@ -621,7 +610,7 @@ try {
       expectedTrainerCount: 5,
       expectedAthleteCount: 25,
       expectedTeamCount: 5,
-      expectedDays: DAYS
+      expectedDays: days
     },
     generatedAt: now
   };
@@ -630,10 +619,30 @@ try {
     await db.collection("haho_seed_manifests").insertOne(manifest);
   }
 
-  console.log(JSON.stringify(manifest, null, 2));
-} catch (error) {
-  console.error(error);
-  process.exit(1);
-} finally {
-  await client.close().catch(() => {});
+  return manifest;
+}
+
+// CLI entrypoint: runs only when this file is executed directly, not on import.
+const invokedDirectly =
+  process.argv[1] && process.argv[1].replace(/\\/g, "/").endsWith("scripts/seed-haho-ecosystem.mjs");
+if (invokedDirectly) {
+  if (!uri) {
+    console.error("MONGODB_URI is missing. Add the Atlas connection string before running this script.");
+    process.exit(1);
+  }
+  const client = new MongoClient(uri, {
+    appName: process.env.MONGODB_APP_NAME || "haho-ecosystem-seed",
+    maxPoolSize: 5,
+    serverSelectionTimeoutMS: 10000
+  });
+  try {
+    await client.connect();
+    const manifest = await runHahoSeed(client.db(dbName));
+    console.log(JSON.stringify(manifest, null, 2));
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  } finally {
+    await client.close().catch(() => {});
+  }
 }
