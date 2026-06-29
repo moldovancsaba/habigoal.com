@@ -2603,7 +2603,12 @@
       "none": "Nincs",
       "teamTitle": "Csapatjelentés",
       "athleteCount": "Sportolók"
-    }
+    },
+    "exportLabel": "Exportálás",
+    "teamSubject": "csapatjelentés",
+    "exportPdfAria": "{subject} exportálása PDF-ként",
+    "exportCsvAria": "{subject} exportálása CSV-ként",
+    "exportJsonAria": "{subject} exportálása JSON-ként"
   },
   "Wearables": {
     "title": "Csatlakoztatott viselhető eszközök",
