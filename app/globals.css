@@ -1303,6 +1303,11 @@ a {
   align-items: start;
 }
 
+/* Embedded in the shared shell: no surface sidebar, so the content spans full width. */
+.aiq-command-layout-embedded {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .aiq-sidebar-v2,
 .aiq-hero-panel,
 .aiq-panel,
