@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
+import { LOCALE_COOKIE } from "@/lib/locale-preference";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -13,6 +14,8 @@ export function LocaleSwitcher() {
   const pathname = usePathname();
 
   function switchLocale(nextLocale: "en" | "hu" | "ar" | "es" | "de" | "he") {
+    // Persist the explicit choice so locale-less entry remembers it (#422).
+    document.cookie = `${LOCALE_COOKIE}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
     const cleanPath = pathname.replace(/^\/(en|hu|ar|es|de|he)(\/|$)/, "/");
     router.replace(cleanPath, { locale: nextLocale });
   }
