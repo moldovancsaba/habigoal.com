@@ -47,16 +47,16 @@ export const env = {
   valdWebhookSecret: process.env.VALD_WEBHOOK_SECRET,
   // Privacy-safe product telemetry (#88). Default OFF; emits nothing until enabled.
   telemetryEnabled: readBooleanEnv(process.env.TELEMETRY_ENABLED, false),
-  // Capability flags (#440). Default OFF: a capability is only ON once its real
-  // implementation exists. UI uses these to render real features or an honest
-  // "not available yet" state — never fabricated data.
+  // Capability flags (#440). Default ON (owner directive: "enable everything to
+  // be able to see") so every feature surface is visible. Each can still be
+  // turned OFF per-environment by setting its CAPABILITY_* env var to "false".
   capabilities: {
-    visionAi: readBooleanEnv(process.env.CAPABILITY_VISION_AI, false),
-    gpsIngestion: readBooleanEnv(process.env.CAPABILITY_GPS_INGESTION, false),
-    forecasting: readBooleanEnv(process.env.CAPABILITY_FORECASTING, false),
-    aiCoachNudges: readBooleanEnv(process.env.CAPABILITY_AI_COACH_NUDGES, false),
-    cogLeague: readBooleanEnv(process.env.CAPABILITY_COGLEAGUE, false),
-    gameFlow: readBooleanEnv(process.env.CAPABILITY_GAMEFLOW, false),
+    visionAi: readBooleanEnv(process.env.CAPABILITY_VISION_AI, true),
+    gpsIngestion: readBooleanEnv(process.env.CAPABILITY_GPS_INGESTION, true),
+    forecasting: readBooleanEnv(process.env.CAPABILITY_FORECASTING, true),
+    aiCoachNudges: readBooleanEnv(process.env.CAPABILITY_AI_COACH_NUDGES, true),
+    cogLeague: readBooleanEnv(process.env.CAPABILITY_COGLEAGUE, true),
+    gameFlow: readBooleanEnv(process.env.CAPABILITY_GAMEFLOW, true),
   },
 };
 
