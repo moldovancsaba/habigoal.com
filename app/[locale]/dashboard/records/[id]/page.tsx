@@ -54,7 +54,6 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
   const tr = useTranslations("Report");
   const searchParams = useSearchParams();
   const shouldPrint = searchParams.get("print") === "true";
-  const reportFormat = searchParams.get("format") || "original";
 
   const [record, setRecord] = useState<CheckInRecord | null>(null);
   const [history, setHistory] = useState<CheckInRecord[]>([]);
@@ -68,7 +67,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           icon: GdsIcons.Edit
         },
         downloadPdf: {
-          defaultMessage: td("downloadPdf"),
+          defaultMessage: td("exportReportPdf"),
           icon: GdsIcons.Print
         },
         view: {
@@ -101,11 +100,10 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
     try {
       const users = await getUsers();
       const printableRecord = withDisplayNamesForReport(record, users);
-      if (reportFormat === "map") {
-        await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, history);
-      } else {
-        await PdfService.generateOriginalReport(printableRecord, t, tc, ts);
-      }
+      // Always export the full report (with longitudinal history). The previous
+      // ?format=original branch silently produced a history-less report, and
+      // there was no UI to choose it — so trainers always got the lesser export.
+      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, history);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {

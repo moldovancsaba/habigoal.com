@@ -611,7 +611,8 @@
     "navAthleteToday": "היום",
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "התקדמות",
-    "chartNoData": "אין עדיין נתונים לתרשים — הוסף צ׳ק-אין."
+    "chartNoData": "אין עדיין נתונים לתרשים — הוסף צ׳ק-אין.",
+    "exportReportPdf": "ייצוא PDF"
   },
   "Assessment": {
     "saved": "הצק-אין נשמר.",

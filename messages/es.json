@@ -611,7 +611,8 @@
     "navAthleteToday": "Hoy",
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "Progreso",
-    "chartNoData": "Aún no hay datos para el gráfico — añade un check-in."
+    "chartNoData": "Aún no hay datos para el gráfico — añade un check-in.",
+    "exportReportPdf": "Exportar PDF"
   },
   "Assessment": {
     "saved": "Registro guardado.",

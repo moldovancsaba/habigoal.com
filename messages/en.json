@@ -611,7 +611,8 @@
     "navAthleteToday": "Today",
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "Progress",
-    "chartNoData": "No data to chart yet — add a check-in to see this."
+    "chartNoData": "No data to chart yet — add a check-in to see this.",
+    "exportReportPdf": "Export PDF"
   },
   "Assessment": {
     "saved": "Check-in saved.",

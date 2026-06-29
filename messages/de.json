@@ -611,7 +611,8 @@
     "navAthleteToday": "Heute",
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "Fortschritt",
-    "chartNoData": "Noch keine Diagrammdaten — füge einen Check-in hinzu."
+    "chartNoData": "Noch keine Diagrammdaten — füge einen Check-in hinzu.",
+    "exportReportPdf": "PDF exportieren"
   },
   "Assessment": {
     "saved": "Check-in gespeichert.",

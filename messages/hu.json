@@ -611,7 +611,8 @@
     "navAthleteToday": "Ma",
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "Haladás",
-    "chartNoData": "Még nincs adat a diagramhoz — adj hozzá egy bejelentkezést."
+    "chartNoData": "Még nincs adat a diagramhoz — adj hozzá egy bejelentkezést.",
+    "exportReportPdf": "PDF exportálása"
   },
   "Assessment": {
     "saved": "Check-in elmentve.",

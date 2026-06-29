@@ -611,7 +611,8 @@
     "navAthleteToday": "اليوم",
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "التقدم",
-    "chartNoData": "لا توجد بيانات للرسم البياني بعد — أضف تسجيل وصول."
+    "chartNoData": "لا توجد بيانات للرسم البياني بعد — أضف تسجيل وصول.",
+    "exportReportPdf": "تصدير PDF"
   },
   "Assessment": {
     "saved": "تم حفظ التسجيل.",
