@@ -1521,7 +1521,11 @@
     "microcyclesTitle": "الدورات الصغيرة",
     "cycleGoal": "هدف الدورة",
     "cycleGoalPlaceholder": "مثال: بناء القاعدة الهوائية",
-    "newSessionDefault": "جلسة جديدة"
+    "newSessionDefault": "جلسة جديدة",
+    "loadPoints": "{points} نقطة",
+    "weeklyLoadSummary": "الحِمل المخطط: {points} نقطة · {count} جلسات",
+    "createCycle": "إنشاء دورة صغيرة",
+    "cycleHint": "يجمع أحدث جلساتك في دورة مدتها 7 أيام."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "إدارة ملف الرياضي",

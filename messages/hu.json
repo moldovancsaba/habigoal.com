@@ -1521,7 +1521,11 @@
     "microcyclesTitle": "Mikrociklusok",
     "cycleGoal": "Ciklus cél",
     "cycleGoalPlaceholder": "pl. Aerob bázis építése",
-    "newSessionDefault": "Új edzés"
+    "newSessionDefault": "Új edzés",
+    "loadPoints": "{points} pont",
+    "weeklyLoadSummary": "Tervezett terhelés: {points} pont · {count} edzés",
+    "createCycle": "Mikrociklus létrehozása",
+    "cycleHint": "A legutóbbi edzéseidet egy 7 napos ciklusba rendezi."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Sportolói profil adminisztráció",

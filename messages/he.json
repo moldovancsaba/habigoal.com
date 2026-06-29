@@ -1521,7 +1521,11 @@
     "microcyclesTitle": "מיקרו-מחזורים",
     "cycleGoal": "מטרת מחזור",
     "cycleGoalPlaceholder": "למשל בניית בסיס",
-    "newSessionDefault": "אימון חדש"
+    "newSessionDefault": "אימון חדש",
+    "loadPoints": "{points} נק׳",
+    "weeklyLoadSummary": "עומס מתוכנן: {points} נק׳ · {count} אימונים",
+    "createCycle": "צור מיקרו-מחזור",
+    "cycleHint": "מקבץ את האימונים האחרונים שלך למחזור של 7 ימים."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "ניהול פרופיל ספורטאי",
