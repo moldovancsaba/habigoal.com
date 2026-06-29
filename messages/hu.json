@@ -607,7 +607,10 @@
     "trainingLogCalculatedLoad": "Számított terhelés:",
     "trainingLogPoints": "{points} pont",
     "trainingLogSuccessTitle": "Edzés rögzítve!",
-    "trainingLogSuccessBody": "A terhelési pontjaid frissültek."
+    "trainingLogSuccessBody": "A terhelési pontjaid frissültek.",
+    "navAthleteToday": "Ma",
+    "navAthleteIq": "Athlete IQ",
+    "navAthleteProgress": "Haladás"
   },
   "Assessment": {
     "saved": "Check-in elmentve.",

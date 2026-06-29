@@ -78,7 +78,7 @@ type ResultPanelProps = {
   translate: Translate;
 };
 
-export function HabigoalExperience({ history, projection, surface }: { history?: HabigoalHistory; projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
+export function HabigoalExperience({ embedded = false, history, projection, surface }: { embedded?: boolean; history?: HabigoalHistory; projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const router = useRouter();
   const t = useTranslations("ProductSurfaces.habigoal");
   const [activeProjection, setActiveProjection] = useState(projection);
@@ -193,23 +193,56 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
 
   return (
     <Box className="habigoal-product-shell">
-      <Box className="hbg-app-frame" px={{ base: "sm", md: "md" }} py={{ base: 0, md: "md" }} mx="auto">
-        <Box className="hbg-desktop-topbar">
-          <SurfaceTopBar surface={surface} />
-        </Box>
+      <Box className={embedded ? "hbg-app-frame hbg-app-frame-embedded" : "hbg-app-frame"} px={{ base: "sm", md: "md" }} py={{ base: 0, md: "md" }} mx="auto">
+        {/* When embedded inside the shared shell (DashboardShell), that shell owns
+            the single persona menu — so suppress this surface's own top bar,
+            mobile header, and fixed bottom nav. The Today/Progress switch is then
+            offered as an inline segmented control (below) so it is not lost. */}
+        {!embedded && (
+          <Box className="hbg-desktop-topbar">
+            <SurfaceTopBar surface={surface} />
+          </Box>
+        )}
 
-        <Box className="hbg-mobile-app-header">
-          <Group gap="sm" wrap="nowrap">
-            <Image src="/images/habigoal_logo.png" alt="" width={38} height={38} priority />
-            <Stack gap={0}>
-              <Text className="hbg-kicker">{t("todayLabel")}</Text>
-              <Text fw={900}>Habigoal</Text>
-            </Stack>
-          </Group>
-          {statusAvailable ? (
-            <Box className="hbg-score-pill" aria-label={scoreAria}>{scoreText}</Box>
-          ) : null}
-        </Box>
+        {!embedded && (
+          <Box className="hbg-mobile-app-header">
+            <Group gap="sm" wrap="nowrap">
+              <Image src="/images/habigoal_logo.png" alt="" width={38} height={38} priority />
+              <Stack gap={0}>
+                <Text className="hbg-kicker">{t("todayLabel")}</Text>
+                <Text fw={900}>Habigoal</Text>
+              </Stack>
+            </Group>
+            {statusAvailable ? (
+              <Box className="hbg-score-pill" aria-label={scoreAria}>{scoreText}</Box>
+            ) : null}
+          </Box>
+        )}
+
+        {embedded ? (
+          <Box className="hbg-embedded-viewswitch" role="tablist" aria-label={t("navigation.aria")}>
+            <button
+              type="button"
+              role="tab"
+              className={view === "flow" ? "hbg-viewswitch-tab hbg-viewswitch-tab-active" : "hbg-viewswitch-tab"}
+              aria-selected={view === "flow"}
+              onClick={() => setView("flow")}
+            >
+              <GdsIcons.Profile size={18} />
+              <span>{t("navigation.today")}</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              className={view === "progress" ? "hbg-viewswitch-tab hbg-viewswitch-tab-active" : "hbg-viewswitch-tab"}
+              aria-selected={view === "progress"}
+              onClick={() => setView("progress")}
+            >
+              <GdsIcons.Record size={18} />
+              <span>{t("navigation.progress")}</span>
+            </button>
+          </Box>
+        ) : null}
 
         {/* No `pb` here: the bottom-inset that clears the fixed bottom nav is
             owned by `.hbg-main-grid` in CSS (nav height + safe-area). A Mantine
@@ -268,26 +301,28 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
           ) : null}
         </Box>
 
-        <nav className="hbg-bottom-nav hbg-bottom-nav-2" aria-label={t("navigation.aria")}>
-          <button
-            type="button"
-            className={view === "flow" ? "hbg-bottom-nav-item hbg-bottom-nav-item-active" : "hbg-bottom-nav-item"}
-            aria-current={view === "flow" ? "page" : undefined}
-            onClick={() => setView("flow")}
-          >
-            <GdsIcons.Profile size={20} />
-            <span>{t("navigation.today")}</span>
-          </button>
-          <button
-            type="button"
-            className={view === "progress" ? "hbg-bottom-nav-item hbg-bottom-nav-item-active" : "hbg-bottom-nav-item"}
-            aria-current={view === "progress" ? "page" : undefined}
-            onClick={() => setView("progress")}
-          >
-            <GdsIcons.Record size={20} />
-            <span>{t("navigation.progress")}</span>
-          </button>
-        </nav>
+        {!embedded && (
+          <nav className="hbg-bottom-nav hbg-bottom-nav-2" aria-label={t("navigation.aria")}>
+            <button
+              type="button"
+              className={view === "flow" ? "hbg-bottom-nav-item hbg-bottom-nav-item-active" : "hbg-bottom-nav-item"}
+              aria-current={view === "flow" ? "page" : undefined}
+              onClick={() => setView("flow")}
+            >
+              <GdsIcons.Profile size={20} />
+              <span>{t("navigation.today")}</span>
+            </button>
+            <button
+              type="button"
+              className={view === "progress" ? "hbg-bottom-nav-item hbg-bottom-nav-item-active" : "hbg-bottom-nav-item"}
+              aria-current={view === "progress" ? "page" : undefined}
+              onClick={() => setView("progress")}
+            >
+              <GdsIcons.Record size={20} />
+              <span>{t("navigation.progress")}</span>
+            </button>
+          </nav>
+        )}
       </Box>
     </Box>
   );

@@ -607,7 +607,10 @@
     "trainingLogCalculatedLoad": "Calculated Load:",
     "trainingLogPoints": "{points} Points",
     "trainingLogSuccessTitle": "Session Logged!",
-    "trainingLogSuccessBody": "Your load points have been updated."
+    "trainingLogSuccessBody": "Your load points have been updated.",
+    "navAthleteToday": "Today",
+    "navAthleteIq": "Athlete IQ",
+    "navAthleteProgress": "Progress"
   },
   "Assessment": {
     "saved": "Check-in saved.",

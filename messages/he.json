@@ -607,7 +607,10 @@
     "trainingLogCalculatedLoad": "עומס מחושב:",
     "trainingLogPoints": "{points} נקודות",
     "trainingLogSuccessTitle": "האימון תועד!",
-    "trainingLogSuccessBody": "נקודות העומס שלך עודכנו."
+    "trainingLogSuccessBody": "נקודות העומס שלך עודכנו.",
+    "navAthleteToday": "היום",
+    "navAthleteIq": "Athlete IQ",
+    "navAthleteProgress": "התקדמות"
   },
   "Assessment": {
     "saved": "הצק-אין נשמר.",

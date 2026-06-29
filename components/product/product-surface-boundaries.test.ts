@@ -144,8 +144,8 @@ describe("product surface route boundaries", () => {
     expect(athleteIqSource).not.toContain("TEAM_OPERATIONS");
     expect(athleteIqRoute).toContain("getAthleteIqProductDashboardProjection");
     expect(athleteIqSource).toContain("teamCommand.title");
-    expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.title).toBe("Trainer team and club command");
-    expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.copy).toContain("club-level delivery");
+    expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.title).toBe("Team & club management");
+    expect(englishMessages.ProductSurfaces.athleteIq.teamCommand.copy).toContain("club-level work");
     expect(ATHLETE_IQ_OS_MODULES.map((module) => module.label)).toContain("Team");
   });
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import DashboardShell from "@/components/layout/DashboardShell";
 import { HabigoalExperience } from "@/components/product/habigoal/HabigoalExperience";
 import { requireProductSession } from "@/lib/product-session";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
@@ -37,5 +38,12 @@ export default async function HabigoalSurfaceRoute({
   });
   const [projection, history] = await Promise.all([getHabigoalTodayProjection(), getHabigoalRecentHistory()]);
 
-  return <HabigoalExperience projection={projection} history={history} surface={getProductSurfaceOrThrow("habigoal")} />;
+  // Render inside the single shared shell so there is exactly one persona menu
+  // (the DashboardShell nav). The Habigoal experience renders in `embedded`
+  // mode, suppressing its own duplicate top bar / mobile header / bottom nav.
+  return (
+    <DashboardShell>
+      <HabigoalExperience projection={projection} history={history} surface={getProductSurfaceOrThrow("habigoal")} embedded />
+    </DashboardShell>
+  );
 }
