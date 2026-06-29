@@ -107,6 +107,7 @@ These are cross-cutting and unblock everything else. Highest priority because th
 
 ## B7. Forms & platform hygiene  (fixes #150, #152, #153, #156, #334; closes #54–61)
 - Migrate admin/profile forms onto the central form contract (#150/#152); enforce server+client validation parity gate (#153) in a shared `validateCentralForm` middleware on all POST handlers; finish athlete-only check-in route split + deprecate legacy (#156); remove remaining placeholder data (#334). **Close #54–61 as superseded by the delivered #147–156.**
+- ✅ #150 delivered: athlete profile is now a single-source contract in `lib/forms/central-form.ts` — `athleteProfileFields`, the `ATHLETE_PROFILE_STATUSES` enum (`isAthleteProfileStatus` guard) and `ATHLETE_PROFILE_FIELD_LIMITS`. The admin panel (`AthleteProfileAdminPanel`) and the server route (`PATCH /api/athletes/:id/assignment`) both consume these constants, so the status enum and field caps can no longer drift between client and server. Covered by `lib/forms/central-form.test.ts`.
 
 ---
 

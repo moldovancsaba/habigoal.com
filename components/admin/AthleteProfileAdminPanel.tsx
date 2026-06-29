@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { Group, Select, Stack, TextInput, TagsInput } from "@mantine/core";
 import { SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
+import { ATHLETE_PROFILE_STATUSES } from "@/lib/forms/central-form";
 
-const STATUS_OPTIONS = ["active", "injured", "unavailable", "trialist", "archived"] as const;
+const STATUS_OPTIONS = ATHLETE_PROFILE_STATUSES;
 
 interface TeamOption {
   _id?: string;
