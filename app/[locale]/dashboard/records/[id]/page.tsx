@@ -103,7 +103,20 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       // Always export the full report (with longitudinal history). The previous
       // ?format=original branch silently produced a history-less report, and
       // there was no UI to choose it — so trainers always got the lesser export.
-      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, history);
+      // Fetch history fresh here so the export never races the background load
+      // (?print=true auto-export, or an immediate click before history resolves)
+      // and silently drops trends (#476 review). Fall back to whatever loaded.
+      let exportHistory = history;
+      if (record.childId) {
+        try {
+          const res = await fetch(`/api/athletes/${record.childId}/history`);
+          const historyData = await res.json();
+          if (Array.isArray(historyData.assessments)) exportHistory = historyData.assessments;
+        } catch {
+          // keep the already-loaded history state on fetch failure
+        }
+      }
+      await PdfService.generateMapReport(printableRecord, t, tc, ts, tr, exportHistory);
     } catch (error) {
       console.error("PDF generation failed:", error);
     } finally {
