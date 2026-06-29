@@ -103,6 +103,75 @@ export const trainingLoadFields = [
   externalLoad?: number;
 }>[];
 
+// Athlete profile — single source of truth for field definitions, the status
+// enum, and field length caps (#150). Both the admin edit panel and the
+// PATCH /api/athletes/:id/assignment route consume these so the schema can't
+// drift between client and server.
+export const ATHLETE_PROFILE_STATUSES = [
+  "active",
+  "injured",
+  "unavailable",
+  "trialist",
+  "archived"
+] as const;
+
+export type AthleteProfileStatus = (typeof ATHLETE_PROFILE_STATUSES)[number];
+
+export function isAthleteProfileStatus(value: unknown): value is AthleteProfileStatus {
+  return typeof value === "string" && (ATHLETE_PROFILE_STATUSES as readonly string[]).includes(value);
+}
+
+// Maximum stored length per text field. The server slices to these bounds; the
+// contract advertises them so the client can mirror the same limits.
+export const ATHLETE_PROFILE_FIELD_LIMITS = {
+  position: 80,
+  season: 40,
+  parentGuardianEmail: 240,
+  teamId: 120
+} as const;
+
+export type AthleteProfileFormValues = {
+  position: string;
+  status: AthleteProfileStatus;
+  teamId: string;
+  season: string;
+  parentGuardianEmail: string;
+};
+
+export const athleteProfileFields = [
+  {
+    key: "position",
+    kind: "text",
+    labelKey: "position",
+    max: ATHLETE_PROFILE_FIELD_LIMITS.position
+  },
+  {
+    key: "status",
+    kind: "select",
+    labelKey: "status",
+    required: true,
+    options: ATHLETE_PROFILE_STATUSES.map((value) => ({ value, labelKey: `status_${value}` }))
+  },
+  {
+    key: "teamId",
+    kind: "select",
+    labelKey: "team",
+    options: []
+  },
+  {
+    key: "season",
+    kind: "text",
+    labelKey: "season",
+    max: ATHLETE_PROFILE_FIELD_LIMITS.season
+  },
+  {
+    key: "parentGuardianEmail",
+    kind: "text",
+    labelKey: "parentEmail",
+    max: ATHLETE_PROFILE_FIELD_LIMITS.parentGuardianEmail
+  }
+] satisfies CentralFormField<AthleteProfileFormValues>[];
+
 export const checkInNotesFields = [
   {
     key: "general",
