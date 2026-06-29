@@ -96,7 +96,7 @@ These are cross-cutting and unblock everything else. Highest priority because th
 ## B4. Privacy, consent & compliance  (fixes #205, #206, #423)
 - **GDPR erasure (#205):** complete `services/privacy.service.ts` erase path (cascade across canonical metrics, habit records, media, twin, reviews) + audit event; `POST /api/athletes/:id/erase` with role + confirm-keyword.
 - **Cookie consent gating (#423):** category model (`necessary|functional|analytics`); `ConsentProvider` exposes categories; telemetry (A4) + locale cookie (B3) check it; commit `docs/cookies.md` inventory. Rebuild the existing banner/modal on GDS (folds in #431's ConsentModal item).
-- **Guardian consent & age rules (#206):** enforce `guardianRequired` for minors before data sharing; block minor rec delivery via A3.
+- **Guardian consent & age rules (#206):** ✅ delivered — `resolveGuardianRequirement(birthDate, requested)` makes the age rule authoritative server-side: an athlete below `YOUTH_AGE_THRESHOLD` always requires guardian consent and the request body can only strengthen (never waive) it. Wired into `POST /api/athletes/:id/consents` so a minor can't be downgraded via `guardianRequired:false`; covered by `tests/age-consent.test.ts`. Consent validity (`lib/consent.ts`) already blocks data sharing until guardian approval, and minor rec delivery is gated via A3.
 
 ## B5. Reports  (fixes #34, #86, #198–201)
 - **Weekly snapshots (#34/#86):** `weekly_snapshot` job (A1) builds `WeeklyAthleteSnapshot` (collection + repo) every Monday; versioned; export in PDF/CSV/JSON. **AI labelling (#201)** via A3. Team-report depth (#198) — sub-team/position breakdowns; consistent role checks (#199).

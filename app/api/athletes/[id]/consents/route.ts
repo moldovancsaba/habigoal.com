@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { findConsentsByAthleteId, upsertConsent } from "@/repositories/consent.repository";
 import { ConsentRecord, ConsentPurpose } from "@/types/consent";
 import { CURRENT_PRIVACY_NOTICE_VERSION } from "@/lib/consent";
-import { requiresGuardianConsent } from "@/lib/age-consent";
+import { resolveGuardianRequirement } from "@/lib/age-consent";
 import { getChildById } from "@/repositories/child.repository";
 import { jsonError, requireRole } from "@/lib/api";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
@@ -53,7 +53,9 @@ export async function POST(
     }
 
     const child = ObjectId.isValid(athleteId) ? await getChildById(new ObjectId(athleteId)) : null;
-    const guardianRequired = guardianRequiredInput ?? (child?.birthDate ? requiresGuardianConsent(child.birthDate) : false);
+    // Age-based rule is authoritative: a minor always requires guardian consent.
+    // The request can only strengthen this, never waive it for an under-age athlete (#206).
+    const guardianRequired = resolveGuardianRequirement(child?.birthDate, guardianRequiredInput);
 
     const ipAddressRaw = request.headers.get("x-forwarded-for") || "unknown";
     const ipAddress = crypto.createHash("sha256").update(ipAddressRaw).digest("hex");
