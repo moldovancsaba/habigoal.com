@@ -227,7 +227,7 @@ function ShellLocaleSwitcher() {
   return (
     <Menu shadow="md" width={170} position="bottom-end">
       <Menu.Target>
-        <ActionIcon variant="default" color="gray" size="lg" radius="md" aria-label={t("languageEnglish")}>
+        <ActionIcon variant="default" color="gray" size="lg" radius="md" aria-label={t("languageSelector")} title={t("languageSelector")}>
           <Text fw={700} size="sm">{localeLabel}</Text>
         </ActionIcon>
       </Menu.Target>
