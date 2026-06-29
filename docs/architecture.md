@@ -146,16 +146,38 @@ Reports are generated client-side with `jsPDF` and `jspdf-autotable`.
 
 Report code must use localized message catalogs for user-facing labels. Mixed-language report surfaces are a known quality risk and should be checked with `npm run i18n:audit` plus manual RTL/report validation before release.
 
-## Automation
+## Operating surfaces and access model
 
-`.codex/` contains the Codex automation control plane:
+The active entity model is `athlete`, `trainer`, and `admin`: athlete access is self-scoped, trainer access is team-scoped, and admin access owns settings plus team management. DoneIsBetter SSO is the intended authentication boundary, while local role authorization is owned by the `users` collection.
 
-- agents
-- heartbeat specs
-- memory
-- policies
+Role-aware route gating must exist in the shell layer as well as in the APIs — athletes must not browse coach/admin dashboard routes, and trainers must not reach admin settings routes by URL.
 
-Autonomous loops should use branch-and-PR delivery. Direct pushes to `main` are reserved for explicit human-directed work.
+Key surfaces:
+
+- `/dashboard` — coach triage and recommendation surface.
+- `/dashboard/planning` — coach weekly planning from live readiness/load state; weekly plans persist in `session_plans`.
+- `/dashboard/athletes/[id]` — athlete operating surface: trends, habits, memory, and reports.
+- `/dashboard/settings` — admin operations: users, teams, restore/governance, company/legal profile, standards, and alerting.
+- `/athletes` — public athlete app entry; `/athletes/[id]` stays athlete-facing and must not leak coach/admin controls. When auth is enforced, `/athletes` redirects signed-in athletes to their own profile and redirects trainer/admin users into dashboard athlete management.
+- `/news` — public release-note surface; posts render only in locales with exact localized content.
+
+Governance invariants: user-rights changes are admin-owned; the system must not allow self-removal of the active admin or deletion/demotion of the final admin account. Product-facing language avoids legacy `child`, `assessment`, `conductor`, and `observer` wording except when documenting compatibility layers.
+
+## Product spine
+
+The current product spine, which work should sharpen before broad platform expansion:
+
+1. coach command center
+2. athlete trend interpretation
+3. athlete daily operating dashboard
+4. habit adherence and routine scoring
+5. session planning and weekly operating summaries
+
+Supporting persistence: `assessments` (daily check-ins / computed readiness), `children` (athlete identity), `coach_actions` (coach response traceability), `habit_records` (routine adherence), `session_plans` (weekly planning), `teams` (membership scoping), `users` (SSO authorization / roles), and `settings` (company/legal, standards, alerting, governance).
+
+## Delivery workflow
+
+Changes are delivered through feature branches and pull requests; CI (`CI / web`) and human review gate merge. Direct pushes to `main` are reserved for explicit human-directed work — no force pushes or shared-history rewrites.
 
 ## Current Architecture Risks
 
