@@ -1525,7 +1525,15 @@
     "loadPoints": "{points} Pkt.",
     "weeklyLoadSummary": "Geplante Last: {points} Pkt. · {count} Einheiten",
     "createCycle": "Mikrozyklus erstellen",
-    "cycleHint": "Fasst deine neuesten Einheiten zu einem 7-Tage-Zyklus zusammen."
+    "cycleHint": "Fasst deine neuesten Einheiten zu einem 7-Tage-Zyklus zusammen.",
+    "categories": {
+      "strength": "Kraft",
+      "tactical": "Taktik",
+      "endurance": "Ausdauer",
+      "speed": "Schnelligkeit",
+      "recovery": "Erholung",
+      "match": "Spiel"
+    }
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Athletenprofil-Verwaltung",

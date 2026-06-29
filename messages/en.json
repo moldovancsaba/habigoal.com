@@ -1525,7 +1525,15 @@
     "loadPoints": "{points} pts",
     "weeklyLoadSummary": "Planned load: {points} pts · {count} sessions",
     "createCycle": "Create microcycle",
-    "cycleHint": "Groups your most recent sessions into a 7-day cycle."
+    "cycleHint": "Groups your most recent sessions into a 7-day cycle.",
+    "categories": {
+      "strength": "Strength",
+      "tactical": "Tactical",
+      "endurance": "Endurance",
+      "speed": "Speed",
+      "recovery": "Recovery",
+      "match": "Match"
+    }
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Athlete profile administration",

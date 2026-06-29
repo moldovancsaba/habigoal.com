@@ -1525,7 +1525,15 @@
     "loadPoints": "{points} pont",
     "weeklyLoadSummary": "Tervezett terhelés: {points} pont · {count} edzés",
     "createCycle": "Mikrociklus létrehozása",
-    "cycleHint": "A legutóbbi edzéseidet egy 7 napos ciklusba rendezi."
+    "cycleHint": "A legutóbbi edzéseidet egy 7 napos ciklusba rendezi.",
+    "categories": {
+      "strength": "Erő",
+      "tactical": "Taktikai",
+      "endurance": "Állóképesség",
+      "speed": "Gyorsaság",
+      "recovery": "Regeneráció",
+      "match": "Meccs"
+    }
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Sportolói profil adminisztráció",

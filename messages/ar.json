@@ -1525,7 +1525,15 @@
     "loadPoints": "{points} نقطة",
     "weeklyLoadSummary": "الحِمل المخطط: {points} نقطة · {count} جلسات",
     "createCycle": "إنشاء دورة صغيرة",
-    "cycleHint": "يجمع أحدث جلساتك في دورة مدتها 7 أيام."
+    "cycleHint": "يجمع أحدث جلساتك في دورة مدتها 7 أيام.",
+    "categories": {
+      "strength": "قوة",
+      "tactical": "تكتيكي",
+      "endurance": "تحمل",
+      "speed": "سرعة",
+      "recovery": "تعافي",
+      "match": "مباراة"
+    }
   },
   "AthleteProfileAdmin": {
     "pageTitle": "إدارة ملف الرياضي",
