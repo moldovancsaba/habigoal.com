@@ -235,6 +235,33 @@ describe("persona pseudo login", () => {
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe("http://localhost/hu/login?next=%2Fhu&error=missing_persona");
   });
+
+  it("never leaks Athlete IQ entitlement or reason codes to a consumer login response (#432)", async () => {
+    // A dual-entitled user signs in through the CONSUMER (Habigoal) surface.
+    // The JSON response must expose only the Habigoal entitlement — no AIQ key,
+    // no reason codes like trainer_assignment.
+    mockedFindUserByEmail.mockResolvedValue(null);
+    mockedUpsertPersonaLoginUser.mockResolvedValue({
+      id: "user-dual",
+      email: "dual@example.com",
+      name: "dual@example.com",
+      roles: ["athlete", "trainer"],
+      productEntitlements: {
+        habigoal: { enabled: true, grantedAt: "2026-06-27T08:00:00.000Z", reason: "aiq_member" },
+        athleteIq: { enabled: true, grantedAt: "2026-06-27T08:00:00.000Z", reason: "trainer_assignment" }
+      }
+    });
+
+    const response = await POST(
+      jsonLoginRequest({ identifier: "dual@example.com", persona: "athlete", next: "/hu/habigoal", productSurface: "habigoal" })
+    );
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload.user.productEntitlements).toEqual({ habigoal: { enabled: true } });
+    expect(JSON.stringify(payload)).not.toContain("trainer_assignment");
+    expect(JSON.stringify(payload)).not.toContain("athleteIq");
+  });
 });
 
 function loginRequest(body: Record<string, string>) {
@@ -243,6 +270,18 @@ function loginRequest(body: Record<string, string>) {
     body: new URLSearchParams(body),
     headers: {
       "content-type": "application/x-www-form-urlencoded",
+      referer: "http://localhost/hu"
+    }
+  });
+}
+
+function jsonLoginRequest(body: Record<string, string>) {
+  return new NextRequest("http://localhost/api/auth/login", {
+    method: "POST",
+    body: new URLSearchParams(body),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      accept: "application/json",
       referer: "http://localhost/hu"
     }
   });

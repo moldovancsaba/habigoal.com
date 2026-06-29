@@ -6,6 +6,7 @@ import { createSession } from "@/lib/session";
 import { canOpenProductSurface } from "@/lib/access";
 import type { AuthUser } from "@/lib/access";
 import type { ProductSurfaceId } from "@/lib/product-entitlements";
+import { projectEntitlementsForSurface } from "@/lib/product-entitlements";
 import { upsertPersonaLoginUser } from "@/repositories/user.repository";
 import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 
@@ -189,7 +190,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         error: "Product access denied",
         code,
-        productEntitlements: localUser.productEntitlements
+        // Scope to the surface being opened so a consumer response never carries
+        // the professional product's entitlement or reason codes (#432).
+        productEntitlements: projectEntitlementsForSurface(localUser.productEntitlements, productSurface)
       }, { status: 403 });
     }
     return NextResponse.redirect(loginPageUrl(request, locale, next, code), 303);
@@ -213,7 +216,9 @@ export async function POST(request: NextRequest) {
         roles: localUser.roles,
         activeRole: persona,
         primaryRole: persona,
-        productEntitlements: localUser.productEntitlements,
+        // Scope to the surface being opened so a consumer response never carries
+        // the professional product's entitlement or reason codes (#432).
+        productEntitlements: projectEntitlementsForSurface(localUser.productEntitlements, productSurface),
         productSurface
       },
       redirectTo: redirectTarget
