@@ -42,7 +42,8 @@
     "openDashboard": "Vezérlőpult megnyitása",
     "logout": "Kijelentkezés",
     "featureUnavailableTitle": "Még nem elérhető",
-    "featureUnavailableBody": "Ez a funkció még nem érhető el. Amint elkészül, itt fog megjelenni."
+    "featureUnavailableBody": "Ez a funkció még nem érhető el. Amint elkészül, itt fog megjelenni.",
+    "cookieRejectNonEssential": "Csak a szükségesek"
   },
   "Dashboard": {
     "title": "Vezérlőpult",

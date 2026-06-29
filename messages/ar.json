@@ -42,7 +42,8 @@
     "openDashboard": "فتح لوحة التحكم",
     "logout": "تسجيل الخروج",
     "featureUnavailableTitle": "غير متاح بعد",
-    "featureUnavailableBody": "هذه الميزة غير متاحة بعد. ستظهر هنا بمجرد أن تصبح جاهزة."
+    "featureUnavailableBody": "هذه الميزة غير متاحة بعد. ستظهر هنا بمجرد أن تصبح جاهزة.",
+    "cookieRejectNonEssential": "الضرورية فقط"
   },
   "Dashboard": {
     "title": "لوحة التحكم",

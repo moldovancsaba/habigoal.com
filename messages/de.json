@@ -42,7 +42,8 @@
     "openDashboard": "Dashboard oeffnen",
     "logout": "Abmelden",
     "featureUnavailableTitle": "Noch nicht verfügbar",
-    "featureUnavailableBody": "Diese Funktion ist noch nicht verfügbar. Sie erscheint hier, sobald sie bereit ist."
+    "featureUnavailableBody": "Diese Funktion ist noch nicht verfügbar. Sie erscheint hier, sobald sie bereit ist.",
+    "cookieRejectNonEssential": "Nur notwendige"
   },
   "Dashboard": {
     "title": "Dashboard",

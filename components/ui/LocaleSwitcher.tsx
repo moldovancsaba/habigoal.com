@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
 import { LOCALE_COOKIE } from "@/lib/locale-preference";
+import { hasConsentFor } from "@/lib/cookie-consent";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -14,8 +15,12 @@ export function LocaleSwitcher() {
   const pathname = usePathname();
 
   function switchLocale(nextLocale: "en" | "hu" | "ar" | "es" | "de" | "he") {
-    // Persist the explicit choice so locale-less entry remembers it (#422).
-    document.cookie = `${LOCALE_COOKIE}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
+    // Persist the explicit choice so locale-less entry remembers it (#422) —
+    // but only with functional cookie consent (#423). Without consent the switch
+    // still applies for this navigation; it just isn't remembered across sessions.
+    if (hasConsentFor("functional")) {
+      document.cookie = `${LOCALE_COOKIE}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
+    }
     const cleanPath = pathname.replace(/^\/(en|hu|ar|es|de|he)(\/|$)/, "/");
     router.replace(cleanPath, { locale: nextLocale });
   }
