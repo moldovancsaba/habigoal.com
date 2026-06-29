@@ -268,7 +268,7 @@ export default function CoachDashboardPage() {
         </SectionPanel>
       )}
 
-      {teams.length > 0 && unassignedAthletes.length > 0 && (
+      {unassignedAthletes.length > 0 && (
         <SectionPanel title={t("teamUnassigned")}>
           <Stack gap="sm">
             <Text size="sm" c="dimmed">{t("teamUnassignedDesc", { count: unassignedAthletes.length })}</Text>
