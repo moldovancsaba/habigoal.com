@@ -2680,5 +2680,11 @@
     "historyDescription": "Entradas del historial: {count}. Organización: {org}.",
     "syncedSourcesTitle": "Fuentes sincronizadas",
     "syncedSourcesEmpty": "Completa un check-in o conecta un wearable para llenar las fuentes."
+  },
+  "Recovery": {
+    "trendImproving": "La recuperación muestra una tendencia ascendente en los últimos días.",
+    "trendStable": "La recuperación se ha mantenido estable en los últimos días.",
+    "trendDeclining": "La recuperación muestra una tendencia descendente: considera reducir la carga.",
+    "trendInsufficient": "Aún no hay suficientes datos de recuperación para mostrar una tendencia."
   }
 }

@@ -78,6 +78,7 @@ These are cross-cutting and unblock everything else. Highest priority because th
 # PHASE B — "Use as intended" completion (core partials)
 
 ## B1. Wearables & GPS  (fixes #350, #283, #6, #209)
+- ✅ #6 delivered (interpretation engine): `lib/recovery-trend.ts` `interpretRecoveryTrend(series)` turns a daily recovery-score series into a direction (improving/stable/declining/insufficient), rolling average, delta %, and a plain-language interpretation key in the new `Recovery` i18n namespace (all 6 locales), plus a readiness-influence signal (boosts/neutral/reduces). Pure + tested (`lib/recovery-trend.test.ts`); consuming surfaces supply real series (no fabrication). Trend chart rendering is the remaining UI surface.
 - **Remove fabricated GPS payloads.** `services/connectors/gps.connector.ts`: `fetchMetrics` returns `[]` and `healthCheck` returns `false` unless `env.gpsIngestionEnabled` + provider credentials present. When enabled, implement real ingestion: Catapult/StatSports CSV/API parse → `RawPayload` → existing `lib/wearable-ingestion.ts` normalisers. Add `services/connectors/__tests__` with real fixture parsing.
 - **Testing-tool ingestion (#283):** VALD/force-plate CSV adapter behind `gpsIngestionEnabled` sibling flag.
 - **Recovery trend UI (#6) + composite/ACWR (#209):** `lib/engines/recovery.engine.ts` compute ACWR from wearable load + subjective; surface 7/28-day trend in the recovery panel. **Acceptance:** no GPS numbers unless a real source is connected; recovery trends render from real series.
