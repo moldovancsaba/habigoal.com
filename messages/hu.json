@@ -1688,7 +1688,7 @@
           "title": "Áttekintés és mentés",
           "copy": "A check-in és a szokások készen állnak. Mentsd őket a mai státuszhoz.",
           "detail": "Mentésre kész",
-          "nextAction": "Mentsd a mai napot a státuszhoz.",
+          "nextAction": "Mentsd el a mait, hogy lásd az állapotodat.",
           "aria": "A napi kör mentésre kész"
         },
         "saving": {
@@ -1838,7 +1838,7 @@
         },
         "club-services": {
           "label": "Klubszolgáltatások",
-          "detail": "Riportok, szolgáltatáscsomagok, lab modulok és stakeholder delivery."
+          "detail": "Riportok, szolgáltatáscsomagok, labormodulok, valamint kézbesítés edzőknek és kluboknak."
         }
       },
       "signals": {
@@ -2567,7 +2567,7 @@
     }
   },
   "Wearables": {
-    "title": "Viselhető ökoszisztéma",
+    "title": "Csatlakoztatott viselhető eszközök",
     "subtitle": "Csatlakoztasd az eszközeidet, hogy a napi mérések bekerüljenek a teljesítményprofilodba.",
     "devices": "Eszközök",
     "noAthlete": "Nincs sportolói profil",

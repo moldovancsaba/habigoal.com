@@ -1688,7 +1688,7 @@
           "title": "Revisar y guardar",
           "copy": "El check-in y los hábitos están listos. Guárdalos para crear el estado.",
           "detail": "Listo para guardar",
-          "nextAction": "Guarda hoy para desbloquear el estado.",
+          "nextAction": "Guarda hoy para ver tu estado.",
           "aria": "El ciclo diario esta listo para guardar"
         },
         "saving": {
@@ -1838,7 +1838,7 @@
         },
         "club-services": {
           "label": "Servicios del club",
-          "detail": "Informes, paquetes de servicio, modulos de laboratorio y entrega a stakeholders."
+          "detail": "Informes, paquetes de servicios, módulos de laboratorio y entrega a entrenadores y clubes."
         }
       },
       "signals": {
@@ -2567,7 +2567,7 @@
     }
   },
   "Wearables": {
-    "title": "Ecosistema de wearables",
+    "title": "Wearables conectados",
     "subtitle": "Conecta tus dispositivos para que las lecturas diarias entren en tu perfil de rendimiento.",
     "devices": "Dispositivos",
     "noAthlete": "Sin perfil de deportista",

@@ -1688,7 +1688,7 @@
           "title": "Prüfen und speichern",
           "copy": "Check-in und Gewohnheiten sind bereit. Speichere sie für den heutigen Status.",
           "detail": "Bereit zum Speichern",
-          "nextAction": "Speichere heute, um den Status freizuschalten.",
+          "nextAction": "Speichere heute, um deinen Status zu sehen.",
           "aria": "Tagesroutine ist speicherbereit"
         },
         "saving": {
@@ -1838,7 +1838,7 @@
         },
         "club-services": {
           "label": "Club-Services",
-          "detail": "Berichte, Servicepakete, Lab-Module und Stakeholder-Lieferung."
+          "detail": "Berichte, Servicepakete, Labormodule und Auslieferung an Trainer und Vereine."
         }
       },
       "signals": {
@@ -2567,7 +2567,7 @@
     }
   },
   "Wearables": {
-    "title": "Wearable-Ökosystem",
+    "title": "Verbundene Wearables",
     "subtitle": "Verbinde deine Geräte, damit tägliche Messwerte in dein Leistungsprofil einfließen.",
     "devices": "Geräte",
     "noAthlete": "Kein Sportlerprofil",

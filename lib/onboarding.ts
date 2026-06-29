@@ -20,7 +20,7 @@ export const ONBOARDING_MODULES: OnboardingModule[] = [
     role: "trainer",
     routePattern: "/dashboard",
     priority: 20,
-    title: "Review the trainer command center",
+    title: "Review your coach dashboard",
     body: "Use the priority queue, missed check-ins, recommendations, and planning context before making session decisions.",
     checklistTitle: "Trainer workflow",
     steps: [

@@ -226,7 +226,7 @@ const athleteIqOnlyFunctions = [
     name: "Professional athlete, coach, and academy dashboard",
     status: "active",
     audience: ["athlete", "coach", "academy", "operator"],
-    summary: "Role-based operating surface for professional monitoring, planning, reporting, and interventions.",
+    summary: "Professional monitoring, planning, reporting, and interventions, organised by role.",
     runtimeFlow: [
       "Resolve role and permissions",
       "Load athlete or team scope",
@@ -281,10 +281,10 @@ const athleteIqOnlyFunctions = [
   },
   {
     id: "aiq-service-command",
-    name: "Service package and report command center",
+    name: "Service packages and reports",
     status: "phase-1",
     audience: ["coach", "academy", "operator"],
-    summary: "Operational workspace for service packages, reports, lab tasks, partner modules, and stakeholder delivery.",
+    summary: "A workspace for service packages, reports, lab tasks, partner modules, and delivery to coaches and clubs.",
     runtimeFlow: [
       "Select service package",
       "Validate entitlement and required data",
@@ -310,7 +310,7 @@ const athleteIqOnlyFunctions = [
   },
   {
     id: "aiq-ecosystem",
-    name: "CogLeague, GameFlow, partners, and academy ecosystem",
+    name: "CogLeague, GameFlow, partners, and academy",
     status: "planned",
     audience: ["coach", "academy", "operator"],
     summary: "Expansion layer for cognitive products, match intelligence, education, licensing, CRM, and partner operations.",
