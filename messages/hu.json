@@ -2732,5 +2732,21 @@
     "trendStable": "A regeneráció stabil maradt az elmúlt napokban.",
     "trendDeclining": "A regeneráció romló tendenciát mutat – érdemes mérsékelni a terhelést.",
     "trendInsufficient": "Még nincs elég regenerációs adat a tendencia megjelenítéséhez."
+  },
+  "DataConfidence": {
+    "band": {
+      "high": "Magas megbízhatóság",
+      "medium": "Közepes megbízhatóság",
+      "low": "Alacsony megbízhatóság",
+      "none": "Nincs adat"
+    },
+    "reasons": {
+      "missingData": "Még nincs rögzített adat",
+      "lowSample": "Kevés adatpont",
+      "singleSource": "Egyetlen forrás",
+      "multiSource": "Több forrás",
+      "stale": "Az adat elavult",
+      "fresh": "Nemrég frissítve"
+    }
   }
 }

@@ -2732,5 +2732,21 @@
     "trendStable": "La recuperación se ha mantenido estable en los últimos días.",
     "trendDeclining": "La recuperación muestra una tendencia descendente: considera reducir la carga.",
     "trendInsufficient": "Aún no hay suficientes datos de recuperación para mostrar una tendencia."
+  },
+  "DataConfidence": {
+    "band": {
+      "high": "Confianza alta",
+      "medium": "Confianza media",
+      "low": "Confianza baja",
+      "none": "Sin datos"
+    },
+    "reasons": {
+      "missingData": "Aún no hay datos registrados",
+      "lowSample": "Pocos datos",
+      "singleSource": "Una sola fuente",
+      "multiSource": "Varias fuentes",
+      "stale": "Los datos están desactualizados",
+      "fresh": "Actualizado recientemente"
+    }
   }
 }

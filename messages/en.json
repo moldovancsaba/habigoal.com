@@ -2732,5 +2732,21 @@
     "trendStable": "Recovery has held steady over recent days.",
     "trendDeclining": "Recovery is trending downward — consider lighter load.",
     "trendInsufficient": "Not enough recovery data yet to show a trend."
+  },
+  "DataConfidence": {
+    "band": {
+      "high": "High confidence",
+      "medium": "Medium confidence",
+      "low": "Low confidence",
+      "none": "No data"
+    },
+    "reasons": {
+      "missingData": "No data recorded yet",
+      "lowSample": "Few data points",
+      "singleSource": "Single source",
+      "multiSource": "Multiple sources",
+      "stale": "Data is out of date",
+      "fresh": "Recently updated"
+    }
   }
 }
