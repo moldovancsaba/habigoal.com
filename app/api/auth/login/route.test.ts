@@ -57,7 +57,7 @@ describe("persona pseudo login", () => {
       email: "coach@example.com",
       name: "Coach@Example.com",
       productSurface: "athlete-iq",
-      roles: ["trainer"]
+      roles: ["trainer", "athlete"]
     });
     expect(mockedCreateSession).toHaveBeenCalledWith({
       id: "user-2",
@@ -107,13 +107,13 @@ describe("persona pseudo login", () => {
     );
   });
 
-  it("does not provision an athlete profile for a trainer login", async () => {
+  it("provisions an athlete profile for a trainer too (trainers are also athletes)", async () => {
     mockedFindUserByEmail.mockResolvedValue(null);
     mockedUpsertPersonaLoginUser.mockResolvedValue({
       id: "user-coach-only",
       email: "coachonly@example.com",
       name: "coachonly@example.com",
-      roles: ["trainer"],
+      roles: ["trainer", "athlete"],
       productEntitlements: {
         habigoal: { enabled: true, reason: "aiq_member" },
         athleteIq: { enabled: true, reason: "trainer_assignment" }
@@ -122,7 +122,12 @@ describe("persona pseudo login", () => {
 
     await POST(loginRequest({ identifier: "coachonly@example.com", persona: "trainer", next: "/hu/athlete-iq", productSurface: "athlete-iq" }));
 
-    expect(mockedEnsureAthlete).not.toHaveBeenCalled();
+    expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith(
+      expect.objectContaining({ roles: ["trainer", "athlete"] })
+    );
+    expect(mockedEnsureAthlete).toHaveBeenCalledWith(
+      expect.objectContaining({ user: expect.objectContaining({ email: "coachonly@example.com" }) })
+    );
   });
 
   it("keeps the selected athlete persona active when the same user has both roles", async () => {

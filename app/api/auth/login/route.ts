@@ -146,11 +146,15 @@ export async function POST(request: NextRequest) {
   // registration provisioning (upsertPersonaLoginUser → createSelfRegisteredEntitlements)
   // grants the Habigoal entitlement; AIQ linkage is an internal, hidden concern,
   // never a precondition for the consumer.
+  // In this product a trainer is also an athlete (the seed model grants both
+  // roles), so a trainer can manage their squad AND record their own daily data.
+  // Athletes get just the athlete role.
+  const roles: Array<"trainer" | "athlete"> = persona === "trainer" ? ["trainer", "athlete"] : ["athlete"];
   const localUser = await upsertPersonaLoginUser({
     email: identity.email,
     name: identity.name,
     productSurface,
-    roles: [persona]
+    roles
   });
 
   if (!localUser) {
@@ -162,13 +166,13 @@ export async function POST(request: NextRequest) {
 
   const name = localUser.name || identity.name;
 
-  // Provision the athlete's own profile on first login so every athlete surface
-  // (Habigoal recorder, athlete dashboard, check-in shell) has an athleteId to
-  // attach to immediately. Without this a freshly registered athlete has no
-  // profile, so data surfaces resolve empty and the athlete-only routes redirect
-  // them away — leaving them with nothing to record against. Idempotent
-  // (find-or-create), and best-effort so a provisioning hiccup never blocks login.
-  if (persona === "athlete" && !localUser.athleteId) {
+  // Provision the user's own athlete profile on first login so every athlete
+  // surface (Habigoal recorder, athlete dashboard, check-in shell) has an
+  // athleteId to attach to immediately. Applies to athletes AND trainers (both
+  // carry the athlete role), so neither lands on a dead, redirect-away surface
+  // with nothing to record. Idempotent (find-or-create), and best-effort so a
+  // provisioning hiccup never blocks login.
+  if (!localUser.athleteId) {
     try {
       await ensureCanonicalAthleteProfileForUser({
         user: { email: localUser.email, id: localUser.id, name } as AuthUser,
