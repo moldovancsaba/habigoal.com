@@ -2748,5 +2748,23 @@
       "stale": "البيانات قديمة",
       "fresh": "حُدِّث مؤخرًا"
     }
+  },
+  "Explainability": {
+    "rules": {
+      "readinessMissingData": "بعض إشارات تسجيل الوصول مفقودة",
+      "readinessGood": "الجاهزية في النطاق الجيد (70+)",
+      "readinessModerate": "الجاهزية متوسطة (50-69)",
+      "readinessFatigued": "الجاهزية منخفضة (30-49)",
+      "readinessCompromised": "الجاهزية متدنية (أقل من 30)",
+      "injuryRiskElevated": "خطر الإصابة مرتفع"
+    },
+    "outputs": {
+      "completeCheckIn": "أكمل تسجيل الوصول للحصول على صورة كاملة",
+      "proceedAsPlanned": "تابع الجلسة المخطط لها",
+      "monitorLoad": "راقب الحِمل وعدّله عند الحاجة",
+      "reduceLoad": "قلّل حِمل التدريب",
+      "prioritiseRecovery": "أعطِ الأولوية للتعافي والدعم",
+      "addInjuryPrevention": "أضف تمارين الوقاية من الإصابات"
+    }
   }
 }

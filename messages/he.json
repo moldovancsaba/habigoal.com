@@ -2748,5 +2748,23 @@
       "stale": "הנתונים אינם עדכניים",
       "fresh": "עודכן לאחרונה"
     }
+  },
+  "Explainability": {
+    "rules": {
+      "readinessMissingData": "חלק מאותות הצ׳ק-אין חסרים",
+      "readinessGood": "המוכנות באזור הטוב (70+)",
+      "readinessModerate": "המוכנות בינונית (50-69)",
+      "readinessFatigued": "המוכנות נמוכה (30-49)",
+      "readinessCompromised": "המוכנות נפגעה (מתחת ל-30)",
+      "injuryRiskElevated": "סיכון הפציעה גבוה"
+    },
+    "outputs": {
+      "completeCheckIn": "השלם את הצ׳ק-אין לתמונה מלאה",
+      "proceedAsPlanned": "המשך עם האימון המתוכנן",
+      "monitorLoad": "עקוב אחר העומס והתאם במידת הצורך",
+      "reduceLoad": "הפחת את עומס האימון",
+      "prioritiseRecovery": "תעדף התאוששות ותמיכה",
+      "addInjuryPrevention": "הוסף עבודת מניעת פציעות"
+    }
   }
 }
