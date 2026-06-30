@@ -308,6 +308,7 @@ function getPath(value, dottedPath) {
 // behind key+placeholder parity (which the catalog audit alone would pass).
 const MUST_TRANSLATE_NAMESPACES = [
   "Dashboard",
+  "Assessment",
   "ProductSurfaces.athleteIq.athleteWorkspace.panels",
   "ProductSurfaces.athleteIq.athleteWorkspace.sections",
   "ProductSurfaces.athleteIq.nav.modules",
@@ -347,6 +348,16 @@ const IDENTICAL_OK = new Set([
   "Dashboard.teamsTitle",
   "Dashboard.trainingLogMarkMaximal",
   "Dashboard.sectionPlan",
+  // Assessment: acronyms, brand terms, shared loanwords and a filename that
+  // stay identical across the target languages.
+  "Assessment.sessionIq",
+  "Assessment.coachPriorityBadge",
+  "Assessment.rpe",
+  "Assessment.drillBlock",
+  "Assessment.pause",
+  "Assessment.mentalShortLabel",
+  "Assessment.optionOkay",
+  "Assessment.reportFileName",
   "AthleteIntelligence.dimensions.readiness",
   "AthleteIntelligence.status.lite_manual",
   "CoachHub.intelligence",
