@@ -1914,7 +1914,14 @@
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "Ein professioneller Arbeitsbereich für Athleten, Trainer, Teams und Vereine.",
         "copy": "Readiness, mentaler Zustand, Trainingslast, Teamaktionen und Berichte bleiben in einem fokussierten Trainer-Arbeitsbereich.",
-        "summaryAria": "Athlete IQ Betriebszusammenfassung"
+        "summaryAria": "Athlete IQ Betriebszusammenfassung",
+        "subtitleVariants": {
+          "neutralB": "Readiness, Prioritäten und Plan deines Kaders in einer Ansicht.",
+          "neutralC": "Führe heute aus echten Daten — sieh, wer dich zuerst braucht.",
+          "morning": "Guten Morgen — stell den Kader vor den Einheiten auf.",
+          "afternoon": "Guten Tag — prüfe Belastung und Erholung.",
+          "evening": "Guten Abend — wertе den Tag aus und plane morgen."
+        }
       },
       "metrics": {
         "dailyIq": "Daily IQ",
@@ -2125,7 +2132,14 @@
         "hero": {
           "title": "Athleten-Support-Arbeitsbereich",
           "subtitle": "Deine professionelle Tagesansicht für Readiness, Trainingskontext, Unterstützungsaktionen und gemeinsame Gewohnheitsdaten.",
-          "copy": "Sieh dir die Daten an, mit denen dein Trainer arbeiten kann; die schnelle tägliche Gewohnheitserfassung bleibt ebenfalls verfügbar."
+          "copy": "Sieh dir die Daten an, mit denen dein Trainer arbeiten kann; die schnelle tägliche Gewohnheitserfassung bleibt ebenfalls verfügbar.",
+          "subtitleVariants": {
+            "neutralB": "Deine Readiness, dein Plan und Fortschritt an einem Ort.",
+            "neutralC": "Kleine, stetige Schritte heute — echter Fortschritt mit der Zeit.",
+            "morning": "Guten Morgen — ein kurzer Check stellt deinen Tag ein.",
+            "afternoon": "Guten Tag — wie hält der Körper durch?",
+            "evening": "Guten Abend — schließ den Tag stark ab."
+          }
         },
         "metrics": {
           "ownReadiness": "Deine Readiness",
@@ -2477,47 +2491,58 @@
       "habits": {
         "extraTouches": {
           "title": "Extra Ballkontakte",
-          "description": "Mach zusätzliche Ballkontakte — kurze, fokussierte Wiederholungen verbessern die Technik."
+          "description": "Mach zusätzliche Ballkontakte — kurze, fokussierte Wiederholungen verbessern die Technik.",
+          "descriptionB": "Ein paar hundert Kontakte heute schärfen deinen ersten Kontakt.",
+          "descriptionC": "Schnelles Jonglieren oder Wandarbeit zählt — halt die Füße in Bewegung."
         },
         "weakFoot": {
           "title": "Schwacher-Fuß-Training",
-          "description": "Verbringe ein paar Minuten mit deinem schwächeren Fuß, um ausgeglichener zu spielen."
+          "description": "Verbringe ein paar Minuten mit deinem schwächeren Fuß, um ausgeglichener zu spielen.",
+          "descriptionB": "Schwachfuß-Reps zahlen sich später im echten Spiel aus.",
+          "descriptionC": "Pass, Annahme und Schuss mit dem schwächeren Fuß — wenig, aber oft."
         },
         "tacticalLearning": {
           "title": "Taktiklernen",
-          "description": "Schau dir einen Clip oder eine Taktik an, um dein Spielverständnis zu schärfen."
+          "description": "Schau dir einen Clip oder eine Taktik an, um dein Spielverständnis zu schärfen.",
+          "descriptionB": "Fünf Minuten Videoanalyse heute bauen dein Spielverständnis auf.",
+          "descriptionC": "Sieh dir eine Szene an und notiere, was du anders machen würdest."
         },
         "stretching": {
           "title": "Dehnen",
-          "description": "Mach ein kurzes Dehnprogramm, um geschmeidig zu bleiben."
+          "description": "Mach ein kurzes Dehnprogramm, um geschmeidig zu bleiben.",
+          "descriptionB": "Ein kurzes Dehnen jetzt schützt das Training von morgen.",
+          "descriptionC": "Lockere die verspannten Stellen — ein paar Minuten reichen."
         },
         "mobility": {
           "title": "Mobilität",
-          "description": "Mach eine schnelle Mobility-Routine, um dich frei zu bewegen und Gelenke zu schützen."
+          "description": "Mach eine schnelle Mobility-Routine, um dich frei zu bewegen und Gelenke zu schützen.",
+          "descriptionB": "Hüften und Knöchel lieben heute einen kurzen Mobility-Flow.",
+          "descriptionC": "Geh durch deine Bewegungsbereiche — geschmeidigere Gelenke, weniger Wehwehchen."
         },
         "recoverySession": {
           "title": "Regenerationseinheit",
-          "description": "Plane einen bewussten Regenerationsblock ein, damit sich dein Körper anpassen kann."
+          "description": "Plane einen bewussten Regenerationsblock ein, damit sich dein Körper anpassen kann.",
+          "descriptionB": "Erholung ist auch Training — gib deinem Körper den Reiz.",
+          "descriptionC": "Ruhige Atmung und leichte Bewegung bringen echte Anpassung."
         },
         "hydration": {
           "title": "Flüssigkeitszufuhr",
-          "description": "Trinke über den Tag genug Wasser, um wach und bereit zu bleiben."
+          "description": "Trinke über den Tag genug Wasser, um wach und bereit zu bleiben.",
+          "descriptionB": "Trink heute stetig in kleinen Schlücken — Hydration hält dich wach.",
+          "descriptionC": "Halte eine Flasche bereit und fülle über den Tag nach."
         },
         "nutrition": {
           "title": "Ernährung",
-          "description": "Iss eine ausgewogene Mahlzeit, um Training und Regeneration zu unterstützen."
+          "description": "Iss eine ausgewogene Mahlzeit, um Training und Regeneration zu unterstützen.",
+          "descriptionB": "Ausgewogene Ernährung heute befeuert die Einheit von morgen.",
+          "descriptionC": "Protein und Kohlenhydrate rund ums Training — halt es einfach."
         },
         "sleepBeforeMidnight": {
           "title": "Schlaf vor Mitternacht",
-          "description": "Komm zur Ruhe und schlafe vor Mitternacht für echte Erholung."
+          "description": "Komm zur Ruhe und schlafe vor Mitternacht für echte Erholung.",
+          "descriptionB": "Früh das Licht aus — Schlaf vor Mitternacht erholt am besten.",
+          "descriptionC": "Schütze den Schlaf heute Nacht; er ist dein größter Erholungshebel."
         }
-      },
-      "habitNudge": {
-        "neutralB": "Ein paar fokussierte Minuten hier sichern deinen Vorsprung.",
-        "neutralC": "Kleine Wiederholungen heute, echter Fortschritt über die Woche.",
-        "evening": "Guter Moment, das vor dem Tagesende abzuschließen.",
-        "streak": "Du bist in Fahrt — halte die Serie am Leben.",
-        "returning": "Willkommen zurück — starte sanft mit dieser Aufgabe."
       }
     },
     "mentalEdge": {

@@ -6,6 +6,8 @@ import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme,
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { selectCopyKey } from "@/lib/copy-variants";
+import { heroSubtitleDef } from "@/lib/surface-voice";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
 import type {
@@ -50,6 +52,8 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
   const common = useTranslations("Common");
   const locale = useLocale() as SupportedLocale;
   const router = useRouter();
+  // Stable per-mount clock for time-aware hero voice.
+  const [heroNowMs] = useState(Date.now);
   const actionPack = useMemo(
     () =>
       createProductSurfaceActionPack({
@@ -231,7 +235,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
                   <Text className="aiq-letter-label">{t("hero.dateLabel", { date: dashboard.localDate })}</Text>
                   <PageHeader
                     title={t("hero.title")}
-                    subtitle={t("hero.subtitle")}
+                    subtitle={t(selectCopyKey(heroSubtitleDef("hero.subtitle"), { now: heroNowMs }))}
                     actions={
                       <Group gap="xs" wrap="wrap">
                         <SemanticButton
@@ -350,6 +354,7 @@ function AiqAthleteWorkspace({
   const athlete = dashboard.athletes[0] ?? null;
   const common = useTranslations("Common");
   const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
+  const [heroNowMs] = useState(Date.now);
   const athleteNavigationGroups = useMemo<AiqNavGroup[]>(
     () => [
       {
@@ -499,7 +504,7 @@ function AiqAthleteWorkspace({
                   <Text className="aiq-letter-label">{translate("hero.dateLabel", { date: dashboard.localDate })}</Text>
                   <PageHeader
                     title={translate("athleteWorkspace.hero.title")}
-                    subtitle={translate("athleteWorkspace.hero.subtitle")}
+                    subtitle={translate(selectCopyKey(heroSubtitleDef("athleteWorkspace.hero.subtitle"), { now: heroNowMs }))}
                     actions={
                       <SemanticButton
                         action="productSurface:launch"

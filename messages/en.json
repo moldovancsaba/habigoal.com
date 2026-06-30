@@ -1914,7 +1914,14 @@
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "One professional workspace for athletes, trainers, teams, and clubs.",
         "copy": "Readiness, mental state, training load, team actions, and reports stay in one focused trainer workspace.",
-        "summaryAria": "Athlete IQ operational summary"
+        "summaryAria": "Athlete IQ operational summary",
+        "subtitleVariants": {
+          "neutralB": "Your squad's readiness, priorities and plan in one view.",
+          "neutralC": "Lead today from real data — see who needs you first.",
+          "morning": "Good morning — set the squad up before sessions start.",
+          "afternoon": "Good afternoon — check in on load and recovery.",
+          "evening": "Good evening — review the day and plan tomorrow."
+        }
       },
       "metrics": {
         "dailyIq": "Daily IQ",
@@ -2125,7 +2132,14 @@
         "hero": {
           "title": "Athlete support workspace",
           "subtitle": "Your professional daily view for readiness, training context, support actions, and shared habit data.",
-          "copy": "Review the data your trainer can act on; fast daily habit capture stays available too."
+          "copy": "Review the data your trainer can act on; fast daily habit capture stays available too.",
+          "subtitleVariants": {
+            "neutralB": "Your readiness, plan and progress in one place.",
+            "neutralC": "Small, steady inputs today — real gains over time.",
+            "morning": "Good morning — a quick read sets up your day.",
+            "afternoon": "Good afternoon — how's the body holding up?",
+            "evening": "Good evening — close the day strong."
+          }
         },
         "metrics": {
           "ownReadiness": "Your readiness",
@@ -2477,47 +2491,58 @@
       "habits": {
         "extraTouches": {
           "title": "Extra touches",
-          "description": "Get extra ball touches in — short, focused reps build technical comfort."
+          "description": "Get extra ball touches in — short, focused reps build technical comfort.",
+          "descriptionB": "A few hundred touches today sharpens your first touch.",
+          "descriptionC": "Quick juggling or wall work counts — keep the feet busy."
         },
         "weakFoot": {
           "title": "Weak-foot work",
-          "description": "Spend a few minutes on your weaker foot to even out your game."
+          "description": "Spend a few minutes on your weaker foot to even out your game.",
+          "descriptionB": "Weak-foot reps now pay off in real games later.",
+          "descriptionC": "Pass, control and shoot with the off-foot — little and often."
         },
         "tacticalLearning": {
           "title": "Tactical learning",
-          "description": "Study a clip or tactic to sharpen your game understanding."
+          "description": "Study a clip or tactic to sharpen your game understanding.",
+          "descriptionB": "Five minutes of film today builds your game IQ.",
+          "descriptionC": "Watch one moment and note what you'd do differently."
         },
         "stretching": {
           "title": "Stretching",
-          "description": "Run through a short stretch to keep your body supple."
+          "description": "Run through a short stretch to keep your body supple.",
+          "descriptionB": "A short stretch now protects tomorrow's training.",
+          "descriptionC": "Loosen the tight spots — a few minutes is enough."
         },
         "mobility": {
           "title": "Mobility",
-          "description": "Do a quick mobility routine to move freely and protect your joints."
+          "description": "Do a quick mobility routine to move freely and protect your joints.",
+          "descriptionB": "Hips and ankles love a short mobility flow today.",
+          "descriptionC": "Move through your ranges — smoother joints, fewer niggles."
         },
         "recoverySession": {
           "title": "Recovery session",
-          "description": "Take a deliberate recovery block so your body can adapt."
+          "description": "Take a deliberate recovery block so your body can adapt.",
+          "descriptionB": "Recovery is training too — give your body the input.",
+          "descriptionC": "Easy breathing and light movement drive real adaptation."
         },
         "hydration": {
           "title": "Hydration",
-          "description": "Drink enough water across the day to stay sharp and ready."
+          "description": "Drink enough water across the day to stay sharp and ready.",
+          "descriptionB": "Sip steadily today — hydration keeps you sharp.",
+          "descriptionC": "Keep a bottle close and top up through the day."
         },
         "nutrition": {
           "title": "Nutrition",
-          "description": "Fuel with a balanced meal to support training and recovery."
+          "description": "Fuel with a balanced meal to support training and recovery.",
+          "descriptionB": "Balanced fuel today powers tomorrow's session.",
+          "descriptionC": "Protein and carbs around training — keep it simple."
         },
         "sleepBeforeMidnight": {
           "title": "Sleep before midnight",
-          "description": "Wind down and get to sleep before midnight for proper recovery."
+          "description": "Wind down and get to sleep before midnight for proper recovery.",
+          "descriptionB": "Lights down early — pre-midnight sleep recovers best.",
+          "descriptionC": "Protect tonight's sleep; it's your biggest recovery lever."
         }
-      },
-      "habitNudge": {
-        "neutralB": "A few focused minutes here keeps your edge.",
-        "neutralC": "Small reps today, real gains over the week.",
-        "evening": "Good time to close this out before the day ends.",
-        "streak": "You're on a roll — keep the streak alive.",
-        "returning": "Welcome back — restart gently with this one."
       }
     },
     "mentalEdge": {
