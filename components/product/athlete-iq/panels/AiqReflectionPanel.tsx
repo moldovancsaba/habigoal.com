@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import { selectCopyKey } from "@/lib/copy-variants";
-import { reflectionPromptDef } from "@/lib/surface-voice";
+import { neutralPromptDef, reflectionPromptDef } from "@/lib/surface-voice";
 import type { ReflectionEntryView, ReflectionVisibility } from "@/types/athleteiq-reflection";
 
 type ReflectionDayResponse = { reflections: ReflectionEntryView[]; count: number };
@@ -114,7 +114,7 @@ export function AiqReflectionPanel({ athleteId, localDate }: { athleteId: string
 
       <Text size="sm" className="aiq-muted-soft">{t("reflection.todayTitle")}</Text>
       {loading ? <Text className="aiq-muted">{t("common.loading")}</Text> : null}
-      {!loading && entries.length === 0 ? <Text className="aiq-muted">{t("reflection.empty")}</Text> : null}
+      {!loading && entries.length === 0 ? <Text className="aiq-muted">{t(selectCopyKey(neutralPromptDef("reflection.empty"), { now: nowMs }))}</Text> : null}
       {entries.map((entry) => (
         <Box key={entry.id} className="aiq-row-card">
           <Stack gap="xs">

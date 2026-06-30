@@ -1370,6 +1370,10 @@
     "directorySubtitle": "Keress sportolókra, nézd át a friss készenlétet, és nyisd meg a teljes sportolói működési profilt.",
     "searchPlaceholder": "Keresés név, születési dátum, helyszín vagy megjegyzés alapján...",
     "empty": "Erre a keresésre még nincs találat.",
+    "emptyVariants": {
+      "neutralB": "Erre a keresésre még nincs találat.",
+      "neutralC": "Nincs találat – próbálj másik nevet vagy szűrőt."
+    },
     "locationHint": "Legutóbbi edzéshelyszín: {location}",
     "locationHintEmpty": "Ehhez a sportolóhoz még nincs friss helyszín rögzítve.",
     "metricReadiness": "Készenlét",
@@ -1884,6 +1888,10 @@
         "days": "{count} nap",
         "last7": "Utolsó 7 nap",
         "empty": "Teljesíts egy szokást ma a sorozatod elindításához.",
+        "emptyVariants": {
+          "neutralB": "Fejezz be ma egy szokást, és elindul a sorozatod.",
+          "neutralC": "Még nincs sorozat – a mai első szokás indítja el."
+        },
         "dayAria": "{date}: {score}% szokáspontszám"
       },
       "reasons": {
@@ -2035,6 +2043,10 @@
           }
         },
         "empty": "Nincs nyitott prioritás élő rekordok alapján.",
+        "emptyVariants": {
+          "neutralB": "A sor tiszta – jelenleg egyetlen sportoló sem igényel figyelmet.",
+          "neutralC": "Ma még semmi sincs megjelölve az élő rekordokból."
+        },
         "reasons": {
           "painAlert": "A fájdalombiztonsági jelzés aktív, edzői ellenőrzés szükséges.",
           "painAlertVariants": {
@@ -2210,7 +2222,11 @@
         "support": {
           "title": "Támogatási sor",
           "copy": "Nyitott elemek readinessből, fájdalombiztonságból, napi tervből és edzői műveletekből.",
-          "empty": "Nincs nyitott támogatási elem élő rekordok alapján."
+          "empty": "Nincs nyitott támogatási elem élő rekordok alapján.",
+          "emptyVariants": {
+            "neutralB": "Jelenleg semmi sem igényel támogatást – minden rendben.",
+            "neutralC": "Ma még nincs támogatási tétel az élő rekordokból."
+          }
         },
         "shared": {
           "kicker": "Napi szokások",
@@ -2218,7 +2234,11 @@
           "copy": "A mai szokásteljesítésed, csapatod és readiness állapotod."
         },
         "empty": {
-          "copy": "Az Athlete IQ profil készen áll, de még nincs mentett élő napi rekord."
+          "copy": "Az Athlete IQ profil készen áll, de még nincs mentett élő napi rekord.",
+          "copyVariants": {
+            "neutralB": "A profil kész – ments egy napi rekordot, hogy életre keljen.",
+            "neutralC": "Még nincs napi rekord; az első bejelentkezésed tölti ki ezt."
+          }
         },
         "recorder": {
           "savedTitle": "Napi rekord mentve",
@@ -2383,12 +2403,20 @@
             },
             "save": "Reflexió mentése",
             "todayTitle": "Mai reflexiók",
-            "empty": "Ma nincs mentett reflexió."
+            "empty": "Ma nincs mentett reflexió.",
+            "emptyVariants": {
+              "neutralB": "Ma még semmi sincs leírva – egy-két sor is elég.",
+              "neutralC": "A mai reflexió még üres."
+            }
           },
           "session": {
             "todayTitle": "Mai edzések",
             "buildFromPlan": "Tervből építés",
             "empty": "Még nincs edzés. Építs egyet a mai tervből.",
+            "emptyVariants": {
+              "neutralB": "Még nincs felépített edzés – indíts egyet a mai tervből.",
+              "neutralC": "Semmi sincs beütemezve. Generálj egy edzést a tervedből."
+            },
             "buildError": "Az edzést nem sikerült felépíteni. Először készíts napi tervet.",
             "transitionError": "Ez az edzésváltás most nem engedélyezett.",
             "debriefError": "Az értékelést nem sikerült menteni.",
@@ -2497,6 +2525,10 @@
             "cognitiveTrait": "Tulajdonság",
             "cognitiveScore": "Pontszám (0–100)",
             "cognitiveEmpty": "Még nincs kognitív eredmény. Adjon meg egy pontszámot fent a kezdéshez.",
+            "cognitiveEmptyVariants": {
+              "neutralB": "Még nincs kognitív pontszám – írj be egyet fent a kezdéshez.",
+              "neutralC": "Indítsd a kognitív profilodat egy tulajdonság pontozásával fent."
+            },
             "cognitiveEntered": "{count} megadva",
             "cognitiveProvenance": {
               "entered": "Megadva",
@@ -2504,6 +2536,10 @@
               "missing": "Nincs adat"
             },
             "noEntryYet": "Ma még nincs bejegyzés.",
+            "noEntryYetVariants": {
+              "neutralB": "Ma még semmi sincs ide rögzítve.",
+              "neutralC": "Eddig nincs bejegyzés – adj hozzá egyet a kezdéshez."
+            },
             "addEntry": "Bejegyzés hozzáadása",
             "addCognitive": "Tulajdonság-pontszám hozzáadása"
           },

@@ -1370,6 +1370,10 @@
     "directorySubtitle": "Search athletes, review recent readiness, and open the full athlete operating profile.",
     "searchPlaceholder": "Search by name, birth date, location, or notes...",
     "empty": "No athletes match this search yet.",
+    "emptyVariants": {
+      "neutralB": "Aún no hay coincidencias para esa búsqueda.",
+      "neutralC": "No se encontró nada: prueba otro nombre o filtro."
+    },
     "locationHint": "Latest training location: {location}",
     "locationHintEmpty": "No recent location has been recorded for this athlete yet.",
     "metricReadiness": "Readiness",
@@ -1884,6 +1888,10 @@
         "days": "{count} días",
         "last7": "Últimos 7 días",
         "empty": "Completa un hábito hoy para empezar tu racha.",
+        "emptyVariants": {
+          "neutralB": "Completa un hábito hoy y empieza tu racha.",
+          "neutralC": "Aún sin racha: el primer hábito de hoy la inicia."
+        },
         "dayAria": "{date}: {score}% de puntuación de hábitos"
       },
       "reasons": {
@@ -2035,6 +2043,10 @@
           }
         },
         "empty": "No hay atletas prioritarios abiertos desde datos en vivo.",
+        "emptyVariants": {
+          "neutralB": "La cola está despejada: ningún atleta necesita atención ahora.",
+          "neutralC": "Nada marcado en los registros en vivo hoy todavía."
+        },
         "reasons": {
           "painAlert": "La seguridad por dolor esta activa y requiere revision del entrenador.",
           "painAlertVariants": {
@@ -2210,7 +2222,11 @@
         "support": {
           "title": "Cola de soporte",
           "copy": "Elementos abiertos desde readiness, seguridad de dolor, plan diario y acciones del entrenador.",
-          "empty": "No hay elementos de soporte abiertos desde registros en vivo."
+          "empty": "No hay elementos de soporte abiertos desde registros en vivo.",
+          "emptyVariants": {
+            "neutralB": "Nada necesita apoyo ahora mismo: todo en orden.",
+            "neutralC": "Aún no hay elementos de apoyo en los registros en vivo hoy."
+          }
         },
         "shared": {
           "kicker": "Habitos diarios",
@@ -2218,7 +2234,11 @@
           "copy": "Tu cumplimiento de habitos, contexto de equipo y estado de readiness de hoy."
         },
         "empty": {
-          "copy": "Tu perfil de Athlete IQ esta listo, pero aun no hay registros diarios en vivo guardados."
+          "copy": "Tu perfil de Athlete IQ esta listo, pero aun no hay registros diarios en vivo guardados.",
+          "copyVariants": {
+            "neutralB": "El perfil está listo: guarda un registro diario para verlo cobrar vida.",
+            "neutralC": "Aún no hay registros diarios; tu primer check-in lo completa."
+          }
         },
         "recorder": {
           "savedTitle": "Registro diario guardado",
@@ -2383,12 +2403,20 @@
             },
             "save": "Guardar reflexión",
             "todayTitle": "Reflexiones de hoy",
-            "empty": "Hoy no se guardó ninguna reflexión."
+            "empty": "Hoy no se guardó ninguna reflexión.",
+            "emptyVariants": {
+              "neutralB": "Aún no has escrito nada hoy: una o dos líneas bastan.",
+              "neutralC": "La reflexión de hoy sigue en blanco."
+            }
           },
           "session": {
             "todayTitle": "Sesiones de hoy",
             "buildFromPlan": "Crear desde el plan",
             "empty": "Aún no hay sesión. Crea una desde el plan de hoy.",
+            "emptyVariants": {
+              "neutralB": "Aún no hay sesión creada: inicia una desde el plan de hoy.",
+              "neutralC": "Nada programado. Genera una sesión desde tu plan."
+            },
             "buildError": "No se pudo crear una sesión. Genera primero un plan diario.",
             "transitionError": "Ese cambio de sesión no está permitido ahora.",
             "debriefError": "No se pudo guardar el análisis.",
@@ -2497,6 +2525,10 @@
             "cognitiveTrait": "Rasgo",
             "cognitiveScore": "Puntuación (0–100)",
             "cognitiveEmpty": "Aún no hay resultados cognitivos. Introduzca una puntuación arriba para empezar.",
+            "cognitiveEmptyVariants": {
+              "neutralB": "Aún no hay puntuaciones cognitivas: introduce una arriba para empezar.",
+              "neutralC": "Inicia tu perfil cognitivo puntuando un rasgo arriba."
+            },
             "cognitiveEntered": "{count} introducidos",
             "cognitiveProvenance": {
               "entered": "Introducido",
@@ -2504,6 +2536,10 @@
               "missing": "Sin datos"
             },
             "noEntryYet": "Aún no hay registros hoy.",
+            "noEntryYetVariants": {
+              "neutralB": "Aún no hay nada registrado aquí hoy.",
+              "neutralC": "Sin entradas por ahora: añade una para empezar."
+            },
             "addEntry": "Añadir registro",
             "addCognitive": "Añadir puntuación de rasgo"
           },

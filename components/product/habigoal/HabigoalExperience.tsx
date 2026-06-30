@@ -262,7 +262,7 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
           ) : null}
 
           {view === "progress" ? (
-            <ProgressPanel history={history} translate={t} />
+            <ProgressPanel history={history} nowMs={nowMs} translate={t} />
           ) : null}
 
           {showResult ? (
@@ -501,7 +501,7 @@ function ResultPanel({
   );
 }
 
-function ProgressPanel({ history, translate }: { history?: HabigoalHistory; translate: Translate }) {
+function ProgressPanel({ history, nowMs, translate }: { history?: HabigoalHistory; nowMs: number; translate: Translate }) {
   return (
     <Paper component="section" className="hbg-panel surface-outline" withBorder radius="md" p={{ base: "md", md: "xl" }}>
       <Stack gap="lg">
@@ -545,7 +545,7 @@ function ProgressPanel({ history, translate }: { history?: HabigoalHistory; tran
               ))}
             </Group>
           ) : (
-            <Text size="sm" className="hbg-muted-text">{translate("progress.empty")}</Text>
+            <Text size="sm" className="hbg-muted-text">{translate(selectCopyKey(neutralPromptDef("progress.empty"), { now: nowMs }))}</Text>
           )}
         </Box>
       </Stack>

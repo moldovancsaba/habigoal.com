@@ -6,7 +6,7 @@ import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticBu
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { selectCopyKey } from "@/lib/copy-variants";
-import { heroSubtitleDef } from "@/lib/surface-voice";
+import { heroSubtitleDef, neutralPromptDef } from "@/lib/surface-voice";
 import type { AthleteProfile } from "@/types/athlete";
 
 type AthleteListItem = AthleteProfile;
@@ -115,7 +115,7 @@ export function AthletesAppHome() {
               <Loader color="var(--mantine-color-ingress-6)" />
             </Group>
           ) : filteredAthletes.length === 0 ? (
-            <Text c="dimmed">{t("empty")}</Text>
+            <Text c="dimmed">{t(selectCopyKey(neutralPromptDef("empty"), { now: heroNowMs }))}</Text>
           ) : (
             <SimpleGrid cols={{ base: 1, md: 2, xl: 3 }} spacing="md">
               {filteredAthletes.map((athlete) => (
