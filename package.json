@@ -28,7 +28,8 @@
     "gds:audit": "node scripts/gds-audit.mjs",
     "gds:compliance": "gds-compliance check --manifest ./gds-adoption.json",
     "gds:manifest": "node scripts/gds-manifest.mjs ./gds-adoption.json",
-    "i18n:audit": "node scripts/i18n-audit.mjs"
+    "i18n:audit": "node scripts/i18n-audit.mjs",
+    "i18n:audit:deep": "node scripts/language-audit.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1063.0",
