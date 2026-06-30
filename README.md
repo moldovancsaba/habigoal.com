@@ -48,6 +48,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [API Reference](docs/api.md)
 - [Architecture](docs/architecture.md)
 - [Trust & Insight Engines](docs/trust-and-insights.md)
+- [GDS Gold-Athlete Theme & Component Brief](docs/gds-gold-athlete-theme-brief.md)
 - [Deployment](docs/deployment.md)
 - [Design System](docs/design-system.md)
 - [General Design System Adoption](docs/gds-adoption.md)
