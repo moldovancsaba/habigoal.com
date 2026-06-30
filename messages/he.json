@@ -1199,7 +1199,15 @@
     "athleteIqTitle": "סביבת ביצועים מקצועית לספורטאים",
     "athleteIqBody": "השכבה המקצועית למאמנים, קבוצות ומועדונים: לוחות בקרה, דוחות והעבודה היומית על הביצועים.",
     "athleteIqAction": "פתח Athlete IQ",
-    "athleteIqAria": "פתח את אפליקציית הביצועים המקצועית Athlete IQ"
+    "athleteIqAria": "פתח את אפליקציית הביצועים המקצועית Athlete IQ",
+    "athleteIqAthleteTitle": "Athlete IQ — ספורטאי",
+    "athleteIqAthleteBody": "פתח את מרחב תמיכת הספורטאי של Athlete IQ: מוכנות, תוכנית, ניתוח ורשומות.",
+    "athleteIqAthleteAction": "פתיחה כספורטאי",
+    "athleteIqAthleteAria": "פתיחת Athlete IQ כספורטאי",
+    "athleteIqTrainerTitle": "Athlete IQ — מאמן",
+    "athleteIqTrainerBody": "פתח את מרחב המאמן והצוות של Athlete IQ: לוחות בקרה, תכנון ודוחות.",
+    "athleteIqTrainerAction": "פתיחה כמאמן",
+    "athleteIqTrainerAria": "פתיחת Athlete IQ כמאמן"
   },
   "Login": {
     "badge": "גישה באימייל",

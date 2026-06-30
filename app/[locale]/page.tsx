@@ -18,7 +18,12 @@ export default async function LandingPage({
   const habigoalPath = `/${locale}/habigoal`;
   const athleteIqPath = `/${locale}/athlete-iq`;
   const habigoalHref = `/${locale}/login?next=${encodeURIComponent(habigoalPath)}&persona=athlete&productSurface=habigoal`;
-  const athleteIqHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=trainer&productSurface=athlete-iq`;
+  // Three pre-selectable destinations (#persona): Habigoal, Athlete IQ as an
+  // athlete, or Athlete IQ as a trainer. Each encodes the persona + surface so a
+  // signed-in user lands directly in the right app (the login page passes through
+  // an existing session), and a first-time login arrives pre-selected.
+  const athleteIqAthleteHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=athlete&productSurface=athlete-iq`;
+  const athleteIqTrainerHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=trainer&productSurface=athlete-iq`;
   const newsHref = `/${locale}/news`;
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;
@@ -47,7 +52,7 @@ export default async function LandingPage({
               <Title order={1}>{t("selectorTitle")}</Title>
             </Stack>
 
-            <SimpleGrid className="selector-grid" cols={{ base: 1, sm: 2 }} spacing={{ base: "md", sm: "lg", md: "xl" }}>
+            <SimpleGrid className="selector-grid" cols={{ base: 1, sm: 2, lg: 3 }} spacing={{ base: "md", sm: "lg", md: "xl" }}>
               <ProductEntryCard
                 badge={t("habigoalBadge")}
                 title={t("habigoalTitle")}
@@ -59,11 +64,20 @@ export default async function LandingPage({
               />
               <ProductEntryCard
                 badge={t("athleteIqBadge")}
-                title={t("athleteIqTitle")}
-                body={t("athleteIqBody")}
-                href={athleteIqHref}
-                action={t("athleteIqAction")}
-                ariaLabel={t("athleteIqAria")}
+                title={t("athleteIqAthleteTitle")}
+                body={t("athleteIqAthleteBody")}
+                href={athleteIqAthleteHref}
+                action={t("athleteIqAthleteAction")}
+                ariaLabel={t("athleteIqAthleteAria")}
+                tone="pro"
+              />
+              <ProductEntryCard
+                badge={t("athleteIqBadge")}
+                title={t("athleteIqTrainerTitle")}
+                body={t("athleteIqTrainerBody")}
+                href={athleteIqTrainerHref}
+                action={t("athleteIqTrainerAction")}
+                ariaLabel={t("athleteIqTrainerAria")}
                 tone="pro"
               />
             </SimpleGrid>

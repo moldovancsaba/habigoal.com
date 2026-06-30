@@ -1199,7 +1199,15 @@
     "athleteIqTitle": "Professioneller Performance-Arbeitsplatz",
     "athleteIqBody": "Die professionelle Ebene für Trainer, Teams und Vereine – Dashboards, Berichte und die tägliche Leistungsarbeit.",
     "athleteIqAction": "Athlete IQ oeffnen",
-    "athleteIqAria": "Professionelle Athlete IQ Performance-App oeffnen"
+    "athleteIqAria": "Professionelle Athlete IQ Performance-App oeffnen",
+    "athleteIqAthleteTitle": "Athlete IQ — Athlet",
+    "athleteIqAthleteBody": "Öffne den Athlete-IQ-Athletenbereich: Readiness, Plan, Analyse und Aufzeichnungen.",
+    "athleteIqAthleteAction": "Als Athlet öffnen",
+    "athleteIqAthleteAria": "Athlete IQ als Athlet öffnen",
+    "athleteIqTrainerTitle": "Athlete IQ — Trainer",
+    "athleteIqTrainerBody": "Öffne den Athlete-IQ-Trainer- und Teambereich: Dashboards, Planung und Berichte.",
+    "athleteIqTrainerAction": "Als Trainer öffnen",
+    "athleteIqTrainerAria": "Athlete IQ als Trainer öffnen"
   },
   "Login": {
     "badge": "E-Mail-Zugang",

@@ -11,8 +11,8 @@ const page = readFileSync(join(process.cwd(), "app/[locale]/page.tsx"), "utf8");
 const card = readFileSync(join(process.cwd(), "components/landing/ProductEntryCard.tsx"), "utf8");
 
 describe("selector responsive shell", () => {
-  it("drives column count by viewport width (single column → two-up at the sm breakpoint)", () => {
-    expect(page).toMatch(/cols=\{\{\s*base:\s*1,\s*sm:\s*2\s*\}\}/);
+  it("drives column count by viewport width (single column → two-up at sm → three-up at lg)", () => {
+    expect(page).toMatch(/cols=\{\{\s*base:\s*1,\s*sm:\s*2(,\s*lg:\s*3)?\s*\}\}/);
   });
 
   it("gates the hover lift on a fine, hovering pointer (capability channel, not width)", () => {

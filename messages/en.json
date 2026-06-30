@@ -1199,7 +1199,15 @@
     "athleteIqTitle": "Professional athlete performance workspace",
     "athleteIqBody": "The professional layer for trainers, teams, and clubs — dashboards, reports, and everyday performance work.",
     "athleteIqAction": "Open Athlete IQ",
-    "athleteIqAria": "Open the Athlete IQ professional performance app"
+    "athleteIqAria": "Open the Athlete IQ professional performance app",
+    "athleteIqAthleteTitle": "Athlete IQ — Athlete",
+    "athleteIqAthleteBody": "Open the Athlete IQ athlete support workspace: your readiness, plan, analysis, and records.",
+    "athleteIqAthleteAction": "Open as athlete",
+    "athleteIqAthleteAria": "Open Athlete IQ as an athlete",
+    "athleteIqTrainerTitle": "Athlete IQ — Trainer",
+    "athleteIqTrainerBody": "Open the Athlete IQ trainer and team workspace: dashboards, planning, and reports.",
+    "athleteIqTrainerAction": "Open as trainer",
+    "athleteIqTrainerAria": "Open Athlete IQ as a trainer"
   },
   "Login": {
     "badge": "Email access",

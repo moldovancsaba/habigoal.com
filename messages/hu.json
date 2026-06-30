@@ -1199,7 +1199,15 @@
     "athleteIqTitle": "Professzionális sportolói teljesítmény munkafelület",
     "athleteIqBody": "A professzionális réteg edzőknek, csapatoknak és kluboknak – irányítópultok, riportok és a napi teljesítménymunka.",
     "athleteIqAction": "Athlete IQ megnyitása",
-    "athleteIqAria": "Athlete IQ professzionális teljesítmény alkalmazás megnyitása"
+    "athleteIqAria": "Athlete IQ professzionális teljesítmény alkalmazás megnyitása",
+    "athleteIqAthleteTitle": "Athlete IQ — Sportoló",
+    "athleteIqAthleteBody": "Nyisd meg az Athlete IQ sportolói támogatási felületét: készenlét, terv, elemzés és rekordok.",
+    "athleteIqAthleteAction": "Megnyitás sportolóként",
+    "athleteIqAthleteAria": "Athlete IQ megnyitása sportolóként",
+    "athleteIqTrainerTitle": "Athlete IQ — Edző",
+    "athleteIqTrainerBody": "Nyisd meg az Athlete IQ edzői és csapatfelületét: vezérlőpultok, tervezés és riportok.",
+    "athleteIqTrainerAction": "Megnyitás edzőként",
+    "athleteIqTrainerAria": "Athlete IQ megnyitása edzőként"
   },
   "Login": {
     "badge": "E-mail hozzáférés",
