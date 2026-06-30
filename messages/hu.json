@@ -2461,6 +2461,13 @@
           "title": "Éjfél előtti alvás",
           "description": "Nyugodj le és feküdj le éjfél előtt a megfelelő regenerációért."
         }
+      },
+      "habitNudge": {
+        "neutralB": "Pár fókuszált perc itt megőrzi az előnyödet.",
+        "neutralC": "Kis ismétlések ma, valódi fejlődés a héten.",
+        "evening": "Jó alkalom lezárni ezt a nap vége előtt.",
+        "streak": "Jól megy — tartsd életben a sorozatot.",
+        "returning": "Üdv újra — kezdd óvatosan ezzel."
       }
     },
     "mentalEdge": {

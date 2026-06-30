@@ -2461,6 +2461,13 @@
           "title": "Dormir antes de medianoche",
           "description": "Relájate y duerme antes de medianoche para una recuperación adecuada."
         }
+      },
+      "habitNudge": {
+        "neutralB": "Unos minutos enfocados aquí mantienen tu ventaja.",
+        "neutralC": "Repeticiones pequeñas hoy, avances reales en la semana.",
+        "evening": "Buen momento para cerrar esto antes de que acabe el día.",
+        "streak": "Vas con todo: mantén viva la racha.",
+        "returning": "Bienvenido de vuelta: retoma con calma con esta."
       }
     },
     "mentalEdge": {

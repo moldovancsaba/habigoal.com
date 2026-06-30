@@ -2461,6 +2461,13 @@
           "title": "Sleep before midnight",
           "description": "Wind down and get to sleep before midnight for proper recovery."
         }
+      },
+      "habitNudge": {
+        "neutralB": "A few focused minutes here keeps your edge.",
+        "neutralC": "Small reps today, real gains over the week.",
+        "evening": "Good time to close this out before the day ends.",
+        "streak": "You're on a roll — keep the streak alive.",
+        "returning": "Welcome back — restart gently with this one."
       }
     },
     "mentalEdge": {
