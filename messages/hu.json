@@ -2334,6 +2334,13 @@
           "reflection": {
             "bodyLabel": "Reflexió",
             "bodyPlaceholder": "Mi ment jól, mi volt nehéz, mi a következő…",
+            "bodyPlaceholderVariants": {
+              "neutralB": "Nevezz meg egy sikert, egy nehézséget és egy dolgot, amit továbbviszel.",
+              "neutralC": "Mi ment ma jól, mi okozott gondot, és mit próbálsz legközelebb…",
+              "morning": "Hogyan akarsz ma megjelenni – és mitől lenne ez jó nap?",
+              "afternoon": "Félidős ellenőrzés: mi működik eddig, és min kell változtatni?",
+              "evening": "Zárd le a napot: mi ment jól ma, mi nem, és mi jön ezután…"
+            },
             "moodLabel": "Hangulatcímke",
             "moodPlaceholder": "pl. fókuszált",
             "visibilityLabel": "Láthatóság",

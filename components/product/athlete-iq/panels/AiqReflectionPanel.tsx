@@ -4,6 +4,8 @@ import { Box, Button, Group, Select, Stack, Text, Textarea, TextInput } from "@m
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
+import { selectCopyKey } from "@/lib/copy-variants";
+import { reflectionPromptDef } from "@/lib/surface-voice";
 import type { ReflectionEntryView, ReflectionVisibility } from "@/types/athleteiq-reflection";
 
 type ReflectionDayResponse = { reflections: ReflectionEntryView[]; count: number };
@@ -13,6 +15,7 @@ const VISIBILITIES: ReflectionVisibility[] = ["private", "coach_summary", "paren
 
 export function AiqReflectionPanel({ athleteId, localDate }: { athleteId: string; localDate: string }) {
   const t = useTranslations("ProductSurfaces.athleteIq.athleteWorkspace.panels");
+  const [nowMs] = useState(Date.now);
   const [entries, setEntries] = useState<ReflectionEntryView[]>([]);
   const [loading, setLoading] = useState(true);
   const [body, setBody] = useState("");
@@ -88,7 +91,7 @@ export function AiqReflectionPanel({ athleteId, localDate }: { athleteId: string
         <Stack gap="sm">
           <Textarea
             label={t("reflection.bodyLabel")}
-            placeholder={t("reflection.bodyPlaceholder")}
+            placeholder={t(selectCopyKey(reflectionPromptDef("reflection.bodyPlaceholder"), { now: nowMs, seed: athleteId }))}
             value={body}
             onChange={(event) => setBody(event.currentTarget.value)}
             autosize

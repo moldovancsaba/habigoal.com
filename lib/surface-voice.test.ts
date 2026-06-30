@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { heroSubtitleDef } from "./surface-voice";
+import { heroSubtitleDef, reflectionPromptDef } from "./surface-voice";
 import { selectCopyKey } from "./copy-variants";
 
 const MORNING = Date.parse("2026-06-29T08:00:00");
@@ -26,5 +26,11 @@ describe("surface hero voice (#intelligent-copy)", () => {
     );
     expect(keys.has("athleteWorkspace.hero.subtitle")).toBe(true);
     expect(keys.size).toBeGreaterThan(1);
+  });
+
+  it("gives the reflection prompt a time-of-day variant in its own keyspace", () => {
+    const def = reflectionPromptDef("reflection.bodyPlaceholder");
+    expect(selectCopyKey(def, { now: MORNING })).toBe("reflection.bodyPlaceholderVariants.morning");
+    expect(selectCopyKey(def, { now: EVENING })).toBe("reflection.bodyPlaceholderVariants.evening");
   });
 });

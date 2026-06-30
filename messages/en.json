@@ -2334,6 +2334,13 @@
           "reflection": {
             "bodyLabel": "Reflection",
             "bodyPlaceholder": "What went well, what was hard, what's next…",
+            "bodyPlaceholderVariants": {
+              "neutralB": "Name one win, one challenge, and one thing to carry forward.",
+              "neutralC": "What clicked today, what fought back, and what you'll try next…",
+              "morning": "How do you want to show up today — and what would make it a good one?",
+              "afternoon": "Midway check: what's working so far, and what needs a reset?",
+              "evening": "Wind down: what worked today, what didn't, and what's next…"
+            },
             "moodLabel": "Mood tag",
             "moodPlaceholder": "e.g. focused",
             "visibilityLabel": "Visibility",

@@ -2334,6 +2334,13 @@
           "reflection": {
             "bodyLabel": "Reflexion",
             "bodyPlaceholder": "Was lief gut, was war schwer, was kommt als Nächstes…",
+            "bodyPlaceholderVariants": {
+              "neutralB": "Nenne einen Erfolg, eine Herausforderung und eine Sache, die du mitnimmst.",
+              "neutralC": "Was lief heute gut, was war zäh, und was probierst du als Nächstes…",
+              "morning": "Wie willst du heute auftreten – und was würde den Tag gut machen?",
+              "afternoon": "Zwischenstand: Was läuft bisher, und was braucht einen Neustart?",
+              "evening": "Tag ausklingen lassen: Was lief gut, was nicht, und was kommt als Nächstes…"
+            },
             "moodLabel": "Stimmungs-Tag",
             "moodPlaceholder": "z. B. fokussiert",
             "visibilityLabel": "Sichtbarkeit",
