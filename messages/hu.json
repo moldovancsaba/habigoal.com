@@ -1288,6 +1288,53 @@
     "actions": {
       "dismiss": "Dismiss",
       "snooze": "Snooze"
+    },
+    "modules": {
+      "athlete-first-login-baseline": {
+        "title": "Állítsd be a sportolói alapprofilod",
+        "body": "Erősítsd meg a heti célodat és a támogatási preferenciáidat, hogy a Habigoal érthetően magyarázza a készenlétet és a check-in kontextust.",
+        "checklistTitle": "Sportolói beállítás",
+        "steps": {
+          "open-profile": {
+            "title": "Nyisd meg a sportolói profilod",
+            "body": "Indulj a saját sportolói profilodból."
+          },
+          "complete-check-in": {
+            "title": "Végezz el egy napi check-int",
+            "body": "Add meg a mai készenléted, hogy a trendek valós adatokon alapuljanak."
+          }
+        }
+      },
+      "trainer-command-center": {
+        "title": "Tekintsd át az edzői vezérlőpultod",
+        "body": "Használd a prioritási sort, a kihagyott check-ineket, az ajánlásokat és a tervezési kontextust, mielőtt edzésdöntéseket hozol.",
+        "checklistTitle": "Edzői munkafolyamat",
+        "steps": {
+          "review-queue": {
+            "title": "Tekintsd át a prioritásos sportolókat",
+            "body": "Kezdd a támogatást igénylő és a kihagyott check-ines sportolókkal."
+          },
+          "save-plan": {
+            "title": "Ments el egy heti tervet",
+            "body": "A tervezéssel fordítsd le a készenlétet edzés-korlátokra."
+          }
+        }
+      },
+      "admin-settings-foundation": {
+        "title": "Fejezd be az admin beállítást",
+        "body": "Tekintsd át a felhasználókat, csapatokat, szabványokat, visszaállítási vezérlőket és a governance mutatókat, mielőtt operátorokat hívsz élő munkafolyamatokba.",
+        "checklistTitle": "Admin beállítás",
+        "steps": {
+          "review-users": {
+            "title": "Tekintsd át a jóváhagyott felhasználókat",
+            "body": "Győződj meg róla, hogy legalább egy admin aktív marad."
+          },
+          "review-teams": {
+            "title": "Tekintsd át a csapattagságot",
+            "body": "Az edzői hozzáférés a csapattagságtól függ."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {
