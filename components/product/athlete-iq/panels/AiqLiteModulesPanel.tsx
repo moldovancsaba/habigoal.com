@@ -2,9 +2,10 @@
 
 import { Badge, Box, Button, Group, NumberInput, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import { COGNITIVE_TRAITS } from "@/lib/athleteiq-cognitive";
+import { MissingDataPrompt } from "@/components/insights/MissingDataPrompt";
 import type { CognitiveLiteJourney } from "@/types/athleteiq-cognitive";
 import type { LiteModuleDailySummary, LiteModuleGatewaySummary } from "@/types/athleteiq-lite-modules";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
@@ -127,17 +128,28 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
     (entryModule === "recovery" && !protocolKey.trim()) ||
     (entryModule === "learning" && !itemId.trim());
 
+  const formRef = useRef<HTMLDivElement>(null);
+  // From an empty card's "Add it" button: select the right entry module and bring
+  // the entry form into view so the athlete can fill the gap immediately (req 5).
+  const handleAdd = useCallback((module: EntryModule) => {
+    setEntryModule(module);
+    formRef.current?.scrollIntoView({ block: "center" });
+  }, []);
+
   return (
     <Stack gap="md">
       {loading ? <Text className="aiq-muted">{t("common.loading")}</Text> : null}
 
       {summary ? (
-        <SimpleSummary summaries={summary.summaries} domain={domain} t={t} />
+        <SimpleSummary summaries={summary.summaries} domain={domain} t={t} onAdd={handleAdd} />
       ) : null}
 
-      <Box className="aiq-row-card">
+      <Box className="aiq-row-card" ref={formRef}>
         <Stack gap="sm">
-          <SegmentedControl value={entryModule} onChange={(value) => setEntryModule(value as EntryModule)} data={moduleOptions} fullWidth />
+          {/* Scroll wrapper so long localized module labels never clip (SS2). */}
+          <Box style={{ overflowX: "auto", maxWidth: "100%" }}>
+            <SegmentedControl value={entryModule} onChange={(value) => setEntryModule(value as EntryModule)} data={moduleOptions} />
+          </Box>
 
           {entryModule === "recovery" ? (
             <Group grow align="flex-end">
@@ -200,36 +212,57 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
         </Stack>
       </Box>
 
-      {cognitive ? <CognitiveSummary journey={cognitive} domain={domain} t={t} /> : null}
+      {cognitive ? <CognitiveSummary journey={cognitive} domain={domain} t={t} onAdd={() => handleAdd("cognitive")} /> : null}
     </Stack>
   );
+}
+
+// Map a lite-module summary key to the entry-form module selector value.
+function moduleKeyToEntry(moduleKey: string): EntryModule | null {
+  switch (moduleKey) {
+    case "recovery_lite": return "recovery";
+    case "fuel_lite": return "fuel";
+    case "learning_lite": return "learning";
+    case "wearable_manual_sync": return "wearable";
+    default: return null;
+  }
 }
 
 function SimpleSummary({
   summaries,
   domain,
-  t
+  t,
+  onAdd
 }: {
   summaries: LiteModuleDailySummary[];
   domain: (key: string) => string;
   t: ReturnType<typeof useTranslations>;
+  onAdd: (module: EntryModule) => void;
 }) {
   return (
     <Stack gap="xs">
       <Text size="sm" className="aiq-muted-soft">{t("lite.summaryTitle")}</Text>
-      {summaries.map((entry) => (
-        <Box key={entry.moduleKey} className="aiq-row-card">
-          <Group justify="space-between" align="flex-start" gap="sm">
-            <Stack gap={2}>
-              <Text fw={800}>{domain(`athleteiq.modules.${liteDisplayKey(entry.moduleKey)}.name`)}</Text>
-              <Text size="sm" className="aiq-muted-faint">{t("lite.entryCount", { count: entry.entryCount })}</Text>
+      {summaries.map((entry) => {
+        const entryModule = moduleKeyToEntry(entry.moduleKey);
+        return (
+          <Box key={entry.moduleKey} className="aiq-row-card">
+            <Stack gap="xs">
+              <Group justify="space-between" align="flex-start" gap="sm">
+                <Stack gap={2}>
+                  <Text fw={800}>{domain(`athleteiq.modules.${liteDisplayKey(entry.moduleKey)}.name`)}</Text>
+                  <Text size="sm" className="aiq-muted-faint">{t("lite.entryCount", { count: entry.entryCount })}</Text>
+                </Stack>
+                <Badge color={entry.confidence === "medium" ? "tactical" : entry.confidence === "low" ? "yellow" : "gray"} variant="light">
+                  {t(`lite.confidence.${entry.confidence}`)}
+                </Badge>
+              </Group>
+              {entry.entryCount === 0 && entryModule ? (
+                <MissingDataPrompt message={t("lite.noEntryYet")} actionLabel={t("lite.addEntry")} onAdd={() => onAdd(entryModule)} />
+              ) : null}
             </Stack>
-            <Badge color={entry.confidence === "medium" ? "tactical" : entry.confidence === "low" ? "yellow" : "gray"} variant="light">
-              {t(`lite.confidence.${entry.confidence}`)}
-            </Badge>
-          </Group>
-        </Box>
-      ))}
+          </Box>
+        );
+      })}
     </Stack>
   );
 }
@@ -237,11 +270,13 @@ function SimpleSummary({
 function CognitiveSummary({
   journey,
   domain,
-  t
+  t,
+  onAdd
 }: {
   journey: CognitiveLiteJourney;
   domain: (key: string) => string;
   t: ReturnType<typeof useTranslations>;
+  onAdd: () => void;
 }) {
   const hasAnyData = journey.traitResults.some((trait) => trait.score !== null);
   return (
@@ -255,7 +290,7 @@ function CognitiveSummary({
             {t("lite.cognitiveEntered", { count: journey.enteredTraitCount })}
           </Text>
           {!hasAnyData ? (
-            <Text size="sm" className="aiq-muted-faint">{t("lite.cognitiveEmpty")}</Text>
+            <MissingDataPrompt message={t("lite.cognitiveEmpty")} actionLabel={t("lite.addCognitive")} onAdd={onAdd} />
           ) : (
             journey.traitResults.map((trait) => (
               <Group key={trait.trait} justify="space-between" gap="sm">

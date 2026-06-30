@@ -2414,7 +2414,10 @@
               "entered": "Megadva",
               "derived": "Származtatott",
               "missing": "Nincs adat"
-            }
+            },
+            "noEntryYet": "Ma még nincs bejegyzés.",
+            "addEntry": "Bejegyzés hozzáadása",
+            "addCognitive": "Tulajdonság-pontszám hozzáadása"
           },
           "progress": {
             "metric": {

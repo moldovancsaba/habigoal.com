@@ -2414,7 +2414,10 @@
               "entered": "Introducido",
               "derived": "Derivado",
               "missing": "Sin datos"
-            }
+            },
+            "noEntryYet": "Aún no hay registros hoy.",
+            "addEntry": "Añadir registro",
+            "addCognitive": "Añadir puntuación de rasgo"
           },
           "progress": {
             "metric": {
