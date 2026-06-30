@@ -2414,7 +2414,10 @@
               "entered": "Eingegeben",
               "derived": "Abgeleitet",
               "missing": "Keine Daten"
-            }
+            },
+            "noEntryYet": "Heute noch keine Einträge.",
+            "addEntry": "Eintrag hinzufügen",
+            "addCognitive": "Trait-Wert hinzufügen"
           },
           "progress": {
             "metric": {

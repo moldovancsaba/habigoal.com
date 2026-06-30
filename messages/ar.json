@@ -2414,7 +2414,10 @@
               "entered": "مُدخَل",
               "derived": "مُشتق",
               "missing": "لا توجد بيانات"
-            }
+            },
+            "noEntryYet": "لا توجد إدخالات اليوم.",
+            "addEntry": "إضافة إدخال",
+            "addCognitive": "إضافة درجة سمة"
           },
           "progress": {
             "metric": {

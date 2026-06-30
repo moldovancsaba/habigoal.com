@@ -2414,7 +2414,10 @@
               "entered": "הוזן",
               "derived": "נגזר",
               "missing": "אין נתונים"
-            }
+            },
+            "noEntryYet": "אין רשומות היום.",
+            "addEntry": "הוסף רשומה",
+            "addCognitive": "הוסף ציון תכונה"
           },
           "progress": {
             "metric": {

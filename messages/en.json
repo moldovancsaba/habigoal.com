@@ -2414,7 +2414,10 @@
               "entered": "Entered",
               "derived": "Derived",
               "missing": "No data"
-            }
+            },
+            "noEntryYet": "No entries today.",
+            "addEntry": "Add entry",
+            "addCognitive": "Add a trait score"
           },
           "progress": {
             "metric": {
