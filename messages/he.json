@@ -1190,7 +1190,8 @@
     "address": "כתובת",
     "shareCapital": "הון מניות",
     "vatNo": "מספר מע\"מ",
-    "website": "אתר"
+    "website": "אתר",
+    "appLabel": "אפליקציה:"
   },
   "Landing": {
     "title": "Habigoal ו-Athlete IQ",
@@ -3077,5 +3078,35 @@
     "stepStatus": "שלב {current} מתוך {total}",
     "saveNext": "שמור והמשך",
     "finish": "סיום"
+  },
+  "Services": {
+    "directoryTitle": "שירותי ספורט ומדריך אימונים",
+    "directorySubtitle": "גלה אקדמיות ספורט, מועדוני אימון ושירותי אימון מאומתים כדי לעלות שלב.",
+    "empty": "אין עדיין שירותים זמינים.",
+    "noDescription": "אין תיאור זמין.",
+    "rawDataTitle": "פריקת נתונים גולמית"
+  },
+  "Consent": {
+    "title": "הסכמה לעיבוד נתונים",
+    "closeAria": "סגירת חלון ההסכמה",
+    "intro": "‏Athlete IQ זקוק להסכמתך לעבד את נתוני הבריאות והביצועים שלך כדי לספק את שירותינו.",
+    "submissionFailed": "השליחה נכשלה",
+    "selectAtLeastOne": "בחר לפחות מטרה אחת כדי להמשיך.",
+    "saveError": "אירעה שגיאה בשמירת ההסכמה.",
+    "submit": "מאשר וממשיך",
+    "purposes": {
+      "daily_check_in": {
+        "title": "נתוני צ'ק-אין יומי",
+        "description": "מאפשר עיבוד של שאלוני מוכנות ורווחה יומיים."
+      },
+      "wearable_data": {
+        "title": "שילוב נתונים ממכשירים לבישים",
+        "description": "מאפשר סנכרון עם Oura, Garmin, Whoop ועוד."
+      },
+      "media_upload": {
+        "title": "העלאת מדיה ו-Vision AI",
+        "description": "מאפשר העלאת תמונות/סרטונים לניתוח יציבה וספרינט."
+      }
+    }
   }
 }

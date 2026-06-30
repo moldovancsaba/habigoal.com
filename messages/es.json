@@ -1190,7 +1190,8 @@
     "address": "Direccion",
     "shareCapital": "Capital social",
     "vatNo": "NIF IVA",
-    "website": "Sitio web"
+    "website": "Sitio web",
+    "appLabel": "Aplicación:"
   },
   "Landing": {
     "title": "Habigoal y Athlete IQ",
@@ -3077,5 +3078,35 @@
     "stepStatus": "Paso {current} de {total}",
     "saveNext": "Guardar y siguiente",
     "finish": "Finalizar"
+  },
+  "Services": {
+    "directoryTitle": "Servicios deportivos y directorio de entrenamiento",
+    "directorySubtitle": "Descubre academias deportivas, clubes de entrenamiento y servicios de coaching verificados para subir de nivel.",
+    "empty": "Aún no hay servicios disponibles.",
+    "noDescription": "No hay descripción disponible.",
+    "rawDataTitle": "Volcado de datos sin procesar"
+  },
+  "Consent": {
+    "title": "Consentimiento de procesamiento de datos",
+    "closeAria": "Cerrar el diálogo de consentimiento",
+    "intro": "Athlete IQ necesita tu consentimiento para procesar tus datos de salud y rendimiento y prestar nuestros servicios.",
+    "submissionFailed": "Error al enviar",
+    "selectAtLeastOne": "Selecciona al menos un propósito para continuar.",
+    "saveError": "Se produjo un error al guardar el consentimiento.",
+    "submit": "Aceptar y continuar",
+    "purposes": {
+      "daily_check_in": {
+        "title": "Datos del check-in diario",
+        "description": "Permite procesar las encuestas diarias de preparación y bienestar."
+      },
+      "wearable_data": {
+        "title": "Integración de datos de wearables",
+        "description": "Permite la sincronización con Oura, Garmin, Whoop, etc."
+      },
+      "media_upload": {
+        "title": "Carga de medios y Vision AI",
+        "description": "Permite subir fotos/videos para el análisis de postura y sprint."
+      }
+    }
   }
 }

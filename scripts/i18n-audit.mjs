@@ -328,6 +328,8 @@ const MUST_TRANSLATE_NAMESPACES = [
   "athleteiq",
   "SessionRunner",
   "PlanningDashboard",
+  "Services",
+  "Consent",
   "ProductSurfaces.athleteIq.athleteWorkspace.panels",
   "ProductSurfaces.athleteIq.athleteWorkspace.sections",
   "ProductSurfaces.athleteIq.nav.modules",

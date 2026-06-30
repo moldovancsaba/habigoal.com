@@ -45,7 +45,7 @@ export default function GtcPage() {
       <SectionPanel title={t("companyDataTitle")}>
         <CompanyData settings={settings} />
         <Text size="sm" mt="xs">
-          <strong>App:</strong> Habigoal v{APP_VERSION}
+          <strong>{t("appLabel")}</strong> Habigoal v{APP_VERSION}
         </Text>
       </SectionPanel>
 

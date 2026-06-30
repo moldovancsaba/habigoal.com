@@ -81,7 +81,7 @@ function looksLikeCopy(text) {
   if (/^(https?:|\/|\.|#|@|var\(|--|rgb|rgba|px|em|rem|%)/.test(t)) return false; // url/css/path
   if (/[{}<>$]/.test(t)) return false;                 // template/jsx fragments
   if (/=>|\(\)|\=\=|\bconst\b|\breturn\b|\bfunction\b/.test(t)) return false; // code
-  if (/^[A-Z][A-Za-z]+(\.[A-Za-z]+)+$/.test(t)) return false; // dotted ref Foo.bar
+  if (/^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(t) && !/\s/.test(t)) return false; // dotted ref Foo.bar / pillar.score
   return true;
 }
 

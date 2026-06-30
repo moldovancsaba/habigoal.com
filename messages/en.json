@@ -1190,7 +1190,8 @@
     "address": "Address",
     "shareCapital": "Share capital",
     "vatNo": "VAT No.",
-    "website": "Website"
+    "website": "Website",
+    "appLabel": "App:"
   },
   "Landing": {
     "title": "Habigoal and Athlete IQ",
@@ -3077,5 +3078,35 @@
     "stepStatus": "Step {current} of {total}",
     "saveNext": "Save & next",
     "finish": "Finish"
+  },
+  "Services": {
+    "directoryTitle": "Sport Services & Training Directory",
+    "directorySubtitle": "Discover verified sport academies, training clubs, and coaching services to level up your game.",
+    "empty": "No services available yet.",
+    "noDescription": "No description available.",
+    "rawDataTitle": "Raw Data Dump"
+  },
+  "Consent": {
+    "title": "Data Processing Consent",
+    "closeAria": "Close consent dialog",
+    "intro": "Athlete IQ requires your consent to process your health and performance data to provide our services.",
+    "submissionFailed": "Submission failed",
+    "selectAtLeastOne": "Please select at least one purpose to proceed.",
+    "saveError": "An error occurred while saving consent.",
+    "submit": "Acknowledge & Continue",
+    "purposes": {
+      "daily_check_in": {
+        "title": "Daily Check-in Data",
+        "description": "Allow processing of daily readiness and wellness surveys."
+      },
+      "wearable_data": {
+        "title": "Wearable Data Integration",
+        "description": "Allow syncing with Oura, Garmin, Whoop, etc."
+      },
+      "media_upload": {
+        "title": "Media Upload & Vision AI",
+        "description": "Allow uploading photos/videos for posture and sprint analysis."
+      }
+    }
   }
 }
