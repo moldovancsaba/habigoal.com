@@ -2815,5 +2815,29 @@
       "recoveryHabit": "Erholungs-Gewohnheiten sind unvollständig ({completed}/{total}). Schließe die Lücke heute.",
       "tomorrowFocus": "Dein Fokus für morgen: {focus}."
     }
+  },
+  "SessionBlueprints": {
+    "titles": {
+      "standardTechnical": "Standard-Techniktraining",
+      "controlledSkill": "Kontrolliertes Skill-Training",
+      "recoveryFlow": "Regenerations-Flow"
+    },
+    "drills": {
+      "warmup": "Aufwärmen",
+      "technical": "Technikarbeit",
+      "conditioning": "Konditionierung",
+      "cooldown": "Abwärmen",
+      "controlledTechnical": "Kontrollierte Technik",
+      "mobility": "Mobilität",
+      "lightAerobic": "Leichtes Aerobic",
+      "stretch": "Dehnen",
+      "breathing": "Atmung"
+    },
+    "skills": {
+      "ballControl": "Ballkontrolle",
+      "endurance": "Ausdauer",
+      "weakFoot": "Schwacher Fuß",
+      "mobility": "Mobilität"
+    }
   }
 }

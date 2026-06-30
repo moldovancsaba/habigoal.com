@@ -157,7 +157,7 @@ Role-aware route gating must exist in the shell layer as well as in the APIs —
 Key surfaces:
 
 - `/dashboard` — coach triage and recommendation surface.
-- `/dashboard/planning` — coach weekly planning from live readiness/load state; weekly plans persist in `session_plans`.
+- `/dashboard/planning` — coach weekly planning from live readiness/load state; weekly plans persist in `session_plans`. Reusable **session blueprints** (TRN-002, #83) — ordered, timed drill sets per variant (standard/controlled/recovery) — live in `lib/session-blueprints.ts` and are served read-only at `GET /api/session-blueprints`. A pure, client-only timer reducer (`lib/session-timer.ts`, play/pause/skip/tick/reset) drives execution; only the final debrief is persisted (via the existing session-lifecycle debrief route).
 - `/dashboard/athletes/[id]` — athlete operating surface, segmented into dedicated function areas (Input · Plan · Analysis · Records) via a `SegmentedControl`, so each function has its own focused view instead of one crammed scroll. The same component backs the athlete app's own profile (`/athletes/[id]`) via `isAthleteApp`; athletes land on Input, trainers on Analysis.
 - `/dashboard/settings` — admin operations: users, teams, restore/governance, company/legal profile, standards, and alerting.
 - `/athletes` — public athlete app entry; `/athletes/[id]` stays athlete-facing and must not leak coach/admin controls. When auth is enforced, `/athletes` redirects signed-in athletes to their own profile and redirects trainer/admin users into dashboard athlete management.

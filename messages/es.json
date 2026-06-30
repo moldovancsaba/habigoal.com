@@ -2815,5 +2815,29 @@
       "recoveryHabit": "Los hábitos de recuperación están incompletos ({completed}/{total}). Cierra la brecha hoy.",
       "tomorrowFocus": "Tu enfoque para mañana: {focus}."
     }
+  },
+  "SessionBlueprints": {
+    "titles": {
+      "standardTechnical": "Sesión técnica estándar",
+      "controlledSkill": "Sesión de habilidad controlada",
+      "recoveryFlow": "Flujo de recuperación"
+    },
+    "drills": {
+      "warmup": "Calentamiento",
+      "technical": "Trabajo técnico",
+      "conditioning": "Acondicionamiento",
+      "cooldown": "Enfriamiento",
+      "controlledTechnical": "Técnica controlada",
+      "mobility": "Movilidad",
+      "lightAerobic": "Aeróbico ligero",
+      "stretch": "Estiramiento",
+      "breathing": "Respiración"
+    },
+    "skills": {
+      "ballControl": "Control del balón",
+      "endurance": "Resistencia",
+      "weakFoot": "Pie débil",
+      "mobility": "Movilidad"
+    }
   }
 }

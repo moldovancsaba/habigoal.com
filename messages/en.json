@@ -2815,5 +2815,29 @@
       "recoveryHabit": "Recovery habits are incomplete ({completed}/{total}). Close the gap today.",
       "tomorrowFocus": "Your focus for tomorrow: {focus}."
     }
+  },
+  "SessionBlueprints": {
+    "titles": {
+      "standardTechnical": "Standard technical session",
+      "controlledSkill": "Controlled skill session",
+      "recoveryFlow": "Recovery flow"
+    },
+    "drills": {
+      "warmup": "Warm-up",
+      "technical": "Technical work",
+      "conditioning": "Conditioning",
+      "cooldown": "Cool-down",
+      "controlledTechnical": "Controlled technical",
+      "mobility": "Mobility",
+      "lightAerobic": "Light aerobic",
+      "stretch": "Stretch",
+      "breathing": "Breathing"
+    },
+    "skills": {
+      "ballControl": "Ball control",
+      "endurance": "Endurance",
+      "weakFoot": "Weak foot",
+      "mobility": "Mobility"
+    }
   }
 }
