@@ -156,7 +156,7 @@ Key surfaces:
 
 - `/dashboard` — coach triage and recommendation surface.
 - `/dashboard/planning` — coach weekly planning from live readiness/load state; weekly plans persist in `session_plans`.
-- `/dashboard/athletes/[id]` — athlete operating surface: trends, habits, memory, and reports.
+- `/dashboard/athletes/[id]` — athlete operating surface, segmented into dedicated function areas (Input · Plan · Analysis · Records) via a `SegmentedControl`, so each function has its own focused view instead of one crammed scroll. The same component backs the athlete app's own profile (`/athletes/[id]`) via `isAthleteApp`; athletes land on Input, trainers on Analysis.
 - `/dashboard/settings` — admin operations: users, teams, restore/governance, company/legal profile, standards, and alerting.
 - `/athletes` — public athlete app entry; `/athletes/[id]` stays athlete-facing and must not leak coach/admin controls. When auth is enforced, `/athletes` redirects signed-in athletes to their own profile and redirects trainer/admin users into dashboard athlete management.
 - `/news` — public release-note surface; posts render only in locales with exact localized content.
