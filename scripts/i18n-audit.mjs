@@ -307,6 +307,7 @@ function getPath(value, dottedPath) {
 // non-English locale. Guards production UI surfaces against English leaking in
 // behind key+placeholder parity (which the catalog audit alone would pass).
 const MUST_TRANSLATE_NAMESPACES = [
+  "Dashboard",
   "ProductSurfaces.athleteIq.athleteWorkspace.panels",
   "ProductSurfaces.athleteIq.athleteWorkspace.sections",
   "ProductSurfaces.athleteIq.nav.modules",
@@ -323,6 +324,29 @@ const MUST_TRANSLATE_NAMESPACES = [
 // brand/metric names, ICU-only format strings, and loanwords the target
 // languages genuinely use as-is (e.g. German "Training"/"Standard"/"Team").
 const IDENTICAL_OK = new Set([
+  // Dashboard: brand, shared loanwords, version strings, and sample placeholders
+  // that are genuinely identical across the target languages.
+  "Dashboard.brandName",
+  "Dashboard.navAthleteIq",
+  "Dashboard.title",
+  "Dashboard.wearables",
+  "Dashboard.conductors",
+  "Dashboard.observers",
+  "Dashboard.volatility",
+  "Dashboard.athleteDailyMomentumLabel",
+  "Dashboard.athleteSessionsLabel",
+  "Dashboard.athleteTrendMetricSocial",
+  "Dashboard.standardsMin",
+  "Dashboard.standardsVersionPlaceholder",
+  "Dashboard.sessionBlueprintStandardBadge",
+  "Dashboard.settingsAdminsCount",
+  "Dashboard.settingsEmailPlaceholder",
+  "Dashboard.teamNamePlaceholder",
+  "Dashboard.roleTrainer",
+  "Dashboard.roleAdmin",
+  "Dashboard.teamsTitle",
+  "Dashboard.trainingLogMarkMaximal",
+  "Dashboard.sectionPlan",
   "AthleteIntelligence.dimensions.readiness",
   "AthleteIntelligence.status.lite_manual",
   "CoachHub.intelligence",
