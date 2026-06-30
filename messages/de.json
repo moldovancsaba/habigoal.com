@@ -2461,6 +2461,13 @@
           "title": "Schlaf vor Mitternacht",
           "description": "Komm zur Ruhe und schlafe vor Mitternacht für echte Erholung."
         }
+      },
+      "habitNudge": {
+        "neutralB": "Ein paar fokussierte Minuten hier sichern deinen Vorsprung.",
+        "neutralC": "Kleine Wiederholungen heute, echter Fortschritt über die Woche.",
+        "evening": "Guter Moment, das vor dem Tagesende abzuschließen.",
+        "streak": "Du bist in Fahrt — halte die Serie am Leben.",
+        "returning": "Willkommen zurück — starte sanft mit dieser Aufgabe."
       }
     },
     "mentalEdge": {

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import type { DailyPlan, DailyTask, DailyTaskCompletionState } from "@/types/athleteiq-daily-plan";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
+import { resolveTaskDescriptionKey } from "@/lib/daily-plan-copy";
 
 type DailyPlanTodayResponse = { plan: DailyPlan | null; empty: boolean };
 type DailyPlanMutationResponse = { plan: DailyPlan };
@@ -28,6 +29,8 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
   const t = useTranslations("ProductSurfaces.athleteIq.athleteWorkspace.panels");
   const domain = useAthleteIqDomainCopy();
   const [plan, setPlan] = useState<DailyPlan | null>(null);
+  // Stable per-mount clock so copy selection is deterministic within a view.
+  const [nowMs] = useState(() => Date.now());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -154,7 +157,7 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
                 {task.completionState === "open" ? t(`dailyPlan.priority.${task.priority}`) : t(`dailyPlan.state.${task.completionState}`)}
               </Badge>
             </Group>
-            <Text size="sm" className="aiq-muted">{domain(task.descriptionKey)}</Text>
+            <Text size="sm" className="aiq-muted">{domain(resolveTaskDescriptionKey(task, { now: nowMs, seed: athleteId }))}</Text>
             <Text size="sm" className="aiq-muted-faint">{t(`dailyPlan.dueWindow.${task.dueWindow}`)}</Text>
             <Group gap="xs">
               {task.completionState === "open" ? (
