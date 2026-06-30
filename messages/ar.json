@@ -1282,30 +1282,30 @@
   },
   "Onboarding": {
     "defaults": {
-      "moduleTitle": "Getting started",
+      "moduleTitle": "البدء",
       "moduleBody": "مقدمة قصيرة لمساعدتك على البدء.",
-      "checklistTitle": "Onboarding checklist",
-      "checklistBody": "Follow these steps to get started."
+      "checklistTitle": "قائمة مهام الإعداد",
+      "checklistBody": "اتبع هذه الخطوات للبدء."
     },
     "status": {
-      "done": "Done",
-      "next": "Next"
+      "done": "تم",
+      "next": "التالي"
     },
     "states": {
-      "loadingTitle": "Loading onboarding",
-      "loadingBody": "The current route remains available while onboarding state loads.",
-      "emptyTitle": "No checklist steps",
-      "emptyBody": "This onboarding module has no checklist steps yet.",
-      "errorTitle": "Onboarding update failed",
-      "errorBody": "Retry the onboarding action or dismiss this prompt. The current page remains usable.",
-      "blockedTitle": "Onboarding unavailable",
-      "blockedBody": "This onboarding module is not available for the current role or route.",
-      "completedTitle": "Onboarding completed",
-      "completedBody": "This onboarding module is complete and can be closed."
+      "loadingTitle": "جارٍ تحميل الإعداد",
+      "loadingBody": "يظل المسار الحالي متاحًا أثناء تحميل حالة الإعداد.",
+      "emptyTitle": "لا توجد خطوات في القائمة",
+      "emptyBody": "لا تحتوي وحدة الإعداد هذه على أي خطوات في القائمة حتى الآن.",
+      "errorTitle": "فشل تحديث الإعداد",
+      "errorBody": "أعد محاولة إجراء الإعداد أو تجاهل هذه الرسالة. تظل الصفحة الحالية قابلة للاستخدام.",
+      "blockedTitle": "الإعداد غير متاح",
+      "blockedBody": "وحدة الإعداد هذه غير متاحة للدور أو المسار الحالي.",
+      "completedTitle": "اكتمل الإعداد",
+      "completedBody": "اكتملت وحدة الإعداد هذه ويمكن إغلاقها."
     },
     "actions": {
-      "dismiss": "Dismiss",
-      "snooze": "Snooze"
+      "dismiss": "تجاهل",
+      "snooze": "تأجيل"
     },
     "modules": {
       "athlete-first-login-baseline": {
@@ -1960,7 +1960,7 @@
       },
       "hero": {
         "dateLabel": "اليوم - {date}",
-        "title": "Athlete IQ Daily Development OS",
+        "title": "Athlete IQ نظام التطوير اليومي",
         "subtitle": "مساحة عمل احترافية واحدة للرياضيين والمدربين والفرق والأندية.",
         "copy": "تبقى الجاهزية والحالة الذهنية وحمل التدريب وإجراءات الفريق والتقارير في مساحة مدرب مركزة واحدة.",
         "summaryAria": "ملخص تشغيل Athlete IQ",
@@ -2560,7 +2560,7 @@
       },
       "theme": {
         "label": "السمة",
-        "name": "Gold Athlete",
+        "name": "الرياضي الذهبي",
         "surfaceTone": "تحكم أداء فاخر بالأسود والذهبي"
       }
     },

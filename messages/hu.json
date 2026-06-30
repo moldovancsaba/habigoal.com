@@ -31,11 +31,11 @@
     "menu": "Menü",
     "switchToLightMode": "Váltás világos módra",
     "switchToDarkMode": "Váltás sötét módra",
-    "languageEnglish": "English",
+    "languageEnglish": "Angol",
     "languageHungarian": "Magyar",
     "languageArabic": "العربية",
-    "languageSpanish": "Español",
-    "languageGerman": "Deutsch",
+    "languageSpanish": "Spanyol",
+    "languageGerman": "Német",
     "languageHebrew": "עברית",
     "languageSelector": "Nyelv kiválasztása",
     "goHome": "Vissza a kezdőlapra",
@@ -1282,30 +1282,30 @@
   },
   "Onboarding": {
     "defaults": {
-      "moduleTitle": "Getting started",
+      "moduleTitle": "Első lépések",
       "moduleBody": "Rövid bevezető az induláshoz.",
-      "checklistTitle": "Onboarding checklist",
-      "checklistBody": "Follow these steps to get started."
+      "checklistTitle": "Bevezető ellenőrzőlista",
+      "checklistBody": "Kövesd ezeket a lépéseket az induláshoz."
     },
     "status": {
-      "done": "Done",
-      "next": "Next"
+      "done": "Kész",
+      "next": "Következő"
     },
     "states": {
-      "loadingTitle": "Loading onboarding",
-      "loadingBody": "The current route remains available while onboarding state loads.",
-      "emptyTitle": "No checklist steps",
-      "emptyBody": "This onboarding module has no checklist steps yet.",
-      "errorTitle": "Onboarding update failed",
-      "errorBody": "Retry the onboarding action or dismiss this prompt. The current page remains usable.",
-      "blockedTitle": "Onboarding unavailable",
-      "blockedBody": "This onboarding module is not available for the current role or route.",
-      "completedTitle": "Onboarding completed",
-      "completedBody": "This onboarding module is complete and can be closed."
+      "loadingTitle": "Bevezető betöltése",
+      "loadingBody": "Az aktuális útvonal elérhető marad, amíg a bevezető állapota betöltődik.",
+      "emptyTitle": "Nincsenek ellenőrzőlista-lépések",
+      "emptyBody": "Ehhez a bevezető modulhoz még nincsenek ellenőrzőlista-lépések.",
+      "errorTitle": "A bevezető frissítése nem sikerült",
+      "errorBody": "Próbáld újra a bevezető műveletet, vagy zárd be ezt az üzenetet. Az aktuális oldal továbbra is használható.",
+      "blockedTitle": "A bevezető nem érhető el",
+      "blockedBody": "Ez a bevezető modul nem érhető el az aktuális szerepkörhöz vagy útvonalhoz.",
+      "completedTitle": "Bevezető befejezve",
+      "completedBody": "Ez a bevezető modul elkészült, és bezárható."
     },
     "actions": {
-      "dismiss": "Dismiss",
-      "snooze": "Snooze"
+      "dismiss": "Elvetés",
+      "snooze": "Halasztás"
     },
     "modules": {
       "athlete-first-login-baseline": {
@@ -1715,7 +1715,7 @@
         }
       },
       "badges": {
-        "checkIn": "Check-in",
+        "checkIn": "Bejelentkezés",
         "habits": "Szokások",
         "action": "Következő lépés"
       },
@@ -1960,7 +1960,7 @@
       },
       "hero": {
         "dateLabel": "Ma - {date}",
-        "title": "Athlete IQ Daily Development OS",
+        "title": "Athlete IQ napi fejlesztési OS",
         "subtitle": "Egységes professzionális munkafelület sportolóknak, edzőknek, csapatoknak és kluboknak.",
         "copy": "Readiness, mentális állapot, edzésterhelés, csapatműveletek és riportok egy fókuszált edzői munkatérben maradnak.",
         "summaryAria": "Athlete IQ operációs összefoglaló",
@@ -1973,12 +1973,12 @@
         }
       },
       "metrics": {
-        "dailyIq": "Daily IQ",
+        "dailyIq": "Napi IQ",
         "lifestyleRoute": "Életmód útvonal",
         "performanceRoute": "Teljesítmény útvonal",
-        "readiness": "Readiness",
+        "readiness": "Felkészültség",
         "teamSnapshot": "Csapat pillanatkép",
-        "mentalEdge": "Mental edge",
+        "mentalEdge": "Mentális előny",
         "priorityAthletes": "Prioritásos sportolók"
       },
       "teamCommand": {
@@ -2036,10 +2036,10 @@
             "source": "Reflexió + readiness útvonal"
           },
           "anna": {
-            "squad": "Return-to-play",
+            "squad": "Visszatérés a játékba",
             "reason": "Zöld útvonal kontrollált terheléssel és stabil szokásokkal.",
             "action": "Haladj egy tervezett edzésblokkal.",
-            "source": "Daily IQ + pain safety"
+            "source": "Napi IQ + fájdalombiztonság"
           }
         },
         "empty": "Nincs nyitott prioritás élő rekordok alapján.",
@@ -2545,7 +2545,7 @@
           },
           "progress": {
             "metric": {
-              "dailyIq": "Daily IQ",
+              "dailyIq": "Napi IQ",
               "readiness": "Felkészültség",
               "habit": "Szokások",
               "mental": "Mentális előny"
@@ -3005,7 +3005,7 @@
     },
     "sourcesLabel": "Források",
     "sourceType": {
-      "check_in": "Check-in",
+      "check_in": "Bejelentkezés",
       "habit_record": "Szokásrekord",
       "training_load": "Edzésterhelés",
       "reflection": "Reflexió"
