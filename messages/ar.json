@@ -621,7 +621,8 @@
     "sectionAnalysis": "التحليل",
     "sectionRecords": "السجلات",
     "sectionNavLabel": "منطقة الوظائف",
-    "guidanceSignalsTitle": "إشارات إرشادية"
+    "guidanceSignalsTitle": "إشارات إرشادية",
+    "athleteRunSessionAction": "تشغيل جلسة"
   },
   "Assessment": {
     "saved": "تم حفظ التسجيل.",
@@ -2847,5 +2848,37 @@
       "weakFoot": "القدم الأضعف",
       "mobility": "الليونة"
     }
+  },
+  "SessionRunner": {
+    "title": "تشغيل جلسة",
+    "subtitle": "اختر قالبًا، نفّذ التمارين المؤقتة، ثم سجّل شعورك.",
+    "pickBlueprint": "اختر قالبًا",
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد قوالب متاحة بعد.",
+    "start": "ابدأ",
+    "durationLabel": "{minutes} دقيقة · {drills} تمارين",
+    "retry": "إعادة المحاولة",
+    "loadError": "تعذّر تحميل القوالب.",
+    "currentDrill": "التمرين الحالي",
+    "drillProgress": "التمرين {current} من {total}",
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت",
+    "skip": "تخطٍ",
+    "reset": "إعادة ضبط",
+    "status": {
+      "idle": "جاهز",
+      "running": "قيد التشغيل",
+      "paused": "متوقف مؤقتًا",
+      "completed": "اكتملت الجلسة"
+    },
+    "debriefTitle": "كيف كانت؟",
+    "rpeLabel": "الجهد (RPE): {value}",
+    "completionLabel": "الإكمال (%)",
+    "painLabel": "الألم بعدها: {value}",
+    "moodLabel": "المزاج بعدها: {value}",
+    "notesLabel": "ملاحظات (اختياري)",
+    "save": "حفظ الملخص",
+    "saved": "تم حفظ الملخص.",
+    "saveError": "تعذّر الحفظ. حاول مرة أخرى."
   }
 }

@@ -708,6 +708,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               <Link href="/dashboard/planning" style={{ textDecoration: "none" }}>
                 <SemanticButton action="launch" variant="light" size="sm" />
               </Link>
+            ) : data?.child._id ? (
+              <Link href={`/athletes/${data.child._id}/session`} style={{ textDecoration: "none" }}>
+                <SemanticButton action="start" color="ingress" size="sm">{td("athleteRunSessionAction")}</SemanticButton>
+              </Link>
             ) : undefined}
           >
             {relevantSessionPlan ? (

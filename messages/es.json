@@ -621,7 +621,8 @@
     "sectionAnalysis": "Análisis",
     "sectionRecords": "Registros",
     "sectionNavLabel": "Área funcional",
-    "guidanceSignalsTitle": "Señales de orientación"
+    "guidanceSignalsTitle": "Señales de orientación",
+    "athleteRunSessionAction": "Ejecutar una sesión"
   },
   "Assessment": {
     "saved": "Registro guardado.",
@@ -2847,5 +2848,37 @@
       "weakFoot": "Pie débil",
       "mobility": "Movilidad"
     }
+  },
+  "SessionRunner": {
+    "title": "Ejecutar una sesión",
+    "subtitle": "Elige una plantilla, realiza los ejercicios cronometrados y registra cómo te sentiste.",
+    "pickBlueprint": "Elige una plantilla",
+    "loading": "Cargando…",
+    "empty": "Aún no hay plantillas disponibles.",
+    "start": "Iniciar",
+    "durationLabel": "{minutes} min · {drills} ejercicios",
+    "retry": "Reintentar",
+    "loadError": "No se pudieron cargar las plantillas.",
+    "currentDrill": "Ejercicio actual",
+    "drillProgress": "Ejercicio {current} de {total}",
+    "play": "Iniciar",
+    "pause": "Pausa",
+    "skip": "Saltar",
+    "reset": "Reiniciar",
+    "status": {
+      "idle": "Listo",
+      "running": "En curso",
+      "paused": "En pausa",
+      "completed": "Sesión completada"
+    },
+    "debriefTitle": "¿Cómo fue?",
+    "rpeLabel": "Esfuerzo (RPE): {value}",
+    "completionLabel": "Finalización (%)",
+    "painLabel": "Dolor después: {value}",
+    "moodLabel": "Ánimo después: {value}",
+    "notesLabel": "Notas (opcional)",
+    "save": "Guardar resumen",
+    "saved": "Resumen guardado.",
+    "saveError": "No se pudo guardar. Inténtalo de nuevo."
   }
 }

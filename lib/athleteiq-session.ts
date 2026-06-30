@@ -1,9 +1,80 @@
 import type { DailyPlan } from "@/types/athleteiq-daily-plan";
 import type { PainGuardrail } from "@/types/athleteiq-pain-safety";
-import type { AthleteIqSession, AthleteIqSessionBlock, AthleteIqSessionState } from "@/types/athleteiq-session";
+import type { AthleteIqSession, AthleteIqSessionBlock, AthleteIqSessionBlockType, AthleteIqSessionState } from "@/types/athleteiq-session";
+import type { SessionBlueprint, SessionBlueprintVariant } from "@/lib/session-blueprints";
 
 export const ATHLETEIQ_SESSION_CAPABILITY_KEY = "AIQ-1270";
 export const ATHLETEIQ_SESSION_VERSION = "aiq-session-1270.1";
+
+type SessionIntensity = DailyPlan["recommendation"]["intensity"];
+
+const VARIANT_INTENSITY: Record<SessionBlueprintVariant, SessionIntensity> = {
+  standard: "moderate",
+  controlled: "low",
+  recovery: "recovery",
+};
+
+const VARIANT_TYPE: Record<SessionBlueprintVariant, DailyPlan["recommendation"]["type"]> = {
+  standard: "controlled",
+  controlled: "controlled",
+  recovery: "recovery",
+};
+
+function drillBlockType(titleKey: string, variant: SessionBlueprintVariant): AthleteIqSessionBlockType {
+  if (variant === "recovery") return "recovery";
+  if (titleKey === "warmup") return "warmup";
+  if (titleKey === "cooldown" || titleKey === "stretch" || titleKey === "breathing") return "cooldown";
+  return "main";
+}
+
+// Build a draft session from a reusable blueprint (TRN-002, #83) — maps the
+// blueprint's timed drills to session blocks and synthesizes a recommendation
+// plus a no-restriction pain guardrail. Reuses the SAME session lifecycle
+// (state machine, debrief, load estimate) as plan-based sessions; no parallel
+// module. Pure + deterministic given `now`.
+export function buildSessionFromBlueprint(input: {
+  athleteId: string;
+  localDate: string;
+  blueprint: SessionBlueprint;
+}, now = new Date()): AthleteIqSession {
+  const timestamp = now.toISOString();
+  const intensity = VARIANT_INTENSITY[input.blueprint.variant];
+  const blocks: AthleteIqSessionBlock[] = input.blueprint.drills.map((drill) => ({
+    type: drillBlockType(drill.titleKey, input.blueprint.variant),
+    durationMinutes: Math.max(1, Math.round(drill.seconds / 60)),
+    intensity,
+    instructionsKey: `SessionBlueprints.drills.${drill.titleKey}`,
+    safetyNotesKey: "athleteiq.sessions.safety.standard",
+  }));
+  const duration = blocks.reduce((sum, block) => sum + block.durationMinutes, 0);
+  const sessionId = `aiq-session:blueprint:${input.athleteId}:${input.blueprint.key}:${input.localDate}`;
+  const recommendation: DailyPlan["recommendation"] = {
+    intensity,
+    type: VARIANT_TYPE[input.blueprint.variant],
+    durationRange: `${duration}-${duration}`,
+    rationale: [`blueprint:${input.blueprint.key}`],
+    blockedByPainGuardrail: false,
+    confidence: "medium",
+  };
+
+  return {
+    sessionId,
+    athleteId: input.athleteId,
+    localDate: input.localDate,
+    state: "draft",
+    blocks,
+    recommendation,
+    painGuardrail: { state: "none", maxTrainingIntensity: "normal", dailyIqCap: null, reasonCodes: [] },
+    log: {
+      sessionId,
+      athleteId: input.athleteId,
+      estimatedLoadPoints: estimateSessionLoad(duration, intensity),
+    },
+    auditHistory: [`created:${timestamp}`, `blueprint:${input.blueprint.key}`],
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+}
 
 export function buildSessionFromPlan(input: {
   athleteId: string;
