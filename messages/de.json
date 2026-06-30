@@ -2629,7 +2629,8 @@
     "exportCsvAria": "{subject} als CSV exportieren",
     "exportJsonAria": "{subject} als JSON exportieren",
     "parentSafe": "Elternsicher",
-    "exportParentSafeAria": "Elternsichere Zusammenfassung von {subject} exportieren"
+    "exportParentSafeAria": "Elternsichere Zusammenfassung von {subject} exportieren",
+    "sourcesDisclosure": "Datenquellen & Vertrauen"
   },
   "Wearables": {
     "title": "Verbundene Wearables",

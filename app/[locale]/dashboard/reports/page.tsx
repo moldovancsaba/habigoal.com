@@ -11,10 +11,13 @@ import { toParentSafeReport } from "@/lib/parent-safe-report";
 import { normalizeConfidenceBand, type ConfidenceBand } from "@/lib/data-confidence";
 import { ConfidenceBadge } from "@/components/insights/ConfidenceBadge";
 
-// Reports carry their confidence in a "Confidence: <band>" source note. Parse it
-// back to the canonical band so the hub can show an honest badge and drive the
-// parent-safe projection (#253/#261) instead of guessing.
+// Prefer the structured provenance band (RPT-005, #200); fall back to parsing the
+// "Confidence: <band>" source note for older reports. Drives the honest hub badge
+// and the parent-safe projection (#253/#261) instead of guessing.
 function reportConfidenceBand(report: AthleteReport): ConfidenceBand {
+  if (report.provenance?.overallConfidence) {
+    return normalizeConfidenceBand(report.provenance.overallConfidence);
+  }
   const note = report.sourceDataNotes.find((n) => /confidence/i.test(n));
   const raw = note?.split(":")[1]?.trim();
   return normalizeConfidenceBand(raw);
@@ -184,6 +187,7 @@ export default function ReportsHubPage() {
         <Stack gap="md">
           {reports.map((row) => (
             <Paper withBorder key={row.id} p="md">
+              <Stack gap="sm">
               <Group justify="space-between">
                 <Box>
                   <Text fw={700} size="md">{row.athleteName}</Text>
@@ -236,6 +240,17 @@ export default function ReportsHubPage() {
                   </SemanticButton>
                 </Group>
               </Group>
+              <Box component="details">
+                <Text component="summary" size="sm" c="dimmed" style={{ cursor: "pointer" }}>
+                  {t("sourcesDisclosure")}
+                </Text>
+                <Stack gap={4} mt="xs">
+                  {row.report.sourceDataNotes.map((note, index) => (
+                    <Text key={index} size="sm" c="dimmed">{note}</Text>
+                  ))}
+                </Stack>
+              </Box>
+              </Stack>
             </Paper>
           ))}
           {reports.length === 0 && (
