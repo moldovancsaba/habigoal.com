@@ -103,7 +103,11 @@ describe("wearable OAuth callback", () => {
 
   it("returns 501 when the provider OAuth is not configured", async () => {
     mockProvider({ configured: false });
-    const res = await GET(callbackRequest({ code: "auth-code", state: validState() }, validState()));
+    // Reuse one signed state for both the query param and the cookie (as the
+    // other tests do) so the double-submit always matches and this test
+    // exercises the config gate, never an incidental state mismatch.
+    const state = validState();
+    const res = await GET(callbackRequest({ code: "auth-code", state }, state));
     expect(res.status).toBe(501);
   });
 });
