@@ -112,7 +112,10 @@ describe("product surface route boundaries", () => {
     expect(landingRoute).toContain("productSurface=habigoal");
     expect(landingRoute).toContain("productSurface=athlete-iq");
     expect(landingRoute).toContain("encodeURIComponent(habigoalPath)");
-    expect(landingRoute).toContain("encodeURIComponent(athleteIqPath)");
+    // The two Athlete IQ entries carry the pre-selected persona into the next
+    // destination so the surface renders the athlete vs trainer experience.
+    expect(landingRoute).toContain("${athleteIqPath}?persona=athlete");
+    expect(landingRoute).toContain("${athleteIqPath}?persona=trainer");
     expect(loginRoute).toContain("ATHLETE_IQ_GOLD_LOGO_SRC");
     expect(loginRoute).toContain("login-panel-aiq");
     expect(loginRoute).toContain("sanitizePersona");
@@ -130,7 +133,8 @@ describe("product surface route boundaries", () => {
     expect(habigoalRoute).toContain('persona: "athlete"');
     expect(habigoalRoute).toContain('allowedRoles: ["athlete"]');
     expect(athleteIqRoute.indexOf("requireProductSession")).toBeLessThan(athleteIqRoute.indexOf("getAthleteIqProductDashboardProjection"));
-    expect(athleteIqRoute).toContain('persona: "trainer"');
+    // Defaults to the trainer surface, but honours a role-gated persona override.
+    expect(athleteIqRoute).toContain('?? "trainer"');
     expect(athleteIqRoute).toContain('"club_management"');
   });
 

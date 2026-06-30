@@ -23,20 +23,26 @@ export async function generateMetadata({
 }
 
 export default async function AthleteIqSurfaceRoute({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ persona?: string }>;
 }) {
   const { locale } = await params;
+  const { persona } = await searchParams;
   setRequestLocale(locale);
+  // The persona pre-selected on the selector decides which AIQ experience to
+  // render (athlete vs trainer); the projection gates it against real roles.
+  const requestedPersona = persona === "athlete" || persona === "trainer" ? persona : undefined;
   await requireProductSession({
     allowedRoles: ["admin", "athlete", "trainer", "performance_coach", "physio", "analyst", "club_management"],
     locale,
-    path: `/${locale}/athlete-iq`,
-    persona: "trainer",
+    path: `/${locale}/athlete-iq${requestedPersona ? `?persona=${requestedPersona}` : ""}`,
+    persona: requestedPersona ?? "trainer",
     surface: "athlete-iq"
   });
-  const dashboard = await getAthleteIqProductDashboardProjection();
+  const dashboard = await getAthleteIqProductDashboardProjection({ requestedPersona });
 
   // Render inside the single shared shell so there is exactly one persona menu
   // (the DashboardShell nav). The Athlete IQ experience renders in `embedded`
