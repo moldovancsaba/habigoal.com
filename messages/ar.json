@@ -2393,6 +2393,11 @@
             "painAfter": "الألم بعدها (1–10)",
             "moodAfter": "المزاج بعدها (1–10)",
             "notes": "ملاحظات",
+            "notesPlaceholder": "ماذا علّمتك هذه الحصة؟",
+            "notesPlaceholderVariants": {
+              "neutralB": "هل هناك ما يستحق تذكّره للمرة القادمة؟",
+              "neutralC": "ملاحظة سيشكرك عليها نفسك المستقبلي (أو مدربك)…"
+            },
             "recordedLoad": "الحمل المسجَّل: {load}",
             "saveDebrief": "حفظ التقييم"
           },
@@ -2410,6 +2415,11 @@
             "mealTiming": "توقيت الوجبات",
             "hydration": "الترطيب",
             "note": "ملاحظة",
+            "notePlaceholder": "كيف سارت التغذية — التوقيت، الكميات، الترطيب؟",
+            "notePlaceholderVariants": {
+              "neutralB": "هل هناك ما ساعد طاقتك اليوم أو أضرّ بها؟",
+              "neutralC": "ملاحظة سريعة عمّا أكلته أو شربته أو فوّتّه…"
+            },
             "fuelStatus": {
               "on_track": "على المسار",
               "late": "متأخر",

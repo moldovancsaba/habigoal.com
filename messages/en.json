@@ -2393,6 +2393,11 @@
             "painAfter": "Pain after (1-10)",
             "moodAfter": "Mood after (1-10)",
             "notes": "Notes",
+            "notesPlaceholder": "What did this session teach you?",
+            "notesPlaceholderVariants": {
+              "neutralB": "Anything worth remembering for next time?",
+              "neutralC": "One note your future self (or coach) would thank you for…"
+            },
             "recordedLoad": "Recorded load: {load}",
             "saveDebrief": "Save debrief"
           },
@@ -2410,6 +2415,11 @@
             "mealTiming": "Meal timing",
             "hydration": "Hydration",
             "note": "Note",
+            "notePlaceholder": "How did fueling go — timing, portions, hydration?",
+            "notePlaceholderVariants": {
+              "neutralB": "Anything that helped or hurt your energy today?",
+              "neutralC": "A quick note on what you ate, drank, or missed…"
+            },
             "fuelStatus": {
               "on_track": "On track",
               "late": "Late",

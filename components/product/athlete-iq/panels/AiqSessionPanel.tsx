@@ -4,6 +4,8 @@ import { Badge, Box, Button, Group, NumberInput, Stack, Text, TextInput } from "
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
+import { selectCopyKey } from "@/lib/copy-variants";
+import { neutralPromptDef } from "@/lib/surface-voice";
 import type { AthleteIqSession, AthleteIqSessionState } from "@/types/athleteiq-session";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 
@@ -33,6 +35,7 @@ const DEFAULT_DEBRIEF: DebriefDraft = { rpe: 5, completionPct: 100, painAfter: 1
 export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId: string; localDate: string; timezone: string }) {
   const t = useTranslations("ProductSurfaces.athleteIq.athleteWorkspace.panels");
   const domain = useAthleteIqDomainCopy();
+  const [nowMs] = useState(Date.now);
   const [sessions, setSessions] = useState<AthleteIqSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
@@ -190,7 +193,7 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
                       <NumberInput label={t("session.painAfter")} value={draft.painAfter} min={1} max={10} onChange={(value) => patchDebrief(session.sessionId, { painAfter: toNumber(value, draft.painAfter) })} />
                       <NumberInput label={t("session.moodAfter")} value={draft.moodAfter} min={1} max={10} onChange={(value) => patchDebrief(session.sessionId, { moodAfter: toNumber(value, draft.moodAfter) })} />
                     </Group>
-                    <TextInput label={t("session.notes")} value={draft.notes} onChange={(event) => patchDebrief(session.sessionId, { notes: event.currentTarget.value })} />
+                    <TextInput label={t("session.notes")} placeholder={t(selectCopyKey(neutralPromptDef("session.notesPlaceholder"), { now: nowMs, seed: session.sessionId }))} value={draft.notes} onChange={(event) => patchDebrief(session.sessionId, { notes: event.currentTarget.value })} />
                     {session.log.rpe !== undefined ? (
                       <Text size="sm" className="aiq-muted-faint">{t("session.recordedLoad", { load: session.log.estimatedLoadPoints })}</Text>
                     ) : null}

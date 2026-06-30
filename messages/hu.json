@@ -2393,6 +2393,11 @@
             "painAfter": "Fájdalom utána (1–10)",
             "moodAfter": "Hangulat utána (1–10)",
             "notes": "Megjegyzések",
+            "notesPlaceholder": "Mit tanultál ebből az edzésből?",
+            "notesPlaceholderVariants": {
+              "neutralB": "Van valami, amit érdemes megjegyezni legközelebbre?",
+              "neutralC": "Egy jegyzet, amiért a jövőbeli éned (vagy az edződ) hálás lesz…"
+            },
             "recordedLoad": "Rögzített terhelés: {load}",
             "saveDebrief": "Értékelés mentése"
           },
@@ -2410,6 +2415,11 @@
             "mealTiming": "Étkezés időzítése",
             "hydration": "Hidratáció",
             "note": "Megjegyzés",
+            "notePlaceholder": "Hogyan ment a táplálkozás – időzítés, adagok, folyadék?",
+            "notePlaceholderVariants": {
+              "neutralB": "Volt valami, ami segítette vagy rontotta a mai energiádat?",
+              "neutralC": "Egy gyors jegyzet arról, mit ettél, ittál vagy hagytál ki…"
+            },
             "fuelStatus": {
               "on_track": "Időben",
               "late": "Késve",
