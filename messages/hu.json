@@ -621,7 +621,8 @@
     "sectionAnalysis": "Elemzés",
     "sectionRecords": "Rekordok",
     "sectionNavLabel": "Funkcióterület",
-    "guidanceSignalsTitle": "Útmutató jelzések"
+    "guidanceSignalsTitle": "Útmutató jelzések",
+    "athleteRunSessionAction": "Edzés futtatása"
   },
   "Assessment": {
     "saved": "Check-in elmentve.",
@@ -2847,5 +2848,37 @@
       "weakFoot": "Gyengébb láb",
       "mobility": "Mobilitás"
     }
+  },
+  "SessionRunner": {
+    "title": "Edzés futtatása",
+    "subtitle": "Válassz sablont, futtasd az időzített gyakorlatokat, majd rögzítsd, milyen volt.",
+    "pickBlueprint": "Válassz sablont",
+    "loading": "Betöltés…",
+    "empty": "Még nincs elérhető sablon.",
+    "start": "Indítás",
+    "durationLabel": "{minutes} perc · {drills} gyakorlat",
+    "retry": "Újra",
+    "loadError": "A sablonok betöltése nem sikerült.",
+    "currentDrill": "Aktuális gyakorlat",
+    "drillProgress": "{current}/{total} gyakorlat",
+    "play": "Indítás",
+    "pause": "Szünet",
+    "skip": "Kihagyás",
+    "reset": "Visszaállítás",
+    "status": {
+      "idle": "Kész",
+      "running": "Fut",
+      "paused": "Szüneteltetve",
+      "completed": "Edzés kész"
+    },
+    "debriefTitle": "Milyen volt?",
+    "rpeLabel": "Megterhelés (RPE): {value}",
+    "completionLabel": "Teljesítés (%)",
+    "painLabel": "Fájdalom utána: {value}",
+    "moodLabel": "Hangulat utána: {value}",
+    "notesLabel": "Megjegyzés (opcionális)",
+    "save": "Visszajelzés mentése",
+    "saved": "Visszajelzés mentve.",
+    "saveError": "Nem sikerült menteni. Próbáld újra."
   }
 }

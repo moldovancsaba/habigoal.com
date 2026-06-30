@@ -621,7 +621,8 @@
     "sectionAnalysis": "Analysis",
     "sectionRecords": "Records",
     "sectionNavLabel": "Function area",
-    "guidanceSignalsTitle": "Guidance signals"
+    "guidanceSignalsTitle": "Guidance signals",
+    "athleteRunSessionAction": "Run a session"
   },
   "Assessment": {
     "saved": "Check-in saved.",
@@ -2847,5 +2848,37 @@
       "weakFoot": "Weak foot",
       "mobility": "Mobility"
     }
+  },
+  "SessionRunner": {
+    "title": "Run a session",
+    "subtitle": "Pick a blueprint, run the timed drills, then log how it felt.",
+    "pickBlueprint": "Choose a blueprint",
+    "loading": "Loading…",
+    "empty": "No blueprints available yet.",
+    "start": "Start",
+    "durationLabel": "{minutes} min · {drills} drills",
+    "retry": "Retry",
+    "loadError": "Could not load blueprints.",
+    "currentDrill": "Current drill",
+    "drillProgress": "Drill {current} of {total}",
+    "play": "Play",
+    "pause": "Pause",
+    "skip": "Skip",
+    "reset": "Reset",
+    "status": {
+      "idle": "Ready",
+      "running": "Running",
+      "paused": "Paused",
+      "completed": "Session complete"
+    },
+    "debriefTitle": "How did it go?",
+    "rpeLabel": "Effort (RPE): {value}",
+    "completionLabel": "Completion (%)",
+    "painLabel": "Pain after: {value}",
+    "moodLabel": "Mood after: {value}",
+    "notesLabel": "Notes (optional)",
+    "save": "Save debrief",
+    "saved": "Debrief saved.",
+    "saveError": "Could not save. Please try again."
   }
 }

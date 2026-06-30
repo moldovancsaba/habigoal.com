@@ -621,7 +621,8 @@
     "sectionAnalysis": "ניתוח",
     "sectionRecords": "רשומות",
     "sectionNavLabel": "אזור תפקודי",
-    "guidanceSignalsTitle": "אותות הנחיה"
+    "guidanceSignalsTitle": "אותות הנחיה",
+    "athleteRunSessionAction": "הרצת אימון"
   },
   "Assessment": {
     "saved": "הצק-אין נשמר.",
@@ -2847,5 +2848,37 @@
       "weakFoot": "רגל חלשה",
       "mobility": "ניידות"
     }
+  },
+  "SessionRunner": {
+    "title": "הרצת אימון",
+    "subtitle": "בחר תבנית, בצע את התרגילים המתוזמנים, ואז תעד איך הרגשת.",
+    "pickBlueprint": "בחר תבנית",
+    "loading": "טוען…",
+    "empty": "אין עדיין תבניות זמינות.",
+    "start": "התחל",
+    "durationLabel": "{minutes} דק׳ · {drills} תרגילים",
+    "retry": "נסה שוב",
+    "loadError": "לא ניתן לטעון תבניות.",
+    "currentDrill": "תרגיל נוכחי",
+    "drillProgress": "תרגיל {current} מתוך {total}",
+    "play": "הפעל",
+    "pause": "השהה",
+    "skip": "דלג",
+    "reset": "איפוס",
+    "status": {
+      "idle": "מוכן",
+      "running": "פועל",
+      "paused": "מושהה",
+      "completed": "האימון הושלם"
+    },
+    "debriefTitle": "איך היה?",
+    "rpeLabel": "מאמץ (RPE): {value}",
+    "completionLabel": "השלמה (%)",
+    "painLabel": "כאב אחרי: {value}",
+    "moodLabel": "מצב רוח אחרי: {value}",
+    "notesLabel": "הערות (אופציונלי)",
+    "save": "שמור תחקיר",
+    "saved": "התחקיר נשמר.",
+    "saveError": "השמירה נכשלה. נסה שוב."
   }
 }

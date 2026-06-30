@@ -1,4 +1,5 @@
-import { buildSessionFromPlan, canTransitionSession, estimateSessionLoad, validateGuardrailBeforeStart } from "@/lib/athleteiq-session";
+import { buildSessionFromPlan, buildSessionFromBlueprint, canTransitionSession, estimateSessionLoad, validateGuardrailBeforeStart } from "@/lib/athleteiq-session";
+import { getBlueprintByKey } from "@/lib/session-blueprints";
 import { getDailyPlanByDate } from "@/repositories/athleteiq-daily-plan.repository";
 import { getAthleteIqSession, listAthleteIqSessions, updateAthleteIqSessionDebrief, updateAthleteIqSessionState, upsertAthleteIqSession } from "@/repositories/athleteiq-session.repository";
 import { recordSessionRpe } from "@/repositories/training-sessions.repository";
@@ -18,6 +19,17 @@ export async function createSessionFromPlan(input: {
   if (!dailyPlan) return { errors: ["daily plan not found"] };
   const painGuardrail = await getPainGuardrailToday({ athleteId: input.athleteId, localDate: input.localDate, timezone: input.timezone });
   const session = buildSessionFromPlan({ athleteId: input.athleteId, dailyPlan, painGuardrail });
+  return { session: await upsertAthleteIqSession(session), errors: [] };
+}
+
+export async function createSessionFromBlueprint(input: {
+  athleteId: string;
+  localDate: string;
+  blueprintKey: string;
+}) {
+  const blueprint = getBlueprintByKey(input.blueprintKey);
+  if (!blueprint || !blueprint.active) return { errors: ["blueprint not found"] };
+  const session = buildSessionFromBlueprint({ athleteId: input.athleteId, localDate: input.localDate, blueprint });
   return { session: await upsertAthleteIqSession(session), errors: [] };
 }
 

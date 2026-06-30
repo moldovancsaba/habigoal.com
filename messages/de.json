@@ -621,7 +621,8 @@
     "sectionAnalysis": "Analyse",
     "sectionRecords": "Aufzeichnungen",
     "sectionNavLabel": "Funktionsbereich",
-    "guidanceSignalsTitle": "Hinweissignale"
+    "guidanceSignalsTitle": "Hinweissignale",
+    "athleteRunSessionAction": "Einheit durchführen"
   },
   "Assessment": {
     "saved": "Check-in gespeichert.",
@@ -2847,5 +2848,37 @@
       "weakFoot": "Schwacher Fuß",
       "mobility": "Mobilität"
     }
+  },
+  "SessionRunner": {
+    "title": "Einheit durchführen",
+    "subtitle": "Wähle eine Vorlage, absolviere die getakteten Übungen und protokolliere danach.",
+    "pickBlueprint": "Vorlage wählen",
+    "loading": "Wird geladen…",
+    "empty": "Noch keine Vorlagen verfügbar.",
+    "start": "Starten",
+    "durationLabel": "{minutes} Min · {drills} Übungen",
+    "retry": "Erneut",
+    "loadError": "Vorlagen konnten nicht geladen werden.",
+    "currentDrill": "Aktuelle Übung",
+    "drillProgress": "Übung {current} von {total}",
+    "play": "Start",
+    "pause": "Pause",
+    "skip": "Überspringen",
+    "reset": "Zurücksetzen",
+    "status": {
+      "idle": "Bereit",
+      "running": "Läuft",
+      "paused": "Pausiert",
+      "completed": "Einheit abgeschlossen"
+    },
+    "debriefTitle": "Wie lief es?",
+    "rpeLabel": "Anstrengung (RPE): {value}",
+    "completionLabel": "Abschluss (%)",
+    "painLabel": "Schmerz danach: {value}",
+    "moodLabel": "Stimmung danach: {value}",
+    "notesLabel": "Notizen (optional)",
+    "save": "Nachbesprechung speichern",
+    "saved": "Nachbesprechung gespeichert.",
+    "saveError": "Speichern fehlgeschlagen. Bitte erneut versuchen."
   }
 }
