@@ -36,6 +36,20 @@ export function heroSubtitleDef(baseKey: string): CopyDef {
   return timeAwareCopyDef(baseKey);
 }
 
+// Neutral rotation for free-text field prompts (placeholders) where a
+// time-of-day greeting would not fit: the original line plus two alternates,
+// rotated by day and seed. Variants live under `${baseKey}Variants.*`.
+export function neutralPromptDef(baseKey: string): CopyDef {
+  return {
+    id: baseKey,
+    variants: [
+      { key: baseKey },
+      { key: `${baseKey}Variants.neutralB` },
+      { key: `${baseKey}Variants.neutralC` },
+    ],
+  };
+}
+
 // The reflection prompt (Textarea placeholder) invites the athlete to write.
 // A time-aware, rotating prompt reads as a thoughtful coach rather than a
 // static form field. Variants live under `${baseKey}Variants.*`.

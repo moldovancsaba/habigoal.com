@@ -2393,6 +2393,11 @@
             "painAfter": "Schmerz danach (1–10)",
             "moodAfter": "Stimmung danach (1–10)",
             "notes": "Notizen",
+            "notesPlaceholder": "Was hat dir diese Einheit gezeigt?",
+            "notesPlaceholderVariants": {
+              "neutralB": "Etwas, das du dir fürs nächste Mal merken solltest?",
+              "neutralC": "Eine Notiz, für die dir dein künftiges Ich (oder dein Coach) danken wird…"
+            },
             "recordedLoad": "Erfasste Belastung: {load}",
             "saveDebrief": "Nachbesprechung speichern"
           },
@@ -2410,6 +2415,11 @@
             "mealTiming": "Mahlzeiten-Timing",
             "hydration": "Flüssigkeitszufuhr",
             "note": "Notiz",
+            "notePlaceholder": "Wie lief die Ernährung – Timing, Portionen, Flüssigkeit?",
+            "notePlaceholderVariants": {
+              "neutralB": "Etwas, das deiner Energie heute geholfen oder geschadet hat?",
+              "neutralC": "Eine kurze Notiz, was du gegessen, getrunken oder verpasst hast…"
+            },
             "fuelStatus": {
               "on_track": "Im Plan",
               "late": "Verspätet",

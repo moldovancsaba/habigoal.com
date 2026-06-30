@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { heroSubtitleDef, reflectionPromptDef } from "./surface-voice";
+import { heroSubtitleDef, reflectionPromptDef, neutralPromptDef } from "./surface-voice";
 import { selectCopyKey } from "./copy-variants";
 
 const MORNING = Date.parse("2026-06-29T08:00:00");
@@ -32,5 +32,16 @@ describe("surface hero voice (#intelligent-copy)", () => {
     const def = reflectionPromptDef("reflection.bodyPlaceholder");
     expect(selectCopyKey(def, { now: MORNING })).toBe("reflection.bodyPlaceholderVariants.morning");
     expect(selectCopyKey(def, { now: EVENING })).toBe("reflection.bodyPlaceholderVariants.evening");
+  });
+
+  it("rotates a neutral free-text prompt within its own keyspace", () => {
+    const def = neutralPromptDef("session.notesPlaceholder");
+    const keys = new Set(
+      Array.from({ length: 14 }, (_, d) =>
+        selectCopyKey(def, { now: Date.parse(`2026-07-${String(1 + d).padStart(2, "0")}T10:00:00`), seed: "s1" })
+      )
+    );
+    expect(keys.size).toBeGreaterThan(1);
+    for (const k of keys) expect(k.startsWith("session.notesPlaceholder")).toBe(true);
   });
 });

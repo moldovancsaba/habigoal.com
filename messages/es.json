@@ -2393,6 +2393,11 @@
             "painAfter": "Dolor después (1–10)",
             "moodAfter": "Ánimo después (1–10)",
             "notes": "Notas",
+            "notesPlaceholder": "¿Qué te enseñó esta sesión?",
+            "notesPlaceholderVariants": {
+              "neutralB": "¿Algo que valga la pena recordar para la próxima?",
+              "neutralC": "Una nota que tu yo futuro (o tu entrenador) agradecerá…"
+            },
             "recordedLoad": "Carga registrada: {load}",
             "saveDebrief": "Guardar análisis"
           },
@@ -2410,6 +2415,11 @@
             "mealTiming": "Horario de comidas",
             "hydration": "Hidratación",
             "note": "Nota",
+            "notePlaceholder": "¿Cómo fue la alimentación: horarios, porciones, hidratación?",
+            "notePlaceholderVariants": {
+              "neutralB": "¿Algo que ayudó o perjudicó tu energía hoy?",
+              "neutralC": "Una nota rápida de lo que comiste, bebiste o te saltaste…"
+            },
             "fuelStatus": {
               "on_track": "En orden",
               "late": "Tarde",

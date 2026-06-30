@@ -2393,6 +2393,11 @@
             "painAfter": "כאב לאחר מכן (1–10)",
             "moodAfter": "מצב רוח לאחר מכן (1–10)",
             "notes": "הערות",
+            "notesPlaceholder": "מה האימון הזה לימד אותך?",
+            "notesPlaceholderVariants": {
+              "neutralB": "משהו ששווה לזכור לפעם הבאה?",
+              "neutralC": "הערה שהאני העתידי שלך (או המאמן) יודה לך עליה…"
+            },
             "recordedLoad": "עומס שנרשם: {load}",
             "saveDebrief": "שמירת תחקיר"
           },
@@ -2410,6 +2415,11 @@
             "mealTiming": "תזמון ארוחות",
             "hydration": "הידרציה",
             "note": "הערה",
+            "notePlaceholder": "איך הלכה התזונה – תזמון, מנות, שתייה?",
+            "notePlaceholderVariants": {
+              "neutralB": "משהו שעזר או פגע באנרגיה שלך היום?",
+              "neutralC": "הערה קצרה על מה אכלת, שתית או פספסת…"
+            },
             "fuelStatus": {
               "on_track": "במסלול",
               "late": "באיחור",

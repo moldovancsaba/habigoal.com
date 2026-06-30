@@ -4,6 +4,8 @@ import { Badge, Box, Button, Group, NumberInput, SegmentedControl, Select, Stack
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
+import { selectCopyKey } from "@/lib/copy-variants";
+import { neutralPromptDef } from "@/lib/surface-voice";
 import { COGNITIVE_TRAITS } from "@/lib/athleteiq-cognitive";
 import { MissingDataPrompt } from "@/components/insights/MissingDataPrompt";
 import type { CognitiveLiteJourney } from "@/types/athleteiq-cognitive";
@@ -30,6 +32,7 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
   const domain = useAthleteIqDomainCopy();
   const [summary, setSummary] = useState<LiteModuleGatewaySummary | null>(null);
   const [cognitive, setCognitive] = useState<CognitiveLiteJourney | null>(null);
+  const [nowMs] = useState(Date.now);
   const [loading, setLoading] = useState(true);
   const [entryModule, setEntryModule] = useState<EntryModule>("recovery");
   const [busy, setBusy] = useState(false);
@@ -164,7 +167,7 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
                 <Select label={t("lite.mealTiming")} data={FUEL_STATUSES.map((value) => ({ value, label: t(`lite.fuelStatus.${value}`) }))} value={mealTimingStatus} onChange={(value) => setMealTimingStatus(value ?? "on_track")} allowDeselect={false} />
                 <Select label={t("lite.hydration")} data={FUEL_STATUSES.map((value) => ({ value, label: t(`lite.fuelStatus.${value}`) }))} value={hydrationStatus} onChange={(value) => setHydrationStatus(value ?? "on_track")} allowDeselect={false} />
               </Group>
-              <TextInput label={t("lite.note")} value={fuelNote} onChange={(event) => setFuelNote(event.currentTarget.value)} maxLength={500} />
+              <TextInput label={t("lite.note")} placeholder={t(selectCopyKey(neutralPromptDef("lite.notePlaceholder"), { now: nowMs, seed: athleteId }))} value={fuelNote} onChange={(event) => setFuelNote(event.currentTarget.value)} maxLength={500} />
             </Stack>
           ) : null}
 
