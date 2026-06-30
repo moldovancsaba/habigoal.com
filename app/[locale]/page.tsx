@@ -22,8 +22,8 @@ export default async function LandingPage({
   // athlete, or Athlete IQ as a trainer. Each encodes the persona + surface so a
   // signed-in user lands directly in the right app (the login page passes through
   // an existing session), and a first-time login arrives pre-selected.
-  const athleteIqAthleteHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=athlete&productSurface=athlete-iq`;
-  const athleteIqTrainerHref = `/${locale}/login?next=${encodeURIComponent(athleteIqPath)}&persona=trainer&productSurface=athlete-iq`;
+  const athleteIqAthleteHref = `/${locale}/login?next=${encodeURIComponent(`${athleteIqPath}?persona=athlete`)}&persona=athlete&productSurface=athlete-iq`;
+  const athleteIqTrainerHref = `/${locale}/login?next=${encodeURIComponent(`${athleteIqPath}?persona=trainer`)}&persona=trainer&productSurface=athlete-iq`;
   const newsHref = `/${locale}/news`;
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;

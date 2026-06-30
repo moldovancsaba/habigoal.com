@@ -79,15 +79,32 @@ export function getBudapestLocalDate(date = new Date()) {
   }).format(date);
 }
 
+// The persona the AIQ surface renders as. Defaults to the user's primary role,
+// but a multi-role user can pre-select athlete vs trainer on the selector
+// (#persona). Honour that choice only when the user actually holds the role —
+// an athlete can never view the trainer surface and vice-versa.
+function resolveEffectivePersona(user: AuthUser, requested?: "athlete" | "trainer"): "athlete" | "trainer" {
+  const roles = (user.roles ?? []).map((role) => String(role).toLowerCase());
+  const canTrainer = ["admin", "trainer", "performance_coach", "physio", "analyst", "club_management"].some((role) =>
+    roles.includes(role)
+  );
+  const canAthlete = roles.includes("athlete");
+  if (requested === "athlete" && canAthlete) return "athlete";
+  if (requested === "trainer" && canTrainer) return "trainer";
+  return user.primaryRole === "athlete" ? "athlete" : "trainer";
+}
+
 export async function getAthleteIqProductDashboardProjection(input: {
   localDate?: string;
   timezone?: string;
   user?: AuthUser | null;
+  requestedPersona?: "athlete" | "trainer";
 } = {}): Promise<AthleteIqProductDashboardProjection> {
   const timezone = input.timezone ?? DEFAULT_TIMEZONE;
   const localDate = input.localDate ?? getBudapestLocalDate();
   const user = input.user === undefined ? await getAuthUser() : input.user;
   if (!user) return emptyDashboardProjection({ localDate, timezone });
+  const effectivePersona = resolveEffectivePersona(user, input.requestedPersona);
 
   const [allAthletes, allTeams, allActions, allowedAthleteIds] = await Promise.all([
     listChildrenWithMetrics(),
@@ -178,7 +195,7 @@ export async function getAthleteIqProductDashboardProjection(input: {
 
   return {
     localDate,
-    persona: user.primaryRole === "athlete" ? "athlete" : "trainer",
+    persona: effectivePersona,
     timezone,
     state,
     teamCount: teams.length,
