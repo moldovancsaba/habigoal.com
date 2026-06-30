@@ -156,6 +156,8 @@ The active entity model is `athlete`, `trainer`, and `admin`: athlete access is 
 
 Role-aware route gating must exist in the shell layer as well as in the APIs — athletes must not browse coach/admin dashboard routes, and trainers must not reach admin settings routes by URL.
 
+**Single sign-on across the three surfaces (selector, Habigoal, Athlete IQ).** One shared session cookie (`habigoal_session`, path `/`, 30-day sliding refresh) authenticates all surfaces. The login page passes an existing valid session straight through to its `next` target when the user can open the requested surface, so a signed-in user never re-authenticates when switching apps or personas — login is permanent until explicit logout. The pass-through is skipped when an `error` param is present so an entitlement bounce from `requireProductSession` shows its message instead of looping. The landing selector offers three pre-selectable destinations — Habigoal, Athlete IQ (athlete), Athlete IQ (trainer) — each encoding persona + surface so first-time login arrives pre-selected and a returning user lands directly in the app.
+
 Key surfaces:
 
 - `/dashboard` — coach triage and recommendation surface.

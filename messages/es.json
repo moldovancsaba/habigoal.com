@@ -1199,7 +1199,15 @@
     "athleteIqTitle": "Espacio profesional de rendimiento deportivo",
     "athleteIqBody": "La capa profesional para entrenadores, equipos y clubes: paneles, informes y el trabajo diario de rendimiento.",
     "athleteIqAction": "Abrir Athlete IQ",
-    "athleteIqAria": "Abrir la app profesional de rendimiento Athlete IQ"
+    "athleteIqAria": "Abrir la app profesional de rendimiento Athlete IQ",
+    "athleteIqAthleteTitle": "Athlete IQ — Atleta",
+    "athleteIqAthleteBody": "Abre el espacio de apoyo al atleta de Athlete IQ: disposición, plan, análisis y registros.",
+    "athleteIqAthleteAction": "Abrir como atleta",
+    "athleteIqAthleteAria": "Abrir Athlete IQ como atleta",
+    "athleteIqTrainerTitle": "Athlete IQ — Entrenador",
+    "athleteIqTrainerBody": "Abre el espacio de entrenador y equipo de Athlete IQ: paneles, planificación e informes.",
+    "athleteIqTrainerAction": "Abrir como entrenador",
+    "athleteIqTrainerAria": "Abrir Athlete IQ como entrenador"
   },
   "Login": {
     "badge": "Acceso por email",

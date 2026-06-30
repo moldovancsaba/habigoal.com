@@ -1,8 +1,11 @@
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { Alert, Anchor, Badge, Button, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import { KeepFocusedFieldVisible } from "@/components/a11y/KeepFocusedFieldVisible";
+import { getSession } from "@/lib/session";
+import { getAuthUser, canOpenProductSurface } from "@/lib/access";
 
 function sanitizeNext(input: string | undefined, locale: string) {
   if (!input) return `/${locale}`;
@@ -48,6 +51,23 @@ export default async function LoginPage({
   const { error, next, persona, productSurface } = await searchParams;
   const nextPath = sanitizeNext(next, locale);
   const selectedSurface = sanitizeProductSurface(productSurface, nextPath);
+
+  // Single sign-on across all three surfaces (selector, Habigoal, Athlete IQ):
+  // if the visitor already has a valid session and can open the requested
+  // surface, send them straight into the app instead of re-prompting for login.
+  // Login is therefore permanent until logout and survives persona switching.
+  // Skip the pass-through when an error is present so an entitlement bounce from
+  // requireProductSession shows the message instead of looping back to the app.
+  if (!error) {
+    const session = await getSession();
+    if (session?.email) {
+      const user = await getAuthUser();
+      if (user && canOpenProductSurface(user, selectedSurface)) {
+        redirect(nextPath);
+      }
+    }
+  }
+
   const initialPersona = sanitizePersona(persona, nextPath, selectedSurface);
   const isAthleteIqSurface = selectedSurface === "athlete-iq";
   const surfaceKey = isAthleteIqSurface ? "athleteIq" : "habigoal";

@@ -1199,7 +1199,15 @@
     "athleteIqTitle": "مساحة احترافية لأداء الرياضيين",
     "athleteIqBody": "الطبقة الاحترافية للمدربين والفرق والأندية: لوحات التحكم والتقارير والعمل اليومي على الأداء.",
     "athleteIqAction": "فتح Athlete IQ",
-    "athleteIqAria": "فتح تطبيق Athlete IQ الاحترافي للأداء"
+    "athleteIqAria": "فتح تطبيق Athlete IQ الاحترافي للأداء",
+    "athleteIqAthleteTitle": "Athlete IQ — رياضي",
+    "athleteIqAthleteBody": "افتح مساحة دعم الرياضي في Athlete IQ: الجاهزية والخطة والتحليل والسجلات.",
+    "athleteIqAthleteAction": "الفتح كرياضي",
+    "athleteIqAthleteAria": "فتح Athlete IQ كرياضي",
+    "athleteIqTrainerTitle": "Athlete IQ — مدرب",
+    "athleteIqTrainerBody": "افتح مساحة المدرب والفريق في Athlete IQ: لوحات التحكم والتخطيط والتقارير.",
+    "athleteIqTrainerAction": "الفتح كمدرب",
+    "athleteIqTrainerAria": "فتح Athlete IQ كمدرب"
   },
   "Login": {
     "badge": "دخول بالبريد الإلكتروني",
