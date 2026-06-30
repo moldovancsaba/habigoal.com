@@ -96,6 +96,11 @@ status*); this layer produces forward-looking guidance. **UI:**
 badge and an accessible source disclosure, wired into the athlete operating
 surface's **Analysis** area. Localized via the `AthleteInsights` namespace.
 
+**API:** `GET /api/athletes/[id]/insights` (athlete-scoped) returns the signals
+for programmatic use, recomputed on read (deterministic ⇒ no persistence needed)
+from the athlete's *canonical* twin values (recovery readiness score, ACWR) plus
+the latest recovery-habit record, via the same engine.
+
 ## Design principles
 
 - **No fabricated data.** Engines only ever describe signals that were actually
