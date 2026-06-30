@@ -309,6 +309,7 @@ function getPath(value, dottedPath) {
 const MUST_TRANSLATE_NAMESPACES = [
   "Dashboard",
   "Assessment",
+  "Schema",
   "ProductSurfaces.athleteIq.athleteWorkspace.panels",
   "ProductSurfaces.athleteIq.athleteWorkspace.sections",
   "ProductSurfaces.athleteIq.nav.modules",
@@ -358,6 +359,10 @@ const IDENTICAL_OK = new Set([
   "Assessment.mentalShortLabel",
   "Assessment.optionOkay",
   "Assessment.reportFileName",
+  // Schema: "Rapid Bio/Psycho/Social" are product feature names kept as-is.
+  "Schema.rapid_movement",
+  "Schema.rapid_mental",
+  "Schema.rapid_social",
   "AthleteIntelligence.dimensions.readiness",
   "AthleteIntelligence.status.lite_manual",
   "CoachHub.intelligence",
