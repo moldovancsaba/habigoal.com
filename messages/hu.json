@@ -1690,9 +1690,25 @@
       },
       "nextAction": {
         "needs_input": "Kezdje a check-innel, majd mentse a mai szokásokat.",
+        "needs_inputVariants": {
+          "neutralB": "Kezdd a bejelentkezéssel, majd rögzítsd a mai szokásokat.",
+          "neutralC": "Két gyors lépés: jelentkezz be, majd mentsd a szokásaidat."
+        },
         "balanced": "Tartsa a tervezett programot, és védje az esti alvásrutint.",
+        "balancedVariants": {
+          "neutralB": "Tartsd a tervet, és védd a ma esti alvásod.",
+          "neutralC": "Csináld meg a tervezett edzést, és este pihenj le rendesen."
+        },
         "watch": "Hidratáljon, tartsa kontrolláltan a következő terhelést, és mozgás után nézze újra az izomfáradtságot.",
-        "needs_support": "Legyen könnyű a következő lépés, és ossza meg a mai státuszt a támogató személlyel."
+        "watchVariants": {
+          "neutralB": "Igyál eleget, tartsd könnyűnek a következő terhelést, és figyeld az izomlázat.",
+          "neutralC": "Vegyél vissza egy kicsit: könnyű terhelés, folyadék, és nézd az izomlázat."
+        },
+        "needs_support": "Legyen könnyű a következő lépés, és ossza meg a mai státuszt a támogató személlyel.",
+        "needs_supportVariants": {
+          "neutralB": "Tartsd könnyűnek a következő lépést, és vond be a támogatódat.",
+          "neutralC": "Csináld kíméletesen, és oszd meg a mai státuszt valakivel, aki segít."
+        }
       },
       "badges": {
         "checkIn": "Check-in",

@@ -1690,9 +1690,25 @@
       },
       "nextAction": {
         "needs_input": "Beginne mit dem Check-in und speichere danach die heutigen Gewohnheiten.",
+        "needs_inputVariants": {
+          "neutralB": "Beginne mit dem Check-in, erfasse dann die heutigen Gewohnheiten.",
+          "neutralC": "Zwei schnelle Schritte: einchecken, dann Gewohnheiten speichern."
+        },
         "balanced": "Halte die geplante Einheit ein und schütze heute Abend deine Schlafroutine.",
+        "balancedVariants": {
+          "neutralB": "Bleib beim Plan und schütze deinen Schlaf heute Abend.",
+          "neutralC": "Zieh die Einheit wie geplant durch und komm abends gut runter."
+        },
         "watch": "Trinke genug, halte die nächste Belastung kontrolliert und prüfe die Muskelmüdigkeit nach Bewegung erneut.",
-        "needs_support": "Halte den nächsten Schritt leicht und teile den heutigen Status mit deiner Unterstützungsperson."
+        "watchVariants": {
+          "neutralB": "Bleib hydriert, halte den nächsten Aufwand locker und achte auf Muskelkater.",
+          "neutralC": "Geh einen Gang zurück: lockerer Aufwand, Flüssigkeit, Muskelkater prüfen."
+        },
+        "needs_support": "Halte den nächsten Schritt leicht und teile den heutigen Status mit deiner Unterstützungsperson.",
+        "needs_supportVariants": {
+          "neutralB": "Halte den nächsten Schritt locker und beziehe deine Bezugsperson ein.",
+          "neutralC": "Geh sanft vor und teile den heutigen Status mit jemandem, der hilft."
+        }
       },
       "badges": {
         "checkIn": "Check-in",
