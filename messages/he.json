@@ -918,252 +918,252 @@
     "rapid_mental": "Rapid Psycho",
     "rapid_social": "Rapid Social",
     "futotechnika": {
-      "title": "Running technique",
-      "prompt": "Rhythm, arm work, foot strike"
+      "title": "טכניקת ריצה",
+      "prompt": "קצב, עבודת ידיים, נחיתת כף הרגל"
     },
     "iranyvaltas": {
-      "title": "Direction change",
-      "prompt": "Fast, controlled turns"
+      "title": "שינוי כיוון",
+      "prompt": "פניות מהירות ומבוקרות"
     },
     "dinamikus_egyensuly": {
-      "title": "Dynamic balance",
-      "prompt": "Stability during movement"
+      "title": "שיווי משקל דינמי",
+      "prompt": "יציבות בתנועה"
     },
     "statikus_egyensuly": {
-      "title": "Static balance",
-      "prompt": "Stability on one leg"
+      "title": "שיווי משקל סטטי",
+      "prompt": "יציבות על רגל אחת"
     },
     "ugraskeszseg": {
-      "title": "Jumping skill",
-      "prompt": "Double/single leg takeoff"
+      "title": "יכולת קפיצה",
+      "prompt": "המראה על שתי רגליים/רגל אחת"
     },
     "erkezestechnika": {
-      "title": "Landing technique",
-      "prompt": "Joint protection, damping"
+      "title": "טכניקת נחיתה",
+      "prompt": "הגנה על מפרקים, בלימה"
     },
     "esesbiztonsag": {
-      "title": "Rolling/Falling safety",
-      "prompt": "Controlled ground work"
+      "title": "בטיחות גלגול/נפילה",
+      "prompt": "עבודה מבוקרת על הקרקע"
     },
     "testsema": {
-      "title": "Body schema awareness",
-      "prompt": "Body position awareness in space"
+      "title": "מודעות לתבנית הגוף",
+      "prompt": "מודעות למיקום הגוף במרחב"
     },
     "lateralitas": {
-      "title": "Laterality",
-      "prompt": "Right-left coordination"
+      "title": "צדדיות",
+      "prompt": "תיאום ימין-שמאל"
     },
     "keresztezo_mozgas": {
-      "title": "Crossing movements",
-      "prompt": "Limb integration"
+      "title": "תנועות הצלבה",
+      "prompt": "שילוב גפיים"
     },
     "szem_kez": {
-      "title": "Eye-hand coordination",
-      "prompt": "Accurate throw/catch"
+      "title": "תיאום עין-יד",
+      "prompt": "זריקה/תפיסה מדויקת"
     },
     "szem_lab": {
-      "title": "Eye-foot coordination",
-      "prompt": "Ball handling"
+      "title": "תיאום עין-רגל",
+      "prompt": "שליטה בכדור"
     },
     "eroadagolas": {
-      "title": "Force modulation",
-      "prompt": "Throw/bounce control"
+      "title": "ויסות כוח",
+      "prompt": "שליטה בזריקה/הקפצה"
     },
     "reakcioido": {
-      "title": "Reaction time",
-      "prompt": "Color-movement task"
+      "title": "זמן תגובה",
+      "prompt": "משימת צבע-תנועה"
     },
     "ritmuserzek": {
-      "title": "Rhythm sense",
-      "prompt": "Coordination ladder"
+      "title": "תחושת קצב",
+      "prompt": "סולם תיאום"
     },
     "mozgassor": {
-      "title": "Execution of movement sequence",
-      "prompt": "Multi-step task"
+      "title": "ביצוע רצף תנועה",
+      "prompt": "משימה רב-שלבית"
     },
     "praxis": {
-      "title": "Praxis / Motor planning",
-      "prompt": "Learning new movements"
+      "title": "פרקסיס / תכנון מוטורי",
+      "prompt": "לימוד תנועות חדשות"
     },
     "terbeli_tajekozodas": {
-      "title": "Spatial orientation",
-      "prompt": "Safety within the field"
+      "title": "התמצאות במרחב",
+      "prompt": "בטיחות בתוך המגרש"
     },
     "utkozeskezeles": {
-      "title": "Collision handling",
-      "prompt": "Tolerance for body contact"
+      "title": "התמודדות עם התנגשות",
+      "prompt": "סבילות למגע גופני"
     },
     "gyorsasag": {
-      "title": "Speed",
-      "prompt": "Short-term intensity"
+      "title": "מהירות",
+      "prompt": "עצימות לטווח קצר"
     },
     "allokepesseg": {
-      "title": "Endurance",
-      "prompt": "Carrying task through"
+      "title": "סיבולת",
+      "prompt": "השלמת המשימה עד הסוף"
     },
     "izomtonus": {
-      "title": "Muscle tone",
-      "prompt": "Stable trunk"
+      "title": "טונוס שרירים",
+      "prompt": "פלג גוף יציב"
     },
     "finommotorika": {
-      "title": "Fine motor skills",
-      "prompt": "Tool handling"
+      "title": "מוטוריקה עדינה",
+      "prompt": "שימוש בכלים"
     },
     "propriocepcio": {
-      "title": "Proprioception",
-      "prompt": "Balance board control"
+      "title": "פרופריוצפציה",
+      "prompt": "שליטה בלוח שיווי משקל"
     },
     "mozgasadaptacio": {
-      "title": "Movement adaptation",
-      "prompt": "Adjusting movement to rule changes"
+      "title": "הסתגלות תנועתית",
+      "prompt": "התאמת התנועה לשינויי כללים"
     },
     "kooperacio": {
-      "title": "Cooperation",
-      "prompt": "Active participation in a team"
+      "title": "שיתוף פעולה",
+      "prompt": "השתתפות פעילה בקבוצה"
     },
     "szabalykovetes": {
-      "title": "Rule following",
-      "prompt": "Conscious compliance"
+      "title": "ציות לכללים",
+      "prompt": "ציות מודע"
     },
     "varakozasi_tolerancia": {
-      "title": "Waiting tolerance",
-      "prompt": "Standing in line"
+      "title": "סבלנות להמתנה",
+      "prompt": "עמידה בתור"
     },
     "kudarctures": {
-      "title": "Failure tolerance",
-      "prompt": "Reaction to mistakes"
+      "title": "סבילות לכישלון",
+      "prompt": "תגובה לטעויות"
     },
     "gyozelem_kezelese": {
-      "title": "Handling victory",
-      "prompt": "Non-dominant behavior"
+      "title": "התמודדות עם ניצחון",
+      "prompt": "התנהגות לא שתלטנית"
     },
     "erzelemszabalyozas": {
-      "title": "Emotional regulation",
-      "prompt": "Impulse control"
+      "title": "ויסות רגשי",
+      "prompt": "שליטה בדחפים"
     },
     "empatia": {
-      "title": "Empathy",
-      "prompt": "Helpfulness"
+      "title": "אמפתיה",
+      "prompt": "נכונות לעזור"
     },
     "kapcsolatkezdemenyezes": {
-      "title": "Initiating contact",
-      "prompt": "Starting communication"
+      "title": "יזימת קשר",
+      "prompt": "פתיחת תקשורת"
     },
     "instrukcio_elfogadas": {
-      "title": "Accepting instructions",
-      "prompt": "Accepting coach guidance"
+      "title": "קבלת הוראות",
+      "prompt": "קבלת הנחיות המאמן"
     },
     "szerepvallalas": {
-      "title": "Dominance-passvitiy ratio",
-      "prompt": "Role taking"
+      "title": "יחס שליטה-פסיביות",
+      "prompt": "נטילת תפקיד"
     },
     "fair_play": {
-      "title": "Fair play attitude",
-      "prompt": "Reaction to rule breaking"
+      "title": "גישת משחק הוגן",
+      "prompt": "תגובה להפרת כללים"
     },
     "konfliktuskezeles": {
-      "title": "Conflict management",
-      "prompt": "Situation resolution"
+      "title": "ניהול קונפליקטים",
+      "prompt": "פתרון מצבים"
     },
     "motivacio": {
-      "title": "Type of motivation",
-      "prompt": "Intrinsic vs extrinsic drive"
+      "title": "סוג המוטיבציה",
+      "prompt": "מניע פנימי מול חיצוני"
     },
     "kitartas": {
-      "title": "Perseverance",
-      "prompt": "Finishing difficult tasks"
+      "title": "התמדה",
+      "prompt": "השלמת משימות קשות"
     },
     "onbizalom": {
-      "title": "Self-confidence",
-      "prompt": "Judging own performance"
+      "title": "ביטחון עצמי",
+      "prompt": "הערכת הביצועים העצמיים"
     },
     "figyelmi_fokusz": {
-      "title": "Attention focus",
-      "prompt": "Task maintenance"
+      "title": "מיקוד קשב",
+      "prompt": "שמירה על המשימה"
     },
     "megosztott_figyelem": {
-      "title": "Divided attention",
-      "prompt": "Movement + external stimulus"
+      "title": "קשב מחולק",
+      "prompt": "תנועה + גירוי חיצוני"
     },
     "munkamemoria": {
-      "title": "Working memory",
-      "prompt": "Remembering movement sequence"
+      "title": "זיכרון עבודה",
+      "prompt": "זכירת רצף תנועה"
     },
     "kognitiv_rugalmassag": {
-      "title": "Cognitive flexibility",
-      "prompt": "Handling rule changes"
+      "title": "גמישות קוגניטיבית",
+      "prompt": "התמודדות עם שינויי כללים"
     },
     "impulzuskontroll": {
-      "title": "Impulse control",
-      "prompt": "Delaying reaction"
+      "title": "שליטה בדחפים",
+      "prompt": "השהיית התגובה"
     },
     "tervezes": {
-      "title": "Planning",
-      "prompt": "Forward-looking movement"
+      "title": "תכנון",
+      "prompt": "תנועה צופה פני עתיד"
     },
     "onjavitas": {
-      "title": "Self-correction",
-      "prompt": "Correction from mistakes"
+      "title": "תיקון עצמי",
+      "prompt": "תיקון מתוך טעויות"
     },
     "terhelhetoseg": {
-      "title": "Mental load capacity",
-      "prompt": "Signs of mental fatigue"
+      "title": "יכולת עומס מנטלי",
+      "prompt": "סימני עייפות מנטלית"
     },
     "teljesitmenyszorongas": {
-      "title": "Performance anxiety",
-      "prompt": "Reaction to competition"
+      "title": "חרדת ביצוע",
+      "prompt": "תגובה לתחרות"
     },
     "celorientacio": {
-      "title": "Goal orientation",
-      "prompt": "Formulating own goal"
+      "title": "התמקדות במטרה",
+      "prompt": "ניסוח מטרה אישית"
     },
     "labboltozat": {
-      "title": "Foot arch activity",
-      "prompt": "Heel/toe walking"
+      "title": "פעילות קשת כף הרגל",
+      "prompt": "הליכה על העקבים/בהונות"
     },
     "egyensuly_rapid": {
-      "title": "Balance",
-      "prompt": "One leg stand 10s"
+      "title": "שיווי משקל",
+      "prompt": "עמידה על רגל אחת 10 שניות"
     },
     "szokdeles": {
-      "title": "Hopping symmetry",
-      "prompt": "Double hopping on a line"
+      "title": "סימטריית קפיצה",
+      "prompt": "קפיצה על שתי רגליים על קו"
     },
     "testtartas": {
-      "title": "Posture baseline",
-      "prompt": "Standing, axes, compensation"
+      "title": "יציבה בסיסית",
+      "prompt": "עמידה, צירים, פיצוי"
     },
     "figyelem_rapid": {
-      "title": "Attention focus",
-      "prompt": "Following fast instructions"
+      "title": "מיקוד קשב",
+      "prompt": "מעקב אחר הוראות מהירות"
     },
     "feladatmegertes": {
-      "title": "Task comprehension",
-      "prompt": "Understanding instructions"
+      "title": "הבנת המשימה",
+      "prompt": "הבנת הוראות"
     },
     "kitartas_rapid": {
-      "title": "Perseverance",
-      "prompt": "Carrying task through"
+      "title": "התמדה",
+      "prompt": "השלמת המשימה עד הסוף"
     },
     "frusztracio": {
-      "title": "Frustration handling",
-      "prompt": "Reaction to mistakes"
+      "title": "התמודדות עם תסכול",
+      "prompt": "תגובה לטעויות"
     },
     "egyuttmukodes_rapid": {
-      "title": "Cooperation",
-      "prompt": "Pair/group task"
+      "title": "שיתוף פעולה",
+      "prompt": "משימת זוגות/קבוצה"
     },
     "szabalykovetes_rapid": {
-      "title": "Rule following",
-      "prompt": "Mini competition situation"
+      "title": "ציות לכללים",
+      "prompt": "מצב תחרות מיני"
     },
     "kommunikacio_rapid": {
-      "title": "Communication",
-      "prompt": "Response, initiative"
+      "title": "תקשורת",
+      "prompt": "תגובה, יוזמה"
     },
     "versenyreakcio": {
-      "title": "Competition reaction",
-      "prompt": "Handling victory/defeat"
+      "title": "תגובה לתחרות",
+      "prompt": "התמודדות עם ניצחון/הפסד"
     }
   },
   "Legal": {
