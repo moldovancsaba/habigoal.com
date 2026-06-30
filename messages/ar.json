@@ -2815,5 +2815,29 @@
       "recoveryHabit": "عادات الاستشفاء غير مكتملة ({completed}/{total}). أغلِق الفجوة اليوم.",
       "tomorrowFocus": "تركيزك للغد: {focus}."
     }
+  },
+  "SessionBlueprints": {
+    "titles": {
+      "standardTechnical": "جلسة تقنية قياسية",
+      "controlledSkill": "جلسة مهارات محكومة",
+      "recoveryFlow": "تدفق الاستشفاء"
+    },
+    "drills": {
+      "warmup": "إحماء",
+      "technical": "عمل تقني",
+      "conditioning": "لياقة",
+      "cooldown": "تهدئة",
+      "controlledTechnical": "تقنية محكومة",
+      "mobility": "ليونة",
+      "lightAerobic": "هوائي خفيف",
+      "stretch": "تمدد",
+      "breathing": "تنفس"
+    },
+    "skills": {
+      "ballControl": "التحكم بالكرة",
+      "endurance": "التحمل",
+      "weakFoot": "القدم الأضعف",
+      "mobility": "الليونة"
+    }
   }
 }

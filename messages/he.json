@@ -2815,5 +2815,29 @@
       "recoveryHabit": "הרגלי ההתאוששות אינם שלמים ({completed}/{total}). סגור את הפער היום.",
       "tomorrowFocus": "המיקוד שלך למחר: {focus}."
     }
+  },
+  "SessionBlueprints": {
+    "titles": {
+      "standardTechnical": "אימון טכני סטנדרטי",
+      "controlledSkill": "אימון מיומנות מבוקר",
+      "recoveryFlow": "זרימת התאוששות"
+    },
+    "drills": {
+      "warmup": "חימום",
+      "technical": "עבודה טכנית",
+      "conditioning": "כושר",
+      "cooldown": "שחרור",
+      "controlledTechnical": "טכניקה מבוקרת",
+      "mobility": "ניידות",
+      "lightAerobic": "אירובי קל",
+      "stretch": "מתיחה",
+      "breathing": "נשימה"
+    },
+    "skills": {
+      "ballControl": "שליטה בכדור",
+      "endurance": "סיבולת",
+      "weakFoot": "רגל חלשה",
+      "mobility": "ניידות"
+    }
   }
 }

@@ -2815,5 +2815,29 @@
       "recoveryHabit": "A regenerációs szokások hiányosak ({completed}/{total}). Pótold ma a lemaradást.",
       "tomorrowFocus": "A holnapi fókuszod: {focus}."
     }
+  },
+  "SessionBlueprints": {
+    "titles": {
+      "standardTechnical": "Standard technikai edzés",
+      "controlledSkill": "Kontrollált készségedzés",
+      "recoveryFlow": "Regenerációs folyam"
+    },
+    "drills": {
+      "warmup": "Bemelegítés",
+      "technical": "Technikai munka",
+      "conditioning": "Állóképesség",
+      "cooldown": "Levezetés",
+      "controlledTechnical": "Kontrollált technika",
+      "mobility": "Mobilitás",
+      "lightAerobic": "Könnyű aerob",
+      "stretch": "Nyújtás",
+      "breathing": "Légzés"
+    },
+    "skills": {
+      "ballControl": "Labdakezelés",
+      "endurance": "Állóképesség",
+      "weakFoot": "Gyengébb láb",
+      "mobility": "Mobilitás"
+    }
   }
 }
