@@ -139,6 +139,9 @@
     "insightRecordReadiness": "Ez a check-in napi készenlét {ski} értéket mutat, területenként: Fizikai {movement}, Mentális {social}, Sportagy {mental}.",
     "insightRecordDomainSummary": "Területi összegzés ehhez a check-inhez: Fizikai {movement}, Mentális {social}, Sportagy {mental}.",
     "athleteHistorySubtitle": "{date} · {sessions} követett check-in",
+    "insightTitle": "Adatmegbízhatóság és útmutatás",
+    "dataConfidenceLabel": "Adatmegbízhatóság",
+    "whyThisStatus": "Miért ez az állapot",
     "athleteHistoryEmptyTitle": "Nincs check-in előzmény",
     "athleteHistoryEmptySubtitle": "Ehhez a sportolóhoz még nincs tárolt napi check-in.",
     "athleteDailyOperatingTitle": "Napi működési dashboard",
@@ -2610,7 +2613,9 @@
     "teamSubject": "csapatjelentés",
     "exportPdfAria": "{subject} exportálása PDF-ként",
     "exportCsvAria": "{subject} exportálása CSV-ként",
-    "exportJsonAria": "{subject} exportálása JSON-ként"
+    "exportJsonAria": "{subject} exportálása JSON-ként",
+    "parentSafe": "Szülőbarát",
+    "exportParentSafeAria": "{subject} szülőbarát összefoglalójának exportálása"
   },
   "Wearables": {
     "title": "Csatlakoztatott viselhető eszközök",

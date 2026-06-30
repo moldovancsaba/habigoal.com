@@ -58,7 +58,11 @@ export const env = {
     // the athlete's digital twin. Default OFF so the product never presents
     // fabricated/heuristic vision metrics as real, validated data.
     visionRealPipeline: readBooleanEnv(process.env.CAPABILITY_VISION_REAL_PIPELINE, false),
-    gpsIngestion: readBooleanEnv(process.env.CAPABILITY_GPS_INGESTION, true),
+    // No real GPS/team-tracking provider integration exists yet (#350): the
+    // connectors honestly return no data. Default OFF so healthCheck never claims
+    // a healthy, connected device when there is nothing behind it. Flip on only
+    // once a credentialed provider integration ships.
+    gpsIngestion: readBooleanEnv(process.env.CAPABILITY_GPS_INGESTION, false),
     forecasting: readBooleanEnv(process.env.CAPABILITY_FORECASTING, true),
     aiCoachNudges: readBooleanEnv(process.env.CAPABILITY_AI_COACH_NUDGES, true),
     cogLeague: readBooleanEnv(process.env.CAPABILITY_COGLEAGUE, true),

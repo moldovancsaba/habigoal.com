@@ -7,6 +7,18 @@ import { useTranslations } from "next-intl";
 import type { AthleteProfile } from "@/types/athlete";
 import type { AthleteReport } from "@/services/reporting.service";
 import { PdfService, type TwinReportLabels } from "@/lib/pdf-service";
+import { toParentSafeReport } from "@/lib/parent-safe-report";
+import { normalizeConfidenceBand, type ConfidenceBand } from "@/lib/data-confidence";
+import { ConfidenceBadge } from "@/components/insights/ConfidenceBadge";
+
+// Reports carry their confidence in a "Confidence: <band>" source note. Parse it
+// back to the canonical band so the hub can show an honest badge and drive the
+// parent-safe projection (#253/#261) instead of guessing.
+function reportConfidenceBand(report: AthleteReport): ConfidenceBand {
+  const note = report.sourceDataNotes.find((n) => /confidence/i.test(n));
+  const raw = note?.split(":")[1]?.trim();
+  return normalizeConfidenceBand(raw);
+}
 
 interface ReportRow {
   id: string;
@@ -179,7 +191,22 @@ export default function ReportsHubPage() {
                 </Box>
                 <Group>
                   <StateBlock variant="success" title={t("ready")} />
+                  <ConfidenceBadge band={reportConfidenceBand(row.report)} />
                   <Text size="sm" c="dimmed">{t("exportLabel")}</Text>
+                  <SemanticButton
+                    action="download"
+                    variant="outline"
+                    aria-label={t("exportParentSafeAria", { subject: row.athleteName })}
+                    title={t("exportParentSafeAria", { subject: row.athleteName })}
+                    onClick={() =>
+                      downloadJson(
+                        toParentSafeReport(row.report, { confidence: reportConfidenceBand(row.report) }),
+                        `parent-safe-${row.id}.json`
+                      )
+                    }
+                  >
+                    {t("parentSafe")}
+                  </SemanticButton>
                   <SemanticButton
                     action="download"
                     variant="outline"

@@ -139,6 +139,9 @@
     "insightRecordReadiness": "Este registro muestra preparacion diaria {ski} con Fisico {movement}, Mental {social} y Cerebro deportivo {mental}.",
     "insightRecordDomainSummary": "El resumen confirma Fisico {movement}, Mental {social} y Cerebro deportivo {mental} para este registro.",
     "athleteHistorySubtitle": "{date} · {sessions} registros seguidos",
+    "insightTitle": "Confianza de datos y orientación",
+    "dataConfidenceLabel": "Confianza de datos",
+    "whyThisStatus": "Por qué este estado",
     "athleteHistoryEmptyTitle": "Sin historial de registros",
     "athleteHistoryEmptySubtitle": "Este atleta todavia no tiene registros diarios guardados.",
     "athleteDailyOperatingTitle": "Daily operating dashboard",
@@ -2610,7 +2613,9 @@
     "teamSubject": "informe del equipo",
     "exportPdfAria": "Exportar {subject} como PDF",
     "exportCsvAria": "Exportar {subject} como CSV",
-    "exportJsonAria": "Exportar {subject} como JSON"
+    "exportJsonAria": "Exportar {subject} como JSON",
+    "parentSafe": "Apto para familias",
+    "exportParentSafeAria": "Exportar un resumen apto para familias de {subject}"
   },
   "Wearables": {
     "title": "Wearables conectados",
