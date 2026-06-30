@@ -1190,7 +1190,8 @@
     "address": "Adresse",
     "shareCapital": "Stammkapital",
     "vatNo": "USt-IdNr.",
-    "website": "Webseite"
+    "website": "Webseite",
+    "appLabel": "App:"
   },
   "Landing": {
     "title": "Habigoal und Athlete IQ",
@@ -3077,5 +3078,35 @@
     "stepStatus": "Schritt {current} von {total}",
     "saveNext": "Speichern & weiter",
     "finish": "Fertig"
+  },
+  "Services": {
+    "directoryTitle": "Sportdienste & Trainingsverzeichnis",
+    "directorySubtitle": "Entdecke geprüfte Sportakademien, Trainingsklubs und Coaching-Angebote, um dein Spiel auf das nächste Level zu bringen.",
+    "empty": "Noch keine Dienste verfügbar.",
+    "noDescription": "Keine Beschreibung verfügbar.",
+    "rawDataTitle": "Rohdaten-Ausgabe"
+  },
+  "Consent": {
+    "title": "Einwilligung zur Datenverarbeitung",
+    "closeAria": "Einwilligungsdialog schließen",
+    "intro": "Athlete IQ benötigt deine Einwilligung, um deine Gesundheits- und Leistungsdaten zu verarbeiten und unsere Dienste bereitzustellen.",
+    "submissionFailed": "Übermittlung fehlgeschlagen",
+    "selectAtLeastOne": "Bitte wähle mindestens einen Zweck aus, um fortzufahren.",
+    "saveError": "Beim Speichern der Einwilligung ist ein Fehler aufgetreten.",
+    "submit": "Bestätigen & fortfahren",
+    "purposes": {
+      "daily_check_in": {
+        "title": "Daten des täglichen Check-ins",
+        "description": "Erlaubt die Verarbeitung täglicher Readiness- und Wohlbefindens-Umfragen."
+      },
+      "wearable_data": {
+        "title": "Integration von Wearable-Daten",
+        "description": "Erlaubt die Synchronisierung mit Oura, Garmin, Whoop usw."
+      },
+      "media_upload": {
+        "title": "Medien-Upload & Vision AI",
+        "description": "Erlaubt das Hochladen von Fotos/Videos für Haltungs- und Sprintanalyse."
+      }
+    }
   }
 }

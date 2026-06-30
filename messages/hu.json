@@ -1190,7 +1190,8 @@
     "address": "Cím",
     "shareCapital": "Jegyzett tőke",
     "vatNo": "ÁFA szám",
-    "website": "Weboldal"
+    "website": "Weboldal",
+    "appLabel": "Alkalmazás:"
   },
   "Landing": {
     "title": "Habigoal és Athlete IQ",
@@ -3077,5 +3078,35 @@
     "stepStatus": "{current}. lépés / {total}",
     "saveNext": "Mentés és tovább",
     "finish": "Befejezés"
+  },
+  "Services": {
+    "directoryTitle": "Sportszolgáltatások és edzéskatalógus",
+    "directorySubtitle": "Fedezz fel ellenőrzött sportakadémiákat, edzőklubokat és edzői szolgáltatásokat, hogy a következő szintre juss.",
+    "empty": "Még nincs elérhető szolgáltatás.",
+    "noDescription": "Nincs elérhető leírás.",
+    "rawDataTitle": "Nyers adatkiíratás"
+  },
+  "Consent": {
+    "title": "Adatkezelési hozzájárulás",
+    "closeAria": "Hozzájárulási ablak bezárása",
+    "intro": "Az Athlete IQ a hozzájárulásodat kéri az egészségügyi és teljesítményadataid feldolgozásához, hogy biztosíthassa szolgáltatásait.",
+    "submissionFailed": "A küldés sikertelen",
+    "selectAtLeastOne": "Kérjük, válassz legalább egy célt a folytatáshoz.",
+    "saveError": "Hiba történt a hozzájárulás mentése közben.",
+    "submit": "Elfogadom és folytatom",
+    "purposes": {
+      "daily_check_in": {
+        "title": "Napi bejelentkezési adatok",
+        "description": "Engedélyezi a napi készenléti és közérzeti kérdőívek feldolgozását."
+      },
+      "wearable_data": {
+        "title": "Viselhető eszköz adatainak integrációja",
+        "description": "Engedélyezi a szinkronizálást Oura, Garmin, Whoop stb. eszközökkel."
+      },
+      "media_upload": {
+        "title": "Médiafeltöltés és Vision AI",
+        "description": "Engedélyezi fotók/videók feltöltését testtartás- és sprintelemzéshez."
+      }
+    }
   }
 }
