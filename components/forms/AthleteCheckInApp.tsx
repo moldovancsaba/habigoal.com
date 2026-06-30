@@ -17,6 +17,7 @@ import { useTranslations } from "next-intl";
 import { ChoiceChip, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { Link, useRouter } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
+import { resolveCheckInPromptKey } from "@/lib/check-in-copy";
 import { sectionsForMode } from "@/lib/readiness-schema";
 import { computeAssessment } from "@/lib/scoring";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
@@ -229,6 +230,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
   const idParam = searchParams.get("id");
   const athleteProfileHref = profileReturnHref ?? (childIdParam ? `/athletes/${childIdParam}` : null);
 
+  const [nowMs] = useState(Date.now);
   const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
   const [recordId, setRecordId] = useState<string>("");
   const [saveState, setSaveState] = useState<SaveState>("idle");
@@ -648,7 +650,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
                     <Group justify="space-between" align="flex-start">
                       <Box style={{ flex: 1, minWidth: 0 }}>
                         <Text size="md" fw={700}>{t(item.title)}</Text>
-                        <Text size="sm" c="dimmed">{t(item.prompt)}</Text>
+                        <Text size="sm" c="dimmed">{t(resolveCheckInPromptKey(item.prompt, { now: nowMs, seed: forcedChildId ?? "" }))}</Text>
                       </Box>
                       <Badge variant="light" color="ingress" size="lg">
                         {currentScore === null ? t("notSet") : `${currentScore}/5`}
