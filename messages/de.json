@@ -2937,5 +2937,10 @@
     "save": "Nachbesprechung speichern",
     "saved": "Nachbesprechung gespeichert.",
     "saveError": "Speichern fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "StepFlow": {
+    "stepStatus": "Schritt {current} von {total}",
+    "saveNext": "Speichern & weiter",
+    "finish": "Fertig"
   }
 }

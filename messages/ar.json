@@ -2937,5 +2937,10 @@
     "save": "حفظ الملخص",
     "saved": "تم حفظ الملخص.",
     "saveError": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "StepFlow": {
+    "stepStatus": "الخطوة {current} من {total}",
+    "saveNext": "حفظ والتالي",
+    "finish": "إنهاء"
   }
 }

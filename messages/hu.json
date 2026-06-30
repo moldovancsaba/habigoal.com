@@ -2937,5 +2937,10 @@
     "save": "Visszajelzés mentése",
     "saved": "Visszajelzés mentve.",
     "saveError": "Nem sikerült menteni. Próbáld újra."
+  },
+  "StepFlow": {
+    "stepStatus": "{current}. lépés / {total}",
+    "saveNext": "Mentés és tovább",
+    "finish": "Befejezés"
   }
 }
