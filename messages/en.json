@@ -615,7 +615,12 @@
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "Progress",
     "chartNoData": "No data to chart yet — add a check-in to see this.",
-    "exportReportPdf": "Export PDF"
+    "exportReportPdf": "Export PDF",
+    "sectionInput": "Input",
+    "sectionPlan": "Plan",
+    "sectionAnalysis": "Analysis",
+    "sectionRecords": "Records",
+    "sectionNavLabel": "Function area"
   },
   "Assessment": {
     "saved": "Check-in saved.",
@@ -2411,31 +2416,40 @@
       },
       "habits": {
         "extraTouches": {
-          "title": "Extra touches"
+          "title": "Extra touches",
+          "description": "Get extra ball touches in — short, focused reps build technical comfort."
         },
         "weakFoot": {
-          "title": "Weak-foot work"
+          "title": "Weak-foot work",
+          "description": "Spend a few minutes on your weaker foot to even out your game."
         },
         "tacticalLearning": {
-          "title": "Tactical learning"
+          "title": "Tactical learning",
+          "description": "Study a clip or tactic to sharpen your game understanding."
         },
         "stretching": {
-          "title": "Stretching"
+          "title": "Stretching",
+          "description": "Run through a short stretch to keep your body supple."
         },
         "mobility": {
-          "title": "Mobility"
+          "title": "Mobility",
+          "description": "Do a quick mobility routine to move freely and protect your joints."
         },
         "recoverySession": {
-          "title": "Recovery session"
+          "title": "Recovery session",
+          "description": "Take a deliberate recovery block so your body can adapt."
         },
         "hydration": {
-          "title": "Hydration"
+          "title": "Hydration",
+          "description": "Drink enough water across the day to stay sharp and ready."
         },
         "nutrition": {
-          "title": "Nutrition"
+          "title": "Nutrition",
+          "description": "Fuel with a balanced meal to support training and recovery."
         },
         "sleepBeforeMidnight": {
-          "title": "Sleep before midnight"
+          "title": "Sleep before midnight",
+          "description": "Wind down and get to sleep before midnight for proper recovery."
         }
       }
     },

@@ -615,7 +615,12 @@
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "التقدم",
     "chartNoData": "لا توجد بيانات للرسم البياني بعد — أضف تسجيل وصول.",
-    "exportReportPdf": "تصدير PDF"
+    "exportReportPdf": "تصدير PDF",
+    "sectionInput": "الإدخال",
+    "sectionPlan": "الخطة",
+    "sectionAnalysis": "التحليل",
+    "sectionRecords": "السجلات",
+    "sectionNavLabel": "منطقة الوظائف"
   },
   "Assessment": {
     "saved": "تم حفظ التسجيل.",
@@ -2411,31 +2416,40 @@
       },
       "habits": {
         "extraTouches": {
-          "title": "لمسات إضافية"
+          "title": "لمسات إضافية",
+          "description": "احصل على لمسات كرة إضافية — التكرارات القصيرة المركزة تبني الراحة الفنية."
         },
         "weakFoot": {
-          "title": "تدريب القدم الأضعف"
+          "title": "تدريب القدم الأضعف",
+          "description": "اقضِ بضع دقائق على قدمك الأضعف لتوازن أداءك."
         },
         "tacticalLearning": {
-          "title": "تعلم تكتيكي"
+          "title": "تعلم تكتيكي",
+          "description": "ادرس مقطعًا أو خطة تكتيكية لتحسين فهمك للعب."
         },
         "stretching": {
-          "title": "تمطيط"
+          "title": "تمطيط",
+          "description": "قم بتمدد قصير للحفاظ على مرونة جسمك."
         },
         "mobility": {
-          "title": "حركة ومفاصل"
+          "title": "حركة ومفاصل",
+          "description": "قم بروتين سريع لليونة للتحرك بحرية وحماية مفاصلك."
         },
         "recoverySession": {
-          "title": "جلسة تعافٍ"
+          "title": "جلسة تعافٍ",
+          "description": "خصّص فترة استشفاء مدروسة حتى يتكيف جسمك."
         },
         "hydration": {
-          "title": "ترطيب"
+          "title": "ترطيب",
+          "description": "اشرب كمية كافية من الماء طوال اليوم لتبقى يقظًا وجاهزًا."
         },
         "nutrition": {
-          "title": "تغذية"
+          "title": "تغذية",
+          "description": "تناول وجبة متوازنة لدعم التدريب والاستشفاء."
         },
         "sleepBeforeMidnight": {
-          "title": "النوم قبل منتصف الليل"
+          "title": "النوم قبل منتصف الليل",
+          "description": "استرخِ ونم قبل منتصف الليل من أجل استشفاء سليم."
         }
       }
     },

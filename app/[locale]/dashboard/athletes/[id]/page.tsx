@@ -107,6 +107,9 @@ const baselineSupportOptions = [
   { value: "Training plan context", labelKey: "athleteBaselineSupportPlanning" }
 ];
 
+// Function areas the athlete operating surface is segmented into.
+type AthleteSection = "input" | "plan" | "analysis" | "records";
+
 export default function AthleteHistoryPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
   const { id } = use(params);
   const pathname = usePathname();
@@ -124,6 +127,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   // Captured once at mount: a stable "now" for freshness scoring, keeping the
   // render pure (no Date.now() during render) while still reflecting load time.
   const [nowMs] = useState(() => Date.now());
+  // Function-area segmentation (#segment): the operating surface is split into
+  // dedicated areas — Input (data entry), Plan, Analysis, Records — so each
+  // function has its own focused view instead of one crammed scroll. Athletes
+  // land on Input (today's actions); trainers land on Analysis.
+  const [section, setSection] = useState<AthleteSection>(isAthleteApp ? "input" : "analysis");
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -457,6 +465,13 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     injuryRisk: loadRatio > 1.3 ? "high" : "normal",
   });
 
+  const sectionOptions = [
+    { value: "input", label: td("sectionInput") },
+    { value: "plan", label: td("sectionPlan") },
+    { value: "analysis", label: td("sectionAnalysis") },
+    { value: "records", label: td("sectionRecords") }
+  ];
+
   if (loading) {
     return (
       <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
@@ -544,7 +559,17 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         </SectionPanel>
       ) : (
         <>
-          {isAthleteApp ? (
+          <Box>
+            <SegmentedControl
+              value={section}
+              onChange={(value) => setSection(value as AthleteSection)}
+              data={sectionOptions}
+              fullWidth
+              aria-label={td("sectionNavLabel")}
+            />
+          </Box>
+
+          {section === "input" && isAthleteApp ? (
             <SectionPanel title={td("athleteTodayTasksTitle")} description={td("athleteTodayTasksSubtitle")}>
               <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
                 <Paper withBorder p="md" radius="md">
@@ -589,6 +614,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             </SectionPanel>
           ) : null}
 
+          {section === "analysis" ? (
           <SectionPanel
             title={td("athleteDailyOperatingTitle")}
             description={td("athleteDailyOperatingSubtitle")}
@@ -646,7 +672,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               </SimpleGrid>
             </Stack>
           </SectionPanel>
+          ) : null}
 
+          {section === "plan" ? (
           <SectionPanel
             title={td("athletePlanTitle")}
             description={td("athletePlanSubtitle")}
@@ -717,7 +745,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               <Text c="dimmed">{td("athletePlanEmpty")}</Text>
             )}
           </SectionPanel>
+          ) : null}
 
+          {section === "input" ? (
           <SectionPanel
             title={td("athleteHabitTrackerTitle")}
             description={td("athleteHabitTrackerSubtitle")}
@@ -803,7 +833,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               </SimpleGrid>
             </Stack>
           </SectionPanel>
+          ) : null}
 
+          {section === "analysis" ? (
+          <>
           <SectionPanel
             title={td("athleteMemoryTitle")}
             description={td("athleteMemorySubtitle")}
@@ -1090,7 +1123,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               ))}
             </SimpleGrid>
           </SectionPanel>
+          </>
+          ) : null}
 
+          {section === "records" ? (
+          <>
           <SectionPanel title={td("athleteSessionLogTitle")} description={td("athleteSessionLogSubtitle")}>
             <Stack gap="md" hiddenFrom="sm">
               {data.assessments.map((assessment) => {
@@ -1216,6 +1253,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               </Stack>
             )}
           </SectionPanel>
+          </>
+          ) : null}
         </>
       )}
 

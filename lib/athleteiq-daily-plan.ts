@@ -84,7 +84,9 @@ function buildTasks(input: {
   const habitSummary = getHabitScoreSummary(statuses);
   for (const habit of athleteHabitDefinitions) {
     if (!statuses[habit.key]) {
-      tasks.push(task(`habit:${habit.key}`, "habit", `athleteiq.dailyPlan.habits.${habit.key}.title`, "athleteiq.dailyPlan.tasks.habit.description", habitSummary.score < 60 ? "medium" : "low", [`habit_gap:${habit.category}`], "anytime"));
+      // Each habit carries its own actionable description so cards are distinct
+      // and useful, instead of repeating one generic "keep your streak" line.
+      tasks.push(task(`habit:${habit.key}`, "habit", `athleteiq.dailyPlan.habits.${habit.key}.title`, `athleteiq.dailyPlan.habits.${habit.key}.description`, habitSummary.score < 60 ? "medium" : "low", [`habit_gap:${habit.category}`], "anytime"));
     }
   }
 

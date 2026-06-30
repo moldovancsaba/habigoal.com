@@ -615,7 +615,12 @@
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "Fortschritt",
     "chartNoData": "Noch keine Diagrammdaten — füge einen Check-in hinzu.",
-    "exportReportPdf": "PDF exportieren"
+    "exportReportPdf": "PDF exportieren",
+    "sectionInput": "Eingabe",
+    "sectionPlan": "Plan",
+    "sectionAnalysis": "Analyse",
+    "sectionRecords": "Aufzeichnungen",
+    "sectionNavLabel": "Funktionsbereich"
   },
   "Assessment": {
     "saved": "Check-in gespeichert.",
@@ -2411,31 +2416,40 @@
       },
       "habits": {
         "extraTouches": {
-          "title": "Extra Ballkontakte"
+          "title": "Extra Ballkontakte",
+          "description": "Mach zusätzliche Ballkontakte — kurze, fokussierte Wiederholungen verbessern die Technik."
         },
         "weakFoot": {
-          "title": "Schwacher-Fuß-Training"
+          "title": "Schwacher-Fuß-Training",
+          "description": "Verbringe ein paar Minuten mit deinem schwächeren Fuß, um ausgeglichener zu spielen."
         },
         "tacticalLearning": {
-          "title": "Taktiklernen"
+          "title": "Taktiklernen",
+          "description": "Schau dir einen Clip oder eine Taktik an, um dein Spielverständnis zu schärfen."
         },
         "stretching": {
-          "title": "Dehnen"
+          "title": "Dehnen",
+          "description": "Mach ein kurzes Dehnprogramm, um geschmeidig zu bleiben."
         },
         "mobility": {
-          "title": "Mobilität"
+          "title": "Mobilität",
+          "description": "Mach eine schnelle Mobility-Routine, um dich frei zu bewegen und Gelenke zu schützen."
         },
         "recoverySession": {
-          "title": "Regenerationseinheit"
+          "title": "Regenerationseinheit",
+          "description": "Plane einen bewussten Regenerationsblock ein, damit sich dein Körper anpassen kann."
         },
         "hydration": {
-          "title": "Flüssigkeitszufuhr"
+          "title": "Flüssigkeitszufuhr",
+          "description": "Trinke über den Tag genug Wasser, um wach und bereit zu bleiben."
         },
         "nutrition": {
-          "title": "Ernährung"
+          "title": "Ernährung",
+          "description": "Iss eine ausgewogene Mahlzeit, um Training und Regeneration zu unterstützen."
         },
         "sleepBeforeMidnight": {
-          "title": "Schlaf vor Mitternacht"
+          "title": "Schlaf vor Mitternacht",
+          "description": "Komm zur Ruhe und schlafe vor Mitternacht für echte Erholung."
         }
       }
     },

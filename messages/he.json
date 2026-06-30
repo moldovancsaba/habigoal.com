@@ -615,7 +615,12 @@
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "התקדמות",
     "chartNoData": "אין עדיין נתונים לתרשים — הוסף צ׳ק-אין.",
-    "exportReportPdf": "ייצוא PDF"
+    "exportReportPdf": "ייצוא PDF",
+    "sectionInput": "קלט",
+    "sectionPlan": "תוכנית",
+    "sectionAnalysis": "ניתוח",
+    "sectionRecords": "רשומות",
+    "sectionNavLabel": "אזור תפקודי"
   },
   "Assessment": {
     "saved": "הצק-אין נשמר.",
@@ -2411,31 +2416,40 @@
       },
       "habits": {
         "extraTouches": {
-          "title": "נגיעות נוספות"
+          "title": "נגיעות נוספות",
+          "description": "בצע נגיעות כדור נוספות — חזרות קצרות וממוקדות בונות נוחות טכנית."
         },
         "weakFoot": {
-          "title": "עבודה על הרגל החלשה"
+          "title": "עבודה על הרגל החלשה",
+          "description": "הקדש כמה דקות לרגל החלשה שלך כדי לאזן את המשחק."
         },
         "tacticalLearning": {
-          "title": "למידה טקטית"
+          "title": "למידה טקטית",
+          "description": "למד קליפ או טקטיקה כדי לחדד את הבנת המשחק שלך."
         },
         "stretching": {
-          "title": "מתיחות"
+          "title": "מתיחות",
+          "description": "בצע מתיחה קצרה כדי לשמור על גמישות הגוף."
         },
         "mobility": {
-          "title": "ניידות"
+          "title": "ניידות",
+          "description": "בצע שגרת ניידות מהירה כדי לנוע בחופשיות ולהגן על המפרקים."
         },
         "recoverySession": {
-          "title": "יחידת התאוששות"
+          "title": "יחידת התאוששות",
+          "description": "הקדש בלוק התאוששות מכוון כדי שהגוף יוכל להסתגל."
         },
         "hydration": {
-          "title": "הידרציה"
+          "title": "הידרציה",
+          "description": "שתה מספיק מים לאורך היום כדי להישאר חד ומוכן."
         },
         "nutrition": {
-          "title": "תזונה"
+          "title": "תזונה",
+          "description": "הזן את גופך בארוחה מאוזנת לתמיכה באימון ובהתאוששות."
         },
         "sleepBeforeMidnight": {
-          "title": "שינה לפני חצות"
+          "title": "שינה לפני חצות",
+          "description": "הירגע ולך לישון לפני חצות להתאוששות נכונה."
         }
       }
     },

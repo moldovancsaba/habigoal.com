@@ -615,7 +615,12 @@
     "navAthleteIq": "Athlete IQ",
     "navAthleteProgress": "Progreso",
     "chartNoData": "Aún no hay datos para el gráfico — añade un check-in.",
-    "exportReportPdf": "Exportar PDF"
+    "exportReportPdf": "Exportar PDF",
+    "sectionInput": "Entrada",
+    "sectionPlan": "Plan",
+    "sectionAnalysis": "Análisis",
+    "sectionRecords": "Registros",
+    "sectionNavLabel": "Área funcional"
   },
   "Assessment": {
     "saved": "Registro guardado.",
@@ -2411,31 +2416,40 @@
       },
       "habits": {
         "extraTouches": {
-          "title": "Toques extra"
+          "title": "Toques extra",
+          "description": "Haz toques de balón extra: las repeticiones cortas y enfocadas mejoran la técnica."
         },
         "weakFoot": {
-          "title": "Trabajo de pie débil"
+          "title": "Trabajo de pie débil",
+          "description": "Dedica unos minutos a tu pie más débil para equilibrar tu juego."
         },
         "tacticalLearning": {
-          "title": "Aprendizaje táctico"
+          "title": "Aprendizaje táctico",
+          "description": "Estudia un clip o una táctica para afinar tu comprensión del juego."
         },
         "stretching": {
-          "title": "Estiramientos"
+          "title": "Estiramientos",
+          "description": "Haz un estiramiento corto para mantenerte flexible."
         },
         "mobility": {
-          "title": "Movilidad"
+          "title": "Movilidad",
+          "description": "Haz una rutina rápida de movilidad para moverte libremente y proteger las articulaciones."
         },
         "recoverySession": {
-          "title": "Sesión de recuperación"
+          "title": "Sesión de recuperación",
+          "description": "Dedica un bloque de recuperación deliberado para que tu cuerpo se adapte."
         },
         "hydration": {
-          "title": "Hidratación"
+          "title": "Hidratación",
+          "description": "Bebe suficiente agua durante el día para mantenerte ágil y listo."
         },
         "nutrition": {
-          "title": "Nutrición"
+          "title": "Nutrición",
+          "description": "Aliméntate con una comida equilibrada para apoyar el entrenamiento y la recuperación."
         },
         "sleepBeforeMidnight": {
-          "title": "Dormir antes de medianoche"
+          "title": "Dormir antes de medianoche",
+          "description": "Relájate y duerme antes de medianoche para una recuperación adecuada."
         }
       }
     },
