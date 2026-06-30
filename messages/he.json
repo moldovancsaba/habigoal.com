@@ -2937,5 +2937,10 @@
     "save": "שמור תחקיר",
     "saved": "התחקיר נשמר.",
     "saveError": "השמירה נכשלה. נסה שוב."
+  },
+  "StepFlow": {
+    "stepStatus": "שלב {current} מתוך {total}",
+    "saveNext": "שמור והמשך",
+    "finish": "סיום"
   }
 }

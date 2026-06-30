@@ -2937,5 +2937,10 @@
     "save": "Save debrief",
     "saved": "Debrief saved.",
     "saveError": "Could not save. Please try again."
+  },
+  "StepFlow": {
+    "stepStatus": "Step {current} of {total}",
+    "saveNext": "Save & next",
+    "finish": "Finish"
   }
 }

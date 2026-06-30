@@ -2937,5 +2937,10 @@
     "save": "Guardar resumen",
     "saved": "Resumen guardado.",
     "saveError": "No se pudo guardar. Inténtalo de nuevo."
+  },
+  "StepFlow": {
+    "stepStatus": "Paso {current} de {total}",
+    "saveNext": "Guardar y siguiente",
+    "finish": "Finalizar"
   }
 }
