@@ -1367,7 +1367,14 @@
     "readinessWatch": "Watch",
     "readinessSupport": "Support",
     "ageValue": "{age} years old",
-    "ageUnknown": "Age unavailable"
+    "ageUnknown": "Age unavailable",
+    "subtitleVariants": {
+      "neutralB": "Search, open, and support every athlete in one place.",
+      "neutralC": "Your athletes' daily readiness and habits at a glance.",
+      "morning": "Good morning — see who needs support today.",
+      "afternoon": "Good afternoon — check in on today's progress.",
+      "evening": "Good evening — review the day across your athletes."
+    }
   },
   "Report": {
     "professionalOpinion": "Professional opinion:",

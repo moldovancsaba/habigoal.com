@@ -5,12 +5,15 @@ import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Text, TextInput, T
 import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { selectCopyKey } from "@/lib/copy-variants";
+import { heroSubtitleDef } from "@/lib/surface-voice";
 import type { AthleteProfile } from "@/types/athlete";
 
 type AthleteListItem = AthleteProfile;
 
 export function AthletesAppHome() {
   const t = useTranslations("AthletesApp");
+  const [heroNowMs] = useState(Date.now);
   const [athletes, setAthletes] = useState<AthleteListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -76,7 +79,7 @@ export function AthletesAppHome() {
       <Box px={{ base: "md", md: "xl" }} py={{ base: "lg", md: "xl" }} maw={1320} mx="auto">
         <PageHeader
           title={t("title")}
-          subtitle={t("subtitle")}
+          subtitle={t(selectCopyKey(heroSubtitleDef("subtitle"), { now: heroNowMs }))}
           actions={
             <Group gap="xs">
               <Link href="/" style={{ textDecoration: "none" }}>

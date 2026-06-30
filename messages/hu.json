@@ -1367,7 +1367,14 @@
     "readinessWatch": "Figyelni kell",
     "readinessSupport": "Támogatás kell",
     "ageValue": "{age} éves",
-    "ageUnknown": "Életkor nem elérhető"
+    "ageUnknown": "Életkor nem elérhető",
+    "subtitleVariants": {
+      "neutralB": "Keresd, nyisd meg és támogasd minden sportolódat egy helyen.",
+      "neutralC": "Sportolóid napi készenléte és szokásai egy pillantásra.",
+      "morning": "Jó reggelt — nézd meg, kinek van ma szüksége támogatásra.",
+      "afternoon": "Jó napot — kövesd a mai haladást.",
+      "evening": "Jó estét — tekintsd át a napot a sportolóidnál."
+    }
   },
   "Report": {
     "professionalOpinion": "Szakértői vélemény:",

@@ -1367,7 +1367,14 @@
     "readinessWatch": "مراقبة",
     "readinessSupport": "دعم",
     "ageValue": "{age} سنة",
-    "ageUnknown": "العمر غير متاح"
+    "ageUnknown": "العمر غير متاح",
+    "subtitleVariants": {
+      "neutralB": "ابحث وافتح وادعم كل رياضي في مكان واحد.",
+      "neutralC": "جاهزية رياضييك اليومية وعاداتهم في لمحة.",
+      "morning": "صباح الخير — اعرف من يحتاج الدعم اليوم.",
+      "afternoon": "مساء الخير — تابع تقدّم اليوم.",
+      "evening": "مساء الخير — راجع يوم رياضييك."
+    }
   },
   "Report": {
     "professionalOpinion": "الرأي المهني:",
