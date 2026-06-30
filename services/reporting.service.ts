@@ -5,7 +5,47 @@ import { computeRecovery } from "@/lib/engines/recovery.engine";
 import { computeInjuryRisk } from "@/lib/engines/injury-risk.engine";
 import { getChildById } from "@/repositories/child.repository";
 import { getLatestFms } from "@/services/athleteiq-fms.service";
+import {
+  classifyFreshness,
+  minConfidenceBand,
+  CONFIDENCE_BAND_RANK,
+  type ConfidenceBand,
+  type DataFreshness,
+} from "@/lib/data-confidence";
 import { ObjectId } from "mongodb";
+
+// Bump when the report's structure or source-note contract changes, so a stored
+// report can be traced to the logic that produced it (RPT-005, #200).
+export const REPORT_VERSION = "report-1.1.0";
+
+export type ReportDimensionKey =
+  | "physical"
+  | "performance"
+  | "technical"
+  | "recovery"
+  | "cognitive";
+
+export interface ReportDimensionSource {
+  dimension: ReportDimensionKey;
+  sources: string[];
+  confidence: ConfidenceBand;
+  updatedAt: string | null;
+}
+
+// Complete, structured provenance for a report: which records produced it, how
+// fresh they are, and how confident we are — so a report is honest about its
+// inputs instead of presenting derived numbers without context (RPT-005, #200).
+export interface ReportProvenance {
+  reportVersion: string;
+  generatedAt: string;
+  dateRange: { from: string; to: string };
+  dimensions: ReportDimensionSource[];
+  movementScreen: { present: boolean; date: string | null };
+  coachBaselineNotes: boolean;
+  lastUpdatedAt: string | null;
+  freshness: DataFreshness;
+  overallConfidence: ConfidenceBand;
+}
 
 export interface AthleteReport {
   athleteId: string;
@@ -18,6 +58,91 @@ export interface AthleteReport {
   // or AI framing in user-facing copy (owner ruling).
   guidanceCommentary: string;
   sourceDataNotes: string[];
+  // Structured source provenance (RPT-005, #200). sourceDataNotes is the
+  // human-readable projection of this.
+  provenance: ReportProvenance;
+}
+
+const REPORT_DIMENSIONS: ReportDimensionKey[] = [
+  "physical",
+  "performance",
+  "technical",
+  "recovery",
+  "cognitive",
+];
+
+function downgradeBand(band: ConfidenceBand, steps: number): ConfidenceBand {
+  const order: ConfidenceBand[] = ["none", "low", "medium", "high"];
+  const rank = Math.max(0, CONFIDENCE_BAND_RANK[band] - steps);
+  return order[rank];
+}
+
+// Pure provenance builder over a twin snapshot — no DB access, fully testable.
+// Overall confidence is the weakest contributing dimension (those that actually
+// have sources) combined with the recommendation confidence, then downgraded one
+// step if the freshest contributing data is stale or missing. Never overstates.
+export function buildReportProvenance(input: {
+  twin: AthleteTwin;
+  dateRange: { from: string; to: string };
+  generatedAt: string;
+  recommendationConfidence: ConfidenceBand | string | null | undefined;
+  movementScreen: { present: boolean; date: string | null };
+  coachBaselineNotes: boolean;
+  now: number;
+}): ReportProvenance {
+  const { twin } = input;
+  const dimensions: ReportDimensionSource[] = REPORT_DIMENSIONS.map((dimension) => {
+    const snapshot = twin[dimension];
+    return {
+      dimension,
+      sources: snapshot?.sources ?? [],
+      confidence: (snapshot?.confidence as ConfidenceBand) ?? "none",
+      updatedAt: snapshot?.updatedAt ?? null,
+    };
+  });
+
+  const contributing = dimensions.filter((d) => d.sources.length > 0);
+  const freshness = classifyFreshness(twin.lastUpdatedAt ?? null, input.now);
+
+  let overallConfidence = minConfidenceBand([
+    ...contributing.map((d) => d.confidence),
+    input.recommendationConfidence,
+  ]);
+  // No contributing source at all → none, regardless of the recommendation.
+  if (contributing.length === 0) overallConfidence = "none";
+  if (freshness === "stale" || freshness === "missing") {
+    overallConfidence = downgradeBand(overallConfidence, 1);
+  }
+
+  return {
+    reportVersion: REPORT_VERSION,
+    generatedAt: input.generatedAt,
+    dateRange: input.dateRange,
+    dimensions,
+    movementScreen: input.movementScreen,
+    coachBaselineNotes: input.coachBaselineNotes,
+    lastUpdatedAt: twin.lastUpdatedAt ?? null,
+    freshness,
+    overallConfidence,
+  };
+}
+
+// Human-readable projection of the provenance. The final "Confidence: <band>"
+// line is a stable contract consumed by the parent-safe projection (#261) and
+// the reports hub badge — keep it last and in this exact shape.
+export function provenanceToSourceNotes(p: ReportProvenance): string[] {
+  const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const notes = [`Date range: ${p.dateRange.from} to ${p.dateRange.to}`];
+  for (const d of p.dimensions) {
+    const sources = d.sources.length ? d.sources.join(", ") : "none";
+    const updated = d.updatedAt ? d.updatedAt.slice(0, 10) : "never";
+    notes.push(`${titleCase(d.dimension)} data: ${sources} (confidence ${d.confidence}, updated ${updated})`);
+  }
+  notes.push(`Movement screen (FMS): ${p.movementScreen.present ? p.movementScreen.date ?? "yes" : "none"}`);
+  notes.push(`Coach baseline notes: ${p.coachBaselineNotes ? "yes" : "none"}`);
+  notes.push(`Data freshness: ${p.freshness}`);
+  notes.push(`Confidence: ${p.overallConfidence}`);
+  return notes;
 }
 
 export class ReportingService {
@@ -39,9 +164,20 @@ export class ReportingService {
     ]);
     const recommendation = buildRecommendation(twin, readiness, recovery, injuryRisk, child?.birthDate);
 
+    const generatedAt = new Date().toISOString();
+    const provenance = buildReportProvenance({
+      twin,
+      dateRange: { from, to },
+      generatedAt,
+      recommendationConfidence: recommendation.confidence,
+      movementScreen: { present: Boolean(latestFms), date: latestFms?.date ?? null },
+      coachBaselineNotes: Boolean(child?.baselineProfile?.coachBaselineNotes),
+      now: Date.now(),
+    });
+
     return {
       athleteId,
-      reportDate: new Date().toISOString(),
+      reportDate: generatedAt,
       dateRange: { from, to },
       summary: "Athlete Operating Report",
       keyMetrics: {
@@ -56,11 +192,8 @@ export class ReportingService {
         ? [child.baselineProfile.coachBaselineNotes]
         : [],
       guidanceCommentary: `${recommendation.text}\n\nReason: ${recommendation.reason}`,
-      sourceDataNotes: [
-        `Recovery data: ${(twin.recovery?.sources || []).join(", ") || "none"}`,
-        `Performance data: ${(twin.performance?.sources || []).join(", ") || "none"}`,
-        `Confidence: ${recommendation.confidence}`,
-      ],
+      sourceDataNotes: provenanceToSourceNotes(provenance),
+      provenance,
     };
   }
 

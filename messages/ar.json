@@ -2629,7 +2629,8 @@
     "exportCsvAria": "تصدير {subject} بصيغة CSV",
     "exportJsonAria": "تصدير {subject} بصيغة JSON",
     "parentSafe": "مناسب لولي الأمر",
-    "exportParentSafeAria": "تصدير ملخص مناسب لولي الأمر لـ {subject}"
+    "exportParentSafeAria": "تصدير ملخص مناسب لولي الأمر لـ {subject}",
+    "sourcesDisclosure": "مصادر البيانات والموثوقية"
   },
   "Wearables": {
     "title": "الأجهزة القابلة للارتداء المتصلة",

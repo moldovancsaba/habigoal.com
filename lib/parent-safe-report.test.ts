@@ -16,6 +16,17 @@ const baseReport: AthleteReport = {
   coachNotes: ["internal note: monitor hamstring"],
   guidanceCommentary: "Engine reason: elevated load",
   sourceDataNotes: ["Confidence: medium"],
+  provenance: {
+    reportVersion: "report-1.1.0",
+    generatedAt: "2026-06-29T00:00:00.000Z",
+    dateRange: { from: "2026-06-22", to: "2026-06-29" },
+    dimensions: [],
+    movementScreen: { present: false, date: null },
+    coachBaselineNotes: false,
+    lastUpdatedAt: null,
+    freshness: "missing",
+    overallConfidence: "medium",
+  },
 };
 
 describe("toParentSafeReport (#261)", () => {

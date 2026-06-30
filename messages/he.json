@@ -2629,7 +2629,8 @@
     "exportCsvAria": "ייצוא {subject} כ-CSV",
     "exportJsonAria": "ייצוא {subject} כ-JSON",
     "parentSafe": "מותאם להורים",
-    "exportParentSafeAria": "ייצוא סיכום מותאם להורים של {subject}"
+    "exportParentSafeAria": "ייצוא סיכום מותאם להורים של {subject}",
+    "sourcesDisclosure": "מקורות נתונים ומהימנות"
   },
   "Wearables": {
     "title": "התקנים לבישים מחוברים",

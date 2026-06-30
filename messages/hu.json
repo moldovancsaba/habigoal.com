@@ -2629,7 +2629,8 @@
     "exportCsvAria": "{subject} exportálása CSV-ként",
     "exportJsonAria": "{subject} exportálása JSON-ként",
     "parentSafe": "Szülőbarát",
-    "exportParentSafeAria": "{subject} szülőbarát összefoglalójának exportálása"
+    "exportParentSafeAria": "{subject} szülőbarát összefoglalójának exportálása",
+    "sourcesDisclosure": "Adatforrások és megbízhatóság"
   },
   "Wearables": {
     "title": "Csatlakoztatott viselhető eszközök",
