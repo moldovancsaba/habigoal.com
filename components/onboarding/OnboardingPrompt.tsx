@@ -11,9 +11,15 @@ export function OnboardingPrompt({ module, state, errorMessage, onDismiss, onCom
   const t = useTranslations("Onboarding");
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const model = buildOnboardingPromptModel(module, state, { onRetry, onSnooze });
-  const title = module.title || t("defaults.moduleTitle");
-  const body = module.body || t("defaults.moduleBody");
-  const checklistTitle = module.checklistTitle || t("defaults.checklistTitle");
+  // Module/step copy is localized via Onboarding.modules.<id>.* keys, falling back
+  // to the module's authored English only if a locale key is missing. (Fixes the
+  // English-in-a-Hungarian-session onboarding modal.)
+  const moduleKey = `modules.${module.id}`;
+  const title = t.has(`${moduleKey}.title`) ? t(`${moduleKey}.title`) : module.title || t("defaults.moduleTitle");
+  const body = t.has(`${moduleKey}.body`) ? t(`${moduleKey}.body`) : module.body || t("defaults.moduleBody");
+  const checklistTitle = t.has(`${moduleKey}.checklistTitle`)
+    ? t(`${moduleKey}.checklistTitle`)
+    : module.checklistTitle || t("defaults.checklistTitle");
   const snoozeActionPack = useMemo(
     () =>
       createGdsVocabularyPack("onboarding", {
@@ -61,14 +67,17 @@ export function OnboardingPrompt({ module, state, errorMessage, onDismiss, onCom
               <Stack gap="sm">
                 {module.steps.map((step) => {
                   const done = module.completedStepIds.includes(step.id) || state === "completed";
+                  const stepKey = `${moduleKey}.steps.${step.id}`;
+                  const stepTitle = t.has(`${stepKey}.title`) ? t(`${stepKey}.title`) : step.title;
+                  const stepBody = t.has(`${stepKey}.body`) ? t(`${stepKey}.body`) : step.body;
                   return (
                     <Box key={step.id} p="sm" style={{ border: "1px solid var(--gds-color-border, var(--mantine-color-default-border))", borderRadius: "var(--mantine-radius-sm)" }}>
                       <Group justify="space-between" align="flex-start" gap="sm" wrap="wrap">
                         <Stack gap={2} style={{ minWidth: 0, flex: "1 1 14rem" }}>
-                          <strong>{step.title}</strong>
-                          <span style={{ color: "var(--mantine-color-dimmed)", fontSize: "0.875rem" }}>{step.body}</span>
+                          <strong>{stepTitle}</strong>
+                          <span style={{ color: "var(--mantine-color-dimmed)", fontSize: "0.875rem" }}>{stepBody}</span>
                         </Stack>
-                        <Badge color={done ? "green" : "blue"} variant="light">
+                        <Badge color={done ? "green" : "ingress"} variant="light">
                           {done ? t("status.done") : t("status.next")}
                         </Badge>
                       </Group>

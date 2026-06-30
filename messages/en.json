@@ -1288,6 +1288,53 @@
     "actions": {
       "dismiss": "Dismiss",
       "snooze": "Snooze"
+    },
+    "modules": {
+      "athlete-first-login-baseline": {
+        "title": "Set up your athlete baseline",
+        "body": "Confirm your weekly goal and support preferences so Habigoal can explain readiness and check-in context clearly.",
+        "checklistTitle": "Athlete setup",
+        "steps": {
+          "open-profile": {
+            "title": "Open your athlete profile",
+            "body": "Start from your own athlete profile only."
+          },
+          "complete-check-in": {
+            "title": "Complete a daily check-in",
+            "body": "Submit today's readiness so your trend context is based on real data."
+          }
+        }
+      },
+      "trainer-command-center": {
+        "title": "Review your coach dashboard",
+        "body": "Use the priority queue, missed check-ins, recommendations, and planning context before making session decisions.",
+        "checklistTitle": "Trainer workflow",
+        "steps": {
+          "review-queue": {
+            "title": "Review priority athletes",
+            "body": "Start with support and missed-check-in athletes."
+          },
+          "save-plan": {
+            "title": "Save a weekly plan",
+            "body": "Use planning to translate readiness into session constraints."
+          }
+        }
+      },
+      "admin-settings-foundation": {
+        "title": "Complete admin setup",
+        "body": "Review users, teams, standards, restore controls, and governance metrics before inviting operators into live workflows.",
+        "checklistTitle": "Admin setup",
+        "steps": {
+          "review-users": {
+            "title": "Review approved users",
+            "body": "Confirm at least one admin remains active."
+          },
+          "review-teams": {
+            "title": "Review team membership",
+            "body": "Trainer access depends on team membership."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {

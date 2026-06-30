@@ -1288,6 +1288,53 @@
     "actions": {
       "dismiss": "Dismiss",
       "snooze": "Snooze"
+    },
+    "modules": {
+      "athlete-first-login-baseline": {
+        "title": "Richte deine Athleten-Baseline ein",
+        "body": "Bestätige dein Wochenziel und deine Support-Präferenzen, damit Habigoal Readiness und Check-in-Kontext klar erklären kann.",
+        "checklistTitle": "Athleten-Setup",
+        "steps": {
+          "open-profile": {
+            "title": "Öffne dein Athletenprofil",
+            "body": "Starte nur von deinem eigenen Athletenprofil."
+          },
+          "complete-check-in": {
+            "title": "Mache einen täglichen Check-in",
+            "body": "Gib die heutige Readiness an, damit dein Trendkontext auf echten Daten beruht."
+          }
+        }
+      },
+      "trainer-command-center": {
+        "title": "Prüfe dein Trainer-Dashboard",
+        "body": "Nutze die Prioritätsliste, verpasste Check-ins, Empfehlungen und Planungskontext, bevor du Trainingsentscheidungen triffst.",
+        "checklistTitle": "Trainer-Workflow",
+        "steps": {
+          "review-queue": {
+            "title": "Prioritäts-Athleten prüfen",
+            "body": "Beginne mit Support- und Check-in-Lücken-Athleten."
+          },
+          "save-plan": {
+            "title": "Wochenplan speichern",
+            "body": "Übersetze mit der Planung Readiness in Trainingsvorgaben."
+          }
+        }
+      },
+      "admin-settings-foundation": {
+        "title": "Admin-Einrichtung abschließen",
+        "body": "Prüfe Nutzer, Teams, Standards, Wiederherstellung und Governance-Kennzahlen, bevor du Operatoren in Live-Workflows einlädst.",
+        "checklistTitle": "Admin-Setup",
+        "steps": {
+          "review-users": {
+            "title": "Freigegebene Nutzer prüfen",
+            "body": "Stelle sicher, dass mindestens ein Admin aktiv bleibt."
+          },
+          "review-teams": {
+            "title": "Teamzugehörigkeit prüfen",
+            "body": "Trainerzugang hängt von der Teamzugehörigkeit ab."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {

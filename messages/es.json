@@ -1288,6 +1288,53 @@
     "actions": {
       "dismiss": "Dismiss",
       "snooze": "Snooze"
+    },
+    "modules": {
+      "athlete-first-login-baseline": {
+        "title": "Configura tu línea base de atleta",
+        "body": "Confirma tu objetivo semanal y tus preferencias de apoyo para que Habigoal explique con claridad la disposición y el contexto del registro.",
+        "checklistTitle": "Configuración del atleta",
+        "steps": {
+          "open-profile": {
+            "title": "Abre tu perfil de atleta",
+            "body": "Empieza solo desde tu propio perfil de atleta."
+          },
+          "complete-check-in": {
+            "title": "Completa un registro diario",
+            "body": "Envía la disposición de hoy para que tus tendencias se basen en datos reales."
+          }
+        }
+      },
+      "trainer-command-center": {
+        "title": "Revisa tu panel de entrenador",
+        "body": "Usa la cola de prioridades, los registros omitidos, las recomendaciones y el contexto de planificación antes de decidir las sesiones.",
+        "checklistTitle": "Flujo del entrenador",
+        "steps": {
+          "review-queue": {
+            "title": "Revisa los atletas prioritarios",
+            "body": "Empieza por los atletas de apoyo y con registros omitidos."
+          },
+          "save-plan": {
+            "title": "Guarda un plan semanal",
+            "body": "Usa la planificación para traducir la disposición en restricciones de sesión."
+          }
+        }
+      },
+      "admin-settings-foundation": {
+        "title": "Completa la configuración de administrador",
+        "body": "Revisa usuarios, equipos, estándares, controles de restauración y métricas de gobernanza antes de invitar operadores a flujos en vivo.",
+        "checklistTitle": "Configuración de administrador",
+        "steps": {
+          "review-users": {
+            "title": "Revisa los usuarios aprobados",
+            "body": "Confirma que al menos un administrador siga activo."
+          },
+          "review-teams": {
+            "title": "Revisa la pertenencia a equipos",
+            "body": "El acceso de entrenador depende de la pertenencia a un equipo."
+          }
+        }
+      }
     }
   },
   "AthletesApp": {
