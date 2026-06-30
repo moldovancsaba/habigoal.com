@@ -2334,6 +2334,13 @@
           "reflection": {
             "bodyLabel": "Reflexión",
             "bodyPlaceholder": "Qué fue bien, qué costó, qué sigue…",
+            "bodyPlaceholderVariants": {
+              "neutralB": "Nombra un logro, un reto y algo que te quieras llevar.",
+              "neutralC": "Qué funcionó hoy, qué costó y qué probarás la próxima vez…",
+              "morning": "¿Cómo quieres presentarte hoy y qué haría que fuera un buen día?",
+              "afternoon": "Punto medio: ¿qué funciona hasta ahora y qué necesita un reinicio?",
+              "evening": "Cierre del día: qué funcionó hoy, qué no y qué sigue…"
+            },
             "moodLabel": "Etiqueta de ánimo",
             "moodPlaceholder": "p. ej. concentrado",
             "visibilityLabel": "Visibilidad",

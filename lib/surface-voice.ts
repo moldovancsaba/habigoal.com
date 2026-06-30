@@ -12,9 +12,11 @@
 
 import { isAfternoon, isEvening, isMorning, type CopyDef } from "@/lib/copy-variants";
 
-// `baseKey` is the existing subtitle key, e.g. "hero.subtitle". Variants live
-// under `${baseKey}Variants.*`.
-export function heroSubtitleDef(baseKey: string): CopyDef {
+// Generic time-aware copy: the original line stays as a neutral variant, plus
+// two neutral alternates and morning/afternoon/evening greetings, all living
+// under `${baseKey}Variants.*`. Used for any frequently-seen line that should
+// feel attentive (hero sublines, reflection prompts, etc.).
+export function timeAwareCopyDef(baseKey: string): CopyDef {
   return {
     id: baseKey,
     variants: [
@@ -26,4 +28,17 @@ export function heroSubtitleDef(baseKey: string): CopyDef {
       { key: `${baseKey}Variants.evening`, when: isEvening },
     ],
   };
+}
+
+// `baseKey` is the existing subtitle key, e.g. "hero.subtitle". Variants live
+// under `${baseKey}Variants.*`.
+export function heroSubtitleDef(baseKey: string): CopyDef {
+  return timeAwareCopyDef(baseKey);
+}
+
+// The reflection prompt (Textarea placeholder) invites the athlete to write.
+// A time-aware, rotating prompt reads as a thoughtful coach rather than a
+// static form field. Variants live under `${baseKey}Variants.*`.
+export function reflectionPromptDef(baseKey: string): CopyDef {
+  return timeAwareCopyDef(baseKey);
 }
