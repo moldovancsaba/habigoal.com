@@ -212,3 +212,6 @@ The canonical metric schema normalises multi-source athlete data (check-ins, wea
 - **Types**: `types/canonical-metric.ts`
 - **Normalisation**: `lib/normalise-metric.ts`
 - **Storage**: `canonical_metrics` and `raw_metrics` collections
+
+### Digital Twin updater (DTW-002, #202)
+`lib/twin-updater.ts` updates the twin from every source: daily check-ins and device data (via canonical metrics → `updateTwinFromMetrics`, covering recovery, performance, physical, and cognitive dimensions), AI engine outputs (`updateTwinFromEngineOutputs`), and vision (`updateTechnicalFromVision`). Each dimension records the contributing `sources` so provenance stays traceable, and `appendHistory` snapshots **all five** dimensions per date (deduped by `(date, dimension)`, bounded to the most recent 90 distinct dates) — engine-driven changes now leave a history trail and credit the `ai_inference` source, where previously only recovery + performance were captured.
