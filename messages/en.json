@@ -1370,6 +1370,10 @@
     "directorySubtitle": "Search athletes, review recent readiness, and open the full athlete operating profile.",
     "searchPlaceholder": "Search by name, birth date, location, or notes...",
     "empty": "No athletes match this search yet.",
+    "emptyVariants": {
+      "neutralB": "No matches for that search yet.",
+      "neutralC": "Nothing found — try a different name or filter."
+    },
     "locationHint": "Latest training location: {location}",
     "locationHintEmpty": "No recent location has been recorded for this athlete yet.",
     "metricReadiness": "Readiness",
@@ -1884,6 +1888,10 @@
         "days": "{count} days",
         "last7": "Last 7 days",
         "empty": "Complete a habit today to start your streak.",
+        "emptyVariants": {
+          "neutralB": "Finish one habit today and your streak begins.",
+          "neutralC": "No streak yet — today's first habit starts it."
+        },
         "dayAria": "{date}: {score}% habit score"
       },
       "reasons": {
@@ -2035,6 +2043,10 @@
           }
         },
         "empty": "No open priority athletes from live records.",
+        "emptyVariants": {
+          "neutralB": "Queue is clear — no athletes need attention right now.",
+          "neutralC": "Nothing flagged from live records yet today."
+        },
         "reasons": {
           "painAlert": "Pain safety is active and requires trainer review.",
           "painAlertVariants": {
@@ -2210,7 +2222,11 @@
         "support": {
           "title": "Support queue",
           "copy": "Open items from readiness, pain safety, daily planning, and trainer actions.",
-          "empty": "No open support items from live records."
+          "empty": "No open support items from live records.",
+          "emptyVariants": {
+            "neutralB": "Nothing needs support right now — all clear.",
+            "neutralC": "No support items from live records yet today."
+          }
         },
         "shared": {
           "kicker": "Daily habits",
@@ -2218,7 +2234,11 @@
           "copy": "Your saved habit completion, team context, and readiness status for today."
         },
         "empty": {
-          "copy": "Your Athlete IQ profile is ready, but no live daily records are saved yet."
+          "copy": "Your Athlete IQ profile is ready, but no live daily records are saved yet.",
+          "copyVariants": {
+            "neutralB": "Profile's ready — save a daily record to see it come alive.",
+            "neutralC": "No daily records yet; your first check-in fills this in."
+          }
         },
         "recorder": {
           "savedTitle": "Daily record saved",
@@ -2383,12 +2403,20 @@
             },
             "save": "Save reflection",
             "todayTitle": "Today's reflections",
-            "empty": "No reflection saved today."
+            "empty": "No reflection saved today.",
+            "emptyVariants": {
+              "neutralB": "Nothing written yet today — a line or two is enough.",
+              "neutralC": "Today's reflection is still blank."
+            }
           },
           "session": {
             "todayTitle": "Today's sessions",
             "buildFromPlan": "Build from plan",
             "empty": "No session yet. Build one from today's plan.",
+            "emptyVariants": {
+              "neutralB": "No session built yet — start one from today's plan.",
+              "neutralC": "Nothing scheduled. Generate a session from your plan."
+            },
             "buildError": "Could not build a session. Generate a daily plan first.",
             "transitionError": "That session change is not allowed right now.",
             "debriefError": "Could not save the debrief.",
@@ -2497,6 +2525,10 @@
             "cognitiveTrait": "Trait",
             "cognitiveScore": "Score (0–100)",
             "cognitiveEmpty": "No cognitive results yet. Submit a trait score above to begin.",
+            "cognitiveEmptyVariants": {
+              "neutralB": "No cognitive scores yet — enter one above to begin.",
+              "neutralC": "Start your cognitive profile by scoring a trait above."
+            },
             "cognitiveEntered": "{count} entered",
             "cognitiveProvenance": {
               "entered": "Entered",
@@ -2504,6 +2536,10 @@
               "missing": "No data"
             },
             "noEntryYet": "No entries today.",
+            "noEntryYetVariants": {
+              "neutralB": "Nothing logged here yet today.",
+              "neutralC": "No entries so far — add one to start."
+            },
             "addEntry": "Add entry",
             "addCognitive": "Add a trait score"
           },

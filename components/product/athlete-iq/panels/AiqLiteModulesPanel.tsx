@@ -144,7 +144,7 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
       {loading ? <Text className="aiq-muted">{t("common.loading")}</Text> : null}
 
       {summary ? (
-        <SimpleSummary summaries={summary.summaries} domain={domain} t={t} onAdd={handleAdd} />
+        <SimpleSummary summaries={summary.summaries} domain={domain} t={t} nowMs={nowMs} onAdd={handleAdd} />
       ) : null}
 
       <Box className="aiq-row-card" ref={formRef}>
@@ -215,7 +215,7 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
         </Stack>
       </Box>
 
-      {cognitive ? <CognitiveSummary journey={cognitive} domain={domain} t={t} onAdd={() => handleAdd("cognitive")} /> : null}
+      {cognitive ? <CognitiveSummary journey={cognitive} domain={domain} t={t} nowMs={nowMs} onAdd={() => handleAdd("cognitive")} /> : null}
     </Stack>
   );
 }
@@ -235,11 +235,13 @@ function SimpleSummary({
   summaries,
   domain,
   t,
+  nowMs,
   onAdd
 }: {
   summaries: LiteModuleDailySummary[];
   domain: (key: string) => string;
   t: ReturnType<typeof useTranslations>;
+  nowMs: number;
   onAdd: (module: EntryModule) => void;
 }) {
   return (
@@ -260,7 +262,7 @@ function SimpleSummary({
                 </Badge>
               </Group>
               {entry.entryCount === 0 && entryModule ? (
-                <MissingDataPrompt message={t("lite.noEntryYet")} actionLabel={t("lite.addEntry")} onAdd={() => onAdd(entryModule)} />
+                <MissingDataPrompt message={t(selectCopyKey(neutralPromptDef("lite.noEntryYet"), { now: nowMs, seed: entry.moduleKey }))} actionLabel={t("lite.addEntry")} onAdd={() => onAdd(entryModule)} />
               ) : null}
             </Stack>
           </Box>
@@ -274,11 +276,13 @@ function CognitiveSummary({
   journey,
   domain,
   t,
+  nowMs,
   onAdd
 }: {
   journey: CognitiveLiteJourney;
   domain: (key: string) => string;
   t: ReturnType<typeof useTranslations>;
+  nowMs: number;
   onAdd: () => void;
 }) {
   const hasAnyData = journey.traitResults.some((trait) => trait.score !== null);
@@ -293,7 +297,7 @@ function CognitiveSummary({
             {t("lite.cognitiveEntered", { count: journey.enteredTraitCount })}
           </Text>
           {!hasAnyData ? (
-            <MissingDataPrompt message={t("lite.cognitiveEmpty")} actionLabel={t("lite.addCognitive")} onAdd={onAdd} />
+            <MissingDataPrompt message={t(selectCopyKey(neutralPromptDef("lite.cognitiveEmpty"), { now: nowMs }))} actionLabel={t("lite.addCognitive")} onAdd={onAdd} />
           ) : (
             journey.traitResults.map((trait) => (
               <Group key={trait.trait} justify="space-between" gap="sm">

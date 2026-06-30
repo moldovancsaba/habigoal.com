@@ -292,7 +292,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
               <Paper id="priority" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
                   <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title={t("priority.title")} copy={t("priority.copy")} inverse />
-                  {activeQueue.length === 0 ? <Text className="aiq-muted">{t("priority.empty")}</Text> : null}
+                  {activeQueue.length === 0 ? <Text className="aiq-muted">{t(selectCopyKey(neutralPromptDef("priority.empty"), { now: heroNowMs }))}</Text> : null}
                   {activeQueue.map((athlete) => (
                     <PriorityAthleteCard
                       key={athlete.id}
@@ -426,7 +426,7 @@ function AiqAthleteWorkspace({
   );
   const habitDetail = athlete
     ? `${translate("athletes.habitsLabel")} ${athlete.habigoalDaily.habitCompletion} · ${translate(`athletes.habigoalCompletion.${athlete.habigoalDaily.completionState}`)}`
-    : translate("athleteWorkspace.empty.copy");
+    : translate(selectCopyKey(neutralPromptDef("athleteWorkspace.empty.copy"), { now: heroNowMs }));
 
   return (
     <Box
@@ -547,7 +547,7 @@ function AiqAthleteWorkspace({
                       />
                     </Stack>
                   ) : (
-                    <Text className="aiq-muted">{translate("athleteWorkspace.empty.copy")}</Text>
+                    <Text className="aiq-muted">{translate(selectCopyKey(neutralPromptDef("athleteWorkspace.empty.copy"), { now: heroNowMs }))}</Text>
                   )}
                 </Stack>
               </Paper>
@@ -555,7 +555,7 @@ function AiqAthleteWorkspace({
               <Paper id="calendar" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
                   <SectionHeading icon={<GdsIcons.Record size={18} />} title={translate("athleteWorkspace.support.title")} copy={translate("athleteWorkspace.support.copy")} inverse />
-                  {supportQueue.length === 0 ? <Text className="aiq-muted">{translate("athleteWorkspace.support.empty")}</Text> : null}
+                  {supportQueue.length === 0 ? <Text className="aiq-muted">{translate(selectCopyKey(neutralPromptDef("athleteWorkspace.support.empty"), { now: heroNowMs }))}</Text> : null}
                   {supportQueue.map((item) => (
                     <Box key={item.id} className="aiq-row-card">
                       <Stack gap="xs">
@@ -655,7 +655,7 @@ function AiqAthleteWorkspace({
                       />
                     </>
                   ) : (
-                    <Text className="aiq-muted">{translate("athleteWorkspace.empty.copy")}</Text>
+                    <Text className="aiq-muted">{translate(selectCopyKey(neutralPromptDef("athleteWorkspace.empty.copy"), { now: heroNowMs }))}</Text>
                   )}
                 </SimpleGrid>
               </SimpleGrid>

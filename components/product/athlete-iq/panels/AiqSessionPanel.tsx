@@ -131,7 +131,7 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
       </Group>
 
       {feedback ? <Text size="sm" style={{ color: "var(--status-error)" }}>{feedback}</Text> : null}
-      {sessions.length === 0 ? <Text className="aiq-muted">{t("session.empty")}</Text> : null}
+      {sessions.length === 0 ? <Text className="aiq-muted">{t(selectCopyKey(neutralPromptDef("session.empty"), { now: nowMs }))}</Text> : null}
 
       {sessions.map((session) => {
         const canDebrief = session.state !== "draft" && session.state !== "abandoned";

@@ -1370,6 +1370,10 @@
     "directorySubtitle": "Search athletes, review recent readiness, and open the full athlete operating profile.",
     "searchPlaceholder": "Search by name, birth date, location, or notes...",
     "empty": "No athletes match this search yet.",
+    "emptyVariants": {
+      "neutralB": "Noch keine Treffer für diese Suche.",
+      "neutralC": "Nichts gefunden – probiere einen anderen Namen oder Filter."
+    },
     "locationHint": "Latest training location: {location}",
     "locationHintEmpty": "No recent location has been recorded for this athlete yet.",
     "metricReadiness": "Readiness",
@@ -1884,6 +1888,10 @@
         "days": "{count} Tage",
         "last7": "Letzte 7 Tage",
         "empty": "Erfülle heute eine Gewohnheit, um deine Serie zu starten.",
+        "emptyVariants": {
+          "neutralB": "Schließe heute eine Gewohnheit ab und deine Serie beginnt.",
+          "neutralC": "Noch keine Serie – die erste Gewohnheit heute startet sie."
+        },
         "dayAria": "{date}: {score}% Gewohnheits-Score"
       },
       "reasons": {
@@ -2035,6 +2043,10 @@
           }
         },
         "empty": "Keine offenen Prioritaetsathleten aus Live-Daten.",
+        "emptyVariants": {
+          "neutralB": "Die Warteschlange ist leer – aktuell braucht kein Athlet Aufmerksamkeit.",
+          "neutralC": "Heute noch nichts aus den Live-Daten markiert."
+        },
         "reasons": {
           "painAlert": "Schmerz-Sicherheit ist aktiv und braucht Trainerpruefung.",
           "painAlertVariants": {
@@ -2210,7 +2222,11 @@
         "support": {
           "title": "Support-Warteschlange",
           "copy": "Offene Punkte aus Readiness, Schmerzschutz, Tagesplanung und Traineraktionen.",
-          "empty": "Keine offenen Support-Punkte aus Live-Daten."
+          "empty": "Keine offenen Support-Punkte aus Live-Daten.",
+          "emptyVariants": {
+            "neutralB": "Aktuell braucht nichts Unterstützung – alles in Ordnung.",
+            "neutralC": "Heute noch keine Support-Einträge aus den Live-Daten."
+          }
         },
         "shared": {
           "kicker": "Taegliche Gewohnheiten",
@@ -2218,7 +2234,11 @@
           "copy": "Deine heutige Gewohnheitserfuellung, dein Teamkontext und dein Readiness-Status."
         },
         "empty": {
-          "copy": "Dein Athlete-IQ-Profil ist bereit, aber es gibt noch keine gespeicherten Live-Tagesdaten."
+          "copy": "Dein Athlete-IQ-Profil ist bereit, aber es gibt noch keine gespeicherten Live-Tagesdaten.",
+          "copyVariants": {
+            "neutralB": "Profil ist bereit – speichere einen Tageseintrag, damit es lebendig wird.",
+            "neutralC": "Noch keine Tageseinträge; dein erster Check-in füllt das aus."
+          }
         },
         "recorder": {
           "savedTitle": "Tagesdatensatz gespeichert",
@@ -2383,12 +2403,20 @@
             },
             "save": "Reflexion speichern",
             "todayTitle": "Heutige Reflexionen",
-            "empty": "Heute keine Reflexion gespeichert."
+            "empty": "Heute keine Reflexion gespeichert.",
+            "emptyVariants": {
+              "neutralB": "Heute noch nichts geschrieben – ein, zwei Zeilen reichen.",
+              "neutralC": "Die heutige Reflexion ist noch leer."
+            }
           },
           "session": {
             "todayTitle": "Heutige Einheiten",
             "buildFromPlan": "Aus Plan erstellen",
             "empty": "Noch keine Einheit. Erstelle eine aus dem heutigen Plan.",
+            "emptyVariants": {
+              "neutralB": "Noch keine Einheit erstellt – starte eine aus dem heutigen Plan.",
+              "neutralC": "Nichts geplant. Erzeuge eine Einheit aus deinem Plan."
+            },
             "buildError": "Einheit konnte nicht erstellt werden. Erstelle zuerst einen Tagesplan.",
             "transitionError": "Diese Änderung der Einheit ist derzeit nicht zulässig.",
             "debriefError": "Die Nachbesprechung konnte nicht gespeichert werden.",
@@ -2497,6 +2525,10 @@
             "cognitiveTrait": "Merkmal",
             "cognitiveScore": "Wert (0–100)",
             "cognitiveEmpty": "Noch keine kognitiven Ergebnisse. Geben Sie oben einen Wert ein, um zu beginnen.",
+            "cognitiveEmptyVariants": {
+              "neutralB": "Noch keine kognitiven Werte – gib oben einen ein, um zu starten.",
+              "neutralC": "Starte dein kognitives Profil, indem du oben ein Merkmal bewertest."
+            },
             "cognitiveEntered": "{count} eingegeben",
             "cognitiveProvenance": {
               "entered": "Eingegeben",
@@ -2504,6 +2536,10 @@
               "missing": "Keine Daten"
             },
             "noEntryYet": "Heute noch keine Einträge.",
+            "noEntryYetVariants": {
+              "neutralB": "Heute hier noch nichts erfasst.",
+              "neutralC": "Bisher keine Einträge – füge einen hinzu, um zu starten."
+            },
             "addEntry": "Eintrag hinzufügen",
             "addCognitive": "Trait-Wert hinzufügen"
           },
