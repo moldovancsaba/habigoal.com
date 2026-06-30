@@ -2021,9 +2021,25 @@
         "empty": "No open priority athletes from live records.",
         "reasons": {
           "painAlert": "Pain safety is active and requires trainer review.",
+          "painAlertVariants": {
+            "neutralB": "Pain flag raised — review before clearing for load.",
+            "neutralC": "Pain-safety triggered; confirm it's safe to train."
+          },
           "dailyIqRisk": "Daily IQ or readiness is below the safe operating range.",
+          "dailyIqRiskVariants": {
+            "neutralB": "Readiness is under the safe line today — adjust the plan.",
+            "neutralC": "Daily IQ dipped below range; ease load before pushing."
+          },
           "missingDailyIq": "Daily IQ is missing for today.",
-          "active": "Athlete is active with no urgent risk marker."
+          "missingDailyIqVariants": {
+            "neutralB": "No check-in logged today — readiness is unknown.",
+            "neutralC": "Today's Daily IQ hasn't come in yet; nudge the athlete."
+          },
+          "active": "Athlete is active with no urgent risk marker.",
+          "activeVariants": {
+            "neutralB": "Tracking normally — no urgent flags right now.",
+            "neutralC": "Stable today; keep the planned progression."
+          }
         },
         "actions": {
           "reviewPain": "Review pain guardrail before training intensity changes.",

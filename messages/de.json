@@ -2021,9 +2021,25 @@
         "empty": "Keine offenen Prioritaetsathleten aus Live-Daten.",
         "reasons": {
           "painAlert": "Schmerz-Sicherheit ist aktiv und braucht Trainerpruefung.",
+          "painAlertVariants": {
+            "neutralB": "Schmerzmarker gesetzt – prüfen, bevor du Belastung freigibst.",
+            "neutralC": "Schmerzsicherheit ausgelöst; bestätige, dass Training sicher ist."
+          },
           "dailyIqRisk": "Daily IQ oder Bereitschaft liegt unter dem sicheren Betriebsbereich.",
+          "dailyIqRiskVariants": {
+            "neutralB": "Die Bereitschaft liegt heute unter der sicheren Linie – Plan anpassen.",
+            "neutralC": "Daily IQ unter dem Bereich; Last reduzieren, bevor du forderst."
+          },
           "missingDailyIq": "Daily IQ fuer heute fehlt.",
-          "active": "Athlet ist aktiv ohne dringenden Risikomarker."
+          "missingDailyIqVariants": {
+            "neutralB": "Heute kein Check-in erfasst – Bereitschaft unbekannt.",
+            "neutralC": "Der heutige Daily IQ ist noch nicht da; erinnere den Athleten."
+          },
+          "active": "Athlet ist aktiv ohne dringenden Risikomarker.",
+          "activeVariants": {
+            "neutralB": "Wird normal verfolgt – aktuell keine dringenden Marker.",
+            "neutralC": "Heute stabil; behalte die geplante Progression bei."
+          }
         },
         "actions": {
           "reviewPain": "Schmerz-Leitplanke vor Aenderungen der Trainingsintensitaet pruefen.",

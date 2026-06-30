@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { selectCopyKey } from "@/lib/copy-variants";
-import { heroSubtitleDef } from "@/lib/surface-voice";
+import { heroSubtitleDef, neutralPromptDef } from "@/lib/surface-voice";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
 import type {
@@ -301,6 +301,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
                       actionPack={actionPack}
                       onAcknowledge={acknowledge}
                       saving={savingAcknowledgement === athlete.id}
+                      nowMs={heroNowMs}
                       translate={t}
                     />
                   ))}
@@ -564,7 +565,7 @@ function AiqAthleteWorkspace({
                             {translate(`states.${item.severity}`)}
                           </Badge>
                         </Group>
-                        <Text size="sm">{translate(`priority.reasons.${item.reasonKey}`)}</Text>
+                        <Text size="sm">{translate(selectCopyKey(neutralPromptDef(`priority.reasons.${item.reasonKey}`), { now: heroNowMs, seed: item.id }))}</Text>
                         <Text size="sm" className="aiq-muted">{translate(`priority.actions.${item.actionKey}`)}</Text>
                       </Stack>
                     </Box>
@@ -872,6 +873,7 @@ function PriorityAthleteCard({
   athlete,
   onAcknowledge,
   saving,
+  nowMs,
   translate
 }: {
   actionPack: ProductSurfaceActionPack;
@@ -879,6 +881,7 @@ function PriorityAthleteCard({
   athlete: AthleteIqDashboardAthlete;
   onAcknowledge: (athlete: AthleteIqDashboardAthlete) => void;
   saving: boolean;
+  nowMs: number;
   translate: AiqTranslate;
 }) {
   const color = athlete.severity === "risk" ? "red" : athlete.severity === "watch" ? "yellow" : athlete.severity === "missing" ? "gray" : "tactical";
@@ -893,7 +896,7 @@ function PriorityAthleteCard({
           </Stack>
           <Badge color={acknowledged ? "gray" : color} variant="light">{acknowledged ? translate("states.acknowledged") : translate(`states.${athlete.severity}`)}</Badge>
         </Group>
-        <Text size="sm">{translate(`priority.reasons.${athlete.reasonKey}`)}</Text>
+        <Text size="sm">{translate(selectCopyKey(neutralPromptDef(`priority.reasons.${athlete.reasonKey}`), { now: nowMs, seed: athlete.id }))}</Text>
         <Text size="sm" className="aiq-muted"><strong>{translate("priority.actionLabel")}:</strong> {translate(`priority.actions.${athlete.actionKey}`)}</Text>
         <Text size="sm" className="aiq-muted-faint">{translate("priority.sourceLabel")}: {translate(`priority.sources.${athlete.sourceKey}`)}</Text>
         <SemanticButton

@@ -2021,9 +2021,25 @@
         "empty": "No hay atletas prioritarios abiertos desde datos en vivo.",
         "reasons": {
           "painAlert": "La seguridad por dolor esta activa y requiere revision del entrenador.",
+          "painAlertVariants": {
+            "neutralB": "Aviso de dolor activo: revisa antes de autorizar carga.",
+            "neutralC": "Seguridad por dolor activada; confirma que es seguro entrenar."
+          },
           "dailyIqRisk": "Daily IQ o disponibilidad esta por debajo del rango seguro.",
+          "dailyIqRiskVariants": {
+            "neutralB": "La preparación está bajo el nivel seguro hoy: ajusta el plan.",
+            "neutralC": "El Daily IQ bajó del rango; reduce la carga antes de exigir."
+          },
           "missingDailyIq": "Falta el Daily IQ de hoy.",
-          "active": "El atleta esta activo sin marcador urgente de riesgo."
+          "missingDailyIqVariants": {
+            "neutralB": "Hoy no hay check-in registrado: preparación desconocida.",
+            "neutralC": "El Daily IQ de hoy aún no llega; recuérdaselo al atleta."
+          },
+          "active": "El atleta esta activo sin marcador urgente de riesgo.",
+          "activeVariants": {
+            "neutralB": "Seguimiento normal: sin avisos urgentes ahora.",
+            "neutralC": "Estable hoy; mantén la progresión planificada."
+          }
         },
         "actions": {
           "reviewPain": "Revisar la regla de dolor antes de cambiar la intensidad.",

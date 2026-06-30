@@ -2021,9 +2021,25 @@
         "empty": "Nincs nyitott prioritás élő rekordok alapján.",
         "reasons": {
           "painAlert": "A fájdalombiztonsági jelzés aktív, edzői ellenőrzés szükséges.",
+          "painAlertVariants": {
+            "neutralB": "Fájdalomjelzés aktív – ellenőrizd, mielőtt terhelést engedélyezel.",
+            "neutralC": "A fájdalombiztonság életbe lépett; igazold, hogy biztonságos az edzés."
+          },
           "dailyIqRisk": "A Daily IQ vagy a készenlét a biztonságos tartomány alatt van.",
+          "dailyIqRiskVariants": {
+            "neutralB": "A készenlét ma a biztonságos szint alatt van – módosítsd a tervet.",
+            "neutralC": "A napi IQ a tartomány alá esett; csökkentsd a terhelést, mielőtt erőltetnéd."
+          },
           "missingDailyIq": "A mai Daily IQ még hiányzik.",
-          "active": "A sportoló aktív, sürgős kockázati jelzés nélkül."
+          "missingDailyIqVariants": {
+            "neutralB": "Ma nincs rögzített bejelentkezés – a készenlét ismeretlen.",
+            "neutralC": "A mai napi IQ még nem érkezett meg; szólj a sportolónak."
+          },
+          "active": "A sportoló aktív, sürgős kockázati jelzés nélkül.",
+          "activeVariants": {
+            "neutralB": "Normálisan követhető – jelenleg nincs sürgős jelzés.",
+            "neutralC": "Ma stabil; tartsd a tervezett progressziót."
+          }
         },
         "actions": {
           "reviewPain": "Edzésintenzitás módosítása előtt ellenőrizd a fájdalomvédelmi szabályt.",
