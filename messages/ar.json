@@ -139,6 +139,9 @@
     "insightRecordReadiness": "يعرض هذا التسجيل جاهزية يومية بقيمة {ski} مع البدني {movement}، الذهني {social}، وعقل الرياضة {mental}.",
     "insightRecordDomainSummary": "ملخص المجالات لهذا التسجيل: البدني {movement}، الذهني {social}، وعقل الرياضة {mental}.",
     "athleteHistorySubtitle": "{date} · {sessions} تسجيلات متتبعة",
+    "insightTitle": "موثوقية البيانات والإرشاد",
+    "dataConfidenceLabel": "موثوقية البيانات",
+    "whyThisStatus": "لماذا هذه الحالة",
     "athleteHistoryEmptyTitle": "لا يوجد سجل تسجيلات",
     "athleteHistoryEmptySubtitle": "لا توجد تسجيلات يومية محفوظة لهذا الرياضي حتى الآن.",
     "athleteDailyOperatingTitle": "لوحة التشغيل اليومية",
@@ -2610,7 +2613,9 @@
     "teamSubject": "تقرير الفريق",
     "exportPdfAria": "تصدير {subject} بصيغة PDF",
     "exportCsvAria": "تصدير {subject} بصيغة CSV",
-    "exportJsonAria": "تصدير {subject} بصيغة JSON"
+    "exportJsonAria": "تصدير {subject} بصيغة JSON",
+    "parentSafe": "مناسب لولي الأمر",
+    "exportParentSafeAria": "تصدير ملخص مناسب لولي الأمر لـ {subject}"
   },
   "Wearables": {
     "title": "الأجهزة القابلة للارتداء المتصلة",

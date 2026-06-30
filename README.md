@@ -41,11 +41,13 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - Soft-delete and restore workflows for athletes and check-ins.
 - Multilingual UI for `en`, `hu`, `es`, `de`, `ar`, and `he`, including RTL layout support for Arabic and Hebrew.
 - Critical athlete check-in copy is message-catalog driven and covered by the i18n audit hardcoded-copy gate.
+- Trust & insight engines: every derived figure carries an honest data-confidence band, operating status is explained with a versioned input → rule → output catalog, and reports can be exported as privacy-respecting parent-safe summaries. See [Trust & Insight Engines](docs/trust-and-insights.md).
 
 ## Documentation
 
 - [API Reference](docs/api.md)
 - [Architecture](docs/architecture.md)
+- [Trust & Insight Engines](docs/trust-and-insights.md)
 - [Deployment](docs/deployment.md)
 - [Design System](docs/design-system.md)
 - [General Design System Adoption](docs/gds-adoption.md)

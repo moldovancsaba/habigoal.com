@@ -139,6 +139,9 @@
     "insightRecordReadiness": "רשומה זו מציגה מוכנות יומית {ski} עם פיזי {movement}, מנטלי {social} ומוח ספורטיבי {mental}.",
     "insightRecordDomainSummary": "סיכום לרשומה זו: פיזי {movement}, מנטלי {social} ומוח ספורטיבי {mental}.",
     "athleteHistorySubtitle": "{date} · {sessions} צק-אינים במעקב",
+    "insightTitle": "מהימנות נתונים והנחיה",
+    "dataConfidenceLabel": "מהימנות נתונים",
+    "whyThisStatus": "מדוע מצב זה",
     "athleteHistoryEmptyTitle": "אין היסטוריית צק-אין",
     "athleteHistoryEmptySubtitle": "עדיין אין לספורטאי זה צק-אינים יומיים שמורים.",
     "athleteDailyOperatingTitle": "לוח תפעול יומי",
@@ -2610,7 +2613,9 @@
     "teamSubject": "דוח קבוצה",
     "exportPdfAria": "ייצוא {subject} כ-PDF",
     "exportCsvAria": "ייצוא {subject} כ-CSV",
-    "exportJsonAria": "ייצוא {subject} כ-JSON"
+    "exportJsonAria": "ייצוא {subject} כ-JSON",
+    "parentSafe": "מותאם להורים",
+    "exportParentSafeAria": "ייצוא סיכום מותאם להורים של {subject}"
   },
   "Wearables": {
     "title": "התקנים לבישים מחוברים",

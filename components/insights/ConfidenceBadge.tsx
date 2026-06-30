@@ -1,0 +1,38 @@
+"use client";
+
+import { Badge, Tooltip } from "@mantine/core";
+import { useTranslations } from "next-intl";
+import type { ConfidenceBand, ConfidenceReasonKey } from "@/lib/data-confidence";
+
+const BAND_COLOR: Record<ConfidenceBand, string> = {
+  high: "green",
+  medium: "yellow",
+  low: "orange",
+  none: "gray",
+};
+
+// Renders the canonical data-confidence band (#253) with its reasons in a
+// tooltip, so every surface explains "how trustworthy is this?" honestly instead
+// of just showing a colour. Pass the result of classifyDataConfidence.
+export function ConfidenceBadge({
+  band,
+  reasonKeys = [],
+  size = "sm",
+}: {
+  band: ConfidenceBand;
+  reasonKeys?: ConfidenceReasonKey[];
+  size?: string;
+}) {
+  const t = useTranslations("DataConfidence");
+  const label = t(`band.${band}`);
+  const reasons = reasonKeys.map((key) => t(`reasons.${key}`));
+  const tooltip = reasons.length > 0 ? `${label} — ${reasons.join(" · ")}` : label;
+
+  return (
+    <Tooltip label={tooltip} multiline w={260} withArrow>
+      <Badge color={BAND_COLOR[band]} variant="light" size={size} aria-label={tooltip}>
+        {label}
+      </Badge>
+    </Tooltip>
+  );
+}

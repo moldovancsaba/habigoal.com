@@ -139,6 +139,9 @@
     "insightRecordReadiness": "Dieser Eintrag zeigt Tagesbereitschaft {ski} mit Koerperlich {movement}, Mental {social} und Sporthirn {mental}.",
     "insightRecordDomainSummary": "Zusammenfassung fuer diesen Eintrag: Koerperlich {movement}, Mental {social} und Sporthirn {mental}.",
     "athleteHistorySubtitle": "{date} · {sessions} Check-ins verfolgt",
+    "insightTitle": "Datenvertrauen & Hinweise",
+    "dataConfidenceLabel": "Datenvertrauen",
+    "whyThisStatus": "Warum dieser Status",
     "athleteHistoryEmptyTitle": "Keine Check-in-Historie",
     "athleteHistoryEmptySubtitle": "Fuer diesen Athleten sind noch keine Tages-Check-ins gespeichert.",
     "athleteDailyOperatingTitle": "Daily operating dashboard",
@@ -2610,7 +2613,9 @@
     "teamSubject": "Teambericht",
     "exportPdfAria": "{subject} als PDF exportieren",
     "exportCsvAria": "{subject} als CSV exportieren",
-    "exportJsonAria": "{subject} als JSON exportieren"
+    "exportJsonAria": "{subject} als JSON exportieren",
+    "parentSafe": "Elternsicher",
+    "exportParentSafeAria": "Elternsichere Zusammenfassung von {subject} exportieren"
   },
   "Wearables": {
     "title": "Verbundene Wearables",

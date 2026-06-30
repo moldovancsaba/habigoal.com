@@ -175,9 +175,27 @@ The current product spine, which work should sharpen before broad platform expan
 
 Supporting persistence: `assessments` (daily check-ins / computed readiness), `children` (athlete identity), `coach_actions` (coach response traceability), `habit_records` (routine adherence), `session_plans` (weekly planning), `teams` (membership scoping), `users` (SSO authorization / roles), and `settings` (company/legal, standards, alerting, governance).
 
+## Trust & insight engines
+
+Three pure, deterministic, unit-tested engines keep derived figures honest and are
+reused across surfaces (no fabricated data, ever):
+
+- **Data confidence** (`lib/data-confidence.ts`, #253) grades every derived figure
+  as `high | medium | low | none` from real sample size, source count, and
+  freshness — surfaced via `components/insights/ConfidenceBadge.tsx`.
+- **Explainability** (`lib/explainability.ts`, #254) exposes a versioned catalog of
+  deterministic rules and returns the exact input → rule → output bundle that
+  fired — surfaced via `components/insights/ExplanationPanel.tsx`.
+- **Parent-safe report** (`lib/parent-safe-report.ts`, #261) projects a coach report
+  into a redacted, privacy-respecting parent summary with an honest encouragement
+  tone driven by the confidence band.
+
+Wired into the athlete operating surface (`/dashboard/athletes/[id]`) and the
+Reports hub (`/dashboard/reports`). Full contract: [Trust & Insight Engines](trust-and-insights.md).
+
 ## Delivery workflow
 
-Changes are delivered through feature branches and pull requests; CI (`CI / web`) and human review gate merge. Direct pushes to `main` are reserved for explicit human-directed work — no force pushes or shared-history rewrites.
+Changes are delivered through feature branches and pull requests. Local quality gates (`npx tsc --noEmit`, `npm run i18n:audit`, `npm run build`, `npx vitest run`) must pass before merge, alongside human review. Direct pushes to `main` are reserved for explicit human-directed work — no force pushes or shared-history rewrites.
 
 ## Current Architecture Risks
 

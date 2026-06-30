@@ -32,6 +32,10 @@ import { athleteIqPillars, readinessChecklist, getReadinessMode } from "@/lib/re
 import { getAthleteEmptyStateAction } from "@/lib/empty-state";
 import { athleteHabitDefinitions, createEmptyHabitStatuses, getHabitCategoryBreakdown, getHabitCompletion, getHabitScoreSummary, getHabitStreak, normalizeHabitStatuses, type HabitCategory } from "@/lib/athlete-habits";
 import { getCompatiblePillarScore, getCompatibleReadinessState } from "@/lib/assessment-compat";
+import { classifyDataConfidence } from "@/lib/data-confidence";
+import { buildExplanation } from "@/lib/explainability";
+import { ConfidenceBadge } from "@/components/insights/ConfidenceBadge";
+import { ExplanationPanel } from "@/components/insights/ExplanationPanel";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteHistoryPayload } from "@/types/athlete-history";
@@ -117,6 +121,9 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const emptyStateRole = isAthleteApp ? "athlete" : "trainer";
 
   const [data, setData] = useState<AthleteHistoryPayload | null>(null);
+  // Captured once at mount: a stable "now" for freshness scoring, keeping the
+  // render pure (no Date.now() during render) while still reflecting load time.
+  const [nowMs] = useState(() => Date.now());
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -434,6 +441,22 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     data?.child.baselineProfile?.supportPreferences?.length
   );
 
+  // Trust + insight wiring (#253 data confidence, #254 explainability): both are
+  // derived from real signals only, so the UI stays honest about how much it
+  // actually knows and *why* it shows a given operating status. Computed inline —
+  // the React compiler memoizes these pure derivations automatically.
+  const dataConfidence = classifyDataConfidence({
+    sampleSize: data?.assessments.length ?? 0,
+    sourceCount: ((data?.assessments.length ?? 0) > 0 ? 1 : 0) + (habitRecords.length > 0 ? 1 : 0),
+    lastUpdatedAt: latest?.session?.date ?? null,
+    now: nowMs,
+  });
+  const readinessExplanation = buildExplanation({
+    readinessScore: athleteOperatingScore,
+    missingSignalCount: Math.max(0, latestReadinessTotal - latestReadinessChecks),
+    injuryRisk: loadRatio > 1.3 ? "high" : "normal",
+  });
+
   if (loading) {
     return (
       <Box style={{ display: "flex", justifyContent: "center", paddingBlock: "2rem" }} role="status">
@@ -473,6 +496,20 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           </Group>
         }
       />
+
+      {data.assessments.length > 0 ? (
+        <SectionPanel title={td("insightTitle")}>
+          <Stack gap="md">
+            <Group gap="sm" wrap="wrap" align="center">
+              <Text size="sm" c="dimmed">
+                {td("dataConfidenceLabel")}
+              </Text>
+              <ConfidenceBadge band={dataConfidence.band} reasonKeys={dataConfidence.reasonKeys} />
+            </Group>
+            <ExplanationPanel bundle={readinessExplanation} title={td("whyThisStatus")} />
+          </Stack>
+        </SectionPanel>
+      ) : null}
 
       {isAthleteApp ? (
         <AthleteBaselineSetupSection

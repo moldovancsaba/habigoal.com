@@ -139,6 +139,9 @@
     "insightRecordReadiness": "This check-in shows daily readiness {ski} with Physical {movement}, Mental {social}, and Sport brain {mental}.",
     "insightRecordDomainSummary": "Domain summary confirms Physical {movement}, Mental {social}, and Sport brain {mental} for this check-in.",
     "athleteHistorySubtitle": "{date} · {sessions} check-ins tracked",
+    "insightTitle": "Data confidence & guidance",
+    "dataConfidenceLabel": "Data confidence",
+    "whyThisStatus": "Why this status",
     "athleteHistoryEmptyTitle": "No check-in history",
     "athleteHistoryEmptySubtitle": "This athlete does not have any stored daily check-ins yet.",
     "athleteDailyOperatingTitle": "Daily operating dashboard",
@@ -2610,7 +2613,9 @@
     "teamSubject": "team report",
     "exportPdfAria": "Export {subject} as PDF",
     "exportCsvAria": "Export {subject} as CSV",
-    "exportJsonAria": "Export {subject} as JSON"
+    "exportJsonAria": "Export {subject} as JSON",
+    "parentSafe": "Parent-safe",
+    "exportParentSafeAria": "Export a parent-safe summary of {subject}"
   },
   "Wearables": {
     "title": "Connected wearables",
