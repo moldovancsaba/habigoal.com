@@ -620,7 +620,8 @@
     "sectionPlan": "Plan",
     "sectionAnalysis": "Analyse",
     "sectionRecords": "Aufzeichnungen",
-    "sectionNavLabel": "Funktionsbereich"
+    "sectionNavLabel": "Funktionsbereich",
+    "guidanceSignalsTitle": "Hinweissignale"
   },
   "Assessment": {
     "saved": "Check-in gespeichert.",
@@ -2794,5 +2795,25 @@
       "strong": "Eine starke, konsistente Woche — großartiges Engagement."
     },
     "coachOnlyNote": "Einige Leistungs- und Gesundheitsdetails werden vertraulich mit dem Trainer geteilt."
+  },
+  "AthleteInsights": {
+    "severity": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch"
+    },
+    "sourcesLabel": "Quellen",
+    "sourceType": {
+      "check_in": "Check-in",
+      "habit_record": "Gewohnheitseintrag",
+      "training_load": "Trainingslast",
+      "reflection": "Reflexion"
+    },
+    "body": {
+      "loadManagement": "Die Trainingslast steigt schnell (Verhältnis {ratio}). Last steuern und Erholung einplanen.",
+      "readinessRecovery": "Die Readiness ist niedrig ({score}). Priorisiere Erholung vor harter Arbeit.",
+      "recoveryHabit": "Erholungs-Gewohnheiten sind unvollständig ({completed}/{total}). Schließe die Lücke heute.",
+      "tomorrowFocus": "Dein Fokus für morgen: {focus}."
+    }
   }
 }

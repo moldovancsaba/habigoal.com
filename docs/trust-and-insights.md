@@ -73,6 +73,29 @@ encouraging, privacy-respecting summary for parents.
 source note) and offers a **Parent-safe** export that downloads the redacted
 projection. Localized via the `ParentSafeReport` and `Reports` namespaces.
 
+## 4. Source-linked guidance signals (#81)
+
+`buildAthleteInsights(input)` (`lib/athlete-insights.ts`) turns real athlete
+inputs into a small set of deterministic, versioned **guidance** signals — each
+carrying the source records it was derived from, for transparent disclosure.
+
+- **Inputs (real only):** readiness/operating score, recovery-habit gap,
+  training-load ratio, and the athlete's own reflection focus.
+- **Signals:** `load_management`, `readiness_recovery`, `recovery_habit`,
+  `tomorrow_focus`. Each has a severity (`low|medium|high`), an i18n `bodyKey` +
+  params, and a non-empty `sources[]` (`check_in | habit_record | training_load |
+  reflection`). `INSIGHT_RULE_VERSION` stamps every signal.
+- **Ordering (deterministic):** safety/load → readiness recovery → recovery habit
+  → reflection focus; higher severity first within a kind.
+- **No fabrication:** a signal only fires when its real input crosses a threshold;
+  a blank reflection produces nothing.
+
+Distinct from the explainability catalog (#254, which explains the *current
+status*); this layer produces forward-looking guidance. **UI:**
+`components/insights/InsightSignalsPanel.tsx` renders each signal with a severity
+badge and an accessible source disclosure, wired into the athlete operating
+surface's **Analysis** area. Localized via the `AthleteInsights` namespace.
+
 ## Design principles
 
 - **No fabricated data.** Engines only ever describe signals that were actually

@@ -36,6 +36,8 @@ import { classifyDataConfidence } from "@/lib/data-confidence";
 import { buildExplanation } from "@/lib/explainability";
 import { ConfidenceBadge } from "@/components/insights/ConfidenceBadge";
 import { ExplanationPanel } from "@/components/insights/ExplanationPanel";
+import { InsightSignalsPanel } from "@/components/insights/InsightSignalsPanel";
+import { buildAthleteInsights } from "@/lib/athlete-insights";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteHistoryPayload } from "@/types/athlete-history";
@@ -465,6 +467,22 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     injuryRisk: loadRatio > 1.3 ? "high" : "normal",
   });
 
+  // Source-linked deterministic guidance signals (#81), derived only from data
+  // already loaded for this athlete — each signal lists the records behind it.
+  const athleteInsights = buildAthleteInsights({
+    athleteId: data?.child._id ?? "",
+    date: latest?.session?.date ?? todayDate,
+    readiness: latest
+      ? { score: athleteOperatingScore, checkInId: latest._id, date: latest.session?.date }
+      : null,
+    habitRecovery: {
+      completed: habitCategoryBreakdown.recovery.completed,
+      total: habitCategoryBreakdown.recovery.total,
+      date: latest?.session?.date,
+    },
+    load: loadTimeline.length ? { ratio: loadRatio, date: latestLoad?.date } : null,
+  });
+
   const sectionOptions = [
     { value: "input", label: td("sectionInput") },
     { value: "plan", label: td("sectionPlan") },
@@ -522,6 +540,14 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               <ConfidenceBadge band={dataConfidence.band} reasonKeys={dataConfidence.reasonKeys} />
             </Group>
             <ExplanationPanel bundle={readinessExplanation} title={td("whyThisStatus")} />
+            {athleteInsights.length > 0 ? (
+              <Stack gap="xs">
+                <Text size="sm" fw={700} tt="uppercase" c="dimmed">
+                  {td("guidanceSignalsTitle")}
+                </Text>
+                <InsightSignalsPanel signals={athleteInsights} />
+              </Stack>
+            ) : null}
           </Stack>
         </SectionPanel>
       ) : null}

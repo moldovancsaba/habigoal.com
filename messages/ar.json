@@ -620,7 +620,8 @@
     "sectionPlan": "الخطة",
     "sectionAnalysis": "التحليل",
     "sectionRecords": "السجلات",
-    "sectionNavLabel": "منطقة الوظائف"
+    "sectionNavLabel": "منطقة الوظائف",
+    "guidanceSignalsTitle": "إشارات إرشادية"
   },
   "Assessment": {
     "saved": "تم حفظ التسجيل.",
@@ -2794,5 +2795,25 @@
       "strong": "أسبوع قوي ومنتظم — تفاعل رائع."
     },
     "coachOnlyNote": "تُشارَك بعض تفاصيل الأداء والصحة بشكل خاص مع المدرب."
+  },
+  "AthleteInsights": {
+    "severity": {
+      "low": "منخفض",
+      "medium": "متوسط",
+      "high": "مرتفع"
+    },
+    "sourcesLabel": "المصادر",
+    "sourceType": {
+      "check_in": "تسجيل",
+      "habit_record": "سجل العادات",
+      "training_load": "حِمل التدريب",
+      "reflection": "تأمل"
+    },
+    "body": {
+      "loadManagement": "حِمل التدريب يتصاعد بسرعة (النسبة {ratio}). أدِر الحِمل وأضِف استشفاءً.",
+      "readinessRecovery": "الجاهزية منخفضة ({score}). أعطِ الأولوية للاستشفاء قبل العمل الشاق.",
+      "recoveryHabit": "عادات الاستشفاء غير مكتملة ({completed}/{total}). أغلِق الفجوة اليوم.",
+      "tomorrowFocus": "تركيزك للغد: {focus}."
+    }
   }
 }
