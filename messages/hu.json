@@ -620,7 +620,8 @@
     "sectionPlan": "Terv",
     "sectionAnalysis": "Elemzés",
     "sectionRecords": "Rekordok",
-    "sectionNavLabel": "Funkcióterület"
+    "sectionNavLabel": "Funkcióterület",
+    "guidanceSignalsTitle": "Útmutató jelzések"
   },
   "Assessment": {
     "saved": "Check-in elmentve.",
@@ -2794,5 +2795,25 @@
       "strong": "Erős, következetes hét — kiváló elköteleződés."
     },
     "coachOnlyNote": "Egyes teljesítmény- és egészségügyi részleteket bizalmasan megosztunk az edzővel."
+  },
+  "AthleteInsights": {
+    "severity": {
+      "low": "Alacsony",
+      "medium": "Közepes",
+      "high": "Magas"
+    },
+    "sourcesLabel": "Források",
+    "sourceType": {
+      "check_in": "Check-in",
+      "habit_record": "Szokásrekord",
+      "training_load": "Edzésterhelés",
+      "reflection": "Reflexió"
+    },
+    "body": {
+      "loadManagement": "Az edzésterhelés gyorsan emelkedik (arány {ratio}). Kezeld a terhelést és iktass be regenerációt.",
+      "readinessRecovery": "A készenlét alacsony ({score}). Helyezd előtérbe a regenerációt a kemény munka előtt.",
+      "recoveryHabit": "A regenerációs szokások hiányosak ({completed}/{total}). Pótold ma a lemaradást.",
+      "tomorrowFocus": "A holnapi fókuszod: {focus}."
+    }
   }
 }

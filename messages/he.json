@@ -620,7 +620,8 @@
     "sectionPlan": "תוכנית",
     "sectionAnalysis": "ניתוח",
     "sectionRecords": "רשומות",
-    "sectionNavLabel": "אזור תפקודי"
+    "sectionNavLabel": "אזור תפקודי",
+    "guidanceSignalsTitle": "אותות הנחיה"
   },
   "Assessment": {
     "saved": "הצק-אין נשמר.",
@@ -2794,5 +2795,25 @@
       "strong": "שבוע חזק ועקבי — מעורבות מצוינת."
     },
     "coachOnlyNote": "חלק מפרטי הביצועים והבריאות משותפים באופן פרטי עם המאמן."
+  },
+  "AthleteInsights": {
+    "severity": {
+      "low": "נמוך",
+      "medium": "בינוני",
+      "high": "גבוה"
+    },
+    "sourcesLabel": "מקורות",
+    "sourceType": {
+      "check_in": "צ׳ק-אין",
+      "habit_record": "רשומת הרגלים",
+      "training_load": "עומס אימון",
+      "reflection": "רפלקציה"
+    },
+    "body": {
+      "loadManagement": "עומס האימון עולה מהר (יחס {ratio}). נהל את העומס והוסף התאוששות.",
+      "readinessRecovery": "המוכנות נמוכה ({score}). תן עדיפות להתאוששות לפני עבודה קשה.",
+      "recoveryHabit": "הרגלי ההתאוששות אינם שלמים ({completed}/{total}). סגור את הפער היום.",
+      "tomorrowFocus": "המיקוד שלך למחר: {focus}."
+    }
   }
 }

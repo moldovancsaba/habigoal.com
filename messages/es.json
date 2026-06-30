@@ -620,7 +620,8 @@
     "sectionPlan": "Plan",
     "sectionAnalysis": "Análisis",
     "sectionRecords": "Registros",
-    "sectionNavLabel": "Área funcional"
+    "sectionNavLabel": "Área funcional",
+    "guidanceSignalsTitle": "Señales de orientación"
   },
   "Assessment": {
     "saved": "Registro guardado.",
@@ -2794,5 +2795,25 @@
       "strong": "Una semana fuerte y constante: gran implicación."
     },
     "coachOnlyNote": "Algunos detalles de rendimiento y salud se comparten en privado con el entrenador."
+  },
+  "AthleteInsights": {
+    "severity": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta"
+    },
+    "sourcesLabel": "Fuentes",
+    "sourceType": {
+      "check_in": "Registro",
+      "habit_record": "Registro de hábitos",
+      "training_load": "Carga de entrenamiento",
+      "reflection": "Reflexión"
+    },
+    "body": {
+      "loadManagement": "La carga de entrenamiento sube rápido (ratio {ratio}). Gestiona la carga y añade recuperación.",
+      "readinessRecovery": "La disposición es baja ({score}). Prioriza la recuperación antes del trabajo intenso.",
+      "recoveryHabit": "Los hábitos de recuperación están incompletos ({completed}/{total}). Cierra la brecha hoy.",
+      "tomorrowFocus": "Tu enfoque para mañana: {focus}."
+    }
   }
 }
