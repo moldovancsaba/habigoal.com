@@ -1690,9 +1690,25 @@
       },
       "nextAction": {
         "needs_input": "Start with the check-in, then save today's habits.",
+        "needs_inputVariants": {
+          "neutralB": "Begin with the check-in, then log today's habits.",
+          "neutralC": "Two quick steps: check in, then save your habits."
+        },
         "balanced": "Keep the planned session and protect your sleep routine tonight.",
+        "balancedVariants": {
+          "neutralB": "Stick to the plan and guard tonight's sleep.",
+          "neutralC": "Run the session as planned and wind down well tonight."
+        },
         "watch": "Hydrate, keep the next effort controlled, and review soreness after movement.",
-        "needs_support": "Keep the next step light and share today's status with your support person."
+        "watchVariants": {
+          "neutralB": "Stay hydrated, keep the next effort easy, and watch for soreness.",
+          "neutralC": "Dial it back a notch: easy effort, fluids, and check soreness."
+        },
+        "needs_support": "Keep the next step light and share today's status with your support person.",
+        "needs_supportVariants": {
+          "neutralB": "Keep the next step light and loop in your support person.",
+          "neutralC": "Go gentle and share today's status with someone who helps."
+        }
       },
       "badges": {
         "checkIn": "Check-in",

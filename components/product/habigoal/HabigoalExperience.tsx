@@ -9,6 +9,8 @@ import { useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
 import type { HabigoalDailyStatus } from "@/lib/habigoal-status";
 import type { HabigoalHabitKey, HabigoalHistory, HabigoalTodayProjection } from "@/services/habigoal-product.service";
+import { selectCopyKey } from "@/lib/copy-variants";
+import { neutralPromptDef } from "@/lib/surface-voice";
 import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
 
 type HabitItem = {
@@ -81,6 +83,7 @@ type ResultPanelProps = {
 export function HabigoalExperience({ embedded = false, history, projection, surface }: { embedded?: boolean; history?: HabigoalHistory; projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
   const router = useRouter();
   const t = useTranslations("ProductSurfaces.habigoal");
+  const [nowMs] = useState(Date.now);
   const [activeProjection, setActiveProjection] = useState(projection);
   const [draftValues, setDraftValues] = useState<MetricDraft>(projection.values);
   const [completedHabits, setCompletedHabits] = useState<HabigoalHabitKey[]>(projection.completedHabits);
@@ -266,7 +269,7 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
             <ResultPanel
               completed={completedHabits.length}
               habitTotal={HABIT_PLAN.length}
-              nextAction={t(`nextAction.${activeProjection.nextActionKey}`)}
+              nextAction={t(selectCopyKey(neutralPromptDef(`nextAction.${activeProjection.nextActionKey}`), { now: nowMs, seed: activeProjection.athleteId ?? "" }))}
               onUpdate={startUpdate}
               onViewProgress={() => setView("progress")}
               reasons={activeProjection.reasonCodes.filter((code) => t.has(`reasons.${code}`)).map((code) => t(`reasons.${code}`))}

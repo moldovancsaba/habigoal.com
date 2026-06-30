@@ -1690,9 +1690,25 @@
       },
       "nextAction": {
         "needs_input": "Empieza con el check-in y luego guarda los hábitos de hoy.",
+        "needs_inputVariants": {
+          "neutralB": "Empieza por el check-in y luego registra los hábitos de hoy.",
+          "neutralC": "Dos pasos rápidos: regístrate y guarda tus hábitos."
+        },
         "balanced": "Mantén la sesión planificada y protege tu rutina de sueño esta noche.",
+        "balancedVariants": {
+          "neutralB": "Mantén el plan y protege tu sueño de esta noche.",
+          "neutralC": "Haz la sesión prevista y relájate bien esta noche."
+        },
         "watch": "Hidrátate, controla el siguiente esfuerzo y revisa la molestia después del movimiento.",
-        "needs_support": "Mantén ligero el siguiente paso y comparte el estado de hoy con tu persona de apoyo."
+        "watchVariants": {
+          "neutralB": "Hidrátate, mantén suave el próximo esfuerzo y vigila las molestias.",
+          "neutralC": "Baja una marcha: esfuerzo suave, líquidos y revisa las molestias."
+        },
+        "needs_support": "Mantén ligero el siguiente paso y comparte el estado de hoy con tu persona de apoyo.",
+        "needs_supportVariants": {
+          "neutralB": "Mantén ligero el siguiente paso e incluye a tu persona de apoyo.",
+          "neutralC": "Ve con calma y comparte el estado de hoy con quien te apoya."
+        }
       },
       "badges": {
         "checkIn": "Check-in",
