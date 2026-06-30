@@ -1914,7 +1914,14 @@
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "Un espacio de trabajo profesional para atletas, entrenadores, equipos y clubes.",
         "copy": "Readiness, estado mental, carga de entrenamiento, acciones de equipo e informes permanecen en un espacio enfocado para el entrenador.",
-        "summaryAria": "Resumen operativo de Athlete IQ"
+        "summaryAria": "Resumen operativo de Athlete IQ",
+        "subtitleVariants": {
+          "neutralB": "La disposición, prioridades y plan de tu plantilla en una vista.",
+          "neutralC": "Dirige hoy con datos reales — mira quién te necesita primero.",
+          "morning": "Buenos días — prepara la plantilla antes de las sesiones.",
+          "afternoon": "Buenas tardes — revisa la carga y la recuperación.",
+          "evening": "Buenas noches — repasa el día y planifica mañana."
+        }
       },
       "metrics": {
         "dailyIq": "Daily IQ",
@@ -2125,7 +2132,14 @@
         "hero": {
           "title": "Espacio de soporte del atleta",
           "subtitle": "Tu vista diaria profesional para preparación, contexto de entrenamiento, acciones de apoyo y datos de hábitos compartidos.",
-          "copy": "Revisa los datos sobre los que tu entrenador puede actuar; la captura rápida de hábitos diarios también sigue disponible."
+          "copy": "Revisa los datos sobre los que tu entrenador puede actuar; la captura rápida de hábitos diarios también sigue disponible.",
+          "subtitleVariants": {
+            "neutralB": "Tu disposición, plan y progreso en un solo lugar.",
+            "neutralC": "Aportes pequeños y constantes hoy — avances reales con el tiempo.",
+            "morning": "Buenos días — una lectura rápida prepara tu día.",
+            "afternoon": "Buenas tardes — ¿cómo aguanta el cuerpo?",
+            "evening": "Buenas noches — cierra el día con fuerza."
+          }
         },
         "metrics": {
           "ownReadiness": "Tu readiness",
@@ -2477,47 +2491,58 @@
       "habits": {
         "extraTouches": {
           "title": "Toques extra",
-          "description": "Haz toques de balón extra: las repeticiones cortas y enfocadas mejoran la técnica."
+          "description": "Haz toques de balón extra: las repeticiones cortas y enfocadas mejoran la técnica.",
+          "descriptionB": "Unos cientos de toques hoy afinan tu primer toque.",
+          "descriptionC": "Hacer dominadas o trabajo de pared cuenta — mantén los pies activos."
         },
         "weakFoot": {
           "title": "Trabajo de pie débil",
-          "description": "Dedica unos minutos a tu pie más débil para equilibrar tu juego."
+          "description": "Dedica unos minutos a tu pie más débil para equilibrar tu juego.",
+          "descriptionB": "Las repeticiones con el pie débil se notan luego en los partidos.",
+          "descriptionC": "Pasa, controla y dispara con el pie no dominante — poco y a menudo."
         },
         "tacticalLearning": {
           "title": "Aprendizaje táctico",
-          "description": "Estudia un clip o una táctica para afinar tu comprensión del juego."
+          "description": "Estudia un clip o una táctica para afinar tu comprensión del juego.",
+          "descriptionB": "Cinco minutos de vídeo hoy construyen tu IQ de juego.",
+          "descriptionC": "Mira una jugada y anota qué harías diferente."
         },
         "stretching": {
           "title": "Estiramientos",
-          "description": "Haz un estiramiento corto para mantenerte flexible."
+          "description": "Haz un estiramiento corto para mantenerte flexible.",
+          "descriptionB": "Un estiramiento corto ahora protege el entrenamiento de mañana.",
+          "descriptionC": "Afloja los puntos tensos — bastan unos minutos."
         },
         "mobility": {
           "title": "Movilidad",
-          "description": "Haz una rutina rápida de movilidad para moverte libremente y proteger las articulaciones."
+          "description": "Haz una rutina rápida de movilidad para moverte libremente y proteger las articulaciones.",
+          "descriptionB": "Caderas y tobillos agradecen una rutina corta de movilidad hoy.",
+          "descriptionC": "Recorre tus rangos de movimiento — articulaciones más suaves, menos molestias."
         },
         "recoverySession": {
           "title": "Sesión de recuperación",
-          "description": "Dedica un bloque de recuperación deliberado para que tu cuerpo se adapte."
+          "description": "Dedica un bloque de recuperación deliberado para que tu cuerpo se adapte.",
+          "descriptionB": "La recuperación también es entrenamiento — dale el estímulo a tu cuerpo.",
+          "descriptionC": "Respiración tranquila y movimiento ligero generan adaptación real."
         },
         "hydration": {
           "title": "Hidratación",
-          "description": "Bebe suficiente agua durante el día para mantenerte ágil y listo."
+          "description": "Bebe suficiente agua durante el día para mantenerte ágil y listo.",
+          "descriptionB": "Bebe a sorbos durante el día — la hidratación te mantiene ágil.",
+          "descriptionC": "Ten una botella cerca y rellena a lo largo del día."
         },
         "nutrition": {
           "title": "Nutrición",
-          "description": "Aliméntate con una comida equilibrada para apoyar el entrenamiento y la recuperación."
+          "description": "Aliméntate con una comida equilibrada para apoyar el entrenamiento y la recuperación.",
+          "descriptionB": "Comer equilibrado hoy impulsa la sesión de mañana.",
+          "descriptionC": "Proteína y carbohidratos alrededor del entrenamiento — sencillo."
         },
         "sleepBeforeMidnight": {
           "title": "Dormir antes de medianoche",
-          "description": "Relájate y duerme antes de medianoche para una recuperación adecuada."
+          "description": "Relájate y duerme antes de medianoche para una recuperación adecuada.",
+          "descriptionB": "Apaga la luz temprano — dormir antes de medianoche recupera mejor.",
+          "descriptionC": "Protege el sueño de esta noche; es tu mayor palanca de recuperación."
         }
-      },
-      "habitNudge": {
-        "neutralB": "Unos minutos enfocados aquí mantienen tu ventaja.",
-        "neutralC": "Repeticiones pequeñas hoy, avances reales en la semana.",
-        "evening": "Buen momento para cerrar esto antes de que acabe el día.",
-        "streak": "Vas con todo: mantén viva la racha.",
-        "returning": "Bienvenido de vuelta: retoma con calma con esta."
       }
     },
     "mentalEdge": {

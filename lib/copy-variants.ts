@@ -95,6 +95,7 @@ export function selectCopyKey(def: CopyDef, ctx: CopyContext): string {
 // Convenience guards for building catalogs.
 export const isEvening = (ctx: CopyContext) => (ctx.timeOfDay ?? deriveTimeOfDay(ctx.now)) === "evening" || (ctx.timeOfDay ?? deriveTimeOfDay(ctx.now)) === "night";
 export const isMorning = (ctx: CopyContext) => (ctx.timeOfDay ?? deriveTimeOfDay(ctx.now)) === "morning";
+export const isAfternoon = (ctx: CopyContext) => (ctx.timeOfDay ?? deriveTimeOfDay(ctx.now)) === "afternoon";
 export const hasStreak = (min: number) => (ctx: CopyContext) => (ctx.streakDays ?? 0) >= min;
 export const lowConfidence = (ctx: CopyContext) => ctx.dataConfidence === "low" || ctx.dataConfidence === "none";
 export const isMissing = (ctx: CopyContext) => ctx.missing === true;

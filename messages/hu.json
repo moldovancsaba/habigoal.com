@@ -1914,7 +1914,14 @@
         "title": "Athlete IQ Daily Development OS",
         "subtitle": "Egységes professzionális munkafelület sportolóknak, edzőknek, csapatoknak és kluboknak.",
         "copy": "Readiness, mentális állapot, edzésterhelés, csapatműveletek és riportok egy fókuszált edzői munkatérben maradnak.",
-        "summaryAria": "Athlete IQ operációs összefoglaló"
+        "summaryAria": "Athlete IQ operációs összefoglaló",
+        "subtitleVariants": {
+          "neutralB": "A csapatod készenléte, prioritásai és terve egy nézetben.",
+          "neutralC": "Vezess ma valós adatból — lásd, kinek van rád szüksége először.",
+          "morning": "Jó reggelt — készítsd fel a csapatot az edzések előtt.",
+          "afternoon": "Jó napot — nézd át a terhelést és a regenerációt.",
+          "evening": "Jó estét — tekintsd át a napot és tervezd a holnapot."
+        }
       },
       "metrics": {
         "dailyIq": "Daily IQ",
@@ -2125,7 +2132,14 @@
         "hero": {
           "title": "Sportolói támogatási munkafelület",
           "subtitle": "Professzionális napi nézet readinesshez, edzéskontextushoz, támogatási műveletekhez és közös szokásadatokhoz.",
-          "copy": "Tekintsd át az adatokat, amelyekkel az edződ dolgozhat; a gyors napi szokásrögzítés is elérhető marad."
+          "copy": "Tekintsd át az adatokat, amelyekkel az edződ dolgozhat; a gyors napi szokásrögzítés is elérhető marad.",
+          "subtitleVariants": {
+            "neutralB": "A készenléted, terved és fejlődésed egy helyen.",
+            "neutralC": "Kis, kitartó lépések ma — valódi fejlődés idővel.",
+            "morning": "Jó reggelt — egy gyors állapotfelmérés beállítja a napod.",
+            "afternoon": "Jó napot — hogy bírja a tested?",
+            "evening": "Jó estét — zárd erősen a napot."
+          }
         },
         "metrics": {
           "ownReadiness": "Saját readiness",
@@ -2477,47 +2491,58 @@
       "habits": {
         "extraTouches": {
           "title": "Extra labdaérintések",
-          "description": "Iktass be extra labdaérintéseket — a rövid, fókuszált ismétlések fejlesztik a technikát."
+          "description": "Iktass be extra labdaérintéseket — a rövid, fókuszált ismétlések fejlesztik a technikát.",
+          "descriptionB": "Pár száz érintés ma élesíti az első érintésedet.",
+          "descriptionC": "Gyors dekázás vagy falazás is számít — pörögjön a láb."
         },
         "weakFoot": {
           "title": "Gyengébb láb gyakorlása",
-          "description": "Szánj pár percet a gyengébb lábadra, hogy kiegyensúlyozottabb legyél."
+          "description": "Szánj pár percet a gyengébb lábadra, hogy kiegyensúlyozottabb legyél.",
+          "descriptionB": "A gyengébb láb gyakorlása később, valódi meccsen térül meg.",
+          "descriptionC": "Passz, átvétel és lövés a gyengébb lábbal — keveset, gyakran."
         },
         "tacticalLearning": {
           "title": "Taktikai tanulás",
-          "description": "Nézz meg egy videót vagy taktikát a játékértésed fejlesztéséhez."
+          "description": "Nézz meg egy videót vagy taktikát a játékértésed fejlesztéséhez.",
+          "descriptionB": "Öt perc videó ma fejleszti a játékértésedet.",
+          "descriptionC": "Nézz meg egy jelenetet, és jegyezd fel, mit csinálnál másképp."
         },
         "stretching": {
           "title": "Nyújtás",
-          "description": "Végezz egy rövid nyújtást, hogy rugalmas maradj."
+          "description": "Végezz egy rövid nyújtást, hogy rugalmas maradj.",
+          "descriptionB": "Egy rövid nyújtás most megóvja a holnapi edzést.",
+          "descriptionC": "Lazítsd ki a feszes pontokat — pár perc is elég."
         },
         "mobility": {
           "title": "Mobilitás",
-          "description": "Csinálj egy gyors mobilitási rutint a szabad mozgásért és az ízületek védelméért."
+          "description": "Csinálj egy gyors mobilitási rutint a szabad mozgásért és az ízületek védelméért.",
+          "descriptionB": "A csípő és a boka szereti a rövid mobilitási folyamot ma.",
+          "descriptionC": "Mozgasd át a teljes mozgástartományt — simább ízületek, kevesebb panasz."
         },
         "recoverySession": {
           "title": "Regenerációs blokk",
-          "description": "Iktass be egy tudatos regenerációs blokkot, hogy a tested alkalmazkodjon."
+          "description": "Iktass be egy tudatos regenerációs blokkot, hogy a tested alkalmazkodjon.",
+          "descriptionB": "A regeneráció is edzés — add meg a testednek az ingert.",
+          "descriptionC": "Nyugodt légzés és könnyű mozgás valódi alkalmazkodást hoz."
         },
         "hydration": {
           "title": "Hidratálás",
-          "description": "Igyál elég vizet a nap során, hogy éber és kész maradj."
+          "description": "Igyál elég vizet a nap során, hogy éber és kész maradj.",
+          "descriptionB": "Kortyolgass folyamatosan — a hidratáltság éberen tart.",
+          "descriptionC": "Tartsd közel a kulacsot, és pótold a folyadékot a nap során."
         },
         "nutrition": {
           "title": "Táplálkozás",
-          "description": "Egyél kiegyensúlyozott étkezést az edzés és a regeneráció támogatására."
+          "description": "Egyél kiegyensúlyozott étkezést az edzés és a regeneráció támogatására.",
+          "descriptionB": "A kiegyensúlyozott táplálkozás ma a holnapi edzést hajtja.",
+          "descriptionC": "Fehérje és szénhidrát az edzés körül — egyszerűen."
         },
         "sleepBeforeMidnight": {
           "title": "Éjfél előtti alvás",
-          "description": "Nyugodj le és feküdj le éjfél előtt a megfelelő regenerációért."
+          "description": "Nyugodj le és feküdj le éjfél előtt a megfelelő regenerációért.",
+          "descriptionB": "Korán le a fényekkel — az éjfél előtti alvás regenerál a legjobban.",
+          "descriptionC": "Védd a mai alvásodat; ez a legnagyobb regenerációs eszközöd."
         }
-      },
-      "habitNudge": {
-        "neutralB": "Pár fókuszált perc itt megőrzi az előnyödet.",
-        "neutralC": "Kis ismétlések ma, valódi fejlődés a héten.",
-        "evening": "Jó alkalom lezárni ezt a nap vége előtt.",
-        "streak": "Jól megy — tartsd életben a sorozatot.",
-        "returning": "Üdv újra — kezdd óvatosan ezzel."
       }
     },
     "mentalEdge": {
