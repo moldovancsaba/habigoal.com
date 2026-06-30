@@ -18,6 +18,8 @@ export type AuditAction =
   | "device.disconnect"
   | "device.sync"
   | "report.generate"
+  | "weekly_snapshot.generate"
+  | "weekly_snapshot.export"
   | "settings.update"
   | "queue.retry"
   | "admin.governance";

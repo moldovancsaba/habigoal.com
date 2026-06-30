@@ -167,6 +167,7 @@ Design authority lives in `/Users/Shared/Projects/general-design-system`. Habigo
 - `habit_records`: athlete habit adherence records.
 - `coach_actions`: trainer acknowledgements and applied recommendation records.
 - `session_plans`: persisted weekly planning records.
+- `weekly_snapshots`: versioned, reproducible weekly athlete snapshots (one per athlete + week) with the scorer/report/insight versions and source counts that produced them.
 - `teams`: team membership for trainers and athletes.
 - `users`: local authorization records linked to SSO identity.
 - `settings`: global settings, company/legal profile, alerting thresholds, and restore/governance state.
