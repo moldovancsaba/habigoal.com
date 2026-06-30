@@ -112,22 +112,48 @@ export function updatePerformanceDimension(
   return updated;
 }
 
+const TWIN_DIMENSIONS: TwinHistoryEntry["dimension"][] = [
+  "physical",
+  "performance",
+  "technical",
+  "recovery",
+  "cognitive",
+];
+
+// Number of distinct calendar dates of history retained.
+const TWIN_HISTORY_DAYS = 90;
+
+// Record a history snapshot for EVERY dimension (DTW-002, #202) — previously only
+// recovery + performance were captured, so physical, technical, and cognitive
+// changes left no longitudinal trail. Entries are deduped by (date, dimension)
+// keeping the latest, then bounded to the most recent TWIN_HISTORY_DAYS distinct
+// dates so adding three dimensions does not shrink the retained window.
 export function appendHistory(
   history: TwinHistoryEntry[],
   date: string,
   twin: AthleteTwin
 ): TwinHistoryEntry[] {
-  const newEntries: TwinHistoryEntry[] = [
-    { date, dimension: "recovery", snapshot: twin.recovery as unknown as Record<string, number> },
-    { date, dimension: "performance", snapshot: twin.performance as unknown as Record<string, number> }
-  ];
+  const byKey = new Map<string, TwinHistoryEntry>();
+  for (const entry of history) byKey.set(`${entry.date}|${entry.dimension}`, entry);
+  for (const dimension of TWIN_DIMENSIONS) {
+    byKey.set(`${date}|${dimension}`, {
+      date,
+      dimension,
+      snapshot: twin[dimension] as unknown as Record<string, number>,
+    });
+  }
 
-  const combined = [...history, ...newEntries];
-  
-  // Sort descending and keep last 90
-  combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  
-  return combined.slice(0, 90);
+  const combined = Array.from(byKey.values()).sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  // Keep only entries within the most recent N distinct dates.
+  const keptDates = new Set<string>();
+  for (const entry of combined) {
+    if (keptDates.size >= TWIN_HISTORY_DAYS && !keptDates.has(entry.date)) break;
+    keptDates.add(entry.date);
+  }
+  return combined.filter((entry) => keptDates.has(entry.date));
 }
 
 export async function updateTwinFromMetrics(
@@ -263,27 +289,44 @@ export async function updateTwinFromEngineOutputs(
   const existing = (await findTwinByAthleteId(athleteId)) ?? createEmptyTwin(athleteId, organisationId);
   const updated = { ...existing };
 
+  const now = new Date().toISOString();
+  const withAiSource = (sources?: string[]) => Array.from(new Set([...(sources || []), "ai_inference"]));
+
   updated.recovery = {
     ...updated.recovery,
     recoveryReadinessScore: outputs.readiness.result.score,
-    updatedAt: new Date().toISOString(),
+    updatedAt: now,
     confidence: outputs.readiness.confidence,
-    sources: Array.from(new Set([...(updated.recovery.sources || []), "ai_inference"])),
+    sources: withAiSource(updated.recovery.sources),
   };
 
+  // DTW-002 (#202): the AI engine output is a real twin source — record it on
+  // every dimension it touches (previously performance/cognitive were updated
+  // without crediting the source, so engine-driven changes weren't traceable).
   updated.performance = {
     ...updated.performance,
-    updatedAt: new Date().toISOString(),
+    updatedAt: now,
     confidence: outputs.injuryRisk.confidence,
+    sources: withAiSource(updated.performance.sources),
   };
 
   updated.cognitive = {
     ...updated.cognitive,
-    updatedAt: new Date().toISOString(),
+    updatedAt: now,
+    confidence: outputs.recovery.confidence,
     stressTrend7d: outputs.recovery.result.status === "under_recovered" ? 8 : updated.cognitive.stressTrend7d,
+    sources: withAiSource(updated.cognitive.sources),
   };
 
+  // Capture the engine-driven state in history so AI outputs leave a trail too.
+  updated.history = appendHistory(updated.history, now.slice(0, 10), updated);
   updated.twinVersion = (existing.twinVersion ?? 0) + 1;
-  updated.lastUpdatedAt = new Date().toISOString();
+  updated.lastUpdatedAt = now;
   await upsertTwin(updated);
+
+  await globalEventBus.publish({
+    type: "TWIN_UPDATED",
+    payload: { athleteId, organisationId, source: "ai_inference" },
+    timestamp: now,
+  });
 }
