@@ -1367,7 +1367,14 @@
     "readinessWatch": "מעקב",
     "readinessSupport": "תמיכה",
     "ageValue": "בן {age}",
-    "ageUnknown": "הגיל לא זמין"
+    "ageUnknown": "הגיל לא זמין",
+    "subtitleVariants": {
+      "neutralB": "חפש, פתח ותמוך בכל ספורטאי במקום אחד.",
+      "neutralC": "המוכנות וההרגלים היומיים של הספורטאים שלך במבט אחד.",
+      "morning": "בוקר טוב — ראה מי צריך תמיכה היום.",
+      "afternoon": "צהריים טובים — עקוב אחר ההתקדמות של היום.",
+      "evening": "ערב טוב — סקור את היום של הספורטאים שלך."
+    }
   },
   "Report": {
     "professionalOpinion": "Professional opinion:",
