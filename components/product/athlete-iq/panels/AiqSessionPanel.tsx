@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Box, Button, Group, NumberInput, Stack, Text, TextInput } from "@mantine/core";
+import { Badge, Box, Button, Group, NumberInput, Select, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
@@ -11,6 +11,8 @@ import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 
 type SessionListResponse = { sessions: AthleteIqSession[]; count: number };
 type SessionMutationResponse = { session: AthleteIqSession };
+type SessionBlueprint = { key: string; titleKey: string; variant: string };
+type BlueprintListResponse = { blueprints: SessionBlueprint[] };
 
 type DebriefDraft = { rpe: number; completionPct: number; painAfter: number; moodAfter: number; notes: string };
 
@@ -34,9 +36,12 @@ const DEFAULT_DEBRIEF: DebriefDraft = { rpe: 5, completionPct: 100, painAfter: 1
 
 export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId: string; localDate: string; timezone: string }) {
   const t = useTranslations("ProductSurfaces.athleteIq.athleteWorkspace.panels");
+  const tb = useTranslations("SessionBlueprints");
   const domain = useAthleteIqDomainCopy();
   const [nowMs] = useState(Date.now);
   const [sessions, setSessions] = useState<AthleteIqSession[]>([]);
+  const [blueprints, setBlueprints] = useState<SessionBlueprint[]>([]);
+  const [selectedBlueprint, setSelectedBlueprint] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -65,6 +70,29 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
       active = false;
     };
   }, [fetchSessions, apply]);
+
+  useEffect(() => {
+    let active = true;
+    athleteIqRequest<BlueprintListResponse>("/api/session-blueprints").then((result) => {
+      if (active && result.ok) setBlueprints(result.data.blueprints);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function buildFromBlueprint() {
+    if (!selectedBlueprint) return;
+    setBusy("from-blueprint");
+    setFeedback(null);
+    const result = await athleteIqRequest<SessionMutationResponse>(
+      "/api/athleteiq/sessions",
+      athleteIqJsonInit({ athleteId, localDate, blueprintKey: selectedBlueprint })
+    );
+    if (result.ok) applySession(result.data.session);
+    else setFeedback(t("session.buildError"));
+    setBusy(null);
+  }
 
   function applySession(updated: AthleteIqSession) {
     setSessions((current) => {
@@ -123,11 +151,28 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
 
   return (
     <Stack gap="md">
-      <Group justify="space-between" gap="sm">
+      <Group justify="space-between" gap="sm" align="flex-end" wrap="wrap">
         <Text size="sm" className="aiq-muted-soft">{t("session.todayTitle")}</Text>
-        <Button color="yellow" size="sm" variant="light" loading={busy === "from-plan"} onClick={() => void buildFromPlan()}>
-          {t("session.buildFromPlan")}
-        </Button>
+        <Group gap="sm" align="flex-end" wrap="wrap">
+          {blueprints.length > 0 ? (
+            <Group gap="xs" align="flex-end">
+              <Select
+                size="sm"
+                placeholder={t("session.blueprintPlaceholder")}
+                data={blueprints.map((blueprint) => ({ value: blueprint.key, label: tb(`titles.${blueprint.titleKey}`) }))}
+                value={selectedBlueprint}
+                onChange={setSelectedBlueprint}
+                clearable
+              />
+              <Button size="sm" variant="light" loading={busy === "from-blueprint"} disabled={!selectedBlueprint} onClick={() => void buildFromBlueprint()}>
+                {t("session.buildFromBlueprint")}
+              </Button>
+            </Group>
+          ) : null}
+          <Button color="yellow" size="sm" variant="light" loading={busy === "from-plan"} onClick={() => void buildFromPlan()}>
+            {t("session.buildFromPlan")}
+          </Button>
+        </Group>
       </Group>
 
       {feedback ? <Text size="sm" style={{ color: "var(--status-error)" }}>{feedback}</Text> : null}

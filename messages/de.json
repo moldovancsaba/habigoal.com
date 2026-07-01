@@ -2541,7 +2541,9 @@
               "neutralC": "Eine Notiz, für die dir dein künftiges Ich (oder dein Coach) danken wird…"
             },
             "recordedLoad": "Erfasste Belastung: {load}",
-            "saveDebrief": "Nachbesprechung speichern"
+            "saveDebrief": "Nachbesprechung speichern",
+            "buildFromBlueprint": "Aus Vorlage erstellen",
+            "blueprintPlaceholder": "Vorlage wählen"
           },
           "lite": {
             "modules": {
