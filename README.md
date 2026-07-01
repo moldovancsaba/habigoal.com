@@ -52,6 +52,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - [Input Copy Research & Variant Model](docs/input-copy-research.md)
 - [GDS Hardcoded-Style Audit](docs/gds-hardcoded-style-audit.md)
 - [Deep Language Audit](docs/language-audit-2026-06-30.md) — run `npm run i18n:audit:deep` to recheck for untranslated/mixed-language leakage anytime.
+- [Athlete IQ Gap Inventory](docs/aiq-gap-inventory.md) — prioritized trainer/athlete missing functions & business logic (P0–P3).
 - [Deployment](docs/deployment.md)
 - [Design System](docs/design-system.md)
 - [General Design System Adoption](docs/gds-adoption.md)
