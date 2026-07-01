@@ -1679,6 +1679,9 @@
   },
   "PlanningDashboard": {
     "title": "מתכנן אימונים ומיקרו-מחזורים",
+    "team": "קבוצה",
+    "teamPlaceholder": "בחר קבוצה",
+    "noTeamsHint": "עדיין אין לך קבוצות — צור קבוצה כדי לשייך אליה אימונים ומחזורים.",
     "createSession": "אימון חדש",
     "sessionTitle": "כותרת",
     "sessionTitlePlaceholder": "למשל Strength A",

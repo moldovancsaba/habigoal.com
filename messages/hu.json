@@ -1679,6 +1679,9 @@
   },
   "PlanningDashboard": {
     "title": "Edzéstervező és mikrociklusok",
+    "team": "Csapat",
+    "teamPlaceholder": "Válassz csapatot",
+    "noTeamsHint": "Még nincs csapatod — hozz létre egyet, hogy hozzárendelhesd az edzéseket és mikrociklusokat.",
     "createSession": "Új edzés",
     "sessionTitle": "Edzés címe",
     "sessionTitlePlaceholder": "pl. Erő blokk A",

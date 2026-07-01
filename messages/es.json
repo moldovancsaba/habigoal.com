@@ -1679,6 +1679,9 @@
   },
   "PlanningDashboard": {
     "title": "Planificador y microciclos",
+    "team": "Equipo",
+    "teamPlaceholder": "Selecciona un equipo",
+    "noTeamsHint": "Todavía no tienes equipos — crea uno para asignarle sesiones y microciclos.",
     "createSession": "Nueva sesion",
     "sessionTitle": "Titulo",
     "sessionTitlePlaceholder": "ej. Fuerza A",

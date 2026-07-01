@@ -1679,6 +1679,9 @@
   },
   "PlanningDashboard": {
     "title": "Session-Planer und Mikrozyklen",
+    "team": "Team",
+    "teamPlaceholder": "Team auswählen",
+    "noTeamsHint": "Du hast noch kein Team — erstelle eines, um Einheiten und Mikrozyklen zuzuweisen.",
     "createSession": "Neue Session",
     "sessionTitle": "Session-Titel",
     "sessionTitlePlaceholder": "z.B. Kraft Block A",

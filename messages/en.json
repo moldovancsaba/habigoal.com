@@ -1679,6 +1679,9 @@
   },
   "PlanningDashboard": {
     "title": "Session Planner & Microcycles",
+    "team": "Team",
+    "teamPlaceholder": "Select a team",
+    "noTeamsHint": "You have no teams yet — create one to assign sessions and microcycles to it.",
     "createSession": "Create New Session",
     "sessionTitle": "Session Title",
     "sessionTitlePlaceholder": "e.g. Strength Block A",

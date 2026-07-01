@@ -1679,6 +1679,9 @@
   },
   "PlanningDashboard": {
     "title": "مخطط الجلسات والدورات",
+    "team": "الفريق",
+    "teamPlaceholder": "اختر فريقًا",
+    "noTeamsHint": "ليس لديك أي فريق بعد — أنشئ فريقًا لتعيين الجلسات والدورات الصغيرة له.",
     "createSession": "جلسة جديدة",
     "sessionTitle": "عنوان الجلسة",
     "sessionTitlePlaceholder": "مثال: قوة A",

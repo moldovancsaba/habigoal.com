@@ -64,6 +64,25 @@ export async function computeInjuryRisk(context: EngineContext): Promise<EngineO
     loadReductionRecommended = true;
   }
 
+  // Present-only refinements (P3 #528 continued). Cumulative-load and compounding
+  // signals deepen the read when they're actually recorded, without touching the
+  // confidence contract above (still driven by acwr/asymmetry/fms presence only).
+  const performanceHistory = (twin.history ?? []).filter((entry) => entry.dimension === "performance").slice(0, 3);
+  const sustainedHighAcwrCount = performanceHistory.filter((entry) => {
+    const acwr = entry.snapshot.acwr;
+    return typeof acwr === "number" && acwr > 1.5;
+  }).length;
+  if (sustainedHighAcwrCount >= 2) {
+    riskScore += 2;
+    factors.push("Sustained ACWR elevation across multiple recent updates");
+  }
+
+  const soreness = twin.recovery?.sorenessScore7d;
+  if (typeof soreness === "number" && soreness > 6) {
+    riskScore += 1;
+    factors.push("High 7-day soreness may compound injury risk");
+  }
+
   if (humanReviewFromInputs) humanReview = true;
 
   return {
