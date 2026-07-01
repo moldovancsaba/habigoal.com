@@ -1590,6 +1590,17 @@
         "medium": "Mittel",
         "low": "Niedrig"
       }
+    },
+    "thresholds": {
+      "title": "Alarm-Schwellenwerte",
+      "description": "Lege die Bereitschafts-Grenzwerte fest, die die Team-Statusfarben steuern (0–5-Skala).",
+      "selectTeam": "Team",
+      "greenMin": "Bereit ab",
+      "yellowMin": "Beobachten ab",
+      "save": "Schwellenwerte speichern",
+      "saved": "Schwellenwerte gespeichert.",
+      "saveError": "Schwellenwerte konnten nicht gespeichert werden.",
+      "scaleHint": "Unterhalb des Beobachten-Werts wird als Risiko markiert. „Bereit“ muss höher als „Beobachten“ sein."
     }
   },
   "VisionLab": {

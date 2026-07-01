@@ -1590,6 +1590,17 @@
         "medium": "Közepes",
         "low": "Alacsony"
       }
+    },
+    "thresholds": {
+      "title": "Riasztási küszöbök",
+      "description": "Állítsd be a készenléti határokat, amelyek a csapat állapotszíneit vezérlik (0–5 skála).",
+      "selectTeam": "Csapat",
+      "greenMin": "Kész ettől az értéktől",
+      "yellowMin": "Figyelendő ettől az értéktől",
+      "save": "Küszöbök mentése",
+      "saved": "Küszöbök elmentve.",
+      "saveError": "A küszöbök mentése nem sikerült.",
+      "scaleHint": "A figyelmeztetési érték alatt kockázatként jelöljük. A „kész” értéknek magasabbnak kell lennie a „figyelendő”-nél."
     }
   },
   "VisionLab": {
