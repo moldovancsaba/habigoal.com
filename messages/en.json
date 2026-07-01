@@ -1702,7 +1702,12 @@
       "speed": "Speed",
       "recovery": "Recovery",
       "match": "Match"
-    }
+    },
+    "loadBalanceTitle": "Weekly load balance",
+    "peakDay": "Peak day load: {points} pts",
+    "dayLoad": "{date}: {points} pts",
+    "overloadWarning": "Overload on {date}: {load} pts exceeds the daily ceiling.",
+    "consecutiveWarning": "Back-to-back high load: {previousDate} → {date}."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Athlete profile administration",

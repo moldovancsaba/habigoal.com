@@ -1702,7 +1702,12 @@
       "speed": "سرعة",
       "recovery": "تعافي",
       "match": "مباراة"
-    }
+    },
+    "loadBalanceTitle": "توازن الحِمل الأسبوعي",
+    "peakDay": "حِمل يوم الذروة: {points} نقطة",
+    "dayLoad": "{date}: {points} نقطة",
+    "overloadWarning": "حِمل زائد في {date}: {load} نقطة تتجاوز الحد اليومي.",
+    "consecutiveWarning": "حِمل عالٍ في يومين متتاليين: {previousDate} → {date}."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "إدارة ملف الرياضي",

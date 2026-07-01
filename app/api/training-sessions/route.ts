@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jsonError, readJson, requireRole } from "@/lib/api";
+import { getAuthUser } from "@/lib/access";
 import { getLoadComparison, listTrainingSessions, upsertTrainingSession } from "@/repositories/training-sessions.repository";
 import type { SessionCategory } from "@/types/training-plan";
 
@@ -35,10 +36,17 @@ export async function POST(request: Request) {
   }
 
   const category = CATEGORIES.includes(body.category as SessionCategory) ? (body.category as SessionCategory) : "tactical";
+  // Resolve the coach from the authenticated session — never trust a client-supplied
+  // coachId (previously hardcoded "coach"). Existing rows keep their coachId on update.
+  const authUser = await getAuthUser();
+  const resolvedCoachId =
+    (typeof body.sessionId === "string" && typeof body.coachId === "string" ? body.coachId : null) ??
+    authUser?.email ??
+    "unknown";
   const plan = await upsertTrainingSession({
     sessionId: typeof body.sessionId === "string" ? body.sessionId : crypto.randomUUID(),
     organisationId: typeof body.organisationId === "string" ? body.organisationId : "default",
-    coachId: typeof body.coachId === "string" ? body.coachId : "coach",
+    coachId: resolvedCoachId,
     title: String(body.title),
     description: typeof body.description === "string" ? body.description : "",
     category,

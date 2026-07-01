@@ -1702,7 +1702,12 @@
       "speed": "Velocidad",
       "recovery": "Recuperación",
       "match": "Partido"
-    }
+    },
+    "loadBalanceTitle": "Balance de carga semanal",
+    "peakDay": "Carga del día pico: {points} pts",
+    "dayLoad": "{date}: {points} pts",
+    "overloadWarning": "Sobrecarga el {date}: {load} pts superan el límite diario.",
+    "consecutiveWarning": "Carga alta en días consecutivos: {previousDate} → {date}."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Admin perfil atleta",

@@ -1702,7 +1702,12 @@
       "speed": "Schnelligkeit",
       "recovery": "Erholung",
       "match": "Spiel"
-    }
+    },
+    "loadBalanceTitle": "Wöchentliche Lastverteilung",
+    "peakDay": "Spitzentag-Last: {points} Pkt.",
+    "dayLoad": "{date}: {points} Pkt.",
+    "overloadWarning": "Überlastung am {date}: {load} Pkt. überschreiten die Tagesobergrenze.",
+    "consecutiveWarning": "Hohe Last an aufeinanderfolgenden Tagen: {previousDate} → {date}."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Athletenprofil-Verwaltung",

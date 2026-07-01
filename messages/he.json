@@ -1702,7 +1702,12 @@
       "speed": "מהירות",
       "recovery": "התאוששות",
       "match": "משחק"
-    }
+    },
+    "loadBalanceTitle": "איזון עומס שבועי",
+    "peakDay": "עומס יום השיא: {points} נק'",
+    "dayLoad": "{date}: {points} נק'",
+    "overloadWarning": "עומס יתר ב-{date}: {load} נק' חורגות מהתקרה היומית.",
+    "consecutiveWarning": "עומס גבוה בימים רצופים: {previousDate} → {date}."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "ניהול פרופיל ספורטאי",
