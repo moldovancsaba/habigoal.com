@@ -58,6 +58,7 @@ export async function computeCoachingQueueEntry(
     },
     recommendation: {
       text: recommendation.text,
+      textKey: recommendation.textKey,
       reason: recommendation.reason,
       confidence: recommendation.confidence,
       humanReviewRequired: recommendation.humanReviewRequired,

@@ -1573,6 +1573,13 @@
       "confidence": "Konfidenz: {level}",
       "humanReview": "Menschliche Prüfung erforderlich",
       "loadReduction": "Belastungsreduktion empfohlen",
+      "recommendationText": {
+        "peak": "Fahren Sie mit der geplanten hochintensiven Einheit fort. Überwachen Sie die RPE bei maximalen Anstrengungen.",
+        "good": "Fahren Sie mit der geplanten Einheit fort. Überwachen Sie die Belastung gegen Ende des Blocks.",
+        "moderate": "Reduzieren Sie das Volumen um 15–20 % und vermeiden Sie heute maximale exzentrische Belastungen.",
+        "fatigued": "Bevorzugen Sie aktive Erholung und taktische Durchläufe gegenüber körperlicher Anstrengung.",
+        "recovery": "Ein obligatorischer Ruhetag wird empfohlen, um die Erholung des zentralen Nervensystems zu ermöglichen."
+      },
       "risk": {
         "high": "Hoch",
         "elevated": "Erhöht",

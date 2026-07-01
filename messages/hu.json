@@ -1573,6 +1573,13 @@
       "confidence": "Megbízhatóság: {level}",
       "humanReview": "Emberi felülvizsgálat szükséges",
       "loadReduction": "Terheléscsökkentés javasolt",
+      "recommendationText": {
+        "peak": "Folytassa a tervezett nagy intenzitású munkát. Figyelje az RPE-t a maximális erőkifejtések alatt.",
+        "good": "Folytassa a tervezett edzést. Figyelje a terhelést a blokk vége felé.",
+        "moderate": "Csökkentse a terjedelmet 15–20%-kal, és kerülje a maximális excentrikus terheléseket ma.",
+        "fatigued": "Részesítse előnyben az aktív regenerációt és a taktikai áttekintéseket a fizikai megterheléssel szemben.",
+        "recovery": "Kötelező pihenőnap javasolt a központi idegrendszer regenerálódásához."
+      },
       "risk": {
         "high": "Magas",
         "elevated": "Emelkedett",

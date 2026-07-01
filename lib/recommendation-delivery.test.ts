@@ -4,6 +4,7 @@ import type { RecommendationResult } from "@/types/ai-engine";
 
 const base: RecommendationResult = {
   text: "Proceed with the planned session.",
+  textKey: "good",
   reason: "Readiness is good.",
   confidence: "high",
   humanReviewRequired: false,

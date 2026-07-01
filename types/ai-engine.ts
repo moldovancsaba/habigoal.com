@@ -43,8 +43,15 @@ export interface InjuryRiskResult {
 
 export type RecommendationDelivery = "direct" | "awaiting_review";
 
+export type RecommendationTextKey = "peak" | "good" | "moderate" | "fatigued" | "recovery";
+
 export interface RecommendationResult {
   text: string;
+  // Translation key for the UI to render the base recommendation in the
+  // viewer's locale — `text` stays English for internal audit trails
+  // (reporting commentary, coach-action detail) that don't route through
+  // next-intl (#recommendation-i18n).
+  textKey: RecommendationTextKey;
   reason: string;
   confidence: ConfidenceLevel;
   humanReviewRequired: boolean;

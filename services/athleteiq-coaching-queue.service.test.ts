@@ -26,6 +26,7 @@ describe("coaching queue entry (#525 P0)", () => {
     const entry = await computeCoachingQueueEntry("a1", twin({ physical: { restingHeartRateBpm: 55 }, recovery: { sleepQualityScore7d: 80 } }));
     expect(entry.athleteId).toBe("a1");
     expect(entry.recommendation.text.length).toBeGreaterThan(0);
+    expect(["peak", "good", "moderate", "fatigued", "recovery"]).toContain(entry.recommendation.textKey);
     expect(["low", "elevated", "high"]).toContain(entry.injuryRisk.riskLevel);
     expect(typeof entry.urgency).toBe("number");
   });

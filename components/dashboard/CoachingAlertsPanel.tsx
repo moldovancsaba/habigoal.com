@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 type TeamRef = { id: string; name: string };
 
 type Readiness = { zone: string; score: number };
-type Recommendation = { text: string; reason: string; confidence: string; humanReviewRequired: boolean; delivery: string };
+type Recommendation = { text: string; textKey: string; reason: string; confidence: string; humanReviewRequired: boolean; delivery: string };
 type InjuryRisk = { riskLevel: string; flags: string[]; loadReductionRecommended: boolean; confidence: string };
 
 type Entry = {
@@ -110,7 +110,7 @@ export function CoachingAlertsPanel({ teams, athleteNames }: { teams: TeamRef[];
 
                 {entry.recommendation ? (
                   <Box>
-                    <Text size="sm">{entry.recommendation.text}</Text>
+                    <Text size="sm">{t(`coachingAlerts.recommendationText.${entry.recommendation.textKey}`)}</Text>
                     <Group gap="xs" mt={4}>
                       <Badge size="sm" variant="outline" color="gray">
                         {t("coachingAlerts.confidence", { level: t(`coachingAlerts.conf.${entry.recommendation.confidence}`) })}

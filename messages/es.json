@@ -1573,6 +1573,13 @@
       "confidence": "Confianza: {level}",
       "humanReview": "Requiere revisión humana",
       "loadReduction": "Se aconseja reducir la carga",
+      "recommendationText": {
+        "peak": "Continúa con el trabajo de alta intensidad planificado. Controla el RPE durante los esfuerzos máximos.",
+        "good": "Continúa con la sesión planificada. Controla la carga hacia el final del bloque.",
+        "moderate": "Reduce el volumen entre un 15 y un 20 % y evita cargas excéntricas máximas hoy.",
+        "fatigued": "Prioriza la recuperación activa y los repasos tácticos frente al esfuerzo físico.",
+        "recovery": "Se recomienda un día de descanso obligatorio para permitir la recuperación del sistema nervioso central."
+      },
       "risk": {
         "high": "Alto",
         "elevated": "Elevado",

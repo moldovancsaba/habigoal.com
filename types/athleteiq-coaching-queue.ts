@@ -1,4 +1,4 @@
-import type { ConfidenceLevel } from "./ai-engine";
+import type { ConfidenceLevel, RecommendationTextKey } from "./ai-engine";
 
 // A per-athlete coaching signal for the trainer daily loop (P0 #525). Combines
 // the recommendation engine output with the injury-risk engine output so the
@@ -14,6 +14,7 @@ export interface CoachingQueueEntry {
   };
   recommendation: {
     text: string;
+    textKey: RecommendationTextKey;
     reason: string;
     confidence: ConfidenceLevel;
     humanReviewRequired: boolean;
