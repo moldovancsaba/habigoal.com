@@ -1601,6 +1601,17 @@
       "saved": "Schwellenwerte gespeichert.",
       "saveError": "Schwellenwerte konnten nicht gespeichert werden.",
       "scaleHint": "Unterhalb des Beobachten-Werts wird als Risiko markiert. „Bereit“ muss höher als „Beobachten“ sein."
+    },
+    "roster": {
+      "title": "Kaderverwaltung",
+      "description": "Athleten zu jedem Team hinzufügen oder daraus entfernen.",
+      "memberCount": "{count} im Kader",
+      "noMembers": "Noch keine Athleten in diesem Team.",
+      "addAthlete": "Athlet hinzufügen",
+      "addPlaceholder": "Athleten suchen…",
+      "noCandidates": "Keine Athleten zum Hinzufügen.",
+      "remove": "Entfernen",
+      "saveError": "Kader konnte nicht aktualisiert werden."
     }
   },
   "VisionLab": {

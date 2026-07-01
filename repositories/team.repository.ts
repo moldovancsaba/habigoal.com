@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, type Document, type UpdateFilter } from "mongodb";
 import { getDatabase } from "@/lib/mongodb";
 import { toJsonId } from "@/lib/utils";
 import type { Team } from "@/types/team";
@@ -79,6 +79,17 @@ export async function addAthleteToTeam(teamId: string, athleteId: string): Promi
   const result = await db.collection(collectionName).findOneAndUpdate(
     { _id: new ObjectId(teamId) },
     { $addToSet: { athleteIds: athleteId.trim() }, $set: { updatedAt: new Date().toISOString() } },
+    { returnDocument: "after" }
+  );
+  return result ? normalizeTeam(result as Record<string, unknown>) : null;
+}
+
+export async function removeAthleteFromTeam(teamId: string, athleteId: string): Promise<Team | null> {
+  if (!ObjectId.isValid(teamId)) return null;
+  const db = await getDatabase();
+  const result = await db.collection(collectionName).findOneAndUpdate(
+    { _id: new ObjectId(teamId) },
+    { $pull: { athleteIds: athleteId.trim() }, $set: { updatedAt: new Date().toISOString() } } as unknown as UpdateFilter<Document>,
     { returnDocument: "after" }
   );
   return result ? normalizeTeam(result as Record<string, unknown>) : null;
