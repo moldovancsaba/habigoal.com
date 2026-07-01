@@ -1601,6 +1601,17 @@
       "saved": "Umbrales guardados.",
       "saveError": "No se pudieron guardar los umbrales.",
       "scaleHint": "Por debajo del valor de vigilancia se marca como riesgo. «Listo» debe ser mayor que «vigilar»."
+    },
+    "roster": {
+      "title": "Gestión de plantilla",
+      "description": "Añade o quita atletas de cada equipo.",
+      "memberCount": "{count} en la plantilla",
+      "noMembers": "Aún no hay atletas en este equipo.",
+      "addAthlete": "Añadir atleta",
+      "addPlaceholder": "Buscar atletas…",
+      "noCandidates": "No hay atletas para añadir.",
+      "remove": "Quitar",
+      "saveError": "No se pudo actualizar la plantilla."
     }
   },
   "VisionLab": {

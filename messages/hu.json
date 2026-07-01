@@ -1601,6 +1601,17 @@
       "saved": "Küszöbök elmentve.",
       "saveError": "A küszöbök mentése nem sikerült.",
       "scaleHint": "A figyelmeztetési érték alatt kockázatként jelöljük. A „kész” értéknek magasabbnak kell lennie a „figyelendő”-nél."
+    },
+    "roster": {
+      "title": "Keret kezelése",
+      "description": "Sportolók hozzáadása vagy eltávolítása az egyes csapatokból.",
+      "memberCount": "{count} fő a keretben",
+      "noMembers": "Még nincs sportoló ebben a csapatban.",
+      "addAthlete": "Sportoló hozzáadása",
+      "addPlaceholder": "Sportolók keresése…",
+      "noCandidates": "Nincs hozzáadható sportoló.",
+      "remove": "Eltávolítás",
+      "saveError": "A keret frissítése nem sikerült."
     }
   },
   "VisionLab": {

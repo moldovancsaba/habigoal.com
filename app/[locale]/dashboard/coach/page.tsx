@@ -9,6 +9,7 @@ import { formatScore } from "@/lib/utils";
 import { TeamMessagesPanel } from "@/components/dashboard/TeamMessagesPanel";
 import { CoachingAlertsPanel } from "@/components/dashboard/CoachingAlertsPanel";
 import { ThresholdsPanel } from "@/components/dashboard/ThresholdsPanel";
+import { RosterManagerPanel } from "@/components/dashboard/RosterManagerPanel";
 import { TeamInvitationsManager } from "@/components/teams/TeamInvitationsManager";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord } from "@/types/coach-action";
@@ -216,6 +217,11 @@ export default function CoachDashboardPage() {
       />
 
       <ThresholdsPanel teams={teams.filter((team) => team._id).map((team) => ({ id: String(team._id), name: team.name }))} />
+
+      <RosterManagerPanel
+        teams={teams.filter((team) => team._id).map((team) => ({ id: String(team._id), name: team.name, athleteIds: (team.athleteIds ?? []).map(String) }))}
+        athletes={athletes.filter((athlete) => athlete._id).map((athlete) => ({ id: String(athlete._id), name: athlete.name }))}
+      />
 
       {teamOverviews.length > 0 && (
         <SectionPanel title={t("teamSquads")}>

@@ -1601,6 +1601,17 @@
       "saved": "Thresholds saved.",
       "saveError": "Could not save thresholds.",
       "scaleHint": "Below the watch value is flagged as risk. Ready must be higher than watch."
+    },
+    "roster": {
+      "title": "Roster management",
+      "description": "Add or remove athletes from each squad.",
+      "memberCount": "{count} on roster",
+      "noMembers": "No athletes on this squad yet.",
+      "addAthlete": "Add athlete",
+      "addPlaceholder": "Search athletes…",
+      "noCandidates": "No athletes to add.",
+      "remove": "Remove",
+      "saveError": "Could not update the roster."
     }
   },
   "VisionLab": {
