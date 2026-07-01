@@ -2541,7 +2541,9 @@
               "neutralC": "Egy jegyzet, amiért a jövőbeli éned (vagy az edződ) hálás lesz…"
             },
             "recordedLoad": "Rögzített terhelés: {load}",
-            "saveDebrief": "Értékelés mentése"
+            "saveDebrief": "Értékelés mentése",
+            "buildFromBlueprint": "Építés sablonból",
+            "blueprintPlaceholder": "Válassz sablont"
           },
           "lite": {
             "modules": {

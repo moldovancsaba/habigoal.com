@@ -2541,7 +2541,9 @@
               "neutralC": "הערה שהאני העתידי שלך (או המאמן) יודה לך עליה…"
             },
             "recordedLoad": "עומס שנרשם: {load}",
-            "saveDebrief": "שמירת תחקיר"
+            "saveDebrief": "שמירת תחקיר",
+            "buildFromBlueprint": "בנה מתבנית",
+            "blueprintPlaceholder": "בחר תבנית"
           },
           "lite": {
             "modules": {

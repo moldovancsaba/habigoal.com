@@ -2541,7 +2541,9 @@
               "neutralC": "One note your future self (or coach) would thank you for…"
             },
             "recordedLoad": "Recorded load: {load}",
-            "saveDebrief": "Save debrief"
+            "saveDebrief": "Save debrief",
+            "buildFromBlueprint": "Build from blueprint",
+            "blueprintPlaceholder": "Choose a blueprint"
           },
           "lite": {
             "modules": {

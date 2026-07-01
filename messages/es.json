@@ -2541,7 +2541,9 @@
               "neutralC": "Una nota que tu yo futuro (o tu entrenador) agradecerá…"
             },
             "recordedLoad": "Carga registrada: {load}",
-            "saveDebrief": "Guardar análisis"
+            "saveDebrief": "Guardar análisis",
+            "buildFromBlueprint": "Crear desde plantilla",
+            "blueprintPlaceholder": "Elige una plantilla"
           },
           "lite": {
             "modules": {

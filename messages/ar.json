@@ -2541,7 +2541,9 @@
               "neutralC": "ملاحظة سيشكرك عليها نفسك المستقبلي (أو مدربك)…"
             },
             "recordedLoad": "الحمل المسجَّل: {load}",
-            "saveDebrief": "حفظ التقييم"
+            "saveDebrief": "حفظ التقييم",
+            "buildFromBlueprint": "إنشاء من قالب",
+            "blueprintPlaceholder": "اختر قالبًا"
           },
           "lite": {
             "modules": {
