@@ -86,7 +86,7 @@ export default function SessionPlannerPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: draftTitle || t("newSessionDefault"),
+          title: draftTitle.trim() || t("newSessionDefault"),
           category: draftCategory,
           date: new Date().toISOString().split("T")[0],
           durationMinutes: 60,
@@ -163,7 +163,7 @@ export default function SessionPlannerPage() {
             />
             <NumberInput label={t("plannedLoad")} value={draftLoad} onChange={setDraftLoad} />
             <Group justify="flex-end">
-              <SemanticButton action="save" color="ingress" onClick={handleCreate} loading={saving} disabled={!draftTitle} />
+              <SemanticButton action="save" color="ingress" onClick={handleCreate} loading={saving} disabled={!draftTitle.trim()} />
             </Group>
           </Stack>
         </SectionPanel>
