@@ -1702,7 +1702,12 @@
       "speed": "Gyorsaság",
       "recovery": "Regeneráció",
       "match": "Meccs"
-    }
+    },
+    "loadBalanceTitle": "Heti terheléselosztás",
+    "peakDay": "Csúcsnapi terhelés: {points} pont",
+    "dayLoad": "{date}: {points} pont",
+    "overloadWarning": "Túlterhelés {date} napon: {load} pont meghaladja a napi határt.",
+    "consecutiveWarning": "Egymást követő magas terhelés: {previousDate} → {date}."
   },
   "AthleteProfileAdmin": {
     "pageTitle": "Sportolói profil adminisztráció",

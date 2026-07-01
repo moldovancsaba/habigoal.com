@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Box, Stack, Text, Paper, SimpleGrid, Group, Badge, TextInput, NumberInput, Loader, Select } from "@mantine/core";
 import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import type { SessionCategory } from "@/types/training-plan";
+import { analyzeWeeklyLoad } from "@/lib/training-load-balance";
 
 interface SessionRow {
   sessionId: string;
@@ -163,6 +164,31 @@ export default function SessionPlannerPage() {
           </Stack>
         </SectionPanel>
       </SimpleGrid>
+      {sessions.length > 0 && (() => {
+        const balance = analyzeWeeklyLoad(sessions);
+        return (
+          <SectionPanel title={t("loadBalanceTitle")}>
+            <Stack gap="sm">
+              <Text size="sm" c="dimmed">{t("peakDay", { points: balance.peakDayLoad })}</Text>
+              <Group gap="xs" wrap="wrap">
+                {balance.byDay.map((day) => (
+                  <Badge key={day.date} variant={day.overloaded ? "filled" : "light"} color={day.overloaded ? "red" : "ingress"}>
+                    {t("dayLoad", { date: day.date, points: day.totalLoad })}
+                  </Badge>
+                ))}
+              </Group>
+              {balance.conflicts.map((conflict, index) => (
+                <Text key={`${conflict.date}-${index}`} size="sm" style={{ color: "var(--status-error)" }}>
+                  {conflict.type === "overload"
+                    ? t("overloadWarning", { date: conflict.date, load: conflict.load })
+                    : t("consecutiveWarning", { date: conflict.date, previousDate: conflict.previousDate })}
+                </Text>
+              ))}
+            </Stack>
+          </SectionPanel>
+        );
+      })()}
+
       <SectionPanel title={t("microcyclesTitle")}>
         <Stack gap="md">
           <TextInput
