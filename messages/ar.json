@@ -2109,7 +2109,11 @@
           "dailyIq": "سجل Daily IQ",
           "assessment": "آخر تقييم",
           "profile": "ملف الرياضي"
-        }
+        },
+        "filter": {
+          "all": "الكل"
+        },
+        "filterNoMatch": "لا يوجد رياضيون مطابقون لهذا المرشح."
       },
       "athletes": {
         "title": "الرياضيون",

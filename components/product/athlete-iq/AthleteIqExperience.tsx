@@ -104,8 +104,10 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
   const [modeView, setModeView] = useState<"lifestyle" | "performance">("performance");
   const [acknowledged, setAcknowledged] = useState<string[]>([]);
   const [savingAcknowledgement, setSavingAcknowledgement] = useState<string | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<"all" | "risk" | "watch" | "missing">("all");
 
   const activeQueue = dashboard.activeQueue.filter((athlete) => !acknowledged.includes(athlete.id));
+  const filteredQueue = priorityFilter === "all" ? activeQueue : activeQueue.filter((athlete) => athlete.severity === priorityFilter);
   const queueScores = activeQueue.map((athlete) => athlete.readiness).filter(isNumber);
   const queueScore = averageScore(queueScores);
   const teamReadiness = dashboard.averageReadiness;
@@ -292,8 +294,24 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
               <Paper id="priority" component="section" className="aiq-panel surface-outline" withBorder radius="md" p="lg">
                 <Stack gap="md">
                   <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title={t("priority.title")} copy={t("priority.copy")} inverse />
+                  {activeQueue.length > 0 ? (
+                    <Box style={{ overflowX: "auto", maxWidth: "100%" }}>
+                      <SegmentedControl
+                        size="sm"
+                        value={priorityFilter}
+                        onChange={(value) => setPriorityFilter(value as typeof priorityFilter)}
+                        data={[
+                          { value: "all", label: t("priority.filter.all") },
+                          { value: "risk", label: t("states.risk") },
+                          { value: "watch", label: t("states.watch") },
+                          { value: "missing", label: t("states.missing") },
+                        ]}
+                      />
+                    </Box>
+                  ) : null}
                   {activeQueue.length === 0 ? <Text className="aiq-muted">{t(selectCopyKey(neutralPromptDef("priority.empty"), { now: heroNowMs }))}</Text> : null}
-                  {activeQueue.map((athlete) => (
+                  {activeQueue.length > 0 && filteredQueue.length === 0 ? <Text className="aiq-muted">{t("priority.filterNoMatch")}</Text> : null}
+                  {filteredQueue.map((athlete) => (
                     <PriorityAthleteCard
                       key={athlete.id}
                       athlete={athlete}
