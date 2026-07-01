@@ -1562,7 +1562,35 @@
     "teamManage": "Team verwalten",
     "teamUnassigned": "Nicht zugewiesene Athleten",
     "teamUnassignedDesc": "{count} Athleten sind noch in keinem Team.",
-    "teamUnassignedManage": "In den Einstellungen zuweisen"
+    "teamUnassignedManage": "In den Einstellungen zuweisen",
+    "coachingAlerts": {
+      "title": "Coaching-Hinweise",
+      "description": "KI-Bereitschaftsempfehlungen und Verletzungsrisiko-Signale für deine Teams.",
+      "empty": "Derzeit keine Coaching-Hinweise.",
+      "loading": "Coaching-Hinweise werden geladen…",
+      "injuryRisk": "Verletzungsrisiko: {level}",
+      "readiness": "Bereitschaft: {zone} ({score})",
+      "confidence": "Konfidenz: {level}",
+      "humanReview": "Menschliche Prüfung erforderlich",
+      "loadReduction": "Belastungsreduktion empfohlen",
+      "risk": {
+        "high": "Hoch",
+        "elevated": "Erhöht",
+        "low": "Niedrig"
+      },
+      "zone": {
+        "peak": "Spitze",
+        "good": "Gut",
+        "moderate": "Mäßig",
+        "fatigued": "Ermüdet",
+        "recovery": "Erholung"
+      },
+      "conf": {
+        "high": "Hoch",
+        "medium": "Mittel",
+        "low": "Niedrig"
+      }
+    }
   },
   "VisionLab": {
     "title": "Kinematik- und Vision-Labor",
