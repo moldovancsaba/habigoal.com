@@ -1627,6 +1627,13 @@
       "metricMovement": "Movement",
       "metricSocial": "Social",
       "metricMental": "Mental"
+    },
+    "trends": {
+      "title": "Team readiness trend",
+      "description": "Average Daily IQ across the squad over the last 14 days.",
+      "selectTeam": "Team",
+      "loading": "Loading trend…",
+      "empty": "Not enough data yet for a trend."
     }
   },
   "VisionLab": {

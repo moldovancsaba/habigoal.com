@@ -1627,6 +1627,13 @@
       "metricMovement": "תנועה",
       "metricSocial": "חברתי",
       "metricMental": "מנטלי"
+    },
+    "trends": {
+      "title": "מגמת מוכנות הקבוצה",
+      "description": "ממוצע ה-Daily IQ של הקבוצה ב-14 הימים האחרונים.",
+      "selectTeam": "קבוצה",
+      "loading": "טוען מגמה…",
+      "empty": "אין עדיין מספיק נתונים למגמה."
     }
   },
   "VisionLab": {

@@ -1627,6 +1627,13 @@
       "metricMovement": "الحركة",
       "metricSocial": "اجتماعي",
       "metricMental": "ذهني"
+    },
+    "trends": {
+      "title": "اتجاه جاهزية الفريق",
+      "description": "متوسط مؤشر اليوم للفريق خلال آخر 14 يومًا.",
+      "selectTeam": "الفريق",
+      "loading": "جارٍ تحميل الاتجاه…",
+      "empty": "لا توجد بيانات كافية بعد لعرض الاتجاه."
     }
   },
   "VisionLab": {

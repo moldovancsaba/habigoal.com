@@ -1627,6 +1627,13 @@
       "metricMovement": "Mozgás",
       "metricSocial": "Szociális",
       "metricMental": "Mentális"
+    },
+    "trends": {
+      "title": "Csapatkészenléti trend",
+      "description": "A csapat átlagos napi IQ-ja az elmúlt 14 napban.",
+      "selectTeam": "Csapat",
+      "loading": "Trend betöltése…",
+      "empty": "Még nincs elég adat a trendhez."
     }
   },
   "VisionLab": {

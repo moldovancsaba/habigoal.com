@@ -1627,6 +1627,13 @@
       "metricMovement": "Bewegung",
       "metricSocial": "Sozial",
       "metricMental": "Mental"
+    },
+    "trends": {
+      "title": "Team-Bereitschaftstrend",
+      "description": "Durchschnittlicher Daily IQ des Teams über die letzten 14 Tage.",
+      "selectTeam": "Team",
+      "loading": "Trend wird geladen…",
+      "empty": "Noch nicht genügend Daten für einen Trend."
     }
   },
   "VisionLab": {

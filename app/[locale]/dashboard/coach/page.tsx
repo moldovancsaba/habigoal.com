@@ -11,6 +11,7 @@ import { CoachingAlertsPanel } from "@/components/dashboard/CoachingAlertsPanel"
 import { ThresholdsPanel } from "@/components/dashboard/ThresholdsPanel";
 import { RosterManagerPanel } from "@/components/dashboard/RosterManagerPanel";
 import { ComparisonPanel } from "@/components/dashboard/ComparisonPanel";
+import { TeamTrendsPanel } from "@/components/dashboard/TeamTrendsPanel";
 import { TeamInvitationsManager } from "@/components/teams/TeamInvitationsManager";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord } from "@/types/coach-action";
@@ -209,6 +210,8 @@ export default function CoachDashboardPage() {
       </SectionPanel>
 
       <TeamInvitationsManager teams={teams} />
+
+      <TeamTrendsPanel teams={teams.filter((team) => team._id).map((team) => ({ id: String(team._id), name: team.name }))} />
 
       <CoachingAlertsPanel
         teams={teams.filter((team) => team._id).map((team) => ({ id: String(team._id), name: team.name }))}

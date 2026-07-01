@@ -1627,6 +1627,13 @@
       "metricMovement": "Movimiento",
       "metricSocial": "Social",
       "metricMental": "Mental"
+    },
+    "trends": {
+      "title": "Tendencia de preparación del equipo",
+      "description": "Daily IQ medio del equipo en los últimos 14 días.",
+      "selectTeam": "Equipo",
+      "loading": "Cargando tendencia…",
+      "empty": "Aún no hay datos suficientes para una tendencia."
     }
   },
   "VisionLab": {
