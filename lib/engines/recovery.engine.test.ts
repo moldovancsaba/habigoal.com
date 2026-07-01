@@ -9,6 +9,7 @@ function ctx(twin: {
   sorenessScore7d?: number;
   sleepQualityScore7d?: number;
   hrvRmssdMs?: number;
+  hrvHistory?: number[];
 }): EngineContext {
   return {
     athleteId: "a1",
@@ -17,6 +18,11 @@ function ctx(twin: {
       cognitive: { stressTrend7d: twin.stressTrend7d },
       recovery: { sorenessScore7d: twin.sorenessScore7d, sleepQualityScore7d: twin.sleepQualityScore7d },
       physical: { hrvRmssdMs: twin.hrvRmssdMs },
+      history: (twin.hrvHistory ?? []).map((value, index) => ({
+        date: `2026-06-${String(20 - index).padStart(2, "0")}`,
+        dimension: "physical",
+        snapshot: { hrvRmssdMs: value },
+      })),
     } as never,
   };
 }
@@ -68,5 +74,26 @@ describe("computeRecovery — subjective + wearable merge (#209)", () => {
   it("never drives the score below zero", async () => {
     const out = await computeRecovery(ctx({ stressTrend7d: 10, sorenessScore7d: 10, sleepQualityScore7d: 0, hrvRmssdMs: 20 }));
     expect(out.result.score).toBeGreaterThanOrEqual(0);
+  });
+
+  it("flags HRV more than 10% below the athlete's own recent baseline", async () => {
+    const out = await computeRecovery(
+      ctx({ stressTrend7d: 2, sorenessScore7d: 2, sleepQualityScore7d: 8, hrvRmssdMs: 50, hrvHistory: [65, 66, 64, 65, 67] })
+    );
+    expect(out.contributingFactors).toContain("HRV below individual baseline");
+  });
+
+  it("does not flag HRV within its own baseline range", async () => {
+    const out = await computeRecovery(
+      ctx({ stressTrend7d: 2, sorenessScore7d: 2, sleepQualityScore7d: 8, hrvRmssdMs: 63, hrvHistory: [65, 66, 64, 65, 67] })
+    );
+    expect(out.contributingFactors).not.toContain("HRV below individual baseline");
+  });
+
+  it("does not apply the baseline check with fewer than 5 prior readings", async () => {
+    const out = await computeRecovery(
+      ctx({ stressTrend7d: 2, sorenessScore7d: 2, sleepQualityScore7d: 8, hrvRmssdMs: 30, hrvHistory: [65, 66] })
+    );
+    expect(out.contributingFactors).not.toContain("HRV below individual baseline");
   });
 });
