@@ -130,7 +130,10 @@ function formatStat(value: number | null): string {
 
 function formatDelta(value: number | null): string {
   if (value === null) return "-";
-  return value > 0 ? `+${value}` : String(value);
+  // Round to 1 decimal so a latest-minus-baseline subtraction can't surface a
+  // floating-point artifact (e.g. 5.7999999999999997 → 5.8).
+  const rounded = Math.round(value * 10) / 10;
+  return rounded > 0 ? `+${rounded}` : String(rounded);
 }
 
 function shiftDate(isoDate: string, days: number): string {
