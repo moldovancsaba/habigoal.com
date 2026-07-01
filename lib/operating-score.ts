@@ -16,6 +16,14 @@ export const OPERATING_SCORE_WEIGHTS: Record<OperatingScoreComponent, number> = 
 
 const recoveryScoreKeys = ["sleep_quality", "body_feel", "fuel_hydration", "energy_level"] as const;
 
+// Acute:chronic workload ratio (ACWR) windows and thresholds (P3 #528). Chronic
+// load needs a reasonably deep trailing sample before the ratio is trustworthy.
+const ACWR_ACUTE_WINDOW_DAYS = 7;
+const ACWR_CHRONIC_WINDOW_DAYS = 28;
+const ACWR_MIN_CHRONIC_DAYS = 14;
+const ACWR_SPIKE_THRESHOLD = 1.5;
+const ACWR_DETRAINING_THRESHOLD = 0.8;
+
 export function buildDailyOperatingMetrics({
   athleteId,
   assessments,
@@ -26,32 +34,40 @@ export function buildDailyOperatingMetrics({
   habitRecords: HabitRecord[];
 }): DailyOperatingMetrics[] {
   const habitsByDate = new Map(habitRecords.map((record) => [record.date, record]));
-  return assessments
-    .slice()
-    .sort((a, b) => a.session.date.localeCompare(b.session.date))
-    .map((assessment) =>
-      buildDailyOperatingMetric({
-        athleteId,
-        assessment,
-        habitRecord: habitsByDate.get(assessment.session.date) ?? null
-      })
-    );
+  const sortedAssessments = assessments.slice().sort((a, b) => a.session.date.localeCompare(b.session.date));
+  const priorLoadPoints: number[] = [];
+  return sortedAssessments.map((assessment) => {
+    const metric = buildDailyOperatingMetric({
+      athleteId,
+      assessment,
+      habitRecord: habitsByDate.get(assessment.session.date) ?? null,
+      priorLoadPoints: priorLoadPoints.slice(-ACWR_CHRONIC_WINDOW_DAYS)
+    });
+    if (metric.trainingLoadPoints !== null) priorLoadPoints.push(metric.trainingLoadPoints);
+    return metric;
+  });
 }
 
 export function buildDailyOperatingMetric({
   athleteId,
   assessment,
-  habitRecord
+  habitRecord,
+  priorLoadPoints = []
 }: {
   athleteId: string;
   assessment: AssessmentRecord;
   habitRecord?: HabitRecord | null;
+  // Chronologically ordered training-load points from PRECEDING days (today's
+  // point is derived below, not included here). Optional — callers with only a
+  // single day's assessment (no history) simply get no ACWR refinement.
+  priorLoadPoints?: number[];
 }): DailyOperatingMetrics {
   const readinessScore = getReadinessScore(assessment);
   const habitScore = habitRecord ? getHabitScoreSummary(habitRecord.statuses).score : null;
   const recoveryScore = getRecoveryScore(assessment, habitRecord ?? null);
   const trainingLoadPoints = getTrainingLoadPoints(assessment);
-  const trainingLoadScore = scoreTrainingLoad(trainingLoadPoints);
+  const trainingLoadAcwr = computeTrainingLoadAcwr(priorLoadPoints, trainingLoadPoints);
+  const trainingLoadScore = applyAcwrRefinement(scoreTrainingLoad(trainingLoadPoints), trainingLoadAcwr);
   const performanceScore = getPerformanceScore(assessment);
   const athleteIqScore = getWeightedScore({
     readiness: readinessScore,
@@ -70,6 +86,7 @@ export function buildDailyOperatingMetric({
     habitScore,
     recoveryScore,
     trainingLoadPoints,
+    trainingLoadAcwr,
     trainingLoadScore,
     performanceScore,
     readinessZone: getReadinessZone(athleteIqScore),
@@ -116,6 +133,29 @@ export function getReadinessZone(score: number | null): ReadinessZone {
   if (score >= 55) return "moderate";
   if (score >= 40) return "fatigued";
   return "recovery";
+}
+
+// Trailing 7-day average over trailing 28-day average, inclusive of today.
+// Requires at least ACWR_MIN_CHRONIC_DAYS of prior points before trusting the
+// chronic average — a thin sample produces a misleadingly volatile ratio.
+function computeTrainingLoadAcwr(priorLoadPoints: number[], todayLoadPoints: number | null): number | null {
+  if (todayLoadPoints === null || priorLoadPoints.length < ACWR_MIN_CHRONIC_DAYS) return null;
+  const combined = [...priorLoadPoints, todayLoadPoints];
+  const acuteLoad = average(combined.slice(-ACWR_ACUTE_WINDOW_DAYS));
+  const chronicLoad = average(combined.slice(-ACWR_CHRONIC_WINDOW_DAYS));
+  if (chronicLoad <= 0) return null;
+  return roundScore(acuteLoad / chronicLoad);
+}
+
+function applyAcwrRefinement(trainingLoadScore: number | null, acwr: number | null): number | null {
+  if (trainingLoadScore === null || acwr === null) return trainingLoadScore;
+  if (acwr > ACWR_SPIKE_THRESHOLD) return Math.max(0, trainingLoadScore - 15);
+  if (acwr < ACWR_DETRAINING_THRESHOLD) return Math.max(0, trainingLoadScore - 10);
+  return trainingLoadScore;
+}
+
+function average(values: number[]) {
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
 function getTrainingLoadPoints(record: AssessmentRecord) {

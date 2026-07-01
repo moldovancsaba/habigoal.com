@@ -68,6 +68,54 @@ describe("daily operating score contract", () => {
     });
   });
 
+  it("leaves trainingLoadAcwr null with fewer than 14 prior load points", () => {
+    const metric = buildDailyOperatingMetric({
+      athleteId: completeDay.athleteId,
+      assessment: completeDay.assessment as AssessmentRecord,
+      priorLoadPoints: [300, 310, 320]
+    });
+    expect(metric.trainingLoadAcwr).toBeNull();
+    expect(metric.trainingLoadScore).toBe(completeDay.expected.trainingLoadScore);
+  });
+
+  it("penalizes an acute training-load spike (ACWR > 1.5) once enough history exists", () => {
+    // 15 low-load baseline days, then the last 6 prior days already ramped up to
+    // today's 350-pt level: the trailing-7 acute average sits well above the
+    // trailing-28 chronic average (baseline-weighted).
+    const priorLoadPoints = [...Array.from({ length: 15 }, () => 100), ...Array.from({ length: 6 }, () => 350)];
+    const metric = buildDailyOperatingMetric({
+      athleteId: completeDay.athleteId,
+      assessment: completeDay.assessment as AssessmentRecord,
+      priorLoadPoints
+    });
+    expect(metric.trainingLoadAcwr).toBeGreaterThan(1.5);
+    expect(metric.trainingLoadScore).toBe(Math.max(0, (completeDay.expected.trainingLoadScore as number) - 15));
+  });
+
+  it("penalizes a detraining dip (ACWR < 0.8) once enough history exists", () => {
+    // 15 high-load baseline days, then the last 6 prior days already tapered to
+    // today's lighter 350-pt level.
+    const priorLoadPoints = [...Array.from({ length: 15 }, () => 700), ...Array.from({ length: 6 }, () => 350)];
+    const metric = buildDailyOperatingMetric({
+      athleteId: completeDay.athleteId,
+      assessment: completeDay.assessment as AssessmentRecord,
+      priorLoadPoints
+    });
+    expect(metric.trainingLoadAcwr).toBeLessThan(0.8);
+    expect(metric.trainingLoadScore).toBe(Math.max(0, (completeDay.expected.trainingLoadScore as number) - 10));
+  });
+
+  it("leaves the score unrefined when ACWR is within the stable range", () => {
+    const priorLoadPoints = Array.from({ length: 28 }, () => 350);
+    const metric = buildDailyOperatingMetric({
+      athleteId: completeDay.athleteId,
+      assessment: completeDay.assessment as AssessmentRecord,
+      priorLoadPoints
+    });
+    expect(metric.trainingLoadAcwr).toBeCloseTo(1, 1);
+    expect(metric.trainingLoadScore).toBe(completeDay.expected.trainingLoadScore);
+  });
+
   it("sorts metrics chronologically and joins habit records by exact date", () => {
     const metrics = buildDailyOperatingMetrics({
       athleteId: completeDay.athleteId,
