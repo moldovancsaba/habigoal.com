@@ -1539,7 +1539,20 @@
       "loadError": "No se pudieron cargar ni enviar los mensajes. Inténtalo de nuevo.",
       "loading": "Cargando mensajes…",
       "empty": "Aún no hay mensajes.",
-      "loadOlder": "Cargar anteriores"
+      "loadOlder": "Cargar anteriores",
+      "modeDirect": "Mensaje directo",
+      "modeBroadcast": "Difusión",
+      "searchLabel": "Buscar",
+      "searchPlaceholder": "Buscar mensajes…",
+      "search": "Buscar",
+      "clearSearch": "Borrar",
+      "searchResultsCount": "{count} resultado(s)",
+      "searchEmpty": "Ningún mensaje coincide con tu búsqueda.",
+      "broadcastComposeLabel": "Mensaje para todo el equipo",
+      "broadcastRecipientCount": "Se enviará a {count} atleta(s)",
+      "sendBroadcast": "Enviar al equipo",
+      "broadcastSent": "Enviado a {count} atleta(s).",
+      "broadcastBadge": "Difusión"
     },
     "concernMetric": {
       "sleep_hours": "Horas de sueño",

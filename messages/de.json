@@ -1539,7 +1539,20 @@
       "loadError": "Nachrichten konnten nicht geladen oder gesendet werden. Bitte erneut versuchen.",
       "loading": "Nachrichten werden geladen…",
       "empty": "Noch keine Nachrichten.",
-      "loadOlder": "Ältere laden"
+      "loadOlder": "Ältere laden",
+      "modeDirect": "Direktnachricht",
+      "modeBroadcast": "Rundnachricht",
+      "searchLabel": "Suche",
+      "searchPlaceholder": "Nachrichten durchsuchen…",
+      "search": "Suchen",
+      "clearSearch": "Löschen",
+      "searchResultsCount": "{count} Ergebnis(se)",
+      "searchEmpty": "Keine Nachrichten entsprechen deiner Suche.",
+      "broadcastComposeLabel": "Nachricht an das gesamte Team",
+      "broadcastRecipientCount": "Wird an {count} Athlet(en) gesendet",
+      "sendBroadcast": "An Team senden",
+      "broadcastSent": "An {count} Athlet(en) gesendet.",
+      "broadcastBadge": "Rundnachricht"
     },
     "concernMetric": {
       "sleep_hours": "Schlafstunden",

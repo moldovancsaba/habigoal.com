@@ -1539,7 +1539,20 @@
       "loadError": "Could not load or send messages. Please try again.",
       "loading": "Loading messages…",
       "empty": "No messages yet.",
-      "loadOlder": "Load older"
+      "loadOlder": "Load older",
+      "modeDirect": "Direct message",
+      "modeBroadcast": "Broadcast",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search messages…",
+      "search": "Search",
+      "clearSearch": "Clear",
+      "searchResultsCount": "{count} result(s)",
+      "searchEmpty": "No messages match your search.",
+      "broadcastComposeLabel": "Message to the whole team",
+      "broadcastRecipientCount": "Will be sent to {count} athlete(s)",
+      "sendBroadcast": "Send to team",
+      "broadcastSent": "Sent to {count} athlete(s).",
+      "broadcastBadge": "Broadcast"
     },
     "concernMetric": {
       "sleep_hours": "Sleep hours",

@@ -1539,7 +1539,20 @@
       "loadError": "Az üzeneteket nem sikerült betölteni vagy elküldeni. Kérjük, próbáld újra.",
       "loading": "Üzenetek betöltése…",
       "empty": "Még nincsenek üzenetek.",
-      "loadOlder": "Korábbiak betöltése"
+      "loadOlder": "Korábbiak betöltése",
+      "modeDirect": "Közvetlen üzenet",
+      "modeBroadcast": "Körüzenet",
+      "searchLabel": "Keresés",
+      "searchPlaceholder": "Üzenetek keresése…",
+      "search": "Keresés",
+      "clearSearch": "Törlés",
+      "searchResultsCount": "{count} találat",
+      "searchEmpty": "Nincs a keresésnek megfelelő üzenet.",
+      "broadcastComposeLabel": "Üzenet az egész csapatnak",
+      "broadcastRecipientCount": "{count} sportolónak lesz elküldve",
+      "sendBroadcast": "Küldés a csapatnak",
+      "broadcastSent": "Elküldve {count} sportolónak.",
+      "broadcastBadge": "Körüzenet"
     },
     "concernMetric": {
       "sleep_hours": "Alvásórák",

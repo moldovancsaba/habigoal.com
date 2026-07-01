@@ -1539,7 +1539,20 @@
       "loadError": "تعذر تحميل الرسائل أو إرسالها. يرجى المحاولة مرة أخرى.",
       "loading": "جارٍ تحميل الرسائل…",
       "empty": "لا توجد رسائل بعد.",
-      "loadOlder": "تحميل الأقدم"
+      "loadOlder": "تحميل الأقدم",
+      "modeDirect": "رسالة مباشرة",
+      "modeBroadcast": "بث جماعي",
+      "searchLabel": "بحث",
+      "searchPlaceholder": "ابحث في الرسائل…",
+      "search": "بحث",
+      "clearSearch": "مسح",
+      "searchResultsCount": "{count} نتيجة",
+      "searchEmpty": "لا توجد رسائل مطابقة لبحثك.",
+      "broadcastComposeLabel": "رسالة إلى الفريق بأكمله",
+      "broadcastRecipientCount": "سيتم إرسالها إلى {count} رياضي",
+      "sendBroadcast": "إرسال إلى الفريق",
+      "broadcastSent": "تم الإرسال إلى {count} رياضي.",
+      "broadcastBadge": "بث جماعي"
     },
     "concernMetric": {
       "sleep_hours": "ساعات النوم",

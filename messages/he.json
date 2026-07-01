@@ -1539,7 +1539,20 @@
       "loadError": "לא ניתן לטעון או לשלוח הודעות. נסו שוב.",
       "loading": "טוען הודעות…",
       "empty": "אין עדיין הודעות.",
-      "loadOlder": "טעינת ישנות יותר"
+      "loadOlder": "טעינת ישנות יותר",
+      "modeDirect": "הודעה ישירה",
+      "modeBroadcast": "הודעה כללית",
+      "searchLabel": "חיפוש",
+      "searchPlaceholder": "חיפוש הודעות…",
+      "search": "חיפוש",
+      "clearSearch": "נקה",
+      "searchResultsCount": "{count} תוצאות",
+      "searchEmpty": "אין הודעות התואמות את החיפוש שלך.",
+      "broadcastComposeLabel": "הודעה לכל הקבוצה",
+      "broadcastRecipientCount": "תישלח ל-{count} ספורטאים",
+      "sendBroadcast": "שלח לקבוצה",
+      "broadcastSent": "נשלח ל-{count} ספורטאים.",
+      "broadcastBadge": "הודעה כללית"
     },
     "concernMetric": {
       "sleep_hours": "שעות שינה",
