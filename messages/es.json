@@ -1590,6 +1590,17 @@
         "medium": "Media",
         "low": "Baja"
       }
+    },
+    "thresholds": {
+      "title": "Umbrales de alerta",
+      "description": "Define los cortes de preparación que determinan los colores de estado del equipo (escala 0–5).",
+      "selectTeam": "Equipo",
+      "greenMin": "Listo a partir de",
+      "yellowMin": "Vigilar a partir de",
+      "save": "Guardar umbrales",
+      "saved": "Umbrales guardados.",
+      "saveError": "No se pudieron guardar los umbrales.",
+      "scaleHint": "Por debajo del valor de vigilancia se marca como riesgo. «Listo» debe ser mayor que «vigilar»."
     }
   },
   "VisionLab": {

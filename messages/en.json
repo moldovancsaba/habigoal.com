@@ -1590,6 +1590,17 @@
         "medium": "Medium",
         "low": "Low"
       }
+    },
+    "thresholds": {
+      "title": "Alert thresholds",
+      "description": "Set the readiness cut-offs that drive squad status colors (0–5 gauge).",
+      "selectTeam": "Team",
+      "greenMin": "Ready at or above",
+      "yellowMin": "Watch at or above",
+      "save": "Save thresholds",
+      "saved": "Thresholds saved.",
+      "saveError": "Could not save thresholds.",
+      "scaleHint": "Below the watch value is flagged as risk. Ready must be higher than watch."
     }
   },
   "VisionLab": {

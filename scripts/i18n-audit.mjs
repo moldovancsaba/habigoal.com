@@ -351,6 +351,7 @@ const IDENTICAL_OK = new Set([
   "Common.emptyValue",
   "Common.languageArabic",
   "Common.languageHebrew",
+  "CoachHub.thresholds.selectTeam",
   "AthleteInsights.sourceType.check_in",
   "AthleteProfileAdmin.position",
   "AthleteProfileAdmin.status",
