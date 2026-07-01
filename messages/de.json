@@ -2050,6 +2050,16 @@
           "evening": "Guten Abend — wertе den Tag aus und plane morgen."
         }
       },
+      "personaIndicator": {
+        "current": {
+          "athlete": "Athletenansicht",
+          "trainer": "Traineransicht"
+        },
+        "switchTo": {
+          "athlete": "Zur Athletenansicht wechseln",
+          "trainer": "Zur Traineransicht wechseln"
+        }
+      },
       "metrics": {
         "dailyIq": "Daily IQ",
         "lifestyleRoute": "Lifestyle-Route",

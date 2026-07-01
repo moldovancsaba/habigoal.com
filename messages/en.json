@@ -2050,6 +2050,16 @@
           "evening": "Good evening — review the day and plan tomorrow."
         }
       },
+      "personaIndicator": {
+        "current": {
+          "athlete": "Athlete view",
+          "trainer": "Coach view"
+        },
+        "switchTo": {
+          "athlete": "Switch to athlete view",
+          "trainer": "Switch to coach view"
+        }
+      },
       "metrics": {
         "dailyIq": "Daily IQ",
         "lifestyleRoute": "Lifestyle route",

@@ -2050,6 +2050,16 @@
           "evening": "Jó estét — tekintsd át a napot és tervezd a holnapot."
         }
       },
+      "personaIndicator": {
+        "current": {
+          "athlete": "Sportolói nézet",
+          "trainer": "Edzői nézet"
+        },
+        "switchTo": {
+          "athlete": "Váltás sportolói nézetre",
+          "trainer": "Váltás edzői nézetre"
+        }
+      },
       "metrics": {
         "dailyIq": "Napi IQ",
         "lifestyleRoute": "Életmód útvonal",

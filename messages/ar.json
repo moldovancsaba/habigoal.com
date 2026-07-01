@@ -2050,6 +2050,16 @@
           "evening": "مساء الخير — راجع اليوم وخطط للغد."
         }
       },
+      "personaIndicator": {
+        "current": {
+          "athlete": "عرض الرياضي",
+          "trainer": "عرض المدرب"
+        },
+        "switchTo": {
+          "athlete": "التبديل إلى عرض الرياضي",
+          "trainer": "التبديل إلى عرض المدرب"
+        }
+      },
       "metrics": {
         "dailyIq": "Daily IQ",
         "lifestyleRoute": "مسار نمط الحياة",

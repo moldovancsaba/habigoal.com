@@ -2050,6 +2050,16 @@
           "evening": "Buenas noches — repasa el día y planifica mañana."
         }
       },
+      "personaIndicator": {
+        "current": {
+          "athlete": "Vista de atleta",
+          "trainer": "Vista de entrenador"
+        },
+        "switchTo": {
+          "athlete": "Cambiar a la vista de atleta",
+          "trainer": "Cambiar a la vista de entrenador"
+        }
+      },
       "metrics": {
         "dailyIq": "Daily IQ",
         "lifestyleRoute": "Ruta de estilo de vida",

@@ -2050,6 +2050,16 @@
           "evening": "ערב טוב — סקור את היום ותכנן את מחר."
         }
       },
+      "personaIndicator": {
+        "current": {
+          "athlete": "תצוגת ספורטאי",
+          "trainer": "תצוגת מאמן"
+        },
+        "switchTo": {
+          "athlete": "עבור לתצוגת ספורטאי",
+          "trainer": "עבור לתצוגת מאמן"
+        }
+      },
       "metrics": {
         "dailyIq": "Daily IQ",
         "lifestyleRoute": "מסלול אורח חיים",
