@@ -2109,7 +2109,11 @@
           "dailyIq": "Daily IQ rekord",
           "assessment": "Legutóbbi felmérés",
           "profile": "Sportolói profil"
-        }
+        },
+        "filter": {
+          "all": "Összes"
+        },
+        "filterNoMatch": "Egy sportoló sem felel meg ennek a szűrőnek."
       },
       "athletes": {
         "title": "Sportolók",

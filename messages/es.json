@@ -2109,7 +2109,11 @@
           "dailyIq": "Registro Daily IQ",
           "assessment": "Ultima evaluacion",
           "profile": "Perfil del atleta"
-        }
+        },
+        "filter": {
+          "all": "Todos"
+        },
+        "filterNoMatch": "Ningún atleta coincide con este filtro."
       },
       "athletes": {
         "title": "Atletas",

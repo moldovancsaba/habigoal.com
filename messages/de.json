@@ -2109,7 +2109,11 @@
           "dailyIq": "Daily-IQ-Snapshot",
           "assessment": "Letzte Bewertung",
           "profile": "Athletenprofil"
-        }
+        },
+        "filter": {
+          "all": "Alle"
+        },
+        "filterNoMatch": "Keine Athleten entsprechen diesem Filter."
       },
       "athletes": {
         "title": "Athleten",

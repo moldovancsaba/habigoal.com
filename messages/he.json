@@ -2109,7 +2109,11 @@
           "dailyIq": "רשומת Daily IQ",
           "assessment": "הערכה אחרונה",
           "profile": "פרופיל ספורטאי"
-        }
+        },
+        "filter": {
+          "all": "הכול"
+        },
+        "filterNoMatch": "אין ספורטאים התואמים למסנן זה."
       },
       "athletes": {
         "title": "ספורטאים",
