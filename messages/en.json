@@ -1612,6 +1612,21 @@
       "noCandidates": "No athletes to add.",
       "remove": "Remove",
       "saveError": "Could not update the roster."
+    },
+    "compare": {
+      "title": "Athlete comparison",
+      "description": "Compare up to three athletes against the squad average.",
+      "select": "Athletes to compare",
+      "selectPlaceholder": "Pick up to 3 athletes",
+      "empty": "Select athletes to compare.",
+      "metric": "Metric",
+      "teamAverage": "Squad avg",
+      "metricReadiness": "Latest readiness",
+      "metricAvgReadiness": "Average readiness",
+      "metricOverall": "Overall",
+      "metricMovement": "Movement",
+      "metricSocial": "Social",
+      "metricMental": "Mental"
     }
   },
   "VisionLab": {

@@ -1612,6 +1612,21 @@
       "noCandidates": "Keine Athleten zum Hinzufügen.",
       "remove": "Entfernen",
       "saveError": "Kader konnte nicht aktualisiert werden."
+    },
+    "compare": {
+      "title": "Athletenvergleich",
+      "description": "Vergleiche bis zu drei Athleten mit dem Team-Durchschnitt.",
+      "select": "Zu vergleichende Athleten",
+      "selectPlaceholder": "Bis zu 3 Athleten wählen",
+      "empty": "Athleten zum Vergleich auswählen.",
+      "metric": "Kennzahl",
+      "teamAverage": "Team-Ø",
+      "metricReadiness": "Letzte Bereitschaft",
+      "metricAvgReadiness": "Durchschn. Bereitschaft",
+      "metricOverall": "Gesamt",
+      "metricMovement": "Bewegung",
+      "metricSocial": "Sozial",
+      "metricMental": "Mental"
     }
   },
   "VisionLab": {

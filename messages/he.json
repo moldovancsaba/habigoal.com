@@ -1612,6 +1612,21 @@
       "noCandidates": "אין ספורטאים להוספה.",
       "remove": "הסר",
       "saveError": "לא ניתן היה לעדכן את הסגל."
+    },
+    "compare": {
+      "title": "השוואת ספורטאים",
+      "description": "השווה עד שלושה ספורטאים לממוצע הקבוצה.",
+      "select": "ספורטאים להשוואה",
+      "selectPlaceholder": "בחר עד 3 ספורטאים",
+      "empty": "בחר ספורטאים להשוואה.",
+      "metric": "מדד",
+      "teamAverage": "ממוצע קבוצתי",
+      "metricReadiness": "מוכנות אחרונה",
+      "metricAvgReadiness": "מוכנות ממוצעת",
+      "metricOverall": "כללי",
+      "metricMovement": "תנועה",
+      "metricSocial": "חברתי",
+      "metricMental": "מנטלי"
     }
   },
   "VisionLab": {
