@@ -1539,7 +1539,20 @@
       "loadError": "Az üzeneteket nem sikerült betölteni vagy elküldeni. Kérjük, próbáld újra.",
       "loading": "Üzenetek betöltése…",
       "empty": "Még nincsenek üzenetek.",
-      "loadOlder": "Korábbiak betöltése"
+      "loadOlder": "Korábbiak betöltése",
+      "modeDirect": "Közvetlen üzenet",
+      "modeBroadcast": "Körüzenet",
+      "searchLabel": "Keresés",
+      "searchPlaceholder": "Üzenetek keresése…",
+      "search": "Keresés",
+      "clearSearch": "Törlés",
+      "searchResultsCount": "{count} találat",
+      "searchEmpty": "Nincs a keresésnek megfelelő üzenet.",
+      "broadcastComposeLabel": "Üzenet az egész csapatnak",
+      "broadcastRecipientCount": "{count} sportolónak lesz elküldve",
+      "sendBroadcast": "Küldés a csapatnak",
+      "broadcastSent": "Elküldve {count} sportolónak.",
+      "broadcastBadge": "Körüzenet"
     },
     "concernMetric": {
       "sleep_hours": "Alvásórák",
@@ -1573,6 +1586,13 @@
       "confidence": "Megbízhatóság: {level}",
       "humanReview": "Emberi felülvizsgálat szükséges",
       "loadReduction": "Terheléscsökkentés javasolt",
+      "recommendationText": {
+        "peak": "Folytassa a tervezett nagy intenzitású munkát. Figyelje az RPE-t a maximális erőkifejtések alatt.",
+        "good": "Folytassa a tervezett edzést. Figyelje a terhelést a blokk vége felé.",
+        "moderate": "Csökkentse a terjedelmet 15–20%-kal, és kerülje a maximális excentrikus terheléseket ma.",
+        "fatigued": "Részesítse előnyben az aktív regenerációt és a taktikai áttekintéseket a fizikai megterheléssel szemben.",
+        "recovery": "Kötelező pihenőnap javasolt a központi idegrendszer regenerálódásához."
+      },
       "risk": {
         "high": "Magas",
         "elevated": "Emelkedett",
@@ -1679,6 +1699,9 @@
   },
   "PlanningDashboard": {
     "title": "Edzéstervező és mikrociklusok",
+    "team": "Csapat",
+    "teamPlaceholder": "Válassz csapatot",
+    "noTeamsHint": "Még nincs csapatod — hozz létre egyet, hogy hozzárendelhesd az edzéseket és mikrociklusokat.",
     "createSession": "Új edzés",
     "sessionTitle": "Edzés címe",
     "sessionTitlePlaceholder": "pl. Erő blokk A",
@@ -2048,6 +2071,16 @@
           "morning": "Jó reggelt — készítsd fel a csapatot az edzések előtt.",
           "afternoon": "Jó napot — nézd át a terhelést és a regenerációt.",
           "evening": "Jó estét — tekintsd át a napot és tervezd a holnapot."
+        }
+      },
+      "personaIndicator": {
+        "current": {
+          "athlete": "Sportolói nézet",
+          "trainer": "Edzői nézet"
+        },
+        "switchTo": {
+          "athlete": "Váltás sportolói nézetre",
+          "trainer": "Váltás edzői nézetre"
         }
       },
       "metrics": {

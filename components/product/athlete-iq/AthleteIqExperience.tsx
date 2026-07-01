@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Badge, Box, Group, Paper, Progress, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Badge, Box, Button, Group, Paper, Progress, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme, SemanticButton } from "@doneisbetter/gds/client";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState, type CSSProperties } from "react";
@@ -234,7 +234,10 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
             <Paper id="home" component="section" className="aiq-hero-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
               <SimpleGrid cols={{ base: 1, lg: 2 }} spacing={{ base: "lg", lg: "xl" }}>
                 <Stack gap="lg">
-                  <Text className="aiq-letter-label">{t("hero.dateLabel", { date: dashboard.localDate })}</Text>
+                  <Group justify="space-between" align="center" gap="sm" wrap="wrap">
+                    <Text className="aiq-letter-label">{t("hero.dateLabel", { date: dashboard.localDate })}</Text>
+                    <PersonaIndicator dashboard={dashboard} translate={t} />
+                  </Group>
                   <PageHeader
                     title={t("hero.title")}
                     subtitle={t(selectCopyKey(heroSubtitleDef("hero.subtitle"), { now: heroNowMs }))}
@@ -520,7 +523,10 @@ function AiqAthleteWorkspace({
             <Paper id="home" component="section" className="aiq-hero-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
               <SimpleGrid cols={{ base: 1, lg: 2 }} spacing={{ base: "lg", lg: "xl" }}>
                 <Stack gap="lg">
-                  <Text className="aiq-letter-label">{translate("hero.dateLabel", { date: dashboard.localDate })}</Text>
+                  <Group justify="space-between" align="center" gap="sm" wrap="wrap">
+                    <Text className="aiq-letter-label">{translate("hero.dateLabel", { date: dashboard.localDate })}</Text>
+                    <PersonaIndicator dashboard={dashboard} translate={translate} />
+                  </Group>
                   <PageHeader
                     title={translate("athleteWorkspace.hero.title")}
                     subtitle={translate(selectCopyKey(heroSubtitleDef("athleteWorkspace.hero.subtitle"), { now: heroNowMs }))}
@@ -682,6 +688,36 @@ function AiqAthleteWorkspace({
         </Box>
       </Box>
     </Box>
+  );
+}
+
+// Multi-role accounts (e.g. a coach who is also a registered athlete) can view
+// either persona on this shared route. Without this indicator the athlete
+// self-service workspace can render for a trainer-capable account with no
+// visible cue why, and no way back (#persona-indicator).
+function PersonaIndicator({ dashboard, translate }: { dashboard: AthleteIqProductDashboardProjection; translate: AiqTranslate }) {
+  const locale = useLocale() as SupportedLocale;
+  const pathname = usePathname();
+  const router = useRouter();
+  const otherPersona = dashboard.persona === "athlete" ? "trainer" : "athlete";
+  const canSwitch = dashboard.availablePersonas.includes(otherPersona);
+
+  function switchTo(next: "athlete" | "trainer") {
+    const cleanPath = pathname.replace(/^\/(en|hu|ar|es|de|he)(\/|$)/, "/");
+    router.push(`${cleanPath}?persona=${next}`, { locale });
+  }
+
+  return (
+    <Group gap="xs" wrap="wrap" className="aiq-persona-indicator">
+      <Badge color={dashboard.persona === "athlete" ? "yellow" : "tactical"} variant="light">
+        {translate(`personaIndicator.current.${dashboard.persona}`)}
+      </Badge>
+      {canSwitch ? (
+        <Button variant="subtle" color="yellow" size="sm" onClick={() => switchTo(otherPersona)}>
+          {translate(`personaIndicator.switchTo.${otherPersona}`)}
+        </Button>
+      ) : null}
+    </Group>
   );
 }
 

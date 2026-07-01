@@ -53,6 +53,11 @@ export type AthleteIqDashboardService = {
 export type AthleteIqProductDashboardProjection = {
   localDate: string;
   persona: "athlete" | "trainer";
+  // Which persona view(s) this account is actually entitled to. Length 2 means
+  // the account holds both an athlete role and a trainer-capable role, so the
+  // surface should expose an explicit switcher rather than silently rendering
+  // one view (#persona-indicator).
+  availablePersonas: Array<"athlete" | "trainer">;
   timezone: string;
   state: AthleteIqDashboardState;
   teamCount: number;
@@ -83,15 +88,24 @@ export function getBudapestLocalDate(date = new Date()) {
 // but a multi-role user can pre-select athlete vs trainer on the selector
 // (#persona). Honour that choice only when the user actually holds the role —
 // an athlete can never view the trainer surface and vice-versa.
-function resolveEffectivePersona(user: AuthUser, requested?: "athlete" | "trainer"): "athlete" | "trainer" {
+function resolveAvailablePersonas(user: AuthUser): Array<"athlete" | "trainer"> {
   const roles = (user.roles ?? []).map((role) => String(role).toLowerCase());
   const canTrainer = ["admin", "trainer", "performance_coach", "physio", "analyst", "club_management"].some((role) =>
     roles.includes(role)
   );
   const canAthlete = roles.includes("athlete");
-  if (requested === "athlete" && canAthlete) return "athlete";
-  if (requested === "trainer" && canTrainer) return "trainer";
-  return user.primaryRole === "athlete" ? "athlete" : "trainer";
+  const personas: Array<"athlete" | "trainer"> = [];
+  if (canTrainer) personas.push("trainer");
+  if (canAthlete) personas.push("athlete");
+  return personas.length > 0 ? personas : [user.primaryRole === "athlete" ? "athlete" : "trainer"];
+}
+
+function resolveEffectivePersona(available: Array<"athlete" | "trainer">, primaryRole: AuthUser["primaryRole"], requested?: "athlete" | "trainer"): "athlete" | "trainer" {
+  if (requested && available.includes(requested)) return requested;
+  if (available.includes(primaryRole === "athlete" ? "athlete" : "trainer")) {
+    return primaryRole === "athlete" ? "athlete" : "trainer";
+  }
+  return available[0];
 }
 
 export async function getAthleteIqProductDashboardProjection(input: {
@@ -104,7 +118,8 @@ export async function getAthleteIqProductDashboardProjection(input: {
   const localDate = input.localDate ?? getBudapestLocalDate();
   const user = input.user === undefined ? await getAuthUser() : input.user;
   if (!user) return emptyDashboardProjection({ localDate, timezone });
-  const effectivePersona = resolveEffectivePersona(user, input.requestedPersona);
+  const availablePersonas = resolveAvailablePersonas(user);
+  const effectivePersona = resolveEffectivePersona(availablePersonas, user.primaryRole, input.requestedPersona);
 
   const [allAthletes, allTeams, allActions, allowedAthleteIds] = await Promise.all([
     listChildrenWithMetrics(),
@@ -196,6 +211,7 @@ export async function getAthleteIqProductDashboardProjection(input: {
   return {
     localDate,
     persona: effectivePersona,
+    availablePersonas,
     timezone,
     state,
     teamCount: teams.length,
@@ -228,6 +244,7 @@ function emptyDashboardProjection(input: { localDate: string; timezone: string }
   return {
     localDate: input.localDate,
     persona: "trainer",
+    availablePersonas: ["trainer"],
     timezone: input.timezone,
     state: "empty",
     teamCount: 0,

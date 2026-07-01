@@ -1539,7 +1539,20 @@
       "loadError": "Could not load or send messages. Please try again.",
       "loading": "Loading messages…",
       "empty": "No messages yet.",
-      "loadOlder": "Load older"
+      "loadOlder": "Load older",
+      "modeDirect": "Direct message",
+      "modeBroadcast": "Broadcast",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search messages…",
+      "search": "Search",
+      "clearSearch": "Clear",
+      "searchResultsCount": "{count} result(s)",
+      "searchEmpty": "No messages match your search.",
+      "broadcastComposeLabel": "Message to the whole team",
+      "broadcastRecipientCount": "Will be sent to {count} athlete(s)",
+      "sendBroadcast": "Send to team",
+      "broadcastSent": "Sent to {count} athlete(s).",
+      "broadcastBadge": "Broadcast"
     },
     "concernMetric": {
       "sleep_hours": "Sleep hours",
@@ -1573,6 +1586,13 @@
       "confidence": "Confidence: {level}",
       "humanReview": "Needs human review",
       "loadReduction": "Load reduction advised",
+      "recommendationText": {
+        "peak": "Proceed with planned high-intensity work. Monitor RPE during maximal efforts.",
+        "good": "Proceed with the planned session. Monitor load toward the end of the block.",
+        "moderate": "Reduce volume by 15–20% and avoid maximal eccentric loads today.",
+        "fatigued": "Prioritise active recovery and tactical walkthroughs over physical exertion.",
+        "recovery": "Mandatory rest day recommended to allow central nervous system recovery."
+      },
       "risk": {
         "high": "High",
         "elevated": "Elevated",
@@ -1679,6 +1699,9 @@
   },
   "PlanningDashboard": {
     "title": "Session Planner & Microcycles",
+    "team": "Team",
+    "teamPlaceholder": "Select a team",
+    "noTeamsHint": "You have no teams yet — create one to assign sessions and microcycles to it.",
     "createSession": "Create New Session",
     "sessionTitle": "Session Title",
     "sessionTitlePlaceholder": "e.g. Strength Block A",
@@ -2048,6 +2071,16 @@
           "morning": "Good morning — set the squad up before sessions start.",
           "afternoon": "Good afternoon — check in on load and recovery.",
           "evening": "Good evening — review the day and plan tomorrow."
+        }
+      },
+      "personaIndicator": {
+        "current": {
+          "athlete": "Athlete view",
+          "trainer": "Coach view"
+        },
+        "switchTo": {
+          "athlete": "Switch to athlete view",
+          "trainer": "Switch to coach view"
         }
       },
       "metrics": {

@@ -4,6 +4,7 @@ import {
   InjuryRiskResult,
   ReadinessResult,
   RecommendationResult,
+  RecommendationTextKey,
   RecoveryResult,
 } from "../../types/ai-engine";
 import { getModelByEngine } from "../model-registry";
@@ -30,6 +31,9 @@ export function buildRecommendation(
 ): RecommendationResult {
   const zone = readiness.result.zone;
   let text = "";
+  // The zone maps 1:1 onto the translation key — the UI renders this instead of
+  // `text` so the coach sees the recommendation in their own locale (#recommendation-i18n).
+  const textKey: RecommendationTextKey = zone;
   let reason = "";
   let confidence = readiness.confidence;
   let humanReviewRequired =
@@ -70,6 +74,7 @@ export function buildRecommendation(
 
   return {
     text,
+    textKey,
     reason,
     confidence,
     humanReviewRequired,

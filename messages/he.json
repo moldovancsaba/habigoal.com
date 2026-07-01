@@ -1539,7 +1539,20 @@
       "loadError": "לא ניתן לטעון או לשלוח הודעות. נסו שוב.",
       "loading": "טוען הודעות…",
       "empty": "אין עדיין הודעות.",
-      "loadOlder": "טעינת ישנות יותר"
+      "loadOlder": "טעינת ישנות יותר",
+      "modeDirect": "הודעה ישירה",
+      "modeBroadcast": "הודעה כללית",
+      "searchLabel": "חיפוש",
+      "searchPlaceholder": "חיפוש הודעות…",
+      "search": "חיפוש",
+      "clearSearch": "נקה",
+      "searchResultsCount": "{count} תוצאות",
+      "searchEmpty": "אין הודעות התואמות את החיפוש שלך.",
+      "broadcastComposeLabel": "הודעה לכל הקבוצה",
+      "broadcastRecipientCount": "תישלח ל-{count} ספורטאים",
+      "sendBroadcast": "שלח לקבוצה",
+      "broadcastSent": "נשלח ל-{count} ספורטאים.",
+      "broadcastBadge": "הודעה כללית"
     },
     "concernMetric": {
       "sleep_hours": "שעות שינה",
@@ -1573,6 +1586,13 @@
       "confidence": "ביטחון: {level}",
       "humanReview": "נדרשת בדיקה אנושית",
       "loadReduction": "מומלץ להפחית עומס",
+      "recommendationText": {
+        "peak": "המשך בעבודה המתוכננת בעצימות גבוהה. עקוב אחר ה-RPE במהלך מאמצים מרביים.",
+        "good": "המשך באימון המתוכנן. עקוב אחר העומס לקראת סוף הבלוק.",
+        "moderate": "הפחת את הנפח ב-15–20% והימנע מעומסים אקצנטריים מרביים היום.",
+        "fatigued": "תן עדיפות להתאוששות פעילה וסקירות טקטיות על פני מאמץ גופני.",
+        "recovery": "מומלץ יום מנוחה חובה כדי לאפשר התאוששות של מערכת העצבים המרכזית."
+      },
       "risk": {
         "high": "גבוה",
         "elevated": "מוגבר",
@@ -1679,6 +1699,9 @@
   },
   "PlanningDashboard": {
     "title": "מתכנן אימונים ומיקרו-מחזורים",
+    "team": "קבוצה",
+    "teamPlaceholder": "בחר קבוצה",
+    "noTeamsHint": "עדיין אין לך קבוצות — צור קבוצה כדי לשייך אליה אימונים ומחזורים.",
     "createSession": "אימון חדש",
     "sessionTitle": "כותרת",
     "sessionTitlePlaceholder": "למשל Strength A",
@@ -2048,6 +2071,16 @@
           "morning": "בוקר טוב — הכן את הסגל לפני האימונים.",
           "afternoon": "צהריים טובים — בדוק עומס והתאוששות.",
           "evening": "ערב טוב — סקור את היום ותכנן את מחר."
+        }
+      },
+      "personaIndicator": {
+        "current": {
+          "athlete": "תצוגת ספורטאי",
+          "trainer": "תצוגת מאמן"
+        },
+        "switchTo": {
+          "athlete": "עבור לתצוגת ספורטאי",
+          "trainer": "עבור לתצוגת מאמן"
         }
       },
       "metrics": {

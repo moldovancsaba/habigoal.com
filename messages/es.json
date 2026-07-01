@@ -1539,7 +1539,20 @@
       "loadError": "No se pudieron cargar ni enviar los mensajes. Inténtalo de nuevo.",
       "loading": "Cargando mensajes…",
       "empty": "Aún no hay mensajes.",
-      "loadOlder": "Cargar anteriores"
+      "loadOlder": "Cargar anteriores",
+      "modeDirect": "Mensaje directo",
+      "modeBroadcast": "Difusión",
+      "searchLabel": "Buscar",
+      "searchPlaceholder": "Buscar mensajes…",
+      "search": "Buscar",
+      "clearSearch": "Borrar",
+      "searchResultsCount": "{count} resultado(s)",
+      "searchEmpty": "Ningún mensaje coincide con tu búsqueda.",
+      "broadcastComposeLabel": "Mensaje para todo el equipo",
+      "broadcastRecipientCount": "Se enviará a {count} atleta(s)",
+      "sendBroadcast": "Enviar al equipo",
+      "broadcastSent": "Enviado a {count} atleta(s).",
+      "broadcastBadge": "Difusión"
     },
     "concernMetric": {
       "sleep_hours": "Horas de sueño",
@@ -1573,6 +1586,13 @@
       "confidence": "Confianza: {level}",
       "humanReview": "Requiere revisión humana",
       "loadReduction": "Se aconseja reducir la carga",
+      "recommendationText": {
+        "peak": "Continúa con el trabajo de alta intensidad planificado. Controla el RPE durante los esfuerzos máximos.",
+        "good": "Continúa con la sesión planificada. Controla la carga hacia el final del bloque.",
+        "moderate": "Reduce el volumen entre un 15 y un 20 % y evita cargas excéntricas máximas hoy.",
+        "fatigued": "Prioriza la recuperación activa y los repasos tácticos frente al esfuerzo físico.",
+        "recovery": "Se recomienda un día de descanso obligatorio para permitir la recuperación del sistema nervioso central."
+      },
       "risk": {
         "high": "Alto",
         "elevated": "Elevado",
@@ -1679,6 +1699,9 @@
   },
   "PlanningDashboard": {
     "title": "Planificador y microciclos",
+    "team": "Equipo",
+    "teamPlaceholder": "Selecciona un equipo",
+    "noTeamsHint": "Todavía no tienes equipos — crea uno para asignarle sesiones y microciclos.",
     "createSession": "Nueva sesion",
     "sessionTitle": "Titulo",
     "sessionTitlePlaceholder": "ej. Fuerza A",
@@ -2048,6 +2071,16 @@
           "morning": "Buenos días — prepara la plantilla antes de las sesiones.",
           "afternoon": "Buenas tardes — revisa la carga y la recuperación.",
           "evening": "Buenas noches — repasa el día y planifica mañana."
+        }
+      },
+      "personaIndicator": {
+        "current": {
+          "athlete": "Vista de atleta",
+          "trainer": "Vista de entrenador"
+        },
+        "switchTo": {
+          "athlete": "Cambiar a la vista de atleta",
+          "trainer": "Cambiar a la vista de entrenador"
         }
       },
       "metrics": {

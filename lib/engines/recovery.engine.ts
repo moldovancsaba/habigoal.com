@@ -11,6 +11,11 @@ import { EngineContext, EngineOutput, RecoveryResult } from "../../types/ai-engi
 const LOW_SLEEP_THRESHOLD = 5;
 const HIGH_STRESS_THRESHOLD = 7;
 const HIGH_SORENESS_THRESHOLD = 6;
+// Minimum prior HRV readings required before trusting a personal baseline.
+const HRV_BASELINE_MIN_SAMPLES = 5;
+// Today's HRV more than 10% below the athlete's own recent average is treated
+// as a recovery signal (a commonly used HRV-drop heuristic in the literature).
+const HRV_BELOW_BASELINE_RATIO = 0.9;
 
 export async function computeRecovery(context: EngineContext): Promise<EngineOutput<RecoveryResult>> {
   const { twin } = context;
@@ -51,14 +56,29 @@ export async function computeRecovery(context: EngineContext): Promise<EngineOut
     missing.push("sleepQualityScore7d");
   }
 
-  // HRV has no per-athlete baseline here, so applying an absolute threshold would
-  // be unreliable. Instead its presence is treated as a recovery signal that
-  // raises confidence (the wearable merge), and its absence is tracked.
+  // HRV has no fixed absolute threshold (that varies too much per athlete to be
+  // reliable) — but the twin's own recorded history gives us each athlete's
+  // personal baseline, so once enough prior readings exist we can compare
+  // today's HRV against the athlete's own trend rather than fabricating a
+  // population threshold (P3 #528, "individual HRV percentile").
   let hrvPresent = false;
   if (typeof twin.physical?.hrvRmssdMs === "number") {
     presentSignals++;
     hrvPresent = true;
     factors.push("HRV available (wearable)");
+
+    const current = twin.physical.hrvRmssdMs;
+    const priorHrvReadings = (twin.history ?? [])
+      .filter((entry) => entry.dimension === "physical" && typeof entry.snapshot.hrvRmssdMs === "number")
+      .map((entry) => entry.snapshot.hrvRmssdMs as number)
+      .filter((value) => value !== current);
+    if (priorHrvReadings.length >= HRV_BASELINE_MIN_SAMPLES) {
+      const baseline = priorHrvReadings.reduce((sum, value) => sum + value, 0) / priorHrvReadings.length;
+      if (baseline > 0 && current < baseline * HRV_BELOW_BASELINE_RATIO) {
+        score -= 15;
+        factors.push("HRV below individual baseline");
+      }
+    }
   } else {
     missing.push("hrvRmssdMs");
   }

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { listTeamMessages } from "@/repositories/team-messages.repository";
+import { insertTeamBroadcast, listTeamMessages } from "@/repositories/team-messages.repository";
 import { getDatabase } from "@/lib/mongodb";
 
 vi.mock("@/lib/mongodb", () => ({ getDatabase: vi.fn() }));
@@ -50,5 +50,77 @@ describe("listTeamMessages", () => {
 
     await listTeamMessages("t1", { limit: 0 });
     expect(limit).toHaveBeenCalledWith(1);
+  });
+
+  it("applies a case-insensitive regex filter on text when searching", async () => {
+    const { db, find } = makeDb([]);
+    vi.mocked(getDatabase).mockResolvedValue(db as never);
+
+    await listTeamMessages("t1", { search: "practice" });
+
+    expect(find).toHaveBeenCalledWith({ teamId: "t1", text: { $regex: "practice", $options: "i" } });
+  });
+
+  it("escapes regex metacharacters in the search term", async () => {
+    const { db, find } = makeDb([]);
+    vi.mocked(getDatabase).mockResolvedValue(db as never);
+
+    await listTeamMessages("t1", { search: "5pm (sharp)" });
+
+    expect(find).toHaveBeenCalledWith({ teamId: "t1", text: { $regex: "5pm \\(sharp\\)", $options: "i" } });
+  });
+
+  it("ignores a blank/whitespace-only search term", async () => {
+    const { db, find } = makeDb([]);
+    vi.mocked(getDatabase).mockResolvedValue(db as never);
+
+    await listTeamMessages("t1", { search: "   " });
+
+    expect(find).toHaveBeenCalledWith({ teamId: "t1" });
+  });
+});
+
+describe("insertTeamBroadcast", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("fans out one message per athlete, sharing a single broadcastId", async () => {
+    const inserted: Record<string, unknown>[] = [];
+    const insertOne = vi.fn(async (doc: Record<string, unknown>) => {
+      inserted.push(doc);
+      return { insertedId: { toString: () => `id-${inserted.length}` } };
+    });
+    const collection = vi.fn(() => ({ insertOne }));
+    vi.mocked(getDatabase).mockResolvedValue({ collection } as never);
+
+    const messages = await insertTeamBroadcast({
+      teamId: "t1",
+      athleteIds: ["a1", "a2"],
+      text: "Practice moved to 5pm",
+      senderEmail: "coach@example.com",
+      senderName: "Coach"
+    });
+
+    expect(messages).toHaveLength(2);
+    expect(messages.map((m) => m.recipientId)).toEqual(["a1", "a2"]);
+    expect(messages.every((m) => m.text === "Practice moved to 5pm")).toBe(true);
+    expect(messages[0].broadcastId).toBeDefined();
+    expect(messages[0].broadcastId).toBe(messages[1].broadcastId);
+  });
+
+  it("returns an empty array for a team with no athletes", async () => {
+    const insertOne = vi.fn();
+    const collection = vi.fn(() => ({ insertOne }));
+    vi.mocked(getDatabase).mockResolvedValue({ collection } as never);
+
+    const messages = await insertTeamBroadcast({
+      teamId: "t1",
+      athleteIds: [],
+      text: "Hello",
+      senderEmail: "coach@example.com",
+      senderName: "Coach"
+    });
+
+    expect(messages).toEqual([]);
+    expect(insertOne).not.toHaveBeenCalled();
   });
 });

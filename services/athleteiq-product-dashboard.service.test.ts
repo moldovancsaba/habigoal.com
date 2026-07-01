@@ -219,6 +219,31 @@ describe("Athlete IQ dashboard access scope", () => {
     expect(projection.activeQueue.map((row) => row.id)).not.toContain("athlete-2");
   });
 
+  it("exposes both persona views for a dual-role account and honours the requested persona", async () => {
+    mockedGetAuthUser.mockResolvedValue(dualRoleUser("dual@example.com", "athlete-1"));
+    mockedResolveAccessibleAthleteIds.mockResolvedValue(["athlete-1"]);
+    mockedListChildrenWithMetrics.mockResolvedValue([athlete("athlete-1", "Dual Athlete")]);
+    mockedListTeams.mockResolvedValue([team("team-1", ["dual@example.com"], ["athlete-1"])]);
+
+    const trainerView = await getAthleteIqProductDashboardProjection({ localDate: "2026-06-27", requestedPersona: "trainer" });
+    expect(trainerView.persona).toBe("trainer");
+    expect(trainerView.availablePersonas).toEqual(["trainer", "athlete"]);
+
+    const athleteView = await getAthleteIqProductDashboardProjection({ localDate: "2026-06-27", requestedPersona: "athlete" });
+    expect(athleteView.persona).toBe("athlete");
+    expect(athleteView.availablePersonas).toEqual(["trainer", "athlete"]);
+  });
+
+  it("restricts availablePersonas to a single view for a single-role account", async () => {
+    mockedGetAuthUser.mockResolvedValue(trainerUser("coach@example.com"));
+    mockedResolveAccessibleAthleteIds.mockResolvedValue([]);
+
+    const projection = await getAthleteIqProductDashboardProjection({ localDate: "2026-06-27", requestedPersona: "athlete" });
+
+    expect(projection.persona).toBe("trainer");
+    expect(projection.availablePersonas).toEqual(["trainer"]);
+  });
+
   it("keeps full dashboard visibility for administrator roles", async () => {
     mockedGetAuthUser.mockResolvedValue(adminUser());
     mockedResolveAccessibleAthleteIds.mockResolvedValue(null);
@@ -275,6 +300,21 @@ function athleteUser(email: string, athleteId: string): AuthUser {
     },
     roles: ["athlete"],
     primaryRole: "athlete",
+    teamIds: []
+  };
+}
+
+function dualRoleUser(email: string, athleteId: string): AuthUser {
+  return {
+    email,
+    name: "Dual Role",
+    athleteId,
+    productEntitlements: {
+      habigoal: { enabled: true, reason: "aiq_member" },
+      athleteIq: { enabled: true, reason: "trainer_assignment" }
+    },
+    roles: ["trainer", "athlete"],
+    primaryRole: "trainer",
     teamIds: []
   };
 }

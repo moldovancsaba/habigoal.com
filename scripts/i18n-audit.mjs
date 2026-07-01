@@ -354,6 +354,7 @@ const IDENTICAL_OK = new Set([
   "CoachHub.thresholds.selectTeam",
   "CoachHub.trends.selectTeam",
   "PlanningDashboard.dayLoad",
+  "PlanningDashboard.team",
   "CoachHub.compare.metricMental",
   "CoachHub.compare.metricSocial",
   "AthleteInsights.sourceType.check_in",

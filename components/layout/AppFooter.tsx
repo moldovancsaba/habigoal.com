@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Divider, Group, Text } from "@mantine/core";
+import { Box, Group, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { APP_VERSION } from "@/lib/app-version";
@@ -16,8 +16,11 @@ export function AppFooter() {
   }, []);
 
   return (
-    <Box component="footer" className="no-print glass-panel surface-outline" mt="xl" px={{ base: "md", sm: "lg" }} py="md" pb={{ base: "md", sm: "md" }} style={{ borderRadius: "var(--mantine-radius-md)" }}>
-      <Divider mb="sm" />
+    // Transparent, border-only footer so it blends into whichever surface wraps
+    // it — the light consumer Habigoal shell and the dark/gold Athlete IQ
+    // workspace alike. A tinted glass panel here read as a foreign bluish block
+    // under the gold AIQ cards (#footer-consistency).
+    <Box component="footer" className="no-print" mt="xl" px={{ base: "md", sm: "lg" }} py="md" pb={{ base: "md", sm: "md" }} style={{ borderTop: "1px solid var(--border-primary)" }}>
       <Group justify="space-between" align="center" gap="sm">
         <Group gap="xs" wrap="wrap">
           <Text component={Link} href="/legal/gtc" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>

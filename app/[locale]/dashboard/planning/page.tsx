@@ -23,6 +23,11 @@ interface MicrocycleRow {
   goal: string;
 }
 
+interface TeamOption {
+  _id?: string;
+  name: string;
+}
+
 const CATEGORIES: SessionCategory[] = ["strength", "tactical", "endurance", "speed", "recovery", "match"];
 
 export default function SessionPlannerPage() {
@@ -31,6 +36,8 @@ export default function SessionPlannerPage() {
   const [saving, setSaving] = useState(false);
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [microcycles, setMicrocycles] = useState<MicrocycleRow[]>([]);
+  const [teams, setTeams] = useState<TeamOption[]>([]);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [draftTitle, setDraftTitle] = useState("");
   const [draftCategory, setDraftCategory] = useState<SessionCategory>("tactical");
   const [draftLoad, setDraftLoad] = useState<number | string>(300);
@@ -41,9 +48,10 @@ export default function SessionPlannerPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [sessionRes, cycleRes] = await Promise.all([
+        const [sessionRes, cycleRes, teamRes] = await Promise.all([
           fetch("/api/training-sessions"),
           fetch("/api/microcycles"),
+          fetch("/api/teams"),
         ]);
         if (sessionRes.ok) {
           const json = await sessionRes.json();
@@ -52,6 +60,14 @@ export default function SessionPlannerPage() {
         if (cycleRes.ok) {
           const json = await cycleRes.json();
           if (!cancelled) setMicrocycles(json.microcycles ?? []);
+        }
+        if (teamRes.ok) {
+          const json = await teamRes.json();
+          const fetchedTeams: TeamOption[] = json.teams ?? [];
+          if (!cancelled) {
+            setTeams(fetchedTeams);
+            setSelectedTeamId((current) => current ?? fetchedTeams[0]?._id ?? null);
+          }
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -63,18 +79,20 @@ export default function SessionPlannerPage() {
   const handleCreate = async () => {
     setSaving(true);
     try {
+      // organisationId/coachId are resolved server-side from the authenticated
+      // session (#planning-attribution) — the client no longer sends placeholder
+      // values for them.
       await fetch("/api/training-sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: draftTitle || t("newSessionDefault"),
+          title: draftTitle.trim() || t("newSessionDefault"),
           category: draftCategory,
           date: new Date().toISOString().split("T")[0],
           durationMinutes: 60,
           plannedLoadPoints: Number(draftLoad),
           description: "",
-          organisationId: "default",
-          coachId: "coach",
+          assignedTeamId: selectedTeamId ?? undefined,
         }),
       });
       setDraftTitle("");
@@ -85,6 +103,7 @@ export default function SessionPlannerPage() {
   };
 
   const handleCreateMicrocycle = async () => {
+    if (!selectedTeamId) return;
     setSaving(true);
     try {
       const start = new Date();
@@ -94,7 +113,7 @@ export default function SessionPlannerPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          teamId: "default",
+          teamId: selectedTeamId,
           startDate: start.toISOString().split("T")[0],
           endDate: end.toISOString().split("T")[0],
           goal: cycleGoal || t("cycleGoalPlaceholder"),
@@ -115,6 +134,18 @@ export default function SessionPlannerPage() {
   return (
     <Stack gap="md">
       <PageHeader title={t("title")} />
+      {teams.length > 0 ? (
+        <Select
+          label={t("team")}
+          placeholder={t("teamPlaceholder")}
+          data={teams.map((team) => ({ value: team._id ?? "", label: team.name }))}
+          value={selectedTeamId}
+          onChange={setSelectedTeamId}
+          maw={360}
+        />
+      ) : (
+        <Text size="sm" c="dimmed">{t("noTeamsHint")}</Text>
+      )}
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
         <SectionPanel title={t("createSession")}>
           <Stack gap="md">
@@ -132,7 +163,7 @@ export default function SessionPlannerPage() {
             />
             <NumberInput label={t("plannedLoad")} value={draftLoad} onChange={setDraftLoad} />
             <Group justify="flex-end">
-              <SemanticButton action="save" color="ingress" onClick={handleCreate} loading={saving} disabled={!draftTitle} />
+              <SemanticButton action="save" color="ingress" onClick={handleCreate} loading={saving} disabled={!draftTitle.trim()} />
             </Group>
           </Stack>
         </SectionPanel>
@@ -199,7 +230,7 @@ export default function SessionPlannerPage() {
           />
           <Text size="sm" c="dimmed">{t("cycleHint")}</Text>
           <Group justify="flex-start">
-            <SemanticButton action="add" color="ingress" onClick={handleCreateMicrocycle} loading={saving} disabled={sessions.length === 0}>
+            <SemanticButton action="add" color="ingress" onClick={handleCreateMicrocycle} loading={saving} disabled={sessions.length === 0 || !selectedTeamId}>
               {t("createCycle")}
             </SemanticButton>
           </Group>
