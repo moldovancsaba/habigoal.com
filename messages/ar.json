@@ -1612,6 +1612,21 @@
       "noCandidates": "لا يوجد رياضيون للإضافة.",
       "remove": "إزالة",
       "saveError": "تعذّر تحديث القائمة."
+    },
+    "compare": {
+      "title": "مقارنة الرياضيين",
+      "description": "قارن حتى ثلاثة رياضيين بمتوسط الفريق.",
+      "select": "الرياضيون للمقارنة",
+      "selectPlaceholder": "اختر حتى 3 رياضيين",
+      "empty": "اختر رياضيين للمقارنة.",
+      "metric": "المؤشر",
+      "teamAverage": "متوسط الفريق",
+      "metricReadiness": "أحدث جاهزية",
+      "metricAvgReadiness": "متوسط الجاهزية",
+      "metricOverall": "الإجمالي",
+      "metricMovement": "الحركة",
+      "metricSocial": "اجتماعي",
+      "metricMental": "ذهني"
     }
   },
   "VisionLab": {

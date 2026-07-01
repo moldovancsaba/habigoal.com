@@ -1612,6 +1612,21 @@
       "noCandidates": "Nincs hozzáadható sportoló.",
       "remove": "Eltávolítás",
       "saveError": "A keret frissítése nem sikerült."
+    },
+    "compare": {
+      "title": "Sportolók összehasonlítása",
+      "description": "Hasonlíts össze legfeljebb három sportolót a csapatátlaggal.",
+      "select": "Összehasonlítandó sportolók",
+      "selectPlaceholder": "Válassz legfeljebb 3 sportolót",
+      "empty": "Válassz sportolókat az összehasonlításhoz.",
+      "metric": "Mutató",
+      "teamAverage": "Csapatátlag",
+      "metricReadiness": "Legutóbbi készenlét",
+      "metricAvgReadiness": "Átlagos készenlét",
+      "metricOverall": "Összesített",
+      "metricMovement": "Mozgás",
+      "metricSocial": "Szociális",
+      "metricMental": "Mentális"
     }
   },
   "VisionLab": {

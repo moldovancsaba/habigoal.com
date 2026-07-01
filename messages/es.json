@@ -1612,6 +1612,21 @@
       "noCandidates": "No hay atletas para añadir.",
       "remove": "Quitar",
       "saveError": "No se pudo actualizar la plantilla."
+    },
+    "compare": {
+      "title": "Comparación de atletas",
+      "description": "Compara hasta tres atletas con la media del equipo.",
+      "select": "Atletas a comparar",
+      "selectPlaceholder": "Elige hasta 3 atletas",
+      "empty": "Selecciona atletas para comparar.",
+      "metric": "Métrica",
+      "teamAverage": "Media del equipo",
+      "metricReadiness": "Preparación reciente",
+      "metricAvgReadiness": "Preparación media",
+      "metricOverall": "General",
+      "metricMovement": "Movimiento",
+      "metricSocial": "Social",
+      "metricMental": "Mental"
     }
   },
   "VisionLab": {

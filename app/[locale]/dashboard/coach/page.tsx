@@ -10,6 +10,7 @@ import { TeamMessagesPanel } from "@/components/dashboard/TeamMessagesPanel";
 import { CoachingAlertsPanel } from "@/components/dashboard/CoachingAlertsPanel";
 import { ThresholdsPanel } from "@/components/dashboard/ThresholdsPanel";
 import { RosterManagerPanel } from "@/components/dashboard/RosterManagerPanel";
+import { ComparisonPanel } from "@/components/dashboard/ComparisonPanel";
 import { TeamInvitationsManager } from "@/components/teams/TeamInvitationsManager";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord } from "@/types/coach-action";
@@ -221,6 +222,19 @@ export default function CoachDashboardPage() {
       <RosterManagerPanel
         teams={teams.filter((team) => team._id).map((team) => ({ id: String(team._id), name: team.name, athleteIds: (team.athleteIds ?? []).map(String) }))}
         athletes={athletes.filter((athlete) => athlete._id).map((athlete) => ({ id: String(athlete._id), name: athlete.name }))}
+      />
+
+      <ComparisonPanel
+        athletes={athletes.filter((athlete) => athlete._id).map((athlete) => ({
+          id: String(athlete._id),
+          name: athlete.name,
+          latestReadiness: athlete.latestReadiness,
+          avgReadiness: athlete.avgReadiness,
+          latestSki: athlete.latestSki,
+          movement: athlete.latestScores?.movement,
+          social: athlete.latestScores?.social,
+          mental: athlete.latestScores?.mental,
+        }))}
       />
 
       {teamOverviews.length > 0 && (
