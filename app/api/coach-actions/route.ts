@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { env } from "@/config/env";
-import { listCoachActionsByDate, upsertCoachAction } from "@/repositories/coach-actions.repository";
+import {
+  listCoachActionsByDate,
+  listCoachActions,
+  bulkSetCoachActionStatus,
+  upsertCoachAction,
+  type CoachActionKey,
+} from "@/repositories/coach-actions.repository";
 import { logAuditEvent } from "@/lib/audit";
 import type { CoachActionRecord, CoachActionSeverity, CoachActionStatus } from "@/types/coach-action";
 
@@ -46,6 +52,28 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
+    const from = stringValue(searchParams.get("from"), 80);
+    const to = stringValue(searchParams.get("to"), 80);
+    const statusParam = stringValue(searchParams.get("status"), 200);
+    const severity = severityValue(searchParams.get("severity"));
+    const sourceType = sourceTypeValue(searchParams.get("sourceType"));
+    const athleteKey = stringValue(searchParams.get("athleteKey"), 240);
+    const limit = Number.parseInt(stringValue(searchParams.get("limit"), 8), 10);
+    const statuses = statusParam
+      ? statusParam.split(",").map((s) => statusValue(s.trim())).filter((s): s is CoachActionStatus => s !== null)
+      : [];
+
+    // Filtered / history query when any filter is supplied; otherwise keep the
+    // original single-day behavior for backward compatibility.
+    if (from || to || statuses.length || severity || sourceType || athleteKey) {
+      const explicitDate = stringValue(searchParams.get("date"), 80);
+      const actions = await listCoachActions(
+        { date: explicitDate || undefined, from: from || undefined, to: to || undefined, statuses, severity, sourceType, athleteKey: athleteKey || undefined },
+        Number.isFinite(limit) ? limit : 200
+      );
+      return NextResponse.json({ actions });
+    }
+
     const date = stringValue(searchParams.get("date"), 80) || new Date().toISOString().slice(0, 10);
     const actions = await listCoachActionsByDate(date);
     return NextResponse.json({ actions });
@@ -60,6 +88,36 @@ export async function POST(request: Request) {
 
   try {
     const body = (await readJson(request)) as Record<string, unknown> | null;
+
+    // Bulk status transition: { items: [{athleteKey,date,recommendationKey}], status }
+    if (Array.isArray(body?.items)) {
+      const bulkStatus = statusValue(body?.status);
+      if (!bulkStatus) return jsonError("Invalid bulk status", 400, "INVALID_PAYLOAD");
+      const keys: CoachActionKey[] = (body!.items as unknown[])
+        .map((item) => {
+          const record = item as Record<string, unknown>;
+          return {
+            athleteKey: stringValue(record?.athleteKey, 240),
+            date: stringValue(record?.date, 80),
+            recommendationKey: stringValue(record?.recommendationKey, 240),
+          };
+        })
+        .filter((key) => key.athleteKey && key.date && key.recommendationKey);
+      if (keys.length === 0) return jsonError("No valid items in bulk payload", 400, "INVALID_PAYLOAD");
+
+      const bulkActor = await resolveActor();
+      const updated = await bulkSetCoachActionStatus({ keys, status: bulkStatus, actorName: bulkActor.actorName, actorEmail: bulkActor.actorEmail });
+      await logAuditEvent({
+        actorEmail: bulkActor.actorEmail,
+        actorRole: "trainer",
+        action: "recommendation.accept",
+        resourceType: "coach_action",
+        resourceId: "bulk",
+        metadata: { status: bulkStatus, requested: keys.length, updated },
+      });
+      return NextResponse.json({ updated, requested: keys.length });
+    }
+
     const athleteKey = stringValue(body?.athleteKey, 240);
     const date = stringValue(body?.date, 80) || new Date().toISOString().slice(0, 10);
     const recommendationKey = stringValue(body?.recommendationKey, 240);
