@@ -1562,7 +1562,35 @@
     "teamManage": "נהל קבוצה",
     "teamUnassigned": "ספורטאים לא משויכים",
     "teamUnassignedDesc": "{count} ספורטאים עדיין לא בקבוצה.",
-    "teamUnassignedManage": "הקצאה בהגדרות"
+    "teamUnassignedManage": "הקצאה בהגדרות",
+    "coachingAlerts": {
+      "title": "התראות אימון",
+      "description": "המלצות מוכנות מבוססות בינה מלאכותית ואותות סיכון פציעה בכל הקבוצות שלך.",
+      "empty": "אין התראות אימון כרגע.",
+      "loading": "טוען התראות אימון…",
+      "injuryRisk": "סיכון פציעה: {level}",
+      "readiness": "מוכנות: {zone} ({score})",
+      "confidence": "ביטחון: {level}",
+      "humanReview": "נדרשת בדיקה אנושית",
+      "loadReduction": "מומלץ להפחית עומס",
+      "risk": {
+        "high": "גבוה",
+        "elevated": "מוגבר",
+        "low": "נמוך"
+      },
+      "zone": {
+        "peak": "שיא",
+        "good": "טוב",
+        "moderate": "בינוני",
+        "fatigued": "עייף",
+        "recovery": "התאוששות"
+      },
+      "conf": {
+        "high": "גבוה",
+        "medium": "בינוני",
+        "low": "נמוך"
+      }
+    }
   },
   "VisionLab": {
     "title": "מעבדת קinematics ו-vision",

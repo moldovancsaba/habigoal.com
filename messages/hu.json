@@ -1562,7 +1562,35 @@
     "teamManage": "Csapat kezelése",
     "teamUnassigned": "Hozzá nem rendelt sportolók",
     "teamUnassignedDesc": "{count} sportoló még egyik csapatban sincs.",
-    "teamUnassignedManage": "Hozzárendelés a beállításokban"
+    "teamUnassignedManage": "Hozzárendelés a beállításokban",
+    "coachingAlerts": {
+      "title": "Edzői riasztások",
+      "description": "MI-alapú készenléti ajánlások és sérüléskockázati jelzések a csapataidban.",
+      "empty": "Jelenleg nincs edzői riasztás.",
+      "loading": "Edzői riasztások betöltése…",
+      "injuryRisk": "Sérüléskockázat: {level}",
+      "readiness": "Készenlét: {zone} ({score})",
+      "confidence": "Megbízhatóság: {level}",
+      "humanReview": "Emberi felülvizsgálat szükséges",
+      "loadReduction": "Terheléscsökkentés javasolt",
+      "risk": {
+        "high": "Magas",
+        "elevated": "Emelkedett",
+        "low": "Alacsony"
+      },
+      "zone": {
+        "peak": "Csúcs",
+        "good": "Jó",
+        "moderate": "Mérsékelt",
+        "fatigued": "Fáradt",
+        "recovery": "Regeneráció"
+      },
+      "conf": {
+        "high": "Magas",
+        "medium": "Közepes",
+        "low": "Alacsony"
+      }
+    }
   },
   "VisionLab": {
     "title": "Kinematikai és vision labor",

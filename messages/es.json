@@ -1562,7 +1562,35 @@
     "teamManage": "Gestionar equipo",
     "teamUnassigned": "Atletas sin asignar",
     "teamUnassignedDesc": "{count} atletas aún no están en ningún equipo.",
-    "teamUnassignedManage": "Asignar en ajustes"
+    "teamUnassignedManage": "Asignar en ajustes",
+    "coachingAlerts": {
+      "title": "Alertas de entrenamiento",
+      "description": "Recomendaciones de preparación por IA y señales de riesgo de lesión en tus equipos.",
+      "empty": "No hay alertas de entrenamiento por ahora.",
+      "loading": "Cargando alertas de entrenamiento…",
+      "injuryRisk": "Riesgo de lesión: {level}",
+      "readiness": "Preparación: {zone} ({score})",
+      "confidence": "Confianza: {level}",
+      "humanReview": "Requiere revisión humana",
+      "loadReduction": "Se aconseja reducir la carga",
+      "risk": {
+        "high": "Alto",
+        "elevated": "Elevado",
+        "low": "Bajo"
+      },
+      "zone": {
+        "peak": "Máximo",
+        "good": "Bueno",
+        "moderate": "Moderado",
+        "fatigued": "Fatigado",
+        "recovery": "Recuperación"
+      },
+      "conf": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      }
+    }
   },
   "VisionLab": {
     "title": "Laboratorio de vision",

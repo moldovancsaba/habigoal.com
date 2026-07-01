@@ -1562,7 +1562,35 @@
     "teamManage": "إدارة الفريق",
     "teamUnassigned": "رياضيون غير معينين",
     "teamUnassignedDesc": "{count} رياضيين ليسوا في أي فريق بعد.",
-    "teamUnassignedManage": "التعيين في الإعدادات"
+    "teamUnassignedManage": "التعيين في الإعدادات",
+    "coachingAlerts": {
+      "title": "تنبيهات التدريب",
+      "description": "توصيات الجاهزية بالذكاء الاصطناعي وإشارات خطر الإصابة عبر فرقك.",
+      "empty": "لا توجد تنبيهات تدريب حاليًا.",
+      "loading": "جارٍ تحميل تنبيهات التدريب…",
+      "injuryRisk": "خطر الإصابة: {level}",
+      "readiness": "الجاهزية: {zone} ({score})",
+      "confidence": "الثقة: {level}",
+      "humanReview": "يتطلب مراجعة بشرية",
+      "loadReduction": "يُنصح بتقليل الحِمل",
+      "risk": {
+        "high": "مرتفع",
+        "elevated": "متزايد",
+        "low": "منخفض"
+      },
+      "zone": {
+        "peak": "ذروة",
+        "good": "جيد",
+        "moderate": "متوسط",
+        "fatigued": "متعب",
+        "recovery": "تعافٍ"
+      },
+      "conf": {
+        "high": "عالية",
+        "medium": "متوسطة",
+        "low": "منخفضة"
+      }
+    }
   },
   "VisionLab": {
     "title": "مختبر الحركة والرؤية",

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
 import { TeamMessagesPanel } from "@/components/dashboard/TeamMessagesPanel";
+import { CoachingAlertsPanel } from "@/components/dashboard/CoachingAlertsPanel";
 import { TeamInvitationsManager } from "@/components/teams/TeamInvitationsManager";
 import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord } from "@/types/coach-action";
@@ -205,6 +206,13 @@ export default function CoachDashboardPage() {
       </SectionPanel>
 
       <TeamInvitationsManager teams={teams} />
+
+      <CoachingAlertsPanel
+        teams={teams.filter((team) => team._id).map((team) => ({ id: String(team._id), name: team.name }))}
+        athleteNames={Object.fromEntries(
+          [...athletesById].map(([id, athlete]) => [id, athlete.name])
+        )}
+      />
 
       {teamOverviews.length > 0 && (
         <SectionPanel title={t("teamSquads")}>

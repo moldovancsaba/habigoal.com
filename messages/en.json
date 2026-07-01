@@ -1562,7 +1562,35 @@
     "teamManage": "Manage team",
     "teamUnassigned": "Unassigned athletes",
     "teamUnassignedDesc": "{count} athletes are not on any team yet.",
-    "teamUnassignedManage": "Assign in settings"
+    "teamUnassignedManage": "Assign in settings",
+    "coachingAlerts": {
+      "title": "Coaching alerts",
+      "description": "AI readiness recommendations and injury-risk signals across your squads.",
+      "empty": "No coaching alerts right now.",
+      "loading": "Loading coaching alerts…",
+      "injuryRisk": "Injury risk: {level}",
+      "readiness": "Readiness: {zone} ({score})",
+      "confidence": "Confidence: {level}",
+      "humanReview": "Needs human review",
+      "loadReduction": "Load reduction advised",
+      "risk": {
+        "high": "High",
+        "elevated": "Elevated",
+        "low": "Low"
+      },
+      "zone": {
+        "peak": "Peak",
+        "good": "Good",
+        "moderate": "Moderate",
+        "fatigued": "Fatigued",
+        "recovery": "Recovery"
+      },
+      "conf": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    }
   },
   "VisionLab": {
     "title": "Kinematics & Vision Lab",
