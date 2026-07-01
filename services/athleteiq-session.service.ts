@@ -1,4 +1,5 @@
 import { buildSessionFromPlan, buildSessionFromBlueprint, canTransitionSession, estimateSessionLoad, validateGuardrailBeforeStart } from "@/lib/athleteiq-session";
+import { deriveDebriefAnalysis } from "@/lib/athleteiq-session-debrief";
 import { getBlueprintByKey } from "@/lib/session-blueprints";
 import { getDailyPlanByDate } from "@/repositories/athleteiq-daily-plan.repository";
 import { getAthleteIqSession, listAthleteIqSessions, updateAthleteIqSessionDebrief, updateAthleteIqSessionState, upsertAthleteIqSession } from "@/repositories/athleteiq-session.repository";
@@ -89,7 +90,12 @@ export async function debriefSession(input: {
     completedLoadPoints: estimatedLoadPoints,
     recordedAt: new Date().toISOString()
   });
-  return { session: saved, errors: [] };
+  const analysis = deriveDebriefAnalysis({
+    plannedDurationMinutes: durationMinutes,
+    estimatedLoadPoints,
+    completionPct: input.completionPct,
+  });
+  return { session: saved, analysis, errors: [] };
 }
 
 export async function listSessions(input: { athleteId: string; from?: string; to?: string }) {

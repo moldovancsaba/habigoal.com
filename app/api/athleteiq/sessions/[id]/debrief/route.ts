@@ -42,7 +42,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
 
     console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_SESSION_CAPABILITY_KEY, event: "athleteiq.session.completed", correlationId, sessionId: id, athleteId: result.session.athleteId, latencyMs: Date.now() - startedAt }));
     console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_SESSION_CAPABILITY_KEY, event: "athleteiq.score.recalculate_requested", correlationId, athleteId: result.session.athleteId, source: "session_debrief" }));
-    return NextResponse.json({ session: result.session, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
+    return NextResponse.json({ session: result.session, analysis: result.analysis, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });
   }
