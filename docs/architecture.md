@@ -1,8 +1,8 @@
 # Architecture
 
-Habigoal is a Next.js App Router application backed by MongoDB Atlas. The product boundary is role-aware: athletes operate on their own data, trainers operate on team-scoped athlete data, and admins manage organization data.
+Habigoal is a Next.js App Router application backed by MongoDB Atlas. The product boundary is entitlement-aware: Habigoal users operate on their own personal routine data, Athlete IQ trainers operate on team-scoped athlete data, and admins manage organization data.
 
-The relationship between Habigoal and Athlete IQ is governed by [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md): Habigoal is the filtered mobile home surface, Athlete IQ is the professional team and performance surface, and both use the same canonical athlete identity, profile, and history with separate product entitlements.
+The relationship between Habigoal and Athlete IQ is governed by [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md): Habigoal is an independent white-label habitbuilder that stores personal routine records in shared athlete-compatible collections, Athlete IQ is the professional team and performance surface, and Athlete IQ can consume Habigoal-created history only through separate professional entitlements and access rules.
 
 ## Layers
 
@@ -11,8 +11,10 @@ The relationship between Habigoal and Athlete IQ is governed by [Product Surface
 User-facing pages live under `app/[locale]`.
 
 - public routes: landing, news, legal pages
+- Habigoal route: `/habigoal`
 - athlete routes: `/athletes`, `/athletes/[id]`
 - trainer/admin dashboard routes: `/dashboard/*`
+- Athlete IQ route: `/athlete-iq`
 
 Locale routing is handled by next-intl. Supported locales are `en`, `hu`, `es`, `de`, `ar`, and `he`.
 
@@ -95,8 +97,9 @@ The active role model is:
 
 Important rules:
 
+- Habigoal access resolves to one personal routine profile for the signed-in user, regardless of whether the active persona is athlete or trainer
 - athlete access resolves to one linked `athleteId`
-- trainer access resolves from team membership
+- Athlete IQ trainer access resolves from team membership
 - admin access is organization-wide
 - legacy `conductor` and `observer` normalize for migration compatibility
 

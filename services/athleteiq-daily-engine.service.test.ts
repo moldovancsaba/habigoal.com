@@ -4,7 +4,7 @@ import { upsertCoachAction } from "@/repositories/coach-actions.repository";
 import { recalculateDailyIq } from "@/services/athleteiq-daily-iq.service";
 import { generateDailyPlan } from "@/services/athleteiq-daily-plan.service";
 import { getPainGuardrailToday } from "@/services/athleteiq-pain-safety.service";
-import { runAthleteIqDailyEngine, validateDailyEngineInput } from "@/services/athleteiq-daily-engine.service";
+import { runAthleteIqDailyEngine, runMirroredAthleteIqDailyEngine, validateDailyEngineInput } from "@/services/athleteiq-daily-engine.service";
 import { recalculateReadinessRoute } from "@/services/athleteiq-readiness-route.service";
 import { rebuildAthleteTwinProjection } from "@/services/athleteiq-twin-projection.service";
 import type { DailyIqSnapshot } from "@/types/athleteiq-daily-iq";
@@ -100,6 +100,40 @@ describe("AthleteIQ daily engine orchestration", () => {
     expect(run.dailyIq?.confidence).toBe("high");
     expect(run.readinessRoute?.route).toBe("green");
     expect(run.partialFailures).toEqual([{ step: "pain_guardrail", message: "pain service unavailable" }]);
+  });
+
+  it("mirrors daily engine execution for lifestyle and performance", async () => {
+    vi.mocked(recalculateDailyIq).mockResolvedValue({ errors: [], snapshot: dailyIq({ confidence: "high" }) });
+    vi.mocked(getPainGuardrailToday).mockResolvedValue(painGuardrail("none"));
+    vi.mocked(recalculateReadinessRoute).mockResolvedValue(readinessRoute("green"));
+    vi.mocked(generateDailyPlan).mockResolvedValue(dailyPlan({ criticalTasks: 0 }));
+
+    const mirrored = await runMirroredAthleteIqDailyEngine({
+      athleteId: "athlete-1",
+      localDate: "2026-06-26",
+      timezone: "Europe/Budapest",
+      primaryMode: "lifestyle",
+      sourceEvent: "check_in_submitted",
+      idempotencyKey: "mirror-1",
+      actor: { email: "coach@example.com", name: "Coach", role: "trainer" }
+    });
+
+    expect(mirrored.lifestyle.mode).toBe("lifestyle");
+    expect(mirrored.performance.mode).toBe("performance");
+    expect(mirrored.primary.mode).toBe("lifestyle");
+    expect(recalculateDailyIq).toHaveBeenCalledTimes(2);
+    expect(recalculateDailyIq).toHaveBeenCalledWith({
+      athleteId: "athlete-1",
+      localDate: "2026-06-26",
+      timezone: "Europe/Budapest",
+      mode: "lifestyle"
+    });
+    expect(recalculateDailyIq).toHaveBeenCalledWith({
+      athleteId: "athlete-1",
+      localDate: "2026-06-26",
+      timezone: "Europe/Budapest",
+      mode: "performance"
+    });
   });
 });
 

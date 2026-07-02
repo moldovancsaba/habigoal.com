@@ -3,7 +3,7 @@ import { canOpenProductSurface, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
 import { createHabigoalCorrelationId, habigoalJsonError, logHabigoalEvent } from "@/lib/habigoal-api";
 import { getHabigoalTodayProjection, type HabigoalHabitKey } from "@/services/habigoal-product.service";
-import { runAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
+import { runMirroredAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
 import { patchSharedDailyState, SharedDailyStateError } from "@/services/shared-daily-state.service";
 
 type DailyOperationBody = {
@@ -42,14 +42,10 @@ export async function POST(request: Request) {
     const body = (await readJson(request)) as DailyOperationBody | null;
     const athleteId = stringValue(body?.athleteId, 120);
     const timezone = stringValue(body?.timezone, 80) || "Europe/Budapest";
-    const idempotencyKey = stringValue(body?.idempotencyKey, 180) || `${athleteId}:${operationId}`;
+    const idempotencyKey = stringValue(body?.idempotencyKey, 180) || `${athleteId || "self"}:${operationId}`;
     const localDate = stringValue(body?.localDate, 10);
     const values = normalizeValues(body?.values);
     const completedHabits = normalizeHabitKeys(body?.habits);
-
-    if (!athleteId) {
-      return fail("VALIDATION_ERROR", 400, correlationId, operationId, startedAt, "athleteId is required");
-    }
 
     if (localDate && !isDateOnly(localDate)) {
       return fail("VALIDATION_ERROR", 400, correlationId, operationId, startedAt, "localDate must use YYYY-MM-DD");
@@ -76,23 +72,23 @@ export async function POST(request: Request) {
       }
     });
 
-    const engineRun = await runAthleteIqDailyEngine({
+    const mirroredEngine = await runMirroredAthleteIqDailyEngine({
       actor: {
         email: user.email,
         name: user.name,
         role: user.primaryRole
       },
-      athleteId,
+      athleteId: sharedState.athleteId,
       idempotencyKey,
       localDate: sharedState.localDate,
-      mode: "lifestyle",
+      primaryMode: "lifestyle",
       sourceEvent: "check_in_submitted",
       timezone: sharedState.timezone
     });
     const projection = await getHabigoalTodayProjection({ timezone, user });
 
     logHabigoalEvent("habigoal.daily_operation.success", {
-      athleteId,
+      athleteId: sharedState.athleteId,
       correlationId,
       durationMs: Date.now() - startedAt,
       operationId,
@@ -109,7 +105,11 @@ export async function POST(request: Request) {
         sharedDailyStateVersion: sharedState.version,
         sourceCollections: sharedState.dataFreshness.sourceCollections
       },
-      engineRun,
+      engineRun: mirroredEngine.primary,
+      engineRuns: {
+        lifestyle: mirroredEngine.lifestyle,
+        performance: mirroredEngine.performance
+      },
       correlationId,
       generatedAt: new Date().toISOString(),
       latencyMs: Date.now() - startedAt

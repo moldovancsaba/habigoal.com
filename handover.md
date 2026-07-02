@@ -17,10 +17,17 @@ The lockfile currently resolves the core runtime to Next.js `15.5.19`, React `19
 
 ## Current Product Model
 
-Habigoal has three active user entities:
+The app currently has two product surfaces:
+
+- Habigoal at `/{locale}/habigoal`: independent white-label personal habitbuilder for athletes, trainers, staff, and general users.
+- Athlete IQ at `/{locale}/athlete-iq`: professional athlete, coach, club, planning, service, dashboard, and advanced analytics workspace.
+
+Habigoal records a signed-in person's own routine profile. Athlete IQ manages professional team and athlete operations. Athlete IQ may consume Habigoal-created daily history only when the user, athlete link, entitlement, assignment, and consent rules allow it.
+
+The active application roles are:
 
 - `athlete`: self-service user linked to one athlete profile.
-- `trainer`: coach-facing user scoped to teams and assigned athletes.
+- `trainer`: coach-facing user scoped to teams and assigned athletes in Athlete IQ, and personal routine user in Habigoal.
 - `admin`: organization user with settings, users, teams, restore, and governance access.
 
 Legacy terms still exist in storage and compatibility layers:
@@ -32,25 +39,22 @@ Legacy terms still exist in storage and compatibility layers:
 
 Product copy and new code should use `athlete`, `trainer`, `admin`, and `check-in`.
 
-The product now runs in two separate surfaces:
-
-- Habigoal at `/{locale}/habigoal`: client wellbeing, habit tracking, daily check-ins, and supportive feedback.
-- Athlete IQ at `/{locale}/athlete-iq`: professional athletes, coaches, dashboards, planning, services, and advanced analytics.
-
-Athlete IQ includes Habigoal through shared contracts in `lib/product-surfaces.ts` and the registry payload from `/api/product-surfaces`.
+Athlete IQ includes Habigoal records through shared contracts in `lib/product-surfaces.ts` and the registry payload from `/api/product-surfaces`; it does not embed the Habigoal UI or inherit Habigoal access rules.
 
 ## 2026-06-27 Haho Ecosystem Live Data Delivery
 
 Implemented scope for GitHub issues `#319` to `#328`:
 
-- Email-only pseudo-login now stores `normalizedEmail`, supports role selection, and grants Athlete IQ athlete access when the user registers through Athlete IQ.
-- Habigoal remains the mobile-first home app, but it is now a filtered live surface over the same canonical Athlete IQ athlete profile and daily records.
+- Email-only pseudo-login now stores `normalizedEmail`, supports role selection, grants standalone Habigoal access on the Habigoal surface, and grants Athlete IQ athlete/professional access only when the user registers through Athlete IQ or receives explicit professional authorization.
+- Habigoal is the independent mobile-first habitbuilder. It resolves or creates a personal routine profile for any signed-in Habigoal user and writes compatible daily records without requiring Athlete IQ registration.
 - Athlete IQ now supports both trainer/professional and athlete personas behind the Athlete IQ product surface.
 - `services/shared-daily-state.service.ts` bridges Habigoal values and habits to canonical `athleteiq_checkins` and `habit_records`.
 - Native Athlete IQ check-ins now persist through `services/athleteiq-check-in-persistence.service.ts`, which mirrors required wellness fields between `performance` and `lifestyle` snapshots. Lifestyle/Habigoal saves preserve existing performance-only fields such as focus, confidence, and training load, while Athlete IQ dashboard reads fall back to performance snapshots for older records that do not yet have a lifestyle mirror.
 - Legacy assessment/check-in saves now call `services/assessment-daily-state-bridge.service.ts`, which maps completed 1-5 check-in answers into canonical Athlete IQ `lifestyle` and `performance` snapshots, updates the same Habigoal-readable daily state, and runs the Athlete IQ daily engine with the authenticated actor.
-- `POST /api/habigoal/daily-operation` writes through the shared daily-state bridge and then runs the Athlete IQ daily engine.
+- `POST /api/habigoal/daily-operation` writes through the shared daily-state bridge, resolves the user's personal routine profile when `athleteId` is omitted, and then runs the mirrored Athlete IQ daily engine.
 - `GET/PATCH /api/daily-state` exposes the same shared contract for product clients and runs the engine after writes.
+- `runMirroredAthleteIqDailyEngine` was introduced to execute the Athlete IQ daily engine in both `lifestyle` and `performance` modes for shared writes. `POST /api/habigoal/daily-operation` and `PATCH /api/daily-state` now use this mirrored mode with a stable primary-mode selection (`lifestyle` for Habigoal, `performance` for shared daily-state endpoint) so both product views remain synchronized.
+- `getHabigoalTodayProjection` now falls back to `performance` check-ins when `lifestyle` is missing, ensuring Habigoal dashboards always render canonical daily state from AIQ or legacy records.
 - `scripts/seed-haho-ecosystem.mjs` creates the Haho live cohort in MongoDB Atlas: 5 trainers, 25 athletes, 5 teams, and 90 Budapest-local days of measurements, habits, plans, Daily IQ snapshots, pain alerts, and coach actions.
 - `scripts/haho-ecosystem-release-gate.mjs` validates required artifacts, package scripts, product wording gates, UI markers, and Atlas coverage when Atlas validation is enabled.
 - Full contract, rollback, and verification notes are in [docs/haho-ecosystem-live-data.md](docs/haho-ecosystem-live-data.md).
@@ -90,7 +94,7 @@ Protected personal-data routes:
 - `/{locale}/dashboard/planning`
 - `/{locale}/dashboard/settings`
 
-When auth is enforced, athletes are redirected to their own athlete profile, trainers are kept out of admin settings, and trainers/admins are redirected away from public athlete routes into dashboard athlete management.
+When auth is enforced, Habigoal users are scoped to their own personal routine profile, athletes are redirected to their own athlete profile, trainers are kept out of admin settings, and trainers/admins are redirected away from public athlete routes into dashboard athlete management.
 
 ## Main Features
 

@@ -18,6 +18,17 @@ import type { CoachActionRecord, CoachActionSeverity } from "@/types/coach-actio
 export const ATHLETEIQ_DAILY_ENGINE_CAPABILITY_KEY = "AIQ-1270";
 export const ATHLETEIQ_DAILY_ENGINE_VERSION = "aiq-daily-engine-1270.1";
 
+export type MirroredDailyEngineMode = "lifestyle" | "performance";
+type MirroredDailyEngineInput = Omit<DailyEngineRunInput, "mode"> & {
+  primaryMode?: MirroredDailyEngineMode;
+};
+
+export type MirroredDailyEngineResult = {
+  lifestyle: DailyEngineRun;
+  primary: DailyEngineRun;
+  performance: DailyEngineRun;
+};
+
 export function validateDailyEngineInput(input: Partial<DailyEngineRunInput>) {
   const errors: string[] = [];
   if (!input.athleteId?.trim()) errors.push("athleteId is required");
@@ -114,6 +125,25 @@ export async function runAthleteIqDailyEngine(input: DailyEngineRunInput): Promi
     coachActions,
     partialFailures: failures,
     generatedAt
+  };
+}
+
+export async function runMirroredAthleteIqDailyEngine(input: MirroredDailyEngineInput): Promise<MirroredDailyEngineResult> {
+  const primaryMode: MirroredDailyEngineMode = input.primaryMode === "lifestyle" ? "lifestyle" : "performance";
+  const baseIdempotencyKey = input.idempotencyKey?.trim();
+
+  const runs = await Promise.all(
+    (["lifestyle", "performance"] as const).map((mode) => runAthleteIqDailyEngine({
+      ...input,
+      mode,
+      idempotencyKey: baseIdempotencyKey ? `${baseIdempotencyKey}:${mode}` : undefined
+    }))
+  );
+  const [lifestyle, performance] = runs;
+  return {
+    lifestyle,
+    performance,
+    primary: primaryMode === "lifestyle" ? lifestyle : performance
   };
 }
 

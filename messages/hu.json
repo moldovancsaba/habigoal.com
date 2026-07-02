@@ -1210,6 +1210,7 @@
     "privacyPolicy": "Adatvédelmi tájékoztató",
     "selectorBadge": "App választó",
     "selectorTitle": "Válassza ki az appot",
+    "selectorSubtitle": "Válassza a Habigoalt a napi szokásokhoz és jólléthez, vagy az Athlete IQ-t a professzionális edzői munkafelülethez. A Habigoal önállóan működik e-maillel; az Athlete IQ professzionális hozzáférést igényel.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "Napi szokások és jóllét",
     "habigoalBody": "Fókuszált mobil app a mai check-inhez, szokásokhoz, jólléthez, sporttámogatáshoz és egy egyértelmű következő lépéshez.",
@@ -1250,13 +1251,12 @@
     "genericError": "Nem sikerült befejezni a belépést. Kérjük, próbálja újra.",
     "athleteIqAccessRequired": "Az Athlete IQ professzionális csapat- vagy edzői hozzáférést igényel. Habigoallal folytathatod, ha a fiókodhoz Habigoal hozzáférés tartozik.",
     "habigoalAccessRequired": "A Habigoal hozzáférés még nincs engedélyezve ehhez a fiókhoz.",
-    "athleteIqRegistrationRequired": "Először regisztráljon az Athlete IQ-ban. Ezután ugyanaz az e-mail megnyitja a Habigoalt is.",
     "surfaces": {
       "habigoal": {
         "badge": "Habigoal hozzáférés",
         "title": "Tovább a Habigoalba",
-        "subtitle": "Adja meg a regisztrált e-mail címét, és nyissa meg a Habigoal mobil napi appot.",
-        "supportingCopy": "A Habigoal a meglévő fiók e-mail címével nyílik meg.",
+        "subtitle": "Adja meg e-mail címét, és nyissa meg a Habigoal napi szokásépítő appot.",
+        "supportingCopy": "A Habigoal létrehozza vagy megnyitja a személyes szokásfiókját.",
         "backLink": "Habigoal"
       },
       "athleteIq": {

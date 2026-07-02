@@ -18,10 +18,18 @@ Use this checklist for feature work, fixes, documentation updates, and automatio
 - Avoid new product-facing use of legacy `child`, `children`, `assessment`, `conductor`, or `observer`.
 - Legacy names may remain in compatibility layers, collection names, and migration code until explicitly migrated.
 
+## Product Boundary
+
+- Habigoal remains an independent white-label habitbuilder for any signed-in person and must not require Athlete IQ registration.
+- Trainer, coach, admin, and staff sessions on Habigoal are personal routine sessions, not assigned-athlete management sessions.
+- Selecting a trainer persona on Habigoal must not grant Athlete IQ access.
+- Athlete IQ may consume Habigoal-created history only through explicit professional entitlement, assignment, and consent rules.
+
 ## Access Control
 
 - Public pages are limited to landing, news, and legal routes.
 - Personal-data routes require OAuth-backed session when `HABIGOAL_ENFORCE_AUTH=true`.
+- Habigoal users can access only their own personal routine profile through Habigoal APIs.
 - Athlete users can access only their linked athlete profile and own tasks.
 - Trainer users access athletes through team membership.
 - Admin-only settings and user/team management remain blocked from trainers and athletes.

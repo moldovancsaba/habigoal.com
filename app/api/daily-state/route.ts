@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/access";
 import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { readJson } from "@/lib/api";
-import { runAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
+import { runMirroredAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
 import { getSharedDailyState, patchSharedDailyState, SharedDailyStateError, type SharedDailyProduct } from "@/services/shared-daily-state.service";
 
 export async function GET(request: Request) {
@@ -60,7 +60,7 @@ export async function PATCH(request: Request) {
       user,
       values: body?.values && typeof body.values === "object" ? body.values as never : undefined
     });
-    const engineRun = await runAthleteIqDailyEngine({
+    const mirroredEngine = await runMirroredAthleteIqDailyEngine({
       actor: {
         email: user.email,
         name: user.name,
@@ -69,7 +69,7 @@ export async function PATCH(request: Request) {
       athleteId: projection.athleteId,
       idempotencyKey: typeof body?.idempotencyKey === "string" ? body.idempotencyKey : undefined,
       localDate: projection.localDate,
-      mode: "lifestyle",
+      primaryMode: "performance",
       sourceEvent: "check_in_submitted",
       timezone: projection.timezone
     });
@@ -77,11 +77,22 @@ export async function PATCH(request: Request) {
       event: "shared_daily_state.patched",
       athleteIdHash: hashForLog(projection.athleteId),
       correlationId,
-      enginePartialFailureCount: engineRun.partialFailures.length,
+      enginePartialFailureCount: mirroredEngine.primary.partialFailures.length,
       latencyMs: Date.now() - startedAt,
       product
     }));
-    return NextResponse.json({ ok: true, projection, engineRun, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
+    return NextResponse.json({
+      ok: true,
+      projection,
+      engineRun: mirroredEngine.primary,
+      engineRuns: {
+        lifestyle: mirroredEngine.lifestyle,
+        performance: mirroredEngine.performance
+      },
+      correlationId,
+      generatedAt: new Date().toISOString(),
+      latencyMs: Date.now() - startedAt
+    });
   } catch (error) {
     return sharedDailyStateError(error, correlationId);
   }

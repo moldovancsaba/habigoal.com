@@ -22,8 +22,8 @@ import type { TeamProjection } from "@/types/athleteiq-stakeholder";
 // traffic-light tone so the roster reflects real recorded status instead of a
 // constant "Ready" badge.
 function readinessTone(value: number): string {
-  if (value >= 4) return "green";
-  if (value >= 2.5) return "yellow";
+  if (value >= 4) return "ingress";
+  if (value >= 2.5) return "review";
   return "red";
 }
 
@@ -259,7 +259,7 @@ export default function CoachDashboardPage() {
                   ) : (
                     <>
                       <Group gap="xs">
-                        <Badge color="green" variant="light">{t("distGreen", { count: overview.projection.readinessDistribution.green })}</Badge>
+                        <Badge color="ingress" variant="light">{t("distGreen", { count: overview.projection.readinessDistribution.green })}</Badge>
                         <Badge color="yellow" variant="light">{t("distYellow", { count: overview.projection.readinessDistribution.yellow })}</Badge>
                         <Badge color="red" variant="light">{t("distRed", { count: overview.projection.readinessDistribution.red })}</Badge>
                         <Badge color="gray" variant="light">{t("distIncomplete", { count: overview.projection.readinessDistribution.incomplete })}</Badge>

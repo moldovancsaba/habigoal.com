@@ -55,6 +55,7 @@ describe("user repository persona login", () => {
     const user = await upsertPersonaLoginUser({
       email: "Same-User@Example.com",
       name: "Same User",
+      productSurface: "athlete-iq",
       roles: ["trainer"]
     });
 

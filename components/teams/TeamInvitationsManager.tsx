@@ -83,7 +83,7 @@ export function TeamInvitationsManager({ teams }: { teams: Team[] }) {
           onChange={(value) => setRole(value === "trainer" ? "trainer" : "athlete")}
           allowDeselect={false}
         />
-        {message ? <Text size="sm" c="green">{message}</Text> : null}
+        {message ? <Text size="sm" c="var(--mantine-color-ingress-7)">{message}</Text> : null}
         {error ? <Text size="sm" c="red">{error}</Text> : null}
         <Group>
           <Button loading={busy} disabled={!teamId || !email.trim()} onClick={() => void send()}>

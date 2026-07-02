@@ -6,18 +6,18 @@ Canonical quality standard: `sovereignsquad/general-design-system#81`
 
 ## Product Contract
 
-Habigoal and Athlete IQ are separate product surfaces over the same athlete identity, profile, and history.
+Habigoal and Athlete IQ are separate product surfaces over shared athlete-compatible profile and daily history collections.
 
-Habigoal is the mobile-first home app. It narrows the workflow to the daily habit loop, simple wellbeing check-in, status review, and one safe next action. It must behave like a mobile app on mobile: fixed bottom navigation, no viewport zoom, short task steps, and status shown only after the daily check-in and habit review have been saved.
+Habigoal is the independent mobile-first white-label habitbuilder. It narrows the workflow to the personal daily habit loop, simple wellbeing check-in, status review, and one safe next action. Athletes, trainers, staff, and general users can use it for their own routines. It must behave like a mobile app on mobile: fixed bottom navigation, no viewport zoom, short task steps, and status shown only after the daily check-in and habit review have been saved.
 
 Athlete IQ is the professional team and athlete operating system. Trainers manage teams, athletes, service coverage, risks, and actions. Athletes can also use Athlete IQ to view their own professional workspace and record or review the same daily state.
 
-The same email account can open both products when the account has both entitlements. Simple Habigoal users can exist with Habigoal-only access, but the current onboarding rule is email-first Athlete IQ registration for the Haho live cohort. Habigoal reads and writes the same canonical daily records, so a future Athlete IQ relationship can use the historical data.
+The same email account can open both products when the account has both entitlements. Habigoal users can exist with Habigoal-only access and do not need Athlete IQ registration. Habigoal reads and writes compatible canonical daily records, so a future Athlete IQ relationship can use the historical data only when professional entitlement, assignment, and consent rules allow it.
 
 ## Architecture
 
 - `users` is the entitlement and login source. All pseudo-login users are email-only and store `normalizedEmail`.
-- `children` stores the canonical athlete profile used by both products.
+- `children` stores the shared athlete-compatible personal routine profile used by Habigoal and linkable to Athlete IQ.
 - `teams` connects trainers to athlete rosters for Athlete IQ.
 - `athleteiq_checkins` stores the canonical lifestyle and performance check-ins.
 - `habit_records` stores the canonical daily habit completion state.
@@ -28,8 +28,8 @@ The same email account can open both products when the account has both entitlem
 
 1. The app selector routes the user to the selected product login with the selected persona.
 2. The login endpoint normalizes the email, resolves or creates the user, applies product entitlements, creates the session, and redirects to the product surface.
-3. Habigoal loads `getHabigoalTodayProjection()`, which reads the authenticated athlete profile, AIQ lifestyle check-in, and habit record for the Budapest local day.
-4. Habigoal daily operation writes through `patchSharedDailyState()`, then runs `runAthleteIqDailyEngine()` to recalculate Daily IQ, plans, pain guardrails, twin projections, and coach actions.
+3. Habigoal loads `getHabigoalTodayProjection()`, which resolves or creates the authenticated user's personal routine profile, then reads the lifestyle check-in and habit record for the Budapest local day.
+4. Habigoal daily operation writes through `patchSharedDailyState()`, then runs `runMirroredAthleteIqDailyEngine()` to keep lifestyle and performance projections synchronized.
 5. Athlete IQ dashboard loads `getAthleteIqProductDashboardProjection()`, scoped by the authenticated user and accessible athlete IDs.
 6. Athlete IQ athlete persona receives `AiqAthleteWorkspace`; trainer and professional personas receive the team and club command workspace.
 7. `GET/PATCH /api/daily-state` exposes the same shared daily state contract for product clients and runs the engine after writes.
@@ -40,7 +40,7 @@ The same email account can open both products when the account has both entitlem
 
 - Requires an authenticated user.
 - Requires entitlement to the selected product.
-- Requires athlete access for explicit `athleteId`.
+- Requires athlete access for explicit `athleteId`; Habigoal requests without `athleteId` resolve the signed-in user's personal routine profile.
 - Creates no fallback records.
 - Returns `projection`, `correlationId`, `generatedAt`, and `latencyMs`.
 
@@ -66,6 +66,7 @@ Body:
 ```
 
 - `values` must include `energy`, `mood`, `sleep`, and `soreness` as `0-100`.
+- `athleteId` is optional for Habigoal writes and required for non-athlete Athlete IQ writes.
 - `habits` uses Habigoal keys and maps to canonical `habit_records` fields.
 - Writes `athleteiq_checkins` in `lifestyle` mode and `habit_records`.
 - Runs the Athlete IQ daily engine after the write.
@@ -74,7 +75,8 @@ Body:
 `POST /api/habigoal/daily-operation`
 
 - Uses the same shared daily-state write path.
-- Runs the same Athlete IQ daily engine.
+- Resolves the signed-in user's personal routine profile when `athleteId` is omitted.
+- Runs the mirrored Athlete IQ daily engine.
 - Returns the refreshed Habigoal projection for the mobile app.
 
 ## Seed Operation

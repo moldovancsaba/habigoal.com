@@ -47,7 +47,7 @@ Full test result inside the gate:
 - Separated product surface access from role labels and athlete history ownership.
 - Added product-aware pseudo-login/register routing and session product surface persistence.
 - Added route/API guards for Habigoal and Athlete IQ product access.
-- Added canonical athlete profile linking so Habigoal and Athlete IQ use one athlete profile and one history.
+- Added shared profile linking so Habigoal personal routine records and Athlete IQ professional history can use one compatible profile/history when entitlement, assignment, and consent rules allow it.
 - Preserved empty first-login behavior: no seeded measurements, habits, check-ins, scores, or fake records.
 - Rebuilt the Habigoal daily journey so status appears only after check-in and habits are reviewed and saved.
 - Added Habigoal daily signal projection into Athlete IQ athlete rows as professional source context.

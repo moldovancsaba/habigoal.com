@@ -1210,6 +1210,7 @@
     "privacyPolicy": "Politica de privacidad",
     "selectorBadge": "Selector de apps",
     "selectorTitle": "Elige tu app",
+    "selectorSubtitle": "Elige Habigoal para hábitos diarios y bienestar, o Athlete IQ para el espacio profesional de entrenadores. Habigoal funciona de forma independiente con email; Athlete IQ requiere acceso profesional.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "Hábitos diarios y bienestar",
     "habigoalBody": "Una app móvil enfocada para el check-in de hoy, hábitos, bienestar, apoyo deportivo y una siguiente acción clara.",
@@ -1250,13 +1251,12 @@
     "genericError": "No pudimos completar el login. Intentalo de nuevo.",
     "athleteIqAccessRequired": "Athlete IQ requiere acceso profesional de equipo o entrenador. Puedes continuar con Habigoal si tu cuenta tiene acceso a Habigoal.",
     "habigoalAccessRequired": "El acceso a Habigoal aun no esta activado para esta cuenta.",
-    "athleteIqRegistrationRequired": "Regístrate primero en Athlete IQ. Después el mismo email podrá abrir Habigoal.",
     "surfaces": {
       "habigoal": {
         "badge": "Acceso Habigoal",
         "title": "Continuar a Habigoal",
-        "subtitle": "Ingresa tu email registrado y abre la app diaria móvil de Habigoal.",
-        "supportingCopy": "Habigoal se abre con el email de tu cuenta existente.",
+        "subtitle": "Ingresa tu email y abre el habitbuilder diario de Habigoal.",
+        "supportingCopy": "Habigoal crea o abre tu cuenta personal de hábitos.",
         "backLink": "Habigoal"
       },
       "athleteIq": {

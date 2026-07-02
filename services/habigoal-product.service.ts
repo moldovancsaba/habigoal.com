@@ -64,10 +64,12 @@ export async function getHabigoalTodayProjection(input: {
   }
 
   const athleteId = athlete._id;
-  const [checkIn, habitRecord] = await Promise.all([
+  const [lifestyleCheckIn, performanceCheckIn, habitRecord] = await Promise.all([
     getAthleteIqCheckInSnapshot(athleteId, localDate, "lifestyle"),
+    getAthleteIqCheckInSnapshot(athleteId, localDate, "performance"),
     getHabitRecordByAthleteIdAndDate(athleteId, localDate)
   ]);
+  const checkIn = lifestyleCheckIn ?? performanceCheckIn;
   const values = {
     energy: valueOrNull(invert(checkIn?.values.fatigue?.normalizedValue)),
     soreness: valueOrNull(checkIn?.values.pain?.normalizedValue),
@@ -185,25 +187,18 @@ export function getHabigoalHabitStatuses(completedHabits: HabigoalHabitKey[]) {
 
 async function resolveHabigoalAthlete(user: AuthUser) {
   // Habigoal is the consumer surface: it must resolve ONLY the signed-in
-  // athlete's own profile (or a parent's own child). It must never fall back to
-  // an arbitrary athlete — the previous "first of all athletes" fallback for
-  // open-access roles (admin/analyst/club_management) rendered another person's
-  // name and data on the consumer surface, a cross-tenant PII leak (#432).
-  // Non-consumer roles (trainer/admin/analyst) get the empty/missing_profile
-  // projection; they manage athletes from the professional AIQ surface instead.
-  const directId = user.primaryRole === "athlete"
+  // user's own profile (or a parent's own child). It must never fall back to
+  // an arbitrary athlete, but it can create a personal habit profile for any
+  // signed-in user because Habigoal is an independent habitbuilder.
+  const directId = user.athleteId && ObjectId.isValid(user.athleteId)
     ? user.athleteId
-    : user.primaryRole === "parent"
-      ? user.parentAthleteIds?.[0]
+    : user.primaryRole === "parent" && user.parentAthleteIds?.[0] && ObjectId.isValid(user.parentAthleteIds[0])
+      ? user.parentAthleteIds[0]
       : undefined;
   if (directId && ObjectId.isValid(directId)) return getChildById(new ObjectId(directId));
 
-  if (user.primaryRole === "athlete") {
-    const result = await ensureCanonicalAthleteProfileForUser({ user });
-    return result.athlete;
-  }
-
-  return null;
+  const result = await ensureCanonicalAthleteProfileForUser({ user });
+  return result.athlete;
 }
 
 function emptyProjection(input: {

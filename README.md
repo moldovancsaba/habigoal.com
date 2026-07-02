@@ -1,12 +1,12 @@
 # Habigoal
 
-Habigoal is a daily athlete support workspace for athletes, trainers, and admins. It captures daily readiness, habits, training load, coach actions, weekly plans, and operational reports in one role-aware web app.
+Habigoal is an independent white-label habitbuilder for any signed-in person. Athletes can use it to record part of their daily routine, trainers and staff can use it for their own habits, and general users can use it as a personal routine app. Athlete IQ is the separate professional workspace for teams, coaches, academies, and advanced performance operations.
 
 ## Current Product Surface
 
 - Public landing page at `/{locale}` with explicit product entry cards for Habigoal and Athlete IQ.
 - Product surfaces:
-  - Habigoal at `/{locale}/habigoal` for client wellbeing, habit tracking, status capture, and lightweight guidance.
+  - Habigoal at `/{locale}/habigoal` for white-label personal habit tracking, wellbeing status capture, and lightweight guidance.
   - Athlete IQ at `/{locale}/athlete-iq` for coaches, academies, professional dashboards, and advanced services.
 - Public news and release notes at `/{locale}/news`.
 - Public legal pages at `/{locale}/legal/gtc` and `/{locale}/legal/privacy`.
@@ -28,7 +28,7 @@ Habigoal is a daily athlete support workspace for athletes, trainers, and admins
 - Persisted coach action status through the `coach_actions` collection and `/api/coach-actions`.
 - Weekly session planning through `/dashboard/planning`, persisted in `session_plans`, and reflected on athlete detail pages.
 - PDF/report export surfaces for athlete and check-in records.
-- Phase 1 product split between Habigoal and Athlete IQ with a shared function registry exposed via `/api/product-surfaces`.
+- Phase 1 product split between independent Habigoal and professional Athlete IQ with a shared function registry exposed via `/api/product-surfaces`.
 - Shared Baseline route and API compatibility preserved while splitting runtime UI surfaces.
 - Public weekly news surface backed by `content/news/posts.json`, with locale-specific fail-closed rendering.
 - DoneIsBetter SSO integration with local user authorization.
@@ -179,11 +179,13 @@ Design authority lives in `/Users/Shared/Projects/general-design-system`. Habigo
 
 ## Authentication And Access
 
-SSO identifies the person. Habigoal authorizes the person through the local `users` collection.
+SSO identifies the person. The app authorizes the person through the local `users` collection and separate product entitlements.
 
-- Athletes land in the athlete app and can access only their linked athlete profile, history, habits, and check-ins.
-- Trainers land in the trainer dashboard and manage athletes through team membership.
+- Habigoal users land in the personal habitbuilder and can access only their own routine profile, history, habits, and check-ins.
+- Athlete IQ athletes land in their professional athlete workspace when Athlete IQ entitlement exists.
+- Athlete IQ trainers land in the trainer dashboard and manage athletes through team membership.
 - Admins land in settings and manage users, teams, global settings, restore workflows, and governance views.
+- Selecting a trainer persona on the Habigoal surface does not grant Athlete IQ access; Athlete IQ entitlement is granted only through the Athlete IQ surface or explicit professional authorization.
 
 Middleware protects personal-data pages when `HABIGOAL_ENFORCE_AUTH=true`. Public pages are limited to the landing page, news, and legal pages.
 

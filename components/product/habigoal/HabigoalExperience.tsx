@@ -25,6 +25,15 @@ type FeedbackState = {
   kind: "error" | "success";
   messageKey: string;
 };
+type HabigoalDailyUiState =
+  | "empty_day"
+  | "check_in_in_progress"
+  | "habits_in_progress"
+  | "ready_to_save"
+  | "saving"
+  | "saved_status"
+  | "save_failed_retryable"
+  | "save_failed_blocked";
 type HabigoalView = "flow" | "progress";
 type WizardStep = "checkin" | "habits" | "review";
 
@@ -97,12 +106,25 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
   const hasCompleteDraft = Object.values(draftValues).every((value) => typeof value === "number" && Number.isFinite(value));
   const hasRecordedHabits = habitsReviewed || activeProjection.hasLiveHabits;
   const statusAvailable = activeProjection.hasLiveCheckIn && activeProjection.hasLiveHabits && activeProjection.score !== null;
+  const dailyUiState = resolveDailyUiState({
+    hasCompleteDraft,
+    hasProfile: Boolean(activeProjection.athleteId),
+    hasRecordedHabits,
+    saving,
+    statusAvailable
+  });
   const score = statusAvailable ? activeProjection.score : null;
   const statusState = statusAvailable ? surfaceStateFromStatus(activeProjection.status) : "neutral";
-  const statusLabel = statusAvailable ? t(`states.${activeProjection.status}`) : t("statusLocked");
+  const statusLabel = statusAvailable ? t(`states.${activeProjection.status}`) : t(`dailyState.${dailyUiState}`);
   const scoreText = statusAvailable && score !== null ? String(score) : t("statusLocked");
   const scoreAria = statusAvailable && score !== null ? t("scoreAria", { score }) : t("scorePendingAria");
   const canSave = Boolean(activeProjection.athleteId) && hasCompleteDraft && hasRecordedHabits && !saving;
+  const progressSteps = [
+    hasCompleteDraft,
+    hasRecordedHabits,
+    statusAvailable
+  ].filter(Boolean).length;
+  const dailyProgress = Math.round((progressSteps / 3) * 100);
   const step = WIZARD_STEPS[stepIndex];
 
   function setMetric(key: keyof MetricDraft, value: number) {
@@ -284,23 +306,26 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
           ) : null}
 
           {showWizard ? (
-            <DailyWizard
-              canSave={canSave}
-              completedHabits={completedHabits}
-              draftValues={draftValues}
-              habitScore={habitScore}
-              hasCompleteDraft={hasCompleteDraft}
-              onBack={() => goToStep(stepIndex - 1)}
-              onContinue={() => goToStep(stepIndex + 1)}
-              onContinueHabits={advanceFromHabits}
-              onSave={completeDailyOperation}
-              onSetMetric={setMetric}
-              onToggleHabit={toggleHabit}
-              saving={saving}
-              step={step}
-              stepIndex={stepIndex}
-              translate={t}
-            />
+            <>
+              <JourneyProgress progress={dailyProgress} state={dailyUiState} translate={t} />
+              <DailyWizard
+                canSave={canSave}
+                completedHabits={completedHabits}
+                draftValues={draftValues}
+                habitScore={habitScore}
+                hasCompleteDraft={hasCompleteDraft}
+                onBack={() => goToStep(stepIndex - 1)}
+                onContinue={() => goToStep(stepIndex + 1)}
+                onContinueHabits={advanceFromHabits}
+                onSave={completeDailyOperation}
+                onSetMetric={setMetric}
+                onToggleHabit={toggleHabit}
+                saving={saving}
+                step={step}
+                stepIndex={stepIndex}
+                translate={t}
+              />
+            </>
           ) : null}
         </Box>
 
@@ -558,6 +583,41 @@ function surfaceStateFromStatus(status: HabigoalDailyStatus): SurfaceSignalState
   if (status === "needs_support") return "risk";
   if (status === "needs_input") return "neutral";
   return "watch";
+}
+
+function resolveDailyUiState(input: {
+  hasCompleteDraft: boolean;
+  hasProfile: boolean;
+  hasRecordedHabits: boolean;
+  saving: boolean;
+  statusAvailable: boolean;
+}): HabigoalDailyUiState {
+  if (!input.hasProfile) return "empty_day";
+  if (input.saving) return "saving";
+  if (input.statusAvailable) return "saved_status";
+  if (!input.hasCompleteDraft) return "check_in_in_progress";
+  if (!input.hasRecordedHabits) return "habits_in_progress";
+  return "ready_to_save";
+}
+
+function JourneyProgress({
+  progress,
+  state,
+  translate
+}: {
+  progress: number;
+  state: HabigoalDailyUiState;
+  translate: Translate;
+}) {
+  return (
+    <Box className="hbg-score-ring hbg-score-ring-empty" style={{ "--score": `${progress}%` } as CSSProperties} aria-label={translate(`journey.${state}.aria`)}>
+      <Stack gap={4} align="center">
+        <Text className="hbg-score-label">{translate("todayLabel")}</Text>
+        <Title order={2} className="hbg-score-value">{progress}%</Title>
+        <Text className="hbg-score-state">{translate(`dailyState.${state}`)}</Text>
+      </Stack>
+    </Box>
+  );
 }
 
 function formatMetric(value: number | null) {

@@ -4,29 +4,30 @@
 
 GitHub issues `#299` through `#308` define this delivery slice. They follow the canonical engineering issue structure in `sovereignsquad/general-design-system#81`.
 
-This delivery follows the shared athlete profile contract in [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md). Habigoal is a filtered mobile home surface over the same athlete identity, profile, and history used by Athlete IQ; it is not a copy, demo, or separate data store.
+This delivery follows the shared athlete profile contract in [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md). Habigoal is an independent white-label habitbuilder for any signed-in person. It stores personal routine records in the shared athlete-compatible profile and daily history collections so Athlete IQ can consume them later only when professional entitlement, assignment, and consent rules allow it; it is not a copy, demo, or separate local data store.
 
 ## Production Rules
 
 - Habigoal is a live mobile app surface.
-- Habigoal writes to the canonical athlete profile and history that Athlete IQ can consume when professional entitlement and assignment rules allow it.
+- Habigoal writes to a personal routine profile and canonical daily history that Athlete IQ can consume when professional entitlement, assignment, and consent rules allow it.
 - Habigoal-only users must not be able to enter Athlete IQ.
-- Athlete IQ users may use Habigoal as a simpler home capture app.
+- Athlete IQ users may use Habigoal as a simpler personal habitbuilder.
+- Trainer, coach, admin, and staff Habigoal sessions remain personal routine sessions, not assigned-athlete management sessions.
 - The app must not render presentation, theme, demo, lorem ipsum, or internal engine language.
-- MongoDB Atlas is the source of truth for users, athlete profiles, check-ins, habits, and projections.
-- A new athlete account starts empty. Profile provisioning creates only an athlete shell, not measurements, habits, check-ins, or scores.
+- MongoDB Atlas is the source of truth for users, personal routine profiles, check-ins, habits, and projections.
+- A new Habigoal account starts empty. Profile provisioning creates only a personal routine shell, not measurements, habits, check-ins, or scores.
 - UI, spacing, action controls, and accessibility states must stay inside the approved GDS/Mantine adapter already governed by the project GDS manifest.
 
 ## Runtime Flow
 
-1. The selector sends the user to `/{locale}/login` with a selected persona.
-2. `POST /api/auth/login` normalizes the identifier, upserts the user, stores the selected persona in the session, and redirects only to the matching product.
-3. `/{locale}/habigoal` requires an athlete session before loading data.
-4. `getHabigoalTodayProjection` resolves or creates an empty athlete profile shell for a first-time athlete user.
+1. The selector sends the user to `/{locale}/login` with a selected product surface and persona.
+2. `POST /api/auth/login` normalizes the email, upserts the user, stores the selected persona in the session, and redirects only to the matching product.
+3. `/{locale}/habigoal` requires Habigoal entitlement before loading data.
+4. `getHabigoalTodayProjection` resolves or creates an empty personal routine profile shell for a first-time Habigoal user.
 5. The projection reads today's check-in and habit records from MongoDB Atlas.
 6. If today's check-in and habits are incomplete, the UI starts with the recording journey, not with a daily status result.
 7. The user records today's check-in signals and daily habits.
-8. `POST /api/habigoal/daily-operation` saves the check-in and habits, runs the existing Athlete IQ daily engine, and returns the refreshed Habigoal projection.
+8. `POST /api/habigoal/daily-operation` saves the check-in and habits, resolving the personal routine profile when no `athleteId` is supplied, runs the mirrored Athlete IQ daily engine, and returns the refreshed Habigoal projection.
 9. The backend daily status service returns `score: null` when no live daily data exists and returns today's status only after the daily operation is recorded.
 10. The UI shows status, rationale, and next action after save succeeds.
 
@@ -48,7 +49,7 @@ Status is a post-recording outcome. It must not be the first primary card for an
 
 ```json
 {
-  "athleteId": "string",
+  "athleteId": "507f1f77bcf86cd799439011",
   "localDate": "YYYY-MM-DD",
   "timezone": "Europe/Budapest",
   "idempotencyKey": "string",
@@ -61,6 +62,8 @@ Status is a post-recording outcome. It must not be the first primary card for an
   "habits": ["hydrate", "move"]
 }
 ```
+
+`athleteId` is optional for Habigoal personal routine saves. When omitted, the server resolves or creates the signed-in user's personal routine profile before writing.
 
 Success returns `{ ok: true, operationId, status, projection, correlationId }`.
 

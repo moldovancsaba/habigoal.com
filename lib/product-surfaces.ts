@@ -80,9 +80,9 @@ const sharedDataContracts = [
     id: "daily-status",
     name: "Daily status ledger",
     owner: "shared-foundation",
-    description: "Wellbeing, readiness, pain, recovery, habits, and context answers stored once and projected differently per product.",
+    description: "Personal routine, wellbeing, readiness, pain, recovery, habits, and context answers stored once and projected differently per product.",
     usedBy: ["habigoal", "athlete-iq"],
-    syncBehavior: "Habigoal writes simple check-ins; AthleteIQ reads the same ledger for professional dashboards and reports."
+    syncBehavior: "Habigoal writes personal check-ins; AthleteIQ reads the same ledger only through professional entitlements, assignments, and consent rules."
   },
   {
     id: "function-registry",
@@ -90,15 +90,15 @@ const sharedDataContracts = [
     owner: "shared-foundation",
     description: "One feature directory filtered by product surface, role, entitlement, and module maturity.",
     usedBy: ["habigoal", "athlete-iq"],
-    syncBehavior: "Habigoal receives only client-safe functions; AthleteIQ includes Habigoal plus pro modules."
+    syncBehavior: "Habigoal receives only personal habitbuilder functions; AthleteIQ includes shared signals plus professional modules."
   },
   {
     id: "guidance-events",
     name: "Guidance and audit events",
     owner: "shared-foundation",
-    description: "Recommendations, coach actions, escalations, and dismissals are logged with product surface and source confidence.",
+    description: "Recommendations, personal guidance, coach actions, escalations, and dismissals are logged with product surface and source confidence.",
     usedBy: ["habigoal", "athlete-iq"],
-    syncBehavior: "Client guidance and professional interventions remain auditable without duplicating data."
+    syncBehavior: "Personal guidance and professional interventions remain auditable without duplicating data."
   }
 ] satisfies SharedDataContract[];
 
@@ -107,8 +107,8 @@ const habigoalFunctions = [
     id: "hbg-check-in",
     name: "Simple daily status check-in",
     status: "active",
-    audience: ["client", "athlete"],
-    summary: "Fast wellbeing, sport, and life status capture that can run without professional staff.",
+    audience: ["client", "athlete", "coach", "academy", "operator"],
+    summary: "Fast wellbeing, sport, and life status capture that can run for any person without professional staff.",
     runtimeFlow: [
       "Start daily support surface",
       "Capture today status",
@@ -136,7 +136,7 @@ const habigoalFunctions = [
     id: "hbg-habits",
     name: "Habit tracker and accountability loop",
     status: "active",
-    audience: ["client", "athlete"],
+    audience: ["client", "athlete", "coach", "academy", "operator"],
     summary: "Daily habit list for movement, recovery, learning, nutrition, hydration, sleep, and personal goals.",
     runtimeFlow: [
       "Load active habit plan",
@@ -165,8 +165,8 @@ const habigoalFunctions = [
     id: "hbg-support-feedback",
     name: "Automatic life and sport support feedback",
     status: "active",
-    audience: ["client", "athlete"],
-    summary: "Plain-language feedback that turns status and habits into safe daily guidance.",
+    audience: ["client", "athlete", "coach", "academy", "operator"],
+    summary: "Plain-language feedback that turns status and habits into safe daily personal guidance.",
     runtimeFlow: [
       "Read status, habit, and daily check-in signals",
       "Apply support rules",
@@ -194,8 +194,8 @@ const habigoalFunctions = [
     id: "hbg-progress",
     name: "Client progress and streak reflection",
     status: "phase-1",
-    audience: ["client", "athlete"],
-    summary: "A simple progress view that shows consistency, wellbeing direction, and completed support actions.",
+    audience: ["client", "athlete", "coach", "academy", "operator"],
+    summary: "A simple progress view that shows consistency, wellbeing direction, and completed personal support actions.",
     runtimeFlow: [
       "Read the daily status ledger",
       "Compare the last seven days with the current day",
@@ -349,15 +349,15 @@ export const productSurfaces = [
     id: "habigoal",
     name: "Habigoal",
     shortName: "Habigoal",
-    headline: "Simple habit tracking and wellbeing support",
+    headline: "White-label habitbuilder and wellbeing support",
     summary:
-      "A client-facing daily system for living better, training smarter, and receiving clear feedback about current status.",
+      "An independent daily habitbuilder for anybody who wants to track routines, wellbeing, and clear personal status.",
     promise:
       "Habigoal keeps the daily loop simple: check in, complete habits, understand status, and get one safe next action.",
     primaryPath: "/habigoal",
     includedSurfaceIds: [],
-    audiences: ["client", "athlete"],
-    operatingMode: "Consumer wellbeing and habit support",
+    audiences: ["client", "athlete", "coach", "academy", "operator"],
+    operatingMode: "White-label personal habit and wellbeing support",
     theme: {
       name: "Habigoal daily",
       mode: "supportive-light",
@@ -372,23 +372,23 @@ export const productSurfaces = [
         label: "Today",
         path: "/habigoal",
         description: "Daily check-in, habits, and simple status.",
-        audience: ["client", "athlete"],
+        audience: ["client", "athlete", "coach", "academy", "operator"],
         sharedFunctionId: "hbg-check-in"
       },
       {
         id: "habits",
         label: "Habits",
         path: "/athletes",
-        description: "Client-safe habit loop using shared scoring.",
-        audience: ["client", "athlete"],
+        description: "Personal habit loop using shared scoring.",
+        audience: ["client", "athlete", "coach", "academy", "operator"],
         sharedFunctionId: "hbg-habits"
       },
       {
         id: "support",
         label: "Support",
         path: "/habigoal",
-        description: "Automatic life and sport feedback.",
-        audience: ["client", "athlete"],
+        description: "Automatic life and routine feedback.",
+        audience: ["client", "athlete", "coach", "academy", "operator"],
         sharedFunctionId: "hbg-support-feedback"
       }
     ],
@@ -406,9 +406,9 @@ export const productSurfaces = [
     shortName: "AIQ",
     headline: "Professional performance operating system",
     summary:
-      "The professional layer that includes Habigoal as a daily signal layer, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
+      "The professional layer that can consume Habigoal daily signals when access rules allow, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
     promise:
-      "Athlete IQ includes Habigoal as its daily signal layer, then adds professional workflows, role-based dashboards, and service modules.",
+      "Athlete IQ can include Habigoal records as a daily signal layer, then adds professional workflows, role-based dashboards, and service modules.",
     primaryPath: "/athlete-iq",
     includedSurfaceIds: ["habigoal"],
     audiences: ["athlete", "coach", "academy", "operator"],

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getSession } from "@/lib/session";
 import { findUserByEmail } from "@/repositories/user.repository";
-import { getAuthUser } from "@/lib/access";
+import { canAccessHabigoalAthlete, getAuthUser, type AuthUser } from "@/lib/access";
 
 vi.mock("@/config/env", () => ({
   env: {
@@ -57,6 +57,24 @@ describe("auth access resolution", () => {
 
     expect(user?.roles).toEqual(["athlete", "trainer"]);
     expect(user?.primaryRole).toBe("trainer");
+  });
+
+  it("keeps Habigoal athlete access personal even for professional users", async () => {
+    const trainerUser: AuthUser = {
+      email: "coach@example.com",
+      name: "Coach",
+      roles: ["trainer"],
+      primaryRole: "trainer",
+      athleteId: "personal-profile",
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: false }
+      },
+      teamIds: ["team-1"]
+    };
+
+    await expect(canAccessHabigoalAthlete(trainerUser, "personal-profile")).resolves.toBe(true);
+    await expect(canAccessHabigoalAthlete(trainerUser, "assigned-athlete")).resolves.toBe(false);
   });
 });
 

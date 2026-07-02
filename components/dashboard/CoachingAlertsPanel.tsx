@@ -116,7 +116,7 @@ export function CoachingAlertsPanel({ teams, athleteNames }: { teams: TeamRef[];
                         {t("coachingAlerts.confidence", { level: t(`coachingAlerts.conf.${entry.recommendation.confidence}`) })}
                       </Badge>
                       {entry.recommendation.humanReviewRequired ? (
-                        <Badge size="sm" variant="light" color="orange">{t("coachingAlerts.humanReview")}</Badge>
+                        <Badge size="sm" variant="light" color="review">{t("coachingAlerts.humanReview")}</Badge>
                       ) : null}
                     </Group>
                   </Box>
