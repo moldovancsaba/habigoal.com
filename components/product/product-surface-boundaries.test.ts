@@ -54,12 +54,14 @@ describe("product surface route boundaries", () => {
   it("uses the dedicated AthleteIQ gold logo and GDS theme preset", () => {
     const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
     const sharedSource = readSource("components/product/ProductSurfaceShared.tsx");
+    const themeBoundarySource = readSource("components/product/ProductThemeBoundary.tsx");
     const logoPath = ATHLETE_IQ_GOLD_LOGO_SRC.replace(/^\//, "");
 
     expect(existsSync(join(process.cwd(), "public", logoPath))).toBe(true);
     expect(athleteIqSource).toContain("ATHLETE_IQ_GOLD_LOGO_SRC");
     expect(sharedSource).toContain("ATHLETE_IQ_GOLD_LOGO_SRC");
-    expect(athleteIqSource).toContain("data-gds-theme-preset");
+    expect(athleteIqSource).toContain("ProductThemeBoundary");
+    expect(themeBoundarySource).toContain("data-gds-theme-preset");
     expect(ATHLETE_IQ_GDS_THEME_PRESET).toBe("athlete-gold");
   });
 

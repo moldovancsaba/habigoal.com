@@ -3,6 +3,7 @@
 import { CtaButtonGroup, createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
 import { useMemo } from "react";
 import { Link } from "@/i18n/navigation";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type LandingCtasProps = {
   athleteAppLabel: string;
@@ -35,7 +36,7 @@ export function LandingCtas({
     <CtaButtonGroup
       primary={
         <Link href={athleteHref} style={{ textDecoration: "none" }}>
-          <SemanticButton action="landing:athleteApp" color="ingress" vocabularyPacks={[landingActionPack]} />
+          <SemanticButton action="landing:athleteApp" color={getProductColor("public", "primaryAction")} vocabularyPacks={[landingActionPack]} />
         </Link>
       }
       secondary={

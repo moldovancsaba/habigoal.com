@@ -2,14 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { Alert, Badge, Box, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Table, Text, TextInput } from "@mantine/core";
-import { createGdsVocabularyPack, GdsIcons, ConfirmDialog, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Alert, Paper, Text } from "@mantine/core";
+import { Badge, Box, Checkbox, ConfirmDialog, createGdsVocabularyPack, GdsIcons, Group, Loader, NumberInput, PageHeader, SectionPanel, Select, SemanticButton, Stack, Table, TextInput } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { deleteUser, getUsers, saveUser, User } from "@/services/user-service";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";
 import { CheckInConfigAdminPanel } from "@/components/admin/CheckInConfigAdminPanel";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 export default function SettingsPage() {
   const t = useTranslations("Dashboard");
@@ -470,7 +471,7 @@ export default function SettingsPage() {
       <SectionPanel title={t("userRights")}>
         <Stack gap="md">
           {!canManageUsers ? (
-            <Alert color="yellow">
+            <Alert color={getProductColor("dashboard", "warning")}>
               {t("settingsUsersAdminOnly")}
             </Alert>
           ) : null}
@@ -528,7 +529,7 @@ export default function SettingsPage() {
                     <ResponsiveDataRow label={t("email")} value={<Text fw={600}>{user.email}</Text>} />
                     <ResponsiveDataRow
                       label={t("userManagementAccess")}
-                      value={<Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>{user.lastLoginAt ? t("userManagementActive") : t("userManagementPending")}</Badge>}
+                      value={<Badge variant="light" color={user.lastLoginAt ? getProductColor("dashboard", "success") : getProductColor("dashboard", "warning")}>{user.lastLoginAt ? t("userManagementActive") : t("userManagementPending")}</Badge>}
                     />
                     <ResponsiveDataRow label={t("userManagementLastLogin")} value={<Text>{formatLastSeen(user.lastLoginAt)}</Text>} />
                     <Select
@@ -596,7 +597,7 @@ export default function SettingsPage() {
                       <Text fw={600}>{user.email}</Text>
                     </Table.Td>
                     <Table.Td>
-                      <Badge variant="light" color={user.lastLoginAt ? "green" : "yellow"}>
+                      <Badge variant="light" color={user.lastLoginAt ? getProductColor("dashboard", "success") : getProductColor("dashboard", "warning")}>
                         {user.lastLoginAt ? t("userManagementActive") : t("userManagementPending")}
                       </Badge>
                     </Table.Td>
@@ -660,7 +661,7 @@ export default function SettingsPage() {
       <SectionPanel title={t("teamsTitle")}>
         <Stack gap="md">
           {!canManageUsers ? (
-            <Alert color="yellow">
+            <Alert color={getProductColor("dashboard", "warning")}>
               {t("teamsAdminOnly")}
             </Alert>
           ) : null}

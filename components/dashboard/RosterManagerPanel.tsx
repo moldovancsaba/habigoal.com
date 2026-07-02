@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Badge, Box, Button, Group, Paper, Select, Stack, Text } from "@mantine/core";
-import { SectionPanel } from "@doneisbetter/gds/client";
+import { Paper, Text } from "@mantine/core";
+import { Badge, Box, Button, Group, SectionPanel, Select, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 // Roster management (#526 P1): add/remove athletes per team via
 // PATCH /api/teams/[teamId]/roster. Self-contained local state so the coach
@@ -68,7 +69,7 @@ export function RosterManagerPanel({ teams, athletes }: { teams: TeamRef[]; athl
                         <Button
                           size="sm"
                           variant="subtle"
-                          color="red"
+                          color={getProductColor("dashboard", "risk")}
                           loading={busy === `${team.id}:${id}`}
                           onClick={() => void mutate(team.id, { remove: id })}
                         >

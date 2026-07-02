@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Alert, Box, Group, Paper, Progress, SimpleGrid, Slider, Stack, Text, Title } from "@mantine/core";
-import { GdsIcons } from "@doneisbetter/gds/client";
+import { Alert, Paper, Text, Title } from "@mantine/core";
+import { Box, Button, GdsIcons, Group, Progress, SimpleGrid, Slider, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
@@ -12,6 +12,8 @@ import type { HabigoalHabitKey, HabigoalHistory, HabigoalTodayProjection } from 
 import { selectCopyKey } from "@/lib/copy-variants";
 import { neutralPromptDef } from "@/lib/surface-voice";
 import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
+import { ProductThemeBoundary } from "../ProductThemeBoundary";
+import { getProductColor, scoreToProgressIntent } from "@/lib/product-ui-contracts";
 
 type HabitItem = {
   id: HabigoalHabitKey;
@@ -217,7 +219,7 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
   const showWizard = view === "flow" && !statusAvailable;
 
   return (
-    <Box className="habigoal-product-shell">
+    <ProductThemeBoundary surface="habigoal" className="habigoal-product-shell">
       <Box className={embedded ? "hbg-app-frame hbg-app-frame-embedded" : "hbg-app-frame"} px={{ base: "sm", md: "md" }} py={{ base: 0, md: "md" }} mx="auto">
         {/* When embedded inside the shared shell (DashboardShell), that shell owns
             the single persona menu — so suppress this surface's own top bar,
@@ -275,7 +277,7 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
             the last card (#425). */}
         <Box component="main" className="hbg-main-grid">
           {feedback ? (
-            <Alert color={feedback.kind === "success" ? "tactical" : "red"} title={feedback.kind === "success" ? t("savedTitle") : t("errors.title")} role={feedback.kind === "success" ? "status" : "alert"}>
+            <Alert color={getProductColor("habigoal", feedback.kind === "success" ? "success" : "risk")} title={feedback.kind === "success" ? t("savedTitle") : t("errors.title")} role={feedback.kind === "success" ? "status" : "alert"}>
               <Stack gap={4}>
                 <Text>{t(feedback.messageKey)}</Text>
                 {feedback.correlationId ? <Text size="sm">{t("errors.reference", { correlationId: feedback.correlationId })}</Text> : null}
@@ -352,7 +354,7 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
           </nav>
         )}
       </Box>
-    </Box>
+    </ProductThemeBoundary>
   );
 }
 
@@ -384,7 +386,7 @@ function DailyWizard({
             <Text className="hbg-kicker">{translate("flow.stepLabel", { current: stepIndex + 1, total })}</Text>
             <Text className="hbg-kicker">{progress}%</Text>
           </Group>
-          <Progress value={progress} color="tactical" radius="xl" size="md" aria-hidden />
+          <Progress value={progress} color={getProductColor("habigoal", "success")} radius="xl" size="md" aria-hidden />
           <Title order={2} className="hbg-headline">{translate(`flow.steps.${step}.title`)}</Title>
           <Text className="hbg-copy">{translate(`flow.steps.${step}.copy`)}</Text>
         </Stack>
@@ -396,9 +398,9 @@ function DailyWizard({
             <StatusSlider label={translate("checkIn.sleep")} unsetLabel={translate("checkIn.unset")} value={draftValues.sleep} onChange={(value) => onSetMetric("sleep", value)} />
             <StatusSlider label={translate("checkIn.soreness")} unsetLabel={translate("checkIn.unset")} value={draftValues.soreness} onChange={(value) => onSetMetric("soreness", value)} inverse />
             {!hasCompleteDraft ? <Text size="sm" className="hbg-muted-text">{translate("checkIn.completeAll")}</Text> : null}
-            <button type="button" className="hbg-primary-button" onClick={onContinue} disabled={!hasCompleteDraft}>
+            <Button type="button" color={getProductColor("habigoal", "primaryAction")} fullWidth onClick={onContinue} disabled={!hasCompleteDraft}>
               {translate("flow.continue")}
-            </button>
+            </Button>
           </Stack>
         ) : null}
 
@@ -431,11 +433,11 @@ function DailyWizard({
                 <Text fw={800}>{translate("habits.completion")}</Text>
                 <Text fw={800}>{habitScore}%</Text>
               </Group>
-              <Progress value={habitScore} color={habitScore >= 70 ? "tactical" : "yellow"} radius="xl" size="lg" />
+              <Progress value={habitScore} color={getProductColor("habigoal", scoreToProgressIntent(habitScore))} radius="xl" size="lg" />
             </Box>
             <Group gap="sm" grow>
-              <button type="button" className="hbg-secondary-button" onClick={onBack}>{translate("flow.back")}</button>
-              <button type="button" className="hbg-primary-button" onClick={onContinueHabits}>{translate("flow.continue")}</button>
+              <Button type="button" variant="default" onClick={onBack}>{translate("flow.back")}</Button>
+              <Button type="button" color={getProductColor("habigoal", "primaryAction")} onClick={onContinueHabits}>{translate("flow.continue")}</Button>
             </Group>
           </Stack>
         ) : null}
@@ -450,10 +452,10 @@ function DailyWizard({
               <ReviewRow label={translate("habits.title")} value={translate("flow.review.habitsValue", { done: completedHabits.length, total: HABIT_PLAN.length })} />
             </Stack>
             <Group gap="sm" grow>
-              <button type="button" className="hbg-secondary-button" onClick={onBack}>{translate("flow.back")}</button>
-              <button type="button" className="hbg-primary-button" onClick={onSave} disabled={!canSave}>
+              <Button type="button" variant="default" onClick={onBack}>{translate("flow.back")}</Button>
+              <Button type="button" color={getProductColor("habigoal", "primaryAction")} onClick={onSave} disabled={!canSave}>
                 {saving ? translate("flow.saving") : translate("flow.saveDay")}
-              </button>
+              </Button>
             </Group>
           </Stack>
         ) : null}
@@ -519,8 +521,8 @@ function ResultPanel({
       ) : null}
 
       <Group gap="sm" grow>
-        <button type="button" className="hbg-secondary-button" onClick={onUpdate}>{translate("flow.result.updateDay")}</button>
-        <button type="button" className="hbg-primary-button" onClick={onViewProgress}>{translate("flow.result.viewProgress")}</button>
+        <Button type="button" variant="default" onClick={onUpdate}>{translate("flow.result.updateDay")}</Button>
+        <Button type="button" color={getProductColor("habigoal", "primaryAction")} onClick={onViewProgress}>{translate("flow.result.viewProgress")}</Button>
       </Group>
     </Stack>
   );
@@ -559,7 +561,7 @@ function ProgressPanel({ history, nowMs, translate }: { history?: HabigoalHistor
                 <Stack key={day.date} gap={4} align="center">
                   <Progress
                     value={day.score}
-                    color={day.score >= 70 ? "tactical" : day.score > 0 ? "yellow" : "gray"}
+                    color={getProductColor("habigoal", scoreToProgressIntent(day.score))}
                     radius="xl"
                     size="lg"
                     style={{ width: "100%" }}
@@ -652,7 +654,7 @@ function StatusSlider({
         step={SLIDER_STEP}
         marks={SLIDER_MARKS}
         thumbSize={30}
-        color={inverse ? "review" : "ingress"}
+        color={getProductColor(inverse ? "athlete_iq" : "habigoal", "primaryAction")}
         label={(current) => `${current}%`}
         aria-label={label}
         className="hbg-slider"

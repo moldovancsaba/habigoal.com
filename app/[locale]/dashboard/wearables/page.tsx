@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
-import { Avatar, Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
+import { Paper, Text } from "@mantine/core";
+import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack, StateBlock, ThemeIcon } from "@doneisbetter/gds/client";
 import { deriveConnectionStatus, toMetricChips, type WearableConnectionStatus } from "@/lib/wearable-dashboard-view";
 import type { CanonicalMetric } from "@/types/canonical-metric";
 import type { DeviceConnection } from "@/types/wearable-connector";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 const SUPPORTED = [
   { id: "oura" },
@@ -18,11 +19,11 @@ const SUPPORTED = [
 ];
 
 const STATUS_TONE: Record<WearableConnectionStatus, string> = {
-  connected: "green",
-  stale: "yellow",
-  error: "red",
-  needs_reauth: "orange",
-  never: "gray"
+  connected: getProductColor("dashboard", "success"),
+  stale: getProductColor("dashboard", "warning"),
+  error: getProductColor("dashboard", "risk"),
+  needs_reauth: getProductColor("dashboard", "warning"),
+  never: getProductColor("dashboard", "neutral")
 };
 
 type LoadResult = { ok: boolean; connections: DeviceConnection[]; metrics: CanonicalMetric[] };
@@ -179,7 +180,7 @@ export default function WearablesConnectFlow() {
                 <Stack gap="sm">
                   <Group justify="space-between">
                     <Group gap="sm">
-                      <Avatar radius="xl" color="ingress">{t(`providers.${provider.id}.name`).charAt(0)}</Avatar>
+                      <ThemeIcon radius="xl" color={getProductColor("dashboard", "primaryAction")}>{t(`providers.${provider.id}.name`).charAt(0)}</ThemeIcon>
                       <Box>
                         <Text fw={700}>{t(`providers.${provider.id}.name`)}</Text>
                         <Text size="sm" c="dimmed">{t(`providers.${provider.id}.desc`)}</Text>
@@ -214,9 +215,9 @@ export default function WearablesConnectFlow() {
 
                       <Group gap="sm">
                         {status === "needs_reauth" ? (
-                          <SemanticButton action="start" color="ingress" onClick={() => void connect(provider.id)}>{t("reconnect")}</SemanticButton>
+                          <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} onClick={() => void connect(provider.id)}>{t("reconnect")}</SemanticButton>
                         ) : (
-                          <SemanticButton action="refresh" variant="light" color="ingress" loading={syncing === conn.connectionId} onClick={() => void syncNow(conn.connectionId)}>
+                          <SemanticButton action="refresh" variant="light" color={getProductColor("dashboard", "primaryAction")} loading={syncing === conn.connectionId} onClick={() => void syncNow(conn.connectionId)}>
                             {t("syncNow")}
                           </SemanticButton>
                         )}
@@ -225,7 +226,7 @@ export default function WearablesConnectFlow() {
                     </>
                   ) : (
                     <Group>
-                      <SemanticButton action="start" color="ingress" disabled={provider.disabled} onClick={() => void connect(provider.id)}>
+                      <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} disabled={provider.disabled} onClick={() => void connect(provider.id)}>
                         {provider.disabled ? t("comingSoon") : t("connect")}
                       </SemanticButton>
                     </Group>

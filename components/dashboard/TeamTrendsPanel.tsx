@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Group, Select, Text } from "@mantine/core";
-import { SectionPanel } from "@doneisbetter/gds/client";
+import { Text } from "@mantine/core";
+import { Group, SectionPanel, Select } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
 

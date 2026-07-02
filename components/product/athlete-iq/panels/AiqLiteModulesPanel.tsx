@@ -1,6 +1,7 @@
 "use client";
 
-import { Badge, Box, Button, Group, NumberInput, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Badge, Box, Button, Group, NumberInput, Select, Stack, TextInput } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
@@ -11,6 +12,7 @@ import { MissingDataPrompt } from "@/components/insights/MissingDataPrompt";
 import type { CognitiveLiteJourney } from "@/types/athleteiq-cognitive";
 import type { LiteModuleDailySummary, LiteModuleGatewaySummary } from "@/types/athleteiq-lite-modules";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type GatewayResponse = { summary: LiteModuleGatewaySummary | null };
 type CognitiveResponse = { journey: CognitiveLiteJourney };
@@ -151,7 +153,17 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
         <Stack gap="sm">
           {/* Scroll wrapper so long localized module labels never clip (SS2). */}
           <Box style={{ overflowX: "auto", maxWidth: "100%" }}>
-            <SegmentedControl value={entryModule} onChange={(value) => setEntryModule(value as EntryModule)} data={moduleOptions} />
+            <Select
+              value={entryModule}
+              onChange={(value) => {
+                if (value === "recovery" || value === "fuel" || value === "learning" || value === "wearable" || value === "cognitive") {
+                  setEntryModule(value);
+                }
+              }}
+              data={moduleOptions}
+              allowDeselect={false}
+              w="100%"
+            />
           </Box>
 
           {entryModule === "recovery" ? (
@@ -208,7 +220,7 @@ export function AiqLiteModulesPanel({ athleteId, localDate, timezone }: { athlet
           {feedback === "error" ? <Text size="sm" style={{ color: "var(--status-error)" }}>{t("common.actionFailed")}</Text> : null}
 
           <Group justify="flex-end">
-            <Button color="yellow" size="sm" loading={busy} disabled={submitDisabled} onClick={() => void submit()}>
+            <Button color={getProductColor("athlete_iq", "primaryAction")} size="sm" loading={busy} disabled={submitDisabled} onClick={() => void submit()}>
               {t("lite.save")}
             </Button>
           </Group>
@@ -229,6 +241,18 @@ function moduleKeyToEntry(moduleKey: string): EntryModule | null {
     case "wearable_manual_sync": return "wearable";
     default: return null;
   }
+}
+
+function confidenceColor(confidence: LiteModuleDailySummary["confidence"]): string {
+  if (confidence === "medium") return getProductColor("athlete_iq", "success");
+  if (confidence === "low") return getProductColor("athlete_iq", "warning");
+  return getProductColor("athlete_iq", "neutral");
+}
+
+function cognitiveBandColor(band: CognitiveLiteJourney["traitResults"][number]["band"]): string {
+  if (band === "strength" || band === "stable") return getProductColor("athlete_iq", "success");
+  if (band === "watch") return getProductColor("athlete_iq", "warning");
+  return getProductColor("athlete_iq", "neutral");
 }
 
 function SimpleSummary({
@@ -257,7 +281,7 @@ function SimpleSummary({
                   <Text fw={800}>{domain(`athleteiq.modules.${liteDisplayKey(entry.moduleKey)}.name`)}</Text>
                   <Text size="sm" className="aiq-muted-faint">{t("lite.entryCount", { count: entry.entryCount })}</Text>
                 </Stack>
-                <Badge color={entry.confidence === "medium" ? "tactical" : entry.confidence === "low" ? "yellow" : "gray"} variant="light">
+                <Badge color={confidenceColor(entry.confidence)} variant="light">
                   {t(`lite.confidence.${entry.confidence}`)}
                 </Badge>
               </Group>
@@ -303,11 +327,11 @@ function CognitiveSummary({
               <Group key={trait.trait} justify="space-between" gap="sm">
                 <Text size="sm">{domain(`athleteiq.cognitiveLite.trait.${trait.trait}`)}</Text>
                 <Group gap="xs">
-                  <Badge size="sm" variant="outline" color={trait.provenance === "entered" ? "tactical" : "gray"}>
+                  <Badge size="sm" variant="outline" color={trait.provenance === "entered" ? getProductColor("athlete_iq", "success") : getProductColor("athlete_iq", "neutral")}>
                     {t(`lite.cognitiveProvenance.${trait.provenance}`)}
                   </Badge>
                   <Text size="sm" fw={700}>{trait.score === null ? "-" : trait.score}</Text>
-                  <Badge size="sm" variant="light" color={trait.band === "strength" ? "tactical" : trait.band === "stable" ? "yellow" : trait.band === "watch" ? "orange" : "gray"}>
+                  <Badge size="sm" variant="light" color={cognitiveBandColor(trait.band)}>
                     {t(`lite.cognitiveBand.${trait.band}`)}
                   </Badge>
                 </Group>

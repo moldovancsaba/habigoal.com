@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Box, Button, Group, NumberInput, Paper, Progress, Slider, Stack, Text, Textarea } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { Paper, Text } from "@mantine/core";
+import { Box, Button, Group, NumberInput, PageHeader, Progress, SectionPanel, SemanticButton, Slider, Stack, StateBlock, Textarea } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { athleteIqJsonInit, athleteIqRequest } from "@/lib/athleteiq-client";
 import {
@@ -11,6 +11,7 @@ import {
   type SessionTimerState,
 } from "@/lib/session-timer";
 import type { SessionBlueprint } from "@/lib/session-blueprints";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type BlueprintsResponse = { blueprints: SessionBlueprint[] };
 type SessionResponse = { session: { sessionId: string } };
@@ -143,7 +144,7 @@ export function SessionRunner({ athleteId }: { athleteId: string }) {
                           {t("durationLabel", { minutes: totalMinutes, drills: blueprint.drills.length })}
                         </Text>
                       </Box>
-                      <SemanticButton action="start" color="ingress" loading={busy} onClick={() => void startSession(blueprint)}>
+                      <SemanticButton action="start" color={getProductColor("athlete_iq", "primaryAction")} loading={busy} onClick={() => void startSession(blueprint)}>
                         {t("start")}
                       </SemanticButton>
                     </Group>
@@ -178,14 +179,14 @@ export function SessionRunner({ athleteId }: { athleteId: string }) {
             </Text>
           </Box>
 
-          <Progress value={completed ? 100 : progress} aria-hidden="true" />
+          <Progress value={completed ? 100 : progress} color={getProductColor("athlete_iq", completed ? "success" : "primaryAction")} aria-hidden="true" />
 
           {!completed ? (
             <Group gap="sm" wrap="wrap">
               {timer.status === "running" ? (
                 <Button onClick={() => dispatch({ type: "pause" })}>{t("pause")}</Button>
               ) : (
-                <Button color="ingress" onClick={() => dispatch({ type: "play" })}>{t("play")}</Button>
+                <Button color={getProductColor("athlete_iq", "primaryAction")} onClick={() => dispatch({ type: "play" })}>{t("play")}</Button>
               )}
               <Button variant="default" onClick={() => dispatch({ type: "skip" })}>{t("skip")}</Button>
               <Button variant="default" onClick={() => dispatch({ type: "reset" })}>{t("reset")}</Button>
@@ -203,19 +204,19 @@ export function SessionRunner({ athleteId }: { athleteId: string }) {
               {actionError ? <StateBlock variant="error" title={t("saveError")} /> : null}
               <Box>
                 <Text size="sm" fw={600} id="rpe-label">{t("rpeLabel", { value: debrief.rpe })}</Text>
-                <Slider min={1} max={10} value={debrief.rpe} onChange={(v) => setDebrief((d) => ({ ...d, rpe: v }))} aria-labelledby="rpe-label" />
+                <Slider color={getProductColor("athlete_iq", "primaryAction")} min={1} max={10} value={debrief.rpe} onChange={(v) => setDebrief((d) => ({ ...d, rpe: v }))} aria-labelledby="rpe-label" />
               </Box>
               <NumberInput label={t("completionLabel")} min={0} max={100} value={debrief.completionPct} onChange={(v) => setDebrief((d) => ({ ...d, completionPct: typeof v === "number" ? v : 0 }))} />
               <Box>
                 <Text size="sm" fw={600} id="pain-label">{t("painLabel", { value: debrief.painAfter })}</Text>
-                <Slider min={1} max={10} value={debrief.painAfter} onChange={(v) => setDebrief((d) => ({ ...d, painAfter: v }))} aria-labelledby="pain-label" />
+                <Slider color={getProductColor("athlete_iq", "primaryAction")} min={1} max={10} value={debrief.painAfter} onChange={(v) => setDebrief((d) => ({ ...d, painAfter: v }))} aria-labelledby="pain-label" />
               </Box>
               <Box>
                 <Text size="sm" fw={600} id="mood-label">{t("moodLabel", { value: debrief.moodAfter })}</Text>
-                <Slider min={1} max={10} value={debrief.moodAfter} onChange={(v) => setDebrief((d) => ({ ...d, moodAfter: v }))} aria-labelledby="mood-label" />
+                <Slider color={getProductColor("athlete_iq", "primaryAction")} min={1} max={10} value={debrief.moodAfter} onChange={(v) => setDebrief((d) => ({ ...d, moodAfter: v }))} aria-labelledby="mood-label" />
               </Box>
               <Textarea label={t("notesLabel")} value={debrief.notes} maxLength={1000} onChange={(e) => setDebrief((d) => ({ ...d, notes: e.currentTarget.value }))} autosize minRows={2} />
-              <SemanticButton action="save" color="ingress" loading={busy} onClick={() => void saveDebrief()}>
+              <SemanticButton action="save" color={getProductColor("athlete_iq", "primaryAction")} loading={busy} onClick={() => void saveDebrief()}>
                 {t("save")}
               </SemanticButton>
             </Stack>

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Badge, Box, Group, Paper, Stack, Text } from "@mantine/core";
-import { SectionPanel } from "@doneisbetter/gds/client";
+import { Paper, Text } from "@mantine/core";
+import { Badge, Box, Group, SectionPanel, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 // P0 #525: surfaces the coach recommendation + injury-risk queues in the coach
 // dashboard. Fetches /coach/recommendations and /coach/injury-alerts per team,
@@ -25,7 +26,11 @@ type Entry = {
   urgency: number;
 };
 
-const RISK_COLOR: Record<string, string> = { high: "red", elevated: "yellow", low: "gray" };
+const RISK_COLOR: Record<string, string> = {
+  elevated: getProductColor("dashboard", "warning"),
+  high: getProductColor("dashboard", "risk"),
+  low: getProductColor("dashboard", "neutral")
+};
 
 export function CoachingAlertsPanel({ teams, athleteNames }: { teams: TeamRef[]; athleteNames: Record<string, string> }) {
   const t = useTranslations("CoachHub");
@@ -96,7 +101,7 @@ export function CoachingAlertsPanel({ teams, athleteNames }: { teams: TeamRef[];
                   </Stack>
                   <Group gap="xs">
                     {entry.injuryRisk && entry.injuryRisk.riskLevel !== "low" ? (
-                      <Badge color={RISK_COLOR[entry.injuryRisk.riskLevel] ?? "gray"} variant="filled">
+                      <Badge color={RISK_COLOR[entry.injuryRisk.riskLevel] ?? getProductColor("dashboard", "neutral")} variant="filled">
                         {t("coachingAlerts.injuryRisk", { level: t(`coachingAlerts.risk.${entry.injuryRisk.riskLevel}`) })}
                       </Badge>
                     ) : null}
@@ -112,7 +117,7 @@ export function CoachingAlertsPanel({ teams, athleteNames }: { teams: TeamRef[];
                   <Box>
                     <Text size="sm">{entry.recommendation.text}</Text>
                     <Group gap="xs" mt={4}>
-                      <Badge size="sm" variant="outline" color="gray">
+                      <Badge size="sm" variant="outline" color={getProductColor("dashboard", "neutral")}>
                         {t("coachingAlerts.confidence", { level: t(`coachingAlerts.conf.${entry.recommendation.confidence}`) })}
                       </Badge>
                       {entry.recommendation.humanReviewRequired ? (

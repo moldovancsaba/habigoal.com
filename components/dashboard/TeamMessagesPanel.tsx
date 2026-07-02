@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Group, Paper, Select, Stack, Text, Textarea } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Paper, Text } from "@mantine/core";
+import { Box, Group, Select, SemanticButton, Stack, Textarea } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type Message = {
   id?: string;
@@ -119,7 +120,7 @@ export function TeamMessagesPanel({ teams, athletes }: { teams: Team[]; athletes
                 maxLength={2000}
               />
             </Box>
-            <SemanticButton action="save" color="ingress" loading={sending} disabled={!draft.trim()} onClick={() => void send()}>
+            <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} loading={sending} disabled={!draft.trim()} onClick={() => void send()}>
               {t("messages.send")}
             </SemanticButton>
           </Group>

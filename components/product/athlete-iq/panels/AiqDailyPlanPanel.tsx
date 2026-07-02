@@ -1,28 +1,29 @@
 "use client";
 
-import { Badge, Box, Button, Group, Stack, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Badge, Box, Button, Group, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import type { DailyPlan, DailyTask, DailyTaskCompletionState } from "@/types/athleteiq-daily-plan";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 import { resolveTaskDescriptionKey } from "@/lib/daily-plan-copy";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type DailyPlanTodayResponse = { plan: DailyPlan | null; empty: boolean };
 type DailyPlanMutationResponse = { plan: DailyPlan };
 
-const PRIORITY_COLOR: Record<DailyTask["priority"], string> = {
-  critical: "red",
-  high: "orange",
-  medium: "yellow",
-  low: "tactical"
-};
-
 function confidenceColor(confidence: DailyPlan["recommendation"]["confidence"]): string {
-  if (confidence === "high") return "tactical";
-  if (confidence === "medium") return "yellow";
-  if (confidence === "low") return "orange";
-  return "gray";
+  if (confidence === "high") return getProductColor("athlete_iq", "success");
+  if (confidence === "medium") return getProductColor("athlete_iq", "warning");
+  if (confidence === "low") return getProductColor("athlete_iq", "risk");
+  return getProductColor("athlete_iq", "neutral");
+}
+
+function priorityColor(priority: DailyTask["priority"]): string {
+  if (priority === "critical") return getProductColor("athlete_iq", "risk");
+  if (priority === "high" || priority === "medium") return getProductColor("athlete_iq", "warning");
+  return getProductColor("athlete_iq", "success");
 }
 
 export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteId: string; localDate: string; timezone: string }) {
@@ -97,7 +98,7 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("common.loadError")}</Text>
-        <Button variant="light" color="yellow" size="sm" onClick={reload}>
+        <Button variant="light" color={getProductColor("athlete_iq", "primaryAction")} size="sm" onClick={reload}>
           {t("common.retry")}
         </Button>
       </Stack>
@@ -108,7 +109,7 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("dailyPlan.empty")}</Text>
-        <Button color="yellow" size="sm" loading={busy === "generate"} onClick={() => void generatePlan()}>
+        <Button color={getProductColor("athlete_iq", "primaryAction")} size="sm" loading={busy === "generate"} onClick={() => void generatePlan()}>
           {t("dailyPlan.generate")}
         </Button>
       </Stack>
@@ -127,7 +128,7 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
               <Badge color={confidenceColor(plan.recommendation.confidence)} variant="light" title={t("dailyPlan.confidenceLabel")}>
                 {t("dailyPlan.confidenceLabel")}: {t(`dailyPlan.confidence.${plan.recommendation.confidence}`)}
               </Badge>
-              <Badge color={plan.recommendation.blockedByPainGuardrail ? "red" : "tactical"} variant="light">
+              <Badge color={plan.recommendation.blockedByPainGuardrail ? getProductColor("athlete_iq", "risk") : getProductColor("athlete_iq", "success")} variant="light">
                 {t(`dailyPlan.intensity.${plan.recommendation.intensity}`)}
               </Badge>
             </Group>
@@ -153,7 +154,7 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
           <Stack gap="xs">
             <Group justify="space-between" align="flex-start" gap="sm">
               <Text fw={800}>{domain(task.titleKey)}</Text>
-              <Badge color={task.completionState === "completed" ? "tactical" : task.completionState === "dismissed" ? "gray" : PRIORITY_COLOR[task.priority]} variant="light">
+              <Badge color={task.completionState === "completed" ? getProductColor("athlete_iq", "success") : task.completionState === "dismissed" ? getProductColor("athlete_iq", "neutral") : priorityColor(task.priority)} variant="light">
                 {task.completionState === "open" ? t(`dailyPlan.priority.${task.priority}`) : t(`dailyPlan.state.${task.completionState}`)}
               </Badge>
             </Group>
@@ -162,7 +163,7 @@ export function AiqDailyPlanPanel({ athleteId, localDate, timezone }: { athleteI
             <Group gap="xs">
               {task.completionState === "open" ? (
                 <>
-                  <Button color="yellow" size="sm" variant="light" loading={busy === task.id} onClick={() => void setTaskState(task, "completed")}>
+                  <Button color={getProductColor("athlete_iq", "primaryAction")} size="sm" variant="light" loading={busy === task.id} onClick={() => void setTaskState(task, "completed")}>
                     {t("dailyPlan.complete")}
                   </Button>
                   <Button size="sm" variant="default" disabled={busy === task.id} onClick={() => void setTaskState(task, "dismissed")}>

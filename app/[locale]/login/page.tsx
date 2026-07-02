@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { Alert, Anchor, Badge, Button, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Alert, Paper, Text, Title } from "@mantine/core";
+import { Anchor, Badge, Button, SimpleGrid, Stack, TextInput } from "@doneisbetter/gds/client";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import { KeepFocusedFieldVisible } from "@/components/a11y/KeepFocusedFieldVisible";
 import { getSession } from "@/lib/session";
 import { getAuthUser, canOpenProductSurface } from "@/lib/access";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 function sanitizeNext(input: string | undefined, locale: string) {
   if (!input) return `/${locale}`;
@@ -73,6 +75,7 @@ export default async function LoginPage({
   const logoSrc = isAthleteIqSurface ? ATHLETE_IQ_GOLD_LOGO_SRC : "/images/habigoal_logo.png";
   const logoWidth = isAthleteIqSurface ? 72 : 54;
   const logoHeight = isAthleteIqSurface ? 64 : 54;
+  const surfaceColor = getProductColor(isAthleteIqSurface ? "athlete_iq" : "habigoal", "primaryAction");
 
   return (
     <main className={isAthleteIqSurface ? "login-page-container login-page-container-aiq" : "login-page-container login-page-container-habigoal"}>
@@ -82,12 +85,12 @@ export default async function LoginPage({
           <Stack gap="lg">
             <Stack gap="sm" align="flex-start">
               <Image src={logoSrc} alt="" width={logoWidth} height={logoHeight} priority className={isAthleteIqSurface ? "login-brand-logo login-brand-logo-aiq" : "login-brand-logo login-brand-logo-habigoal"} />
-              <Badge variant="light" color={isAthleteIqSurface ? "yellow" : "ingress"}>{t(`surfaces.${surfaceKey}.badge`)}</Badge>
+              <Badge variant="light" color={surfaceColor}>{t(`surfaces.${surfaceKey}.badge`)}</Badge>
               <Title order={1}>{t(`surfaces.${surfaceKey}.title`)}</Title>
             </Stack>
 
             {error ? (
-              <Alert color="red" title={t("errorTitle")}>
+              <Alert color={getProductColor(isAthleteIqSurface ? "athlete_iq" : "habigoal", "risk")} title={t("errorTitle")}>
                 {t(errorKey(error))}
               </Alert>
             ) : null}
@@ -126,7 +129,7 @@ export default async function LoginPage({
                 </SimpleGrid>
               </Stack>
             ) : null}
-            <Button fullWidth type="submit" size="md" variant="filled" color={isAthleteIqSurface ? "yellow" : "ingress"}>
+            <Button fullWidth type="submit" size="md" variant="filled" color={surfaceColor}>
               {t("submit")}
             </Button>
 

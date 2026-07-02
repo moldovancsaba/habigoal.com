@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useReducer, useRef, type ReactNode } from "react";
-import { Box, Group, Progress, Stack, Text } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Text } from "@mantine/core";
+import { Box, Group, Progress, SemanticButton, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import {
   createStepFlow,
@@ -11,6 +11,7 @@ import {
   isLastStep,
   stepProgressPercent,
 } from "@/lib/step-flow";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 export interface StepDef {
   id: string;
@@ -75,11 +76,11 @@ export function StepFlow({
           onClick={() => dispatch({ type: "back" })}
         />
         {last ? (
-          <SemanticButton action="save" color="ingress" loading={busy} onClick={onComplete}>
+          <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} loading={busy} onClick={onComplete}>
             {t("finish")}
           </SemanticButton>
         ) : (
-          <SemanticButton action="start" color="ingress" disabled={busy} onClick={() => dispatch({ type: "next" })}>
+          <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} disabled={busy} onClick={() => dispatch({ type: "next" })}>
             {t("saveNext")}
           </SemanticButton>
         )}

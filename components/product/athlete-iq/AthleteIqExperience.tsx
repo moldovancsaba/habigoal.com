@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Badge, Box, Group, Paper, Progress, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
-import { GdsIcons, getGdsVibeThemeCssVariables, PageHeader, resolveGdsVibeTheme, SemanticButton } from "@doneisbetter/gds/client";
+import { Paper, Text, Title } from "@mantine/core";
+import { Badge, Box, GdsIcons, Group, PageHeader, Progress, resolveGdsVibeTheme, Select, SemanticButton, SimpleGrid, Stack } from "@doneisbetter/gds/client";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { selectCopyKey } from "@/lib/copy-variants";
 import { heroSubtitleDef, neutralPromptDef } from "@/lib/surface-voice";
@@ -19,6 +19,7 @@ import type {
 import { SectionHeading, SignalCard, SurfaceTopBar } from "../ProductSurfaceShared";
 import { SharedDailyRecorder, type SharedDailyRecorderLabels } from "../SharedDailyRecorder";
 import { createProductSurfaceActionPack, type ProductSurfaceActionPack } from "../productSurfaceActions";
+import { ProductThemeBoundary } from "../ProductThemeBoundary";
 import { DailyReminders } from "@/components/reminders/DailyReminders";
 import { AiqDailyPlanPanel } from "./panels/AiqDailyPlanPanel";
 import { AiqMentalEdgePanel } from "./panels/AiqMentalEdgePanel";
@@ -26,6 +27,7 @@ import { AiqReflectionPanel } from "./panels/AiqReflectionPanel";
 import { AiqSessionPanel } from "./panels/AiqSessionPanel";
 import { AiqLiteModulesPanel } from "./panels/AiqLiteModulesPanel";
 import { AiqProgressPanel } from "./panels/AiqProgressPanel";
+import { getProductColor, scoreToProgressIntent, signalStateToIntent } from "@/lib/product-ui-contracts";
 
 type AiqTranslate = ReturnType<typeof useTranslations>;
 type CommonTranslate = ReturnType<typeof useTranslations>;
@@ -44,7 +46,6 @@ type SupportedLocale = "en" | "hu" | "ar" | "es" | "de" | "he";
 type AiqPersona = AthleteIqProductDashboardProjection["persona"];
 
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
-const ATHLETE_IQ_THEME_VARIABLES = getGdsVibeThemeCssVariables(ATHLETE_IQ_GDS_THEME_PRESET, "dark") as CSSProperties;
 
 export function AthleteIqExperience({ dashboard, surface, embedded = false }: { dashboard: AthleteIqProductDashboardProjection; relatedSurface?: ProductSurface; surface: ProductSurface; embedded?: boolean }) {
   const t = useTranslations("ProductSurfaces.athleteIq");
@@ -162,12 +163,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
   }
 
   return (
-    <Box
-      className="aiq-product-shell"
-      data-gds-theme-preset={ATHLETE_IQ_GDS_THEME_PRESET}
-      data-mantine-color-scheme="dark"
-      style={ATHLETE_IQ_THEME_VARIABLES}
-    >
+    <ProductThemeBoundary surface="athlete_iq" className="aiq-product-shell">
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
         {/* When embedded inside the shared shell (DashboardShell), that shell owns
             the single persona menu — so suppress this surface's own top bars,
@@ -215,12 +211,15 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
                 <Paper className="aiq-mode-card surface-outline" withBorder radius="md" p="md">
                   <Stack gap="xs">
                     <Text className="aiq-letter-label">{t("controls.mode.label")}</Text>
-                    <SegmentedControl
+                    <Select
                       value={modeView}
-                      onChange={(value) => setModeView(value as "lifestyle" | "performance")}
+                      onChange={(value) => {
+                        if (value === "lifestyle" || value === "performance") setModeView(value);
+                      }}
                       data={modeOptions}
                       aria-label={t("controls.mode.aria")}
-                      fullWidth
+                      allowDeselect={false}
+                      w="100%"
                     />
                   </Stack>
                 </Paper>
@@ -243,7 +242,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
                         <SemanticButton
                           action="productSurface:athleteDashboard"
                           aria-controls="team-club"
-                          color="yellow"
+                          color={getProductColor("athlete_iq", "primaryAction")}
                           onClick={openAthleteDashboard}
                           vocabularyPacks={[actionPack]}
                         />
@@ -253,11 +252,14 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
                   <Text className="aiq-command-copy" size="lg">
                     {t("hero.copy")}
                   </Text>
-                  <SegmentedControl
+                  <Select
                     value={roleView}
-                    onChange={(value) => setRoleView(value as "coach" | "academy" | "services")}
+                    onChange={(value) => {
+                      if (value === "coach" || value === "academy" || value === "services") setRoleView(value);
+                    }}
                     data={roleViewOptions}
                     aria-label={t("controls.role.aria")}
+                    allowDeselect={false}
                   />
                 </Stack>
 
@@ -296,16 +298,21 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
                   <SectionHeading icon={<GdsIcons.Dashboard size={18} />} title={t("priority.title")} copy={t("priority.copy")} inverse />
                   {activeQueue.length > 0 ? (
                     <Box style={{ overflowX: "auto", maxWidth: "100%" }}>
-                      <SegmentedControl
+                      <Select
                         size="sm"
                         value={priorityFilter}
-                        onChange={(value) => setPriorityFilter(value as typeof priorityFilter)}
+                        onChange={(value) => {
+                          if (value === "all" || value === "risk" || value === "watch" || value === "missing") {
+                            setPriorityFilter(value);
+                          }
+                        }}
                         data={[
                           { value: "all", label: t("priority.filter.all") },
                           { value: "risk", label: t("states.risk") },
                           { value: "watch", label: t("states.watch") },
                           { value: "missing", label: t("states.missing") },
                         ]}
+                        allowDeselect={false}
                       />
                     </Box>
                   ) : null}
@@ -347,7 +354,7 @@ export function AthleteIqExperience({ dashboard, surface, embedded = false }: { 
           </Stack>
         </Box>
       </Box>
-    </Box>
+    </ProductThemeBoundary>
   );
 }
 
@@ -447,12 +454,7 @@ function AiqAthleteWorkspace({
     : translate(selectCopyKey(neutralPromptDef("athleteWorkspace.empty.copy"), { now: heroNowMs }));
 
   return (
-    <Box
-      className="aiq-product-shell"
-      data-gds-theme-preset={ATHLETE_IQ_GDS_THEME_PRESET}
-      data-mantine-color-scheme="dark"
-      style={ATHLETE_IQ_THEME_VARIABLES}
-    >
+    <ProductThemeBoundary surface="athlete_iq" className="aiq-product-shell">
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
         {/* When embedded inside the shared shell (DashboardShell), that shell owns
             the single persona menu — so suppress this surface's own top bars,
@@ -502,12 +504,15 @@ function AiqAthleteWorkspace({
               <Paper className="aiq-mode-card surface-outline" withBorder radius="md" p="md">
                 <Stack gap="xs">
                   <Text className="aiq-letter-label">{translate("controls.mode.label")}</Text>
-                  <SegmentedControl
+                  <Select
                     value={modeView}
-                    onChange={(value) => setModeView(value as "lifestyle" | "performance")}
+                    onChange={(value) => {
+                      if (value === "lifestyle" || value === "performance") setModeView(value);
+                    }}
                     data={modeOptions}
                     aria-label={translate("controls.mode.aria")}
-                    fullWidth
+                    allowDeselect={false}
+                    w="100%"
                   />
                 </Stack>
               </Paper>
@@ -527,7 +532,7 @@ function AiqAthleteWorkspace({
                     actions={
                       <SemanticButton
                         action="productSurface:launch"
-                        color="yellow"
+                        color={getProductColor("athlete_iq", "primaryAction")}
                         onClick={() => document.getElementById("checkin")?.scrollIntoView({ behavior: "smooth", block: "start" })}
                         vocabularyPacks={[actionPack]}
                       />
@@ -579,7 +584,7 @@ function AiqAthleteWorkspace({
                       <Stack gap="xs">
                         <Group justify="space-between" gap="sm">
                           <Text fw={900}>{item.name}</Text>
-                          <Badge color={item.severity === "risk" ? "red" : item.severity === "watch" ? "yellow" : "gray"} variant="light">
+                          <Badge color={getProductColor("athlete_iq", signalStateToIntent(item.severity))} variant="light">
                             {translate(`states.${item.severity}`)}
                           </Badge>
                         </Group>
@@ -681,12 +686,12 @@ function AiqAthleteWorkspace({
           </Stack>
         </Box>
       </Box>
-    </Box>
+    </ProductThemeBoundary>
   );
 }
 
 function TeamOperationCard({ operation, translate }: { operation: AthleteIqDashboardOperation; translate: AiqTranslate }) {
-  const color = operation.state === "risk" ? "red" : operation.state === "watch" ? "yellow" : "tactical";
+  const color = getProductColor("athlete_iq", signalStateToIntent(operation.state));
 
   return (
     <Box className="aiq-row-card aiq-operation-card">
@@ -902,7 +907,7 @@ function PriorityAthleteCard({
   nowMs: number;
   translate: AiqTranslate;
 }) {
-  const color = athlete.severity === "risk" ? "red" : athlete.severity === "watch" ? "yellow" : athlete.severity === "missing" ? "gray" : "tactical";
+  const color = getProductColor("athlete_iq", signalStateToIntent(athlete.severity));
 
   return (
     <Box className={acknowledged ? "aiq-row-card aiq-row-card-muted" : "aiq-row-card"}>
@@ -912,14 +917,14 @@ function PriorityAthleteCard({
             <Text fw={900}>{athlete.name}</Text>
             <Text size="sm" className="aiq-muted-soft">{athlete.teamName ?? translate("athletes.unassignedTeam")}</Text>
           </Stack>
-          <Badge color={acknowledged ? "gray" : color} variant="light">{acknowledged ? translate("states.acknowledged") : translate(`states.${athlete.severity}`)}</Badge>
+          <Badge color={acknowledged ? getProductColor("athlete_iq", "neutral") : color} variant="light">{acknowledged ? translate("states.acknowledged") : translate(`states.${athlete.severity}`)}</Badge>
         </Group>
         <Text size="sm">{translate(selectCopyKey(neutralPromptDef(`priority.reasons.${athlete.reasonKey}`), { now: nowMs, seed: athlete.id }))}</Text>
         <Text size="sm" className="aiq-muted"><strong>{translate("priority.actionLabel")}:</strong> {translate(`priority.actions.${athlete.actionKey}`)}</Text>
         <Text size="sm" className="aiq-muted-faint">{translate("priority.sourceLabel")}: {translate(`priority.sources.${athlete.sourceKey}`)}</Text>
         <SemanticButton
           action="productSurface:acknowledge"
-          color="yellow"
+          color={getProductColor("athlete_iq", "primaryAction")}
           size="sm"
           variant={acknowledged ? "default" : "light"}
           vocabularyPacks={[actionPack]}
@@ -949,7 +954,7 @@ function AiqReadinessRow({ athlete, translate }: { athlete: AthleteIqDashboardAt
           <Text fw={900}>{formatScore(athlete.readiness)}</Text>
         </Group>
         <Progress.Root size="lg" radius="xl">
-          <Progress.Section value={readiness} color={readiness >= 75 ? "tactical" : readiness >= 60 ? "yellow" : "red"} />
+          <Progress.Section value={readiness} color={getProductColor("athlete_iq", scoreToProgressIntent(readiness))} />
         </Progress.Root>
         <SimpleGrid cols={2} spacing={6}>
           <Text size="sm" className="aiq-muted-soft">{translate("athletes.loadLabel")} {formatScore(athlete.load)}</Text>
@@ -974,7 +979,7 @@ function ServiceModuleCard({
   onOpen: (module: AthleteIqDashboardService) => void;
   translate: AiqTranslate;
 }) {
-  const color = module.status === "ready" ? "tactical" : module.status === "missing" ? "gray" : "yellow";
+  const color = getProductColor("athlete_iq", module.status === "ready" ? "success" : module.status === "missing" ? "neutral" : "warning");
   return (
     <Box className="aiq-row-card">
       <Stack gap="sm">
@@ -989,7 +994,7 @@ function ServiceModuleCard({
         <Text size="sm" className="aiq-muted">{translate(`services.modules.${module.id}.nextStep`)}</Text>
         <SemanticButton
           action={module.status === "ready" ? "productSurface:report" : "productSurface:launch"}
-          color="yellow"
+          color={getProductColor("athlete_iq", "primaryAction")}
           size="sm"
           variant="light"
           vocabularyPacks={[actionPack]}

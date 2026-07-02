@@ -1,20 +1,22 @@
 "use client";
 
-import { Badge, Box, Button, Group, Stack, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Badge, Box, Button, Group, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import type { MentalEdgeRoutine, MentalEdgeSnapshot } from "@/types/athleteiq-mental-edge";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type MentalEdgeTodayResponse = { snapshot: MentalEdgeSnapshot };
 
 const RISK_COLOR: Record<MentalEdgeSnapshot["riskLevel"], string> = {
-  stable: "tactical",
-  watch: "yellow",
-  concern: "orange",
-  urgent: "red",
-  insufficient: "gray"
+  stable: getProductColor("athlete_iq", "success"),
+  watch: getProductColor("athlete_iq", "warning"),
+  concern: getProductColor("athlete_iq", "warning"),
+  urgent: getProductColor("athlete_iq", "risk"),
+  insufficient: getProductColor("athlete_iq", "neutral")
 };
 
 export function AiqMentalEdgePanel({ athleteId, localDate, timezone }: { athleteId: string; localDate: string; timezone: string }) {
@@ -83,7 +85,7 @@ export function AiqMentalEdgePanel({ athleteId, localDate, timezone }: { athlete
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("common.loadError")}</Text>
-        <Button variant="light" color="yellow" size="sm" onClick={reload}>
+        <Button variant="light" color={getProductColor("athlete_iq", "primaryAction")} size="sm" onClick={reload}>
           {t("common.retry")}
         </Button>
       </Stack>
@@ -111,13 +113,13 @@ export function AiqMentalEdgePanel({ athleteId, localDate, timezone }: { athlete
           <Stack gap="xs">
             <Group justify="space-between" align="flex-start" gap="sm">
               <Text fw={800}>{domain(routine.labelKey)}</Text>
-              <Badge color={routine.completed ? "tactical" : "gray"} variant="light">
+              <Badge color={routine.completed ? getProductColor("athlete_iq", "success") : getProductColor("athlete_iq", "neutral")} variant="light">
                 {routine.completed ? t("mentalEdge.completed") : t("mentalEdge.minutes", { minutes: routine.estimatedMinutes })}
               </Badge>
             </Group>
             <Text size="sm" className="aiq-muted-faint">{domain(`athleteiq.mentalEdge.reasons.${routine.reasonCode}`)}</Text>
             <Button
-              color="yellow"
+              color={getProductColor("athlete_iq", "primaryAction")}
               size="sm"
               variant="light"
               disabled={routine.completed || busy === routine.routineId}

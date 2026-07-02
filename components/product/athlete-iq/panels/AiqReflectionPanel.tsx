@@ -1,12 +1,14 @@
 "use client";
 
-import { Box, Button, Group, Select, Stack, Text, Textarea, TextInput } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Box, Button, Group, Select, Stack, Textarea, TextInput } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import { selectCopyKey } from "@/lib/copy-variants";
 import { neutralPromptDef, reflectionPromptDef } from "@/lib/surface-voice";
 import type { ReflectionEntryView, ReflectionVisibility } from "@/types/athleteiq-reflection";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type ReflectionDayResponse = { reflections: ReflectionEntryView[]; count: number };
 type ReflectionCreateResponse = { skipped: boolean; reflection: unknown };
@@ -105,7 +107,7 @@ export function AiqReflectionPanel({ athleteId, localDate }: { athleteId: string
           </Group>
           {feedback === "error" ? <Text size="sm" style={{ color: "var(--status-error)" }}>{t("common.actionFailed")}</Text> : null}
           <Group justify="flex-end">
-            <Button color="yellow" size="sm" loading={saving} disabled={!body.trim()} onClick={() => void save()}>
+            <Button color={getProductColor("athlete_iq", "primaryAction")} size="sm" loading={saving} disabled={!body.trim()} onClick={() => void save()}>
               {t("reflection.save")}
             </Button>
           </Group>

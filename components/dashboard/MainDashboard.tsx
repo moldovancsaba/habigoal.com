@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Text } from "@mantine/core";
-import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Paper, Text } from "@mantine/core";
+import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";
@@ -14,6 +14,7 @@ import type { User } from "@/services/user-service";
 import { formatScore } from "@/lib/utils";
 import { DEFAULT_HABIGOAL_SETTINGS, type HabigoalSettings } from "@/services/settings-service";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type DashboardData = {
   users: User[];
@@ -70,7 +71,7 @@ type Recommendation = {
   key: string;
   title: string;
   detail: string;
-  tone: "red" | "yellow" | "blue" | "green";
+  tone: "plan" | "risk" | "success" | "warning";
   action?: CoachActionRecord | null;
 };
 
@@ -98,6 +99,23 @@ type CoachActivitySummary = {
 };
 
 const PRIORITY_QUEUE_LIMIT = 6;
+
+function dashboardToneColor(tone: Recommendation["tone"]): string {
+  if (tone === "risk") return getProductColor("dashboard", "risk");
+  if (tone === "warning") return getProductColor("dashboard", "warning");
+  if (tone === "success") return getProductColor("dashboard", "success");
+  return getProductColor("dashboard", "primaryAction");
+}
+
+function dashboardSeverityColor(intent: "primaryAction" | "risk" | "success" | "warning"): string {
+  return getProductColor("dashboard", intent);
+}
+
+function supportLevelColor(level: QueueItem["supportLevel"]): string {
+  if (level === "support") return getProductColor("dashboard", "risk");
+  if (level === "watch") return getProductColor("dashboard", "warning");
+  return getProductColor("dashboard", "success");
+}
 
 export function MainDashboard() {
   const t = useTranslations("Dashboard");
@@ -264,9 +282,9 @@ export function MainDashboard() {
   const activeStaff = data?.users.filter((user) => user.roles.includes("trainer") || user.roles.includes("admin")).length ?? 0;
 
   const actionBuckets: ActionBucket[] = [
-    { label: t("actionBucketReady"), count: queueItems.filter((item) => item.supportLevel === "ready").length, color: "var(--mantine-color-ingress-6)" },
-    { label: t("actionBucketWatch"), count: watchNowCount, color: "var(--mantine-color-review-6)" },
-    { label: t("actionBucketSupport"), count: supportNowCount, color: "var(--mantine-color-red-6)" }
+    { label: t("actionBucketReady"), count: queueItems.filter((item) => item.supportLevel === "ready").length, color: `var(--mantine-color-${getProductColor("dashboard", "success")}-6)` },
+    { label: t("actionBucketWatch"), count: watchNowCount, color: `var(--mantine-color-${getProductColor("dashboard", "warning")}-6)` },
+    { label: t("actionBucketSupport"), count: supportNowCount, color: `var(--mantine-color-${getProductColor("dashboard", "risk")}-6)` }
   ];
 
   const bucketQueues = useMemo(
@@ -516,8 +534,8 @@ export function MainDashboard() {
       <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
         <MetricCard label={t("totalChildren")} value={String(data?.athletes.length ?? 0)} />
         <MetricCard label={t("todayCheckInsLabel")} value={String(checkedInTodayCount)} />
-        <MetricCard label={t("missedCheckInsLabel")} value={String(missedCheckIns.length)} tone="red" />
-        <MetricCard label={t("supportFlagsLabel")} value={String(supportNowCount + watchNowCount)} tone="yellow" />
+        <MetricCard label={t("missedCheckInsLabel")} value={String(missedCheckIns.length)} tone="risk" />
+        <MetricCard label={t("supportFlagsLabel")} value={String(supportNowCount + watchNowCount)} tone="warning" />
       </SimpleGrid>
 
       <SectionPanel title={t("alertDigestTitle")} description={t("alertDigestSubtitle")}>
@@ -533,7 +551,7 @@ export function MainDashboard() {
                       <Text fw={700}>{alert.athlete.name}</Text>
                       <Text size="sm" c="dimmed">{alert.titles.join(" · ")}</Text>
                     </Box>
-                    <Badge color={alert.severity === "critical" ? "red" : "yellow"}>
+                    <Badge color={dashboardSeverityColor(alert.severity === "critical" ? "risk" : "warning")}>
                       {alert.severity === "critical" ? t("alertSeverityCritical") : t("alertSeverityWarning")}
                     </Badge>
                     {alert.action ? (
@@ -552,7 +570,7 @@ export function MainDashboard() {
                       <SemanticButton action="profile" variant="default" size="sm" />
                     </Link>
                     <Link href={alert.checkInHref} style={{ textDecoration: "none" }}>
-                      <SemanticButton action="start" color="ingress" size="sm" />
+                      <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} size="sm" />
                     </Link>
                   </Group>
                 </Stack>
@@ -627,7 +645,7 @@ export function MainDashboard() {
                         action="dashboard:markAppliedAction"
                         variant="light"
                         size="sm"
-                        color="tactical"
+                        color={getProductColor("dashboard", "success")}
                         onClick={() =>
                           saveCoachAction(
                             item.athlete._id || `${item.athlete.name}|${item.athlete.birthDate}`,
@@ -642,7 +660,7 @@ export function MainDashboard() {
                         <SemanticButton action="profile" variant="default" size="sm" />
                       </Link>
                       <Link href={checkInHref} style={{ textDecoration: "none" }}>
-                        <SemanticButton action="start" color="ingress" size="sm" />
+                        <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} size="sm" />
                       </Link>
                     </Group>
                   </Stack>
@@ -712,9 +730,9 @@ export function MainDashboard() {
       <SectionPanel title={t("coachActivityTitle")} description={t("coachActivitySubtitle")}>
         <Stack gap="md">
           <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
-            <MetricCard label={t("coachActivityAcknowledgedLabel")} value={String(coachActivity.acknowledgedCount)} tone="yellow" />
+            <MetricCard label={t("coachActivityAcknowledgedLabel")} value={String(coachActivity.acknowledgedCount)} tone="warning" />
             <MetricCard label={t("coachActivityAppliedLabel")} value={String(coachActivity.appliedCount)} />
-            <MetricCard label={t("coachActivityPendingLabel")} value={String(coachActivity.pendingCount)} tone="red" />
+            <MetricCard label={t("coachActivityPendingLabel")} value={String(coachActivity.pendingCount)} tone="risk" />
           </SimpleGrid>
 
           <Text size="sm" c="dimmed">
@@ -768,7 +786,7 @@ export function MainDashboard() {
                             {item.reasons[0] || t("coachActivityPendingFallback")}
                           </Text>
                         </Box>
-                        <Badge color="red">{t("coachActivityPendingBadge")}</Badge>
+                        <Badge color={getProductColor("dashboard", "risk")}>{t("coachActivityPendingBadge")}</Badge>
                       </Group>
                     </Box>
                   ))
@@ -892,15 +910,15 @@ export function MainDashboard() {
                         })}
                       </Text>
                     </Box>
-                    <Badge color={summary.support > 0 ? "red" : summary.watch > 0 ? "yellow" : "green"}>
+                    <Badge color={supportLevelColor(summary.support > 0 ? "support" : summary.watch > 0 ? "watch" : "ready")}>
                       {summary.support > 0 ? t("actionBucketSupport") : summary.watch > 0 ? t("actionBucketWatch") : t("actionBucketReady")}
                     </Badge>
                   </Group>
 
                   <SimpleGrid cols={3} spacing="xs">
-                    <MiniBucketStat label={t("actionBucketReady")} value={summary.ready} tone="green" />
-                    <MiniBucketStat label={t("actionBucketWatch")} value={summary.watch} tone="yellow" />
-                    <MiniBucketStat label={t("actionBucketSupport")} value={summary.support} tone="red" />
+                    <MiniBucketStat label={t("actionBucketReady")} value={summary.ready} tone="success" />
+                    <MiniBucketStat label={t("actionBucketWatch")} value={summary.watch} tone="warning" />
+                    <MiniBucketStat label={t("actionBucketSupport")} value={summary.support} tone="risk" />
                   </SimpleGrid>
 
                   <Text size="sm" c="dimmed">
@@ -920,7 +938,7 @@ export function MainDashboard() {
           <BucketColumn
             title={t("actionBucketReady")}
             items={bucketQueues.ready}
-            badgeColor="green"
+            badgeColor={supportLevelColor("ready")}
             emptyText={t("bucketDrilldownEmptyReady")}
             t={t}
             tc={tc}
@@ -928,7 +946,7 @@ export function MainDashboard() {
           <BucketColumn
             title={t("actionBucketWatch")}
             items={bucketQueues.watch}
-            badgeColor="yellow"
+            badgeColor={supportLevelColor("watch")}
             emptyText={t("bucketDrilldownEmptyWatch")}
             t={t}
             tc={tc}
@@ -936,7 +954,7 @@ export function MainDashboard() {
           <BucketColumn
             title={t("actionBucketSupport")}
             items={bucketQueues.support}
-            badgeColor="red"
+            badgeColor={supportLevelColor("support")}
             emptyText={t("bucketDrilldownEmptySupport")}
             t={t}
             tc={tc}
@@ -947,8 +965,9 @@ export function MainDashboard() {
   );
 }
 
-function MetricCard({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "red" | "yellow" }) {
-  const color = tone === "red" ? "var(--mantine-color-red-6)" : tone === "yellow" ? "var(--mantine-color-review-6)" : "var(--mantine-color-ingress-6)";
+function MetricCard({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "risk" | "warning" }) {
+  const token = tone === "risk" ? getProductColor("dashboard", "risk") : tone === "warning" ? getProductColor("dashboard", "warning") : getProductColor("dashboard", "primaryAction");
+  const color = `var(--mantine-color-${token}-6)`;
   return (
     <Paper withBorder p="md" radius="md">
       <Text size="sm" c="dimmed">{label}</Text>
@@ -958,11 +977,12 @@ function MetricCard({ label, value, tone = "default" }: { label: string; value: 
   );
 }
 
-function MiniBucketStat({ label, value, tone }: { label: string; value: number; tone: "green" | "yellow" | "red" }) {
+function MiniBucketStat({ label, value, tone }: { label: string; value: number; tone: "risk" | "success" | "warning" }) {
+  const color = `${dashboardToneColor(tone)}.7`;
   return (
     <Paper withBorder p="sm" radius="md">
       <Text size="sm" c="dimmed">{label}</Text>
-      <Text fw={700} c={tone === "red" ? "red" : tone === "yellow" ? "yellow.7" : "green.7"}>
+      <Text fw={700} c={color}>
         {value}
       </Text>
     </Paper>
@@ -1047,10 +1067,10 @@ function QueueCard({
             </Text>
           </Box>
           <Group gap="xs">
-            <Badge color={item.supportLevel === "support" ? "red" : item.supportLevel === "watch" ? "yellow" : "green"}>
+            <Badge color={supportLevelColor(item.supportLevel)}>
               {item.supportLevel === "support" ? t("actionBucketSupport") : item.supportLevel === "watch" ? t("actionBucketWatch") : t("actionBucketReady")}
             </Badge>
-            <Badge variant="light" color={item.checkedInToday ? "ingress" : emphasizeMissing ? "red" : "gray"}>
+            <Badge variant="light" color={item.checkedInToday ? getProductColor("dashboard", "success") : emphasizeMissing ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "neutral")}>
               {item.checkedInToday ? t("todayStatusCheckedIn") : t("todayStatusMissing")}
             </Badge>
           </Group>
@@ -1107,7 +1127,7 @@ function QueueCard({
             action="dashboard:markAppliedAction"
             variant="light"
             size="sm"
-            color="tactical"
+            color={getProductColor("dashboard", "success")}
             onClick={() => onSaveCoachAction(athleteKey, item.recommendations[0].key, "applied")}
             loading={savingActionKey === `${athleteKey}:${item.recommendations[0].key}:applied`}
             vocabularyPacks={[dashboardActionPack]}
@@ -1118,7 +1138,7 @@ function QueueCard({
             <SemanticButton action="profile" variant="default" size="sm" />
           </Link>
           <Link href={checkInHref} style={{ textDecoration: "none" }}>
-            <SemanticButton action="start" color="ingress" size="sm" />
+            <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} size="sm" />
           </Link>
         </Group>
       </Stack>
@@ -1160,14 +1180,14 @@ function buildRecommendations({
       key: "baseline-check-in",
       title: t("recommendationBaselineTitle"),
       detail: t("recommendationBaselineDetail"),
-      tone: "red"
+      tone: "risk"
     });
   } else if (!checkedInToday) {
     recommendations.push({
       key: "collect-today-check-in",
       title: t("recommendationCollectTitle"),
       detail: t("recommendationCollectDetail"),
-      tone: "red"
+      tone: "risk"
     });
   }
 
@@ -1179,7 +1199,7 @@ function buildRecommendations({
         done: latestCheckIn.computed.completion.done,
         total: latestCheckIn.computed.completion.total
       }),
-      tone: "yellow"
+      tone: "warning"
     });
   }
 
@@ -1190,7 +1210,7 @@ function buildRecommendations({
       detail: t("recommendationSupportConversationDetail", {
         area: supportAreas[0] || tc("emptyValue")
       }),
-      tone: "red"
+      tone: "risk"
     });
     recommendations.push({
       key: "modify-session-load",
@@ -1198,7 +1218,7 @@ function buildRecommendations({
       detail: t("recommendationModifySessionDetail", {
         score: formatScore(readinessScore)
       }),
-      tone: "red"
+      tone: "risk"
     });
   } else if (supportLevel === "watch") {
     recommendations.push({
@@ -1208,7 +1228,7 @@ function buildRecommendations({
         checks: readinessChecks,
         total: readinessTotal
       }),
-      tone: "yellow"
+      tone: "warning"
     });
 
     if (supportAreas.length > 0) {
@@ -1218,7 +1238,7 @@ function buildRecommendations({
         detail: t("recommendationTargetedCueDetail", {
           area: supportAreas[0]
         }),
-        tone: "blue"
+        tone: "plan"
       });
     }
   } else if (checkedInToday) {
@@ -1228,7 +1248,7 @@ function buildRecommendations({
       detail: t("recommendationMaintainDetail", {
         score: formatScore(readinessScore)
       }),
-      tone: "green"
+      tone: "success"
     });
   }
 
@@ -1237,7 +1257,7 @@ function buildRecommendations({
       key: "same-day-follow-up",
       title: t("recommendationSameDayFollowUpTitle"),
       detail: t("recommendationSameDayFollowUpDetail"),
-      tone: "blue"
+      tone: "plan"
     });
   }
 
@@ -1248,23 +1268,23 @@ function buildRecommendations({
 }
 
 function getRecommendationBadgeColor(tone: Recommendation["tone"]) {
-  return tone === "red" ? "red" : tone === "yellow" ? "yellow" : tone === "green" ? "green" : "blue";
+  return dashboardToneColor(tone);
 }
 
 function getRecommendationBadgeLabel(tone: Recommendation["tone"], t: ReturnType<typeof useTranslations>) {
-  return tone === "red"
+  return tone === "risk"
     ? t("recommendationToneUrgent")
-    : tone === "yellow"
+    : tone === "warning"
       ? t("recommendationToneMonitor")
-      : tone === "green"
+      : tone === "success"
         ? t("recommendationToneOnTrack")
         : t("recommendationTonePlan");
 }
 
 function getActionStatusColor(status: CoachActionStatus) {
-  if (status === "applied" || status === "resolved") return "green";
-  if (status === "open") return "red";
-  return "blue";
+  if (status === "applied" || status === "resolved") return getProductColor("dashboard", "success");
+  if (status === "open") return getProductColor("dashboard", "risk");
+  return getProductColor("dashboard", "primaryAction");
 }
 
 function getActionStatusLabel(status: CoachActionStatus, t: ReturnType<typeof useTranslations>) {
@@ -1348,7 +1368,7 @@ function buildSessionBlueprint(
               ? t("sessionAdjustmentWatchSummary")
               : t("sessionAdjustmentMissingSummary"),
         detail: primaryRecommendation?.detail || t("sessionBlueprintAdjustmentsEmpty"),
-        tone: primaryRecommendation?.tone || (item.supportLevel === "support" ? "red" : item.supportLevel === "watch" ? "yellow" : "blue")
+        tone: primaryRecommendation?.tone || (item.supportLevel === "support" ? "risk" : item.supportLevel === "watch" ? "warning" : "plan")
       };
     });
 
@@ -1356,7 +1376,7 @@ function buildSessionBlueprint(
 }
 
 function getBlueprintBadgeColor(variant: SessionBlueprintPlan["variant"]) {
-  return variant === "recovery" ? "red" : variant === "controlled" ? "yellow" : "green";
+  return variant === "recovery" ? getProductColor("dashboard", "risk") : variant === "controlled" ? getProductColor("dashboard", "warning") : getProductColor("dashboard", "success");
 }
 
 function getBlueprintBadgeLabel(variant: SessionBlueprintPlan["variant"], t: ReturnType<typeof useTranslations>) {

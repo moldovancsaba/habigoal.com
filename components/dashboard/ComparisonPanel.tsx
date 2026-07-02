@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { MultiSelect, Table, Text } from "@mantine/core";
-import { SectionPanel } from "@doneisbetter/gds/client";
+import { Text } from "@mantine/core";
+import { MultiSelect, SectionPanel, Table } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 
 // Athlete comparison / cohort (#526 P1). Compares selected athletes side by

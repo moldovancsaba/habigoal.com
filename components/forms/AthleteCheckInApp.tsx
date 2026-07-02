@@ -3,18 +3,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
-  Badge,
-  Box,
-  Group,
   Paper,
-  Progress,
-  SimpleGrid,
-  Stack,
   Text
 } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  ChoiceChip,
+  Group,
+  PageHeader,
+  Progress,
+  SectionPanel,
+  SemanticButton,
+  SimpleGrid,
+  Stack
+} from "@doneisbetter/gds/client";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChoiceChip, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
 import { Link, useRouter } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { resolveCheckInPromptKey } from "@/lib/check-in-copy";
@@ -28,6 +33,7 @@ import type { CentralFormErrors } from "@/lib/forms/central-form";
 import type { AssessmentPayload, ScoreEntry } from "@/types/assessment";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteProfile } from "@/types/athlete";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 const DRAFT_STORAGE_KEY = "habigoal-assessment-draft";
 const LEGACY_DRAFT_STORAGE_KEYS = ["survey-draft", "kidex-draft"];
@@ -553,7 +559,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
             <SemanticButton action="add" variant="default" onClick={newAssessment} style={{ flex: 1, fontWeight: 600 }} />
             <SemanticButton
               action={recordId ? "edit" : "save"}
-              color="ingress"
+              color={getProductColor("dashboard", "primaryAction")}
               onClick={() => void saveAssessment()}
               loading={saveState === "saving"}
               style={{ flex: 1, fontWeight: 700 }}
@@ -563,7 +569,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
       />
 
       {message ? (
-        <Alert color={saveState === "error" ? "red" : saveState === "saved" ? "ingress" : "blue"} withCloseButton onClose={() => setMessage("")}>
+        <Alert color={saveState === "error" ? getProductColor("dashboard", "risk") : saveState === "saved" ? getProductColor("dashboard", "success") : getProductColor("dashboard", "primaryAction")} withCloseButton onClose={() => setMessage("")}>
           {message}
           {saveState === "error" ? (
             <Group mt="sm">
@@ -616,11 +622,11 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
                 {t("answeredCount", { answered: answeredCount, total: activeQuestions.length })}
               </Text>
             </Box>
-            <Badge variant="light" color={readinessResult.mode === "full" ? "ingress" : readinessResult.mode === "moderate" ? "review" : "red"} size="lg">
+            <Badge variant="light" color={readinessResult.mode === "full" ? getProductColor("dashboard", "success") : readinessResult.mode === "moderate" ? getProductColor("dashboard", "warning") : getProductColor("dashboard", "risk")} size="lg">
               {t("greenChecksCount", { green: greenChecks, total: activeQuestions.length })}
             </Badge>
           </Group>
-          <Progress value={progressPercent} color="ingress" radius="xl" size="lg" />
+          <Progress value={progressPercent} color={getProductColor("dashboard", "primaryAction")} radius="xl" size="lg" />
           <Text size="sm" c="dimmed">
             {t("dailyTrackerRationale")}
           </Text>
@@ -652,7 +658,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
                         <Text size="md" fw={700}>{t(item.title)}</Text>
                         <Text size="sm" c="dimmed">{t(resolveCheckInPromptKey(item.prompt, { now: nowMs, seed: forcedChildId ?? "" }))}</Text>
                       </Box>
-                      <Badge variant="light" color="ingress" size="lg">
+                      <Badge variant="light" color={getProductColor("dashboard", "primaryAction")} size="lg">
                         {currentScore === null ? t("notSet") : `${currentScore}/5`}
                       </Badge>
                     </Group>
@@ -715,7 +721,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
               <Text size="sm" c="dimmed">{t("dailyReadiness")}</Text>
               <Text fw={700}>{t("completionCount", { done: computed.completion.done, total: computed.completion.total })}</Text>
             </Box>
-            <Badge variant="light" color={readinessResult.mode === "full" ? "ingress" : readinessResult.mode === "moderate" ? "review" : "red"} size="lg">
+            <Badge variant="light" color={readinessResult.mode === "full" ? getProductColor("dashboard", "success") : readinessResult.mode === "moderate" ? getProductColor("dashboard", "warning") : getProductColor("dashboard", "risk")} size="lg">
               {readinessModeLabel}
             </Badge>
           </Group>
@@ -723,7 +729,7 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
             <SemanticButton action="add" variant="default" onClick={newAssessment} style={{ fontWeight: 600 }} />
             <SemanticButton
               action={recordId ? "edit" : "save"}
-              color="ingress"
+              color={getProductColor("dashboard", "primaryAction")}
               onClick={() => void saveAssessment()}
               loading={saveState === "saving"}
               style={{ fontWeight: 700 }}

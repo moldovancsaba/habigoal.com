@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Group, Stack, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Box, Group, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import type { ExplanationBundle } from "@/lib/explainability";
 

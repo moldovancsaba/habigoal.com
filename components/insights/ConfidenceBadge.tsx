@@ -1,14 +1,15 @@
 "use client";
 
-import { Badge, Tooltip } from "@mantine/core";
+import { Badge, Tooltip } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import type { ConfidenceBand, ConfidenceReasonKey } from "@/lib/data-confidence";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 const BAND_COLOR: Record<ConfidenceBand, string> = {
-  high: "green",
-  medium: "yellow",
-  low: "orange",
-  none: "gray",
+  high: getProductColor("dashboard", "success"),
+  medium: getProductColor("dashboard", "warning"),
+  low: getProductColor("dashboard", "risk"),
+  none: getProductColor("dashboard", "neutral"),
 };
 
 // Renders the canonical data-confidence band (#253) with its reasons in a

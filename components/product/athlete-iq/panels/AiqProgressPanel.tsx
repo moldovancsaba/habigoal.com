@@ -1,11 +1,13 @@
 "use client";
 
-import { Button, Group, SegmentedControl, SimpleGrid, Stack, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Button, Group, Select, SimpleGrid, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
 import { athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import type { DailyIqPublicSnapshot } from "@/types/athleteiq-daily-iq";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type HistoryResponse = { snapshots: DailyIqPublicSnapshot[]; from: string; to: string; count: number };
 type TrendMetric = "dailyIqScore" | "readinessScore" | "habitScore" | "mentalEdgeScore";
@@ -84,7 +86,7 @@ export function AiqProgressPanel({ athleteId, localDate, timezone }: { athleteId
     return (
       <Stack gap="sm">
         <Text className="aiq-muted">{t("common.loadError")}</Text>
-        <Button variant="light" color="yellow" size="sm" onClick={reload}>
+        <Button variant="light" color={getProductColor("athlete_iq", "primaryAction")} size="sm" onClick={reload}>
           {t("common.retry")}
         </Button>
       </Stack>
@@ -93,7 +95,17 @@ export function AiqProgressPanel({ athleteId, localDate, timezone }: { athleteId
 
   return (
     <Stack gap="md">
-      <SegmentedControl value={metric} onChange={(value) => setMetric(value as TrendMetric)} data={metricOptions} fullWidth />
+      <Select
+        value={metric}
+        onChange={(value) => {
+          if (value === "dailyIqScore" || value === "readinessScore" || value === "habitScore" || value === "mentalEdgeScore") {
+            setMetric(value);
+          }
+        }}
+        data={metricOptions}
+        allowDeselect={false}
+        w="100%"
+      />
 
       <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm">
         <Stat label={t("progress.latest")} value={formatStat(latest)} />
@@ -105,7 +117,7 @@ export function AiqProgressPanel({ athleteId, localDate, timezone }: { athleteId
       {series.length === 0 ? (
         <Text className="aiq-muted">{t("progress.empty")}</Text>
       ) : (
-        <LongitudinalChart title={t(`progress.metric.${metricLabelKey(metric)}`)} data={series} color="var(--mantine-color-yellow-6)" yDomain={[0, 100]} />
+        <LongitudinalChart title={t(`progress.metric.${metricLabelKey(metric)}`)} data={series} color="var(--mantine-color-review-6)" yDomain={[0, 100]} />
       )}
     </Stack>
   );

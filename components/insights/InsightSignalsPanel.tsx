@@ -1,13 +1,15 @@
 "use client";
 
-import { Badge, Box, Group, Stack, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Badge, Box, Group, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import type { InsightSignal, InsightSeverity } from "@/lib/athlete-insights";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 const SEVERITY_COLOR: Record<InsightSeverity, string> = {
-  high: "red",
-  medium: "yellow",
-  low: "gray",
+  high: getProductColor("dashboard", "risk"),
+  medium: getProductColor("dashboard", "warning"),
+  low: getProductColor("dashboard", "neutral"),
 };
 
 // Renders the source-linked deterministic insight signals (#81). Each signal

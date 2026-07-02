@@ -1,6 +1,7 @@
 "use client";
 
-import { Badge, Box, Button, Group, NumberInput, Select, Stack, Text, TextInput } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { Badge, Box, Button, Group, NumberInput, Select, Stack, TextInput } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
@@ -8,6 +9,7 @@ import { selectCopyKey } from "@/lib/copy-variants";
 import { neutralPromptDef } from "@/lib/surface-voice";
 import type { AthleteIqSession, AthleteIqSessionState } from "@/types/athleteiq-session";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type SessionListResponse = { sessions: AthleteIqSession[]; count: number };
 type SessionMutationResponse = { session: AthleteIqSession };
@@ -17,11 +19,11 @@ type BlueprintListResponse = { blueprints: SessionBlueprint[] };
 type DebriefDraft = { rpe: number; completionPct: number; painAfter: number; moodAfter: number; notes: string };
 
 const STATE_COLOR: Record<AthleteIqSessionState, string> = {
-  draft: "gray",
-  active: "tactical",
-  paused: "yellow",
-  completed: "tactical",
-  abandoned: "red"
+  draft: getProductColor("athlete_iq", "neutral"),
+  active: getProductColor("athlete_iq", "success"),
+  paused: getProductColor("athlete_iq", "warning"),
+  completed: getProductColor("athlete_iq", "success"),
+  abandoned: getProductColor("athlete_iq", "risk")
 };
 
 const NEXT_STATES: Record<AthleteIqSessionState, AthleteIqSessionState[]> = {
@@ -169,7 +171,7 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
               </Button>
             </Group>
           ) : null}
-          <Button color="yellow" size="sm" variant="light" loading={busy === "from-plan"} onClick={() => void buildFromPlan()}>
+          <Button color={getProductColor("athlete_iq", "primaryAction")} size="sm" variant="light" loading={busy === "from-plan"} onClick={() => void buildFromPlan()}>
             {t("session.buildFromPlan")}
           </Button>
         </Group>
@@ -206,7 +208,7 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
                     {NEXT_STATES[session.state].map((state) => (
                       <Button
                         key={state}
-                        color={state === "abandoned" ? "red" : "yellow"}
+                        color={getProductColor("athlete_iq", state === "abandoned" ? "risk" : "primaryAction")}
                         size="sm"
                         variant={state === "abandoned" ? "default" : "light"}
                         loading={busy === `${session.sessionId}:${state}`}
@@ -243,7 +245,7 @@ export function AiqSessionPanel({ athleteId, localDate, timezone }: { athleteId:
                       <Text size="sm" className="aiq-muted-faint">{t("session.recordedLoad", { load: session.log.estimatedLoadPoints })}</Text>
                     ) : null}
                     <Group justify="flex-end">
-                      <Button color="yellow" size="sm" loading={busy === `${session.sessionId}:debrief`} onClick={() => void submitDebrief(session)}>
+                      <Button color={getProductColor("athlete_iq", "primaryAction")} size="sm" loading={busy === `${session.sessionId}:debrief`} onClick={() => void submitDebrief(session)}>
                         {t("session.saveDebrief")}
                       </Button>
                     </Group>

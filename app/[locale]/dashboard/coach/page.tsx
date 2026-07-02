@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Loader, Stack, Text, SimpleGrid, Group, Badge, Paper } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { Paper, Text } from "@mantine/core";
+import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack, StateBlock } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
@@ -17,14 +17,15 @@ import type { AthleteProfile } from "@/types/athlete";
 import type { CoachActionRecord } from "@/types/coach-action";
 import type { Team } from "@/types/team";
 import type { TeamProjection } from "@/types/athleteiq-stakeholder";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 // Readiness is recorded on a 0-5 gauge scale (see readiness-model). Map it to a
 // traffic-light tone so the roster reflects real recorded status instead of a
 // constant "Ready" badge.
 function readinessTone(value: number): string {
-  if (value >= 4) return "ingress";
-  if (value >= 2.5) return "review";
-  return "red";
+  if (value >= 4) return getProductColor("dashboard", "success");
+  if (value >= 2.5) return getProductColor("dashboard", "warning");
+  return getProductColor("dashboard", "risk");
 }
 
 interface ConcernItem {
@@ -259,10 +260,10 @@ export default function CoachDashboardPage() {
                   ) : (
                     <>
                       <Group gap="xs">
-                        <Badge color="ingress" variant="light">{t("distGreen", { count: overview.projection.readinessDistribution.green })}</Badge>
-                        <Badge color="yellow" variant="light">{t("distYellow", { count: overview.projection.readinessDistribution.yellow })}</Badge>
-                        <Badge color="red" variant="light">{t("distRed", { count: overview.projection.readinessDistribution.red })}</Badge>
-                        <Badge color="gray" variant="light">{t("distIncomplete", { count: overview.projection.readinessDistribution.incomplete })}</Badge>
+                        <Badge color={getProductColor("dashboard", "success")} variant="light">{t("distGreen", { count: overview.projection.readinessDistribution.green })}</Badge>
+                        <Badge color={getProductColor("dashboard", "warning")} variant="light">{t("distYellow", { count: overview.projection.readinessDistribution.yellow })}</Badge>
+                        <Badge color={getProductColor("dashboard", "risk")} variant="light">{t("distRed", { count: overview.projection.readinessDistribution.red })}</Badge>
+                        <Badge color={getProductColor("dashboard", "neutral")} variant="light">{t("distIncomplete", { count: overview.projection.readinessDistribution.incomplete })}</Badge>
                       </Group>
                       <Text size="sm" c="dimmed">{t("teamFlags", { count: overview.projection.flagsCount })}</Text>
                     </>
@@ -391,7 +392,7 @@ export default function CoachDashboardPage() {
                           </Text>
                         </Box>
                         <Group gap="sm">
-                          <Badge color={resolved ? "gray" : concern.severity === "support" ? "red" : "yellow"} variant="light">
+                          <Badge color={resolved ? getProductColor("dashboard", "neutral") : concern.severity === "support" ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "warning")} variant="light">
                             {resolved ? t("concernResolved") : concern.severity}
                           </Badge>
                           {concern.athleteId ? (

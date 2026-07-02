@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { PageHeader, SectionPanel, StateBlock } from "@doneisbetter/gds/client";
-import { SimpleGrid, Box, Stack, Group, Text, Progress, Paper, Loader } from "@mantine/core";
+import { Paper, Text } from "@mantine/core";
+import { Box, Group, Loader, PageHeader, Progress, SectionPanel, SimpleGrid, Stack, StateBlock } from "@doneisbetter/gds/client";
 import type { AthleteTwin } from "@/types/athlete-twin";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 function dimScore(value?: number): number {
   if (value == null || Number.isNaN(value)) return 0;
@@ -68,7 +69,7 @@ export default function DigitalTwinDashboard() {
                     <Text fw={600}>{d.label}</Text>
                     <Text fw={700}>{d.value}%</Text>
                   </Group>
-                  <Progress value={d.value} color={d.value >= 70 ? "green" : d.value >= 50 ? "yellow" : "red"} size="md" radius="xl" />
+                  <Progress value={d.value} color={d.value >= 70 ? getProductColor("dashboard", "success") : d.value >= 50 ? getProductColor("dashboard", "warning") : getProductColor("dashboard", "risk")} size="md" radius="xl" />
                   <Text size="sm" c="dimmed" mt="xs">{t("sourcesLabel", { sources: (d.sources ?? []).join(", ") || t("sourcesNone") })}</Text>
                 </Paper>
               ))}

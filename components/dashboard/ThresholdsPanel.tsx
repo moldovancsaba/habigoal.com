@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Group, NumberInput, Select, Stack, Text } from "@mantine/core";
-import { SectionPanel } from "@doneisbetter/gds/client";
+import { Text } from "@mantine/core";
+import { Button, Group, NumberInput, SectionPanel, Select, Stack } from "@doneisbetter/gds/client";
 import { useTranslations } from "next-intl";
 
 // Per-team readiness/alert threshold editor (#525 P0). Coach/admin adjusts the

@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Anchor, Badge, Box, Group, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from "@mantine/core";
-import { GdsIcons } from "@doneisbetter/gds/client";
+import { Paper, Text, Title } from "@mantine/core";
+import { Anchor, Badge, Box, GdsIcons, Group, SimpleGrid, Stack, ThemeIcon } from "@doneisbetter/gds/client";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type ProductEntryCardProps = {
   ariaLabel: string;
@@ -29,7 +30,7 @@ export function ProductEntryCard({
       <Anchor className="selector-card-link" href={href} underline="never" c="inherit" aria-label={ariaLabel}>
         <Stack gap="lg" h="100%">
           <Group justify="space-between" align="flex-start" gap="md">
-            <Badge variant="light" color={tone === "home" ? "ingress" : "yellow"} w="fit-content" className={tone === "home" ? "selector-home-badge" : "selector-pro-badge"}>
+            <Badge variant="light" color={getProductColor(tone === "home" ? "habigoal" : "athlete_iq", "primaryAction")} w="fit-content" className={tone === "home" ? "selector-home-badge" : "selector-pro-badge"}>
               {badge}
             </Badge>
             {tone === "pro" ? (
@@ -80,7 +81,7 @@ function AthleteIqSelectorPreview() {
       <Box className="selector-pro-sidebar" />
       <Stack gap={8} className="selector-pro-grid">
         <Group gap={8} wrap="nowrap">
-          <ThemeIcon color="yellow" variant="light" radius="md">
+          <ThemeIcon color={getProductColor("athlete_iq", "primaryAction")} variant="light" radius="md">
             <GdsIcons.Dashboard size={16} />
           </ThemeIcon>
           <Box className="selector-pro-line selector-pro-line-wide" />

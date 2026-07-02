@@ -1239,18 +1239,16 @@ a {
   color: var(--gds-vibe-text, #f4f7fb);
   background: var(--gds-vibe-gradient, #070c18);
 
-  /* Accent buttons inside the professional surface use Mantine's `yellow`,
-     which renders as amber. Retint the yellow palette to the brand gold
-     (the same accent used by the active nav state and the mobile surface)
-     so the whole surface shares one gold. Scoped to the AIQ shell only. */
+  /* Accent controls inside the professional surface must resolve through the
+     GDS review token, so Athlete IQ keeps the black-gold theme consistently. */
   --aiq-gold: var(--gds-vibe-accent, var(--accent-gold));
-  --mantine-color-yellow-filled: var(--aiq-gold);
-  --mantine-color-yellow-filled-hover: color-mix(in srgb, var(--aiq-gold) 86%, #000 14%);
-  --mantine-color-yellow-light: color-mix(in srgb, var(--aiq-gold) 16%, transparent);
-  --mantine-color-yellow-light-hover: color-mix(in srgb, var(--aiq-gold) 26%, transparent);
-  --mantine-color-yellow-light-color: var(--aiq-gold);
-  --mantine-color-yellow-outline: var(--aiq-gold);
-  --mantine-color-yellow-outline-hover: color-mix(in srgb, var(--aiq-gold) 14%, transparent);
+  --mantine-color-review-filled: var(--aiq-gold);
+  --mantine-color-review-filled-hover: color-mix(in srgb, var(--aiq-gold) 86%, #000 14%);
+  --mantine-color-review-light: color-mix(in srgb, var(--aiq-gold) 16%, transparent);
+  --mantine-color-review-light-hover: color-mix(in srgb, var(--aiq-gold) 26%, transparent);
+  --mantine-color-review-light-color: var(--aiq-gold);
+  --mantine-color-review-outline: var(--aiq-gold);
+  --mantine-color-review-outline-hover: color-mix(in srgb, var(--aiq-gold) 14%, transparent);
 
   /* The Mantine Paper/Card/input defaults paint the global navy surface, which
      leaks the old blue look into the professional surface. Remap the shared
@@ -1274,6 +1272,15 @@ a {
 /* Brand gold is light, so filled gold buttons need dark text for contrast. */
 .aiq-product-shell .mantine-Button-root[data-variant="filled"] {
   color: #1b1403;
+}
+
+html[data-active-product-surface="athlete_iq"] .mantine-Menu-dropdown,
+html[data-active-product-surface="athlete_iq"] .mantine-Modal-content,
+html[data-active-product-surface="athlete_iq"] .mantine-Popover-dropdown,
+html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
+  color: var(--gds-vibe-text, #fff9e8);
+  background: var(--gds-vibe-surface, rgba(21, 24, 31, 0.96));
+  border-color: var(--gds-vibe-border, rgba(240, 182, 66, 0.30));
 }
 
 .aiq-workspace {

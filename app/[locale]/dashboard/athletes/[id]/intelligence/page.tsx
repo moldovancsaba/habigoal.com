@@ -1,30 +1,31 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Box, Loader, Stack, Text, Paper, SimpleGrid, Group, Badge } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { Paper, Text } from "@mantine/core";
+import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack } from "@doneisbetter/gds/client";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import { useAthleteIqDomainCopy } from "@/components/product/athlete-iq/useAthleteIqDomainCopy";
 import type { AthleteTwinProjection, ProfileDimension } from "@/types/athleteiq-twin-projection";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 type TwinResponse = { projection: AthleteTwinProjection };
 
 const STATUS_COLOR: Record<string, string> = {
-  active: "tactical",
-  lite_manual: "yellow",
-  future: "gray",
-  setup_required: "orange",
-  redacted: "gray"
+  active: getProductColor("dashboard", "success"),
+  lite_manual: getProductColor("dashboard", "warning"),
+  future: getProductColor("dashboard", "neutral"),
+  setup_required: getProductColor("dashboard", "warning"),
+  redacted: getProductColor("dashboard", "neutral")
 };
 
 const CONFIDENCE_COLOR: Record<string, string> = {
-  high: "tactical",
-  medium: "yellow",
-  low: "orange",
-  insufficient: "gray"
+  high: getProductColor("dashboard", "success"),
+  medium: getProductColor("dashboard", "warning"),
+  low: getProductColor("dashboard", "risk"),
+  insufficient: getProductColor("dashboard", "neutral")
 };
 
 export default function AthleteIntelligencePage() {
@@ -132,7 +133,7 @@ export default function AthleteIntelligencePage() {
                   <PolarGrid />
                   <PolarAngleAxis dataKey="dimension" />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                  <Radar name={projection.athlete.name ?? "Athlete"} dataKey="value" stroke="var(--brand-blue)" fill="var(--brand-blue)" fillOpacity={0.6} />
+                  <Radar name={projection.athlete.name ?? "Athlete"} dataKey="value" stroke="var(--mantine-color-ingress-6)" fill="var(--mantine-color-ingress-6)" fillOpacity={0.6} />
                 </RadarChart>
               </ResponsiveContainer>
             </Box>
@@ -171,7 +172,7 @@ export default function AthleteIntelligencePage() {
                       ) : null}
                     </Box>
                     <Stack gap={4} align="flex-end">
-                      <Badge color={STATUS_COLOR[dimension.status] ?? "gray"} variant="light">{t(`status.${dimension.status}`)}</Badge>
+                      <Badge color={STATUS_COLOR[dimension.status] ?? getProductColor("dashboard", "neutral")} variant="light">{t(`status.${dimension.status}`)}</Badge>
                       <Badge color={CONFIDENCE_COLOR[dimension.confidence]} variant="light">{t(`confidence.${dimension.confidence}`)}</Badge>
                     </Stack>
                   </Group>

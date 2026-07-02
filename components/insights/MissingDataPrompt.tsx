@@ -1,7 +1,7 @@
 "use client";
 
-import { Group, Text } from "@mantine/core";
-import { SemanticButton } from "@doneisbetter/gds/client";
+import { Text } from "@mantine/core";
+import { Group, SemanticButton } from "@doneisbetter/gds/client";
 
 // Inline "this is empty — add it yourself" affordance (#missing-data, req 5).
 // Used wherever the data model has a field but no value yet (e.g. a lite module

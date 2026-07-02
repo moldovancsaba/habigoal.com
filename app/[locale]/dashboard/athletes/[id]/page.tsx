@@ -38,6 +38,7 @@ import { ConfidenceBadge } from "@/components/insights/ConfidenceBadge";
 import { ExplanationPanel } from "@/components/insights/ExplanationPanel";
 import { InsightSignalsPanel } from "@/components/insights/InsightSignalsPanel";
 import { buildAthleteInsights } from "@/lib/athlete-insights";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteHistoryPayload } from "@/types/athlete-history";
@@ -607,7 +608,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                           {checkedInToday ? td("athleteTodayCheckInDone") : td("athleteTodayCheckInOpen")}
                         </Text>
                       </Box>
-                      <Badge color={checkedInToday ? "green" : "red"}>
+                      <Badge color={checkedInToday ? getProductColor("dashboard", "success") : getProductColor("dashboard", "risk")}>
                         {checkedInToday ? td("athleteTaskDoneBadge") : td("athleteTaskOpenBadge")}
                       </Badge>
                     </Group>
@@ -629,7 +630,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                           })}
                         </Text>
                       </Box>
-                      <Badge color={habitsCompleteToday ? "green" : "yellow"}>
+                      <Badge color={habitsCompleteToday ? getProductColor("dashboard", "success") : getProductColor("dashboard", "warning")}>
                         {habitsCompleteToday ? td("athleteTaskDoneBadge") : td("athleteTaskOpenBadge")}
                       </Badge>
                     </Group>
@@ -1331,7 +1332,7 @@ function AthleteBaselineSetupSection({
       title={translate("athleteBaselineSetupTitle")}
       description={translate("athleteBaselineSetupSubtitle")}
       action={
-        <GdsBadge color={saved ? "green" : "yellow"}>
+        <GdsBadge color={saved ? getProductColor("dashboard", "success") : getProductColor("dashboard", "warning")}>
           {saved ? translate("athleteBaselineSavedBadge") : translate("athleteBaselineOpenBadge")}
         </GdsBadge>
       }
@@ -1575,15 +1576,15 @@ function getAthleteOperatingActions(
 }
 
 function getReadinessModeBadgeColor(mode: string) {
-  if (mode === "full") return "green";
-  if (mode === "moderate") return "yellow";
-  return "orange";
+  if (mode === "full") return getProductColor("dashboard", "success");
+  if (mode === "moderate") return getProductColor("dashboard", "warning");
+  return getProductColor("dashboard", "risk");
 }
 
 function getMomentumBadgeColor(state: "rising" | "steady" | "falling") {
-  if (state === "rising") return "green";
-  if (state === "falling") return "red";
-  return "gray";
+  if (state === "rising") return getProductColor("dashboard", "success");
+  if (state === "falling") return getProductColor("dashboard", "risk");
+  return getProductColor("dashboard", "neutral");
 }
 
 function averageScore(values: number[]) {
@@ -1624,7 +1625,7 @@ function selectRelevantSessionPlan(plans: SessionPlanRecord[], athleteName: stri
 }
 
 function getPlanVariantBadgeColor(variant: "standard" | "controlled" | "recovery") {
-  return variant === "recovery" ? "red" : variant === "controlled" ? "yellow" : "green";
+  return variant === "recovery" ? getProductColor("dashboard", "risk") : variant === "controlled" ? getProductColor("dashboard", "warning") : getProductColor("dashboard", "success");
 }
 
 function buildAthleteMemoryTimeline(

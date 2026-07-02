@@ -1,12 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Alert, Box, Checkbox, Group, Progress, SimpleGrid, Slider, Stack, Text } from "@mantine/core";
-import { GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
+import { Alert, Text } from "@mantine/core";
+import { Box, Checkbox, GdsIcons, Group, Progress, SemanticButton, SimpleGrid, Slider, Stack } from "@doneisbetter/gds/client";
 import { useCallback, useEffect, useState } from "react";
 import type { HabigoalHabitKey } from "@/services/habigoal-product.service";
 import type { SharedDailyProduct, SharedDailyStateProjection } from "@/services/shared-daily-state.service";
 import type { ProductSurfaceActionPack } from "./productSurfaceActions";
+import { getProductColor, scoreToProgressIntent, type ProductSurfaceKey } from "@/lib/product-ui-contracts";
 
 type DailyMetricKey = keyof SharedDailyStateProjection["checkIn"];
 type DailyMetricValues = SharedDailyStateProjection["checkIn"];
@@ -138,6 +139,7 @@ export function SharedDailyRecorder({
   const hasRecordedHabits = habitsReviewed || Boolean(projection?.habits.recorded);
   const canSave = Boolean(athleteId) && hasCompleteDraft && hasRecordedHabits && !saving;
   const shellClass = variant === "aiq" ? "shared-daily-recorder shared-daily-recorder-aiq" : "shared-daily-recorder shared-daily-recorder-habigoal";
+  const surfaceKey = surfaceKeyForVariant(variant);
   const statusScore = projection?.status.score;
 
   function setMetric(key: DailyMetricKey, value: number) {
@@ -234,7 +236,7 @@ export function SharedDailyRecorder({
   return (
     <Stack gap="md" className={shellClass}>
       {feedback ? (
-        <Alert color={feedback.kind === "success" ? "tactical" : "red"} title={feedback.title} role={feedback.kind === "success" ? "status" : "alert"}>
+        <Alert color={getProductColor(surfaceKey, feedback.kind === "success" ? "success" : "risk")} title={feedback.title} role={feedback.kind === "success" ? "status" : "alert"}>
           <Stack gap={4}>
             <Text>{feedback.message}</Text>
             {feedback.correlationId ? <Text size="sm">{labels.reference.replace("{correlationId}", feedback.correlationId)}</Text> : null}
@@ -286,14 +288,14 @@ export function SharedDailyRecorder({
               <Text fw={800}>{labels.habits.completion}</Text>
               <Text fw={800}>{habitScore}%</Text>
             </Group>
-            <Progress value={habitScore} color={habitScore >= 70 ? "tactical" : "yellow"} radius="xl" size="lg" />
+            <Progress value={habitScore} color={getProductColor(surfaceKey, scoreToProgressIntent(habitScore))} radius="xl" size="lg" />
           </Box>
         </Stack>
       </Box>
 
       <Group gap="sm" wrap="wrap">
         <SemanticButton action="productSurface:reset" variant="default" vocabularyPacks={[actionPack]} onClick={resetValues} disabled={saving} />
-        <SemanticButton action="productSurface:complete" color={variant === "aiq" ? "yellow" : "ingress"} vocabularyPacks={[actionPack]} onClick={saveDailyState} disabled={!canSave} loading={saving} />
+        <SemanticButton action="productSurface:complete" color={getProductColor(surfaceKey, "primaryAction")} vocabularyPacks={[actionPack]} onClick={saveDailyState} disabled={!canSave} loading={saving} />
       </Group>
       {!hasRecordedHabits ? <Text size="sm" className={variant === "aiq" ? "aiq-muted" : "hbg-muted-text"}>{labels.habits.confirmRequired}</Text> : null}
       {typeof statusScore === "number" ? <Text size="sm" className={variant === "aiq" ? "aiq-muted-faint" : "hbg-muted-text"}>{labels.saved}</Text> : null}
@@ -315,6 +317,7 @@ function DailyMetricSlider({
   variant: "aiq" | "habigoal";
 }) {
   const sliderValue = value ?? 50;
+  const surfaceKey = surfaceKeyForVariant(variant);
   return (
     <Stack gap={6} className={variant === "aiq" ? "aiq-recorder-slider" : undefined}>
       <Group justify="space-between">
@@ -323,7 +326,7 @@ function DailyMetricSlider({
       </Group>
       <Slider
         aria-label={label}
-        color={variant === "aiq" ? "yellow" : "ingress"}
+        color={getProductColor(surfaceKey, "primaryAction")}
         label={(current) => `${current}%`}
         max={100}
         min={0}
@@ -339,4 +342,8 @@ function errorMessageForCode(code: string | undefined, labels: SharedDailyRecord
   if (code === "AUTH_REQUIRED") return labels.errors.sessionExpired;
   if (code === "FORBIDDEN" || code === "PRODUCT_ACCESS_DENIED") return labels.errors.profileRequired;
   return labels.errors.saveFailed;
+}
+
+function surfaceKeyForVariant(variant: "aiq" | "habigoal"): ProductSurfaceKey {
+  return variant === "aiq" ? "athlete_iq" : "habigoal";
 }
