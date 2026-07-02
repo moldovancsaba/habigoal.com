@@ -125,7 +125,9 @@ describe("product surface route boundaries", () => {
 
     expect(habigoalRoute.indexOf("requireProductSession")).toBeLessThan(habigoalRoute.indexOf("getHabigoalTodayProjection"));
     expect(habigoalRoute).toContain('persona: "athlete"');
-    expect(habigoalRoute).toContain('allowedRoles: ["athlete"]');
+    expect(habigoalRoute).toContain('"athlete"');
+    expect(habigoalRoute).toContain('"trainer"');
+    expect(habigoalRoute).toContain('"club_management"');
     expect(athleteIqRoute.indexOf("requireProductSession")).toBeLessThan(athleteIqRoute.indexOf("getAthleteIqProductDashboardProjection"));
     expect(athleteIqRoute).toContain('persona: "trainer"');
     expect(athleteIqRoute).toContain('"club_management"');

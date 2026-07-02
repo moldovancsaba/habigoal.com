@@ -180,6 +180,12 @@ async function resolveDailyStateAthlete(input: {
     return { athleteId: input.athleteId, athleteName: athlete?.name ?? null };
   }
 
+  if (surface === "habigoal") {
+    const result = await ensureCanonicalAthleteProfileForUser({ user: input.user });
+    if (!result.athlete._id) throw new SharedDailyStateError("VALIDATION_ERROR", "habitbuilder profile is not ready");
+    return { athleteId: result.athlete._id, athleteName: result.athlete.name ?? null };
+  }
+
   if (input.user.primaryRole !== "athlete") {
     throw new SharedDailyStateError("VALIDATION_ERROR", "athleteId is required for non-athlete sessions");
   }

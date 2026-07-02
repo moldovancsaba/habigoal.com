@@ -1120,7 +1120,7 @@
     "privacyPolicy": "سياسة الخصوصية",
     "selectorBadge": "محدد التطبيق",
     "selectorTitle": "اختر تطبيقك",
-    "selectorSubtitle": "اختر Habigoal للعادات اليومية والرفاه، أو Athlete IQ لمساحة عمل المدرب الاحترافية. سجّل أولاً بالبريد الإلكتروني في Athlete IQ، ثم يفتح البريد نفسه كلا التطبيقين.",
+    "selectorSubtitle": "اختر Habigoal للعادات اليومية والرفاه، أو Athlete IQ لمساحة عمل المدرب الاحترافية. يعمل Habigoal بشكل مستقل بالبريد الإلكتروني؛ ويتطلب Athlete IQ وصولاً احترافياً.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "العادات اليومية والرفاه",
     "habigoalBody": "تطبيق جوال مركز لتسجيل اليوم والعادات والرفاه والدعم الرياضي وخطوة تالية واضحة.",
@@ -1154,13 +1154,12 @@
     "genericError": "تعذر إكمال تسجيل الدخول. حاول مرة أخرى.",
     "athleteIqAccessRequired": "يتطلب Athlete IQ وصول فريق أو مدرب محترف. يمكنك المتابعة في Habigoal إذا كان حسابك يملك وصول Habigoal.",
     "habigoalAccessRequired": "وصول Habigoal غير مفعّل لهذا الحساب بعد.",
-    "athleteIqRegistrationRequired": "سجّل في Athlete IQ أولاً. بعد ذلك يمكن للبريد نفسه فتح Habigoal.",
     "surfaces": {
       "habigoal": {
         "badge": "وصول Habigoal",
         "title": "المتابعة إلى Habigoal",
-        "subtitle": "أدخل البريد الإلكتروني المسجل مسبقاً في Athlete IQ وافتح تطبيق Habigoal اليومي على الهاتف.",
-        "supportingCopy": "يستخدم Habigoal حساب البريد الإلكتروني نفسه الذي تم إنشاؤه عبر Athlete IQ."
+        "subtitle": "أدخل بريدك الإلكتروني وافتح منشئ العادات اليومي في Habigoal.",
+        "supportingCopy": "ينشئ Habigoal حساب عاداتك الشخصي أو يفتحه."
       },
       "athleteIq": {
         "badge": "وصول Athlete IQ",

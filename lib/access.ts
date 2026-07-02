@@ -151,8 +151,7 @@ export async function canAccessAthleteIqAthlete(user: AuthUser, athleteId: strin
 
 export async function canAccessHabigoalAthlete(user: AuthUser, athleteId: string): Promise<boolean> {
   if (!canOpenProductSurface(user, "habigoal")) return false;
-  if (user.primaryRole !== "athlete" && user.primaryRole !== "admin") return false;
-  return canAccessAthlete(user, athleteId);
+  return Boolean(user.athleteId && user.athleteId === athleteId);
 }
 
 export async function getAthleteTeamIds(athleteId: string): Promise<string[]> {

@@ -4,7 +4,7 @@
 
 This document defines the production relationship between Habigoal and Athlete IQ.
 
-Habigoal is not a copy of Athlete IQ. Habigoal is a filtered, mobile-first product surface over the same athlete identity, profile, and history that Athlete IQ uses. Athlete IQ is the professional operating surface for trainers, clubs, teams, and pro-athlete workflows.
+Habigoal is not a copy of Athlete IQ. Habigoal is an independent white-label habitbuilder and daily support app for any signed-in person: athletes, trainers, staff, or general users. It stores the user's personal routine record in the shared athlete-compatible profile and daily history collections so Athlete IQ can consume that history later only when professional entitlement, assignment, and consent rules allow it. Athlete IQ is the professional operating surface for trainers, clubs, teams, and pro-athlete workflows.
 
 This is a product architecture invariant. Any auth, routing, data, UI, reporting, or engine change that touches either product surface must preserve this contract.
 
@@ -12,15 +12,15 @@ This is a product architecture invariant. Any auth, routing, data, UI, reporting
 
 ### Habigoal
 
-Habigoal is the home and daily habit app.
+Habigoal is the independent personal habitbuilder app.
 
 Primary outcomes:
 
-- make the daily journey simple enough to use at home
+- make the daily journey simple enough for any person to use at home, at work, or around training
 - help the user build habits through repeatable daily actions
 - collect wellbeing, check-in, habit, and support signals
 - return clear personal status and one safe next action
-- keep the interface mobile-first and app-like
+- keep the interface mobile-first, white-label ready, and app-like
 
 Habigoal exposes a narrower usability model, but it is still a full live app. It must never use demo data, presentation wording, lorem ipsum, fake measurements, or local database fallback.
 
@@ -35,16 +35,17 @@ Primary outcomes:
 - provide dashboards, reporting, planning, services, team operations, and advanced intelligence
 - allow trainers and authorized staff to work with athlete data through role, assignment, and consent boundaries
 
-Athlete IQ can consume the data Habigoal users record because the underlying athlete profile and history are the same.
+Athlete IQ can consume the data Habigoal users record because the underlying daily history is compatible, but only after professional access exists.
 
 ## Non-Negotiable Rules
 
 - One user identity can have access to one or both product surfaces.
-- One athlete has one canonical athlete profile and one measurement history.
-- Habigoal writes to the canonical athlete profile, not to a separate Habigoal-only profile.
-- Athlete IQ reads from the same canonical athlete profile and can use Habigoal-created history when access rules allow it.
+- Every Habigoal user records against one personal routine profile in the shared athlete-compatible profile collection.
+- Habigoal writes to canonical check-in and habit history, not to a demo, offline, or product-only store.
+- Athlete IQ reads from the same compatible daily history and can use Habigoal-created history only when access rules allow it.
 - Habigoal-only users must not be able to enter Athlete IQ.
-- Athlete IQ users may use Habigoal as a simpler home capture app.
+- Athlete IQ users may use Habigoal as a simpler personal habitbuilder for their own routine.
+- Trainer, coach, admin, and staff Habigoal sessions are personal habitbuilder sessions, not assigned-athlete management sessions.
 - Trainer access to Habigoal-created history requires Athlete IQ entitlement, athlete assignment, and the applicable consent/access checks.
 - Product separation is enforced by entitlements and route/API authorization, not only by hiding navigation.
 - The selector is an app selector, not a presentation page.
@@ -79,24 +80,24 @@ type ProductEntitlements = {
 Rules:
 
 - A self-registered user receives Habigoal access by default.
-- A self-registered athlete persona receives Habigoal access by default and does not receive Athlete IQ access.
-- During the pseudo-login phase, selecting the trainer persona provisions Athlete IQ trainer access so the user can enter the professional workspace before SSO is rolled out.
+- A Habigoal login receives Habigoal access by default and does not receive Athlete IQ access, regardless of whether the selected persona is athlete or trainer.
+- During the pseudo-login phase, selecting the trainer persona provisions Athlete IQ trainer access only when the requested product surface is Athlete IQ.
 - Athlete IQ access requires a professional entitlement: team membership, trainer assignment, club staff role, pro-athlete membership, or admin grant.
 - The same email or username can log in to Habigoal and Athlete IQ only when the user has the required entitlement for each surface.
 - Choosing the athlete persona must not grant Athlete IQ access.
-- Choosing the trainer persona is treated as a professional onboarding request in pseudo-login and grants the provisional `trainer_assignment` entitlement.
+- Choosing the trainer persona is treated as a professional onboarding request only on the Athlete IQ surface and grants the provisional `trainer_assignment` entitlement there.
 
 ## Runtime Flow
 
 ### Habigoal Entry
 
 1. User selects Habigoal.
-2. Login collects email or username and persona.
-3. Server normalizes identity and creates or updates the user record.
+2. Login collects email and the selected persona.
+3. Server normalizes identity and creates or updates the user record without requiring Athlete IQ registration.
 4. Server resolves Habigoal entitlement.
-5. If allowed, server ensures a canonical athlete profile shell exists.
+5. If allowed, server ensures a personal routine profile shell exists in the shared athlete-compatible profile collection.
 6. New users start empty: no score, no check-in, no habits, no measurements.
-7. Habigoal loads the filtered daily projection from canonical athlete data.
+7. Habigoal loads the filtered daily projection from the user's personal routine data.
 8. If today is incomplete, the UI guides the user through daily check-in, then habits, then review/save.
 9. The user records daily habits and saves the daily operation.
 10. The save writes to canonical check-in and habit collections.
@@ -112,7 +113,7 @@ Rules:
 4. If the user still lacks Athlete IQ access, the server denies entry and offers Habigoal when allowed.
 5. If allowed, Athlete IQ loads the professional workspace.
 6. Trainers see only assigned athletes and allowed data.
-7. Athlete IQ dashboards and reports include Habigoal-created history as part of the athlete timeline.
+7. Athlete IQ dashboards and reports include Habigoal-created history as part of the athlete timeline when the record is linked and access rules allow it.
 
 ## Data Ownership
 
@@ -121,7 +122,7 @@ Canonical operational data lives in MongoDB Atlas.
 Current compatible collections:
 
 - `users`: identity, roles, product entitlements, linked athlete id
-- `children`: canonical athlete profile until the compatibility collection is renamed or migrated
+- `children`: shared athlete-compatible personal routine profile until the compatibility collection is renamed or migrated
 - `assessments`: check-in records until the compatibility collection is renamed or migrated
 - `habit_records`: daily habit state
 - `teams`: team, club, trainer, and athlete membership
@@ -132,7 +133,7 @@ Product code should use athlete, check-in, habit, team, and entitlement language
 
 ## Projection Contract
 
-Habigoal projections are filtered personal projections. Athlete IQ projections are professional operational projections.
+Habigoal projections are personal habitbuilder projections. Athlete IQ projections are professional operational projections.
 
 Both projections read from the same canonical data sources.
 
@@ -157,7 +158,7 @@ Required server contracts:
 
 - `POST /api/auth/login` must validate requested product access before redirecting.
 - `GET /api/auth/me` should expose current identity, persona, and product entitlements without leaking unavailable product data.
-- Habigoal APIs must require Habigoal entitlement and athlete self-access.
+- Habigoal APIs must require Habigoal entitlement and personal routine profile access.
 - Athlete IQ APIs must require Athlete IQ entitlement plus trainer, team, athlete, admin, or consent access.
 - Product API handlers must not rely on client-side navigation hiding for security.
 
@@ -179,7 +180,7 @@ if (requestedSurface === "athlete-iq" && role === "trainer") {
 }
 
 if (requestedSurface === "habigoal") {
-  await requireSelfAthleteAccess(user.id, athleteId);
+  await requirePersonalHabigoalProfileAccess(user.id, athleteId);
 }
 ```
 
@@ -192,14 +193,14 @@ Status is the result of the daily loop. The user must first record today's signa
 | Step | User intent | UI state | System behavior | Result |
 | --- | --- | --- | --- | --- |
 | 1. Select app | Open the correct app | App selector shows Habigoal and Athlete IQ as two real apps | Routes user to login with requested surface | User is in the Habigoal entry path |
-| 2. Login/register | Enter with email or username | Minimal pseudo login with persona selection | Creates or resolves user and Habigoal entitlement | User is authenticated for Habigoal |
-| 3. First daily screen | Understand what to do today | Empty or in-progress daily loop, not a status hero | Loads canonical profile and today's completion state | User sees the next required action |
+| 2. Login/register | Enter with email | Minimal pseudo login with persona selection | Creates or resolves user, Habigoal entitlement, and personal routine profile | User is authenticated for Habigoal |
+| 3. First daily screen | Understand what to do today | Empty or in-progress daily loop, not a status hero | Loads personal routine profile and today's completion state | User sees the next required action |
 | 4. Daily check-in | Record today's wellbeing signals | Mobile-first inputs for energy, mood, sleep, soreness, and any configured signals | Keeps values local until save or stores draft if implemented | Check-in step becomes complete |
 | 5. Daily habits | Record habit completion | Habit list with clear completed/not-completed controls | Keeps selected habits tied to today's operation | Habit step becomes complete |
 | 6. Review and save | Confirm the day | Review screen summarizes check-in and habits with one primary save action | `POST /api/habigoal/daily-operation` writes canonical data with idempotency | Daily operation is persisted |
 | 7. Status result | See outcome after action | Status, reason, confidence, and one next action appear after save success | Backend calculates status from saved daily data | User gets the daily outcome |
 | 8. Return later | Continue or update today | Completed-day summary with edit/update affordance | Reads persisted projection from Atlas | User sees today's saved status and can update if allowed |
-| 9. AIQ later access | Join a team/pro context | No Habigoal UI is embedded in AIQ | AIQ reads the same canonical history through entitlements | Trainer/pro surface can use historical Habigoal data |
+| 9. AIQ later access | Join a team/pro context | No Habigoal UI is embedded in AIQ | AIQ reads the compatible history through entitlements, assignments, and consent | Trainer/pro surface can use historical Habigoal data when authorized |
 
 #### Habigoal UI State Contract
 
@@ -235,7 +236,7 @@ Work:
 
 Acceptance:
 
-- Documentation states one identity, one athlete profile, one history.
+- Documentation states one identity, one Habigoal personal routine profile, and one compatible daily history.
 - Audit fails if product copy says Habigoal is demo/presentation-only or a copy of AIQ.
 
 ### Phase 2: Entitlement Schema
@@ -256,7 +257,7 @@ Work:
 Acceptance:
 
 - Self-registration creates Habigoal access, not Athlete IQ access.
-- AIQ access can be granted without creating a second athlete profile.
+- AIQ access can be granted without creating a second personal routine or athlete-compatible profile.
 - Existing users are not silently given broader professional access.
 
 ### Phase 3: Login And Route Enforcement
@@ -275,7 +276,7 @@ Work:
 Acceptance:
 
 - Habigoal-only users cannot reach Athlete IQ by direct URL.
-- Athlete IQ users can choose Habigoal and record data into the same profile.
+- Athlete IQ users can choose Habigoal and record personal routine data without entering assigned-athlete management.
 - Login redirection cannot cross into the wrong product surface.
 
 ### Phase 4: Shared Athlete Profile Write Path
@@ -284,8 +285,8 @@ Goal: ensure Habigoal writes become AIQ history without fake records.
 
 Work:
 
-- Keep first-use Habigoal profile creation as an empty canonical athlete shell.
-- Ensure Habigoal daily operation writes check-ins and habits against the canonical athlete id.
+- Keep first-use Habigoal profile creation as an empty personal routine profile shell.
+- Ensure Habigoal daily operation writes check-ins and habits against the resolved personal routine profile id.
 - Add idempotency keys for daily writes.
 - Keep missing values nullable, not zero-filled.
 - Add integration tests proving a Habigoal save appears in the professional athlete history query when AIQ access is granted.
@@ -362,7 +363,7 @@ Acceptance:
 
 - Release gate proves the shared-data/separate-entitlement model end to end.
 - Support can trace product access failures by correlation id.
-- Rollback does not delete athlete history.
+- Rollback does not delete Habigoal-created daily history.
 
 ## File-Level Implementation Targets
 

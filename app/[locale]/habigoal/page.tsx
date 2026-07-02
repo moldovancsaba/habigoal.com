@@ -29,7 +29,7 @@ export default async function HabigoalSurfaceRoute({
   const { locale } = await params;
   setRequestLocale(locale);
   await requireProductSession({
-    allowedRoles: ["athlete"],
+    allowedRoles: ["admin", "athlete", "trainer", "parent", "performance_coach", "physio", "analyst", "club_management"],
     locale,
     path: `/${locale}/habigoal`,
     persona: "athlete",

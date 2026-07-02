@@ -79,7 +79,7 @@ Returns service diagnostics:
 
 Returns the canonical phase-1 surface and function split used by the app landing workflow.
 
-The surface relationship is defined in [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md). `includedSurfaceIds: ["habigoal"]` on Athlete IQ means Athlete IQ can consume Habigoal-created athlete history through professional authorization. It does not mean the Athlete IQ UI embeds or copies the Habigoal UI.
+The surface relationship is defined in [Product Surface Shared Athlete Profile Contract](product-surface-shared-athlete-profile-contract.md). Habigoal is an independent white-label habitbuilder. `includedSurfaceIds: ["habigoal"]` on Athlete IQ means Athlete IQ can consume Habigoal-created personal routine history through professional authorization, assignment, and consent checks. It does not mean the Athlete IQ UI embeds or copies the Habigoal UI.
 
 Response:
 
@@ -92,8 +92,8 @@ Response:
       "id": "habigoal",
       "name": "Habigoal",
       "shortName": "Habigoal",
-      "headline": "Simple habit tracking and wellbeing support",
-      "summary": "A client-facing daily system for living better, training smarter, and receiving clear feedback about current status.",
+      "headline": "White-label habitbuilder and wellbeing support",
+      "summary": "An independent daily habitbuilder for anybody who wants to track routines, wellbeing, and clear personal status.",
       "primaryPath": "/habigoal",
       "includedSurfaceIds": [],
       "functionRegistry": []
@@ -103,7 +103,7 @@ Response:
       "name": "Athlete IQ",
       "shortName": "AIQ",
       "headline": "Professional performance operating system",
-      "summary": "The professional layer that includes Habigoal as a daily signal layer, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
+      "summary": "The professional layer that can consume Habigoal daily signals when access rules allow, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
       "primaryPath": "/athlete-iq",
       "includedSurfaceIds": ["habigoal"],
       "functionRegistry": []
@@ -326,8 +326,8 @@ Rules:
 
 - `identifier` can be an email or a username. Usernames are normalized to a local email identity.
 - `persona` is `athlete` or `trainer` and selects the active session role.
-- `persona=athlete` provisions an empty Habigoal account by default and does not grant Athlete IQ access.
-- `persona=trainer` provisions provisional Athlete IQ trainer access during the pseudo-login phase.
+- Habigoal logins provision an empty personal habitbuilder account by default and do not grant Athlete IQ access, even when the selected persona is `trainer`.
+- Athlete IQ logins provision Athlete IQ access only when the requested surface is `athlete-iq`; during the pseudo-login phase, `persona=trainer` on Athlete IQ grants provisional trainer access.
 - `productSurface` is `habigoal` or `athlete-iq`. If omitted, the server derives it from `next` and persona.
 - New users are provisioned empty. No measurements, habits, check-ins, scores, or sample records are created.
 - The server validates product entitlements before creating the session redirect.
@@ -380,6 +380,39 @@ Deletes the local session and redirects to the SSO logout URL when configured.
 ### `POST /api/auth/logout`
 
 Deletes the local session and returns `{ "success": true }`.
+
+## Habigoal Daily Operation
+
+### `POST /api/habigoal/daily-operation`
+
+Saves the signed-in user's Habigoal check-in values and completed habits, then returns the refreshed personal habitbuilder projection. The route requires Habigoal entitlement. `athleteId` is optional for Habigoal personal routine saves; when omitted, the server resolves or creates the signed-in user's personal routine profile before writing.
+
+Request:
+
+```json
+{
+  "athleteId": "507f1f77bcf86cd799439011",
+  "localDate": "2026-07-01",
+  "timezone": "Europe/Budapest",
+  "idempotencyKey": "habigoal:user:date",
+  "values": {
+    "energy": 80,
+    "mood": 70,
+    "sleep": 75,
+    "soreness": 20
+  },
+  "habits": ["hydrate", "move", "sleep"]
+}
+```
+
+Rules:
+
+- `values.energy`, `values.mood`, `values.sleep`, and `values.soreness` are required and must be `0-100`.
+- `habits` accepts Habigoal habit keys only.
+- The write uses the shared daily-state bridge, mirrors lifestyle/performance engine updates, and does not create sample records.
+- Trainer persona on Habigoal writes only to that user's personal routine profile.
+
+Success returns `{ ok: true, operationId, projection, engineRun, engineRuns, correlationId }`.
 
 ## Onboarding
 

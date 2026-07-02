@@ -259,6 +259,41 @@ describe("shared daily state bridge", () => {
     expect(projection.habits.recorded).toBe(false);
   });
 
+  it("creates a personal Habigoal habitbuilder profile for trainer sessions", async () => {
+    mockedEnsureCanonicalAthleteProfileForUser.mockResolvedValue({
+      athlete: { _id: athleteId, name: "Coach Personal Habits" },
+      created: true,
+      linked: true,
+      profileState: "empty"
+    } as Awaited<ReturnType<typeof ensureCanonicalAthleteProfileForUser>>);
+
+    const projection = await getSharedDailyState({
+      product: "habigoal",
+      user: athleteUser({
+        athleteId: undefined,
+        email: "coach@example.com",
+        name: "Coach",
+        primaryRole: "trainer",
+        roles: ["trainer"],
+        productEntitlements: {
+          habigoal: { enabled: true, reason: "self_registered" },
+          athleteIq: { enabled: false }
+        },
+        teamIds: ["team-1"]
+      })
+    });
+
+    expect(mockedEnsureCanonicalAthleteProfileForUser).toHaveBeenCalledWith({
+      user: expect.objectContaining({
+        email: "coach@example.com",
+        primaryRole: "trainer"
+      })
+    });
+    expect(projection.athleteId).toBe(athleteId);
+    expect(projection.athleteName).toBe("Coach Personal Habits");
+    expect(projection.status.score).toBeNull();
+  });
+
   it("blocks access when the selected product entitlement is missing", async () => {
     mockedCanOpenProductSurface.mockReturnValue(false);
 

@@ -1120,7 +1120,7 @@
     "privacyPolicy": "מדיניות פרטיות",
     "selectorBadge": "בורר אפליקציה",
     "selectorTitle": "בחרו את האפליקציה",
-    "selectorSubtitle": "בחרו Habigoal להרגלים יומיים ורווחה, או Athlete IQ לסביבת עבודה מקצועית למאמנים. נרשמים קודם עם אימייל ב-Athlete IQ, ואז אותו אימייל פותח את שתי האפליקציות.",
+    "selectorSubtitle": "בחרו Habigoal להרגלים יומיים ורווחה, או Athlete IQ לסביבת עבודה מקצועית למאמנים. Habigoal עובד באופן עצמאי עם אימייל; Athlete IQ דורש גישה מקצועית.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "הרגלים יומיים ורווחה",
     "habigoalBody": "אפליקציה ניידת ממוקדת לצ׳ק-אין היום, הרגלים, רווחה, תמיכה ספורטיבית וצעד הבא ברור.",
@@ -1154,13 +1154,12 @@
     "genericError": "לא הצלחנו להשלים את ההתחברות. נסה שוב.",
     "athleteIqAccessRequired": "Athlete IQ דורשת גישת צוות או מאמן מקצועית. אפשר להמשיך עם Habigoal אם לחשבון יש גישת Habigoal.",
     "habigoalAccessRequired": "גישת Habigoal עדיין לא מופעלת לחשבון זה.",
-    "athleteIqRegistrationRequired": "יש להירשם קודם ב-Athlete IQ. לאחר מכן אותו אימייל יפתח גם את Habigoal.",
     "surfaces": {
       "habigoal": {
         "badge": "גישת Habigoal",
         "title": "המשך אל Habigoal",
-        "subtitle": "יש להזין את האימייל שכבר נרשם ב-Athlete IQ ולפתוח את אפליקציית היום הניידת של Habigoal.",
-        "supportingCopy": "Habigoal משתמש באותו חשבון אימייל שנוצר דרך Athlete IQ."
+        "subtitle": "יש להזין אימייל ולפתוח את בונה ההרגלים היומי של Habigoal.",
+        "supportingCopy": "Habigoal יוצר או פותח את חשבון ההרגלים האישי שלך."
       },
       "athleteIq": {
         "badge": "גישת Athlete IQ",

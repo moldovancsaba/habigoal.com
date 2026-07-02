@@ -90,9 +90,13 @@ export function resolvePersonaLoginEntitlements(input: {
   now?: string;
 }): ProductEntitlements {
   const requestedRoles = normalizeRoleSet(input.requestedRoles);
+  const existingRoles = normalizeRoleSet(input.existingRoles);
   const explicit = normalizeProductEntitlements(input.existingProductEntitlements);
   if (explicit) return grantRequestedProfessionalEntitlement(explicit, requestedRoles, input.now, input.requestedSurface);
-  const combinedRoles = [...normalizeRoleSet(input.existingRoles), ...requestedRoles];
+  if (input.requestedSurface === "habigoal" && existingRoles.length === 0) {
+    return createSelfRegisteredEntitlements(input.now);
+  }
+  const combinedRoles = [...existingRoles, ...requestedRoles];
   if (input.requestedSurface === "athlete-iq" && requestedRoles.includes("athlete")) {
     return createAthleteIqAthleteEntitlements(input.now);
   }
@@ -121,7 +125,7 @@ function grantRequestedProfessionalEntitlement(
   now = new Date().toISOString(),
   requestedSurface?: ProductSurfaceId
 ): ProductEntitlements {
-  const hasRequestedProfessionalRole = requestedRoles.some((role) => PROFESSIONAL_ROLES.has(role));
+  const hasRequestedProfessionalRole = requestedSurface === "athlete-iq" && requestedRoles.some((role) => PROFESSIONAL_ROLES.has(role));
   const hasRequestedAthleteIqAthlete = requestedSurface === "athlete-iq" && requestedRoles.includes("athlete");
   if (!hasRequestedProfessionalRole && !hasRequestedAthleteIqAthlete) return entitlements;
   const isAdmin = requestedRoles.includes("admin");

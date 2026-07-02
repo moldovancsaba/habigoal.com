@@ -52,6 +52,7 @@ describe("product entitlement contract", () => {
     const entitlements = resolvePersonaLoginEntitlements({
       existingRoles: [],
       requestedRoles: ["trainer"],
+      requestedSurface: "athlete-iq",
       now: "2026-06-27T08:00:00.000Z"
     });
 
@@ -61,11 +62,25 @@ describe("product entitlement contract", () => {
     expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
   });
 
+  it("keeps Habigoal trainer-persona login independent from Athlete IQ for new users", () => {
+    const entitlements = resolvePersonaLoginEntitlements({
+      existingRoles: [],
+      requestedRoles: ["trainer"],
+      requestedSurface: "habigoal",
+      now: "2026-06-27T08:00:00.000Z"
+    });
+
+    expect(entitlements.habigoal.enabled).toBe(true);
+    expect(entitlements.habigoal.reason).toBe("self_registered");
+    expect(entitlements.athleteIq.enabled).toBe(false);
+  });
+
   it("upgrades an existing Habigoal-only account when the user selects trainer persona", () => {
     const entitlements = resolvePersonaLoginEntitlements({
       existingProductEntitlements: createSelfRegisteredEntitlements("2026-06-27T08:00:00.000Z"),
       existingRoles: ["athlete"],
       requestedRoles: ["trainer"],
+      requestedSurface: "athlete-iq",
       now: "2026-06-27T09:00:00.000Z"
     });
 
@@ -74,5 +89,19 @@ describe("product entitlement contract", () => {
     expect(entitlements.athleteIq.enabled).toBe(true);
     expect(entitlements.athleteIq.grantedAt).toBe("2026-06-27T09:00:00.000Z");
     expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
+  });
+
+  it("does not upgrade an existing Habigoal account when trainer persona stays on Habigoal", () => {
+    const entitlements = resolvePersonaLoginEntitlements({
+      existingProductEntitlements: createSelfRegisteredEntitlements("2026-06-27T08:00:00.000Z"),
+      existingRoles: ["athlete"],
+      requestedRoles: ["trainer"],
+      requestedSurface: "habigoal",
+      now: "2026-06-27T09:00:00.000Z"
+    });
+
+    expect(entitlements.habigoal.enabled).toBe(true);
+    expect(entitlements.habigoal.reason).toBe("self_registered");
+    expect(entitlements.athleteIq.enabled).toBe(false);
   });
 });

@@ -5,7 +5,7 @@ import { env } from "@/config/env";
 import { createSession } from "@/lib/session";
 import { canOpenProductSurface } from "@/lib/access";
 import type { ProductSurfaceId } from "@/lib/product-entitlements";
-import { findUserByEmail, upsertPersonaLoginUser } from "@/repositories/user.repository";
+import { upsertPersonaLoginUser } from "@/repositories/user.repository";
 
 function sanitizeReturnTo(input: string | null, fallbackLocale: string) {
   if (!input) return `/${fallbackLocale}/dashboard`;
@@ -137,18 +137,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid login input" }, { status: 400 });
     }
     return NextResponse.redirect(loginPageUrl(request, locale, next, !identity ? "invalid_identifier" : "missing_persona"), 303);
-  }
-
-  const existingUser = await findUserByEmail(identity.email);
-  if (productSurface === "habigoal" && !existingUser) {
-    const code = "athlete_iq_registration_required";
-    if (acceptsJson) {
-      return NextResponse.json({
-        error: "Athlete IQ registration required",
-        code
-      }, { status: 403 });
-    }
-    return NextResponse.redirect(loginPageUrl(request, locale, next, code), 303);
   }
 
   const localUser = await upsertPersonaLoginUser({

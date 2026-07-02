@@ -1120,7 +1120,7 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "selectorBadge": "App-Auswahl",
     "selectorTitle": "App auswaehlen",
-    "selectorSubtitle": "Wähle Habigoal für tägliche Gewohnheiten und Wohlbefinden oder Athlete IQ für den professionellen Trainerarbeitsplatz. Registriere dich zuerst mit E-Mail in Athlete IQ, danach öffnet dieselbe E-Mail beide Apps.",
+    "selectorSubtitle": "Wähle Habigoal für tägliche Gewohnheiten und Wohlbefinden oder Athlete IQ für den professionellen Trainerarbeitsplatz. Habigoal funktioniert eigenständig mit E-Mail; Athlete IQ erfordert professionellen Zugang.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "Tägliche Gewohnheiten und Wohlbefinden",
     "habigoalBody": "Eine fokussierte mobile App für den heutigen Check-in, Gewohnheiten, Wohlbefinden, Sportsupport und einen klaren nächsten Schritt.",
@@ -1154,13 +1154,12 @@
     "genericError": "Login konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
     "athleteIqAccessRequired": "Athlete IQ erfordert professionellen Team- oder Trainerzugang. Du kannst mit Habigoal fortfahren, wenn dein Konto Habigoal-Zugriff hat.",
     "habigoalAccessRequired": "Habigoal-Zugriff ist fuer dieses Konto noch nicht aktiviert.",
-    "athleteIqRegistrationRequired": "Registriere dich zuerst in Athlete IQ. Danach kann dieselbe E-Mail Habigoal oeffnen.",
     "surfaces": {
       "habigoal": {
         "badge": "Habigoal-Zugriff",
         "title": "Weiter zu Habigoal",
-        "subtitle": "Gib die E-Mail ein, die bereits in Athlete IQ registriert ist, und oeffne die mobile Habigoal Tages-App.",
-        "supportingCopy": "Habigoal nutzt dasselbe E-Mail-Konto, das ueber Athlete IQ erstellt wurde."
+        "subtitle": "Gib deine E-Mail ein und oeffne den taeglichen Habigoal Habitbuilder.",
+        "supportingCopy": "Habigoal erstellt oder oeffnet dein persoenliches Gewohnheitskonto."
       },
       "athleteIq": {
         "badge": "Athlete-IQ-Zugriff",

@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb";
-import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
+import { getAuthUser, type AuthUser } from "@/lib/access";
 import { getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
 import { createHabigoalCorrelationId, logHabigoalEvent } from "@/lib/habigoal-api";
 import { buildHabigoalDailyStatus, type HabigoalConfidence, type HabigoalDailyStatus, type HabigoalMetricValues } from "@/lib/habigoal-status";
 import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
-import { getChildById, listChildren } from "@/repositories/child.repository";
+import { getChildById } from "@/repositories/child.repository";
 import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
 import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 
@@ -63,10 +63,12 @@ export async function getHabigoalTodayProjection(input: {
   }
 
   const athleteId = athlete._id;
-  const [checkIn, habitRecord] = await Promise.all([
+  const [lifestyleCheckIn, performanceCheckIn, habitRecord] = await Promise.all([
     getAthleteIqCheckInSnapshot(athleteId, localDate, "lifestyle"),
+    getAthleteIqCheckInSnapshot(athleteId, localDate, "performance"),
     getHabitRecordByAthleteIdAndDate(athleteId, localDate)
   ]);
+  const checkIn = lifestyleCheckIn ?? performanceCheckIn;
   const values = {
     energy: valueOrNull(invert(checkIn?.values.fatigue?.normalizedValue)),
     soreness: valueOrNull(checkIn?.values.pain?.normalizedValue),
@@ -125,18 +127,12 @@ export function getHabigoalHabitStatuses(completedHabits: HabigoalHabitKey[]) {
 }
 
 async function resolveHabigoalAthlete(user: AuthUser) {
-  const directId = user.primaryRole === "athlete" ? user.athleteId : user.primaryRole === "parent" ? user.parentAthleteIds?.[0] : undefined;
-  if (directId && ObjectId.isValid(directId)) return getChildById(new ObjectId(directId));
-
-  if (user.primaryRole === "athlete") {
-    const result = await ensureCanonicalAthleteProfileForUser({ user });
-    return result.athlete;
+  if (user.athleteId && ObjectId.isValid(user.athleteId)) {
+    return getChildById(new ObjectId(user.athleteId));
   }
 
-  const allowedIds = await resolveAccessibleAthleteIds(user);
-  const children = await listChildren();
-  if (allowedIds === null) return children[0] ?? null;
-  return children.find((child) => child._id && allowedIds.includes(child._id)) ?? null;
+  const result = await ensureCanonicalAthleteProfileForUser({ user });
+  return result.athlete;
 }
 
 function emptyProjection(input: {

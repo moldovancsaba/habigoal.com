@@ -1120,7 +1120,7 @@
     "privacyPolicy": "Privacy Policy",
     "selectorBadge": "App selector",
     "selectorTitle": "Choose your app",
-    "selectorSubtitle": "Choose Habigoal for daily habits and wellbeing, or Athlete IQ for the professional trainer workspace. Register with email in Athlete IQ first, then use the same email for both apps.",
+    "selectorSubtitle": "Choose Habigoal for daily habits and wellbeing, or Athlete IQ for the professional trainer workspace. Habigoal works independently with email; Athlete IQ requires professional access.",
     "habigoalBadge": "Habigoal",
     "habigoalTitle": "Daily habits and wellbeing",
     "habigoalBody": "A focused mobile app for today check-ins, habits, wellbeing, sport support, and one clear next action.",
@@ -1154,13 +1154,12 @@
     "genericError": "We could not complete login. Please try again.",
     "athleteIqAccessRequired": "Athlete IQ requires professional team or trainer access. You can continue with Habigoal when your account has Habigoal access.",
     "habigoalAccessRequired": "Habigoal access is not enabled for this account yet.",
-    "athleteIqRegistrationRequired": "Register with Athlete IQ first. After that, the same email can open Habigoal.",
     "surfaces": {
       "habigoal": {
         "badge": "Habigoal access",
         "title": "Continue to Habigoal",
-        "subtitle": "Enter the email you already registered with Athlete IQ and open the Habigoal mobile daily app.",
-        "supportingCopy": "Habigoal uses the same email account created through Athlete IQ."
+        "subtitle": "Enter your email and open the Habigoal daily habitbuilder.",
+        "supportingCopy": "Habigoal creates or opens your personal habit account."
       },
       "athleteIq": {
         "badge": "Athlete IQ access",

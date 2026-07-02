@@ -30,7 +30,7 @@ describe("product surface function registries", () => {
     expect(athleteIq?.includedSurfaceIds).toEqual(["habigoal"]);
     expect(athleteIq?.primaryPath).toBe("/athlete-iq");
     expect(habigoal?.primaryPath).toBe("/habigoal");
-    expect(athleteIq?.summary).toContain("daily signal layer");
+    expect(athleteIq?.summary).toContain("consume Habigoal daily signals");
     expect(athleteIq?.summary).not.toMatch(/copy|embed|presentation/i);
   });
 
