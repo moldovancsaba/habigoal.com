@@ -1,7 +1,7 @@
 "use client";
 
 import { Text } from "@mantine/core";
-import { Box, Button, Group, Select, Stack, Textarea, TextInput } from "@doneisbetter/gds/client";
+import { Box, Button, Group, Select, Stack, Textarea, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";

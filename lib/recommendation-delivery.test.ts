@@ -13,7 +13,7 @@ const base: RecommendationResult = {
 };
 const awaiting: RecommendationResult = { ...base, humanReviewRequired: true, delivery: "awaiting_review" };
 
-describe("gateRecommendationForAudience (#441)", () => {
+describe("gateRecommendationForAudience (GH-441)", () => {
   it("delivers a direct recommendation to every audience", () => {
     for (const a of ["athlete", "parent", "coach", "admin"] as const) {
       const g = gateRecommendationForAudience(base, a);

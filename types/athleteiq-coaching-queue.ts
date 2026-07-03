@@ -1,10 +1,10 @@
 import type { ConfidenceLevel } from "./ai-engine";
 
-// A per-athlete coaching signal for the trainer daily loop (P0 #525). Combines
+// A per-athlete coaching signal for the trainer daily loop (P0 GH-525). Combines
 // the recommendation engine output with the injury-risk engine output so the
 // coach sees "what to do" and "what to watch" in one queue. Raw recommendation
 // text is coach/admin-only (delivery === "awaiting_review" withholds it from
-// end-user surfaces per #441).
+// end-user surfaces per GH-441).
 export interface CoachingQueueEntry {
   athleteId: string;
   readiness: {

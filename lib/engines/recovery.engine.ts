@@ -1,6 +1,6 @@
 import { EngineContext, EngineOutput, RecoveryResult } from "../../types/ai-engine";
 
-// ENG-002 (#209): the recovery engine combines **subjective** signals (stress,
+// ENG-002 (GH-209): the recovery engine combines **subjective** signals (stress,
 // soreness) with **wearable** signals (sleep quality, HRV) into one composite
 // score. Each signal contributes only when present; absent signals are tracked
 // in `missingData` and lower the confidence, so a wearable-equipped athlete

@@ -4,7 +4,7 @@ import { Menu } from "@mantine/core";
 import { useMemo } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@sovereignsquad/gds/client";
 import { LOCALE_COOKIE } from "@/lib/locale-preference";
 import { hasConsentFor } from "@/lib/cookie-consent";
 
@@ -15,8 +15,8 @@ export function LocaleSwitcher() {
   const pathname = usePathname();
 
   function switchLocale(nextLocale: "en" | "hu" | "ar" | "es" | "de" | "he") {
-    // Persist the explicit choice so locale-less entry remembers it (#422) —
-    // but only with functional cookie consent (#423). Without consent the switch
+    // Persist the explicit choice so locale-less entry remembers it (GH-422) —
+    // but only with functional cookie consent (GH-423). Without consent the switch
     // still applies for this navigation; it just isn't remembered across sessions.
     if (hasConsentFor("functional")) {
       document.cookie = `${LOCALE_COOKIE}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;

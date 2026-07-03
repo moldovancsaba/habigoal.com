@@ -1,6 +1,6 @@
 # GDS Gold-Athlete Theme & Component Brief
 
-**Audience:** General Design System (GDS) developer agents (`@doneisbetter/gds`).
+**Audience:** General Design System (GDS) developer agents (`@sovereignsquad/gds`).
 **Requested by:** Habigoal / Athlete IQ product team.
 **Date:** 2026-06-30.
 **Goal:** Deliver a complete, production-grade **Gold-Athlete** theme **and the missing
@@ -13,8 +13,8 @@ that close every gap.
 
 ## 0. How we consume GDS today (ground truth)
 
-- Package: `@doneisbetter/gds@^3.6.0` (+ `-eslint-config`, `-compliance`). We import
-  from `@doneisbetter/gds/client`.
+- Package: `@sovereignsquad/gds@3.9.0` (+ `-eslint-config`, `-compliance`). We import
+  from `@sovereignsquad/gds/client`.
 - Global theming: `components/theme/ThemeRegistry.tsx` mounts a single
   `GdsProvider` with a **Mantine theme** (`theme/mantine-theme.ts`,
   `primaryColor: "ingress"` — teal) and `defaultColorScheme` light/dark.
@@ -227,13 +227,13 @@ active preset so all charts re-skin with the theme automatically.
 
 ## 9. Migration / compatibility
 
-- Keep the import surface stable (`@doneisbetter/gds/client` symbols listed in §0);
+- Keep the import surface stable (`@sovereignsquad/gds/client` symbols listed in §0);
   add new exports for the chart kit, Stepper, MissingDataPrompt, and any new
   controls.
 - Keep preset id **`athlete-gold`**; deliver dark + light.
 - Provide a token map so we can mechanically replace every entry in our
   hardcoded-style audit with a GDS token (we will share that file).
-- Ship `@doneisbetter/gds-compliance` rules that **fail** on app-local hex / inline
+- Ship `@sovereignsquad/gds-compliance` rules that **fail** on app-local hex / inline
   color / non-token radius, so regressions can't creep back.
 
 ---

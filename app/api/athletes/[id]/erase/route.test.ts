@@ -37,7 +37,7 @@ beforeEach(() => {
   mErase.mockResolvedValue({ erased: ["habit_records"], counts: { habit_records: 3 }, mediaObjectsDeleted: 0 });
 });
 
-describe("POST /api/athletes/[id]/erase (#205)", () => {
+describe("POST /api/athletes/[id]/erase (GH-205)", () => {
   it("403 without the privacy:erase capability", async () => {
     mCap.mockReturnValue(false);
     const res = await POST(req({ confirm: "ERASE" }), ctx);

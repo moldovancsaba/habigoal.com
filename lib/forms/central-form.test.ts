@@ -8,7 +8,7 @@ import {
   type AthleteProfileFormValues,
 } from "@/lib/forms/central-form";
 
-describe("athlete profile single-source contract (#150)", () => {
+describe("athlete profile single-source contract (GH-150)", () => {
   it("exposes every editable profile field once", () => {
     expect(athleteProfileFields.map((f) => f.key)).toEqual([
       "position",
@@ -33,7 +33,7 @@ describe("athlete profile single-source contract (#150)", () => {
   });
 });
 
-describe("isAthleteProfileStatus (#150)", () => {
+describe("isAthleteProfileStatus (GH-150)", () => {
   it("accepts known statuses and rejects everything else", () => {
     expect(isAthleteProfileStatus("active")).toBe(true);
     expect(isAthleteProfileStatus("archived")).toBe(true);
@@ -43,7 +43,7 @@ describe("isAthleteProfileStatus (#150)", () => {
   });
 });
 
-describe("validateCentralForm over the profile contract (#150)", () => {
+describe("validateCentralForm over the profile contract (GH-150)", () => {
   const translate = (key: string, params?: Record<string, string>) =>
     key === "requiredField" ? `Required: ${params?.field ?? ""}` : key;
 

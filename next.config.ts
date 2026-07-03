@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@doneisbetter/gds-theme", "@doneisbetter/gds-core", "@doneisbetter/gds-admin"],
+  transpilePackages: ["@sovereignsquad/gds-theme", "@sovereignsquad/gds-core", "@sovereignsquad/gds-admin"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.ibb.co" },

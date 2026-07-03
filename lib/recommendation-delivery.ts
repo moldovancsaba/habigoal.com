@@ -1,6 +1,6 @@
 import type { RecommendationResult } from "@/types/ai-engine";
 
-// AI safety gating (#441). A recommendation flagged for human review (high-risk
+// AI safety gating (GH-441). A recommendation flagged for human review (high-risk
 // state, or any minor — see recommendation.engine) must NOT reach an end user
 // (athlete/parent) until a coach approves it. Coaches/admins see it so they can
 // review. Every surface that shows a recommendation to a user routes it through

@@ -15,7 +15,7 @@ import {
 import { ObjectId } from "mongodb";
 
 // Bump when the report's structure or source-note contract changes, so a stored
-// report can be traced to the logic that produced it (RPT-005, #200).
+// report can be traced to the logic that produced it (RPT-005, GH-200).
 export const REPORT_VERSION = "report-1.1.0";
 
 export type ReportDimensionKey =
@@ -34,7 +34,7 @@ export interface ReportDimensionSource {
 
 // Complete, structured provenance for a report: which records produced it, how
 // fresh they are, and how confident we are — so a report is honest about its
-// inputs instead of presenting derived numbers without context (RPT-005, #200).
+// inputs instead of presenting derived numbers without context (RPT-005, GH-200).
 export interface ReportProvenance {
   reportVersion: string;
   generatedAt: string;
@@ -58,7 +58,7 @@ export interface AthleteReport {
   // or AI framing in user-facing copy (owner ruling).
   guidanceCommentary: string;
   sourceDataNotes: string[];
-  // Structured source provenance (RPT-005, #200). sourceDataNotes is the
+  // Structured source provenance (RPT-005, GH-200). sourceDataNotes is the
   // human-readable projection of this.
   provenance: ReportProvenance;
 }
@@ -128,7 +128,7 @@ export function buildReportProvenance(input: {
 }
 
 // Human-readable projection of the provenance. The final "Confidence: <band>"
-// line is a stable contract consumed by the parent-safe projection (#261) and
+// line is a stable contract consumed by the parent-safe projection (GH-261) and
 // the reports hub badge — keep it last and in this exact shape.
 export function provenanceToSourceNotes(p: ReportProvenance): string[] {
   const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -204,7 +204,7 @@ export class ReportingService {
     return {
       generatedAt: new Date().toISOString(),
       athleteCount: reports.length,
-      // RPT-002 (#198): team-level rollup so a coach gets operational support, not
+      // RPT-002 (GH-198): team-level rollup so a coach gets operational support, not
       // just a list of individual reports.
       aggregate: aggregateTeamReports(reports),
       reports,

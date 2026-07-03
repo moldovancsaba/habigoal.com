@@ -104,7 +104,7 @@ export const trainingLoadFields = [
 }>[];
 
 // Athlete profile — single source of truth for field definitions, the status
-// enum, and field length caps (#150). Both the admin edit panel and the
+// enum, and field length caps (GH-150). Both the admin edit panel and the
 // PATCH /api/athletes/:id/assignment route consume these so the schema can't
 // drift between client and server.
 export const ATHLETE_PROFILE_STATUSES = [

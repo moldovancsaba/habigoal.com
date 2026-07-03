@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Paper, Text } from "@mantine/core";
-import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack } from "@doneisbetter/gds/client";
+import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";

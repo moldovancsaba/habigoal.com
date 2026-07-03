@@ -25,7 +25,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe("age-consent age maths (#206)", () => {
+describe("age-consent age maths (GH-206)", () => {
   it("returns null for empty or invalid birth dates", () => {
     expect(calculateAgeYears("")).toBeNull();
     expect(calculateAgeYears("not-a-date")).toBeNull();
@@ -40,7 +40,7 @@ describe("age-consent age maths (#206)", () => {
   });
 });
 
-describe("requiresGuardianConsent threshold (#206)", () => {
+describe("requiresGuardianConsent threshold (GH-206)", () => {
   it("requires guardian consent strictly below the youth threshold", () => {
     expect(requiresGuardianConsent(birthDateForAge(YOUTH_AGE_THRESHOLD - 1))).toBe(true);
   });
@@ -51,14 +51,14 @@ describe("requiresGuardianConsent threshold (#206)", () => {
   });
 });
 
-describe("isMinorAthlete (#206)", () => {
+describe("isMinorAthlete (GH-206)", () => {
   it("treats under-18 as minors and 18+ as adults", () => {
     expect(isMinorAthlete(birthDateForAge(17))).toBe(true);
     expect(isMinorAthlete(birthDateForAge(18))).toBe(false);
   });
 });
 
-describe("resolveGuardianRequirement enforces age rules server-side (#206)", () => {
+describe("resolveGuardianRequirement enforces age rules server-side (GH-206)", () => {
   const minor = birthDateForAge(YOUTH_AGE_THRESHOLD - 1);
   const adult = birthDateForAge(YOUTH_AGE_THRESHOLD + 2);
 

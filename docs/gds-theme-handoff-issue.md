@@ -24,7 +24,7 @@ repositories, the issue + project-board placement can be created automatically.)
 ## Issue body
 
 ### Context
-Habigoal / Athlete IQ consumes `@doneisbetter/gds@^3.6.0` and needs a complete,
+Habigoal / Athlete IQ consumes `@sovereignsquad/gds@3.9.0` and needs a complete,
 production **Gold-Athlete** theme plus the missing components/chart primitives so the
 app can be **100% GDS-driven with zero app-local hardcoded styles**. We have written
 a detailed technical brief (attached) and are providing our current design files and
@@ -47,7 +47,7 @@ tokens so you can deliver against real usage.
    gauge, sparkline, symmetry, calendar heatmap, distribution histogram, diverging
    bars, slope, stacked bar.
 5. **Token coverage** for 100% of our hardcoded-style audit (we will share that file),
-   plus `@doneisbetter/gds-compliance` rules that fail on app-local hex / inline color
+   plus `@sovereignsquad/gds-compliance` rules that fail on app-local hex / inline color
    / non-token radius.
 
 ### Observed defects to resolve

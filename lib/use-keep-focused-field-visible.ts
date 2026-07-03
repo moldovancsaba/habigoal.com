@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-// Virtual-keyboard safety (#412). When the on-screen keyboard opens on touch
+// Virtual-keyboard safety (GH-412). When the on-screen keyboard opens on touch
 // devices it covers the lower part of the screen. On Android (with
 // `interactive-widget=resizes-content`) the layout viewport shrinks and the
 // browser usually keeps the focused field visible; on iOS Safari the layout

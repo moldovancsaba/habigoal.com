@@ -1,4 +1,4 @@
-// Session debrief analysis (#527 P2). Turns the raw debrief into a plan-vs-actual
+// Session debrief analysis (GH-527 P2). Turns the raw debrief into a plan-vs-actual
 // read: the effort-based load (already computed from RPE) adjusted by how much of
 // the session was actually completed, plus an adherence band. Pure + honest —
 // no fabrication; realized load is simply estimated × completion.

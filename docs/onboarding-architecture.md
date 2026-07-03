@@ -290,7 +290,7 @@ Runtime behavior:
 
 ## GDS And Accessibility Contract
 
-All onboarding UI must use the Sovereign Squad General Design System. Current runtime uses `@doneisbetter/gds/client` primitives: `Modal`, `Stack`, `Group`, `Box`, `Badge`, `Progress`, `SemanticButton`, `StateBlock`, and `createGdsVocabularyPack` for the custom snooze action.
+All onboarding UI must use the Sovereign Squad General Design System. Current runtime uses `@sovereignsquad/gds/client` primitives: `Modal`, `Stack`, `Group`, `Box`, `Badge`, `Progress`, `SemanticButton`, `StateBlock`, and `createGdsVocabularyPack` for the custom snooze action.
 
 Release-blocking requirements:
 

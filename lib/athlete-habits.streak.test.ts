@@ -18,7 +18,7 @@ function day(date: string, completed: number): DayRecordLike {
   return { date, statuses };
 }
 
-describe("computeCurrentStreak (#426)", () => {
+describe("computeCurrentStreak (GH-426)", () => {
   it("reproduces the reported scenario: two consecutive active days are a streak of 2, not 0", () => {
     // Chart showed 27 & 28 active (>=1 habit), 22-26 inactive; today = 28.
     const records = [day("2026-06-27", 1), day("2026-06-28", 1)];
@@ -53,7 +53,7 @@ describe("computeCurrentStreak (#426)", () => {
   });
 });
 
-describe("computeBestStreak (#426)", () => {
+describe("computeBestStreak (GH-426)", () => {
   it("finds the longest consecutive run, ignoring gaps", () => {
     const records = [
       day("2026-06-01", 1), day("2026-06-02", 1), day("2026-06-03", 1), // run of 3

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildCoachActionsFilter } from "./coach-actions.repository";
 
-describe("coach-actions filter builder (#525 P0)", () => {
+describe("coach-actions filter builder (GH-525 P0)", () => {
   it("exact date wins over range", () => {
     expect(buildCoachActionsFilter({ date: "2026-07-01", from: "2026-06-01" })).toEqual({ date: "2026-07-01" });
   });

@@ -18,7 +18,7 @@ const connection: DeviceConnection = {
   updatedAt: "2026-06-28T00:00:00.000Z",
 };
 
-describe("GPS connectors no longer fabricate data (#350)", () => {
+describe("GPS connectors no longer fabricate data (GH-350)", () => {
   it("the source file contains no hardcoded session metrics", () => {
     const src = readFileSync(join(process.cwd(), "services/connectors/gps.connector.ts"), "utf8");
     for (const n of ["7500", "850", "7200", "910"]) {

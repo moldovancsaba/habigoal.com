@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Box, Stack, Text, Paper, SimpleGrid, Group, Badge, TextInput, NumberInput, Loader, Select } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import type { SessionCategory } from "@/types/training-plan";
 import { analyzeWeeklyLoad } from "@/lib/training-load-balance";
 

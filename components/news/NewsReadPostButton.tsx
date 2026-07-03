@@ -1,6 +1,6 @@
 "use client";
 
-import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@sovereignsquad/gds/client";
 import { Link } from "@/i18n/navigation";
 
 type NewsReadPostButtonProps = {

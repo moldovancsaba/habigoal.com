@@ -6,7 +6,7 @@ export type DailyCompletion = {
   reflectionDone: boolean;
 };
 
-// Reminder delivery policy (#257). Deterministic, privacy-safe rules applied
+// Reminder delivery policy (GH-257). Deterministic, privacy-safe rules applied
 // before any nudge is surfaced. Quiet hours are expressed as local hours in the
 // athlete's timezone over the half-open range [0, 24); when `start > end` the
 // window wraps midnight (e.g. { start: 21, end: 7 } means 21:00–06:59).

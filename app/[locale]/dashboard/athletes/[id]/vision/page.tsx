@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Box, Stack, Text, Paper, Group, Badge, Loader } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
 
 interface MediaItem {
   mediaId: string;

@@ -123,7 +123,7 @@ const TWIN_DIMENSIONS: TwinHistoryEntry["dimension"][] = [
 // Number of distinct calendar dates of history retained.
 const TWIN_HISTORY_DAYS = 90;
 
-// Record a history snapshot for EVERY dimension (DTW-002, #202) — previously only
+// Record a history snapshot for EVERY dimension (DTW-002, GH-202) — previously only
 // recovery + performance were captured, so physical, technical, and cognitive
 // changes left no longitudinal trail. Entries are deduped by (date, dimension)
 // keeping the latest, then bounded to the most recent TWIN_HISTORY_DAYS distinct
@@ -300,7 +300,7 @@ export async function updateTwinFromEngineOutputs(
     sources: withAiSource(updated.recovery.sources),
   };
 
-  // DTW-002 (#202): the AI engine output is a real twin source — record it on
+  // DTW-002 (GH-202): the AI engine output is a real twin source — record it on
   // every dimension it touches (previously performance/cognitive were updated
   // without crediting the source, so engine-driven changes weren't traceable).
   updated.performance = {

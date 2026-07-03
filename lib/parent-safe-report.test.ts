@@ -29,7 +29,7 @@ const baseReport: AthleteReport = {
   },
 };
 
-describe("toParentSafeReport (#261)", () => {
+describe("toParentSafeReport (GH-261)", () => {
   it("redacts clinical/injury metrics and lists them as coach-only", () => {
     const safe = toParentSafeReport(baseReport, { confidence: "medium" });
     const labels = safe.highlights.map((h) => h.label);

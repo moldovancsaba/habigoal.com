@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { classifyReadinessTone, normalizeThresholds, DEFAULT_COACH_THRESHOLDS } from "./coach-thresholds";
 
-describe("coach thresholds (#525 P0)", () => {
+describe("coach thresholds (GH-525 P0)", () => {
   it("classifies with defaults", () => {
     const t = DEFAULT_COACH_THRESHOLDS;
     expect(classifyReadinessTone(4.2, t)).toBe("green");

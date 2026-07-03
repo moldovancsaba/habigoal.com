@@ -64,7 +64,7 @@ function twinFixture(overrides: Partial<Record<string, unknown>> = {}): AthleteT
   return { ...base, ...overrides } as AthleteTwin;
 }
 
-describe("aggregateTeamReports (#198)", () => {
+describe("aggregateTeamReports (GH-198)", () => {
   it("returns empty distributions and null average for no reports", () => {
     expect(aggregateTeamReports([])).toEqual({
       averageReadiness: null,
@@ -106,7 +106,7 @@ describe("aggregateTeamReports (#198)", () => {
   });
 });
 
-describe("buildReportProvenance (#200 RPT-005)", () => {
+describe("buildReportProvenance (GH-200 RPT-005)", () => {
   it("captures per-dimension sources, confidence, and update dates", () => {
     const p = buildReportProvenance({
       twin: twinFixture(),
@@ -174,7 +174,7 @@ describe("buildReportProvenance (#200 RPT-005)", () => {
   });
 });
 
-describe("provenanceToSourceNotes (#200)", () => {
+describe("provenanceToSourceNotes (GH-200)", () => {
   it("renders complete notes and keeps a parseable Confidence line last", () => {
     const p = buildReportProvenance({
       twin: twinFixture(),

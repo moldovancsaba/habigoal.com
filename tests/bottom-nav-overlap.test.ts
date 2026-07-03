@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// Regression guard (#425): the Habigoal consumer content must reserve space for
+// Regression guard (GH-425): the Habigoal consumer content must reserve space for
 // the fixed bottom nav (+ safe-area) via a single token, and must NOT inline a
 // Mantine `pb` prop that would override that reserve and let the nav cover the
 // last card.

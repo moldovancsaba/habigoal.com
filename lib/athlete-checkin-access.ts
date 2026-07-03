@@ -1,6 +1,6 @@
 import type { AuthUser } from "@/lib/access";
 
-// Access + redirect rules for the dedicated athlete-first check-in shell (#156).
+// Access + redirect rules for the dedicated athlete-first check-in shell (GH-156).
 // Pure so the role/redirect logic is unit-testable independently of the route.
 export type CheckinShellAccess =
   | { ok: true; athleteId: string }

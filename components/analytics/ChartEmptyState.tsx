@@ -3,7 +3,7 @@
 import { Box, Text } from "@mantine/core";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 
-// Shared empty state for analytics charts (#339): a new athlete with no history
+// Shared empty state for analytics charts (GH-339): a new athlete with no history
 // must see clear guidance, not a blank chart frame. Announced to assistive tech
 // via role="status" and sized to the chart so layout does not jump.
 export function ChartEmptyState({ label }: { label: string }) {

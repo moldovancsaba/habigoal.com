@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Stack, Text, Group, Select, Box, Paper } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import type { AthleteProfile } from "@/types/athlete";
 import type { AthleteReport } from "@/services/reporting.service";
@@ -11,9 +11,9 @@ import { toParentSafeReport } from "@/lib/parent-safe-report";
 import { normalizeConfidenceBand, type ConfidenceBand } from "@/lib/data-confidence";
 import { ConfidenceBadge } from "@/components/insights/ConfidenceBadge";
 
-// Prefer the structured provenance band (RPT-005, #200); fall back to parsing the
+// Prefer the structured provenance band (RPT-005, GH-200); fall back to parsing the
 // "Confidence: <band>" source note for older reports. Drives the honest hub badge
-// and the parent-safe projection (#253/#261) instead of guessing.
+// and the parent-safe projection (GH-253/GH-261) instead of guessing.
 function reportConfidenceBand(report: AthleteReport): ConfidenceBand {
   if (report.provenance?.overallConfidence) {
     return normalizeConfidenceBand(report.provenance.overallConfidence);

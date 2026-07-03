@@ -4,7 +4,7 @@ import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athletei
 import { getTeamById } from "@/repositories/team.repository";
 import { getCoachCoachingQueue } from "@/services/athleteiq-coaching-queue.service";
 
-// Injury-risk coach alerts (#525 P0). Returns athletes with an elevated/high
+// Injury-risk coach alerts (GH-525 P0). Returns athletes with an elevated/high
 // injury-risk signal for a team, triage-ordered. Coach/admin only.
 export async function GET(request: Request) {
   const correlationId = createAthleteIqCorrelationId();

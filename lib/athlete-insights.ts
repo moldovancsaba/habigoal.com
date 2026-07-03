@@ -7,7 +7,7 @@
 // records it was derived from. No LLM, no fabrication: a signal only fires when
 // its real input is present, and every signal lists its sources for disclosure.
 //
-// Pairs with the explainability catalog (#254, which explains the readiness
+// Pairs with the explainability catalog (GH-254, which explains the readiness
 // *status*); this layer produces forward-looking *guidance* signals with sources.
 
 export const INSIGHT_RULE_VERSION = "athlete-insights-1.0.0";

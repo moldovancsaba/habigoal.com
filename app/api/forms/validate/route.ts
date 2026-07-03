@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { jsonError, readJson } from "@/lib/api";
 import { getFormContract, validateContract, isValidationOk } from "@/lib/forms/validation";
 
-// Debug / CI validation endpoint (#153). Resolves a named form contract and runs
+// Debug / CI validation endpoint (GH-153). Resolves a named form contract and runs
 // the shared validation gateway, so client and server provably agree on what a
 // valid payload is. Read-only — performs no writes.
 export async function POST(request: Request) {

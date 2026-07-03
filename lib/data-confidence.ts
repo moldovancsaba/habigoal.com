@@ -1,4 +1,4 @@
-// Canonical data-confidence engine (#253).
+// Canonical data-confidence engine (GH-253).
 //
 // The codebase had many ad-hoc confidence strings (HabigoalConfidence,
 // DailyIqScoreConfidence, ProfileSourceConfidence, LiteModuleConfidence, …) with

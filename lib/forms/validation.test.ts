@@ -7,7 +7,7 @@ import {
 } from "@/lib/forms/validation";
 import { trainingLoadFields, athleteProfileFields } from "@/lib/forms/central-form";
 
-describe("validateContract — cross-layer gateway (#153)", () => {
+describe("validateContract — cross-layer gateway (GH-153)", () => {
   it("flags a missing required field with the required code", () => {
     const errors = validateContract(athleteProfileFields, { position: "GK", status: "" });
     expect(errors).toContainEqual({ field: "status", code: "required", messageKey: "form.error.required" });
@@ -51,7 +51,7 @@ describe("validateContract — cross-layer gateway (#153)", () => {
   });
 });
 
-describe("form contract registry (#153)", () => {
+describe("form contract registry (GH-153)", () => {
   it("resolves known forms and rejects unknown ones", () => {
     expect(getFormContract("athlete.profile")).toBe(athleteProfileFields);
     expect(getFormContract("training.load")).toBe(trainingLoadFields);

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { deriveDebriefAnalysis, adherenceBand } from "./athleteiq-session-debrief";
 
-describe("session debrief analysis (#527 P2)", () => {
+describe("session debrief analysis (GH-527 P2)", () => {
   it("realizes load by completion and bands adherence", () => {
     const a = deriveDebriefAnalysis({ plannedDurationMinutes: 60, estimatedLoadPoints: 400, completionPct: 50 });
     expect(a.realizedLoadPoints).toBe(200);

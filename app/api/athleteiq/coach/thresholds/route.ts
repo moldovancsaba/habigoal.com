@@ -5,7 +5,7 @@ import { getTeamById } from "@/repositories/team.repository";
 import { getCoachThresholds, upsertCoachThresholds } from "@/repositories/coach-thresholds.repository";
 import { normalizeThresholds } from "@/types/coach-thresholds";
 
-// Configurable readiness/alert thresholds per team (#525 P0). Coach/admin only.
+// Configurable readiness/alert thresholds per team (GH-525 P0). Coach/admin only.
 async function authorize(request: Request, correlationId: string) {
   const user = await getAuthUser();
   if (!user) return { error: athleteIqJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true }) };

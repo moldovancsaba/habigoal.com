@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveGdsVibeTheme } from "@doneisbetter/gds";
+import { resolveGdsVibeTheme } from "@sovereignsquad/gds";
 import { ATHLETE_IQ_GDS_THEME_PRESET } from "./product-surface-branding";
 import { getSurfaceFunctionIds, getSurfaceFunctions, getSurfaceNavigation, productSurfaces } from "./product-surfaces";
 

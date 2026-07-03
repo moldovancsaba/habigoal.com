@@ -17,7 +17,7 @@ import {
   SemanticButton,
   SimpleGrid,
   Stack
-} from "@doneisbetter/gds/client";
+} from "@sovereignsquad/gds/client";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";

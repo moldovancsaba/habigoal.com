@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Paper, Text } from "@mantine/core";
-import { Badge, Box, Button, Group, SectionPanel, Select, Stack } from "@doneisbetter/gds/client";
+import { Badge, Box, Button, Group, SectionPanel, Select, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { getProductColor } from "@/lib/product-ui-contracts";
 
-// Roster management (#526 P1): add/remove athletes per team via
+// Roster management (GH-526 P1): add/remove athletes per team via
 // PATCH /api/teams/[teamId]/roster. Self-contained local state so the coach
 // dashboard doesn't need to re-thread roster data.
 

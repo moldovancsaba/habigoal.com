@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Alert, Paper, Text, Title } from "@mantine/core";
-import { Box, Button, GdsIcons, Group, Progress, SimpleGrid, Slider, Stack } from "@doneisbetter/gds/client";
+import { Box, Button, GdsIcons, Group, Progress, SimpleGrid, Slider, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useState, type CSSProperties } from "react";
 import type { ProductSurface } from "@/lib/product-surfaces";
@@ -275,7 +275,7 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
         {/* No `pb` here: the bottom-inset that clears the fixed bottom nav is
             owned by `.hbg-main-grid` in CSS (nav height + safe-area). A Mantine
             `pb` prop would inline-override that reserve and let the nav cover
-            the last card (#425). */}
+            the last card (GH-425). */}
         <Box component="main" className="hbg-main-grid">
           {/* Daily nudges are a Habigoal-only concept: this is their single
               mount point across the whole app (product boundary). */}

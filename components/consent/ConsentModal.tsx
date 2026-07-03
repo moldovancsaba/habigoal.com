@@ -11,9 +11,9 @@ interface ConsentModalProps {
   onClose?: () => void;
 }
 
-// Data-purpose consent (distinct from the cookie banner in #423). Built on
+// Data-purpose consent (distinct from the cookie banner in GH-423). Built on
 // Mantine primitives so it is a proper modal — aria-modal, focus trap, labelled
-// close, and inputs id-linked to their labels via Mantine Checkbox (#431).
+// close, and inputs id-linked to their labels via Mantine Checkbox (GH-431).
 const CONSENT_PURPOSE_KEYS = ["daily_check_in", "wearable_data", "media_upload"] as const;
 
 type PurposeKey = (typeof CONSENT_PURPOSE_KEYS)[number];

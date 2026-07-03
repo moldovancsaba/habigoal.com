@@ -19,7 +19,7 @@ import {
   Stack as GdsStack,
   StateBlock,
   TextInput as GdsTextInput
-} from "@doneisbetter/gds/client";
+} from "@sovereignsquad/gds/client";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -366,7 +366,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
       // pillarSeries always has one row per pillar (with 0s) even when the
       // selected window excludes every assessment; pass an empty array in that
       // case so the benchmark chart shows the empty state instead of zero bars
-      // (matches the adjacent timelines). (#475 review)
+      // (matches the adjacent timelines). (GH-475 review)
       filteredAssessments.length === 0
         ? []
         : pillarSeries.map((pillar) => ({
@@ -452,7 +452,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     data?.child.baselineProfile?.supportPreferences?.length
   );
 
-  // Trust + insight wiring (#253 data confidence, #254 explainability): both are
+  // Trust + insight wiring (GH-253 data confidence, GH-254 explainability): both are
   // derived from real signals only, so the UI stays honest about how much it
   // actually knows and *why* it shows a given operating status. Computed inline —
   // the React compiler memoizes these pure derivations automatically.

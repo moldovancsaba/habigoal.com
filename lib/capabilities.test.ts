@@ -10,7 +10,7 @@ const ALL_OFF: Capabilities = {
   gameFlow: false,
 };
 
-describe("resolveCapabilities (#440)", () => {
+describe("resolveCapabilities (GH-440)", () => {
   it("defaults every capability to off so nothing fabricated is shown by default", () => {
     expect(resolveCapabilities(ALL_OFF)).toEqual(ALL_OFF);
   });

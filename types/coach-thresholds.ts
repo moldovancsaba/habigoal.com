@@ -1,4 +1,4 @@
-// Configurable readiness/alert thresholds per team (#525 P0). Readiness is on
+// Configurable readiness/alert thresholds per team (GH-525 P0). Readiness is on
 // the 0–5 gauge scale used across the coach surfaces. `greenMin` and below-that
 // `yellowMin` split the traffic-light tone; anything below yellowMin is red.
 export interface CoachThresholds {

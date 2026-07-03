@@ -6,7 +6,7 @@ import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Table, Text, Title
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { Link } from "@/i18n/navigation";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -105,7 +105,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
       // there was no UI to choose it — so trainers always got the lesser export.
       // Fetch history fresh here so the export never races the background load
       // (?print=true auto-export, or an immediate click before history resolves)
-      // and silently drops trends (#476 review). Fall back to whatever loaded.
+      // and silently drops trends (GH-476 review). Fall back to whatever loaded.
       let exportHistory = history;
       if (record.childId) {
         try {

@@ -35,7 +35,7 @@ export async function computeReadiness(context: EngineContext): Promise<EngineOu
     confidence = "low";
   }
 
-  // Present-only refinements (P3 #528). These deepen the read when richer twin
+  // Present-only refinements (P3 GH-528). These deepen the read when richer twin
   // signals exist WITHOUT changing the two-signal confidence contract: absent
   // extras are not counted against confidence, they only sharpen the score when
   // present. No fabrication — every penalty maps to a recorded twin value.

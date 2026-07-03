@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.redirect(loginPageUrl(request, locale, next, !identity ? "invalid_identifier" : "missing_persona"), 303);
   }
 
-  // Habigoal is a standalone white-label product (#424): a new email may register
+  // Habigoal is a standalone white-label product (GH-424): a new email may register
   // and use Habigoal directly, with no prior Athlete IQ registration. Self-
   // registration provisioning (upsertPersonaLoginUser → createSelfRegisteredEntitlements)
   // grants the Habigoal entitlement; AIQ linkage is an internal, hidden concern,
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
         error: "Product access denied",
         code,
         // Scope to the surface being opened so a consumer response never carries
-        // the professional product's entitlement or reason codes (#432).
+        // the professional product's entitlement or reason codes (GH-432).
         productEntitlements: projectEntitlementsForSurface(localUser.productEntitlements, productSurface)
       }, { status: 403 });
     }
@@ -217,7 +217,7 @@ export async function POST(request: NextRequest) {
         activeRole: persona,
         primaryRole: persona,
         // Scope to the surface being opened so a consumer response never carries
-        // the professional product's entitlement or reason codes (#432).
+        // the professional product's entitlement or reason codes (GH-432).
         productEntitlements: projectEntitlementsForSurface(localUser.productEntitlements, productSurface),
         productSurface
       },

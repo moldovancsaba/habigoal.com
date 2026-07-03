@@ -47,7 +47,7 @@ No structured injury risk indicator exists. Coaches have load zone information b
 
 ## Mandatory Technical Constraints
 
-All UI must use `@doneisbetter/gds`. Risk badges, banners, and CTAs use GDS tokens — warning amber and critical red per GDS token definitions. No custom risk colours. Medical boundary language enforced: use "risk indicator", "recommend review", "movement observation" — never "injury", "diagnosis", "prevent injury", "treats".
+All UI must use `@sovereignsquad/gds`. Risk badges, banners, and CTAs use GDS tokens — warning amber and critical red per GDS token definitions. No custom risk colours. Medical boundary language enforced: use "risk indicator", "recommend review", "movement observation" — never "injury", "diagnosis", "prevent injury", "treats".
 
 ## Architecture
 

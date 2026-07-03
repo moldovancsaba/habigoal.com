@@ -1,6 +1,6 @@
 import { routing } from "@/i18n/routing";
 
-// Locale persistence (#422). The user's explicit language choice is stored in the
+// Locale persistence (GH-422). The user's explicit language choice is stored in the
 // NEXT_LOCALE cookie and honored on locale-less entry (the root redirect) so the
 // app remembers it across sessions instead of always falling back to the default.
 

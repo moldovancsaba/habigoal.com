@@ -1,6 +1,6 @@
 "use client";
 
-import { StateBlock as GdsStateBlock } from "@doneisbetter/gds/client";
+import { StateBlock as GdsStateBlock } from "@sovereignsquad/gds/client";
 import type { ReactNode } from "react";
 
 type StateBlockProps = {

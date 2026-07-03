@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Paper, Text } from "@mantine/core";
-import { Box, Group, Select, SemanticButton, Stack, Textarea } from "@doneisbetter/gds/client";
+import { Box, Group, Select, SemanticButton, Stack, Textarea } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";

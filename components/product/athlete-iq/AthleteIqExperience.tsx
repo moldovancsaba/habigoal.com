@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Paper, Text, Title } from "@mantine/core";
-import { Badge, Box, GdsIcons, Group, PageHeader, Progress, resolveGdsVibeTheme, Select, SemanticButton, SimpleGrid, Stack } from "@doneisbetter/gds/client";
+import { Badge, Box, GdsIcons, Group, PageHeader, Progress, resolveGdsVibeTheme, Select, SemanticButton, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";

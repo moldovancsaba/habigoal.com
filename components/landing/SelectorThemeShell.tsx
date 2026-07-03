@@ -1,6 +1,6 @@
 "use client";
 
-import { getGdsVibeThemeCssVariables } from "@doneisbetter/gds/client";
+import { getGdsVibeThemeCssVariables } from "@sovereignsquad/gds/client";
 import type { CSSProperties, ReactNode } from "react";
 import { SELECTOR_GDS_THEME_PRESET } from "@/lib/product-surface-branding";
 

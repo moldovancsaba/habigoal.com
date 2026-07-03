@@ -5,7 +5,7 @@ import { getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
 import { getTeamById } from "@/repositories/team.repository";
 import { getTeamReadinessTrend } from "@/services/athleteiq-team-trends.service";
 
-// Team readiness trend (#526 P1). Coach/admin only.
+// Team readiness trend (GH-526 P1). Coach/admin only.
 export async function GET(request: Request) {
   const correlationId = createAthleteIqCorrelationId();
   const startedAt = Date.now();

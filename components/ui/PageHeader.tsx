@@ -1,6 +1,6 @@
 "use client";
 
-import { PageHeader as GdsPageHeader } from "@doneisbetter/gds/client";
+import { PageHeader as GdsPageHeader } from "@sovereignsquad/gds/client";
 import { Box, Flex, Text, Title } from "@mantine/core";
 import type { ReactNode } from "react";
 

@@ -19,7 +19,7 @@ Last updated: 2026-05-31
 - Repeatable i18n audit gate for locale key parity, ICU placeholder parity, news localization completeness, and known legacy copy leaks.
 - Public legal pages.
 - MongoDB Atlas integration, health checks, seed scripts, and migration/backfill helpers.
-- GDS governed runtime baseline with `@doneisbetter/gds@2.6.4`, passing `npm run gds:audit` and `npm run gds:compliance`.
+- GDS governed runtime baseline with `@sovereignsquad/gds@2.6.4`, passing `npm run gds:audit` and `npm run gds:compliance`.
 
 ## Current Active Engineering Themes
 

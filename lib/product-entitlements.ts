@@ -114,7 +114,7 @@ export function hasProductEntitlement(entitlements: ProductEntitlements, surface
 // entitlements. The consumer (Habigoal) surface must never receive the
 // professional product's entitlement or any reason codes
 // (e.g. trainer_assignment, pro_athlete_membership) — that is a product-boundary
-// leak (#432). Reason codes and grant timestamps are server-only concerns and
+// leak (GH-432). Reason codes and grant timestamps are server-only concerns and
 // are dropped for BOTH surfaces; the consumer additionally never sees the
 // athleteIq key at all. Accepts the broad shape returned by lib/access so callers
 // don't have to normalize first.

@@ -2,7 +2,7 @@
 
 import { useEffect, useReducer, useRef, type ReactNode } from "react";
 import { Text } from "@mantine/core";
-import { Box, Group, Progress, SemanticButton, Stack } from "@doneisbetter/gds/client";
+import { Box, Group, Progress, SemanticButton, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import {
   createStepFlow,
@@ -25,7 +25,7 @@ export interface StepDef {
 // screen, a progress bar, and Back / Save & next (Finish on the last step). The
 // step heading is focused on each change and the position is announced via an
 // aria-live region so it works for keyboard + screen-reader users. Interim shell
-// until the GDS Stepper (issue #502) is available.
+// until the GDS Stepper (issue GH-502) is available.
 export function StepFlow({
   steps,
   onComplete,

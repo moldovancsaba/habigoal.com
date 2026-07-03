@@ -6,7 +6,7 @@ import {
   isGovAssignableRole,
 } from "@/lib/admin-actions";
 
-describe("validateGovAction (#152)", () => {
+describe("validateGovAction (GH-152)", () => {
   const valid = { userEmail: "Coach@Example.com", action: "grant_role", scope: "trainer", reason: "promotion" };
 
   it("accepts a well-formed payload and normalizes the email", () => {
@@ -38,7 +38,7 @@ describe("validateGovAction (#152)", () => {
   });
 });
 
-describe("computeNextRoles (#152)", () => {
+describe("computeNextRoles (GH-152)", () => {
   it("grants a role and is idempotent", () => {
     expect(computeNextRoles(["athlete"], "grant_role", "trainer").sort()).toEqual(["athlete", "trainer"]);
     expect(computeNextRoles(["trainer"], "grant_role", "trainer")).toEqual(["trainer"]);
@@ -50,7 +50,7 @@ describe("computeNextRoles (#152)", () => {
   });
 });
 
-describe("governance guards (#152)", () => {
+describe("governance guards (GH-152)", () => {
   it("isGovAction only allows the supported actions", () => {
     expect(isGovAction("grant_role")).toBe(true);
     expect(isGovAction("revoke_role")).toBe(true);

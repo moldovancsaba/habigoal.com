@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Box, Checkbox, Group, Loader, Paper, Select, SimpleGrid, Stack, Text, Textarea } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { FMS_SUBTESTS, type FmsSubtest } from "@/lib/athleteiq-fms";
 import type { AthleteProfile } from "@/types/athlete";

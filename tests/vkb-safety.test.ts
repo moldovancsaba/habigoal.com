@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// Virtual-keyboard safety guards (#412).
+// Virtual-keyboard safety guards (GH-412).
 const css = readFileSync(join(process.cwd(), "app/globals.css"), "utf8");
 const viewport = readFileSync(join(process.cwd(), "app/[locale]/layout.tsx"), "utf8");
 const login = readFileSync(join(process.cwd(), "app/[locale]/login/page.tsx"), "utf8");

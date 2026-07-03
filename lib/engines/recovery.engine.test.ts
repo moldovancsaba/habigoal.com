@@ -21,7 +21,7 @@ function ctx(twin: {
   };
 }
 
-describe("computeRecovery — subjective + wearable merge (#209)", () => {
+describe("computeRecovery — subjective + wearable merge (GH-209)", () => {
   it("is high recovery and high confidence when all signals are present and good", async () => {
     const out = await computeRecovery(ctx({ stressTrend7d: 2, sorenessScore7d: 2, sleepQualityScore7d: 8, hrvRmssdMs: 65 }));
     expect(out.result.score).toBe(100);

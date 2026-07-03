@@ -1,6 +1,6 @@
 "use client";
 
-import { GdsProvider } from "@doneisbetter/gds/client";
+import { GdsProvider } from "@sovereignsquad/gds/client";
 import { useMemo } from "react";
 import { useLocale } from "next-intl";
 import { getHabigoalMantineTheme } from "@/theme/mantine-theme";

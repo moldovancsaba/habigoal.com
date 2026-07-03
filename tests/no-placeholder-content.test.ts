@@ -2,14 +2,14 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// #334 regression guard: rendered surfaces and message catalogs must not contain
+// GH-334 regression guard: rendered surfaces and message catalogs must not contain
 // classic placeholder/filler content. "lorem"/"ipsum" never have a legitimate
 // use in product copy, so they are banned outright across the UI and i18n
 // catalogs. This enforces the "placeholder keys are disallowed in CI/PR" cutoff.
 //
 // Note on scope: the issue's illustrative banned list also mentions "demo" and
 // "sample", but those have genuine non-placeholder uses in this codebase (the
-// demo seed ecosystem in #427, "user@example.com"-style example inputs). Banning
+// demo seed ecosystem in GH-427, "user@example.com"-style example inputs). Banning
 // them wholesale would produce false positives, so this guard targets only the
 // unambiguous filler markers. The allowed-placeholder catalog lives in
 // docs/placeholder-content-policy.md.
@@ -40,7 +40,7 @@ function collectFiles(dir: string): string[] {
   return out;
 }
 
-describe("no placeholder/filler content in shipped surfaces (#334)", () => {
+describe("no placeholder/filler content in shipped surfaces (GH-334)", () => {
   const files = SCAN_DIRS.flatMap((dir) => collectFiles(join(process.cwd(), dir)));
 
   it("scans a non-trivial number of files", () => {

@@ -39,7 +39,7 @@ beforeEach(() => {
   mSetRoles.mockResolvedValue(undefined);
 });
 
-describe("POST /api/admin/actions (#152)", () => {
+describe("POST /api/admin/actions (GH-152)", () => {
   it("rejects non-admins via requireRole", async () => {
     mRequireRole.mockResolvedValue(new Response("no", { status: 403 }) as never);
     const res = await POST(req(grant));

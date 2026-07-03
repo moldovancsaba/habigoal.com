@@ -1,6 +1,6 @@
 "use client";
 
-import { FormField, NumberInput, Select, Textarea, TextInput } from "@doneisbetter/gds/client";
+import { FormField, NumberInput, Select, Textarea, TextInput } from "@sovereignsquad/gds/client";
 import type { CentralFormField } from "@/lib/forms/central-form";
 
 export function CentralFormRenderer<TValues extends Record<string, unknown>>({

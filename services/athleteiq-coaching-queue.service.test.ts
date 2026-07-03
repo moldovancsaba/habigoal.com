@@ -21,7 +21,7 @@ function twin(overrides: Partial<Record<"physical" | "performance" | "recovery",
   };
 }
 
-describe("coaching queue entry (#525 P0)", () => {
+describe("coaching queue entry (GH-525 P0)", () => {
   it("produces a recommendation + injury-risk entry from a twin", async () => {
     const entry = await computeCoachingQueueEntry("a1", twin({ physical: { restingHeartRateBpm: 55 }, recovery: { sleepQualityScore7d: 80 } }));
     expect(entry.athleteId).toBe("a1");

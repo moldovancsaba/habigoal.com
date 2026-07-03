@@ -9,7 +9,7 @@ function req(body?: unknown) {
   });
 }
 
-describe("POST /api/forms/validate (#153)", () => {
+describe("POST /api/forms/validate (GH-153)", () => {
   it("400s when the form id is missing", async () => {
     const res = await POST(req({ payload: {} }));
     expect(res.status).toBe(400);

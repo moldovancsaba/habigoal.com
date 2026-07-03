@@ -5,7 +5,7 @@ This document describes the current implementation state of Habigoal and the mai
 ## Stack
 
 - Framework: Next.js App Router
-- UI: Mantine through the governed `@doneisbetter/gds` runtime
+- UI: Mantine through the governed `@sovereignsquad/gds` runtime
 - Language: TypeScript
 - i18n: next-intl with locale-prefixed routes
 - Database: MongoDB Atlas through the MongoDB Node driver
@@ -13,7 +13,7 @@ This document describes the current implementation state of Habigoal and the mai
 - Runtime: Node.js `22.x`
 - Deployment target: Vercel
 
-The lockfile currently resolves the core runtime to Next.js `15.5.19`, React `19.2.5`, TypeScript `5.9.3`, MongoDB driver `6.21.0`, next-intl `4.9.2`, Mantine `8.3.18`, and GDS `3.6.0`.
+The lockfile currently resolves the core runtime to Next.js `15.5.19`, React `19.2.x`, MongoDB driver `6.x`, next-intl `4.9.x`, GDS `3.9.0`, and the GDS-supported Mantine `8.3.x` engine lane.
 
 ## Current Product Model
 
@@ -428,10 +428,10 @@ The implementation pass delivered the runtime and documentation that the client 
 - Canonical onboarding architecture documentation in `docs/onboarding-architecture.md`.
 - Manual reconciliation in `docs/user-guide.md`, `docs/settings-guide.md`, and `docs/api.md`.
 - Version drift gate in `scripts/version-audit.mjs`, exposed as `npm run version:audit`.
-- GDS governance reconciliation to `@doneisbetter/gds@^3.6.0` in README, `docs/design-system.md`, `gds-adoption.json`, and `scripts/gds-audit.mjs`.
+- GDS governance reconciliation to `@sovereignsquad/gds@3.9.0` in README, `docs/design-system.md`, `gds-adoption.json`, and `scripts/gds-audit.mjs`.
 - GDS compliance cleanup for raw color literals and product-authored news exception metadata.
 
-The implementation preserves the mandatory frontend constraint: onboarding UI imports interactive primitives from `@doneisbetter/gds/client` and does not introduce a parallel UI system.
+The implementation preserves the mandatory frontend constraint: onboarding UI imports interactive primitives from `@sovereignsquad/gds/client` and does not introduce a parallel UI system.
 
 ### AthleteIQ Session Lifecycle Delivered
 
@@ -620,7 +620,7 @@ Results:
 - TypeScript: passed with `tsc --noEmit`.
 - Version audit: passed for app version `0.5.1`; OpenAPI version remains `2.0.0`.
 - i18n audit: passed for 6 locales, 6 message catalogs, and localized news content.
-- GDS audit: passed for Habigoal on GDS `3.6.0`.
+- GDS audit: passed for Habigoal on GDS `3.9.0`.
 - GDS compliance: passed for `habigoal`.
 - Next.js production build: passed; new routes include `/api/onboarding/state`, `/api/onboarding/events`, and `/api/athletes/[id]/baseline`.
 
@@ -650,7 +650,7 @@ On 2026-05-21, `#62` received the first shipped audit gate in commit `30e122f`. 
 
 Issue `#29` was closed because typecheck validation is stable on `main`.
 
-On 2026-05-31, the GDS documentation and project-board state were reconciled after `@doneisbetter/gds@2.6.4` adoption. On 2026-06-27, the repository is reconciled to `@doneisbetter/gds@3.6.0`; `npm run gds:audit` and `npm run gds:compliance` pass locally, so issue/project references that describe GDS runtime adoption as blocked by package publication or Mantine compatibility are obsolete.
+On 2026-05-31, the GDS documentation and project-board state were reconciled after the `2.6.4` adoption. On 2026-06-27, the repository was reconciled to the prior `3.6.0` line; on 2026-07-03 it moved to `@sovereignsquad/gds@3.9.0`. `npm run gds:audit` and `npm run gds:compliance` should pass locally, so issue/project references that describe GDS runtime adoption as blocked by package publication or Mantine compatibility are obsolete.
 
 ## Validation
 

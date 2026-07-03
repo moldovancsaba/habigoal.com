@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Stack, Text } from "@mantine/core";
-import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { APP_VERSION } from "@/lib/app-version";

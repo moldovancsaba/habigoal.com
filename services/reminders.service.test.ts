@@ -25,7 +25,7 @@ describe("deriveReminders", () => {
   });
 });
 
-describe("isWithinQuietHours (#257)", () => {
+describe("isWithinQuietHours (GH-257)", () => {
   it("is false when no quiet hours are configured", () => {
     expect(isWithinQuietHours(3, undefined)).toBe(false);
   });
@@ -50,7 +50,7 @@ describe("isWithinQuietHours (#257)", () => {
   });
 });
 
-describe("applyReminderPolicy (#257)", () => {
+describe("applyReminderPolicy (GH-257)", () => {
   const due: ReminderKey[] = ["checkin", "habits", "reflection"];
 
   it("is the identity over due reminders with no preferences", () => {
@@ -84,7 +84,7 @@ describe("applyReminderPolicy (#257)", () => {
   });
 });
 
-describe("localHourInTimezone (#257)", () => {
+describe("localHourInTimezone (GH-257)", () => {
   it("returns the local hour for a fixed instant in a known timezone", () => {
     // 2026-06-29T12:00:00Z is 14:00 in Europe/Budapest (UTC+2 in summer).
     const instant = new Date("2026-06-29T12:00:00.000Z");

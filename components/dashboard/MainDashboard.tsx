@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Paper, Text } from "@mantine/core";
-import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack } from "@doneisbetter/gds/client";
+import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMode } from "@/lib/readiness-model";

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// Guards the adaptive token foundation (#400): capability-driven target size,
+// Guards the adaptive token foundation (GH-400): capability-driven target size,
 // density floor, and the surface-radius token must remain declared.
 const css = readFileSync(join(process.cwd(), "app/globals.css"), "utf8");
 
@@ -29,7 +29,7 @@ describe("adaptive tokens", () => {
     expect(block).not.toBeNull();
   });
 
-  it("migrates interactive primitives to the target-size token (#402)", () => {
+  it("migrates interactive primitives to the target-size token (GH-402)", () => {
     const tokenMins = css.match(/min-height:\s*max\(var\(--target-size\),/g) || [];
     expect(tokenMins.length).toBeGreaterThanOrEqual(12);
   });

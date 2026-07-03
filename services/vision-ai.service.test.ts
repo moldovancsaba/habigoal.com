@@ -20,7 +20,7 @@ vi.mock("@/lib/vision/frame-extraction", () => ({
 const service = new VisionAiService();
 const payload = { mediaId: "m1", athleteId: "a1", fileSize: 100000, mimeType: "video/mp4" } as Parameters<typeof service.runTrackingPipeline>[0];
 
-describe("vision honest gating (#188-194)", () => {
+describe("vision honest gating (GH-188-194)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     env.capabilities.visionRealPipeline = false;

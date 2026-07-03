@@ -1,6 +1,6 @@
 "use client";
 
-import { createGdsVocabularyPack, GdsIcons } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons } from "@sovereignsquad/gds/client";
 
 export type ProductSurfaceActionMessages = Partial<Record<"dashboard" | "athleteDashboard" | "reset" | "complete" | "acknowledge" | "report" | "launch", string>>;
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { StateBlock } from "@doneisbetter/gds/client";
+import { StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 
-// Honest "not available yet" state (#440). Render this wherever a capability is
+// Honest "not available yet" state (GH-440). Render this wherever a capability is
 // off — never a fabricated value. Optional title/description override the
 // localized defaults for surface-specific copy.
 export function NotAvailableYet({ title, description }: { title?: string; description?: string }) {

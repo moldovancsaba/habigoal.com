@@ -1,6 +1,6 @@
 import type { CanonicalMetric, MetricSource, MetricUnit, CanonicalMetricKey } from "@/types/canonical-metric";
 
-// Measurement adapter layer (#283, AIQ-1361). The canonical metric model already
+// Measurement adapter layer (GH-283, AIQ-1361). The canonical metric model already
 // normalizes value/unit/source/confidence; this adds the cross-cutting metadata
 // the issue requires to be *visible where relevant* — source trust class and
 // data freshness — and folds them into one render-ready descriptor with an

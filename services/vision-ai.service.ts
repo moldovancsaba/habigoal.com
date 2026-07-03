@@ -44,7 +44,7 @@ export class VisionAiService {
   }
 
   async runTrackingPipeline(media: MediaUploadPayload): Promise<VisionAnalysisResult> {
-    // Honest gating (#188-194): real pose/kinematics analysis does not exist yet.
+    // Honest gating (GH-188-194): real pose/kinematics analysis does not exist yet.
     // Until env.capabilities.visionRealPipeline is enabled we must NOT present
     // heuristic numbers as validated analysis, and must NOT write them into the
     // athlete's digital twin. Store the upload and record an explicit

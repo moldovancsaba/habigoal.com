@@ -1,6 +1,6 @@
 import type { AppRole } from "@/lib/access";
 
-// Admin governance actions (#152). Bounded to role grant/revoke, the mutations
+// Admin governance actions (GH-152). Bounded to role grant/revoke, the mutations
 // the user store actually supports — no fabricated "suspend"/"flag" actions that
 // have no backing field.
 export const GOV_ACTIONS = ["grant_role", "revoke_role"] as const;

@@ -141,7 +141,7 @@ export function getHabitStreak(records: Array<{ date: string; statuses: Record<s
   return streak;
 }
 
-// --- Canonical, calendar-correct streak helpers (#426) ---------------------
+// --- Canonical, calendar-correct streak helpers (GH-426) ---------------------
 // The legacy getHabitStreak above counts newest-first and breaks only on a
 // *present* non-qualifying record, so it ignores calendar gaps and isn't anchored
 // to today; it also hard-codes the >=70%-of-9 rule, which a 6-habit product can

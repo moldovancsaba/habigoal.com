@@ -1,7 +1,7 @@
 "use client";
 
 import { ActionIcon, Box, Burger, Button, Group, Menu, Text } from "@mantine/core";
-import { GdsIcons } from "@doneisbetter/gds/client";
+import { GdsIcons } from "@sovereignsquad/gds/client";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";

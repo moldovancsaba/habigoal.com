@@ -135,7 +135,7 @@ create_issue "Dashboards: Athlete Mobile Portal & Twin Visualization" \
 Create a mobile-first GDS view for athletes to see their own AI readiness scores, Twin radar charts, and assigned session plans.
 
 ## UX Requirements
-- Must use \`@doneisbetter/gds\` exclusively.
+- Must use \`@sovereignsquad/gds\` exclusively.
 - Radar charts for 5-dimension Twin view."
 
 # ISSUE 9

@@ -1,4 +1,4 @@
-import { getGdsMessages } from "@doneisbetter/gds/client";
+import { getGdsMessages } from "@sovereignsquad/gds/client";
 
 // GDS ships built-in vocabularies for en/hu/es/de/he (and more), resolved via
 // getGdsMessages(locale). Arabic is not covered upstream, so we overlay our own

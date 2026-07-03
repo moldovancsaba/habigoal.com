@@ -1,4 +1,4 @@
-// Explainability: versioned rule catalog + applied-rule bundles (#254).
+// Explainability: versioned rule catalog + applied-rule bundles (GH-254).
 //
 // Recommendations were previously opaque free-text reasons. This module makes the
 // reasoning transparent and auditable: a versioned catalog of deterministic

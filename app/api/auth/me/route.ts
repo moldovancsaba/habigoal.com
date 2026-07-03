@@ -39,7 +39,7 @@ export async function GET(request: Request) {
   // sign-on, a professional user (session productSurface=athlete-iq) can open the
   // consumer Habigoal route, whose shell calls this endpoint — keying off the
   // login surface would still hand the consumer client the Athlete IQ projection
-  // (#432). Default to the most restrictive (consumer) projection when no surface
+  // (GH-432). Default to the most restrictive (consumer) projection when no surface
   // is declared.
   const requestedSurface = new URL(request.url).searchParams.get("surface");
   const activeSurface: ProductSurfaceId = requestedSurface === "athlete-iq" ? "athlete-iq" : "habigoal";

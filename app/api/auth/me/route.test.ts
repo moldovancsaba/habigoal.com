@@ -20,7 +20,7 @@ const mockedGetAuthUser = vi.mocked(getAuthUser);
 
 // A dual-entitled professional: signed in through Athlete IQ, but also holds the
 // Habigoal entitlement. The AIQ entitlement carries a reason code that must never
-// reach a consumer client (#432).
+// reach a consumer client (GH-432).
 const dualSession = {
   userId: "user-dual",
   email: "dual@example.com",
@@ -48,7 +48,7 @@ function meRequest(surface?: string) {
   return new Request(url);
 }
 
-describe("/api/auth/me surface-scoped entitlements (#432)", () => {
+describe("/api/auth/me surface-scoped entitlements (GH-432)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockedGetSession.mockResolvedValue(dualSession);

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { analyzeWeeklyLoad } from "./training-load-balance";
 
-describe("weekly load balance (#527 P2)", () => {
+describe("weekly load balance (GH-527 P2)", () => {
   it("aggregates per day and totals the week", () => {
     const r = analyzeWeeklyLoad([
       { date: "2026-07-01", plannedLoadPoints: 300 },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, getGdsVibeThemeCssVariables } from "@doneisbetter/gds/client";
+import { Box, getGdsVibeThemeCssVariables } from "@sovereignsquad/gds/client";
 import { createContext, useContext, useEffect, useMemo, type CSSProperties } from "react";
 import { ATHLETE_IQ_GDS_THEME_PRESET } from "@/lib/product-surface-branding";
 import {

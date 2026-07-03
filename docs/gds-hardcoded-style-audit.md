@@ -102,7 +102,7 @@ No actionable raw hex in `.tsx` (only a comment). Keep the lint guard.
    brief's token list.
 2. **Do now (independent of theme):** Category 4 inline-style literals → existing
    radius/spacing tokens and GDS button variants (no new tokens needed).
-3. **Enforce:** once `@doneisbetter/gds-compliance` ships the rules (per the brief),
+3. **Enforce:** once `@sovereignsquad/gds-compliance` ships the rules (per the brief),
    add them to lint so `color="<palette>"`, inline color/background literals, and
    non-token radius **fail CI**.
 

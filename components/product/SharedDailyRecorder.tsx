@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Alert, Text } from "@mantine/core";
-import { Box, Checkbox, GdsIcons, Group, Progress, SemanticButton, SimpleGrid, Slider, Stack } from "@doneisbetter/gds/client";
+import { Box, Checkbox, GdsIcons, Group, Progress, SemanticButton, SimpleGrid, Slider, Stack } from "@sovereignsquad/gds/client";
 import { useCallback, useEffect, useState } from "react";
 import type { HabigoalHabitKey } from "@/services/habigoal-product.service";
 import type { SharedDailyProduct, SharedDailyStateProjection } from "@/services/shared-daily-state.service";

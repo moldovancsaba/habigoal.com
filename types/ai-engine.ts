@@ -49,7 +49,7 @@ export interface RecommendationResult {
   confidence: ConfidenceLevel;
   humanReviewRequired: boolean;
   /** "awaiting_review" when humanReviewRequired — end-user surfaces must withhold
-   *  the raw text until a coach approves (#441). Coach/admin surfaces see it. */
+   *  the raw text until a coach approves (GH-441). Coach/admin surfaces see it. */
   delivery: RecommendationDelivery;
   advisoryDisclaimer: string;
   modelVersion: string;

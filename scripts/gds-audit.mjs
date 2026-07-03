@@ -2,14 +2,14 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const fallbackExpectedGdsVersion = "3.6.0";
+const fallbackExpectedGdsVersion = "3.9.0";
 const manifestPath = path.join(root, "gds-adoption.json");
 const packagePath = path.join(root, "package.json");
 
 const requiredPackages = [
-  "@doneisbetter/gds",
-  "@doneisbetter/gds-eslint-config",
-  "@doneisbetter/gds-compliance"
+  "@sovereignsquad/gds",
+  "@sovereignsquad/gds-eslint-config",
+  "@sovereignsquad/gds-compliance"
 ];
 
 const requiredManifestFields = [
@@ -54,9 +54,9 @@ function collectFiles(dir, results = []) {
   return results;
 }
 
-function scanForDoneIsBetterImports() {
+function scanForSovereignSquadImports() {
   const imports = new Set();
-  const pattern = /from\s+["'](@doneisbetter\/gds(?:\/(?:client|server))?|@doneisbetter\/gds-[^"']+)["']|import\s+["'](@doneisbetter\/gds(?:\/(?:client|server))?|@doneisbetter\/gds-[^"']+)["']/g;
+  const pattern = /from\s+["'](@sovereignsquad\/gds(?:\/(?:client|server))?|@sovereignsquad\/gds-[^"']+)["']|import\s+["'](@sovereignsquad\/gds(?:\/(?:client|server))?|@sovereignsquad\/gds-[^"']+)["']/g;
 
   for (const file of collectFiles(root)) {
     const source = fs.readFileSync(file, "utf8");
@@ -87,8 +87,8 @@ function scanForLegacyGdsReferences() {
 const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
 const pkg = fs.existsSync(packagePath) ? readJson(packagePath) : null;
 const expectedGdsVersion = normalizePackageVersion(
-  pkg?.dependencies?.["@doneisbetter/gds"] ??
-  pkg?.devDependencies?.["@doneisbetter/gds"] ??
+  pkg?.dependencies?.["@sovereignsquad/gds"] ??
+  pkg?.devDependencies?.["@sovereignsquad/gds"] ??
   manifest?.gdsVersion ??
   fallbackExpectedGdsVersion
 );
@@ -143,11 +143,11 @@ if (legacyGdsReferences.length > 0) {
   blockers.push(`Legacy placeholder GDS package references remain: ${legacyGdsReferences.join(", ")}.`);
 }
 
-const gdsImports = scanForDoneIsBetterImports();
+const gdsImports = scanForSovereignSquadImports();
 if (gdsImports.length === 0) {
-    blockers.push("No @doneisbetter/gds runtime imports found in source code.");
+    blockers.push("No @sovereignsquad/gds runtime imports found in source code.");
 } else {
-  warnings.push(`Detected @doneisbetter/gds imports: ${gdsImports.join(", ")}`);
+  warnings.push(`Detected @sovereignsquad/gds imports: ${gdsImports.join(", ")}`);
 }
 
 if (blockers.length > 0) {

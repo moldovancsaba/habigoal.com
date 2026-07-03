@@ -42,7 +42,7 @@ const forbidden = [
   },
   {
     pattern: /import\s+\{[^}]*\b(ActionIcon|Anchor|Avatar|Badge|Box|Burger|Button|Checkbox|Group|Loader|Menu|Modal|MultiSelect|NumberInput|Progress|Radio|ScrollArea|Select|SimpleGrid|Slider|Stack|Switch|Table|TextInput|Textarea|ThemeIcon|Tooltip)\b[^}]*\}\s+from ["']@mantine\/core["']/g,
-    label: "direct Mantine control/layout import in migrated UI surface; import available controls via @doneisbetter/gds/client",
+    label: "direct Mantine control/layout import in migrated UI surface; import available controls via @sovereignsquad/gds/client",
     appliesTo: isMigratedGdsSurface
   },
   {

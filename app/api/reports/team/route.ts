@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     return jsonError("athleteIds required", 400, "VALIDATION_ERROR");
   }
 
-  // RPT-004 (#199): scope the caller-supplied athleteIds to those the user may
+  // RPT-004 (GH-199): scope the caller-supplied athleteIds to those the user may
   // access. The GET path already filters by accessibility; the POST must too, so
   // a coach cannot pull a team report over athletes outside their scope.
   const authUser = await getAuthUser();

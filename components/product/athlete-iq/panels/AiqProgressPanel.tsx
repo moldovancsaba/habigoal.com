@@ -1,7 +1,7 @@
 "use client";
 
 import { Text } from "@mantine/core";
-import { Button, Group, Select, SimpleGrid, Stack } from "@doneisbetter/gds/client";
+import { Button, Group, Select, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";

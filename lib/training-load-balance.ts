@@ -1,4 +1,4 @@
-// Weekly training-load balance + overload conflict detection (#527 P2).
+// Weekly training-load balance + overload conflict detection (GH-527 P2).
 // Pure aggregation over planned sessions so a coach can see load distribution
 // across the week and get flagged when a day is overloaded or two hard days
 // land back-to-back. Honest: only planned load points are summed; nothing is

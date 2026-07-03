@@ -4,7 +4,7 @@
 // snapshot captures the computed values *together with the versions and source
 // counts that produced them*, so a week's output is reproducible and auditable.
 // This is the pure builder — it composes already-computed pieces (the report with
-// its provenance #200, habit scoring, load summary, reflections, and insight
+// its provenance GH-200, habit scoring, load summary, reflections, and insight
 // signals #81) into one immutable-shaped record. No fabrication: source counts
 // and reflection themes come only from the records actually supplied.
 

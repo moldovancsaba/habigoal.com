@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { AppFooter } from "@/components/layout/AppFooter";
-import { AppShell as GdsAppShell, Box, Select, SidebarNav, SidebarNavItem, Stack } from "@doneisbetter/gds/client";
+import { AppShell as GdsAppShell, Box, Select, SidebarNav, SidebarNavItem, Stack } from "@sovereignsquad/gds/client";
 import { APP_LAYOUT } from "@/theme/tokens";
 import { OnboardingProvider } from "@/components/onboarding/OnboardingPrompt";
 import { PendingInvitations } from "@/components/teams/PendingInvitations";
@@ -25,7 +25,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     // Tell /api/auth/me which surface we are on so it scopes the entitlement
     // payload to the active surface (consumer Habigoal vs professional Athlete
     // IQ). This shell wraps both, so a professional user opening /habigoal must
-    // still receive the consumer-only projection (#432).
+    // still receive the consumer-only projection (GH-432).
     const authSurface = resolveProductSurfaceFromPathname(pathname) === "habigoal" ? "habigoal" : "athlete-iq";
     fetch(`/api/auth/me?surface=${authSurface}`)
       .then((res) => res.json())

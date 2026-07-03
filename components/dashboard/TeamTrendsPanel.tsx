@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Text } from "@mantine/core";
-import { Group, SectionPanel, Select } from "@doneisbetter/gds/client";
+import { Group, SectionPanel, Select } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
 
-// Team readiness trend (#526 P1): per-day team-average Daily IQ over the last
+// Team readiness trend (GH-526 P1): per-day team-average Daily IQ over the last
 // 14 days, from /api/athleteiq/team/trends. Reuses the shared LongitudinalChart.
 
 type TeamRef = { id: string; name: string };

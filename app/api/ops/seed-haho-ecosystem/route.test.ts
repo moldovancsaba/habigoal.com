@@ -21,7 +21,7 @@ afterEach(() => {
 });
 beforeEach(() => vi.clearAllMocks());
 
-describe("POST /api/ops/seed-haho-ecosystem (#427)", () => {
+describe("POST /api/ops/seed-haho-ecosystem (GH-427)", () => {
   it("404s when OPS_SEED_TOKEN is not configured (endpoint disabled)", async () => {
     delete process.env.OPS_SEED_TOKEN;
     const res = await POST(req({ "x-ops-token": "anything" }));

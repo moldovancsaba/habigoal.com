@@ -7,7 +7,7 @@ import {
   ESSENTIAL_ONLY,
 } from "@/lib/cookie-consent";
 
-describe("cookie consent categories (#423)", () => {
+describe("cookie consent categories (GH-423)", () => {
   it("returns null when no choice has been made", () => {
     expect(parseCookieConsent(null)).toBeNull();
     expect(parseCookieConsent(undefined)).toBeNull();

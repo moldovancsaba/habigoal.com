@@ -15,7 +15,7 @@ function metric(canonicalKey: string, value: number, source: string): CanonicalM
   return { athleteId: "a1", organisationId: "o1", canonicalKey, value, source, date: "2026-06-29" } as CanonicalMetric;
 }
 
-describe("twin dimension updaters (#202 DTW-002)", () => {
+describe("twin dimension updaters (GH-202 DTW-002)", () => {
   it("wires recovery metrics, values, and sources", () => {
     const twin = createEmptyTwin("a1", "o1");
     const out = updateRecoveryDimension(twin.recovery, [
@@ -64,7 +64,7 @@ describe("twin dimension updaters (#202 DTW-002)", () => {
   });
 });
 
-describe("appendHistory (#202 DTW-002)", () => {
+describe("appendHistory (GH-202 DTW-002)", () => {
   it("records a snapshot for all five dimensions, not just two", () => {
     const twin = createEmptyTwin("a1", "o1");
     const history = appendHistory([], "2026-06-29", twin);

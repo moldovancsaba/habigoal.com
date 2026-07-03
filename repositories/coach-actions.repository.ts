@@ -22,7 +22,7 @@ export interface CoachActionsQuery {
   athleteKey?: string;
 }
 
-// Pure mongo-filter builder (#525 P0: coach-action filtering + history).
+// Pure mongo-filter builder (GH-525 P0: coach-action filtering + history).
 // Exported for unit testing without a database.
 export function buildCoachActionsFilter(params: CoachActionsQuery): Record<string, unknown> {
   const filter: Record<string, unknown> = {};

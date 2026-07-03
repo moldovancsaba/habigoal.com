@@ -1,6 +1,6 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
-import { createGdsConfig } from "@doneisbetter/gds-eslint-config";
+import { createGdsConfig } from "@sovereignsquad/gds-eslint-config";
 
 const gdsScopedConfig = createGdsConfig().map((config) => ({
   ...config,

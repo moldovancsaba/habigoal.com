@@ -47,18 +47,18 @@ export const env = {
   valdWebhookSecret: process.env.VALD_WEBHOOK_SECRET,
   // Privacy-safe product telemetry (#88). Default OFF; emits nothing until enabled.
   telemetryEnabled: readBooleanEnv(process.env.TELEMETRY_ENABLED, false),
-  // Capability flags (#440). Default ON (owner directive: "enable everything to
+  // Capability flags (GH-440). Default ON (owner directive: "enable everything to
   // be able to see") so every feature surface is visible. Each can still be
   // turned OFF per-environment by setting its CAPABILITY_* env var to "false".
   capabilities: {
     visionAi: readBooleanEnv(process.env.CAPABILITY_VISION_AI, true),
     // The vision FEATURE surface (upload/preview) stays visible via visionAi, but
-    // real pose/kinematics analysis does not exist yet (#188-194). This flag gates
+    // real pose/kinematics analysis does not exist yet (GH-188-194). This flag gates
     // whether analysis results are treated as VALIDATED and allowed to write into
     // the athlete's digital twin. Default OFF so the product never presents
     // fabricated/heuristic vision metrics as real, validated data.
     visionRealPipeline: readBooleanEnv(process.env.CAPABILITY_VISION_REAL_PIPELINE, false),
-    // No real GPS/team-tracking provider integration exists yet (#350): the
+    // No real GPS/team-tracking provider integration exists yet (GH-350): the
     // connectors honestly return no data. Default OFF so healthCheck never claims
     // a healthy, connected device when there is nothing behind it. Flip on only
     // once a credentialed provider integration ships.

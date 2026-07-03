@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// #429 regression guard: the surfaces localized in this issue must not
+// GH-429 regression guard: the surfaces localized in this issue must not
 // re-introduce hardcoded user-facing string literals in label/placeholder/
 // title/description props. (A literal like `label="..."` bypasses next-intl;
 // `label={t("...")}` is fine.) Example/keyword placeholders that are passed
@@ -19,7 +19,7 @@ const FILES = [
 // NOT label={...} (curly = expression, e.g. a t() call).
 const HARDCODED = /\b(?:label|placeholder|title|description)=["'][^"'{}]+["']/g;
 
-describe("no hardcoded UI strings (#429)", () => {
+describe("no hardcoded UI strings (GH-429)", () => {
   for (const file of FILES) {
     it(`${file} routes label/placeholder/title/description through i18n`, () => {
       const src = readFileSync(join(process.cwd(), file), "utf8");

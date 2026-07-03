@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { LOCALE_COOKIE, resolvePreferredLocale } from "@/lib/locale-preference";
 
-// Locale-less entry honors the persisted language choice (#422): redirect to the
+// Locale-less entry honors the persisted language choice (GH-422): redirect to the
 // locale stored in NEXT_LOCALE when present and supported, otherwise the default.
 export default async function RootPage() {
   const store = await cookies();

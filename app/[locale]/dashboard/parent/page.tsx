@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Box, Loader, Stack, Text, Group, Paper, SimpleGrid, Select } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@doneisbetter/gds/client";
+import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";

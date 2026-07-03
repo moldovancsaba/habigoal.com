@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Tooltip } from "@doneisbetter/gds/client";
+import { Badge, Tooltip } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import type { ConfidenceBand, ConfidenceReasonKey } from "@/lib/data-confidence";
 import { getProductColor } from "@/lib/product-ui-contracts";
@@ -12,7 +12,7 @@ const BAND_COLOR: Record<ConfidenceBand, string> = {
   none: getProductColor("dashboard", "neutral"),
 };
 
-// Renders the canonical data-confidence band (#253) with its reasons in a
+// Renders the canonical data-confidence band (GH-253) with its reasons in a
 // tooltip, so every surface explains "how trustworthy is this?" honestly instead
 // of just showing a colour. Pass the result of classifyDataConfidence.
 export function ConfidenceBadge({

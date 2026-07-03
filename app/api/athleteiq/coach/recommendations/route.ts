@@ -4,7 +4,7 @@ import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athletei
 import { getTeamById } from "@/repositories/team.repository";
 import { getCoachCoachingQueue } from "@/services/athleteiq-coaching-queue.service";
 
-// Coach recommendation queue (#525 P0). Returns the per-athlete recommendation
+// Coach recommendation queue (GH-525 P0). Returns the per-athlete recommendation
 // engine output for a team, triage-ordered. Coach/admin only — raw recommendation
 // text (incl. awaiting_review) is authorized for coaching surfaces.
 export async function GET(request: Request) {

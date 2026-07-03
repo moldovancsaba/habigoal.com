@@ -1,4 +1,4 @@
-// Team readiness trend (#526 P1). Aggregates each athlete's Daily IQ history
+// Team readiness trend (GH-526 P1). Aggregates each athlete's Daily IQ history
 // across a team into a per-day team average, for the coach trends chart.
 // Honest: days with no data are simply absent; nulls are excluded from averages.
 

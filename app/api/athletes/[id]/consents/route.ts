@@ -54,7 +54,7 @@ export async function POST(
 
     const child = ObjectId.isValid(athleteId) ? await getChildById(new ObjectId(athleteId)) : null;
     // Age-based rule is authoritative: a minor always requires guardian consent.
-    // The request can only strengthen this, never waive it for an under-age athlete (#206).
+    // The request can only strengthen this, never waive it for an under-age athlete (GH-206).
     const guardianRequired = resolveGuardianRequirement(child?.birthDate, guardianRequiredInput);
 
     const ipAddressRaw = request.headers.get("x-forwarded-for") || "unknown";

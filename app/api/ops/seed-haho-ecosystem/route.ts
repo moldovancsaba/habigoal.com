@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDatabase } from "@/lib/mongodb";
 import { jsonError } from "@/lib/api";
 
-// Demo-ecosystem seeding for production (#427/#334). This runs the tested seed
+// Demo-ecosystem seeding for production (GH-427/GH-334). This runs the tested seed
 // routine against the app's live database (where MONGODB_URI is configured), so
 // the Haho roster (5 trainers + 25 athletes @haho.ai with ~90 days of history)
 // can be created without direct DB access.

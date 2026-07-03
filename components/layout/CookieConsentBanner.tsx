@@ -4,7 +4,7 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import { Paper, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@sovereignsquad/gds/client";
 import { COOKIE_CONSENT_NAME, serializeCookieConsent, ACCEPT_ALL, ESSENTIAL_ONLY, parseCookieConsent } from "@/lib/cookie-consent";
 
 const CONSENT_COOKIE_NAME = COOKIE_CONSENT_NAME;

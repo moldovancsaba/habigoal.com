@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Alert, Paper, Text } from "@mantine/core";
-import { Badge, Box, Checkbox, ConfirmDialog, createGdsVocabularyPack, GdsIcons, Group, Loader, NumberInput, PageHeader, SectionPanel, Select, SemanticButton, Stack, Table, TextInput } from "@doneisbetter/gds/client";
+import { Badge, Box, Checkbox, ConfirmDialog, createGdsVocabularyPack, GdsIcons, Group, Loader, NumberInput, PageHeader, SectionPanel, Select, SemanticButton, Stack, Table, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { deleteUser, getUsers, saveUser, User } from "@/services/user-service";

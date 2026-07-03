@@ -1,4 +1,4 @@
-import type { GdsThemePresetId } from "@doneisbetter/gds";
+import type { GdsThemePresetId } from "@sovereignsquad/gds";
 import { ATHLETE_IQ_OS_FUNCTIONS, ATHLETE_IQ_OS_NAVIGATION } from "@/lib/athlete-iq-os";
 import { ATHLETE_IQ_GDS_THEME_PRESET } from "@/lib/product-surface-branding";
 

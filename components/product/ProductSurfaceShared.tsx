@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Paper, Text, Title } from "@mantine/core";
-import { Badge, Box, GdsIcons, Group, SectionPanel, SimpleGrid, Stack, ThemeIcon } from "@doneisbetter/gds/client";
+import { Badge, Box, GdsIcons, Group, SectionPanel, SimpleGrid, Stack, ThemeIcon } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { PublicAppControls } from "@/components/layout/PublicAppControls";

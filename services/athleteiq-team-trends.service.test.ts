@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { aggregateTeamTrend } from "./athleteiq-team-trends.service";
 
-describe("team readiness trend aggregation (#526 P1)", () => {
+describe("team readiness trend aggregation (GH-526 P1)", () => {
   it("averages per day and counts contributors, excluding nulls", () => {
     const points = aggregateTeamTrend([
       { localDate: "2026-06-30", dailyIqScore: 80 },

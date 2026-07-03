@@ -71,7 +71,7 @@ describe("product surface route boundaries", () => {
     const habigoalSource = readSource("components/product/habigoal/HabigoalExperience.tsx");
     const styles = readSource("app/globals.css");
 
-    // The PWA must NOT lock pinch-zoom (WCAG 1.4.4 / #412); iOS focus-zoom is
+    // The PWA must NOT lock pinch-zoom (WCAG 1.4.4 / GH-412); iOS focus-zoom is
     // prevented by ≥16px inputs on coarse pointers, not by disabling scale.
     expect(localeLayout).not.toContain("userScalable: false");
     expect(localeLayout).not.toContain("maximumScale: 1");

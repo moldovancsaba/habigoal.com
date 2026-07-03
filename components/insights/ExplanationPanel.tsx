@@ -1,11 +1,11 @@
 "use client";
 
 import { Text } from "@mantine/core";
-import { Box, Group, Stack } from "@doneisbetter/gds/client";
+import { Box, Group, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import type { ExplanationBundle } from "@/lib/explainability";
 
-// Renders the input -> rule -> output explanation bundle (#254) in plain
+// Renders the input -> rule -> output explanation bundle (GH-254) in plain
 // language, so a coach/athlete can see *why* a result was produced. Each applied
 // rule shows its description and the action it yields; the rule id + version are
 // exposed as a title for traceability without cluttering the UI.

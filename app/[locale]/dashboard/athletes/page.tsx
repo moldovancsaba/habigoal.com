@@ -2,7 +2,7 @@
 
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { Alert, Badge, Box, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
-import { createGdsVocabularyPack, ChoiceChip, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { createGdsVocabularyPack, ChoiceChip, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";

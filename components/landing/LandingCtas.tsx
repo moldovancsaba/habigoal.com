@@ -1,6 +1,6 @@
 "use client";
 
-import { CtaButtonGroup, createGdsVocabularyPack, GdsIcons, SemanticButton } from "@doneisbetter/gds/client";
+import { CtaButtonGroup, createGdsVocabularyPack, GdsIcons, SemanticButton } from "@sovereignsquad/gds/client";
 import { useMemo } from "react";
 import { Link } from "@/i18n/navigation";
 import { getProductColor } from "@/lib/product-ui-contracts";

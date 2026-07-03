@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Group, Select, Stack, TextInput, TagsInput } from "@mantine/core";
-import { SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { ATHLETE_PROFILE_STATUSES } from "@/lib/forms/central-form";
 

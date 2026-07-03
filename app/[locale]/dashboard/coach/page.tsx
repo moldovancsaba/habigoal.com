@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Paper, Text } from "@mantine/core";
-import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack, StateBlock } from "@doneisbetter/gds/client";
+import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";

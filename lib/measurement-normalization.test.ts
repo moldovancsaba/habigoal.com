@@ -33,7 +33,7 @@ function metric(partial: Partial<CanonicalMetric>): CanonicalMetric {
   };
 }
 
-describe("sourceTrust (#283)", () => {
+describe("sourceTrust (GH-283)", () => {
   it("classifies devices, manual entry, and AI inference", () => {
     expect(sourceTrust("oura")).toBe("device");
     expect(sourceTrust("catapult")).toBe("device");
@@ -43,7 +43,7 @@ describe("sourceTrust (#283)", () => {
   });
 });
 
-describe("ageHours / classifyFreshness (#283)", () => {
+describe("ageHours / classifyFreshness (GH-283)", () => {
   it("computes elapsed hours and never goes negative", () => {
     expect(ageHours("2026-06-29T08:00:00.000Z", NOW)).toBe(4);
     expect(ageHours("2026-06-30T00:00:00.000Z", NOW)).toBe(0); // future clamps to 0
@@ -60,7 +60,7 @@ describe("ageHours / classifyFreshness (#283)", () => {
   });
 });
 
-describe("describeMeasurement (#283)", () => {
+describe("describeMeasurement (GH-283)", () => {
   it("does not caution a fresh, high-confidence device metric", () => {
     const d = describeMeasurement(metric({}), NOW);
     expect(d.sourceTrust).toBe("device");

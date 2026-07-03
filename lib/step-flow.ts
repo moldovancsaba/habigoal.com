@@ -4,7 +4,7 @@
 // athlete focuses on a single thing at a time. Kept as a pure reducer so the
 // navigation logic is deterministic and unit-testable independent of React; the
 // StepFlow component renders it. (This is the interim until the GDS Stepper from
-// issue #502 lands.)
+// issue GH-502 lands.)
 
 export interface StepFlowState {
   stepIndex: number;

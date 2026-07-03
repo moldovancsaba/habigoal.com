@@ -164,7 +164,7 @@ export async function setUserAthleteId(email: string, athleteId: string) {
   );
 }
 
-// Replace a user's role set wholesale (used by admin governance actions, #152).
+// Replace a user's role set wholesale (used by admin governance actions, GH-152).
 // Roles are normalized so aliases and duplicates can't leak in.
 export async function setUserRoles(email: string, roles: string[]) {
   const db = await getDatabase();

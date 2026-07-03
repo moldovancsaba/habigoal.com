@@ -5,6 +5,7 @@ import { Noto_Sans, Noto_Sans_Arabic, Noto_Sans_Hebrew } from "next/font/google"
 import { ThemeRegistry } from "@/components/theme/ThemeRegistry";
 import { CookieConsentBanner } from "@/components/layout/CookieConsentBanner";
 import { getSemanticTone } from "@/theme/semantic-theme";
+import "@sovereignsquad/gds-theme/styles.css";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "../globals.css";
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  // Pinch-zoom must stay available (WCAG 1.4.4 / #412). We rely on ≥16px inputs
+  // Pinch-zoom must stay available (WCAG 1.4.4 / GH-412). We rely on ≥16px inputs
   // on coarse pointers to avoid iOS focus-zoom instead of locking scale, so we
   // deliberately do NOT set maximum-scale/user-scalable.
   viewportFit: "cover",

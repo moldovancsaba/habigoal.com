@@ -1,7 +1,7 @@
 "use client";
 
 import { Box } from "@mantine/core";
-import { SectionPanel } from "@doneisbetter/gds/client";
+import { SectionPanel } from "@sovereignsquad/gds/client";
 import type { CSSProperties, ReactNode } from "react";
 
 type SectionCardProps = {

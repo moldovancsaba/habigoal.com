@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Paper, Text } from "@mantine/core";
-import { Badge, Box, Group, SectionPanel, Stack } from "@doneisbetter/gds/client";
+import { Badge, Box, Group, SectionPanel, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { getProductColor } from "@/lib/product-ui-contracts";
 
-// P0 #525: surfaces the coach recommendation + injury-risk queues in the coach
+// P0 GH-525: surfaces the coach recommendation + injury-risk queues in the coach
 // dashboard. Fetches /coach/recommendations and /coach/injury-alerts per team,
 // merges by athlete, and renders a single triage-ordered list. Recommendation
 // text is coach-authorized here (this is a coach-only surface).

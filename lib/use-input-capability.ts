@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-// Canonical input-capability detection (#401). The adaptive system has TWO
+// Canonical input-capability detection (GH-401). The adaptive system has TWO
 // channels: viewport WIDTH drives layout, input CAPABILITY (pointer precision +
 // hover) drives affordances. This module is the only sanctioned way to branch on
 // capability in JS — prefer CSS (the postcss `hover` mixin / `@media

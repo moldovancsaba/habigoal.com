@@ -72,7 +72,7 @@ Stack:
 - TypeScript
 - MongoDB Atlas
 - `next-intl`
-- Mantine through governed `@doneisbetter/gds`
+- Mantine through governed `@sovereignsquad/gds`
 - DoneIsBetter SSO plus local authorization
 - Vercel deployment target
 - Node.js 22.x

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { isSupportedLocale, resolvePreferredLocale, LOCALE_COOKIE } from "@/lib/locale-preference";
 
-describe("locale persistence (#422)", () => {
+describe("locale persistence (GH-422)", () => {
   it("uses the cookie locale when it is supported", () => {
     for (const loc of ["en", "hu", "ar", "es", "de", "he"]) {
       expect(resolvePreferredLocale(loc)).toBe(loc);

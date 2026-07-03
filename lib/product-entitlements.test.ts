@@ -108,7 +108,7 @@ describe("product entitlement contract", () => {
   });
 });
 
-describe("surface entitlement projection (product boundary #432)", () => {
+describe("surface entitlement projection (product boundary GH-432)", () => {
   // A professional user (Habigoal granted via AIQ membership, plus a live AIQ
   // entitlement with a reason code that must never reach a consumer client).
   const professional: ProductEntitlements = {

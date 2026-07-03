@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "gdsVersion": "3.6.0",
+  "gdsVersion": "3.9.0",
   "productArchetype": "hybrid",
-  "packageSource": "npm:@doneisbetter/gds@^3.6.0",
+  "packageSource": "npm:@sovereignsquad/gds@3.9.0",
   "supportedEntryPoints": [
-    "@doneisbetter/gds",
-    "@doneisbetter/gds/client",
-    "@doneisbetter/gds/server"
+    "@sovereignsquad/gds",
+    "@sovereignsquad/gds/client",
+    "@sovereignsquad/gds/server"
   ],
   "requiredContracts": [
     "GdsProvider",

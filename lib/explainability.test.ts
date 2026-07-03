@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildExplanation, READINESS_RULES, RULE_CATALOG_VERSION } from "./explainability";
 
-describe("explainability rule catalog (#254)", () => {
+describe("explainability rule catalog (GH-254)", () => {
   it("fires exactly one readiness zone and stamps rule id + version + inputs", () => {
     const bundle = buildExplanation({ readinessScore: 42, missingSignalCount: 0 });
     const zones = bundle.appliedRules.filter((r) => r.ruleId.startsWith("readiness.zone."));

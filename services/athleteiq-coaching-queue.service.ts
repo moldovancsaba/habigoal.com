@@ -1,4 +1,4 @@
-// Coach coaching-queue service (P0 #525). Runs the readiness/recovery/injury
+// Coach coaching-queue service (P0 GH-525). Runs the readiness/recovery/injury
 // engines + recommendation engine per athlete and assembles a triage-ordered
 // queue for the trainer. Reuses the same orchestration as the twin pipeline, so
 // what the coach sees matches what the twin records — no separate heuristic.

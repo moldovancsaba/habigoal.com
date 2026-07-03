@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// Guards the selector device-class responsive shell (#403): the selector is the
+// Guards the selector device-class responsive shell (GH-403): the selector is the
 // reference implementation of the two-axis adaptive model — WIDTH drives the
 // column count, input CAPABILITY drives affordances — so these declarations must
 // remain in place.

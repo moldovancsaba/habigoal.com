@@ -22,7 +22,7 @@ export function isMinorAthlete(birthDate: string): boolean {
 }
 
 /**
- * Resolves the authoritative guardian-consent requirement for an athlete (#206
+ * Resolves the authoritative guardian-consent requirement for an athlete (GH-206
  * PRV-002). Age-based rules are enforced server-side: an athlete below the youth
  * digital-consent threshold ALWAYS requires guardian consent. A caller-supplied
  * override can only strengthen the requirement (force a guardian) — it can never

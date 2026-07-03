@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Text } from "@mantine/core";
-import { Button, Group, NumberInput, SectionPanel, Select, Stack } from "@doneisbetter/gds/client";
+import { Button, Group, NumberInput, SectionPanel, Select, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 
-// Per-team readiness/alert threshold editor (#525 P0). Coach/admin adjusts the
+// Per-team readiness/alert threshold editor (GH-525 P0). Coach/admin adjusts the
 // green/yellow cut-offs on the 0–5 readiness gauge; persisted via
 // PATCH /api/athleteiq/coach/thresholds.
 

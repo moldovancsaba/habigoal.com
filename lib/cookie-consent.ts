@@ -1,4 +1,4 @@
-// Cookie consent categories (#423). Necessary cookies are always allowed;
+// Cookie consent categories (GH-423). Necessary cookies are always allowed;
 // functional (e.g. NEXT_LOCALE language preference) and analytics (telemetry)
 // require explicit consent. The choice is stored in a single first-party
 // cookie as a category list, e.g. "necessary,functional".

@@ -1,11 +1,11 @@
-// Parent-safe report projection (#261).
+// Parent-safe report projection (GH-261).
 //
 // Coaches see the full athlete report (including clinical/injury-risk detail and
 // raw internal metrics). Parents should get an encouraging, privacy-respecting
 // summary — never raw injury/clinical figures, and never strong claims when the
 // data is thin. This pure projection redacts clinical content, keeps
 // parent-appropriate highlights, attaches an honest confidence band (reusing the
-// canonical engine, #253), and is transparent that some detail is coach-only
+// canonical engine, GH-253), and is transparent that some detail is coach-only
 // rather than silently dropping it.
 
 import type { AthleteReport } from "@/services/reporting.service";

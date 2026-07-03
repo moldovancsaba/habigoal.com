@@ -9,7 +9,7 @@ function stringArray(value: unknown): string[] {
     : [];
 }
 
-// Roster management (#526 P1): add/remove athletes from a team.
+// Roster management (GH-526 P1): add/remove athletes from a team.
 // PATCH body: { add?: string[], remove?: string[] }
 export async function PATCH(request: Request, { params }: { params: Promise<{ teamId: string }> }) {
   const authError = await requireRole(request, ["admin", "trainer"]);

@@ -6,7 +6,7 @@ import { findUserByEmail, setUserRoles } from "@/repositories/user.repository";
 import { insertAuditEvent } from "@/repositories/audit-event.repository";
 import { validateGovAction, computeNextRoles } from "@/lib/admin-actions";
 
-// Policy-safe admin governance actions (#152): admin-only, validated against the
+// Policy-safe admin governance actions (GH-152): admin-only, validated against the
 // shared contract, audit-first (the change is recorded before it is applied; if
 // the audit write fails the mutation is aborted), and role-grant/revoke is the
 // only supported mutation — both backed by the real user store.

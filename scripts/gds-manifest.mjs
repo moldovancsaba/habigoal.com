@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { validateManifest } from "@doneisbetter/gds-compliance";
+import { validateManifest } from "@sovereignsquad/gds-compliance";
 
 const manifestPath = process.argv[2] ?? "./gds-adoption.json";
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));

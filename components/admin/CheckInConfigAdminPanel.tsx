@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Checkbox, Group, NumberInput, Stack, Text } from "@mantine/core";
-import { SectionPanel, SemanticButton } from "@doneisbetter/gds/client";
+import { SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { trackerQuestions } from "@/lib/readiness-model";
 import type { CheckInQuestionConfig } from "@/types/check-in-config";

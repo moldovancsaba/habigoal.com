@@ -5,7 +5,7 @@ import { resolveCheckinShellAccess } from "@/lib/athlete-checkin-access";
 import { AthleteCheckInApp } from "@/components/forms/AthleteCheckInApp";
 import { OnboardingProvider } from "@/components/onboarding/OnboardingPrompt";
 
-// Dedicated athlete-first check-in shell (#156). Self-resolves the signed-in
+// Dedicated athlete-first check-in shell (GH-156). Self-resolves the signed-in
 // athlete's identity and enforces the athlete role, so this surface stays free of
 // trainer/admin controls. The legacy per-id route (/athletes/[id]/check-in)
 // remains operational for coach/admin flows.

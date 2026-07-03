@@ -6,7 +6,7 @@ import {
   athleteProfileFields
 } from "./central-form";
 
-// Cross-layer form validation gateway (#153). One contract-derived validator
+// Cross-layer form validation gateway (GH-153). One contract-derived validator
 // shared by client submit hooks and server route handlers, so browser-side
 // checks and persisted-data acceptance can never diverge. Errors use a single
 // normalized, path-based shape.

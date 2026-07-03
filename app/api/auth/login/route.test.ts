@@ -155,7 +155,7 @@ describe("persona pseudo login", () => {
     expect(response.headers.get("location")).toBe("http://localhost/hu/habigoal");
   });
 
-  it("allows Habigoal-first self-registration without any prior Athlete IQ account (#424)", async () => {
+  it("allows Habigoal-first self-registration without any prior Athlete IQ account (GH-424)", async () => {
     mockedUpsertPersonaLoginUser.mockResolvedValue({
       id: "user-habigoal",
       email: "new-athlete@example.com",
@@ -239,7 +239,7 @@ describe("persona pseudo login", () => {
     expect(response.headers.get("location")).toBe("http://localhost/hu/login?next=%2Fhu&error=missing_persona");
   });
 
-  it("never leaks Athlete IQ entitlement or reason codes to a consumer login response (#432)", async () => {
+  it("never leaks Athlete IQ entitlement or reason codes to a consumer login response (GH-432)", async () => {
     // A dual-entitled user signs in through the CONSUMER (Habigoal) surface.
     // The JSON response must expose only the Habigoal entitlement — no AIQ key,
     // no reason codes like trainer_assignment.

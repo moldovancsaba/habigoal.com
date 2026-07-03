@@ -147,7 +147,7 @@ export async function getHabigoalRecentHistory(input: { timezone?: string; user?
 
   // Habigoal's streak rule matches its copy and the last-7-days chart: a day
   // counts when at least one habit is completed, over consecutive calendar days
-  // anchored to today (#426). The previous >=70%-of-9 rule was unreachable for
+  // anchored to today (GH-426). The previous >=70%-of-9 rule was unreachable for
   // the 6-habit Habigoal set, so the streak was always 0 while the chart showed
   // active days.
   const currentStreak = computeCurrentStreak(records, localDate, atLeastOneHabitCompleted);

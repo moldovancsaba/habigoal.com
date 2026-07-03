@@ -1,6 +1,6 @@
 import { env } from "@/config/env";
 
-// Capability framework (#440). One source of truth for "is this feature real and
+// Capability framework (GH-440). One source of truth for "is this feature real and
 // allowed?" — resolved from env flags (and, in future, per-tenant entitlement).
 // Server code imports `getCapabilities`; the client reads `/api/capabilities`.
 // A capability that is off MUST render an honest "not available yet" state

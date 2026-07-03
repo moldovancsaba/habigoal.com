@@ -43,7 +43,7 @@ beforeEach(() => {
   mReport.mockResolvedValue({ team: true } as never);
 });
 
-describe("POST /api/reports/team role scoping (#199)", () => {
+describe("POST /api/reports/team role scoping (GH-199)", () => {
   it("403s when the role check fails", async () => {
     mRequireRole.mockResolvedValue(new Response("no", { status: 403 }) as never);
     const res = await POST(req({ athleteIds: ["a1"] }));

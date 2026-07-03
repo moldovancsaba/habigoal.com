@@ -14,7 +14,7 @@ function user(partial: Partial<AuthUser>): AuthUser {
   };
 }
 
-describe("resolveCheckinShellAccess (#156)", () => {
+describe("resolveCheckinShellAccess (GH-156)", () => {
   it("redirects an anonymous visitor to the app home", () => {
     expect(resolveCheckinShellAccess(null)).toEqual({ ok: false, redirectTo: "/" });
   });

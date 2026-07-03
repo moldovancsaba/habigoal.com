@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Modal, Progress, SemanticButton, Stack, StateBlock } from "@doneisbetter/gds/client";
+import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Modal, Progress, SemanticButton, Stack, StateBlock } from "@sovereignsquad/gds/client";
 import { usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { buildOnboardingPromptModel, type OnboardingPromptProps } from "@/lib/onboarding-prompt";
