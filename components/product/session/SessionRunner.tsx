@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Paper, Text } from "@mantine/core";
 import { Box, Button, Group, NumberInput, PageHeader, Progress, SectionPanel, SemanticButton, Slider, Stack, StateBlock, Textarea } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { athleteIqJsonInit, athleteIqRequest } from "@/lib/athleteiq-client";
@@ -12,6 +11,7 @@ import {
 } from "@/lib/session-timer";
 import type { SessionBlueprint } from "@/lib/session-blueprints";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 
 type BlueprintsResponse = { blueprints: SessionBlueprint[] };
 type SessionResponse = { session: { sessionId: string } };

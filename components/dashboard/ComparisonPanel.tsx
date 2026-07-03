@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Text } from "@mantine/core";
 import { MultiSelect, SectionPanel, Table } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Text } from "@/components/gds/SurfacePrimitives";
 
 // Athlete comparison / cohort (GH-526 P1). Compares selected athletes side by
 // side against the squad average, using metrics the coach dashboard already

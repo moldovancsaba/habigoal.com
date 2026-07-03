@@ -1,6 +1,5 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Box, Button, Group, Select, Stack, Textarea, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -9,6 +8,7 @@ import { selectCopyKey } from "@/lib/copy-variants";
 import { neutralPromptDef, reflectionPromptDef } from "@/lib/surface-voice";
 import type { ReflectionEntryView, ReflectionVisibility } from "@/types/athleteiq-reflection";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Text } from "@/components/gds/SurfacePrimitives";
 
 type ReflectionDayResponse = { reflections: ReflectionEntryView[]; count: number };
 type ReflectionCreateResponse = { skipped: boolean; reflection: unknown };

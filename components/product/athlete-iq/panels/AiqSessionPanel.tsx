@@ -1,6 +1,5 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Badge, Box, Button, Group, NumberInput, Select, Stack, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import { neutralPromptDef } from "@/lib/surface-voice";
 import type { AthleteIqSession, AthleteIqSessionState } from "@/types/athleteiq-session";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Text } from "@/components/gds/SurfacePrimitives";
 
 type SessionListResponse = { sessions: AthleteIqSession[]; count: number };
 type SessionMutationResponse = { session: AthleteIqSession };

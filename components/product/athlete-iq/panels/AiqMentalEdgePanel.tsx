@@ -1,6 +1,5 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Badge, Box, Button, Group, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -8,6 +7,7 @@ import { athleteIqJsonInit, athleteIqRequest, type AthleteIqClientResult } from 
 import type { MentalEdgeRoutine, MentalEdgeSnapshot } from "@/types/athleteiq-mental-edge";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Text } from "@/components/gds/SurfacePrimitives";
 
 type MentalEdgeTodayResponse = { snapshot: MentalEdgeSnapshot };
 

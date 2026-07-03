@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Paper, Text } from "@mantine/core";
 import { Box, Group, Select, SemanticButton, Stack, Textarea } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import type { AthleteProfile } from "@/types/athlete";
 import type { Team } from "@/types/team";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 
 type Message = {
   id?: string;

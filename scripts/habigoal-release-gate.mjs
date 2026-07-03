@@ -2,10 +2,12 @@ import { spawnSync } from "node:child_process";
 
 const commands = [
   ["npm", ["run", "product-boundary:audit"]],
+  ["npm", ["run", "persona-ui:audit"]],
   ["npm", ["run", "habigoal:audit"]],
   ["npm", ["run", "i18n:audit"]],
   ["npm", ["run", "semantic:audit"]],
   ["npm", ["run", "gds:audit"]],
+  ["npm", ["run", "gds:compliance"]],
   ["npm", ["run", "test"]],
   ["npm", ["run", "typecheck"]],
   ["npm", ["run", "build"]]

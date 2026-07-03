@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Paper, Text } from "@mantine/core";
 import { Badge, Box, Button, Group, SectionPanel, Select, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 
 // Roster management (GH-526 P1): add/remove athletes per team via
 // PATCH /api/teams/[teamId]/roster. Self-contained local state so the coach

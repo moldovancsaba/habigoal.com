@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Alert, Paper, Text, Title } from "@mantine/core";
 import { Box, Button, GdsIcons, Group, Progress, SimpleGrid, Slider, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useState, type CSSProperties } from "react";
@@ -15,6 +14,7 @@ import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } fr
 import { DailyReminders } from "@/components/reminders/DailyReminders";
 import { ProductThemeBoundary } from "../ProductThemeBoundary";
 import { getProductColor, scoreToProgressIntent } from "@/lib/product-ui-contracts";
+import { Alert, Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 
 type HabitItem = {
   id: HabigoalHabitKey;

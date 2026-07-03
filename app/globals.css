@@ -65,6 +65,19 @@
   --density-row-height: max(36px, var(--target-size));
 }
 
+.gds-surface-panel {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, var(--brand-cyan)) 7%, transparent), transparent),
+    var(--gds-vibe-surface, var(--surface-elevated));
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, var(--border-primary)) 22%, transparent);
+  box-shadow: var(--surface-shadow-flat);
+  color: var(--gds-vibe-text, var(--text-primary));
+}
+
+.gds-surface-panel-bordered {
+  border-color: color-mix(in srgb, var(--gds-vibe-primary, var(--border-primary)) 30%, transparent);
+}
+
 * {
   box-sizing: border-box;
 }

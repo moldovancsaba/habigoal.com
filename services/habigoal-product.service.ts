@@ -128,10 +128,10 @@ export type HabigoalHistory = {
   last7Days: HabigoalHistoryDay[];
 };
 
-// Recent habit history for the Habigoal "build your habits" view. Habigoal is a
-// white-label of AthleteIQ, so this borrows the AIQ-owned habit functions
-// (lib/athlete-habits) over the shared habit_records store — the same streak and
-// completion math AIQ shows for the same athlete, kept consistent across both apps.
+// Recent habit history for the independent Habigoal habitbuilder. It reuses the
+// shared habit_records store and streak math so daily routine data stays
+// consistent when an Athlete IQ user also records habits, without requiring
+// professional, athlete, trainer, or team context.
 export async function getHabigoalRecentHistory(input: { timezone?: string; user?: AuthUser | null } = {}): Promise<HabigoalHistory> {
   const timezone = input.timezone || DEFAULT_TIMEZONE;
   const localDate = getLocalDateForTimezone(timezone);

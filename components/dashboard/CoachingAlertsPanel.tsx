@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Paper, Text } from "@mantine/core";
 import { Badge, Box, Group, SectionPanel, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 
 // P0 GH-525: surfaces the coach recommendation + injury-risk queues in the coach
 // dashboard. Fetches /coach/recommendations and /coach/injury-alerts per team,

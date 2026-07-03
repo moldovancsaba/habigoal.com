@@ -1,6 +1,5 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Button, Group, Select, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -8,6 +7,7 @@ import { LongitudinalChart } from "@/components/analytics/LongitudinalChart";
 import { athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import type { DailyIqPublicSnapshot } from "@/types/athleteiq-daily-iq";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Text } from "@/components/gds/SurfacePrimitives";
 
 type HistoryResponse = { snapshots: DailyIqPublicSnapshot[]; from: string; to: string; count: number };
 type TrendMetric = "dailyIqScore" | "readinessScore" | "habitScore" | "mentalEdgeScore";

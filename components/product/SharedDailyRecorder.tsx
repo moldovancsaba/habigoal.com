@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Alert, Text } from "@mantine/core";
 import { Box, Checkbox, GdsIcons, Group, Progress, SemanticButton, SimpleGrid, Slider, Stack } from "@sovereignsquad/gds/client";
 import { useCallback, useEffect, useState } from "react";
 import type { HabigoalHabitKey } from "@/services/habigoal-product.service";
 import type { SharedDailyProduct, SharedDailyStateProjection } from "@/services/shared-daily-state.service";
 import type { ProductSurfaceActionPack } from "./productSurfaceActions";
 import { getProductColor, scoreToProgressIntent, type ProductSurfaceKey } from "@/lib/product-ui-contracts";
+import { Alert, Text } from "@/components/gds/SurfacePrimitives";
 
 type DailyMetricKey = keyof SharedDailyStateProjection["checkIn"];
 type DailyMetricValues = SharedDailyStateProjection["checkIn"];

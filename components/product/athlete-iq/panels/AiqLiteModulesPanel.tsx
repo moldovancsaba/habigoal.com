@@ -1,6 +1,5 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Badge, Box, Button, Group, NumberInput, Select, Stack, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -13,6 +12,7 @@ import type { CognitiveLiteJourney } from "@/types/athleteiq-cognitive";
 import type { LiteModuleDailySummary, LiteModuleGatewaySummary } from "@/types/athleteiq-lite-modules";
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Text } from "@/components/gds/SurfacePrimitives";
 
 type GatewayResponse = { summary: LiteModuleGatewaySummary | null };
 type CognitiveResponse = { journey: CognitiveLiteJourney };

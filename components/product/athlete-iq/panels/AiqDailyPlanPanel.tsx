@@ -1,6 +1,5 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Badge, Box, Button, Group, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import type { DailyPlan, DailyTask, DailyTaskCompletionState } from "@/types/ath
 import { useAthleteIqDomainCopy } from "../useAthleteIqDomainCopy";
 import { resolveTaskDescriptionKey } from "@/lib/daily-plan-copy";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Text } from "@/components/gds/SurfacePrimitives";
 
 type DailyPlanTodayResponse = { plan: DailyPlan | null; empty: boolean };
 type DailyPlanMutationResponse = { plan: DailyPlan };

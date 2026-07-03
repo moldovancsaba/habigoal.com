@@ -50,6 +50,11 @@
       "contract": "SemanticButton",
       "path": "components/forms/AthleteCheckInApp.tsx",
       "status": "active"
+    },
+    {
+      "contract": "SurfacePrimitives",
+      "path": "components/gds/SurfacePrimitives.tsx",
+      "status": "active"
     }
   ],
   "approvedExceptions": [

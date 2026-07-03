@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { Paper, Text, Title } from "@mantine/core";
 import { Badge, Box, GdsIcons, Group, SectionPanel, SimpleGrid, Stack, ThemeIcon } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { PublicAppControls } from "@/components/layout/PublicAppControls";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import type { ProductFunction, ProductSurface, ProductSurfaceAudience, ProductSurfaceId } from "@/lib/product-surfaces";
 import { getProductColor, signalStateToIntent, type ProductSurfaceKey } from "@/lib/product-ui-contracts";

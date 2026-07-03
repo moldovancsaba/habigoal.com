@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Paper, Text } from "@mantine/core";
 import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -15,6 +14,7 @@ import { formatScore } from "@/lib/utils";
 import { DEFAULT_HABIGOAL_SETTINGS, type HabigoalSettings } from "@/services/settings-service";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 
 type DashboardData = {
   users: User[];

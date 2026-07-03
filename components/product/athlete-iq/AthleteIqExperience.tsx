@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Paper, Text, Title } from "@mantine/core";
 import { Badge, Box, GdsIcons, Group, PageHeader, Progress, resolveGdsVibeTheme, Select, SemanticButton, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -27,6 +26,7 @@ import { AiqSessionPanel } from "./panels/AiqSessionPanel";
 import { AiqLiteModulesPanel } from "./panels/AiqLiteModulesPanel";
 import { AiqProgressPanel } from "./panels/AiqProgressPanel";
 import { getProductColor, scoreToProgressIntent, signalStateToIntent } from "@/lib/product-ui-contracts";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 
 type AiqTranslate = ReturnType<typeof useTranslations>;
 type CommonTranslate = ReturnType<typeof useTranslations>;

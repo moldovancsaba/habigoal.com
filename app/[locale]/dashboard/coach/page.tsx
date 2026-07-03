@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Paper, Text } from "@mantine/core";
 import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { Link } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
 import { TeamMessagesPanel } from "@/components/dashboard/TeamMessagesPanel";
@@ -315,7 +315,7 @@ export default function CoachDashboardPage() {
               ))}
             </Group>
             <Link href="/dashboard/settings" style={{ textDecoration: "none" }}>
-              <SemanticButton action="settings" variant="light" color="ingress" size="sm">{t("teamUnassignedManage")}</SemanticButton>
+              <SemanticButton action="settings" variant="light" color={getProductColor("dashboard", "primaryAction")} size="sm">{t("teamUnassignedManage")}</SemanticButton>
             </Link>
           </Stack>
         </SectionPanel>
@@ -349,7 +349,7 @@ export default function CoachDashboardPage() {
                 </Box>
                 <Group>
                   <Link href={`/dashboard/athletes/${athlete._id}/intelligence`}>
-                    <SemanticButton action="dashboard" variant="light" color="ingress">{t("intelligence")}</SemanticButton>
+                    <SemanticButton action="dashboard" variant="light" color={getProductColor("dashboard", "primaryAction")}>{t("intelligence")}</SemanticButton>
                   </Link>
                   <Link href={`/dashboard/athletes/${athlete._id}/vision`}>
                     <SemanticButton action="dashboard" variant="outline" color="strategy">{t("vision")}</SemanticButton>
@@ -404,7 +404,7 @@ export default function CoachDashboardPage() {
                             <SemanticButton
                               action="save"
                               variant="light"
-                              color="ingress"
+                              color={getProductColor("dashboard", "primaryAction")}
                               loading={resolving === key}
                               onClick={() => void resolveConcern(concern)}
                             >
