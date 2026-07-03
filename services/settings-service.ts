@@ -40,7 +40,6 @@ export interface HabigoalSettings {
 }
 
 const STORAGE_KEY = "habigoal-settings-local";
-const LEGACY_STORAGE_KEYS = ["survey-settings-local", "kidex-settings-local"];
 export const DEFAULT_HABIGOAL_SETTINGS: HabigoalSettings = {
   conductors: [],
   observers: [],
@@ -117,8 +116,7 @@ export async function getSettings(): Promise<HabigoalSettings> {
     return normalizeSettings((await response.json()) as Partial<HabigoalSettings>);
   }
   
-  // Migration-only read path for pre-Habigoal browser settings; this is not an offline fallback.
-  const local = localStorage.getItem(STORAGE_KEY) ?? LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
+  const local = localStorage.getItem(STORAGE_KEY);
   if (local) return normalizeSettings(JSON.parse(local) as Partial<HabigoalSettings>);
   
   return DEFAULT_HABIGOAL_SETTINGS;

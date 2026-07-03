@@ -4,14 +4,12 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { AppFooter } from "@/components/layout/AppFooter";
-import { AppShell as GdsAppShell, Box, Group, Select, SidebarNav, SidebarNavItem, Stack } from "@doneisbetter/gds/client";
+import { AppShell as GdsAppShell, Box, Select, SidebarNav, SidebarNavItem, Stack } from "@doneisbetter/gds/client";
 import { APP_LAYOUT } from "@/theme/tokens";
-import { useThemeMode } from "@/components/theme/ThemeModeContext";
 import { OnboardingProvider } from "@/components/onboarding/OnboardingPrompt";
 import { PendingInvitations } from "@/components/teams/PendingInvitations";
-import { DailyReminders } from "@/components/reminders/DailyReminders";
 import { ProductThemeBoundary } from "@/components/product/ProductThemeBoundary";
-import { getProductSurfaceContract, getRouteChromeContract, resolveProductSurfaceFromPathname } from "@/lib/product-ui-contracts";
+import { getRouteChromeContract, resolveProductSurfaceFromPathname } from "@/lib/product-ui-contracts";
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Dashboard");
@@ -19,7 +17,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const router = useRouter();
   const chromeContract = getRouteChromeContract(pathname);
   const activeSurface = chromeContract.activeSurface;
-  const activeSurfaceContract = getProductSurfaceContract(activeSurface);
 
   const [user, setUser] = useState<{ name: string; email: string; primaryRole?: string; athleteId?: string } | null>(null);
   const [authResolved, setAuthResolved] = useState(false);
@@ -157,12 +154,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       <GdsAppShell
         logoText={t("brandName")}
         headerContext={t("brandSubtitle")}
-        headerActions={routeBlocked ? undefined : (
-          <Group gap="xs" wrap="nowrap">
-            <ShellThemeModeBridge colorScheme={activeSurfaceContract.colorScheme} />
-            <ShellLocaleSwitcher />
-          </Group>
-        )}
+        headerActions={routeBlocked ? undefined : <ShellLocaleSwitcher />}
+        showThemeToggle={false}
         primaryNavigation={routeBlocked ? undefined : primaryNavigation}
         accountPanel={routeBlocked ? undefined : accountPanel}
       >
@@ -177,7 +170,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
               px={{ base: APP_LAYOUT.pageGutterMobile, sm: APP_LAYOUT.pageGutterTablet, md: APP_LAYOUT.pageGutterDesktop }}
               pt={{ base: 8, sm: 24 }}
             >
-              {routeBlocked ? null : <DailyReminders />}
               {routeBlocked ? null : <PendingInvitations />}
               <OnboardingProvider>{children}</OnboardingProvider>
             </Box>
@@ -187,18 +179,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </GdsAppShell>
     </ProductThemeBoundary>
   );
-}
-
-function ShellThemeModeBridge({ colorScheme }: { colorScheme: "dark" | "light" }) {
-  const { mode, setMode } = useThemeMode();
-
-  useEffect(() => {
-    if (colorScheme !== mode) {
-      setMode(colorScheme);
-    }
-  }, [colorScheme, mode, setMode]);
-
-  return null;
 }
 
 function ShellLocaleSwitcher() {

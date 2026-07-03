@@ -20,7 +20,6 @@ import { SectionHeading, SignalCard, SurfaceTopBar } from "../ProductSurfaceShar
 import { SharedDailyRecorder, type SharedDailyRecorderLabels } from "../SharedDailyRecorder";
 import { createProductSurfaceActionPack, type ProductSurfaceActionPack } from "../productSurfaceActions";
 import { ProductThemeBoundary } from "../ProductThemeBoundary";
-import { DailyReminders } from "@/components/reminders/DailyReminders";
 import { AiqDailyPlanPanel } from "./panels/AiqDailyPlanPanel";
 import { AiqMentalEdgePanel } from "./panels/AiqMentalEdgePanel";
 import { AiqReflectionPanel } from "./panels/AiqReflectionPanel";
@@ -521,7 +520,6 @@ function AiqAthleteWorkspace({
           )}
 
           <Stack gap="md" component="main">
-            <DailyReminders />
             <Paper id="home" component="section" className="aiq-hero-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
               <SimpleGrid cols={{ base: 1, lg: 2 }} spacing={{ base: "lg", lg: "xl" }}>
                 <Stack gap="lg">

@@ -14,10 +14,6 @@ describe("cookie consent categories (#423)", () => {
     expect(parseCookieConsent("")).toBeNull();
   });
 
-  it("honors the legacy binary 'accepted' value as all categories", () => {
-    expect(parseCookieConsent("accepted")).toEqual(ACCEPT_ALL);
-  });
-
   it("parses a category list; necessary is always on", () => {
     expect(parseCookieConsent("necessary")).toEqual(ESSENTIAL_ONLY);
     expect(parseCookieConsent("necessary,functional")).toEqual({ necessary: true, functional: true, analytics: false });
@@ -34,7 +30,7 @@ describe("cookie consent categories (#423)", () => {
     expect(hasCategory(null, "functional")).toBe(false);
     expect(hasCategory("necessary", "functional")).toBe(false);
     expect(hasCategory("necessary,functional", "functional")).toBe(true);
-    expect(hasCategory("accepted", "analytics")).toBe(true);
+    expect(hasCategory("necessary,functional,analytics", "analytics")).toBe(true);
     expect(hasCategory("necessary,functional", "necessary")).toBe(true);
   });
 });

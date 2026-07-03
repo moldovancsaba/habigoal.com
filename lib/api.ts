@@ -5,7 +5,6 @@ import { normalizeRoles } from "@/lib/access";
 import { hasCapability, type Capability } from "@/lib/permissions";
 
 const ROLE_HEADER = "x-habigoal-role";
-const LEGACY_ROLE_HEADER = "x-survey-role";
 
 export const STAFF_ROLES = ["admin", "trainer", "performance_coach", "physio", "analyst", "club_management", "parent"];
 export const COACHING_ROLES = ["admin", "trainer", "performance_coach"];
@@ -34,10 +33,7 @@ export async function requireRole(request: Request, allowedRoles: string[]) {
     return null;
   }
 
-  const roleHeaderValue =
-    request.headers.get(ROLE_HEADER)?.trim().toLowerCase() ||
-    request.headers.get(LEGACY_ROLE_HEADER)?.trim().toLowerCase() ||
-    "";
+  const roleHeaderValue = request.headers.get(ROLE_HEADER)?.trim().toLowerCase() || "";
   let userRoles = parseRoles(roleHeaderValue);
 
   if (userRoles.length === 0) {
@@ -62,10 +58,7 @@ export async function requireRole(request: Request, allowedRoles: string[]) {
 
 export async function requireCapability(request: Request, capability: Capability) {
   if (!env.habigoalEnforceAuth) return null;
-  const roleHeaderValue =
-    request.headers.get(ROLE_HEADER)?.trim().toLowerCase() ||
-    request.headers.get(LEGACY_ROLE_HEADER)?.trim().toLowerCase() ||
-    "";
+  const roleHeaderValue = request.headers.get(ROLE_HEADER)?.trim().toLowerCase() || "";
   let userRoles = parseRoles(roleHeaderValue);
   if (userRoles.length === 0) {
     const session = await getSession();

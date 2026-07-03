@@ -24,8 +24,9 @@ export type RouteChromeContract = {
   shellOwner: ChromeOwner;
 };
 
+// The whole app is dark-only; product surfaces differentiate through mode
+// (branding lane) and semantic colors, never through a color scheme.
 export type ProductSurfaceContract = {
-  colorScheme: "light" | "dark";
   mode: ProductThemeMode;
   portalRootId: string;
   surface: ProductSurfaceKey;
@@ -33,25 +34,21 @@ export type ProductSurfaceContract = {
 
 const PRODUCT_SURFACE_CONTRACTS: Record<ProductSurfaceKey, ProductSurfaceContract> = {
   athlete_iq: {
-    colorScheme: "dark",
     mode: "professional_dark_gold",
     portalRootId: "product-surface-portal",
     surface: "athlete_iq"
   },
   dashboard: {
-    colorScheme: "dark",
     mode: "neutral",
     portalRootId: "product-surface-portal",
     surface: "dashboard"
   },
   habigoal: {
-    colorScheme: "light",
     mode: "whitelabel",
     portalRootId: "product-surface-portal",
     surface: "habigoal"
   },
   public: {
-    colorScheme: "light",
     mode: "neutral",
     portalRootId: "product-surface-portal",
     surface: "public"

@@ -1,12 +1,12 @@
 import { createTheme, rgba, type MantineThemeOverride } from "@mantine/core";
-import { getSemanticTone, getThemeFoundation, type ThemeMode } from "@/theme/semantic-theme";
+import { getSemanticTone, getThemeFoundation } from "@/theme/semantic-theme";
 import { APP_FONT_FAMILY_LTR, APP_FONT_FAMILY_RTL, APP_FONT_SIZES, APP_FONT_WEIGHTS } from "@/theme/typography";
 
 type Direction = "ltr" | "rtl";
 
-export function getHabigoalMantineTheme(mode: ThemeMode, direction: Direction = "ltr"): MantineThemeOverride {
-  const foundation = getThemeFoundation(mode);
-  const tone = (name: Parameters<typeof getSemanticTone>[1]) => getSemanticTone(mode, name);
+export function getHabigoalMantineTheme(direction: Direction = "ltr"): MantineThemeOverride {
+  const foundation = getThemeFoundation();
+  const tone = getSemanticTone;
   const fontFamily = direction === "rtl" ? APP_FONT_FAMILY_RTL : APP_FONT_FAMILY_LTR;
 
   return createTheme({

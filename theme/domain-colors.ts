@@ -4,9 +4,9 @@ import { DOMAIN_TONES } from "@/theme/tokens";
 export type AssessmentDomain = "movement" | "social" | "mental";
 
 const DOMAIN_COLORS: Record<AssessmentDomain, string> = {
-  movement: getSemanticTone("light", DOMAIN_TONES.movement).color,
-  social: getSemanticTone("light", DOMAIN_TONES.social).color,
-  mental: getSemanticTone("light", DOMAIN_TONES.mental).color
+  movement: getSemanticTone(DOMAIN_TONES.movement).color,
+  social: getSemanticTone(DOMAIN_TONES.social).color,
+  mental: getSemanticTone(DOMAIN_TONES.mental).color
 };
 
 function withAlpha(hex: string, alpha: number) {

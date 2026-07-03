@@ -4,31 +4,26 @@ import { GdsProvider } from "@doneisbetter/gds/client";
 import { useMemo } from "react";
 import { useLocale } from "next-intl";
 import { getHabigoalMantineTheme } from "@/theme/mantine-theme";
-import { ThemeModeProvider, useThemeMode } from "./ThemeModeContext";
+import { getAppGdsMessages } from "@/i18n/gds-messages";
 
-function ThemedTree({ children }: { children: React.ReactNode }) {
-  const { mode } = useThemeMode();
+// Habigoal is dark-only: the scheme is forced at the provider so no runtime
+// toggle, cookie, or per-surface bridge can diverge from it.
+export function ThemeRegistry({ children }: { children: React.ReactNode }) {
   const locale = useLocale();
   const direction: "ltr" | "rtl" = locale === "ar" || locale === "he" ? "rtl" : "ltr";
-  const mantineTheme = useMemo(() => getHabigoalMantineTheme(mode, direction), [mode, direction]);
+  const mantineTheme = useMemo(() => getHabigoalMantineTheme(direction), [direction]);
+  const gdsMessages = useMemo(() => getAppGdsMessages(locale), [locale]);
 
   return (
-    <GdsProvider key={`${locale}-${mode}`} locale={locale} theme={mantineTheme} defaultColorScheme={mode}>
+    <GdsProvider
+      key={locale}
+      locale={locale}
+      messages={gdsMessages}
+      theme={mantineTheme}
+      defaultColorScheme="dark"
+      forceColorScheme="dark"
+    >
       {children}
     </GdsProvider>
-  );
-}
-
-export function ThemeRegistry({
-  children,
-  initialMode
-}: {
-  children: React.ReactNode;
-  initialMode?: "light" | "dark";
-}) {
-  return (
-    <ThemeModeProvider initialMode={initialMode}>
-      <ThemedTree>{children}</ThemedTree>
-    </ThemeModeProvider>
   );
 }

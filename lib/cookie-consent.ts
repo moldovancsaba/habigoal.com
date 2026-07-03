@@ -1,8 +1,7 @@
 // Cookie consent categories (#423). Necessary cookies are always allowed;
-// functional (e.g. NEXT_LOCALE language preference, theme) and analytics
-// (telemetry) require explicit consent. The choice is stored in a single
-// first-party cookie. Legacy value "accepted" (binary accept-all banner) is
-// honored as all categories granted, so existing visitors aren't re-prompted.
+// functional (e.g. NEXT_LOCALE language preference) and analytics (telemetry)
+// require explicit consent. The choice is stored in a single first-party
+// cookie as a category list, e.g. "necessary,functional".
 
 export const COOKIE_CONSENT_NAME = "habigoal_cookie_consent";
 
@@ -15,7 +14,6 @@ export const ACCEPT_ALL: CookieConsent = { necessary: true, functional: true, an
 /** Parse the cookie value into a consent state, or null if no choice was made. */
 export function parseCookieConsent(raw: string | null | undefined): CookieConsent | null {
   if (!raw) return null;
-  if (raw === "accepted") return { ...ACCEPT_ALL }; // legacy binary accept
   const parts = raw.split(",").map((s) => s.trim()).filter(Boolean);
   if (parts.length === 0) return null;
   return {

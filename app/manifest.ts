@@ -10,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: getThemeFoundation("light").appBg,
-    theme_color: getSemanticTone("light", "knowmore").color,
+    background_color: getThemeFoundation().appBg,
+    theme_color: getSemanticTone("knowmore").color,
     icons: [
       {
         src: "/images/habigoal_logo.png",

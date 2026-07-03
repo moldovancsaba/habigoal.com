@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { cookies } from "next/headers";
 import { setRequestLocale } from "next-intl/server";
 import { Noto_Sans, Noto_Sans_Arabic, Noto_Sans_Hebrew } from "next/font/google";
 import { ThemeRegistry } from "@/components/theme/ThemeRegistry";
@@ -10,9 +9,14 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "../globals.css";
 
-const mobileThemeColor = getSemanticTone("light", "knowmore").color;
+const mobileThemeColor = getSemanticTone("knowmore").color;
+
 
 export const metadata: Metadata = {
+  title: {
+    default: "Habigoal",
+    template: "%s · Habigoal"
+  },
   applicationName: "Habigoal",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -34,7 +38,7 @@ export const viewport: Viewport = {
   // deliberately do NOT set maximum-scale/user-scalable.
   viewportFit: "cover",
   themeColor: mobileThemeColor,
-  colorScheme: "light dark",
+  colorScheme: "dark",
   interactiveWidget: "resizes-content"
 };
 
@@ -67,18 +71,12 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = (await import(`../../messages/${locale}.json`)).default;
   const direction = locale === "ar" || locale === "he" ? "rtl" : "ltr";
-  const cookieStore = await cookies();
-  const themeCookie =
-    cookieStore.get("habigoal_theme")?.value ??
-    cookieStore.get("survey_theme")?.value ??
-    cookieStore.get("kidex_theme")?.value;
-  const initialMode = themeCookie === "dark" || themeCookie === "light" ? themeCookie : undefined;
 
   return (
-    <html lang={locale} dir={direction}>
+    <html lang={locale} dir={direction} data-mantine-color-scheme="dark">
       <body dir={direction} className={`${notoSans.variable} ${notoSansArabic.variable} ${notoSansHebrew.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ThemeRegistry initialMode={initialMode}>
+          <ThemeRegistry>
             {children}
             <CookieConsentBanner />
           </ThemeRegistry>

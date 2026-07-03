@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { requireServerEnv } from "@/config/env";
 
 const SESSION_COOKIE_NAME = "habigoal_session";
-const LEGACY_SESSION_COOKIE_NAMES = ["survey_session", "kidex_session"];
 // Persistent pseudo session: a long absolute lifetime plus sliding refresh
 // (middleware) keeps an active user signed in until explicit logout.
 // Configurable via SESSION_DURATION_DAYS (default 30).
@@ -68,9 +67,7 @@ export async function createSession(user: { id: string; email: string; name: str
 
 export async function getSession() {
   const cookieStore = await cookies();
-  const session =
-    cookieStore.get(SESSION_COOKIE_NAME)?.value ??
-    LEGACY_SESSION_COOKIE_NAMES.map((name) => cookieStore.get(name)?.value).find(Boolean);
+  const session = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!session) return null;
   return await decrypt(session);
 }
@@ -78,5 +75,4 @@ export async function getSession() {
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
-  LEGACY_SESSION_COOKIE_NAMES.forEach((name) => cookieStore.delete(name));
 }

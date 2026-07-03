@@ -36,7 +36,6 @@ import type { AthleteProfile } from "@/types/athlete";
 import { getProductColor } from "@/lib/product-ui-contracts";
 
 const DRAFT_STORAGE_KEY = "habigoal-assessment-draft";
-const LEGACY_DRAFT_STORAGE_KEYS = ["survey-draft", "kidex-draft"];
 
 const emptyAssessment: AssessmentPayload = {
   childId: "",
@@ -97,7 +96,7 @@ function loadDraftAssessment(): AssessmentPayload {
     return cloneAssessment(emptyAssessment);
   }
 
-  const raw = localStorage.getItem(DRAFT_STORAGE_KEY) ?? LEGACY_DRAFT_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean);
+  const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
   if (!raw) {
     return cloneAssessment(emptyAssessment);
   }
@@ -511,7 +510,6 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
     setRecordId(data.assessment._id || "");
     setSaveState("saved");
     localStorage.removeItem(DRAFT_STORAGE_KEY);
-    LEGACY_DRAFT_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     setMessage(t("saved"));
 
     const profileChildId = data.assessment.childId || childIdParam;

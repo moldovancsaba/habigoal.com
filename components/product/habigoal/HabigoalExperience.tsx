@@ -12,6 +12,7 @@ import type { HabigoalHabitKey, HabigoalHistory, HabigoalTodayProjection } from 
 import { selectCopyKey } from "@/lib/copy-variants";
 import { neutralPromptDef } from "@/lib/surface-voice";
 import { SectionHeading, SignalCard, SurfaceTopBar, type SurfaceSignalState } from "../ProductSurfaceShared";
+import { DailyReminders } from "@/components/reminders/DailyReminders";
 import { ProductThemeBoundary } from "../ProductThemeBoundary";
 import { getProductColor, scoreToProgressIntent } from "@/lib/product-ui-contracts";
 
@@ -276,6 +277,9 @@ export function HabigoalExperience({ embedded = false, history, projection, surf
             `pb` prop would inline-override that reserve and let the nav cover
             the last card (#425). */}
         <Box component="main" className="hbg-main-grid">
+          {/* Daily nudges are a Habigoal-only concept: this is their single
+              mount point across the whole app (product boundary). */}
+          <DailyReminders />
           {feedback ? (
             <Alert color={getProductColor("habigoal", feedback.kind === "success" ? "success" : "risk")} title={feedback.kind === "success" ? t("savedTitle") : t("errors.title")} role={feedback.kind === "success" ? "status" : "alert"}>
               <Stack gap={4}>

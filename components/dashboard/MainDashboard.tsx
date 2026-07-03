@@ -967,12 +967,10 @@ export function MainDashboard() {
 
 function MetricCard({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "risk" | "warning" }) {
   const token = tone === "risk" ? getProductColor("dashboard", "risk") : tone === "warning" ? getProductColor("dashboard", "warning") : getProductColor("dashboard", "primaryAction");
-  const color = `var(--mantine-color-${token}-6)`;
   return (
     <Paper withBorder p="md" radius="md">
       <Text size="sm" c="dimmed">{label}</Text>
-      <Text size="xl" fw={800}>{value}</Text>
-      <Box mt="sm" h={6} style={{ borderRadius: 999, background: color, opacity: 0.85 }} />
+      <Text size="xl" fw={800} c={`${token}.5`}>{value}</Text>
     </Paper>
   );
 }
