@@ -39,12 +39,12 @@ const PRODUCT_SURFACE_CONTRACTS: Record<ProductSurfaceKey, ProductSurfaceContrac
     surface: "athlete_iq"
   },
   dashboard: {
-    mode: "neutral",
+    mode: "professional_dark_gold",
     portalRootId: "product-surface-portal",
     surface: "dashboard"
   },
   habigoal: {
-    mode: "whitelabel",
+    mode: "professional_dark_gold",
     portalRootId: "product-surface-portal",
     surface: "habigoal"
   },
@@ -80,7 +80,7 @@ const PRODUCT_COLORS: Record<ProductSurfaceKey, Record<ProductColorIntent, strin
   },
   habigoal: {
     neutral: "neutral",
-    primaryAction: "knowmore",
+    primaryAction: "review",
     progressGood: "tactical",
     progressRisk: "red",
     progressWatch: "review",
@@ -131,7 +131,7 @@ export function getRouteChromeContract(pathname: string): RouteChromeContract {
     allowPageHeader: true,
     allowProductTopBar: !dashboardRoute && !productRoute,
     routePattern: routePatternForPath(path),
-    shellOwner: dashboardRoute || productRoute ? "dashboard" : activeSurface === "public" ? "public" : "none"
+    shellOwner: productRoute ? "product" : dashboardRoute ? "dashboard" : activeSurface === "public" ? "public" : "none"
   };
 }
 

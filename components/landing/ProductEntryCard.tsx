@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Paper, Text, Title } from "@mantine/core";
 import { Anchor, Badge, Box, GdsIcons, Group, SimpleGrid, Stack, ThemeIcon } from "@sovereignsquad/gds/client";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 
 type ProductEntryCardProps = {
   ariaLabel: string;

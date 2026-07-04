@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { Alert, Paper, Text, Title } from "@mantine/core";
 import { Anchor, Badge, Button, SimpleGrid, Stack, TextInput } from "@sovereignsquad/gds/client";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
@@ -8,6 +7,7 @@ import { KeepFocusedFieldVisible } from "@/components/a11y/KeepFocusedFieldVisib
 import { getSession } from "@/lib/session";
 import { getAuthUser, canOpenProductSurface } from "@/lib/access";
 import { getProductColor } from "@/lib/product-ui-contracts";
+import { Alert, Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 
 function sanitizeNext(input: string | undefined, locale: string) {
   if (!input) return `/${locale}`;

@@ -363,8 +363,8 @@ a {
   min-width: 0;
 }
 
-.selector-card .mantine-Title-root,
-.selector-card .mantine-Text-root {
+.selector-card h2,
+.selector-card p {
   overflow-wrap: anywhere;
 }
 
@@ -398,7 +398,7 @@ a {
 }
 
 .landing-selector-vibe .landing-news-link,
-.landing-selector-vibe .landing-selector-container .mantine-Title-root {
+.landing-selector-vibe .landing-selector-container h1 {
   color: var(--gds-vibe-text, var(--text-primary));
 }
 
@@ -489,12 +489,12 @@ a {
   height: auto;
 }
 
-.login-panel .mantine-Title-root {
+.login-panel h1 {
   overflow-wrap: anywhere;
   color: var(--text-primary);
 }
 
-.login-panel-aiq .mantine-Title-root {
+.login-panel-aiq h1 {
   color: rgba(255, 255, 255, 0.96);
 }
 
@@ -535,21 +535,21 @@ a {
 }
 
 .selector-card.selector-card-home {
-  color: #0e2d2a !important;
+  color: var(--text-primary) !important;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(237, 252, 248, 0.96)),
-    #f7fffc !important;
-  border-color: rgba(0, 129, 112, 0.22) !important;
-  box-shadow: 0 24px 52px rgba(0, 129, 112, 0.18) !important;
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-gold) 16%, transparent), transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-elevated) 96%, black), var(--surface-base)) !important;
+  border-color: color-mix(in srgb, var(--accent-gold) 30%, transparent) !important;
+  box-shadow: 0 24px 52px rgba(0, 0, 0, 0.34) !important;
 }
 
-.selector-card-home .mantine-Title-root,
-.selector-card-home .mantine-Text-root {
-  color: #0e2d2a !important;
+.selector-card-home h2,
+.selector-card-home .selector-card-body-home {
+  color: inherit !important;
 }
 
 .selector-card-home .selector-card-body-home {
-  color: rgba(14, 45, 42, 0.72) !important;
+  color: var(--text-secondary) !important;
 }
 
 .selector-card.selector-card-pro {
@@ -562,9 +562,9 @@ a {
 }
 
 .selector-card .selector-home-badge {
-  color: #064b43 !important;
-  background: rgba(0, 129, 112, 0.1) !important;
-  border: 1px solid rgba(0, 129, 112, 0.16) !important;
+  color: var(--accent-gold) !important;
+  background: color-mix(in srgb, var(--accent-gold) 12%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 18%, transparent) !important;
 }
 
 .selector-card .selector-pro-badge {
@@ -576,11 +576,11 @@ a {
 .selector-home-preview {
   max-width: 100%;
   padding: 14px;
-  border: 1px solid rgba(0, 129, 112, 0.16);
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 18%, transparent);
   border-radius: var(--mantine-radius-md);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(226, 250, 244, 0.92)),
-    #f1fffb;
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-gold) 8%, transparent), transparent),
+    color-mix(in srgb, var(--surface-base) 94%, black);
 }
 
 .selector-home-copy-lines {
@@ -591,7 +591,7 @@ a {
 .selector-home-copy-line {
   height: 10px;
   border-radius: 999px;
-  background: rgba(0, 129, 112, 0.16);
+  background: color-mix(in srgb, var(--accent-gold) 18%, transparent);
 }
 
 .selector-home-copy-line-short {
@@ -606,20 +606,20 @@ a {
   width: 54px;
   height: 54px;
   flex: 0 0 54px;
-  border: 8px solid rgba(0, 129, 112, 0.16);
-  border-top-color: var(--brand-teal);
-  border-right-color: var(--brand-cyan);
+  border: 8px solid color-mix(in srgb, var(--accent-gold) 16%, transparent);
+  border-top-color: var(--accent-gold);
+  border-right-color: color-mix(in srgb, var(--accent-gold) 72%, white);
   border-radius: 50%;
-  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--surface-elevated) 88%, black);
 }
 
 .selector-home-tab {
   height: 44px;
-  border: 1px solid rgba(0, 129, 112, 0.12);
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 16%, transparent);
   border-radius: var(--mantine-radius-sm);
   background:
-    linear-gradient(180deg, rgba(0, 174, 239, 0.12), rgba(0, 129, 112, 0.08)),
-    rgba(255, 255, 255, 0.82);
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-gold) 12%, transparent), transparent),
+    color-mix(in srgb, var(--surface-elevated) 92%, black);
 }
 
 .selector-pro-preview {
@@ -768,9 +768,9 @@ a {
 }
 
 .hbg-topbar {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(0, 129, 112, 0.16);
-  color: #12332f;
+  background: var(--gds-vibe-shell, color-mix(in srgb, var(--hbg-surface, var(--surface-elevated)) 92%, black));
+  border-color: var(--gds-vibe-border, var(--hbg-line, var(--border-primary)));
+  color: var(--gds-vibe-text, var(--hbg-ink, var(--text-primary)));
 }
 
 .aiq-topbar {
@@ -787,14 +787,13 @@ a {
 }
 
 .habigoal-product-shell {
-  --hbg-ink: #102a2b;
-  --hbg-muted: #52676a;
-  --hbg-line: rgba(19, 120, 107, 0.16);
-  --hbg-surface: rgba(255, 255, 255, 0.9);
-  --hbg-elevated: rgba(247, 253, 252, 0.96);
-  --hbg-mint: #0f9f8f;
-  --hbg-sky: #1687d9;
-  --hbg-coral: #e86658;
+  --hbg-ink: var(--gds-vibe-text, var(--text-primary));
+  --hbg-muted: var(--gds-vibe-muted, var(--text-secondary));
+  --hbg-line: var(--gds-vibe-border, var(--border-primary));
+  --hbg-surface: var(--gds-vibe-surface, var(--surface-base));
+  --hbg-elevated: var(--gds-vibe-shell, var(--surface-elevated));
+  --hbg-accent: var(--gds-vibe-accent, var(--accent-gold));
+  --hbg-coral: var(--status-error);
   /* Single source of truth for the space the fixed bottom nav (and the device
      home indicator) occupy, so scroll containers can reserve it and never let
      the nav cover content (#425). The fixed nav is ~72px tall; the extra gives
@@ -809,9 +808,7 @@ a {
   overscroll-behavior-x: none;
   touch-action: pan-y;
   color: var(--hbg-ink);
-  background:
-    linear-gradient(120deg, rgba(15, 159, 143, 0.14), transparent 34%),
-    linear-gradient(180deg, #f7fbff 0%, #eaf8f6 56%, #f7f9fb 100%);
+  background: var(--gds-vibe-gradient, var(--app-bg));
 }
 
 .hbg-app-frame {
@@ -823,9 +820,9 @@ a {
   position: relative;
   overflow-x: clip;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(247, 253, 252, 0.9)),
+    linear-gradient(180deg, color-mix(in srgb, var(--hbg-accent) 7%, transparent), transparent),
     var(--hbg-elevated);
-  box-shadow: 0 28px 80px rgba(15, 109, 101, 0.16);
+  box-shadow: 0 28px 80px color-mix(in srgb, black 48%, transparent);
 }
 
 .hbg-desktop-topbar {
@@ -842,7 +839,7 @@ a {
   justify-content: space-between;
   gap: var(--mantine-spacing-md);
   padding: calc(10px + env(safe-area-inset-top)) 14px 10px;
-  background: rgba(247, 253, 252, 0.92);
+  background: color-mix(in srgb, var(--hbg-surface) 94%, black);
   border-bottom: 1px solid var(--hbg-line);
   backdrop-filter: blur(18px) saturate(1.12);
   -webkit-backdrop-filter: blur(18px) saturate(1.12);
@@ -859,15 +856,15 @@ a {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--hbg-mint), var(--hbg-sky));
+  color: color-mix(in srgb, black 88%, var(--hbg-accent));
+  background: var(--hbg-accent);
   font-weight: 900;
-  box-shadow: 0 12px 28px rgba(15, 109, 101, 0.2);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--hbg-accent) 18%, transparent);
 }
 
 .hbg-score-pill-empty {
   padding-inline: 14px;
-  background: rgba(16, 42, 43, 0.72);
+  background: color-mix(in srgb, var(--hbg-muted) 28%, transparent);
 }
 
 .hbg-main-grid {
@@ -892,10 +889,10 @@ a {
 .hbg-function-card {
   color: var(--hbg-ink) !important;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 253, 252, 0.88)),
+    linear-gradient(180deg, color-mix(in srgb, var(--hbg-accent) 6%, transparent), transparent),
     var(--hbg-surface) !important;
   border-color: var(--hbg-line) !important;
-  box-shadow: 0 18px 48px rgba(15, 109, 101, 0.1) !important;
+  box-shadow: var(--surface-shadow-flat) !important;
 }
 
 .hbg-hero-panel {
@@ -903,7 +900,7 @@ a {
 }
 
 .hbg-kicker {
-  color: var(--hbg-mint) !important;
+  color: var(--hbg-accent) !important;
   font-size: 0.76rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -932,9 +929,9 @@ a {
 }
 
 .hbg-soft-badge {
-  color: #0b5c54;
-  background: rgba(15, 159, 143, 0.1);
-  border: 1px solid rgba(15, 159, 143, 0.16);
+  color: var(--hbg-accent);
+  background: color-mix(in srgb, var(--hbg-accent) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hbg-accent) 22%, transparent);
 }
 
 .hbg-score-ring {
@@ -944,16 +941,16 @@ a {
   place-items: center;
   border-radius: 50%;
   background:
-    radial-gradient(circle at center, #ffffff 0 57%, transparent 58%),
-    conic-gradient(var(--hbg-mint) var(--score), rgba(16, 42, 43, 0.1) 0);
-  border: 1px solid rgba(15, 159, 143, 0.16);
-  box-shadow: 0 20px 56px rgba(15, 109, 101, 0.16);
+    radial-gradient(circle at center, color-mix(in srgb, var(--hbg-surface) 94%, black) 0 57%, transparent 58%),
+    conic-gradient(var(--hbg-accent) var(--score), color-mix(in srgb, var(--hbg-muted) 18%, transparent) 0);
+  border: 1px solid color-mix(in srgb, var(--hbg-accent) 24%, transparent);
+  box-shadow: 0 20px 56px color-mix(in srgb, black 44%, transparent);
 }
 
 .hbg-score-ring-empty {
   background:
-    radial-gradient(circle at center, #ffffff 0 57%, transparent 58%),
-    conic-gradient(rgba(16, 42, 43, 0.16) 100%, rgba(16, 42, 43, 0.1) 0);
+    radial-gradient(circle at center, color-mix(in srgb, var(--hbg-surface) 94%, black) 0 57%, transparent 58%),
+    conic-gradient(color-mix(in srgb, var(--hbg-muted) 24%, transparent) 100%, color-mix(in srgb, var(--hbg-muted) 18%, transparent) 0);
 }
 
 .hbg-score-label,
@@ -991,7 +988,7 @@ a {
   padding: 12px;
   border: 1px solid var(--hbg-line);
   border-radius: var(--mantine-radius-md);
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, var(--hbg-surface) 92%, black);
 }
 
 .hbg-signal-strip {
@@ -1027,7 +1024,9 @@ a {
   padding: var(--mantine-spacing-lg);
   border: 1px solid var(--hbg-line);
   border-radius: var(--mantine-radius-md);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(236, 251, 248, 0.8));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--hbg-accent) 6%, transparent), transparent),
+    var(--hbg-surface);
 }
 
 .hbg-bottom-nav {
@@ -1042,7 +1041,7 @@ a {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
   padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
-  background: rgba(247, 253, 252, 0.94);
+  background: color-mix(in srgb, var(--hbg-surface) 94%, black);
   border-top: 1px solid var(--hbg-line);
   backdrop-filter: blur(18px) saturate(1.12);
   -webkit-backdrop-filter: blur(18px) saturate(1.12);
@@ -1063,8 +1062,8 @@ a {
 }
 
 .hbg-bottom-nav-item-active {
-  color: #0b5c54;
-  background: rgba(15, 159, 143, 0.1);
+  color: var(--hbg-accent);
+  background: color-mix(in srgb, var(--hbg-accent) 13%, transparent);
 }
 
 /* Bottom nav items can be <button> (tab switch) — reset UA chrome. */
@@ -1103,9 +1102,9 @@ a {
 
 .hbg-primary-button {
   border: 0;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--hbg-mint), var(--hbg-sky));
-  box-shadow: 0 14px 30px rgba(15, 109, 101, 0.22);
+  color: color-mix(in srgb, black 88%, var(--hbg-accent));
+  background: var(--hbg-accent);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--hbg-accent) 18%, transparent);
 }
 
 .hbg-primary-button:active {
@@ -1120,7 +1119,7 @@ a {
 
 .hbg-secondary-button {
   color: var(--hbg-ink);
-  background: rgba(255, 255, 255, 0.82);
+  background: color-mix(in srgb, var(--hbg-surface) 92%, black);
   border: 1px solid var(--hbg-line);
 }
 
@@ -1128,7 +1127,7 @@ a {
 .hbg-secondary-button:focus-visible,
 .hbg-habit-toggle:focus-visible,
 .hbg-bottom-nav-item:focus-visible {
-  outline: 2px solid var(--hbg-mint);
+  outline: 2px solid var(--hbg-accent);
   outline-offset: 2px;
 }
 
@@ -1143,7 +1142,7 @@ a {
   text-align: start;
   border-radius: var(--surface-radius);
   border: 1px solid var(--hbg-line);
-  background: rgba(255, 255, 255, 0.78);
+  background: color-mix(in srgb, var(--hbg-surface) 92%, black);
   color: var(--hbg-ink);
   font-family: inherit;
   font-weight: 800;
@@ -1152,8 +1151,8 @@ a {
 }
 
 .hbg-habit-toggle-on {
-  border-color: var(--hbg-mint);
-  background: rgba(15, 159, 143, 0.12);
+  border-color: var(--hbg-accent);
+  background: color-mix(in srgb, var(--hbg-accent) 13%, transparent);
 }
 
 .hbg-habit-check {
@@ -1165,12 +1164,12 @@ a {
   justify-content: center;
   border-radius: var(--mantine-radius-sm);
   border: 2px solid var(--hbg-line);
-  color: #ffffff;
+  color: color-mix(in srgb, black 88%, var(--hbg-accent));
 }
 
 .hbg-habit-toggle-on .hbg-habit-check {
-  border-color: var(--hbg-mint);
-  background: var(--hbg-mint);
+  border-color: var(--hbg-accent);
+  background: var(--hbg-accent);
 }
 
 .hbg-habit-label {
@@ -1193,7 +1192,7 @@ a {
 
 .hbg-slider .mantine-Slider-thumb {
   border-width: 3px;
-  box-shadow: 0 4px 12px rgba(15, 109, 101, 0.28);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--hbg-accent) 22%, transparent);
 }
 
 .hbg-step-panel .hbg-headline {
@@ -1204,14 +1203,14 @@ a {
   padding: 12px 14px;
   border: 1px solid var(--hbg-line);
   border-radius: var(--surface-radius);
-  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, var(--hbg-surface) 92%, black);
 }
 
 .hbg-failure-pill,
 .aiq-failure-pill {
   border-radius: var(--mantine-radius-md);
-  border: 1px solid rgba(15, 159, 143, 0.18);
-  background: rgba(15, 159, 143, 0.08);
+  border: 1px solid color-mix(in srgb, var(--hbg-accent, var(--gds-vibe-accent)) 22%, transparent);
+  background: color-mix(in srgb, var(--hbg-accent, var(--gds-vibe-accent)) 10%, transparent);
 }
 
 .aiq-product-shell {
@@ -1234,8 +1233,8 @@ a {
   --mantine-color-review-outline: var(--aiq-gold);
   --mantine-color-review-outline-hover: color-mix(in srgb, var(--aiq-gold) 14%, transparent);
 
-  /* The Mantine Paper/Card/input defaults paint the global navy surface, which
-     leaks the old blue look into the professional surface. Remap the shared
+  /* The Mantine Paper/Card/input defaults paint the global app surface, which
+     leaks the old ingress look into the professional surface. Remap the shared
      surface/border/text tokens to the athlete-gold vibe inside the AIQ shell so
      every Mantine surface adopts the premium black-gold theme, not just the
      header and nav. Scoped to .aiq-product-shell only. */
@@ -1297,52 +1296,6 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 /* Embedded in the shared shell: no surface sidebar, so the content spans full width. */
 .aiq-command-layout-embedded {
   grid-template-columns: minmax(0, 1fr);
-}
-
-/* Embedded mode: Habigoal rendered inside the shared DashboardShell. The shell
-   owns the page chrome, width, and the single persona menu — so drop the
-   standalone phone-frame sizing/background, remove the fixed-nav bottom reserve,
-   and let the surface fill the shell's content column. The descendant selector
-   keeps these overrides ahead of the mobile `.hbg-app-frame` media query. */
-.habigoal-product-shell .hbg-app-frame-embedded {
-  width: 100%;
-  max-width: 100%;
-  min-height: 0;
-  box-shadow: none;
-  background: transparent;
-}
-
-.hbg-app-frame-embedded .hbg-main-grid {
-  padding-bottom: var(--mantine-spacing-md);
-  scroll-padding-bottom: var(--mantine-spacing-md);
-}
-
-.hbg-embedded-viewswitch {
-  display: inline-flex;
-  gap: 6px;
-  padding: 4px;
-  margin-bottom: var(--mantine-spacing-sm);
-  border-radius: var(--mantine-radius-md);
-  background: var(--surface-muted, rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--surface-outline-color, rgba(255, 255, 255, 0.08));
-}
-
-.hbg-viewswitch-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: var(--mantine-radius-sm);
-  background: transparent;
-  color: var(--text-secondary);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.hbg-viewswitch-tab-active {
-  background: var(--mantine-color-tactical-filled, #1f6feb);
-  color: #fff;
 }
 
 .aiq-sidebar-v2,

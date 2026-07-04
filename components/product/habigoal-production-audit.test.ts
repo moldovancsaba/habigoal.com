@@ -12,7 +12,12 @@ const productionFiles = [
   "components/product/ProductSurfaceShared.tsx",
   "lib/product-surfaces.ts"
 ];
-const forbidden = [
+const habigoalSourceFiles = [
+  "app/[locale]/habigoal/page.tsx",
+  "components/product/habigoal/HabigoalExperience.tsx"
+];
+const legacyHex = (prefix: string, suffix: string) => new RegExp(`#${prefix}${suffix}`, "i");
+const copyForbidden = [
   /Támogató nappali téma/i,
   /Supportive daylight/i,
   /\bthemeName\b/i,
@@ -27,6 +32,28 @@ const forbidden = [
   /Forr[aá]sadat/i,
   /Automatic feedback/i,
   /Automatikus visszajelz[eé]s/i
+];
+const implementationForbidden = [
+  /\bDashboardShell\b/,
+  /\bembedded\b/i,
+  /\bhbg-app-frame-embedded\b/i,
+  /\bhbg-embedded-viewswitch\b/i,
+  /\bathlete_iq\b/i,
+  /\bAthleteIQ\b/i
+];
+const habigoalStyleForbidden = [
+  /\bhbg-app-frame-embedded\b/i,
+  /\bhbg-embedded-viewswitch\b/i,
+  /--hbg-sky\b/i,
+  /--hbg-mint\b/i,
+  legacyHex("0f", "9f8f"),
+  legacyHex("16", "87d9"),
+  legacyHex("12", "332f"),
+  legacyHex("0e", "2d2a"),
+  legacyHex("06", "4b43"),
+  legacyHex("f1", "fffb"),
+  legacyHex("f7", "fffc"),
+  /rgba\(0,\s*129,\s*112/i
 ];
 
 describe("Habigoal production copy and locale gate", () => {
@@ -49,9 +76,26 @@ describe("Habigoal production copy and locale gate", () => {
 
     for (const sourcePath of sources) {
       const source = readFileSync(join(root, sourcePath), "utf8");
-      for (const pattern of forbidden) {
+      for (const pattern of copyForbidden) {
         if (pattern.test(source)) failures.push(`${sourcePath}: ${pattern}`);
       }
+    }
+
+    expect(failures).toEqual([]);
+  });
+
+  it("blocks embedded chrome, cross-app identifiers, and legacy color tokens from Habigoal implementation files", () => {
+    const failures: string[] = [];
+
+    for (const sourcePath of habigoalSourceFiles) {
+      const source = readFileSync(join(root, sourcePath), "utf8");
+      for (const pattern of implementationForbidden) {
+        if (pattern.test(source)) failures.push(`${sourcePath}: ${pattern}`);
+      }
+    }
+    const styles = readFileSync(join(root, "app/globals.css"), "utf8");
+    for (const pattern of habigoalStyleForbidden) {
+      if (pattern.test(styles)) failures.push(`app/globals.css: ${pattern}`);
     }
 
     expect(failures).toEqual([]);

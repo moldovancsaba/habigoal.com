@@ -1,8 +1,10 @@
-import { Alert, Anchor, Badge, Box, Container, Group, Paper, SimpleGrid, Stack, Title } from "@mantine/core";
+import { Anchor, Badge, Box, Group, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductEntryCard } from "@/components/landing/ProductEntryCard";
 import { PublicAppControls } from "@/components/layout/PublicAppControls";
 import { SelectorThemeShell } from "@/components/landing/SelectorThemeShell";
+import { Alert, Paper, Title } from "@/components/gds/SurfacePrimitives";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 export default async function LandingPage({
   params,
@@ -30,7 +32,13 @@ export default async function LandingPage({
 
   return (
     <SelectorThemeShell>
-    <Container className="landing-selector-container" size="md" py="xl">
+    <Box
+      className="landing-selector-container"
+      mx="auto"
+      px={{ base: "md", md: "lg" }}
+      py="xl"
+      style={{ maxWidth: "var(--mantine-container-size-md)" }}
+    >
       <Stack gap="xl">
         <Group className="landing-topbar" justify="flex-end" wrap="wrap">
           <Group className="landing-top-actions" gap="sm" wrap="wrap">
@@ -48,7 +56,7 @@ export default async function LandingPage({
         <Box component="main">
           <Stack gap="xl">
             <Stack gap="sm">
-              <Badge variant="light" color="ingress" w="fit-content">{t("selectorBadge")}</Badge>
+              <Badge variant="light" color={getProductColor("dashboard", "primaryAction")} w="fit-content">{t("selectorBadge")}</Badge>
               <Title order={1}>{t("selectorTitle")}</Title>
             </Stack>
 
@@ -91,7 +99,7 @@ export default async function LandingPage({
           </Group>
         </Paper>
       </Stack>
-    </Container>
+    </Box>
     </SelectorThemeShell>
   );
 }

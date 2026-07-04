@@ -15,16 +15,19 @@ describe("product UI contracts", () => {
     expect(resolveProductSurfaceFromPathname("/de/dashboard/coach")).toBe("dashboard");
   });
 
-  it("declares dashboard shell ownership for embedded product routes", () => {
-    expect(getRouteChromeContract("/en/habigoal").shellOwner).toBe("dashboard");
+  it("suppresses shared shell chrome for product-owned routes", () => {
+    expect(getRouteChromeContract("/en/habigoal").shellOwner).toBe("product");
+    expect(getRouteChromeContract("/en/habigoal").allowProductTopBar).toBe(false);
+    expect(getRouteChromeContract("/en/habigoal").allowMobileProductNav).toBe(false);
     expect(getRouteChromeContract("/en/athlete-iq").activeSurface).toBe("athlete_iq");
+    expect(getRouteChromeContract("/en/athlete-iq").shellOwner).toBe("product");
     expect(getRouteChromeContract("/en/dashboard").allowProductTopBar).toBe(false);
   });
 
   it("maps visible product states to GDS semantic color tokens", () => {
     expect(getProductColor("athlete_iq", "primaryAction")).toBe("review");
     expect(getProductColor("athlete_iq", "warning")).toBe("review");
-    expect(getProductColor("habigoal", "primaryAction")).toBe("knowmore");
+    expect(getProductColor("habigoal", "primaryAction")).toBe("review");
     expect(signalStateToIntent("missing")).toBe("neutral");
     expect(scoreToProgressIntent(55)).toBe("progressWatch");
   });

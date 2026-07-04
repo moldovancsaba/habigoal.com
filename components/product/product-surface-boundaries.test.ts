@@ -6,6 +6,7 @@ import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/pro
 
 const readSource = (path: string) => readFileSync(join(process.cwd(), path), "utf8");
 const readJson = <T,>(path: string) => JSON.parse(readSource(path)) as T;
+const legacyHex = (prefix: string, suffix: string) => `#${prefix}${suffix}`;
 
 type Messages = {
   ProductSurfaces: {
@@ -41,6 +42,8 @@ describe("product surface route boundaries", () => {
     expect(habigoalSource).not.toContain("PRIORITY_ATHLETES");
     expect(habigoalSource).not.toContain("SERVICE_MODULES");
     expect(habigoalSource).not.toContain("roleView");
+    expect(habigoalSource).not.toContain("athlete_iq");
+    expect(habigoalSource).not.toContain("AthleteIQ");
   });
 
   it("keeps AthleteIQ free of Habigoal client-state ownership", () => {
@@ -84,6 +87,52 @@ describe("product surface route boundaries", () => {
     expect(styles).toContain("width: 100dvw");
     expect(styles).toMatch(/\.hbg-bottom-nav\s*\{[\s\S]*?position:\s*fixed/);
     expect(styles).toMatch(/\.hbg-main-grid\s*\{[\s\S]*?scroll-padding-bottom/);
+  });
+
+  it("keeps Habigoal as an owned product app instead of an embedded dashboard panel", () => {
+    const habigoalRoute = readSource("app/[locale]/habigoal/page.tsx");
+    const habigoalSource = readSource("components/product/habigoal/HabigoalExperience.tsx");
+    const styles = readSource("app/globals.css");
+
+    expect(habigoalRoute).not.toContain("DashboardShell");
+    expect(habigoalRoute).not.toContain("embedded");
+    expect(habigoalSource).toContain("<SurfaceTopBar surface={surface} />");
+    expect(habigoalSource).toContain("className=\"hbg-bottom-nav hbg-bottom-nav-2\"");
+    expect(habigoalSource).toContain("aria-current={view === \"flow\" ? \"page\" : undefined}");
+    expect(habigoalSource).toContain("aria-current={view === \"progress\" ? \"page\" : undefined}");
+    expect(habigoalSource).not.toContain("hbg-embedded-viewswitch");
+    expect(habigoalSource).not.toContain("hbg-app-frame-embedded");
+    expect(styles).not.toContain("hbg-embedded-viewswitch");
+    expect(styles).not.toContain("hbg-app-frame-embedded");
+  });
+
+  it("uses the official gold athlete theme contract for persona app shells", () => {
+    const localeLayout = readSource("app/[locale]/layout.tsx");
+    const manifest = readSource("app/manifest.ts");
+    const theme = readSource("theme/mantine-theme.ts");
+    const productContracts = readSource("lib/product-ui-contracts.ts");
+    const themeBoundary = readSource("components/product/ProductThemeBoundary.tsx");
+    const styles = readSource("app/globals.css");
+    const oldHabigoalTeal = legacyHex("0f", "9f8f");
+    const oldHabigoalBlue = legacyHex("16", "87d9");
+
+    expect(localeLayout).toContain("getSemanticTone(\"review\").color");
+    expect(manifest).toContain("getSemanticTone(\"review\").color");
+    expect(theme).toContain("primaryColor: \"review\"");
+    expect(theme).toMatch(/defaultGradient:\s*\{[\s\S]*?from:\s*"review(?:\.\d+)?"/);
+    expect(theme).toMatch(/defaultGradient:\s*\{[\s\S]*?to:\s*"review(?:\.\d+)?"/);
+    expect(theme).not.toContain("primaryColor: \"ingress\"");
+    expect(productContracts).toMatch(/dashboard:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/);
+    expect(productContracts).toMatch(/habigoal:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/);
+    expect(productContracts).toMatch(/habigoal:\s*\{[\s\S]*?primaryAction:\s*"review"/);
+    expect(themeBoundary).toContain("surface === \"habigoal\"");
+    expect(themeBoundary).toContain("surface === \"dashboard\"");
+    expect(themeBoundary).toContain("--app-bg");
+    expect(themeBoundary).toContain("--blob-1");
+    expect(styles).not.toContain("--hbg-sky");
+    expect(styles).not.toContain("--hbg-mint");
+    expect(styles).not.toContain(oldHabigoalTeal);
+    expect(styles).not.toContain(oldHabigoalBlue);
   });
 
   it("keeps product apps isolated from selector and cross-app navigation", () => {

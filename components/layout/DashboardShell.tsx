@@ -24,8 +24,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   useEffect(() => {
     // Tell /api/auth/me which surface we are on so it scopes the entitlement
     // payload to the active surface (consumer Habigoal vs professional Athlete
-    // IQ). This shell wraps both, so a professional user opening /habigoal must
-    // still receive the consumer-only projection (GH-432).
+    // IQ) when dashboard-owned routes ask for user/navigation context.
     const authSurface = resolveProductSurfaceFromPathname(pathname) === "habigoal" ? "habigoal" : "athlete-iq";
     fetch(`/api/auth/me?surface=${authSurface}`)
       .then((res) => res.json())
@@ -75,9 +74,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { href: "/dashboard/parent", label: t("parentPortal"), action: "users" as const },
       { href: "/dashboard/reports", label: t("reports"), action: "dashboard" as const },
     ] : []),
-    // Athletes get their own persona menu in the SAME shared shell — every athlete
-    // surface (Habigoal daily flow, the Athlete IQ workspace, their history, and the
-    // assessment) is reachable from one menu rather than a separate per-app drawer.
+    // The dashboard menu links to product-owned athlete routes without taking
+    // over their app chrome.
     ...(primaryRole === "athlete" ? [
       { href: "/habigoal", label: t("navAthleteToday"), action: "record" as const },
       { href: "/athlete-iq", label: t("navAthleteIq"), action: "dashboard" as const },

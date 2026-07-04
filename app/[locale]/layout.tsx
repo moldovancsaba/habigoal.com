@@ -10,7 +10,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "../globals.css";
 
-const mobileThemeColor = getSemanticTone("knowmore").color;
+const mobileThemeColor = getSemanticTone("review").color;
 
 
 export const metadata: Metadata = {

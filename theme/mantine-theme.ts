@@ -10,7 +10,7 @@ export function getHabigoalMantineTheme(direction: Direction = "ltr"): MantineTh
   const fontFamily = direction === "rtl" ? APP_FONT_FAMILY_RTL : APP_FONT_FAMILY_LTR;
 
   return createTheme({
-    primaryColor: "ingress",
+    primaryColor: "review",
     defaultRadius: "md",
     fontFamily,
     fontSizes: {
@@ -44,8 +44,8 @@ export function getHabigoalMantineTheme(direction: Direction = "ltr"): MantineTh
     white: "#ffffff",
     primaryShade: 6,
     defaultGradient: {
-      from: "strategy.5",
-      to: "synthesis.7",
+      from: "review.5",
+      to: "review.7",
       deg: 135
     },
     components: {
