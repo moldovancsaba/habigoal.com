@@ -86,7 +86,7 @@ export function TeamInvitationsManager({ teams }: { teams: Team[] }) {
           allowDeselect={false}
         />
         {message ? <Text size="sm" c="var(--status-success)">{message}</Text> : null}
-        {error ? <Text size="sm" c="red">{error}</Text> : null}
+        {error ? <Text size="sm" c={getProductColor("dashboard", "risk")}>{error}</Text> : null}
         <Group>
           <Button color={getProductColor("dashboard", "primaryAction")} loading={busy} disabled={!teamId || !email.trim()} onClick={() => void send()}>
             {busy ? t("sending") : t("send")}

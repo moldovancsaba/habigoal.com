@@ -48,7 +48,7 @@ export default async function LandingPage({
         </Group>
 
       {error === "access_denied" && (
-          <Alert color="red" title={t("accessDeniedTitle")}>
+          <Alert color={getProductColor("public", "risk")} title={t("accessDeniedTitle")}>
             {t("accessDenied")}
           </Alert>
       )}

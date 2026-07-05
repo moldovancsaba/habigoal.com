@@ -7,31 +7,30 @@ describe("product surface function registries", () => {
   it("keeps Habigoal and Athlete IQ as separate publishable surfaces", () => {
     expect(productSurfaces.map((surface) => surface.id)).toEqual(["habigoal", "athlete-iq"]);
 
-    const habigoal = productSurfaces.find((surface) => surface.id === "habigoal");
-    const athleteIq = productSurfaces.find((surface) => surface.id === "athlete-iq");
-
-    expect(habigoal?.includedSurfaceIds).toEqual([]);
-    expect(athleteIq?.includedSurfaceIds).toEqual(["habigoal"]);
+    for (const surface of productSurfaces) {
+      expect("includedSurfaceIds" in surface).toBe(false);
+    }
   });
 
-  it("includes every Habigoal function inside Athlete IQ through the shared registry contract", () => {
+  it("does not publish Habigoal functions inside the Athlete IQ registry", () => {
     const habigoalFunctionIds = getSurfaceFunctionIds("habigoal");
     const athleteIqFunctionIds = getSurfaceFunctionIds("athlete-iq");
 
     for (const functionId of habigoalFunctionIds) {
-      expect(athleteIqFunctionIds).toContain(functionId);
+      expect(athleteIqFunctionIds).not.toContain(functionId);
     }
   });
 
-  it("treats Athlete IQ inclusion of Habigoal as shared data capability, not UI nesting", () => {
+  it("treats Athlete IQ access to daily Habigoal records as data capability, not UI nesting", () => {
     const habigoal = productSurfaces.find((surface) => surface.id === "habigoal");
     const athleteIq = productSurfaces.find((surface) => surface.id === "athlete-iq");
+    const dailyStatusContract = athleteIq?.sharedDataContracts.find((contract) => contract.id === "daily-status");
 
-    expect(athleteIq?.includedSurfaceIds).toEqual(["habigoal"]);
     expect(athleteIq?.primaryPath).toBe("/athlete-iq");
     expect(habigoal?.primaryPath).toBe("/habigoal");
-    expect(athleteIq?.summary).toContain("consume Habigoal daily signals");
-    expect(athleteIq?.summary).not.toMatch(/copy|embed|presentation/i);
+    expect(athleteIq?.summary).toContain("shared daily-status records");
+    expect(dailyStatusContract?.syncBehavior).toContain("never imports Habigoal UI or Habigoal functions");
+    expect(JSON.stringify(athleteIq)).not.toMatch(/copy|embed|presentation|includedSurfaceIds/i);
   });
 
   it("does not duplicate function IDs inside a surface", () => {
@@ -47,15 +46,18 @@ describe("product surface function registries", () => {
 
     expect(habigoalFunctions.every((item) => item.id.startsWith("hbg-"))).toBe(true);
     expect(athleteIqFunctions.some((item) => item.id.startsWith("aiq-"))).toBe(true);
+    expect(athleteIqFunctions.every((item) => !item.id.startsWith("hbg-"))).toBe(true);
   });
 
-  it("exposes separate navigation and themes for the two products", () => {
+  it("exposes separate navigation under the same official Athlete Gold theme", () => {
     const habigoal = productSurfaces.find((surface) => surface.id === "habigoal");
     const athleteIq = productSurfaces.find((surface) => surface.id === "athlete-iq");
 
-    expect(habigoal?.theme.mode).toBe("supportive-light");
-    expect(athleteIq?.theme.mode).toBe("professional-dark");
+    expect(habigoal?.theme.mode).toBe("athlete-gold");
+    expect(habigoal?.theme.gdsPresetId).toBe(ATHLETE_IQ_GDS_THEME_PRESET);
+    expect(athleteIq?.theme.mode).toBe("athlete-gold");
     expect(athleteIq?.theme.gdsPresetId).toBe(ATHLETE_IQ_GDS_THEME_PRESET);
+    expect(getSurfaceNavigation("habigoal").every((item) => item.path === "/habigoal")).toBe(true);
     expect(getSurfaceNavigation("habigoal").map((item) => item.label)).not.toEqual(
       getSurfaceNavigation("athlete-iq").map((item) => item.label)
     );

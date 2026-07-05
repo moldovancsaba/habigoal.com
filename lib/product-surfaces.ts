@@ -32,7 +32,7 @@ export type ProductNavigationItem = {
 
 export type ProductTheme = {
   name: string;
-  mode: "supportive-light" | "professional-dark";
+  mode: "athlete-gold";
   gdsPresetId?: GdsThemePresetId;
   accent: string;
   secondaryAccent: string;
@@ -65,7 +65,6 @@ export type ProductSurface = {
   summary: string;
   promise: string;
   primaryPath: string;
-  includedSurfaceIds: ProductSurfaceId[];
   audiences: ProductSurfaceAudience[];
   operatingMode: string;
   theme: ProductTheme;
@@ -82,15 +81,15 @@ const sharedDataContracts = [
     owner: "shared-foundation",
     description: "Personal routine, wellbeing, readiness, pain, recovery, habits, and context answers stored once and projected differently per product.",
     usedBy: ["habigoal", "athlete-iq"],
-    syncBehavior: "Habigoal writes personal check-ins; AthleteIQ reads the same ledger only through professional entitlements, assignments, and consent rules."
+    syncBehavior: "Habigoal writes personal habitbuilder records. Athlete IQ may read the same ledger only through professional data-source contracts, entitlements, assignments, and consent rules; it never imports Habigoal UI or Habigoal functions."
   },
   {
     id: "function-registry",
-    name: "Product-aware function registry",
+    name: "Product-owned function registry",
     owner: "shared-foundation",
-    description: "One feature directory filtered by product surface, role, entitlement, and module maturity.",
+    description: "Separate function directories per product surface, filtered by role, entitlement, and module maturity without cross-publishing another product's UI functions.",
     usedBy: ["habigoal", "athlete-iq"],
-    syncBehavior: "Habigoal receives only personal habitbuilder functions; AthleteIQ includes shared signals plus professional modules."
+    syncBehavior: "Habigoal exposes only personal habitbuilder functions. Athlete IQ exposes only professional modules and reads shared daily signals as data, not as Habigoal function cards."
   },
   {
     id: "guidance-events",
@@ -349,21 +348,21 @@ export const productSurfaces = [
     id: "habigoal",
     name: "Habigoal",
     shortName: "Habigoal",
-    headline: "White-label habitbuilder and wellbeing support",
+    headline: "Independent whitelabel habitbuilder",
     summary:
-      "An independent daily habitbuilder for anybody who wants to track routines, wellbeing, and clear personal status.",
+      "An independent whitelabel habitbuilder for anybody who wants to track routines, wellbeing, and clear personal status.",
     promise:
       "Habigoal keeps the daily loop simple: check in, complete habits, understand status, and get one safe next action.",
     primaryPath: "/habigoal",
-    includedSurfaceIds: [],
     audiences: ["client", "athlete", "coach", "academy", "operator"],
     operatingMode: "White-label personal habit and wellbeing support",
     theme: {
-      name: "Habigoal daily",
-      mode: "supportive-light",
-      accent: "Mint",
-      secondaryAccent: "Sky",
-      surfaceTone: "Bright, calm, mobile-first support",
+      name: "Athlete Gold",
+      mode: "athlete-gold",
+      gdsPresetId: ATHLETE_IQ_GDS_THEME_PRESET,
+      accent: "Gold",
+      secondaryAccent: "Black performance shell",
+      surfaceTone: "Official black-and-gold habitbuilder shell",
       typographyTone: "Plain language and low-pressure status"
     },
     navigation: [
@@ -378,7 +377,7 @@ export const productSurfaces = [
       {
         id: "habits",
         label: "Habits",
-        path: "/athletes",
+        path: "/habigoal",
         description: "Personal habit loop using shared scoring.",
         audience: ["client", "athlete", "coach", "academy", "operator"],
         sharedFunctionId: "hbg-habits"
@@ -406,16 +405,15 @@ export const productSurfaces = [
     shortName: "AIQ",
     headline: "Professional performance operating system",
     summary:
-      "The professional layer that can consume Habigoal daily signals when access rules allow, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
+      "The professional layer that can read shared daily-status records when access rules allow, then adds team, trainer, academy, dashboard, report, service, and advanced intelligence workflows.",
     promise:
-      "Athlete IQ can include Habigoal records as a daily signal layer, then adds professional workflows, role-based dashboards, and service modules.",
+      "Athlete IQ consumes shared daily-status records as a data-source contract, then adds professional workflows, role-based dashboards, and service modules.",
     primaryPath: "/athlete-iq",
-    includedSurfaceIds: ["habigoal"],
     audiences: ["athlete", "coach", "academy", "operator"],
     operatingMode: "Professional athlete, coach, academy, and service operations",
     theme: {
       name: "Athlete Gold",
-      mode: "professional-dark",
+      mode: "athlete-gold",
       gdsPresetId: ATHLETE_IQ_GDS_THEME_PRESET,
       accent: "Gold",
       secondaryAccent: "Black performance shell",
@@ -429,7 +427,7 @@ export const productSurfaces = [
       { id: "reports", label: "Reports due", value: "2 packages", state: "neutral", source: "guidance-events" },
       { id: "scope", label: "Shared Habigoal signals", value: "Included", state: "good", source: "function-registry" }
     ],
-    functionRegistry: [...habigoalFunctions, ...athleteIqFunctions]
+    functionRegistry: athleteIqFunctions
   }
 ] satisfies ProductSurface[];
 

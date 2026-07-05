@@ -1,15 +1,13 @@
 :root {
-  --brand-lime: #c7f036;
-  --brand-teal: #00b894;
-  --brand-cyan: #00aeef;
-  --brand-blue: #003fce;
+  --brand-gold: #ffd54a;
+  --brand-gold-soft: #f0b642;
+  --brand-ink: #070c18;
   --accent-orange: #ffb000;
   --accent-gold: #ffd54a;
   --status-success: #22c55e;
   --status-warning: #f59e0b;
   --status-error: #ef4444;
   --status-info: #38bdf8;
-  --brand-gradient: linear-gradient(135deg, #c7f036 0%, #00b894 35%, #00aeef 65%, #003fce 100%);
   --app-bg: #0a0f1c;
   --sidebar-bg: #111827;
   --surface-base: rgba(24, 34, 53, 0.84);
@@ -32,9 +30,9 @@
   --nav-company-description: #a7b4cc;
   --nav-link-active: #f4f7fb;
   --nav-link-inactive: #a7b4cc;
-  --blob-1: rgba(0, 63, 206, 0.28);
-  --blob-2: rgba(0, 174, 239, 0.22);
-  --blob-3: rgba(199, 240, 54, 0.16);
+  --blob-1: rgba(255, 213, 74, 0.16);
+  --blob-2: rgba(240, 182, 66, 0.12);
+  --blob-3: rgba(167, 180, 204, 0.08);
   --grid-line: rgba(44, 59, 87, 0.34);
   /* Adaptive tokens (#400). --target-size is driven by INPUT CAPABILITY (see the
      any-pointer media block below), NOT viewport width: 32px for precise
@@ -67,7 +65,7 @@
 
 .gds-surface-panel {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, var(--brand-cyan)) 7%, transparent), transparent),
+    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, var(--accent-gold)) 7%, transparent), transparent),
     var(--gds-vibe-surface, var(--surface-elevated));
   border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, var(--border-primary)) 22%, transparent);
   box-shadow: var(--surface-shadow-flat);
@@ -246,7 +244,7 @@ a {
 }
 
 ::selection {
-  background: rgba(0, 174, 239, 0.28);
+  background: rgba(255, 213, 74, 0.28);
 }
 
 ::-webkit-scrollbar {
@@ -281,10 +279,6 @@ a {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)), var(--surface-base);
   backdrop-filter: blur(12px) saturate(1.16);
   -webkit-backdrop-filter: blur(12px) saturate(1.16);
-}
-
-.brand-gradient {
-  background-image: var(--brand-gradient);
 }
 
 .surface-outline {
@@ -521,7 +515,7 @@ a {
   width: 18px;
   height: 18px;
   margin-top: 3px;
-  accent-color: var(--brand-cyan);
+  accent-color: var(--accent-gold);
 }
 
 .login-panel-aiq .login-persona-option > input {

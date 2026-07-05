@@ -102,7 +102,7 @@ export default function VisionPage() {
             }}
           />
           <SemanticButton action="start" loading={uploading} onClick={() => fileRef.current?.click()} />
-          {error ? <Text c="red" size="sm" mt="sm">{error}</Text> : null}
+          {error ? <Text c={getProductColor("dashboard", "risk")} size="sm" mt="sm">{error}</Text> : null}
         </Paper>
       </SectionPanel>
 

@@ -47,7 +47,7 @@ export function PendingInvitations() {
     <Paper withBorder radius="md" p="md" mb="md">
       <Stack gap="sm">
         <Text fw={800}>{t("pendingTitle")}</Text>
-        {error ? <Text size="sm" c="red">{error}</Text> : null}
+        {error ? <Text size="sm" c={getProductColor("dashboard", "risk")}>{error}</Text> : null}
         {invites.map((invite) => (
           <Group key={invite._id} justify="space-between" wrap="nowrap" gap="sm">
             <Text>{invite.teamName} · {t(invite.role === "trainer" ? "roleTrainer" : "roleAthlete")}</Text>

@@ -27,9 +27,10 @@ const forbidden = [
 ];
 
 const requiredProductSurfaceSnippets = [
-  "daily signal layer",
+  "shared daily-status records",
   "professional workflows",
-  "includedSurfaceIds: [\"habigoal\"]"
+  "functionRegistry: athleteIqFunctions",
+  "never imports Habigoal UI or Habigoal functions"
 ];
 
 const failures = [];
@@ -43,6 +44,9 @@ for (const file of checkedFiles) {
 const productSurfaces = readFileSync(path.join(root, "lib/product-surfaces.ts"), "utf8");
 for (const snippet of requiredProductSurfaceSnippets) {
   if (!productSurfaces.includes(snippet)) failures.push(`lib/product-surfaces.ts missing required shared-profile snippet: ${snippet}`);
+}
+for (const forbidden of ["includedSurfaceIds", "supportive-light", "Mint", "Sky", "functionRegistry: [...habigoalFunctions"]) {
+  if (productSurfaces.includes(forbidden)) failures.push(`lib/product-surfaces.ts keeps forbidden mixed-surface registry/theme marker: ${forbidden}`);
 }
 
 const habigoalSource = readFileSync(path.join(root, "components/product/habigoal/HabigoalExperience.tsx"), "utf8");

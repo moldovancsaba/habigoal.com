@@ -49,7 +49,7 @@ import { ConfidenceBadge } from "@/components/insights/ConfidenceBadge";
 import { ExplanationPanel } from "@/components/insights/ExplanationPanel";
 import { InsightSignalsPanel } from "@/components/insights/InsightSignalsPanel";
 import { buildAthleteInsights } from "@/lib/athlete-insights";
-import { getProductColor } from "@/lib/product-ui-contracts";
+import { getProductColor, type ProductColorIntent } from "@/lib/product-ui-contracts";
 import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import type { CheckInRecord } from "@/types/check-in";
 import type { AthleteHistoryPayload } from "@/types/athlete-history";
@@ -679,10 +679,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 </Paper>
               ) : null}
               <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-                <HistoryMetricCard label={td("athleteDailyOperatingScoreLabel")} value={String(athleteOperatingScore)} accent="ingress" />
-                <HistoryMetricCard label={td("athleteDailyReadinessModeLabel")} value={t(`readinessMode${capitalize(latestReadinessMode)}`)} accent="knowmore" />
-                <HistoryMetricCard label={td("athleteDailyMomentumLabel")} value={td(`athleteMomentum${capitalize(athleteMomentum.state)}`)} accent="strategy" />
-                <HistoryMetricCard label={td("athleteDailyFocusLabel")} value={focusPillar} accent="review" />
+                <HistoryMetricCard label={td("athleteDailyOperatingScoreLabel")} value={String(athleteOperatingScore)} intent="primaryAction" />
+                <HistoryMetricCard label={td("athleteDailyReadinessModeLabel")} value={t(`readinessMode${capitalize(latestReadinessMode)}`)} intent="secondaryAction" />
+                <HistoryMetricCard label={td("athleteDailyMomentumLabel")} value={td(`athleteMomentum${capitalize(athleteMomentum.state)}`)} intent="success" />
+                <HistoryMetricCard label={td("athleteDailyFocusLabel")} value={focusPillar} intent="warning" />
               </SimpleGrid>
 
               <Paper withBorder p="md" radius="md">
@@ -801,10 +801,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           >
             <Stack gap="md">
               <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-                <HistoryMetricCard label={td("athleteHabitScoreLabel")} value={`${habitScoreSummary.score}`} accent="ingress" />
-                <HistoryMetricCard label={td("athleteHabitCompletedLabel")} value={`${habitCompletion.completed}/${habitCompletion.total}`} accent="strategy" />
-                <HistoryMetricCard label={td("athleteHabitStreakLabel")} value={`${habitStreak}`} accent="knowmore" />
-                <HistoryMetricCard label={td("athleteHabitFocusLabel")} value={habitFocusCategory} accent="review" />
+                <HistoryMetricCard label={td("athleteHabitScoreLabel")} value={`${habitScoreSummary.score}`} intent="primaryAction" />
+                <HistoryMetricCard label={td("athleteHabitCompletedLabel")} value={`${habitCompletion.completed}/${habitCompletion.total}`} intent="success" />
+                <HistoryMetricCard label={td("athleteHabitStreakLabel")} value={`${habitStreak}`} intent="secondaryAction" />
+                <HistoryMetricCard label={td("athleteHabitFocusLabel")} value={habitFocusCategory} intent="warning" />
               </SimpleGrid>
 
               <Paper withBorder p="md" radius="md">
@@ -887,10 +887,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           >
             <Stack gap="md">
               <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-                <HistoryMetricCard label={td("athleteMemoryEntriesLabel")} value={`${memoryTimeline.length}`} accent="ingress" />
-                <HistoryMetricCard label={td("athleteMemoryTrendLabel")} value={memorySummary.pattern} accent="knowmore" />
-                <HistoryMetricCard label={td("athleteMemoryConstraintLabel")} value={memorySummary.constraint} accent="review" />
-                <HistoryMetricCard label={td("athleteMemorySupportLabel")} value={memorySummary.support} accent="strategy" />
+                <HistoryMetricCard label={td("athleteMemoryEntriesLabel")} value={`${memoryTimeline.length}`} intent="primaryAction" />
+                <HistoryMetricCard label={td("athleteMemoryTrendLabel")} value={memorySummary.pattern} intent="secondaryAction" />
+                <HistoryMetricCard label={td("athleteMemoryConstraintLabel")} value={memorySummary.constraint} intent="warning" />
+                <HistoryMetricCard label={td("athleteMemorySupportLabel")} value={memorySummary.support} intent="success" />
               </SimpleGrid>
 
               <Paper withBorder p="md" radius="md">
@@ -982,10 +982,10 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             ) : (
               <Stack gap="md">
                 <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-                  <HistoryMetricCard label={td("athleteLoadLatestLabel")} value={latestLoad ? `${latestLoad.value}` : "-"} accent="ingress" />
-                  <HistoryMetricCard label={td("athleteLoadShortAverageLabel")} value={latestThreeAverage ? latestThreeAverage.toFixed(0) : "-"} accent="strategy" />
-                  <HistoryMetricCard label={td("athleteLoadRatioLabel")} value={loadRatio.toFixed(2)} accent={loadRatio > 1.15 ? "review" : "knowmore"} />
-                  <HistoryMetricCard label={td("athleteLoadStatusLabel")} value={td(`athleteLoadStatus${capitalize(loadStatus)}`)} accent="review" />
+                  <HistoryMetricCard label={td("athleteLoadLatestLabel")} value={latestLoad ? `${latestLoad.value}` : "-"} intent="primaryAction" />
+                  <HistoryMetricCard label={td("athleteLoadShortAverageLabel")} value={latestThreeAverage ? latestThreeAverage.toFixed(0) : "-"} intent="success" />
+                  <HistoryMetricCard label={td("athleteLoadRatioLabel")} value={loadRatio.toFixed(2)} intent={loadRatio > 1.15 ? "warning" : "secondaryAction"} />
+                  <HistoryMetricCard label={td("athleteLoadStatusLabel")} value={td(`athleteLoadStatus${capitalize(loadStatus)}`)} intent="warning" />
                 </SimpleGrid>
 
                 <LongitudinalChart
@@ -1008,14 +1008,14 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           </SectionPanel>
 
           <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
-            <HistoryMetricCard label={td("athleteSessionsLabel")} value={String(data.assessments.length)} accent="ingress" />
+            <HistoryMetricCard label={td("athleteSessionsLabel")} value={String(data.assessments.length)} intent="primaryAction" />
             <HistoryMetricCard
               label={td("athleteReadinessChecksLabel")}
               value={`${latestReadinessChecks}/${latestReadinessTotal}`}
-              accent="knowmore"
+              intent="secondaryAction"
             />
-            <HistoryMetricCard label={td("athleteStrongestPillarLabel")} value={strongestPillar} accent="strategy" />
-            <HistoryMetricCard label={td("athleteFocusPillarLabel")} value={focusPillar} accent="review" />
+            <HistoryMetricCard label={td("athleteStrongestPillarLabel")} value={strongestPillar} intent="success" />
+            <HistoryMetricCard label={td("athleteFocusPillarLabel")} value={focusPillar} intent="warning" />
           </SimpleGrid>
 
           <SectionPanel title={td("athleteTrendExplorerTitle")} description={td("athleteTrendExplorerSubtitle")}>
@@ -1079,13 +1079,13 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               ) : (
                 <>
                   <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
-                    <HistoryMetricCard label={td("athleteTrendSessionsLabel")} value={String(filteredAssessments.length)} accent="ingress" />
-                    <HistoryMetricCard label={td("athleteTrendAverageLabel")} value={formatTrendValue(trendAverageValue)} accent="strategy" />
-                    <HistoryMetricCard label={td("athleteTrendLatestLabel")} value={formatTrendValue(trendLatestValue)} accent="knowmore" />
+                    <HistoryMetricCard label={td("athleteTrendSessionsLabel")} value={String(filteredAssessments.length)} intent="primaryAction" />
+                    <HistoryMetricCard label={td("athleteTrendAverageLabel")} value={formatTrendValue(trendAverageValue)} intent="success" />
+                    <HistoryMetricCard label={td("athleteTrendLatestLabel")} value={formatTrendValue(trendLatestValue)} intent="secondaryAction" />
                     <HistoryMetricCard
                       label={td("athleteTrendChangeLabel")}
                       value={formatTrendDelta(trendChangeValue)}
-                      accent={trendChangeValue !== null && trendChangeValue >= 0 ? "ingress" : "review"}
+                      intent={trendChangeValue !== null && trendChangeValue >= 0 ? "success" : "warning"}
                     />
                   </SimpleGrid>
 
@@ -1856,13 +1856,21 @@ function DeleteSurveyModal({
   );
 }
 
-function HistoryMetricCard({ label, value, accent }: { label: string; value: string; accent: string }) {
+function HistoryMetricCard({
+  intent,
+  label,
+  value
+}: {
+  intent: ProductColorIntent;
+  label: string;
+  value: string;
+}) {
   return (
     <Paper withBorder p="md" radius="md">
       <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </Text>
-      <Text size="xl" mt={4} fw={800} c={accent}>
+      <Text size="xl" mt={4} fw={800} c={getProductColor("dashboard", intent)}>
         {value}
       </Text>
     </Paper>

@@ -85,6 +85,7 @@ assertAthletePersonaShellContract();
 assertPersonaColorContract();
 assertNoLegacyBlueUiTokens();
 assertGoldAthleteThemeContract();
+assertProductSurfaceRegistryContract();
 assertHabigoalBoundaryLanguage();
 assertNoHabigoalLegacyThemeTokens();
 
@@ -131,6 +132,7 @@ function findRawPersonaColors(source) {
   const patterns = [
     /var\(--brand-blue\)/g,
     /var\(--brand-yellow\)/g,
+    /var\(--brand-gradient\)/g,
     /#[0-9a-fA-F]{6,8}/g
   ];
 
@@ -464,6 +466,18 @@ function assertNoLegacyBlueUiTokens() {
     {
       pattern: /primaryAction:\s*["']ingress["']/,
       message: "Product contracts must not map primary actions to the old ingress/blue lane."
+    },
+    {
+      pattern: /\baccent=["'](ingress|knowmore)["']/,
+      message: "UI metric components must not accept legacy ingress/knowmore accent props; use product color intents."
+    },
+    {
+      pattern: /\baccent=\{[^}]*["'](ingress|knowmore)["'][^}]*\}/,
+      message: "UI metric components must not resolve dynamic accents to legacy ingress/knowmore; use product color intents."
+    },
+    {
+      pattern: /--brand-blue|--brand-gradient/,
+      message: "Global UI CSS must not define or consume the legacy blue brand tokens."
     }
   ];
 
@@ -555,6 +569,46 @@ function assertGoldAthleteThemeContract() {
         file: contractFile,
         rule: "gold-athlete-theme-contract",
         message: `Missing official gold/review product contract: ${pattern}`
+      });
+    }
+  }
+}
+
+function assertProductSurfaceRegistryContract() {
+  const file = "lib/product-surfaces.ts";
+  const source = fs.readFileSync(path.join(root, file), "utf8");
+  const forbiddenSnippets = [
+    "includedSurfaceIds",
+    "supportive-light",
+    "Mint",
+    "Sky",
+    "path: \"/athletes\"",
+    "functionRegistry: [...habigoalFunctions"
+  ];
+  const requiredSnippets = [
+    "mode: \"athlete-gold\"",
+    "gdsPresetId: ATHLETE_IQ_GDS_THEME_PRESET",
+    "functionRegistry: habigoalFunctions",
+    "functionRegistry: athleteIqFunctions",
+    "never imports Habigoal UI or Habigoal functions"
+  ];
+
+  for (const snippet of forbiddenSnippets) {
+    if (source.includes(snippet)) {
+      failures.push({
+        file,
+        rule: "product-surface-registry-boundary",
+        message: `Product registry must not expose mixed UI/theme/function ownership marker: ${snippet}`
+      });
+    }
+  }
+
+  for (const snippet of requiredSnippets) {
+    if (!source.includes(snippet)) {
+      failures.push({
+        file,
+        rule: "product-surface-registry-boundary",
+        message: `Product registry is missing strict ownership marker: ${snippet}`
       });
     }
   }

@@ -5,6 +5,7 @@ import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Modal, Progress, 
 import { usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { buildOnboardingPromptModel, type OnboardingPromptProps } from "@/lib/onboarding-prompt";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import type { OnboardingEventType, OnboardingModuleView } from "@/types/onboarding";
 
 export function OnboardingPrompt({ module, state, errorMessage, onDismiss, onComplete, onSnooze, onRetry }: OnboardingPromptProps) {
@@ -77,7 +78,7 @@ export function OnboardingPrompt({ module, state, errorMessage, onDismiss, onCom
                           <strong>{stepTitle}</strong>
                           <span style={{ color: "var(--mantine-color-dimmed)", fontSize: "0.875rem" }}>{stepBody}</span>
                         </Stack>
-                        <Badge color={done ? "green" : "ingress"} variant="light">
+                        <Badge color={getProductColor("dashboard", done ? "success" : "primaryAction")} variant="light">
                           {done ? t("status.done") : t("status.next")}
                         </Badge>
                       </Group>
