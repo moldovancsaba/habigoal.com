@@ -106,6 +106,24 @@ describe("product surface route boundaries", () => {
     expect(styles).not.toContain("hbg-app-frame-embedded");
   });
 
+  it("keeps AthleteIQ as an owned product app instead of an embedded dashboard panel", () => {
+    const athleteIqRoute = readSource("app/[locale]/athlete-iq/page.tsx");
+    const athleteIqSource = readSource("components/product/athlete-iq/AthleteIqExperience.tsx");
+    const styles = readSource("app/globals.css");
+
+    expect(athleteIqRoute).not.toContain("DashboardShell");
+    expect(athleteIqRoute).not.toContain("embedded");
+    expect(athleteIqSource).toContain("<SurfaceTopBar surface={surface} />");
+    expect(athleteIqSource).toContain("AiqMobileTopBar");
+    expect(athleteIqSource).toContain("AiqMobileNavigation");
+    expect(athleteIqSource).toContain("className=\"aiq-command-layout\"");
+    expect(athleteIqSource).toContain("className=\"aiq-sidebar-v2 aiq-desktop-sidebar surface-outline\"");
+    expect(athleteIqSource).not.toContain("DashboardShell");
+    expect(athleteIqSource).not.toContain("embedded");
+    expect(athleteIqSource).not.toContain("aiq-command-layout-embedded");
+    expect(styles).not.toContain("aiq-command-layout-embedded");
+  });
+
   it("uses the official gold athlete theme contract for persona app shells", () => {
     const localeLayout = readSource("app/[locale]/layout.tsx");
     const manifest = readSource("app/manifest.ts");

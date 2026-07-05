@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import DashboardShell from "@/components/layout/DashboardShell";
 import { AthleteIqExperience } from "@/components/product/athlete-iq/AthleteIqExperience";
 import { requireProductSession } from "@/lib/product-session";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
@@ -44,12 +43,7 @@ export default async function AthleteIqSurfaceRoute({
   });
   const dashboard = await getAthleteIqProductDashboardProjection({ requestedPersona });
 
-  // Render inside the single shared shell so there is exactly one persona menu
-  // (the DashboardShell nav). The Athlete IQ experience renders in `embedded`
-  // mode, suppressing its own duplicate top bars / drawer / sidebar.
   return (
-    <DashboardShell>
-      <AthleteIqExperience dashboard={dashboard} surface={getProductSurfaceOrThrow("athlete-iq")} embedded />
-    </DashboardShell>
+    <AthleteIqExperience dashboard={dashboard} surface={getProductSurfaceOrThrow("athlete-iq")} />
   );
 }

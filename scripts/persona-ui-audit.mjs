@@ -67,8 +67,8 @@ for (const file of checkedFiles) {
 assertDashboardColorContract();
 assertDashboardRouteColorContract();
 assertRouteChromeContract();
-assertSurfaceTopBarsGuarded("components/product/athlete-iq/AthleteIqExperience.tsx");
 assertHabigoalOwnsChrome();
+assertAthleteIqOwnsChrome();
 assertGoldAthleteThemeContract();
 assertHabigoalBoundaryLanguage();
 assertNoHabigoalLegacyThemeTokens();
@@ -188,21 +188,6 @@ function assertRouteChromeContract() {
   }
 }
 
-function assertSurfaceTopBarsGuarded(relativeFile) {
-  const lines = fs.readFileSync(path.join(root, relativeFile), "utf8").split("\n");
-  lines.forEach((line, index) => {
-    if (!line.includes("<SurfaceTopBar")) return;
-    const context = lines.slice(Math.max(0, index - 6), index + 1).join("\n");
-    if (!/!\s*embedded/.test(context)) {
-      failures.push({
-        file: relativeFile,
-        rule: "embedded-chrome-ownership",
-        message: "SurfaceTopBar must be guarded by !embedded so the shared shell does not render duplicate product headers."
-      });
-    }
-  });
-}
-
 function assertHabigoalOwnsChrome() {
   const routeFile = "app/[locale]/habigoal/page.tsx";
   const routeSource = fs.readFileSync(path.join(root, routeFile), "utf8");
@@ -241,6 +226,61 @@ function assertHabigoalOwnsChrome() {
         file: componentFile,
         rule: "habigoal-accessible-owned-chrome",
         message: `Missing Habigoal-owned accessible chrome marker: ${snippet}`
+      });
+    }
+  }
+}
+
+function assertAthleteIqOwnsChrome() {
+  const routeFile = "app/[locale]/athlete-iq/page.tsx";
+  const routeSource = fs.readFileSync(path.join(root, routeFile), "utf8");
+  const componentFile = "components/product/athlete-iq/AthleteIqExperience.tsx";
+  const componentSource = fs.readFileSync(path.join(root, componentFile), "utf8");
+  const styleFile = "app/globals.css";
+  const styleSource = fs.readFileSync(path.join(root, styleFile), "utf8");
+
+  for (const snippet of ["DashboardShell", "embedded"]) {
+    if (routeSource.includes(snippet)) {
+      failures.push({
+        file: routeFile,
+        rule: "athlete-iq-chrome-ownership",
+        message: `Athlete IQ route must not use shared dashboard chrome or embedded mode: ${snippet}`
+      });
+    }
+  }
+
+  for (const snippet of ["embedded", "aiq-command-layout-embedded", "DashboardShell"]) {
+    if (componentSource.includes(snippet)) {
+      failures.push({
+        file: componentFile,
+        rule: "athlete-iq-source-boundary",
+        message: `Athlete IQ source must not carry shared-shell implementation residue: ${snippet}`
+      });
+    }
+  }
+
+  for (const snippet of ["aiq-command-layout-embedded"]) {
+    if (styleSource.includes(snippet)) {
+      failures.push({
+        file: styleFile,
+        rule: "athlete-iq-legacy-layout-token",
+        message: `Athlete IQ CSS must not carry old embedded layout residue: ${snippet}`
+      });
+    }
+  }
+
+  for (const snippet of [
+    "<SurfaceTopBar surface={surface} />",
+    "AiqMobileTopBar",
+    "AiqMobileNavigation",
+    "className=\"aiq-command-layout\"",
+    "className=\"aiq-sidebar-v2 aiq-desktop-sidebar surface-outline\""
+  ]) {
+    if (!componentSource.includes(snippet)) {
+      failures.push({
+        file: componentFile,
+        rule: "athlete-iq-accessible-owned-chrome",
+        message: `Missing Athlete IQ-owned chrome marker: ${snippet}`
       });
     }
   }
