@@ -5,6 +5,7 @@ import { Group, Select, Stack, TextInput, TagsInput } from "@mantine/core";
 import { SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { ATHLETE_PROFILE_STATUSES } from "@/lib/forms/central-form";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 const STATUS_OPTIONS = ATHLETE_PROFILE_STATUSES;
 
@@ -127,7 +128,7 @@ export function AthleteProfileAdminPanel({ athleteId }: AthleteProfileAdminPanel
           />
         </Group>
         <Group justify="flex-end">
-          <SemanticButton action="save" color="ingress" loading={saving} onClick={() => void handleSave()} />
+          <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} loading={saving} onClick={() => void handleSave()} />
         </Group>
         {message ? <span>{message}</span> : null}
       </Stack>

@@ -27,6 +27,7 @@ const CONFIDENCE_COLOR: Record<string, string> = {
   low: getProductColor("dashboard", "risk"),
   insufficient: getProductColor("dashboard", "neutral")
 };
+const DASHBOARD_RADAR_COLOR = "var(--gds-vibe-accent, var(--accent-gold))";
 
 export default function AthleteIntelligencePage() {
   const params = useParams<{ id: string }>();
@@ -133,7 +134,7 @@ export default function AthleteIntelligencePage() {
                   <PolarGrid />
                   <PolarAngleAxis dataKey="dimension" />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                  <Radar name={projection.athlete.name ?? "Athlete"} dataKey="value" stroke="var(--mantine-color-ingress-6)" fill="var(--mantine-color-ingress-6)" fillOpacity={0.6} />
+                  <Radar name={projection.athlete.name ?? "Athlete"} dataKey="value" stroke={DASHBOARD_RADAR_COLOR} fill={DASHBOARD_RADAR_COLOR} fillOpacity={0.6} />
                 </RadarChart>
               </ResponsiveContainer>
             </Box>

@@ -91,7 +91,7 @@ const PRODUCT_COLORS: Record<ProductSurfaceKey, Record<ProductColorIntent, strin
   },
   public: {
     neutral: "neutral",
-    primaryAction: "ingress",
+    primaryAction: "review",
     progressGood: "tactical",
     progressRisk: "red",
     progressWatch: "review",

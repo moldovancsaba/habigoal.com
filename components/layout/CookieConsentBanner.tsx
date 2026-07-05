@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { Paper, Stack, Text } from "@mantine/core";
+import { createGdsVocabularyPack, GdsIcons, SemanticButton, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { createGdsVocabularyPack, GdsIcons, SemanticButton } from "@sovereignsquad/gds/client";
+import { Link, usePathname } from "@/i18n/navigation";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { COOKIE_CONSENT_NAME, serializeCookieConsent, ACCEPT_ALL, ESSENTIAL_ONLY, parseCookieConsent } from "@/lib/cookie-consent";
+import { getProductColor, resolveProductSurfaceFromPathname } from "@/lib/product-ui-contracts";
 
 const CONSENT_COOKIE_NAME = COOKIE_CONSENT_NAME;
 
@@ -22,12 +23,16 @@ function hasConsentCookie() {
 
 export function CookieConsentBanner() {
   const t = useTranslations("Common");
+  const pathname = usePathname();
   const consentAccepted = useSyncExternalStore(
     () => () => undefined,
     () => hasConsentCookie(),
     () => false
   );
   const [dismissed, setDismissed] = useState(false);
+  const activeSurface = resolveProductSurfaceFromPathname(pathname);
+  const primaryActionColor = getProductColor(activeSurface, "primaryAction");
+  const secondaryActionColor = getProductColor(activeSurface, "secondaryAction");
   const consentActionPack = useMemo(
     () =>
       createGdsVocabularyPack("cookie", {
@@ -61,6 +66,8 @@ export function CookieConsentBanner() {
 
   return (
     <Paper
+      aria-label={t("cookieConsentMessage")}
+      role="region"
       shadow="md"
       withBorder
       className="glass-panel surface-outline"
@@ -85,13 +92,13 @@ export function CookieConsentBanner() {
           <SemanticButton
             action="cookie:essentialOnly"
             variant="default"
-            color="gray"
+            color={secondaryActionColor}
             onClick={acceptEssentialOnly}
             vocabularyPacks={[consentActionPack]}
           />
           <SemanticButton
             action="cookie:accept"
-            color="ingress"
+            color={primaryActionColor}
             onClick={acceptAll}
             vocabularyPacks={[consentActionPack]}
           />

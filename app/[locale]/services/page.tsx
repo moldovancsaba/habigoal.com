@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 
 import { Container, Title, Text, SimpleGrid, Card, Badge, Group } from "@mantine/core";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import { listTrainersServices } from "@/repositories/trainers-service.repository";
 
 export default async function ServicesDirectoryPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -29,7 +30,7 @@ export default async function ServicesDirectoryPage({ params }: { params: Promis
               <Card key={service.id} shadow="sm" padding="lg" radius="md" withBorder component={Link} href={`/${locale}/services/${service.id}`}>
                 <Group justify="space-between" mt="md" mb="xs">
                   <Text fw={500} lineClamp={1}>{title}</Text>
-                  <Badge color="ingress">{service.entityKind}</Badge>
+                  <Badge color={getProductColor("public", "primaryAction")}>{service.entityKind}</Badge>
                 </Group>
                 <Text size="sm" c="dimmed" lineClamp={3}>
                   {description}

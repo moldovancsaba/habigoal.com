@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Group, Paper, Select, Stack, Text, TextInput } from "@mantine/core";
+import { Button, Group, Select, Stack, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import type { Team } from "@/types/team";
 import type { TeamInvitation } from "@/types/team-invitation";
 
@@ -83,10 +85,10 @@ export function TeamInvitationsManager({ teams }: { teams: Team[] }) {
           onChange={(value) => setRole(value === "trainer" ? "trainer" : "athlete")}
           allowDeselect={false}
         />
-        {message ? <Text size="sm" c="var(--mantine-color-ingress-7)">{message}</Text> : null}
+        {message ? <Text size="sm" c="var(--status-success)">{message}</Text> : null}
         {error ? <Text size="sm" c="red">{error}</Text> : null}
         <Group>
-          <Button loading={busy} disabled={!teamId || !email.trim()} onClick={() => void send()}>
+          <Button color={getProductColor("dashboard", "primaryAction")} loading={busy} disabled={!teamId || !email.trim()} onClick={() => void send()}>
             {busy ? t("sending") : t("send")}
           </Button>
         </Group>

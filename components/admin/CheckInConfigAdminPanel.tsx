@@ -5,6 +5,7 @@ import { Checkbox, Group, NumberInput, Stack, Text } from "@mantine/core";
 import { SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { trackerQuestions } from "@/lib/readiness-model";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import type { CheckInQuestionConfig } from "@/types/check-in-config";
 
 export function CheckInConfigAdminPanel() {
@@ -86,7 +87,7 @@ export function CheckInConfigAdminPanel() {
           </Group>
         ))}
         <Group justify="flex-end">
-          <SemanticButton action="save" color="ingress" loading={saving} onClick={() => void handleSave()} />
+          <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} loading={saving} onClick={() => void handleSave()} />
         </Group>
         {message ? <Text size="sm">{message}</Text> : null}
       </Stack>

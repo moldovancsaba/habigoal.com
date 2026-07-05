@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listNewsPosts } from "@/lib/news";
 import { NewsReadPostButton } from "@/components/news/NewsReadPostButton";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 export default async function NewsIndexPage({
   params
@@ -26,7 +27,7 @@ export default async function NewsIndexPage({
           </Box>
 
           <Stack gap="sm">
-            <Badge color="ingress" variant="light" size="lg" w="fit-content">
+            <Badge color={getProductColor("public", "primaryAction")} variant="light" size="lg" w="fit-content">
               {t("badge")}
             </Badge>
             <Title order={1}>{t("title")}</Title>

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container, Title, Text, Card, Badge, Group, Stack } from "@mantine/core";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import { getTrainersServiceById } from "@/repositories/trainers-service.repository";
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
@@ -22,7 +23,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         <Stack gap="md">
           <Group justify="space-between">
             <Title order={1}>{title}</Title>
-            <Badge color="ingress" size="lg">{service.entityKind}</Badge>
+            <Badge color={getProductColor("public", "primaryAction")} size="lg">{service.entityKind}</Badge>
           </Group>
 
           <Text size="lg">{description}</Text>

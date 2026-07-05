@@ -124,6 +124,40 @@ describe("product surface route boundaries", () => {
     expect(styles).not.toContain("aiq-command-layout-embedded");
   });
 
+  it("keeps global overlays and athlete persona routes on the gold product color contract", () => {
+    const cookieBanner = readSource("components/layout/CookieConsentBanner.tsx");
+    const athleteHome = readSource("components/athletes/AthletesAppHome.tsx");
+    const trainingLogRoute = readSource("app/[locale]/athletes/[id]/training-log/page.tsx");
+    const trainingLogForm = readSource("components/athletes/TrainingLoadLogger.tsx");
+    const sessionRpeRoute = readSource("app/api/session-plans/rpe/route.ts");
+
+    expect(cookieBanner).toContain("resolveProductSurfaceFromPathname(pathname)");
+    expect(cookieBanner).toContain("getProductColor(activeSurface, \"primaryAction\")");
+    expect(cookieBanner).not.toContain("color=\"ingress\"");
+    expect(cookieBanner).not.toContain("@mantine/core");
+
+    expect(athleteHome).toContain("getProductColor(ATHLETE_APP_SURFACE, \"primaryAction\")");
+    expect(athleteHome).not.toContain("@mantine/core");
+    expect(athleteHome).not.toContain("mantine-color-ingress");
+
+    expect(trainingLogRoute).toContain("<DashboardShell>");
+    expect(trainingLogRoute).toContain("TrainingLoadLogger");
+    expect(trainingLogRoute).not.toContain("setTimeout");
+
+    expect(trainingLogForm).toContain("`/api/athletes/${athleteId}/training-load`");
+    expect(trainingLogForm).toContain("getProductColor(\"dashboard\", \"primaryAction\")");
+    expect(trainingLogForm).not.toContain("bg=\"gray.0\"");
+    expect(trainingLogForm).not.toContain("color=\"ingress\"");
+    expect(trainingLogForm).not.toContain("mantine-color-ingress");
+    expect(trainingLogForm).not.toContain("setTimeout");
+
+    expect(sessionRpeRoute).toContain("requireRole(request, [\"admin\", \"trainer\", \"athlete\"])");
+    expect(sessionRpeRoute).toContain("canAccessAthlete(authUser, athleteId)");
+    expect(sessionRpeRoute).toContain("createTrainingLoadRecord");
+    expect(sessionRpeRoute).not.toContain("console.log");
+    expect(sessionRpeRoute).not.toContain("Store in DB");
+  });
+
   it("uses the official gold athlete theme contract for persona app shells", () => {
     const localeLayout = readSource("app/[locale]/layout.tsx");
     const manifest = readSource("app/manifest.ts");
@@ -143,6 +177,7 @@ describe("product surface route boundaries", () => {
     expect(productContracts).toMatch(/dashboard:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/);
     expect(productContracts).toMatch(/habigoal:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/);
     expect(productContracts).toMatch(/habigoal:\s*\{[\s\S]*?primaryAction:\s*"review"/);
+    expect(productContracts).toMatch(/public:\s*\{[\s\S]*?primaryAction:\s*"review"/);
     expect(themeBoundary).toContain("surface === \"habigoal\"");
     expect(themeBoundary).toContain("surface === \"dashboard\"");
     expect(themeBoundary).toContain("--app-bg");

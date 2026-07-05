@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Text, TextInput, Title } from "@mantine/core";
-import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { Badge, Box, createGdsVocabularyPack, GdsIcons, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import { Link } from "@/i18n/navigation";
 import { selectCopyKey } from "@/lib/copy-variants";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import { heroSubtitleDef, neutralPromptDef } from "@/lib/surface-voice";
 import type { AthleteProfile } from "@/types/athlete";
 
 type AthleteListItem = AthleteProfile;
+const ATHLETE_APP_SURFACE = "dashboard";
 
 export function AthletesAppHome() {
   const t = useTranslations("AthletesApp");
@@ -112,7 +114,7 @@ export function AthletesAppHome() {
         >
           {loading ? (
             <Group justify="center" py="xl">
-              <Loader color="var(--mantine-color-ingress-6)" />
+              <Loader color={getProductColor(ATHLETE_APP_SURFACE, "primaryAction")} />
             </Group>
           ) : filteredAthletes.length === 0 ? (
             <Text c="dimmed">{t(selectCopyKey(neutralPromptDef("empty"), { now: heroNowMs }))}</Text>
@@ -191,7 +193,7 @@ function AthletePreviewCard({ athlete }: { athlete: AthleteListItem }) {
             </Link>
           ) : null}
           <Link href={athlete._id ? `/athletes/${athlete._id}/check-in` : "/athletes"} style={{ textDecoration: "none", width: "100%" }}>
-            <SemanticButton action="start" color="ingress" fullWidth />
+            <SemanticButton action="start" color={getProductColor(ATHLETE_APP_SURFACE, "primaryAction")} fullWidth />
           </Link>
         </Group>
       </Stack>
@@ -214,7 +216,7 @@ function MetricMini({ label, value }: { label: string; value: string }) {
 
 function PillarChip({ label, value }: { label: string; value: string }) {
   return (
-    <Box className="glass-pill" px="sm" py={8} style={{ borderRadius: 14 }}>
+    <Box className="glass-pill" px="sm" py={8} style={{ borderRadius: "var(--surface-radius)" }}>
       <Stack gap={0} align="center">
         <Text size="sm" c="var(--text-secondary)">
           {label}

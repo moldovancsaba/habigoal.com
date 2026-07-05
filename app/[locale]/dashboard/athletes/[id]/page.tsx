@@ -68,6 +68,7 @@ type MemoryEntry = {
 
 type TrendWindow = "7d" | "30d" | "all" | "custom";
 type TrendMetric = "readiness" | "movement" | "social" | "mental" | "ski";
+const DASHBOARD_CHART_PRIMARY_COLOR = "var(--gds-vibe-accent, var(--accent-gold))";
 type BaselineSaveState = "idle" | "saving" | "saved" | "error";
 
 type BaselineDraft = {
@@ -851,7 +852,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                     title={td("athleteHabitTrendTitle")}
                     data={habitTrendData}
                     emptyLabel={td("chartNoData")}
-                    color="var(--mantine-color-ingress-6)"
+                    color={DASHBOARD_CHART_PRIMARY_COLOR}
                     yDomain={[0, 5]}
                   />
                   <Text size="sm" c="dimmed">
@@ -1124,7 +1125,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   title={td("athleteReadinessTimelineTitle")}
                   data={readinessTimeline}
                   emptyLabel={td("chartNoData")}
-                  color="var(--mantine-color-knowmore-6)"
+                  color={DASHBOARD_CHART_PRIMARY_COLOR}
                   yDomain={[0, 5]}
                 />
               </SimpleGrid>
@@ -1468,11 +1469,11 @@ function getTrendMetricValue(assessment: CheckInRecord, metric: TrendMetric) {
 }
 
 function getTrendMetricColor(metric: TrendMetric) {
-  if (metric === "readiness") return "var(--mantine-color-knowmore-6)";
+  if (metric === "readiness") return DASHBOARD_CHART_PRIMARY_COLOR;
   if (metric === "movement") return "var(--mantine-color-tactical-6)";
   if (metric === "social") return "var(--mantine-color-synthesis-6)";
   if (metric === "mental") return "var(--mantine-color-strategy-6)";
-  return "var(--mantine-color-ingress-6)";
+  return DASHBOARD_CHART_PRIMARY_COLOR;
 }
 
 function formatTrendValue(value: number | null) {

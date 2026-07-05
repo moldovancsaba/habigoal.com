@@ -10,7 +10,7 @@ export const ANALYTICS_CONFIG = {
   fontFamily: 'var(--font-noto-sans), "Noto Sans", Helvetica, Arial, sans-serif',
   margins: { top: 10, right: 10, left: -20, bottom: 5 },
   colors: {
-    primary: "var(--mantine-color-ingress-6)",
+    primary: "var(--gds-vibe-accent, var(--accent-gold))",
     secondary: "var(--mantine-color-synthesis-7)",
     grid: "var(--border-primary)",
     text: "var(--text-primary)",

@@ -1,7 +1,8 @@
 "use client";
 
 import { Line, LineChart, ResponsiveContainer } from "recharts";
-import { Box } from "@mantine/core";
+import { Box } from "@sovereignsquad/gds/client";
+import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 
 interface SparklineChartProps {
   data: number[];
@@ -14,7 +15,7 @@ export function SparklineChart({
   data, 
   width = 80, 
   height = 30, 
-  color = "var(--mantine-color-ingress-6)" 
+  color = ANALYTICS_CONFIG.colors.primary
 }: SparklineChartProps) {
   
   // Recharts expects objects

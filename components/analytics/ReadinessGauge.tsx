@@ -25,7 +25,7 @@ export function ReadinessGauge({ value, max = 5, title, subtitle }: ReadinessGau
     const ratio = max > 0 ? value / max : 0;
     if (ratio < 0.45) return "var(--status-error)";
     if (ratio < 0.72) return "var(--accent-gold)";
-    return "var(--mantine-color-knowmore-6)";
+    return "var(--gds-vibe-accent, var(--accent-gold))";
   };
 
   const gaugeColor = getColor();

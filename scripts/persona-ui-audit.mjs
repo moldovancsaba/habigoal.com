@@ -12,7 +12,16 @@ const protectedScopes = [
   "app/[locale]/dashboard/coach"
 ];
 const protectedFiles = [
-  "app/[locale]/page.tsx"
+  "app/[locale]/page.tsx",
+  "app/[locale]/athletes/[id]/training-log/page.tsx",
+  "components/athletes/AthletesAppHome.tsx",
+  "components/athletes/TrainingLoadLogger.tsx",
+  "components/layout/CookieConsentBanner.tsx"
+];
+const personaColorContractFiles = [
+  ...protectedFiles,
+  "components/admin/AthleteProfileAdminPanel.tsx",
+  "components/admin/CheckInConfigAdminPanel.tsx"
 ];
 
 const reportIndex = process.argv.indexOf("--report");
@@ -69,6 +78,10 @@ assertDashboardRouteColorContract();
 assertRouteChromeContract();
 assertHabigoalOwnsChrome();
 assertAthleteIqOwnsChrome();
+assertGlobalOverlayColorContract();
+assertAthletePersonaShellContract();
+assertPersonaColorContract();
+assertNoLegacyBlueUiTokens();
 assertGoldAthleteThemeContract();
 assertHabigoalBoundaryLanguage();
 assertNoHabigoalLegacyThemeTokens();
@@ -286,6 +299,147 @@ function assertAthleteIqOwnsChrome() {
   }
 }
 
+function assertGlobalOverlayColorContract() {
+  const file = "components/layout/CookieConsentBanner.tsx";
+  const source = fs.readFileSync(path.join(root, file), "utf8");
+  const requiredSnippets = [
+    "resolveProductSurfaceFromPathname(pathname)",
+    "getProductColor(activeSurface, \"primaryAction\")",
+    "getProductColor(activeSurface, \"secondaryAction\")"
+  ];
+  const forbiddenSnippets = [
+    "color=\"ingress\"",
+    "color=\"gray\"",
+    "@mantine/core"
+  ];
+
+  for (const snippet of requiredSnippets) {
+    if (!source.includes(snippet)) {
+      failures.push({
+        file,
+        rule: "global-overlay-product-color-contract",
+        message: `Cookie consent overlay must inherit active product color contract: ${snippet}`
+      });
+    }
+  }
+
+  for (const snippet of forbiddenSnippets) {
+    if (source.includes(snippet)) {
+      failures.push({
+        file,
+        rule: "global-overlay-product-color-contract",
+        message: `Cookie consent overlay must not hardcode legacy/default UI color or direct Mantine: ${snippet}`
+      });
+    }
+  }
+}
+
+function assertAthletePersonaShellContract() {
+  const files = [
+    {
+      file: "components/athletes/AthletesAppHome.tsx",
+      required: ["getProductColor(ATHLETE_APP_SURFACE, \"primaryAction\")"],
+      forbidden: ["@mantine/core", "color=\"ingress\"", "mantine-color-ingress"]
+    },
+    {
+      file: "app/[locale]/athletes/[id]/training-log/page.tsx",
+      required: ["<DashboardShell>", "TrainingLoadLogger"],
+      forbidden: ["setTimeout", "session-plans/rpe", "Real implementation"]
+    },
+    {
+      file: "components/athletes/TrainingLoadLogger.tsx",
+      required: ["`/api/athletes/${athleteId}/training-load`", "getProductColor(\"dashboard\", \"primaryAction\")"],
+      forbidden: ["@mantine/core", "bg=\"gray.0\"", "color=\"ingress\"", "mantine-color-ingress", "setTimeout", "session-plans/rpe", "Real implementation"]
+    },
+    {
+      file: "app/api/session-plans/rpe/route.ts",
+      required: ["requireRole(request, [\"admin\", \"trainer\", \"athlete\"])", "canAccessAthlete(authUser, athleteId)", "createTrainingLoadRecord"],
+      forbidden: ["console.log", "Store in DB", "completedLoadPoints: rpeScore *"]
+    }
+  ];
+
+  for (const check of files) {
+    const source = fs.readFileSync(path.join(root, check.file), "utf8");
+    for (const snippet of check.required) {
+      if (!source.includes(snippet)) {
+        failures.push({
+          file: check.file,
+          rule: "athlete-persona-shell-contract",
+          message: `Athlete persona route must keep shared dark/gold shell contract: ${snippet}`
+        });
+      }
+    }
+    for (const snippet of check.forbidden) {
+      if (source.includes(snippet)) {
+        failures.push({
+          file: check.file,
+          rule: "athlete-persona-shell-contract",
+          message: `Athlete persona route must not keep old blue/light UI residue: ${snippet}`
+        });
+      }
+    }
+  }
+}
+
+function assertPersonaColorContract() {
+  for (const relativeFile of new Set(personaColorContractFiles)) {
+    const filePath = path.join(root, relativeFile);
+    if (!fs.existsSync(filePath)) continue;
+    const source = fs.readFileSync(filePath, "utf8");
+    for (const snippet of ["color=\"ingress\"", "color='ingress'", "var(--mantine-color-ingress"]) {
+      if (source.includes(snippet)) {
+        failures.push({
+          file: relativeFile,
+          rule: "persona-primary-action-color-contract",
+          message: `Persona primary actions must resolve through product-ui-contracts instead of the old ingress/blue lane: ${snippet}`
+        });
+      }
+    }
+  }
+}
+
+function assertNoLegacyBlueUiTokens() {
+  const checkedRoots = ["app", "components", "lib", "services"];
+  const forbiddenPatterns = [
+    {
+      pattern: /color=\{?["']ingress["']/,
+      message: "UI must not hardcode the old ingress/blue semantic color."
+    },
+    {
+      pattern: /color=\{?["']knowmore["']/,
+      message: "UI must not hardcode the old knowmore/blue semantic color."
+    },
+    {
+      pattern: /var\(--mantine-color-ingress-[0-9]\)/,
+      message: "UI must not reference the old ingress/blue Mantine CSS token."
+    },
+    {
+      pattern: /var\(--mantine-color-knowmore-[0-9]\)/,
+      message: "UI must not reference the old knowmore/blue Mantine CSS token."
+    },
+    {
+      pattern: /primaryAction:\s*["']ingress["']/,
+      message: "Product contracts must not map primary actions to the old ingress/blue lane."
+    }
+  ];
+
+  for (const rootName of checkedRoots) {
+    for (const file of collectFiles(path.join(root, rootName))) {
+      const relativeFile = path.relative(root, file);
+      const source = fs.readFileSync(file, "utf8");
+      for (const { pattern, message } of forbiddenPatterns) {
+        if (pattern.test(source)) {
+          failures.push({
+            file: relativeFile,
+            rule: "no-legacy-blue-ui-token",
+            message
+          });
+        }
+      }
+    }
+  }
+}
+
 function assertGoldAthleteThemeContract() {
   const checks = [
     {
@@ -347,7 +501,8 @@ function assertGoldAthleteThemeContract() {
   const requiredSnippets = [
     /dashboard:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/,
     /habigoal:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/,
-    /habigoal:\s*\{[\s\S]*?primaryAction:\s*"review"/
+    /habigoal:\s*\{[\s\S]*?primaryAction:\s*"review"/,
+    /public:\s*\{[\s\S]*?primaryAction:\s*"review"/
   ];
 
   for (const pattern of requiredSnippets) {
