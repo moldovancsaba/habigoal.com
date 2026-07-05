@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import { canOpenProductSurface, getAuthUser, normalizeRoles, type AppRole } from "@/lib/access";
+import type { ProductAppPersona } from "@/lib/product-apps";
 import { getSession } from "@/lib/session";
 import type { ProductSurfaceId } from "@/lib/product-entitlements";
 
-export type ProductLoginPersona = "athlete" | "trainer";
+export type ProductLoginPersona = ProductAppPersona;
 
 export async function requireProductSession(input: {
-  allowedRoles: AppRole[];
+  allowedRoles: readonly AppRole[];
   locale: string;
   path: string;
   persona: ProductLoginPersona;

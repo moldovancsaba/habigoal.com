@@ -232,16 +232,20 @@ describe("product surface route boundaries", () => {
   it("requires a matching login session before product app data is loaded", () => {
     const habigoalRoute = readSource("app/[locale]/habigoal/page.tsx");
     const athleteIqRoute = readSource("app/[locale]/athlete-iq/page.tsx");
+    const appContracts = readSource("lib/product-apps.ts");
 
     expect(habigoalRoute.indexOf("requireProductSession")).toBeLessThan(habigoalRoute.indexOf("getHabigoalTodayProjection"));
-    expect(habigoalRoute).toContain('persona: "athlete"');
-    expect(habigoalRoute).toContain('"athlete"');
-    expect(habigoalRoute).toContain('"trainer"');
-    expect(habigoalRoute).toContain('"club_management"');
+    expect(habigoalRoute).toContain('getProductAppContract("habigoal")');
+    expect(habigoalRoute).toContain("getProductAppSessionInput(HABIGOAL_APP, locale)");
+    expect(appContracts).toContain('defaultPersona: "athlete"');
+    expect(appContracts).toContain('"parent"');
+    expect(appContracts).toContain('"trainer"');
+    expect(appContracts).toContain('"club_management"');
     expect(athleteIqRoute.indexOf("requireProductSession")).toBeLessThan(athleteIqRoute.indexOf("getAthleteIqProductDashboardProjection"));
-    // Defaults to the trainer surface, but honours a role-gated persona override.
-    expect(athleteIqRoute).toContain('?? "trainer"');
-    expect(athleteIqRoute).toContain('"club_management"');
+    expect(athleteIqRoute).toContain("resolveAthleteIqProductAppId(requestedPersona)");
+    expect(athleteIqRoute).toContain("getProductAppSessionInput(appContract, locale");
+    expect(appContracts).toContain('"athlete-iq-athlete"');
+    expect(appContracts).toContain('"athlete-iq-trainer"');
   });
 
   it("keeps AthleteIQ oriented around trainer team and club operations", () => {

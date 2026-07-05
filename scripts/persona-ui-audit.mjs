@@ -86,6 +86,7 @@ assertPersonaColorContract();
 assertNoLegacyBlueUiTokens();
 assertGoldAthleteThemeContract();
 assertProductSurfaceRegistryContract();
+assertProductAppContract();
 assertHabigoalBoundaryLanguage();
 assertNoHabigoalLegacyThemeTokens();
 
@@ -609,6 +610,84 @@ function assertProductSurfaceRegistryContract() {
         file,
         rule: "product-surface-registry-boundary",
         message: `Product registry is missing strict ownership marker: ${snippet}`
+      });
+    }
+  }
+}
+
+function assertProductAppContract() {
+  const contractFile = "lib/product-apps.ts";
+  const contractSource = fs.readFileSync(path.join(root, contractFile), "utf8");
+  const requiredContractSnippets = [
+    'PRODUCT_APP_SEQUENCE = ["habigoal", "athlete-iq-athlete", "athlete-iq-trainer"]',
+    'productSurfaceId: "habigoal"',
+    'productSurfaceId: "athlete-iq"',
+    'productSurfaceKey: "habigoal"',
+    'productSurfaceKey: "athlete_iq"',
+    'themePresetId: ATHLETE_IQ_GDS_THEME_PRESET',
+    'allowedFunctionPrefixes: ["hbg-"]',
+    'allowedFunctionPrefixes: ["aiq-"]',
+    'forbiddenFunctionPrefixes: ["hbg-"]',
+    'forbiddenFunctionPrefixes: ["aiq-"]',
+    'mayRenderForeignProductUi: false',
+    'mayPublishForeignProductFunctions: false',
+    'sourceContract: "shared-daily-status-ledger"'
+  ];
+
+  for (const snippet of requiredContractSnippets) {
+    if (!contractSource.includes(snippet)) {
+      failures.push({
+        file: contractFile,
+        rule: "product-app-contract",
+        message: `Missing canonical app boundary marker: ${snippet}`
+      });
+    }
+  }
+
+  const routeChecks = [
+    {
+      file: "app/[locale]/habigoal/page.tsx",
+      required: ['getProductAppContract("habigoal")', "getProductAppSessionInput(HABIGOAL_APP, locale)", "appContract={HABIGOAL_APP}"]
+    },
+    {
+      file: "app/[locale]/athlete-iq/page.tsx",
+      required: ["resolveAthleteIqProductAppId(requestedPersona)", "getProductAppSessionInput(appContract, locale", "appContract={appContract}"]
+    }
+  ];
+
+  for (const check of routeChecks) {
+    const source = fs.readFileSync(path.join(root, check.file), "utf8");
+    for (const snippet of check.required) {
+      if (!source.includes(snippet)) {
+        failures.push({
+          file: check.file,
+          rule: "product-app-contract",
+          message: `Product route must consume the canonical app contract: ${snippet}`
+        });
+      }
+    }
+  }
+
+  const shellChecks = [
+    "components/product/habigoal/HabigoalExperience.tsx",
+    "components/product/athlete-iq/AthleteIqExperience.tsx"
+  ];
+
+  for (const file of shellChecks) {
+    const source = fs.readFileSync(path.join(root, file), "utf8");
+    if (!source.includes("ProductThemeBoundary surface={appContract.productSurfaceKey}")) {
+      failures.push({
+        file,
+        rule: "product-app-contract",
+        message: "Product shells must receive their theme surface from the selected app contract."
+      });
+    }
+
+    if (/ProductThemeBoundary\s+surface=["'](?:habigoal|athlete_iq)["']/.test(source)) {
+      failures.push({
+        file,
+        rule: "product-app-contract",
+        message: "Product shells must not hardcode their own theme surface; the route-selected app contract owns it."
       });
     }
   }

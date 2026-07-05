@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { selectCopyKey } from "@/lib/copy-variants";
 import { heroSubtitleDef, neutralPromptDef } from "@/lib/surface-voice";
 import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/product-surface-branding";
+import type { ProductAppContract } from "@/lib/product-apps";
 import type { ProductSurface, ProductTheme } from "@/lib/product-surfaces";
 import type {
   AthleteIqDashboardAthlete,
@@ -46,7 +47,13 @@ type AiqPersona = AthleteIqProductDashboardProjection["persona"];
 
 const ATHLETE_IQ_THEME = resolveGdsVibeTheme(ATHLETE_IQ_GDS_THEME_PRESET);
 
-export function AthleteIqExperience({ dashboard, surface }: { dashboard: AthleteIqProductDashboardProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
+type AthleteIqExperienceProps = {
+  appContract: ProductAppContract;
+  dashboard: AthleteIqProductDashboardProjection;
+  surface: ProductSurface;
+};
+
+export function AthleteIqExperience({ appContract, dashboard, surface }: AthleteIqExperienceProps) {
   const t = useTranslations("ProductSurfaces.athleteIq");
   const tActions = useTranslations("ProductSurfaces.actions");
   const common = useTranslations("Common");
@@ -154,6 +161,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
         modeOptions={modeOptions}
         modeView={modeView}
         setModeView={setModeView}
+        appContract={appContract}
         surface={surface}
         translate={t}
       />
@@ -161,7 +169,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
   }
 
   return (
-    <ProductThemeBoundary surface="athlete_iq" className="aiq-product-shell">
+    <ProductThemeBoundary surface={appContract.productSurfaceKey} className="aiq-product-shell">
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
         <SurfaceTopBar surface={surface} />
         <AiqMobileTopBar
@@ -349,6 +357,7 @@ export function AthleteIqExperience({ dashboard, surface }: { dashboard: Athlete
 
 function AiqAthleteWorkspace({
   actionPack,
+  appContract,
   dashboard,
   modeOptions,
   modeView,
@@ -357,6 +366,7 @@ function AiqAthleteWorkspace({
   translate
 }: {
   actionPack: ProductSurfaceActionPack;
+  appContract: ProductAppContract;
   dashboard: AthleteIqProductDashboardProjection;
   modeOptions: Array<{ label: string; value: string }>;
   modeView: "lifestyle" | "performance";
@@ -441,7 +451,7 @@ function AiqAthleteWorkspace({
     : translate(selectCopyKey(neutralPromptDef("athleteWorkspace.empty.copy"), { now: heroNowMs }));
 
   return (
-    <ProductThemeBoundary surface="athlete_iq" className="aiq-product-shell">
+    <ProductThemeBoundary surface={appContract.productSurfaceKey} className="aiq-product-shell">
       <Box className="aiq-workspace" px={{ base: "md", md: "xl" }} py={{ base: "md", md: "xl" }} maw={1480} mx="auto">
         <SurfaceTopBar surface={surface} />
         <AiqMobileTopBar

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HabigoalExperience } from "@/components/product/habigoal/HabigoalExperience";
+import { getProductAppContract, getProductAppSessionInput } from "@/lib/product-apps";
 import { requireProductSession } from "@/lib/product-session";
 import { getProductSurfaceOrThrow } from "@/lib/product-surfaces";
 import { getHabigoalRecentHistory, getHabigoalTodayProjection } from "@/services/habigoal-product.service";
 
 export const dynamic = "force-dynamic";
+const HABIGOAL_APP = getProductAppContract("habigoal");
 
 export async function generateMetadata({
   params
@@ -28,16 +30,15 @@ export default async function HabigoalSurfaceRoute({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  await requireProductSession({
-    allowedRoles: ["admin", "athlete", "trainer", "parent", "performance_coach", "physio", "analyst", "club_management"],
-    locale,
-    path: `/${locale}/habigoal`,
-    persona: "athlete",
-    surface: "habigoal"
-  });
+  await requireProductSession(getProductAppSessionInput(HABIGOAL_APP, locale));
   const [projection, history] = await Promise.all([getHabigoalTodayProjection(), getHabigoalRecentHistory()]);
 
   return (
-    <HabigoalExperience projection={projection} history={history} surface={getProductSurfaceOrThrow("habigoal")} />
+    <HabigoalExperience
+      appContract={HABIGOAL_APP}
+      projection={projection}
+      history={history}
+      surface={getProductSurfaceOrThrow(HABIGOAL_APP.productSurfaceId)}
+    />
   );
 }

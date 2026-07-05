@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Box, Button, GdsIcons, Group, Progress, SimpleGrid, Slider, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { useState, type CSSProperties } from "react";
+import type { ProductAppContract } from "@/lib/product-apps";
 import type { ProductSurface } from "@/lib/product-surfaces";
 import type { HabigoalDailyStatus } from "@/lib/habigoal-status";
 import type { HabigoalHabitKey, HabigoalHistory, HabigoalTodayProjection } from "@/services/habigoal-product.service";
@@ -92,7 +93,14 @@ type ResultPanelProps = {
   translate: Translate;
 };
 
-export function HabigoalExperience({ history, projection, surface }: { history?: HabigoalHistory; projection: HabigoalTodayProjection; relatedSurface?: ProductSurface; surface: ProductSurface }) {
+type HabigoalExperienceProps = {
+  appContract: ProductAppContract;
+  history?: HabigoalHistory;
+  projection: HabigoalTodayProjection;
+  surface: ProductSurface;
+};
+
+export function HabigoalExperience({ appContract, history, projection, surface }: HabigoalExperienceProps) {
   const router = useRouter();
   const t = useTranslations("ProductSurfaces.habigoal");
   const [nowMs] = useState(Date.now);
@@ -220,7 +228,7 @@ export function HabigoalExperience({ history, projection, surface }: { history?:
   const showWizard = view === "flow" && !statusAvailable;
 
   return (
-    <ProductThemeBoundary surface="habigoal" className="habigoal-product-shell">
+    <ProductThemeBoundary surface={appContract.productSurfaceKey} className="habigoal-product-shell">
       <Box className="hbg-app-frame" px={{ base: "sm", md: "md" }} py={{ base: 0, md: "md" }} mx="auto">
         <Box className="hbg-desktop-topbar">
           <SurfaceTopBar surface={surface} />
