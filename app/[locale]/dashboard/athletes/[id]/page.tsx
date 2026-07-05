@@ -516,14 +516,14 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           <Group gap="sm" wrap="wrap" className="mobile-actions-stack">
             {isAthleteApp ? (
               <Link href={startCheckInHref} style={{ textDecoration: "none" }}>
-                <SemanticButton action="start" color="ingress" />
+                <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} />
               </Link>
             ) : (
               <>
                 <Link href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"} style={{ textDecoration: "none" }}>
                   <SemanticButton action="edit" variant="default" disabled={data.assessments.length === 0} />
                 </Link>
-                <SemanticButton action="download" color="ingress" onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>{td("exportReportPdf")}</SemanticButton>
+                <SemanticButton action="download" color={getProductColor("dashboard", "primaryAction")} onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>{td("exportReportPdf")}</SemanticButton>
                 <SemanticButton action="delete" color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0} />
               </>
             )}
@@ -579,7 +579,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             description={t("noHistory")}
             action={emptyActionHref ? (
               <Link href={emptyActionHref} style={{ textDecoration: "none" }}>
-                <SemanticButton action="start" color="ingress" />
+                <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} />
               </Link>
             ) : null}
           />
@@ -613,7 +613,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                       </Badge>
                     </Group>
                     <Link href={startCheckInHref} style={{ textDecoration: "none" }}>
-                      <SemanticButton action={checkedInToday ? "edit" : "start"} color="ingress" fullWidth />
+                      <SemanticButton action={checkedInToday ? "edit" : "start"} color={getProductColor("dashboard", "primaryAction")} fullWidth />
                     </Link>
                   </Stack>
                 </Paper>
@@ -711,7 +711,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               </Link>
             ) : data?.child._id ? (
               <Link href={`/athletes/${data.child._id}/session`} style={{ textDecoration: "none" }}>
-                <SemanticButton action="start" color="ingress" size="sm">{td("athleteRunSessionAction")}</SemanticButton>
+                <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} size="sm">{td("athleteRunSessionAction")}</SemanticButton>
               </Link>
             ) : undefined}
           >
@@ -762,7 +762,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                           </Box>
 
                           {isPriorityAthlete ? (
-                            <Badge variant="light" color="ingress">
+                            <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>
                               {td("athletePlanPriorityBadge")}
                             </Badge>
                           ) : null}
@@ -783,7 +783,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             title={td("athleteHabitTrackerTitle")}
             description={td("athleteHabitTrackerSubtitle")}
             action={
-              <SemanticButton action="save" color="ingress" onClick={() => void saveTodayHabits()} loading={savingHabits} />
+              <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={() => void saveTodayHabits()} loading={savingHabits} />
             }
           >
             <Stack gap="md">
@@ -921,7 +921,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                               })}
                             </Text>
                           </Box>
-                          <Badge variant="light" color="ingress">
+                          <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>
                             {entry.focus}
                           </Badge>
                         </Group>
@@ -962,7 +962,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 description={td("athleteLoadEmpty")}
                 action={emptyActionHref ? (
                   <Link href={emptyActionHref} style={{ textDecoration: "none" }}>
-                    <SemanticButton action="start" color="ingress" />
+                    <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} />
                   </Link>
                 ) : null}
               />
@@ -1388,7 +1388,7 @@ function AthleteBaselineSetupSection({
         </GdsBox>
 
         <GdsGroup justify="flex-end">
-          <SemanticButton action="save" color="ingress" onClick={onSave} loading={saveState === "saving"} disabled={!canSave} />
+          <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={onSave} loading={saveState === "saving"} disabled={!canSave} />
         </GdsGroup>
       </GdsStack>
     </SectionPanel>

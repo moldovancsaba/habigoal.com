@@ -5,6 +5,7 @@ import { Box, Checkbox, Group, Loader, Paper, Select, SimpleGrid, Stack, Text, T
 import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { FMS_SUBTESTS, type FmsSubtest } from "@/lib/athleteiq-fms";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import type { AthleteProfile } from "@/types/athlete";
 import type { FmsScreen } from "@/types/athleteiq-fms";
 
@@ -229,7 +230,7 @@ export default function InjuryHubFmsPage() {
               ) : null}
 
               <Group justify="flex-end">
-                <SemanticButton action="save" color="ingress" loading={saving} disabled={!selectedId || saving} onClick={() => void save()}>
+                <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} loading={saving} disabled={!selectedId || saving} onClick={() => void save()}>
                   {t("save")}
                 </SemanticButton>
               </Group>

@@ -6,6 +6,7 @@ import { createGdsVocabularyPack, ChoiceChip, GdsIcons, PageHeader, SectionPanel
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { formatScore } from "@/lib/utils";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import type { AthleteProfile } from "@/types/athlete";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -349,14 +350,14 @@ export default function ChildrenListPage() {
               onClick={() => setShowDeleted((v) => !v)}
               vocabularyPacks={[athleteActionPack]}
             />
-            <SemanticButton action="add" color="ingress" onClick={startCreate} />
+            <SemanticButton action="add" color={getProductColor("dashboard", "primaryAction")} onClick={startCreate} />
           </Group>
         }
       />
       <SectionPanel>
         <Stack gap="md">
           {message ? (
-            <Alert color={error ? "red" : "ingress"} withCloseButton onClose={() => setMessage("")}>
+            <Alert color={error ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "primaryAction")} withCloseButton onClose={() => setMessage("")}>
               {message}
             </Alert>
           ) : null}
@@ -473,7 +474,7 @@ export default function ChildrenListPage() {
                           href={`/dashboard/athletes/${child._id}`}
                           fw={800}
                           size="lg"
-                          color="ingress"
+                          color={getProductColor("dashboard", "primaryAction")}
                           style={{ textDecoration: "none" }}
                           onClick={(e: MouseEvent<HTMLElement>) => e.stopPropagation()}
                         >
@@ -493,10 +494,10 @@ export default function ChildrenListPage() {
                         ) : null}
                         {child.latestReadiness !== undefined && (
                           <Group gap="xs" mt={8}>
-                            <Badge color="ingress" variant="filled" size="sm">
+                            <Badge color={getProductColor("dashboard", "primaryAction")} variant="filled" size="sm">
                               {t("athleteLatestReadinessBadge", { value: formatScore(child.latestReadiness) })}
                             </Badge>
-                            <Badge color="knowmore" variant="light" size="sm">
+                            <Badge color={getProductColor("dashboard", "secondaryAction")} variant="light" size="sm">
                               {t("athleteAverageReadinessBadge", { value: formatScore(child.avgReadiness) })}
                             </Badge>
                             <Badge color="strategy" variant="light" size="sm">
@@ -513,14 +514,14 @@ export default function ChildrenListPage() {
                       <Group gap="sm">
                         {!showDeleted ? (
                           <Link href={`/dashboard/assessment?childId=${child._id}`} style={{ textDecoration: "none" }} onClick={(e) => e.stopPropagation()}>
-                            <SemanticButton action="start" color="ingress" size="sm" />
+                            <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} size="sm" />
                           </Link>
                         ) : null}
                         {child.latestRecordId && (
                           <SemanticButton
                             action="download"
                             variant="outline"
-                            color="ingress"
+                            color={getProductColor("dashboard", "primaryAction")}
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -535,7 +536,7 @@ export default function ChildrenListPage() {
                           </Link>
                         ) : null}
                         {!showDeleted ? <SemanticButton action="edit" variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }} /> : null}
-                        {!showDeleted ? <SemanticButton action="delete" color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }} /> : <SemanticButton action="restore" color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }} />}
+                        {!showDeleted ? <SemanticButton action="delete" color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }} /> : <SemanticButton action="restore" color={getProductColor("dashboard", "primaryAction")} variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }} />}
                       </Group>
                     </Stack>
                   </Paper>
@@ -583,7 +584,7 @@ export default function ChildrenListPage() {
           </Stack>
           <Group justify="flex-end" mt="md">
           <SemanticButton action="cancel" variant="subtle" onClick={() => setEditing(null)} disabled={saving} />
-          <SemanticButton action="save" onClick={() => void saveEdit()} color="ingress" loading={saving} disabled={!draftName.trim() || !draftBirthDate.trim()} />
+          <SemanticButton action="save" onClick={() => void saveEdit()} color={getProductColor("dashboard", "primaryAction")} loading={saving} disabled={!draftName.trim() || !draftBirthDate.trim()} />
         </Group>
       </Modal>
       <Modal opened={createOpen} onClose={() => (saving ? null : setCreateOpen(false))} title={t("addChild")} centered>
@@ -614,7 +615,7 @@ export default function ChildrenListPage() {
           </Group>
           <Group justify="flex-end" mt="sm">
             <SemanticButton action="cancel" variant="subtle" onClick={() => setCreateOpen(false)} disabled={saving} />
-            <SemanticButton action="save" color="ingress" onClick={() => void createChild()} loading={saving} disabled={!draftName.trim() || !draftBirthDate.trim()} />
+            <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={() => void createChild()} loading={saving} disabled={!draftName.trim() || !draftBirthDate.trim()} />
           </Group>
         </Stack>
       </Modal>
@@ -646,7 +647,7 @@ export default function ChildrenListPage() {
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
             <SemanticButton action="cancel" variant="subtle" onClick={() => setRestoreTarget(null)} />
-            <SemanticButton action="restore" color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)} />
+            <SemanticButton action="restore" color={getProductColor("dashboard", "primaryAction")} disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTarget} onClick={() => restoreTarget && void restoreChild(restoreTarget)} />
           </Group>
         </Stack>
       </Modal>

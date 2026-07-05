@@ -65,6 +65,7 @@ for (const file of checkedFiles) {
 }
 
 assertDashboardColorContract();
+assertDashboardRouteColorContract();
 assertRouteChromeContract();
 assertSurfaceTopBarsGuarded("components/product/athlete-iq/AthleteIqExperience.tsx");
 assertHabigoalOwnsChrome();
@@ -136,6 +137,34 @@ function assertDashboardColorContract() {
       rule: "dashboard-primary-action-contract",
       message: "Dashboard primaryAction must resolve to review/gold, not ingress/blue."
     });
+  }
+}
+
+function assertDashboardRouteColorContract() {
+  const dashboardFiles = collectFiles(path.join(root, "app/[locale]/dashboard"));
+  const forbiddenPatterns = [
+    {
+      pattern: /color=\{?["']ingress["']/,
+      message: "Dashboard route UI must use getProductColor(\"dashboard\", \"primaryAction\") instead of the old ingress/blue lane."
+    },
+    {
+      pattern: /color=\{?["']knowmore["']/,
+      message: "Dashboard route UI must use getProductColor(\"dashboard\", \"secondaryAction\") or another dashboard intent instead of the old knowmore lane."
+    }
+  ];
+
+  for (const file of dashboardFiles) {
+    const relativeFile = path.relative(root, file);
+    const source = fs.readFileSync(file, "utf8");
+    for (const { pattern, message } of forbiddenPatterns) {
+      if (pattern.test(source)) {
+        failures.push({
+          file: relativeFile,
+          rule: "dashboard-route-color-contract",
+          message
+        });
+      }
+    }
   }
 }
 

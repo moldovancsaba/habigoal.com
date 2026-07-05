@@ -6,6 +6,7 @@ import { Box, Stack, Text, Paper, SimpleGrid, Group, Badge, TextInput, NumberInp
 import { PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import type { SessionCategory } from "@/types/training-plan";
 import { analyzeWeeklyLoad } from "@/lib/training-load-balance";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 interface SessionRow {
   sessionId: string;
@@ -132,7 +133,7 @@ export default function SessionPlannerPage() {
             />
             <NumberInput label={t("plannedLoad")} value={draftLoad} onChange={setDraftLoad} />
             <Group justify="flex-end">
-              <SemanticButton action="save" color="ingress" onClick={handleCreate} loading={saving} disabled={!draftTitle} />
+              <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={handleCreate} loading={saving} disabled={!draftTitle} />
             </Group>
           </Stack>
         </SectionPanel>
@@ -155,7 +156,7 @@ export default function SessionPlannerPage() {
                     <Text size="sm" c="dimmed">{t("dateLabel", { date: session.date })}</Text>
                   </Box>
                   <Group>
-                    <Badge color="ingress" variant="light">{t(`categories.${session.category}`)}</Badge>
+                    <Badge color={getProductColor("dashboard", "primaryAction")} variant="light">{t(`categories.${session.category}`)}</Badge>
                     <Badge color="gray" variant="filled">{t("loadPoints", { points: session.plannedLoadPoints })}</Badge>
                   </Group>
                 </Group>
@@ -172,7 +173,7 @@ export default function SessionPlannerPage() {
               <Text size="sm" c="dimmed">{t("peakDay", { points: balance.peakDayLoad })}</Text>
               <Group gap="xs" wrap="wrap">
                 {balance.byDay.map((day) => (
-                  <Badge key={day.date} variant={day.overloaded ? "filled" : "light"} color={day.overloaded ? "red" : "ingress"}>
+                  <Badge key={day.date} variant={day.overloaded ? "filled" : "light"} color={day.overloaded ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "primaryAction")}>
                     {t("dayLoad", { date: day.date, points: day.totalLoad })}
                   </Badge>
                 ))}
@@ -199,7 +200,7 @@ export default function SessionPlannerPage() {
           />
           <Text size="sm" c="dimmed">{t("cycleHint")}</Text>
           <Group justify="flex-start">
-            <SemanticButton action="add" color="ingress" onClick={handleCreateMicrocycle} loading={saving} disabled={sessions.length === 0}>
+            <SemanticButton action="add" color={getProductColor("dashboard", "primaryAction")} onClick={handleCreateMicrocycle} loading={saving} disabled={sessions.length === 0}>
               {t("createCycle")}
             </SemanticButton>
           </Group>

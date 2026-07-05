@@ -463,7 +463,7 @@ export default function SettingsPage() {
       </ConfirmDialog>
 
       {message ? (
-        <Alert color={message === tc("error") ? "red" : "ingress"} withCloseButton onClose={() => setMessage("")}>
+        <Alert color={message === tc("error") ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "primaryAction")} withCloseButton onClose={() => setMessage("")}>
           {message}
         </Alert>
       ) : null}
@@ -476,8 +476,8 @@ export default function SettingsPage() {
             </Alert>
           ) : null}
           <Group gap="xs" wrap="wrap">
-            <Badge variant="light" color="ingress">{t("settingsAdminsCount", { count: adminCount })}</Badge>
-            <Badge variant="light" color="knowmore">{t("settingsTrainersCount", { count: trainerCount })}</Badge>
+            <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>{t("settingsAdminsCount", { count: adminCount })}</Badge>
+            <Badge variant="light" color={getProductColor("dashboard", "secondaryAction")}>{t("settingsTrainersCount", { count: trainerCount })}</Badge>
             <Badge variant="light" color="strategy">{t("settingsAthletesCount", { count: athleteCount })}</Badge>
             <Badge variant="light" color="gray">{t("settingsApprovedUsersCount", { count: users.length })}</Badge>
           </Group>
@@ -696,10 +696,10 @@ export default function SettingsPage() {
               />
             </Box>
             <SemanticButton action="add" variant="default" onClick={addTeamAthleteDraft} disabled={!canManageUsers || !teamAthleteDraft} />
-            <SemanticButton action="save" color="ingress" onClick={() => void saveTeam()} disabled={!canManageUsers || !teamNameDraft.trim()} />
+            <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={() => void saveTeam()} disabled={!canManageUsers || !teamNameDraft.trim()} />
           </Group>
           <Group gap="xs" wrap="wrap">
-            {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color="knowmore">{email}</Badge>)}
+            {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color={getProductColor("dashboard", "secondaryAction")}>{email}</Badge>)}
             {teamAthleteIds.map((athleteId) => {
               const athlete = athletes.find((entry) => entry._id === athleteId);
               return <Badge key={athleteId} variant="light" color="strategy">{athlete?.name || athleteId}</Badge>;
@@ -782,7 +782,7 @@ export default function SettingsPage() {
               />
             </Box>
             <SemanticButton action="add" variant="default" onClick={addLocation} disabled={!locationDraft.trim()} />
-            <SemanticButton action="save" color="ingress" onClick={() => void handleSaveSettings()} loading={saving} />
+            <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={() => void handleSaveSettings()} loading={saving} />
           </Group>
           {settings.locations.length === 0 ? (
             <Text c="dimmed">{t("noLocations")}</Text>
@@ -873,7 +873,7 @@ export default function SettingsPage() {
             })}
           </Text>
           <Group justify="flex-end">
-            <SemanticButton action="save" color="ingress" onClick={() => void handleSaveSettings()} loading={saving} />
+            <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={() => void handleSaveSettings()} loading={saving} />
           </Group>
         </Stack>
       </SectionPanel>
@@ -881,7 +881,7 @@ export default function SettingsPage() {
       <SectionPanel
         title={t("legalAndCompany")}
         action={
-          <SemanticButton action="save" color="ingress" onClick={() => void handleSaveSettings()} loading={saving} />
+          <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={() => void handleSaveSettings()} loading={saving} />
         }
       >
         <Stack gap="md">
@@ -1019,7 +1019,7 @@ export default function SettingsPage() {
           ) : null}
           <SemanticButton
             action="settings:save"
-            color="ingress"
+            color={getProductColor("dashboard", "primaryAction")}
             onClick={() => void handleSaveSettings()}
             disabled={saving}
             vocabularyPacks={[settingsActionPack]}
@@ -1043,7 +1043,7 @@ export default function SettingsPage() {
                         action="settings:restoreAction"
                         size="sm"
                         variant="light"
-                        color="ingress"
+                        color={getProductColor("dashboard", "primaryAction")}
                         onClick={() => void restoreChild(c._id)}
                         vocabularyPacks={[settingsActionPack]}
                       />
@@ -1065,7 +1065,7 @@ export default function SettingsPage() {
                         action="settings:restoreAction"
                         size="sm"
                         variant="light"
-                        color="ingress"
+                        color={getProductColor("dashboard", "primaryAction")}
                         onClick={() => void restoreAssessment(a._id)}
                         vocabularyPacks={[settingsActionPack]}
                       />

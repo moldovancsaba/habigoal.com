@@ -5,6 +5,7 @@ import { Badge, Box, Group, Loader, Modal, Paper, Stack, Text, TextInput } from 
 import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import { formatScore } from "@/lib/utils";
 import type { CheckInRecord } from "@/types/check-in";
 
@@ -127,7 +128,7 @@ export default function RecordsPage() {
                             href={`/dashboard/records/${record._id}`}
                             fw={800}
                             size="lg"
-                            color="ingress"
+                            color={getProductColor("dashboard", "primaryAction")}
                             style={{ textDecoration: "none" }}
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -137,7 +138,7 @@ export default function RecordsPage() {
                             {record.session.date} {record.session.location ? `· ${record.session.location}` : ""}
                           </Text>
                         </Box>
-                        <Badge color="ingress" variant="filled" size="lg">
+                        <Badge color={getProductColor("dashboard", "primaryAction")} variant="filled" size="lg">
                           {t("sportReadiness")}: {formatScore(record.computed.ski)}
                         </Badge>
                       </Group>
@@ -150,11 +151,11 @@ export default function RecordsPage() {
                             <SemanticButton action="launch" variant="default" size="sm" />
                           </Link>
                           <Link href={`/dashboard/assessment?id=${record._id}`} style={{ textDecoration: "none" }} onClick={(e) => e.stopPropagation()}>
-                            <SemanticButton action="edit" color="ingress" variant="light" size="sm" />
+                            <SemanticButton action="edit" color={getProductColor("dashboard", "primaryAction")} variant="light" size="sm" />
                           </Link>
                         </>
                       ) : (
-                        <SemanticButton action="restore" color="ingress" variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }} />
+                        <SemanticButton action="restore" color={getProductColor("dashboard", "primaryAction")} variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTargetId(record._id || null); setRestoreConfirmText(""); }} />
                       )}
                     </Group>
                   </Stack>
@@ -170,7 +171,7 @@ export default function RecordsPage() {
           <TextInput value={restoreConfirmText} onChange={(e) => setRestoreConfirmText(e.currentTarget.value)} placeholder="restore" />
           <Group justify="flex-end">
             <SemanticButton action="cancel" variant="subtle" onClick={() => setRestoreTargetId(null)} />
-            <SemanticButton action="restore" color="ingress" disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)} />
+            <SemanticButton action="restore" color={getProductColor("dashboard", "primaryAction")} disabled={restoreConfirmText.trim().toLowerCase() !== "restore" || !restoreTargetId} onClick={() => void restoreAssessment(restoreTargetId || undefined)} />
           </Group>
         </Stack>
       </Modal>

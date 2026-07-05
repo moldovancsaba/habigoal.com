@@ -23,6 +23,7 @@ import { sectionsForMode } from "@/lib/readiness-schema";
 import { getDomainMainColor, type AssessmentDomain } from "@/theme/domain-colors";
 import { hasTrackerScores } from "@/lib/assessment-compat";
 import { formatScore } from "@/lib/utils";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import { ReadinessGauge } from "@/components/analytics/ReadinessGauge";
 import { MaturityRadarChart } from "@/components/analytics/MaturityRadarChart";
 import type { CheckInRecord } from "@/types/check-in";
@@ -186,11 +187,11 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
           actions={
             <Group gap="xs" wrap="wrap" className="mobile-actions-stack">
               <Link href={`/dashboard/assessment?id=${record._id}`} style={{ textDecoration: "none" }}>
-                <SemanticButton action="records:update" color="ingress" variant="light" vocabularyPacks={[recordsActionPack]} />
+                <SemanticButton action="records:update" color={getProductColor("dashboard", "primaryAction")} variant="light" vocabularyPacks={[recordsActionPack]} />
               </Link>
               <SemanticButton
                 action="records:downloadPdf"
-                color="ingress"
+                color={getProductColor("dashboard", "primaryAction")}
                 variant="outline"
                 onClick={() => void downloadPdf()}
                 loading={downloadingPdf}
@@ -276,7 +277,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               const entry = record.scores[item.key];
               return (
                 <ResponsiveDataCard key={item.key} title={t(item.title)}>
-                  <ResponsiveDataRow label={t("tableScore")} value={<Badge color="ingress" variant="light" size="lg">{entry?.score ?? "—"}</Badge>} />
+                  <ResponsiveDataRow label={t("tableScore")} value={<Badge color={getProductColor("dashboard", "primaryAction")} variant="light" size="lg">{entry?.score ?? "—"}</Badge>} />
                   <ResponsiveDataRow label={t("tableNote")} value={<Text size="sm" c="dimmed">{entry?.note || tc("emptyValue")}</Text>} />
                 </ResponsiveDataCard>
               );
@@ -300,7 +301,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
                     <Table.Tr key={item.key}>
                       <Table.Td fw={500}>{t(item.title)}</Table.Td>
                       <Table.Td style={{ textAlign: "right" }}>
-                        <Badge color="ingress" variant="light" size="lg">
+                        <Badge color={getProductColor("dashboard", "primaryAction")} variant="light" size="lg">
                           {entry?.score ?? "—"}
                         </Badge>
                       </Table.Td>
@@ -438,7 +439,7 @@ function Metric({ label, value }: { label: string; value: string }) {
       <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </Text>
-      <Text size="xl" mt={4} fw={800} color="ingress">
+      <Text size="xl" mt={4} fw={800} color={getProductColor("dashboard", "primaryAction")}>
         {value}
       </Text>
     </Paper>
@@ -502,7 +503,7 @@ function RecordRadarChart({
                 <Text size="sm" fw={600} style={{ flex: 1, minWidth: 0 }}>
                   {point.label}
                 </Text>
-                <Badge color="ingress" variant="light" size="lg">
+                <Badge color={getProductColor("dashboard", "primaryAction")} variant="light" size="lg">
                   {formatScore(point.value)}
                 </Badge>
               </Group>
