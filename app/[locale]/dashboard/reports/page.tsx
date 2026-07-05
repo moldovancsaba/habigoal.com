@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Stack, Text, Group, Select, Box, Paper } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
+import { Stack, Group, Select, Box, PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import type { AthleteProfile } from "@/types/athlete";
 import type { AthleteReport } from "@/services/reporting.service";
 import { PdfService, type TwinReportLabels } from "@/lib/pdf-service";

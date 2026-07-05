@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Paper, Stack, Text } from "@mantine/core";
+import { Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import type { ReminderKey } from "@/types/reminder";
 
 // Outstanding daily nudges for the signed-in athlete. Renders nothing when the

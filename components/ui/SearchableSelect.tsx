@@ -1,6 +1,6 @@
 "use client";
 
-import { ComboboxItem, Select } from "@mantine/core";
+import { Select } from "@sovereignsquad/gds/client";
 import { useMemo } from "react";
 
 interface Option {
@@ -18,7 +18,7 @@ interface SearchableSelectProps {
 }
 
 export function SearchableSelect({ label, value, options, onChange, placeholder, allowAdd }: SearchableSelectProps) {
-  const data = useMemo<ComboboxItem[]>(() => {
+  const data = useMemo(() => {
     return options.map((option) => ({ value: option.name, label: option.name }));
   }, [options]);
 

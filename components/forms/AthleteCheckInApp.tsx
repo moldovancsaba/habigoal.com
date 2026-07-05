@@ -2,11 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Alert,
-  Paper,
-  Text
-} from "@mantine/core";
-import {
   Badge,
   Box,
   ChoiceChip,
@@ -29,6 +24,7 @@ import { runRecoverableJsonRequest } from "@/lib/request-recovery";
 import { enqueueOfflineCheckIn, flushOfflineCheckIns } from "@/lib/offline-check-in-sync";
 import { checkInNotesFields, checkInSetupFields, trainingLoadFields, validateCentralForm } from "@/lib/forms/central-form";
 import { CentralFormRenderer } from "@/components/forms/CentralFormRenderer";
+import { Alert, Paper, Text } from "@/components/gds/SurfacePrimitives";
 import type { CentralFormErrors } from "@/lib/forms/central-form";
 import type { AssessmentPayload, ScoreEntry } from "@/types/assessment";
 import type { CheckInRecord } from "@/types/check-in";
@@ -567,7 +563,11 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
       />
 
       {message ? (
-        <Alert color={saveState === "error" ? getProductColor("dashboard", "risk") : saveState === "saved" ? getProductColor("dashboard", "success") : getProductColor("dashboard", "primaryAction")} withCloseButton onClose={() => setMessage("")}>
+        <Alert
+          color={saveState === "error" ? getProductColor("dashboard", "risk") : saveState === "saved" ? getProductColor("dashboard", "success") : getProductColor("dashboard", "primaryAction")}
+          role={saveState === "error" ? "alert" : "status"}
+          title={saveState === "error" ? t("saveError") : t("saved")}
+        >
           {message}
           {saveState === "error" ? (
             <Group mt="sm">

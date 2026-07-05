@@ -1,8 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { Stack } from "@mantine/core";
-import { PageHeader } from "@sovereignsquad/gds/client";
+import { Stack, PageHeader } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { AthleteProfileAdminPanel } from "@/components/admin/AthleteProfileAdminPanel";
 

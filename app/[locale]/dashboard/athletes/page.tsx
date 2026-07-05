@@ -1,10 +1,10 @@
 "use client";
 
 import { MouseEvent, useEffect, useMemo, useState } from "react";
-import { Alert, Badge, Box, Checkbox, Divider, Group, Loader, Modal, MultiSelect, NumberInput, Paper, Select, SimpleGrid, Stack, Text, TextInput, Textarea } from "@mantine/core";
-import { createGdsVocabularyPack, ChoiceChip, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { Badge, Box, Checkbox, Group, Loader, Modal, MultiSelect, NumberInput, Select, SimpleGrid, Stack, TextInput, Textarea, createGdsVocabularyPack, ChoiceChip, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { Alert, Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { formatScore } from "@/lib/utils";
 import { getProductColor } from "@/lib/product-ui-contracts";
 import type { AthleteProfile } from "@/types/athlete";
@@ -346,7 +346,7 @@ export default function ChildrenListPage() {
             <SemanticButton
               action={showDeleted ? "athletes:showingDeleted" : "athletes:showDeleted"}
               variant={showDeleted ? "filled" : "default"}
-              color={showDeleted ? "red" : "gray"}
+              color={showDeleted ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "neutral")}
               onClick={() => setShowDeleted((v) => !v)}
               vocabularyPacks={[athleteActionPack]}
             />
@@ -357,7 +357,11 @@ export default function ChildrenListPage() {
       <SectionPanel>
         <Stack gap="md">
           {message ? (
-            <Alert color={error ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "primaryAction")} withCloseButton onClose={() => setMessage("")}>
+            <Alert
+              color={error ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "success")}
+              role={error ? "alert" : "status"}
+              title={error ? tc("error") : tc("success")}
+            >
               {message}
             </Alert>
           ) : null}
@@ -373,7 +377,7 @@ export default function ChildrenListPage() {
             <SemanticButton
               action={showAdvanced ? "athletes:hideFilters" : "athletes:advancedFilters"}
               variant="light"
-              color="gray"
+              color={getProductColor("dashboard", "neutral")}
               onClick={() => setShowAdvanced((v) => !v)}
               vocabularyPacks={[athleteActionPack]}
             />
@@ -474,7 +478,7 @@ export default function ChildrenListPage() {
                           href={`/dashboard/athletes/${child._id}`}
                           fw={800}
                           size="lg"
-                          color={getProductColor("dashboard", "primaryAction")}
+                          c={getProductColor("dashboard", "primaryAction")}
                           style={{ textDecoration: "none" }}
                           onClick={(e: MouseEvent<HTMLElement>) => e.stopPropagation()}
                         >
@@ -486,7 +490,7 @@ export default function ChildrenListPage() {
                         {baselineFacts.length > 0 ? (
                           <Group gap="xs" mt={8}>
                             {baselineFacts.map((fact) => (
-                              <Badge key={fact} color="gray" variant="light" size="sm">
+                              <Badge key={fact} color={getProductColor("dashboard", "neutral")} variant="light" size="sm">
                                 {fact}
                               </Badge>
                             ))}
@@ -535,8 +539,8 @@ export default function ChildrenListPage() {
                             <SemanticButton action="profile" variant="default" size="sm" />
                           </Link>
                         ) : null}
-                        {!showDeleted ? <SemanticButton action="edit" variant="subtle" color="gray" size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }} /> : null}
-                        {!showDeleted ? <SemanticButton action="delete" color="red" variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }} /> : <SemanticButton action="restore" color={getProductColor("dashboard", "primaryAction")} variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }} />}
+                        {!showDeleted ? <SemanticButton action="edit" variant="subtle" color={getProductColor("dashboard", "neutral")} size="sm" onClick={(e) => { e.stopPropagation(); startEdit(child); }} /> : null}
+                        {!showDeleted ? <SemanticButton action="delete" color={getProductColor("dashboard", "risk")} variant="filled" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(child); setDeleteConfirmText(""); }} /> : <SemanticButton action="restore" color={getProductColor("dashboard", "primaryAction")} variant="light" size="sm" onClick={(e) => { e.stopPropagation(); setRestoreTarget(child); setRestoreConfirmText(""); }} />}
                       </Group>
                     </Stack>
                   </Paper>
@@ -561,7 +565,7 @@ export default function ChildrenListPage() {
             />
             <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
             <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
-            <Divider label={ta("baselineSection")} labelPosition="left" />
+            <FormDivider label={ta("baselineSection")} />
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
               <NumberInput label={ta("baselineHeight")} value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
               <NumberInput label={ta("baselineWeight")} value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
@@ -593,7 +597,7 @@ export default function ChildrenListPage() {
           <TextInput label={ta("birthDate")} type="date" value={draftBirthDate} onChange={(event) => setDraftBirthDate(event.target.value)} />
           <Textarea label={ta("knownTraits")} value={draftKnownTraits} onChange={(event) => setDraftKnownTraits(event.target.value)} minRows={2} />
           <Textarea label={ta("parentSignals")} value={draftParentSignals} onChange={(event) => setDraftParentSignals(event.target.value)} minRows={2} />
-          <Divider label={ta("baselineSection")} labelPosition="left" />
+          <FormDivider label={ta("baselineSection")} />
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
             <NumberInput label={ta("baselineHeight")} value={draftBaseline.heightCm} onChange={(value) => setDraftBaseline((current) => ({ ...current, heightCm: typeof value === "number" ? value : undefined }))} min={50} max={260} />
             <NumberInput label={ta("baselineWeight")} value={draftBaseline.weightKg} onChange={(value) => setDraftBaseline((current) => ({ ...current, weightKg: typeof value === "number" ? value : undefined }))} min={15} max={250} />
@@ -630,7 +634,7 @@ export default function ChildrenListPage() {
             <SemanticButton action="cancel" variant="subtle" onClick={() => setDeleteTarget(null)} />
             <SemanticButton
               action="delete"
-              color="red"
+              color={getProductColor("dashboard", "risk")}
               disabled={deleteConfirmText.trim().toLowerCase() !== "delete" || !deleteTarget}
               onClick={() => {
                 if (!deleteTarget) return;
@@ -652,5 +656,17 @@ export default function ChildrenListPage() {
         </Stack>
       </Modal>
     </Stack>
+  );
+}
+
+function FormDivider({ label }: { label: string }) {
+  return (
+    <Group gap="sm" align="center" role="separator" aria-label={label}>
+      <Box style={{ flex: 1, borderTop: "1px solid var(--border-primary)" }} />
+      <Text size="sm" fw={700} c="dimmed">
+        {label}
+      </Text>
+      <Box style={{ flex: 1, borderTop: "1px solid var(--border-primary)" }} />
+    </Group>
   );
 }

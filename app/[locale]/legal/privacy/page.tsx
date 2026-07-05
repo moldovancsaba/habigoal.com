@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Stack, Text } from "@mantine/core";
-import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { Stack, createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import { APP_VERSION } from "@/lib/app-version";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, type HabigoalSettings } from "@/services/settings-service";
 

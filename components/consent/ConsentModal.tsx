@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Alert, Button, Checkbox, Group, Modal, Stack, Text } from "@mantine/core";
+import { Button, Checkbox, Group, Modal, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Alert, Text } from "@/components/gds/SurfacePrimitives";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 interface ConsentModalProps {
   athleteId: string;
@@ -12,8 +14,8 @@ interface ConsentModalProps {
 }
 
 // Data-purpose consent (distinct from the cookie banner in GH-423). Built on
-// Mantine primitives so it is a proper modal — aria-modal, focus trap, labelled
-// close, and inputs id-linked to their labels via Mantine Checkbox (GH-431).
+// GDS primitives so it is a proper modal with focus trap, labelled close, and
+// inputs id-linked to their labels via the governed checkbox contract (GH-431).
 const CONSENT_PURPOSE_KEYS = ["daily_check_in", "wearable_data", "media_upload"] as const;
 
 type PurposeKey = (typeof CONSENT_PURPOSE_KEYS)[number];
@@ -73,7 +75,7 @@ export function ConsentModal({ athleteId, isOpen, onSuccess, onClose }: ConsentM
         </Text>
 
         {error ? (
-          <Alert color="red" title={t("submissionFailed")} role="alert">
+          <Alert color={getProductColor("dashboard", "risk")} title={t("submissionFailed")} role="alert">
             {error}
           </Alert>
         ) : null}

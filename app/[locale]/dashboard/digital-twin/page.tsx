@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Paper, Text } from "@mantine/core";
 import { Box, Group, Loader, PageHeader, Progress, SectionPanel, SimpleGrid, Stack, StateBlock } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import type { AthleteTwin } from "@/types/athlete-twin";
 import { getProductColor } from "@/lib/product-ui-contracts";
 

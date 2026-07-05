@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState, use } from "react";
 import type { ReactNode } from "react";
-import { Badge, Box, Group, Loader, Paper, SimpleGrid, Stack, Table, Text, Title, useMantineTheme } from "@mantine/core";
+import { Badge, Box, Group, Loader, SimpleGrid, Stack, Table } from "@sovereignsquad/gds/client";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { Link } from "@/i18n/navigation";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
 import { withDisplayNamesForReport } from "@/lib/report-user-display";
@@ -159,7 +160,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
 
   if (!record) {
     return (
-      <Text c="red" py="md">
+      <Text c={getProductColor("dashboard", "risk")} py="md">
         {tc("error")}
       </Text>
     );
@@ -439,7 +440,7 @@ function Metric({ label, value }: { label: string; value: string }) {
       <Text size="sm" c="dimmed" fw={500} style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
         {label}
       </Text>
-      <Text size="xl" mt={4} fw={800} color={getProductColor("dashboard", "primaryAction")}>
+      <Text size="xl" mt={4} fw={800} c={getProductColor("dashboard", "primaryAction")}>
         {value}
       </Text>
     </Paper>
@@ -487,7 +488,6 @@ function RecordRadarChart({
   domain: AssessmentDomain;
   animate?: boolean;
 }) {
-  const theme = useMantineTheme();
   const domainColor = getDomainMainColor(domain);
 
   if (data.length < 3) {
@@ -511,7 +511,7 @@ function RecordRadarChart({
                 style={{
                   height: 10,
                   borderRadius: 999,
-                  background: theme.colors.gray[2],
+                  background: "var(--surface-muted)",
                   overflow: "hidden"
                 }}
               >
@@ -549,7 +549,7 @@ function RecordRadarChart({
               domain={[0, 5]}
               tickCount={4}
               tick={(props) => renderRotatedRadiusTick(props)}
-              stroke={theme.colors.gray[6]}
+              stroke="var(--text-secondary)"
             />
             <Radar 
               dataKey="value" 

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Group, Select, Stack, TextInput, TagsInput } from "@mantine/core";
-import { SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { Badge, Group, Select, Stack, TextInput, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import { ATHLETE_PROFILE_STATUSES } from "@/lib/forms/central-form";
 import { getProductColor } from "@/lib/product-ui-contracts";
 
@@ -30,6 +30,7 @@ export function AthleteProfileAdminPanel({ athleteId }: AthleteProfileAdminPanel
   const [status, setStatus] = useState<string | null>("active");
   const [parentEmail, setParentEmail] = useState("");
   const [injuryFlags, setInjuryFlags] = useState<string[]>([]);
+  const [injuryFlagDraft, setInjuryFlagDraft] = useState("");
   const [season, setSeason] = useState("");
   const [customKey, setCustomKey] = useState("");
   const [customValue, setCustomValue] = useState("");
@@ -89,6 +90,13 @@ export function AthleteProfileAdminPanel({ athleteId }: AthleteProfileAdminPanel
     }
   };
 
+  const addInjuryFlag = () => {
+    const nextFlag = injuryFlagDraft.trim();
+    if (!nextFlag) return;
+    setInjuryFlags((current) => (current.includes(nextFlag) ? current : [...current, nextFlag]));
+    setInjuryFlagDraft("");
+  };
+
   if (loading) return null;
 
   return (
@@ -112,7 +120,39 @@ export function AthleteProfileAdminPanel({ athleteId }: AthleteProfileAdminPanel
         />
         <TextInput label={t("season")} value={season} onChange={(e) => setSeason(e.currentTarget.value)} placeholder="2025/26" />
         <TextInput label={t("parentEmail")} value={parentEmail} onChange={(e) => setParentEmail(e.currentTarget.value)} />
-        <TagsInput label={t("injuryFlags")} value={injuryFlags} onChange={setInjuryFlags} placeholder={t("injuryFlagsPlaceholder")} />
+        <Stack gap="xs">
+          <Text size="sm" fw={700}>{t("injuryFlags")}</Text>
+          <Group gap="xs">
+            {injuryFlags.length === 0 ? <Text size="sm" c="dimmed">{t("injuryFlagsPlaceholder")}</Text> : null}
+            {injuryFlags.map((flag) => (
+              <Group key={flag} gap={4} wrap="nowrap">
+                <Badge variant="light" color={getProductColor("dashboard", "warning")}>{flag}</Badge>
+                <SemanticButton
+                  action="delete"
+                  aria-label={`${tc("remove")} ${flag}`}
+                  color={getProductColor("dashboard", "risk")}
+                  size="sm"
+                  variant="subtle"
+                  style={{ minHeight: 24, height: 24, paddingInline: 4 }}
+                  onClick={() => setInjuryFlags((current) => current.filter((entry) => entry !== flag))}
+                />
+              </Group>
+            ))}
+          </Group>
+          <Group grow align="flex-end">
+            <TextInput
+              label={t("injuryFlagsPlaceholder")}
+              value={injuryFlagDraft}
+              onChange={(event) => setInjuryFlagDraft(event.currentTarget.value)}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter") return;
+                event.preventDefault();
+                addInjuryFlag();
+              }}
+            />
+            <SemanticButton action="add" variant="light" disabled={!injuryFlagDraft.trim()} onClick={addInjuryFlag} />
+          </Group>
+        </Stack>
         <Group grow align="flex-end">
           <TextInput label={t("customKey")} value={customKey} onChange={(e) => setCustomKey(e.currentTarget.value)} />
           <TextInput label={t("customValue")} value={customValue} onChange={(e) => setCustomValue(e.currentTarget.value)} />

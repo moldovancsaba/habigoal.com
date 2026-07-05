@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { Alert, Paper, Text } from "@mantine/core";
 import { Badge, Box, Checkbox, ConfirmDialog, createGdsVocabularyPack, GdsIcons, Group, Loader, NumberInput, PageHeader, SectionPanel, Select, SemanticButton, Stack, Table, TextInput } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Alert, Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, HabigoalSettings, saveSettings } from "@/services/settings-service";
 import { deleteUser, getUsers, saveUser, User } from "@/services/user-service";
 import type { AthleteProfile } from "@/types/athlete";
@@ -463,7 +463,11 @@ export default function SettingsPage() {
       </ConfirmDialog>
 
       {message ? (
-        <Alert color={message === tc("error") ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "primaryAction")} withCloseButton onClose={() => setMessage("")}>
+        <Alert
+          color={message === tc("error") ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "success")}
+          role={message === tc("error") ? "alert" : "status"}
+          title={message === tc("error") ? tc("error") : tc("success")}
+        >
           {message}
         </Alert>
       ) : null}
@@ -471,15 +475,13 @@ export default function SettingsPage() {
       <SectionPanel title={t("userRights")}>
         <Stack gap="md">
           {!canManageUsers ? (
-            <Alert color={getProductColor("dashboard", "warning")}>
-              {t("settingsUsersAdminOnly")}
-            </Alert>
+            <Alert color={getProductColor("dashboard", "warning")} role="status" title={t("settingsUsersAdminOnly")} />
           ) : null}
           <Group gap="xs" wrap="wrap">
             <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>{t("settingsAdminsCount", { count: adminCount })}</Badge>
             <Badge variant="light" color={getProductColor("dashboard", "secondaryAction")}>{t("settingsTrainersCount", { count: trainerCount })}</Badge>
             <Badge variant="light" color="strategy">{t("settingsAthletesCount", { count: athleteCount })}</Badge>
-            <Badge variant="light" color="gray">{t("settingsApprovedUsersCount", { count: users.length })}</Badge>
+            <Badge variant="light" color={getProductColor("dashboard", "neutral")}>{t("settingsApprovedUsersCount", { count: users.length })}</Badge>
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
@@ -557,7 +559,7 @@ export default function SettingsPage() {
                       <SemanticButton
                         action="delete"
                         variant="light"
-                        color="red"
+                        color={getProductColor("dashboard", "risk")}
                         disabled={!canManageUsers || isProtectedAdmin(user)}
                         onClick={() => void removeUserAccess(user)}
                       />
@@ -636,7 +638,7 @@ export default function SettingsPage() {
                         <SemanticButton
                           action="delete"
                           variant="light"
-                          color="red"
+                          color={getProductColor("dashboard", "risk")}
                           size="sm"
                           disabled={!canManageUsers || isProtectedAdmin(user)}
                           onClick={() => void removeUserAccess(user)}
@@ -661,9 +663,7 @@ export default function SettingsPage() {
       <SectionPanel title={t("teamsTitle")}>
         <Stack gap="md">
           {!canManageUsers ? (
-            <Alert color={getProductColor("dashboard", "warning")}>
-              {t("teamsAdminOnly")}
-            </Alert>
+            <Alert color={getProductColor("dashboard", "warning")} role="status" title={t("teamsAdminOnly")} />
           ) : null}
           <Group gap="xs" align="end" wrap="wrap">
             <TextInput
@@ -714,7 +714,7 @@ export default function SettingsPage() {
                       <Text fw={700}>{team.name}</Text>
                       <Text size="sm" c="dimmed">{t("teamTrainersList", { trainers: team.trainerEmails.join(", ") || t("noneAssigned") })}</Text>
                     </Stack>
-                    <SemanticButton action="delete" variant="light" color="red" size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)} />
+                    <SemanticButton action="delete" variant="light" color={getProductColor("dashboard", "risk")} size="sm" disabled={!canManageUsers} onClick={() => void deleteTeam(team._id)} />
                   </Group>
                   <Group gap="xs" wrap="wrap">
                     {team.athleteIds.length === 0 ? <Text size="sm" c="dimmed">{t("noAthletesAssigned")}</Text> : null}
@@ -725,14 +725,15 @@ export default function SettingsPage() {
                         color="strategy"
                         rightSection={
                           canManageUsers ? (
-                            <button
-                              type="button"
+                            <SemanticButton
+                              action="delete"
                               aria-label={tc("remove")}
+                              color={getProductColor("dashboard", "risk")}
+                              size="sm"
+                              variant="subtle"
                               onClick={() => removeAthleteFromTeam(team, athleteId)}
-                              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, lineHeight: 1 }}
-                            >
-                              ×
-                            </button>
+                              style={{ minHeight: 24, height: 24, paddingInline: 4 }}
+                            />
                           ) : undefined
                         }
                       >
@@ -796,7 +797,7 @@ export default function SettingsPage() {
                   style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}
                 >
                   <Text>{loc}</Text>
-                  <SemanticButton action="delete" color="red" variant="light" size="sm" onClick={() => removeLocation(i)} />
+                  <SemanticButton action="delete" color={getProductColor("dashboard", "risk")} variant="light" size="sm" onClick={() => removeLocation(i)} />
                 </Paper>
               ))}
             </Stack>

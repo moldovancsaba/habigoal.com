@@ -1,7 +1,7 @@
 "use client";
 
-import { Box, Stack, Text } from "@mantine/core";
-import { SectionPanel } from "@sovereignsquad/gds/client";
+import { Box, SectionPanel, Stack } from "@sovereignsquad/gds/client";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import type { ReactNode } from "react";
 
 export function ResponsiveDataCard({ title, children, onClick }: { title: string; children: ReactNode; onClick?: () => void }) {

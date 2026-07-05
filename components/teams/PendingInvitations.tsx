@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Group, Paper, Stack, Text } from "@mantine/core";
+import { Button, Group, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
+import { getProductColor } from "@/lib/product-ui-contracts";
 import type { TeamInvitation } from "@/types/team-invitation";
 
 // Shows the signed-in user's pending team invitations and lets them accept.
@@ -49,7 +51,7 @@ export function PendingInvitations() {
         {invites.map((invite) => (
           <Group key={invite._id} justify="space-between" wrap="nowrap" gap="sm">
             <Text>{invite.teamName} · {t(invite.role === "trainer" ? "roleTrainer" : "roleAthlete")}</Text>
-            <Button size="sm" loading={busy === invite._id} onClick={() => void accept(invite)}>
+            <Button color={getProductColor("dashboard", "primaryAction")} size="sm" loading={busy === invite._id} onClick={() => void accept(invite)}>
               {busy === invite._id ? t("accepting") : t("accept")}
             </Button>
           </Group>

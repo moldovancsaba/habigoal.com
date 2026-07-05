@@ -1,7 +1,7 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Badge, Box, Group, Stack } from "@sovereignsquad/gds/client";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import { useTranslations } from "next-intl";
 import type { InsightSignal, InsightSeverity } from "@/lib/athlete-insights";
 import { getProductColor } from "@/lib/product-ui-contracts";

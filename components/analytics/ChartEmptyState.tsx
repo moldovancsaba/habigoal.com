@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Text } from "@mantine/core";
+import { Box } from "@sovereignsquad/gds/client";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 
 // Shared empty state for analytics charts (GH-339): a new athlete with no history

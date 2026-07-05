@@ -1,7 +1,7 @@
 "use client";
 
-import { Text } from "@mantine/core";
 import { Box, Group, Stack } from "@sovereignsquad/gds/client";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import { useTranslations } from "next-intl";
 import type { ExplanationBundle } from "@/lib/explainability";
 

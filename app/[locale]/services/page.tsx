@@ -1,7 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 
-import { Container, Title, Text, SimpleGrid, Card, Badge, Group } from "@mantine/core";
+import { Badge, Container, Group, SimpleGrid } from "@sovereignsquad/gds/client";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import { getProductColor } from "@/lib/product-ui-contracts";
 import { listTrainersServices } from "@/repositories/trainers-service.repository";
 
@@ -27,7 +28,7 @@ export default async function ServicesDirectoryPage({ params }: { params: Promis
             const description = (service.draftPayload?.description as string) || t("noDescription");
 
             return (
-              <Card key={service.id} shadow="sm" padding="lg" radius="md" withBorder component={Link} href={`/${locale}/services/${service.id}`}>
+              <Paper key={service.id} p="lg" radius="md" withBorder component={Link} href={`/${locale}/services/${service.id}`} className="glass-panel surface-outline" style={{ display: "block", textDecoration: "none" }}>
                 <Group justify="space-between" mt="md" mb="xs">
                   <Text fw={500} lineClamp={1}>{title}</Text>
                   <Badge color={getProductColor("public", "primaryAction")}>{service.entityKind}</Badge>
@@ -35,7 +36,7 @@ export default async function ServicesDirectoryPage({ params }: { params: Promis
                 <Text size="sm" c="dimmed" lineClamp={3}>
                   {description}
                 </Text>
-              </Card>
+              </Paper>
             );
           })}
         </SimpleGrid>

@@ -1,7 +1,7 @@
 "use client";
 
-import { PageHeader as GdsPageHeader } from "@sovereignsquad/gds/client";
-import { Box, Flex, Text, Title } from "@mantine/core";
+import { Box, Group, PageHeader as GdsPageHeader, Stack } from "@sovereignsquad/gds/client";
+import { Text, Title } from "@/components/gds/SurfacePrimitives";
 import type { ReactNode } from "react";
 
 type PageHeaderProps = {
@@ -16,12 +16,12 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   }
 
   return (
-    <Flex
+    <Group
       className="glass-panel"
       gap="md"
-      direction={{ base: "column", md: "row" }}
       justify="space-between"
-      align={{ base: "stretch", md: "center" }}
+      align="center"
+      wrap="wrap"
       px={{ base: "md", sm: "lg" }}
       py={{ base: "md", sm: "md" }}
       mb="md"
@@ -38,15 +38,13 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
         </Text>
       </Box>
       {actions ? (
-        <Flex
+        <Stack
           gap="sm"
-          wrap={{ base: "wrap", md: "nowrap" }}
-          justify={{ base: "stretch", md: "flex-end" }}
-          style={{ width: "100%" }}
+          style={{ alignItems: "flex-end", width: "100%" }}
         >
           {actions}
-        </Flex>
+        </Stack>
       ) : null}
-    </Flex>
+    </Group>
   );
 }

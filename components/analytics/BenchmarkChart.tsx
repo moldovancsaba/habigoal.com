@@ -1,7 +1,8 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Box, Paper, Text } from "@mantine/core";
+import { Box } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 import { ChartEmptyState } from "./ChartEmptyState";
 

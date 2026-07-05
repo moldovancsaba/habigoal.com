@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Paper, Text } from "@mantine/core";
 import { Badge, Box, Group, Loader, PageHeader, SectionPanel, SemanticButton, SimpleGrid, Stack, StateBlock, ThemeIcon } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { deriveConnectionStatus, toMetricChips, type WearableConnectionStatus } from "@/lib/wearable-dashboard-view";
 import type { CanonicalMetric } from "@/types/canonical-metric";
 import type { DeviceConnection } from "@/types/wearable-connector";

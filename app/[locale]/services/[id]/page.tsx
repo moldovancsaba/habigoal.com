@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Container, Title, Text, Card, Badge, Group, Stack } from "@mantine/core";
+import { Badge, Container, Group, Stack } from "@sovereignsquad/gds/client";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import { getProductColor } from "@/lib/product-ui-contracts";
 import { getTrainersServiceById } from "@/repositories/trainers-service.repository";
 
@@ -19,7 +20,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
   return (
     <Container size="md" py="xl">
-      <Card shadow="sm" padding="xl" radius="md" withBorder>
+      <Paper p="xl" radius="md" withBorder className="glass-panel surface-outline">
         <Stack gap="md">
           <Group justify="space-between">
             <Title order={1}>{title}</Title>
@@ -33,7 +34,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             {JSON.stringify(service.draftPayload, null, 2)}
           </pre>
         </Stack>
-      </Card>
+      </Paper>
     </Container>
   );
 }

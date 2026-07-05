@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Box } from "@mantine/core";
+import { Box } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useReducer, useRef, type ReactNode } from "react";
-import { Text } from "@mantine/core";
 import { Box, Group, Progress, SemanticButton, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import {
   createStepFlow,
   stepFlowReducer,

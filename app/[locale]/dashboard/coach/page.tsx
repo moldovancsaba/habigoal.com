@@ -286,7 +286,7 @@ export default function CoachDashboardPage() {
                                 {formatScore(member.latestReadiness)}
                               </Badge>
                             ) : (
-                              <Badge size="sm" color="gray" variant="light">{t("readinessPending")}</Badge>
+                              <Badge size="sm" color={getProductColor("dashboard", "neutral")} variant="light">{t("readinessPending")}</Badge>
                             )}
                           </Group>
                         ))}
@@ -310,7 +310,7 @@ export default function CoachDashboardPage() {
             <Group gap="xs">
               {unassignedAthletes.map((athlete) => (
                 <Link key={athlete._id} href={`/dashboard/athletes/${athlete._id}`} style={{ textDecoration: "none" }}>
-                  <Badge variant="outline" color="gray" style={{ cursor: "pointer" }}>{athlete.name}</Badge>
+                  <Badge variant="outline" color={getProductColor("dashboard", "neutral")} style={{ cursor: "pointer" }}>{athlete.name}</Badge>
                 </Link>
               ))}
             </Group>
@@ -340,7 +340,7 @@ export default function CoachDashboardPage() {
                         {t("readinessValue", { value: formatScore(athlete.latestReadiness) })}
                       </Badge>
                     ) : (
-                      <Badge color="gray" variant="light">{t("readinessPending")}</Badge>
+                      <Badge color={getProductColor("dashboard", "neutral")} variant="light">{t("readinessPending")}</Badge>
                     )}
                   </Group>
                   <Text size="sm" c="dimmed">

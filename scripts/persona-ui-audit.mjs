@@ -75,6 +75,8 @@ for (const file of checkedFiles) {
 
 assertDashboardColorContract();
 assertDashboardRouteColorContract();
+assertNoDirectMantineComponentImports();
+assertNoRawDashboardColorProps();
 assertRouteChromeContract();
 assertHabigoalOwnsChrome();
 assertAthleteIqOwnsChrome();
@@ -177,6 +179,48 @@ function assertDashboardRouteColorContract() {
           message
         });
       }
+    }
+  }
+}
+
+function assertNoDirectMantineComponentImports() {
+  const files = [
+    ...collectFiles(path.join(root, "app")),
+    ...collectFiles(path.join(root, "components"))
+  ];
+
+  for (const file of files) {
+    const relativeFile = path.relative(root, file);
+    const source = fs.readFileSync(file, "utf8");
+    if (/\bfrom\s+["']@mantine\/core["']/.test(source)) {
+      failures.push({
+        file: relativeFile,
+        rule: "global-gds-only",
+        message: "Application TS/TSX must import UI primitives from @sovereignsquad/gds or local GDS adapters, not direct @mantine/core component imports."
+      });
+    }
+  }
+}
+
+function assertNoRawDashboardColorProps() {
+  const files = [
+    ...collectFiles(path.join(root, "app/[locale]/dashboard")),
+    ...collectFiles(path.join(root, "components/dashboard")),
+    ...collectFiles(path.join(root, "components/admin")),
+    ...collectFiles(path.join(root, "components/forms")),
+    ...collectFiles(path.join(root, "components/consent"))
+  ];
+  const rawHuePattern = /\bcolor=\{?["'](blue|gray|green|red|teal|violet|yellow)["']/;
+
+  for (const file of files) {
+    const relativeFile = path.relative(root, file);
+    const source = fs.readFileSync(file, "utf8");
+    if (rawHuePattern.test(source)) {
+      failures.push({
+        file: relativeFile,
+        rule: "dashboard-product-color-contract",
+        message: "Dashboard UI color props must resolve through getProductColor(...) or approved GDS semantic tokens instead of raw hue names."
+      });
     }
   }
 }

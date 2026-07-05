@@ -2,7 +2,8 @@
 
 import { useId } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Box, Paper, Text, useMantineTheme } from "@mantine/core";
+import { Box } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 import { ChartEmptyState } from "./ChartEmptyState";
 
@@ -27,7 +28,6 @@ export function LongitudinalChart({
   yDomain = [0, 5],
   emptyLabel = "No data yet"
 }: LongitudinalChartProps) {
-  const theme = useMantineTheme();
   const gradientId = useId().replace(/[:]/g, "");
 
   return (
@@ -71,7 +71,7 @@ export function LongitudinalChart({
                 borderRadius: ANALYTICS_CONFIG.tooltipRadius,
                 fontFamily: ANALYTICS_CONFIG.fontFamily,
                 fontSize: "12px",
-                boxShadow: theme.shadows.md,
+                boxShadow: "var(--surface-shadow-elevated)",
                 color: "var(--text-primary)"
               }}
             />

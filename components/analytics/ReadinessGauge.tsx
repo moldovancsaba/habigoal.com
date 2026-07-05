@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Paper, Text, Group } from "@mantine/core";
+import { Box, Group } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 
 interface ReadinessGaugeProps {
   value: number;

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Box, Stack, Text, Paper, SimpleGrid, Group, Badge, TextInput, NumberInput, Loader, Select } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { Box, Stack, SimpleGrid, Group, Badge, TextInput, NumberInput, Loader, Select, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import type { SessionCategory } from "@/types/training-plan";
 import { analyzeWeeklyLoad } from "@/lib/training-load-balance";
 import { getProductColor } from "@/lib/product-ui-contracts";
@@ -157,7 +157,7 @@ export default function SessionPlannerPage() {
                   </Box>
                   <Group>
                     <Badge color={getProductColor("dashboard", "primaryAction")} variant="light">{t(`categories.${session.category}`)}</Badge>
-                    <Badge color="gray" variant="filled">{t("loadPoints", { points: session.plannedLoadPoints })}</Badge>
+                    <Badge color={getProductColor("dashboard", "neutral")} variant="filled">{t("loadPoints", { points: session.plannedLoadPoints })}</Badge>
                   </Group>
                 </Group>
               </Paper>

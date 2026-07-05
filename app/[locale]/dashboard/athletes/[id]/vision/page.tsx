@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Box, Stack, Text, Paper, Group, Badge, Loader } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
+import { Box, Stack, Group, Badge, Loader, PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 interface MediaItem {
   mediaId: string;
@@ -119,7 +120,7 @@ export default function VisionPage() {
                   )}
                 </Box>
                 <Group>
-                  <Badge color={item.qualityAccepted ? "green" : "red"} variant="light">
+                  <Badge color={item.qualityAccepted ? getProductColor("dashboard", "success") : getProductColor("dashboard", "risk")} variant="light">
                     {item.qualityAccepted ? t("accepted") : t("rejected")}
                   </Badge>
                   <Badge variant="outline">{item.confidence}</Badge>

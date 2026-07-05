@@ -1,7 +1,6 @@
 "use client";
 
-import { ActionIcon, Box, Burger, Button, Group, Menu, Text } from "@mantine/core";
-import { GdsIcons } from "@sovereignsquad/gds/client";
+import { Box, Button, GdsIcons, Group, Select, Stack } from "@sovereignsquad/gds/client";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
@@ -53,36 +52,29 @@ export function PublicAppControls({
     ? (pathname.startsWith(`/${locale}`) ? pathname : `/${locale}${pathname}`)
     : `/${locale}`;
   const loginHref = `/${locale}/login?next=${encodeURIComponent(currentPath)}`;
-  const languageOptions: Array<{ label: string; shortLabel: string; value: SupportedLocale }> = [
-    { label: common("languageEnglish"), shortLabel: "EN", value: "en" },
-    { label: common("languageHungarian"), shortLabel: "HU", value: "hu" },
-    { label: common("languageArabic"), shortLabel: "AR", value: "ar" },
-    { label: common("languageSpanish"), shortLabel: "ES", value: "es" },
-    { label: common("languageGerman"), shortLabel: "DE", value: "de" },
-    { label: common("languageHebrew"), shortLabel: "HE", value: "he" }
+  const languageOptions: Array<{ label: string; value: SupportedLocale }> = [
+    { label: common("languageEnglish"), value: "en" },
+    { label: common("languageHungarian"), value: "hu" },
+    { label: common("languageArabic"), value: "ar" },
+    { label: common("languageSpanish"), value: "es" },
+    { label: common("languageGerman"), value: "de" },
+    { label: common("languageHebrew"), value: "he" }
   ];
 
   return (
     <Group className="public-app-controls" gap="xs" wrap="nowrap">
       <Group className="public-desktop-controls" gap="xs" wrap="nowrap">
-        <Menu shadow="md" width={180} position="bottom-end">
-          <Menu.Target>
-            <ActionIcon variant="default" color="gray" size={compact ? "md" : "lg"} radius="md" aria-label={common("languageSelector")} title={common("languageSelector")}>
-              <Text fw={800} size="sm">{localeLabel}</Text>
-            </ActionIcon>
-          </Menu.Target>
-          <Menu.Dropdown>
-            {languageOptions.map((language) => (
-              <Menu.Item
-                key={language.value}
-                onClick={() => switchLocale(language.value)}
-                rightSection={locale === language.value ? <GdsIcons.Check size={14} /> : null}
-              >
-                {language.label}
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
+        <Select
+          aria-label={`${common("languageSelector")} (${localeLabel})`}
+          allowDeselect={false}
+          data={languageOptions.map(({ label, value }) => ({ label, value }))}
+          onChange={(value) => {
+            if (isSupportedLocale(value)) switchLocale(value);
+          }}
+          size={compact ? "xs" : "sm"}
+          value={locale}
+          w={compact ? 84 : 124}
+        />
 
         {authResolved && user ? (
           <>
@@ -102,60 +94,71 @@ export function PublicAppControls({
         )}
       </Group>
 
-      <Box className="public-mobile-menu">
-        <Menu opened={mobileMenuOpened} onChange={setMobileMenuOpened} shadow="md" width={260} position="bottom-end">
-          <Menu.Target>
-            <Burger
-              className="public-mobile-menu-trigger"
-              opened={mobileMenuOpened}
-              size="sm"
-              aria-label={common("menu")}
-              title={common("menu")}
-            />
-          </Menu.Target>
-          <Menu.Dropdown>
+      <Box className="public-mobile-menu" style={{ position: "relative" }}>
+        <Button
+          className="public-mobile-menu-trigger"
+          variant="default"
+          aria-expanded={mobileMenuOpened}
+          aria-label={common("menu")}
+          title={common("menu")}
+          onClick={() => setMobileMenuOpened((opened) => !opened)}
+        >
+          {mobileMenuOpened ? <GdsIcons.Close size={20} aria-hidden="true" /> : <GdsIcons.Menu size={20} aria-hidden="true" />}
+        </Button>
+        {mobileMenuOpened ? (
+          <Stack
+            role="menu"
+            className="glass-panel surface-outline"
+            gap="xs"
+            p="sm"
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "calc(100% + 8px)",
+              width: 260,
+              zIndex: 500
+            }}
+          >
             {mobileNewsHref && mobileNewsLabel ? (
-              <>
-                <Menu.Item component={Link} href={mobileNewsHref} leftSection={<GdsIcons.Notifications size={16} />}>
-                  {mobileNewsLabel}
-                </Menu.Item>
-                <Menu.Divider />
-              </>
+              <Button component={Link} href={mobileNewsHref} leftSection={<GdsIcons.Notifications size={16} />} variant="subtle" fullWidth onClick={() => setMobileMenuOpened(false)}>
+                {mobileNewsLabel}
+              </Button>
             ) : null}
 
             {authResolved && user ? (
               <>
-                <Menu.Item component={Link} href={dashboardHref} leftSection={<GdsIcons.Dashboard size={16} />}>
+                <Button component={Link} href={dashboardHref} leftSection={<GdsIcons.Dashboard size={16} />} variant="subtle" fullWidth onClick={() => setMobileMenuOpened(false)}>
                   {common("openDashboard")}
-                </Menu.Item>
-                <Menu.Item component="a" href="/api/auth/logout" leftSection={<GdsIcons.Back size={16} />}>
+                </Button>
+                <Button component="a" href="/api/auth/logout" leftSection={<GdsIcons.Back size={16} />} variant="subtle" fullWidth>
                   {common("logout")}
-                </Menu.Item>
-                <Menu.Divider />
+                </Button>
               </>
             ) : (
-              <>
-                <Menu.Item component="a" href={loginHref} leftSection={<GdsIcons.Profile size={16} />}>
-                  {landing("login")}
-                </Menu.Item>
-                <Menu.Divider />
-              </>
+              <Button component="a" href={loginHref} leftSection={<GdsIcons.Profile size={16} />} variant="subtle" fullWidth>
+                {landing("login")}
+              </Button>
             )}
 
-            <Menu.Label>{common("languageSelector")}</Menu.Label>
-            {languageOptions.map((language) => (
-              <Menu.Item
-                key={language.value}
-                leftSection={<Text fw={900} size="sm">{language.shortLabel}</Text>}
-                onClick={() => switchLocale(language.value)}
-                rightSection={locale === language.value ? <GdsIcons.Check size={14} /> : null}
-              >
-                {language.label}
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
+            <Select
+              aria-label={`${common("languageSelector")} (${localeLabel})`}
+              allowDeselect={false}
+              data={languageOptions.map(({ label, value }) => ({ label, value }))}
+              onChange={(value) => {
+                if (isSupportedLocale(value)) {
+                  switchLocale(value);
+                  setMobileMenuOpened(false);
+                }
+              }}
+              value={locale}
+            />
+          </Stack>
+        ) : null}
       </Box>
     </Group>
   );
+}
+
+function isSupportedLocale(value: unknown): value is SupportedLocale {
+  return value === "en" || value === "hu" || value === "ar" || value === "es" || value === "de" || value === "he";
 }

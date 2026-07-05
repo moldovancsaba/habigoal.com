@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Checkbox, Group, NumberInput, Stack, Text } from "@mantine/core";
-import { SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { Checkbox, Group, NumberInput, Stack, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import { trackerQuestions } from "@/lib/readiness-model";
 import { getProductColor } from "@/lib/product-ui-contracts";
 import type { CheckInQuestionConfig } from "@/types/check-in-config";

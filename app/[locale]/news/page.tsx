@@ -1,6 +1,7 @@
-import { Badge, Box, Container, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import { Badge, Box, Container, Group, Stack } from "@sovereignsquad/gds/client";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import { Link } from "@/i18n/navigation";
 import { listNewsPosts } from "@/lib/news";
 import { NewsReadPostButton } from "@/components/news/NewsReadPostButton";

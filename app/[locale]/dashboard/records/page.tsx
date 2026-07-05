@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Badge, Box, Group, Loader, Modal, Paper, Stack, Text, TextInput } from "@mantine/core";
-import { createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
+import { useEffect, useMemo, useState, type MouseEvent } from "react";
+import { Badge, Box, Group, Loader, Modal, Stack, TextInput, createGdsVocabularyPack, GdsIcons, PageHeader, SectionPanel, SemanticButton } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { getProductColor } from "@/lib/product-ui-contracts";
 import { formatScore } from "@/lib/utils";
 import type { CheckInRecord } from "@/types/check-in";
@@ -91,7 +91,7 @@ export default function RecordsPage() {
           <SemanticButton
             action={showDeleted ? "records:showingDeleted" : "records:showDeleted"}
             variant={showDeleted ? "filled" : "default"}
-            color={showDeleted ? "red" : "gray"}
+            color={showDeleted ? getProductColor("dashboard", "risk") : getProductColor("dashboard", "neutral")}
             onClick={() => setShowDeleted((v) => !v)}
             vocabularyPacks={[recordsActionPack]}
           />
@@ -128,9 +128,9 @@ export default function RecordsPage() {
                             href={`/dashboard/records/${record._id}`}
                             fw={800}
                             size="lg"
-                            color={getProductColor("dashboard", "primaryAction")}
+                            c={getProductColor("dashboard", "primaryAction")}
                             style={{ textDecoration: "none" }}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e: MouseEvent<HTMLElement>) => e.stopPropagation()}
                           >
                             {record.child.name || "---"}
                           </Text>

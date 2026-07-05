@@ -2,25 +2,36 @@
 
 import { useEffect, useMemo, useState, use } from "react";
 import type { ReactNode } from "react";
-import { Badge, Box, Checkbox, Group, Loader, Modal, Paper, SegmentedControl, SimpleGrid, Stack, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import {
+  Badge,
   Badge as GdsBadge,
+  Box,
   Box as GdsBox,
+  Checkbox,
   Checkbox as GdsCheckbox,
   createGdsVocabularyPack,
+  GdsSegmentedControl,
   GdsIcons,
+  Group,
   Group as GdsGroup,
+  Loader,
+  Modal,
   PageHeader,
   SectionPanel,
   SemanticButton,
+  SimpleGrid,
   SimpleGrid as GdsSimpleGrid,
+  Stack,
   Stack as GdsStack,
   StateBlock,
+  Table,
+  TextInput,
   TextInput as GdsTextInput
 } from "@sovereignsquad/gds/client";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
 import { withDisplayNamesForReport } from "@/lib/report-user-display";
@@ -485,7 +496,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     load: loadTimeline.length ? { ratio: loadRatio, date: latestLoad?.date } : null,
   });
 
-  const sectionOptions = [
+  const sectionOptions: Array<{ value: AthleteSection; label: string }> = [
     { value: "input", label: td("sectionInput") },
     { value: "plan", label: td("sectionPlan") },
     { value: "analysis", label: td("sectionAnalysis") },
@@ -502,7 +513,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
   if (!data) {
     return (
-      <Text c="red" py="md">
+      <Text c={getProductColor("dashboard", "risk")} py="md">
         {tc("error")}
       </Text>
     );
@@ -525,7 +536,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   <SemanticButton action="edit" variant="default" disabled={data.assessments.length === 0} />
                 </Link>
                 <SemanticButton action="download" color={getProductColor("dashboard", "primaryAction")} onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>{td("exportReportPdf")}</SemanticButton>
-                <SemanticButton action="delete" color="red" onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0} />
+                <SemanticButton action="delete" color={getProductColor("dashboard", "risk")} onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0} />
               </>
             )}
           </Group>
@@ -588,12 +599,13 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
       ) : (
         <>
           <Box>
-            <SegmentedControl
+            <GdsSegmentedControl<AthleteSection>
               value={section}
-              onChange={(value) => setSection(value as AthleteSection)}
-              data={sectionOptions}
+              onChange={setSection}
+              options={sectionOptions}
               fullWidth
-              aria-label={td("sectionNavLabel")}
+              ariaLabel={td("sectionNavLabel")}
+              overflow="wrap"
             />
           </Box>
 
@@ -661,7 +673,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               {habitSaveError ? (
                 <Paper withBorder p="md" radius="md">
                   <Group justify="space-between" align="center">
-                    <Text size="sm" c="red">{habitSaveError}</Text>
+                    <Text size="sm" c={getProductColor("dashboard", "risk")}>{habitSaveError}</Text>
                     <SemanticButton action="refresh" variant="light" size="sm" onClick={() => void retryTodayHabits()} loading={savingHabits} />
                   </Group>
                 </Paper>
@@ -1011,25 +1023,27 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="md">
                 <Stack gap="xs">
                   <Text size="sm" fw={600}>{td("athleteTrendWindowLabel")}</Text>
-                  <SegmentedControl
+                  <GdsSegmentedControl<TrendWindow>
                     value={trendWindow}
-                    onChange={(value) => setTrendWindow(value as TrendWindow)}
-                    data={[
+                    onChange={setTrendWindow}
+                    options={[
                       { label: td("athleteTrendWindow7d"), value: "7d" },
                       { label: td("athleteTrendWindow30d"), value: "30d" },
                       { label: td("athleteTrendWindowAll"), value: "all" },
                       { label: td("athleteTrendWindowCustom"), value: "custom" }
                     ]}
                     fullWidth
+                    ariaLabel={td("athleteTrendWindowLabel")}
+                    overflow="wrap"
                   />
                 </Stack>
 
                 <Stack gap="xs">
                   <Text size="sm" fw={600}>{td("athleteTrendMetricLabel")}</Text>
-                  <SegmentedControl
+                  <GdsSegmentedControl<TrendMetric>
                     value={trendMetric}
-                    onChange={(value) => setTrendMetric(value as TrendMetric)}
-                    data={[
+                    onChange={setTrendMetric}
+                    options={[
                       { label: td("athleteTrendMetricReadiness"), value: "readiness" },
                       { label: td("athleteTrendMetricMovement"), value: "movement" },
                       { label: td("athleteTrendMetricSocial"), value: "social" },
@@ -1037,6 +1051,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                       { label: td("athleteTrendMetricSki"), value: "ski" }
                     ]}
                     fullWidth
+                    ariaLabel={td("athleteTrendMetricLabel")}
+                    overflow="wrap"
                   />
                 </Stack>
               </SimpleGrid>
@@ -1204,7 +1220,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                       >
                         <Table.Td>{assessment.session.date}</Table.Td>
                         <Table.Td>
-                          <Badge variant="outline" size="sm" color="gray">
+                          <Badge variant="outline" size="sm" color={getProductColor("dashboard", "neutral")}>
                             {t("appTitle")}
                           </Badge>
                         </Table.Td>
@@ -1833,7 +1849,7 @@ function DeleteSurveyModal({
         <TextInput value={confirmValue} onChange={(e) => onConfirmValueChange(e.currentTarget.value)} placeholder={t("deleteKeyword")} />
         <Group justify="flex-end">
           <SemanticButton action="cancel" variant="subtle" onClick={onClose} />
-          <SemanticButton action="delete" color="red" disabled={confirmValue.trim().toLowerCase() !== "delete"} loading={deleting} onClick={onDelete} />
+          <SemanticButton action="delete" color={getProductColor("dashboard", "risk")} disabled={confirmValue.trim().toLowerCase() !== "delete"} loading={deleting} onClick={onDelete} />
         </Group>
       </Stack>
     </Modal>

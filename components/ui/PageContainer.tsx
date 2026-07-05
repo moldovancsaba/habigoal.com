@@ -1,6 +1,6 @@
 "use client";
 
-import { Box } from "@mantine/core";
+import { Box } from "@sovereignsquad/gds/client";
 import { APP_LAYOUT } from "@/theme/tokens";
 
 export function PageContainer({ children }: { children: React.ReactNode }) {

@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Box, Loader, Stack, Text, Group, Paper, SimpleGrid, Select } from "@mantine/core";
-import { PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
+import { Box, Loader, Stack, Group, SimpleGrid, Select, PageHeader, SectionPanel, SemanticButton, StateBlock } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { athleteIqRequest, type AthleteIqClientResult } from "@/lib/athleteiq-client";
 import { toParentSummaryView, type ParentSummaryView } from "@/lib/parent-summary-view";
 import type { AthleteProfile } from "@/types/athlete";

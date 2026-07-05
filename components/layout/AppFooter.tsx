@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Divider, Group, Text } from "@mantine/core";
+import { Box, Group } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
+import { Text } from "@/components/gds/SurfacePrimitives";
 import { Link } from "@/i18n/navigation";
 import { APP_VERSION } from "@/lib/app-version";
 import { DEFAULT_HABIGOAL_SETTINGS, getSettings, type HabigoalSettings } from "@/services/settings-service";
@@ -17,7 +18,7 @@ export function AppFooter() {
 
   return (
     <Box component="footer" className="no-print glass-panel surface-outline" mt="xl" px={{ base: "md", sm: "lg" }} py="md" pb={{ base: "md", sm: "md" }} style={{ borderRadius: "var(--mantine-radius-md)" }}>
-      <Divider mb="sm" />
+      <Box mb="sm" style={{ borderTop: "1px solid var(--border-primary)" }} />
       <Group justify="space-between" align="center" gap="sm">
         <Group gap="xs" wrap="wrap">
           <Text component={Link} href="/legal/gtc" size="sm" c="var(--text-secondary)" style={{ textDecoration: "none" }}>

@@ -1,7 +1,8 @@
 "use client";
 
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import { Box, Paper, Text } from "@mantine/core";
+import { Box } from "@sovereignsquad/gds/client";
+import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { ANALYTICS_CONFIG } from "./AnalyticsConstants";
 import { ChartEmptyState } from "./ChartEmptyState";
 
