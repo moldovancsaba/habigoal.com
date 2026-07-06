@@ -62,7 +62,7 @@ export function TrainingLoadLogger({ athleteId }: TrainingLoadLoggerProps) {
   if (savedLoadPoints !== null) {
     return (
       <Box p="xl" style={{ textAlign: "center" }}>
-        <Text size="xl" fw={700} c="var(--mantine-color-tactical-6)">{t("trainingLogSuccessTitle")}</Text>
+        <Text size="xl" fw={700} c="var(--gds-vibe-accent, var(--accent-gold))">{t("trainingLogSuccessTitle")}</Text>
         <Text mt="sm">{t("trainingLogSuccessBody")}</Text>
         <Text mt="sm" c="var(--gds-vibe-accent, var(--accent-gold))" fw={700}>
           {t("trainingLogPoints", { points: savedLoadPoints })}
@@ -115,7 +115,7 @@ export function TrainingLoadLogger({ athleteId }: TrainingLoadLoggerProps) {
           </Paper>
 
           {error ? (
-            <Text c="var(--mantine-color-red-6)" role="alert" size="sm">
+            <Text c="var(--gds-vibe-accent, var(--accent-gold))" role="alert" size="sm">
               {error}
             </Text>
           ) : null}

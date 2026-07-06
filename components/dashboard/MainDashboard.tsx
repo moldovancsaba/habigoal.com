@@ -282,9 +282,9 @@ export function MainDashboard() {
   const activeStaff = data?.users.filter((user) => user.roles.includes("trainer") || user.roles.includes("admin")).length ?? 0;
 
   const actionBuckets: ActionBucket[] = [
-    { label: t("actionBucketReady"), count: queueItems.filter((item) => item.supportLevel === "ready").length, color: `var(--mantine-color-${getProductColor("dashboard", "success")}-6)` },
-    { label: t("actionBucketWatch"), count: watchNowCount, color: `var(--mantine-color-${getProductColor("dashboard", "warning")}-6)` },
-    { label: t("actionBucketSupport"), count: supportNowCount, color: `var(--mantine-color-${getProductColor("dashboard", "risk")}-6)` }
+    { label: t("actionBucketReady"), count: queueItems.filter((item) => item.supportLevel === "ready").length, color: "var(--gds-vibe-accent, var(--accent-gold))" },
+    { label: t("actionBucketWatch"), count: watchNowCount, color: "var(--gds-vibe-primary, var(--brand-gold))" },
+    { label: t("actionBucketSupport"), count: supportNowCount, color: "var(--gds-vibe-accent, var(--accent-gold))" }
   ];
 
   const bucketQueues = useMemo(

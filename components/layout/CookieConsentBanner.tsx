@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
-import { createGdsVocabularyPack, GdsIcons, SemanticButton, Stack } from "@sovereignsquad/gds/client";
+import { useState, useSyncExternalStore } from "react";
+import { Button, GdsIcons, Stack } from "@sovereignsquad/gds/client";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { COOKIE_CONSENT_NAME, serializeCookieConsent, ACCEPT_ALL, ESSENTIAL_ONLY, parseCookieConsent } from "@/lib/cookie-consent";
-import { getProductColor, resolveProductSurfaceFromPathname } from "@/lib/product-ui-contracts";
+import { resolveProductSurfaceFromPathname } from "@/lib/product-ui-contracts";
 
 const CONSENT_COOKIE_NAME = COOKIE_CONSENT_NAME;
 
@@ -31,22 +31,6 @@ export function CookieConsentBanner() {
   );
   const [dismissed, setDismissed] = useState(false);
   const activeSurface = resolveProductSurfaceFromPathname(pathname);
-  const primaryActionColor = getProductColor(activeSurface, "primaryAction");
-  const secondaryActionColor = getProductColor(activeSurface, "secondaryAction");
-  const consentActionPack = useMemo(
-    () =>
-      createGdsVocabularyPack("cookie", {
-        accept: {
-          defaultMessage: t("cookieAccept"),
-          icon: GdsIcons.Check
-        },
-        essentialOnly: {
-          defaultMessage: t("cookieRejectNonEssential"),
-          icon: GdsIcons.Settings
-        }
-      }),
-    [t]
-  );
 
   function writeConsent(value: string) {
     document.cookie = `${CONSENT_COOKIE_NAME}=${value}; path=/; max-age=31536000; samesite=lax`;
@@ -67,10 +51,11 @@ export function CookieConsentBanner() {
   return (
     <Paper
       aria-label={t("cookieConsentMessage")}
+      data-product-surface={activeSurface}
       role="region"
       shadow="md"
       withBorder
-      className="glass-panel surface-outline"
+      className="cookie-consent-panel surface-outline"
       style={{
         position: "fixed",
         left: 16,
@@ -89,19 +74,21 @@ export function CookieConsentBanner() {
           <Link href="/legal/privacy">{t("cookiePolicyLink")}</Link>
         </Text>
         <Stack gap="xs" style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
-          <SemanticButton
-            action="cookie:essentialOnly"
+          <Button
+            className="gds-athlete-gold-button gds-athlete-gold-button-secondary"
+            leftSection={<GdsIcons.Settings size={16} aria-hidden="true" />}
             variant="default"
-            color={secondaryActionColor}
             onClick={acceptEssentialOnly}
-            vocabularyPacks={[consentActionPack]}
-          />
-          <SemanticButton
-            action="cookie:accept"
-            color={primaryActionColor}
+          >
+            {t("cookieRejectNonEssential")}
+          </Button>
+          <Button
+            className="gds-athlete-gold-button"
+            leftSection={<GdsIcons.Check size={16} aria-hidden="true" />}
             onClick={acceptAll}
-            vocabularyPacks={[consentActionPack]}
-          />
+          >
+            {t("cookieAccept")}
+          </Button>
         </Stack>
       </Stack>
     </Paper>

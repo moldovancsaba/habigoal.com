@@ -328,7 +328,7 @@ export default function RecordDetailPage({ params }: { params: Promise<{ id: str
               return (
                 <Paper key={attachment.id} withBorder p="xs" radius="md" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   {isPdf ? (
-                    <Box style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--mantine-color-gray-0)", borderRadius: "var(--mantine-radius-md)" }}>
+                    <Box style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center", background: "color-mix(in srgb, var(--gds-vibe-surface, var(--surface-elevated)) 88%, black)", borderRadius: "var(--mantine-radius-md)" }}>
                        <Stack align="center" gap={4}>
                          <Text style={{ fontSize: 32 }}>📄</Text>
                          <Text size="sm" c="dimmed" style={{ textAlign: "center", paddingInline: 4 }} lineClamp={1}>{attachment.name || t("pdfReportFallback")}</Text>
@@ -573,7 +573,7 @@ function renderRotatedRadiusTick(props: { x?: string | number; y?: string | numb
     <text
       x={x}
       y={y}
-      fill="var(--mantine-color-text)"
+      fill="var(--gds-vibe-text, var(--text-primary))"
       fontSize={RADAR_TICK_FONT_SIZE}
       fontFamily={CHART_FONT_FAMILY}
       textAnchor="middle"
@@ -646,7 +646,7 @@ function renderWrappedAngleTick(props: {
     <text
       x={x}
       y={y}
-      fill="var(--mantine-color-text)"
+      fill="var(--gds-vibe-text, var(--text-primary))"
       fontSize={RADAR_TICK_FONT_SIZE}
       fontFamily={CHART_FONT_FAMILY}
       textAnchor={x < cx - 8 ? "end" : x > cx + 8 ? "start" : "middle"}

@@ -504,7 +504,7 @@ export default function ChildrenListPage() {
                             <Badge color={getProductColor("dashboard", "secondaryAction")} variant="light" size="sm">
                               {t("athleteAverageReadinessBadge", { value: formatScore(child.avgReadiness) })}
                             </Badge>
-                            <Badge color="strategy" variant="light" size="sm">
+                            <Badge color={getProductColor("dashboard", "primaryAction")} variant="light" size="sm">
                               {t("athleteSessionCountBadge", { count: child.assessmentCount ?? 0 })}
                             </Badge>
                             {child.latestLocation && (

@@ -351,8 +351,9 @@ function assertGlobalOverlayColorContract() {
   const source = fs.readFileSync(path.join(root, file), "utf8");
   const requiredSnippets = [
     "resolveProductSurfaceFromPathname(pathname)",
-    "getProductColor(activeSurface, \"primaryAction\")",
-    "getProductColor(activeSurface, \"secondaryAction\")"
+    "data-product-surface={activeSurface}",
+    "gds-athlete-gold-button",
+    "gds-athlete-gold-button-secondary"
   ];
   const forbiddenSnippets = [
     "color=\"ingress\"",
@@ -433,7 +434,7 @@ function assertPersonaColorContract() {
     const filePath = path.join(root, relativeFile);
     if (!fs.existsSync(filePath)) continue;
     const source = fs.readFileSync(filePath, "utf8");
-    for (const snippet of ["color=\"ingress\"", "color='ingress'", "var(--mantine-color-ingress"]) {
+    for (const snippet of [["color=", "\"ingress\""].join(""), ["color=", "'ingress'"].join(""), ["var(", "--mantine-color-", "ingress"].join("")]) {
       if (source.includes(snippet)) {
         failures.push({
           file: relativeFile,

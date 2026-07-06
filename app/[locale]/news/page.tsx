@@ -48,7 +48,7 @@ export default async function NewsIndexPage({
                     </Stack>
                     <Group gap="xs">
                       {post.tags.map((tag) => (
-                        <Badge key={tag} variant="light" color="strategy">
+                        <Badge key={tag} variant="light" color={getProductColor("public", "primaryAction")}>
                           {t(`tags.${tag}`)}
                         </Badge>
                       ))}

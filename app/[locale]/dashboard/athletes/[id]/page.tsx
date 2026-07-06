@@ -100,9 +100,9 @@ function unwrapHistoryPayload(response: unknown): AthleteHistoryPayload | null {
 }
 
 const PILLAR_COLORS: Record<string, string> = {
-  physical_pillar: "var(--mantine-color-tactical-6)",
-  mental_pillar: "var(--mantine-color-synthesis-6)",
-  sport_brain_pillar: "var(--mantine-color-strategy-6)"
+  physical_pillar: DASHBOARD_CHART_PRIMARY_COLOR,
+  mental_pillar: "var(--gds-vibe-primary, var(--accent-gold))",
+  sport_brain_pillar: "var(--gds-vibe-accent, var(--accent-gold))"
 };
 
 const baselineTrainingDayOptions = [
@@ -992,7 +992,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                   title={td("athleteLoadTrendTitle")}
                   data={loadTimeline.map((entry) => ({ date: entry.date, value: entry.value as number }))}
                   emptyLabel={td("chartNoData")}
-                  color="var(--mantine-color-review-6)"
+                  color={DASHBOARD_CHART_PRIMARY_COLOR}
                   yDomain={[0, Math.max(...loadTimeline.map((entry) => entry.value as number), 100)]}
                 />
 
@@ -1260,7 +1260,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                           return (
                             <Paper key={attachment.id} withBorder p="xs" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", minWidth: 0 }}>
                               {isPdf ? (
-                                <Box style={{ height: 110, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--mantine-color-gray-0)", borderRadius: "var(--mantine-radius-md)" }}>
+                                <Box style={{ height: 110, display: "flex", alignItems: "center", justifyContent: "center", background: "color-mix(in srgb, var(--gds-vibe-surface, var(--surface-elevated)) 88%, black)", borderRadius: "var(--mantine-radius-md)" }}>
                                   <Stack align="center" gap={4}>
                                     <Text size="xl" style={{ fontSize: 40 }}>📄</Text>
                                     <Text size="sm" c="dimmed" style={{ textAlign: "center", paddingInline: 8 }}>{attachment.name || t("pdfReportFallback")}</Text>
@@ -1486,9 +1486,9 @@ function getTrendMetricValue(assessment: CheckInRecord, metric: TrendMetric) {
 
 function getTrendMetricColor(metric: TrendMetric) {
   if (metric === "readiness") return DASHBOARD_CHART_PRIMARY_COLOR;
-  if (metric === "movement") return "var(--mantine-color-tactical-6)";
-  if (metric === "social") return "var(--mantine-color-synthesis-6)";
-  if (metric === "mental") return "var(--mantine-color-strategy-6)";
+  if (metric === "movement") return "var(--gds-vibe-primary, var(--accent-gold))";
+  if (metric === "social") return "var(--gds-vibe-accent, var(--accent-gold))";
+  if (metric === "mental") return "var(--gds-vibe-primary, var(--accent-gold))";
   return DASHBOARD_CHART_PRIMARY_COLOR;
 }
 

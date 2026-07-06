@@ -7,6 +7,7 @@ import { ATHLETE_IQ_GDS_THEME_PRESET, ATHLETE_IQ_GOLD_LOGO_SRC } from "@/lib/pro
 const readSource = (path: string) => readFileSync(join(process.cwd(), path), "utf8");
 const readJson = <T,>(path: string) => JSON.parse(readSource(path)) as T;
 const legacyHex = (prefix: string, suffix: string) => `#${prefix}${suffix}`;
+const legacyRgbaPrefix = (...parts: string[]) => `${["rg", "ba("].join("")}${parts.join(", ")}`;
 
 type Messages = {
   ProductSurfaces: {
@@ -132,7 +133,8 @@ describe("product surface route boundaries", () => {
     const sessionRpeRoute = readSource("app/api/session-plans/rpe/route.ts");
 
     expect(cookieBanner).toContain("resolveProductSurfaceFromPathname(pathname)");
-    expect(cookieBanner).toContain("getProductColor(activeSurface, \"primaryAction\")");
+    expect(cookieBanner).toContain("data-product-surface={activeSurface}");
+    expect(cookieBanner).toContain("gds-athlete-gold-button");
     expect(cookieBanner).not.toContain("color=\"ingress\"");
     expect(cookieBanner).not.toContain("@mantine/core");
 
@@ -161,6 +163,7 @@ describe("product surface route boundaries", () => {
   it("uses the official gold athlete theme contract for persona app shells", () => {
     const localeLayout = readSource("app/[locale]/layout.tsx");
     const manifest = readSource("app/manifest.ts");
+    const middlewareSource = readSource("middleware.ts");
     const theme = readSource("theme/mantine-theme.ts");
     const productContracts = readSource("lib/product-ui-contracts.ts");
     const themeBoundary = readSource("components/product/ProductThemeBoundary.tsx");
@@ -169,6 +172,13 @@ describe("product surface route boundaries", () => {
     const oldHabigoalBlue = legacyHex("16", "87d9");
 
     expect(localeLayout).toContain("getSemanticTone(\"review\").color");
+    expect(localeLayout).toContain("data-gds-theme-preset={ATHLETE_IQ_GDS_THEME_PRESET}");
+    expect(localeLayout).toContain("data-mantine-color-scheme=\"dark\"");
+    expect(localeLayout).toContain("goldAthleteRootVariables");
+    expect(middlewareSource).toContain("x-habigoal-product-surface");
+    expect(middlewareSource).toContain("x-habigoal-gds-theme-preset");
+    expect(middlewareSource).toContain("ATHLETE_IQ_GDS_THEME_PRESET");
+    expect(middlewareSource).toContain("nextWithProductHeaders(request)");
     expect(manifest).toContain("getSemanticTone(\"review\").color");
     expect(theme).toContain("primaryColor: \"review\"");
     expect(theme).toMatch(/defaultGradient:\s*\{[\s\S]*?from:\s*"review(?:\.\d+)?"/);
@@ -177,6 +187,8 @@ describe("product surface route boundaries", () => {
     expect(productContracts).toMatch(/dashboard:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/);
     expect(productContracts).toMatch(/habigoal:\s*\{[\s\S]*?mode:\s*"professional_dark_gold"/);
     expect(productContracts).toMatch(/habigoal:\s*\{[\s\S]*?primaryAction:\s*"review"/);
+    expect(productContracts).not.toContain('success: "tactical"');
+    expect(productContracts).not.toContain('risk: "red"');
     expect(productContracts).toMatch(/public:\s*\{[\s\S]*?primaryAction:\s*"review"/);
     expect(themeBoundary).toContain("surface === \"habigoal\"");
     expect(themeBoundary).toContain("surface === \"dashboard\"");
@@ -186,6 +198,40 @@ describe("product surface route boundaries", () => {
     expect(styles).not.toContain("--hbg-mint");
     expect(styles).not.toContain(oldHabigoalTeal);
     expect(styles).not.toContain(oldHabigoalBlue);
+  });
+
+  it("blocks legacy visual escape paths from visible persona UI files", () => {
+    const visibleUiFiles = [
+      "app/[locale]/dashboard/athletes/[id]/page.tsx",
+      "app/[locale]/dashboard/records/[id]/page.tsx",
+      "components/dashboard/MainDashboard.tsx",
+      "components/layout/CookieConsentBanner.tsx",
+      "components/onboarding/OnboardingPrompt.tsx",
+      "components/product/athlete-iq/AthleteIqExperience.tsx",
+      "components/product/habigoal/HabigoalExperience.tsx"
+    ];
+
+    const bannedVisualPatterns = [
+      /var\(--mantine-color-(?:ingress|synthesis|strategy|tactical|red|yellow|cyan|blue|dimmed|text|default-border)/,
+      /color=["'](?:ingress|synthesis|strategy|tactical|yellow|cyan|blue)["']/,
+      /#[0-9A-Fa-f]{6}\b/,
+      /rgba\(0,\s*(?:63|174),/
+    ];
+
+    for (const file of visibleUiFiles) {
+      const source = readSource(file);
+      for (const pattern of bannedVisualPatterns) {
+        expect(source, `${file} must not contain ${pattern}`).not.toMatch(pattern);
+      }
+    }
+
+    const styles = readSource("app/globals.css");
+    expect(styles).not.toContain(legacyHex("38", "bdf8"));
+    expect(styles).not.toContain(legacyHex("68", "d7ec"));
+    expect(styles).not.toContain(legacyHex("00", "aeef"));
+    expect(styles).not.toContain(legacyHex("00", "b894"));
+    expect(styles).not.toContain(legacyRgbaPrefix("0", "63", "206"));
+    expect(styles).not.toContain(legacyRgbaPrefix("0", "174", "239"));
   });
 
   it("keeps product apps isolated from selector and cross-app navigation", () => {

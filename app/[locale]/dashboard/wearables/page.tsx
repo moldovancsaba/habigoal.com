@@ -200,7 +200,7 @@ export default function WearablesConnectFlow() {
                       {chips.length > 0 ? (
                         <Group gap="xs">
                           {chips.map((chip) => (
-                            <Badge key={chip.key} variant="outline" color="strategy">
+                            <Badge key={chip.key} variant="outline" color={getProductColor("dashboard", "primaryAction")}>
                               {t(`metricLabel.${chip.key}`)}: {chip.value}{chip.unit ? ` ${chip.unit}` : ""}
                             </Badge>
                           ))}

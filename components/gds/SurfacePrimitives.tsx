@@ -64,6 +64,20 @@ const titleSizeMap: Record<number, CSSProperties["fontSize"]> = {
 };
 
 const GdsBox = Box as unknown as (props: LooseProps & { children?: ReactNode }) => ReactElement;
+const productColorTokens: Record<string, CSSProperties["color"]> = {
+  checklist: "var(--gds-vibe-accent, var(--accent-gold))",
+  ingress: "var(--gds-vibe-accent, var(--accent-gold))",
+  knowmore: "var(--gds-vibe-accent, var(--accent-gold))",
+  neutral: "var(--gds-vibe-muted, var(--text-secondary))",
+  red: "var(--gds-vibe-accent, var(--accent-gold))",
+  review: "var(--gds-vibe-accent, var(--accent-gold))",
+  risk: "var(--gds-vibe-accent, var(--accent-gold))",
+  strategy: "var(--gds-vibe-accent, var(--accent-gold))",
+  success: "var(--gds-vibe-accent, var(--accent-gold))",
+  synthesis: "var(--gds-vibe-accent, var(--accent-gold))",
+  tactical: "var(--gds-vibe-accent, var(--accent-gold))",
+  warning: "var(--gds-vibe-accent, var(--accent-gold))"
+};
 
 export function Text({
   c,
@@ -167,7 +181,7 @@ export function Alert({ children, color, role, title }: GdsAlertProps) {
       <InlineAlert
         title={title}
         message={children}
-        severity={color === "red" || color === "risk" ? "error" : color === "review" ? "warning" : color === "tactical" ? "success" : "info"}
+        severity={role === "alert" || color === "red" || color === "risk" ? "error" : "warning"}
       />
     </Box>
   );
@@ -176,12 +190,16 @@ export function Alert({ children, color, role, title }: GdsAlertProps) {
 function resolveTextColor(color: unknown): CSSProperties["color"] {
   if (!color) return undefined;
   if (color === "dimmed") return "var(--gds-vibe-muted, var(--text-secondary))";
+  if (typeof color === "string" && productColorTokens[color]) return productColorTokens[color];
+  if (typeof color === "string" && color.includes("--mantine-color-") && color.includes("dimmed")) return "var(--gds-vibe-muted, var(--text-secondary))";
+  if (typeof color === "string" && color.includes("--mantine-color-")) return "var(--gds-vibe-accent, var(--accent-gold))";
   if (typeof color === "string" && color.startsWith("var(")) return color;
   if (typeof color === "string" && /^[a-z]+\.[0-9]$/.test(color)) {
-    const [name, shade] = color.split(".");
-    return `var(--mantine-color-${name}-${shade})`;
+    const [name] = color.split(".");
+    return productColorTokens[name] ?? "var(--gds-vibe-accent, var(--accent-gold))";
   }
-  return `var(--mantine-color-${color}-filled, ${String(color)})`;
+  if (typeof color === "string") return productColorTokens[color] ?? "var(--gds-vibe-accent, var(--accent-gold))";
+  return "var(--gds-vibe-accent, var(--accent-gold))";
 }
 
 function resolveFontSize(size: unknown): CSSProperties["fontSize"] {

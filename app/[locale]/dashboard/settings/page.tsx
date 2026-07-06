@@ -480,7 +480,7 @@ export default function SettingsPage() {
           <Group gap="xs" wrap="wrap">
             <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>{t("settingsAdminsCount", { count: adminCount })}</Badge>
             <Badge variant="light" color={getProductColor("dashboard", "secondaryAction")}>{t("settingsTrainersCount", { count: trainerCount })}</Badge>
-            <Badge variant="light" color="strategy">{t("settingsAthletesCount", { count: athleteCount })}</Badge>
+            <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>{t("settingsAthletesCount", { count: athleteCount })}</Badge>
             <Badge variant="light" color={getProductColor("dashboard", "neutral")}>{t("settingsApprovedUsersCount", { count: users.length })}</Badge>
           </Group>
           <Group gap="xs" align="end" wrap="wrap">
@@ -702,7 +702,7 @@ export default function SettingsPage() {
             {teamTrainerEmails.map((email) => <Badge key={email} variant="light" color={getProductColor("dashboard", "secondaryAction")}>{email}</Badge>)}
             {teamAthleteIds.map((athleteId) => {
               const athlete = athletes.find((entry) => entry._id === athleteId);
-              return <Badge key={athleteId} variant="light" color="strategy">{athlete?.name || athleteId}</Badge>;
+              return <Badge key={athleteId} variant="light" color={getProductColor("dashboard", "primaryAction")}>{athlete?.name || athleteId}</Badge>;
             })}
           </Group>
           <Stack gap="sm">
@@ -722,7 +722,7 @@ export default function SettingsPage() {
                       <Badge
                         key={athleteId}
                         variant="light"
-                        color="strategy"
+                        color={getProductColor("dashboard", "primaryAction")}
                         rightSection={
                           canManageUsers ? (
                             <SemanticButton

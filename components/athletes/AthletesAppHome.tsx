@@ -238,8 +238,8 @@ function getReadinessLabel(readiness: number, t: ReturnType<typeof useTranslatio
 }
 
 function getReadinessColor(readiness: number) {
-  if (readiness >= 4) return "strategy";
-  if (readiness >= 3) return "synthesis";
+  if (readiness >= 4) return getProductColor(ATHLETE_APP_SURFACE, "success");
+  if (readiness >= 3) return getProductColor(ATHLETE_APP_SURFACE, "warning");
   return "review";
 }
 

@@ -250,7 +250,7 @@ export default function CoachDashboardPage() {
                   <Group justify="space-between">
                     <Text fw={700}>{overview.teamName}</Text>
                     {overview.projection ? (
-                      <Badge variant="light" color="strategy">{t("teamAthletes", { count: overview.projection.athleteCount })}</Badge>
+                      <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>{t("teamAthletes", { count: overview.projection.athleteCount })}</Badge>
                     ) : null}
                   </Group>
                   {!overview.projection ? (
@@ -352,7 +352,7 @@ export default function CoachDashboardPage() {
                     <SemanticButton action="dashboard" variant="light" color={getProductColor("dashboard", "primaryAction")}>{t("intelligence")}</SemanticButton>
                   </Link>
                   <Link href={`/dashboard/athletes/${athlete._id}/vision`}>
-                    <SemanticButton action="dashboard" variant="outline" color="strategy">{t("vision")}</SemanticButton>
+                    <SemanticButton action="dashboard" variant="outline" color={getProductColor("dashboard", "primaryAction")}>{t("vision")}</SemanticButton>
                   </Link>
                   <Link href={`/dashboard/athletes/${athlete._id}/profile`}>
                     <SemanticButton action="settings" variant="outline">{t("profile")}</SemanticButton>

@@ -11,7 +11,7 @@ export const ANALYTICS_CONFIG = {
   margins: { top: 10, right: 10, left: -20, bottom: 5 },
   colors: {
     primary: "var(--gds-vibe-accent, var(--accent-gold))",
-    secondary: "var(--mantine-color-synthesis-7)",
+    secondary: "var(--gds-vibe-primary, var(--accent-gold))",
     grid: "var(--border-primary)",
     text: "var(--text-primary)",
     dimmed: "var(--text-secondary)",

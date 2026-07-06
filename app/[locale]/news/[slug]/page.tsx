@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import { Link } from "@/i18n/navigation";
 import { getNewsPostBySlug } from "@/lib/news";
+import { getProductColor } from "@/lib/product-ui-contracts";
 
 export default async function NewsPostPage({
   params
@@ -39,7 +40,7 @@ export default async function NewsPostPage({
             <Text size="lg" c="var(--text-secondary)">{post.summary}</Text>
             <Group gap="xs">
               {post.tags.map((tag) => (
-                <Badge key={tag} variant="light" color="strategy">
+                <Badge key={tag} variant="light" color={getProductColor("public", "primaryAction")}>
                   {t(`tags.${tag}`)}
                 </Badge>
               ))}

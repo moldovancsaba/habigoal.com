@@ -106,7 +106,7 @@ export function CoachingAlertsPanel({ teams, athleteNames }: { teams: TeamRef[];
                       </Badge>
                     ) : null}
                     {entry.readiness ? (
-                      <Badge variant="light" color="strategy">
+                      <Badge variant="light" color={getProductColor("dashboard", "primaryAction")}>
                         {t("coachingAlerts.readiness", { zone: t(`coachingAlerts.zone.${entry.readiness.zone}`), score: entry.readiness.score })}
                       </Badge>
                     ) : null}

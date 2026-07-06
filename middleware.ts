@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_DURATION_MS, buildRefreshedClaims, shouldRefreshSession } from "@/lib/session-refresh";
+import { ATHLETE_IQ_GDS_THEME_PRESET } from "@/lib/product-surface-branding";
+import { resolveProductSurfaceFromPathname } from "@/lib/product-ui-contracts";
 
 const SESSION_COOKIE_NAME = "habigoal_session";
 const LEGACY_SESSION_COOKIE_NAMES = ["survey_session", "kidex_session"];
 const localePattern = /^\/(hu|en|ar|es|de|he)(\/|$)/;
+const PRODUCT_SURFACE_HEADER = "x-habigoal-product-surface";
+const PRODUCT_THEME_HEADER = "x-habigoal-gds-theme-preset";
+const PRODUCT_PATH_HEADER = "x-habigoal-pathname";
 
 type SessionPayload = {
   role?: string;
@@ -138,6 +143,25 @@ async function readSession(request: NextRequest): Promise<SessionPayload | null>
   }
 }
 
+function productRequestHeaders(request: NextRequest) {
+  const headers = new Headers(request.headers);
+  const pathname = request.nextUrl.pathname;
+
+  headers.set(PRODUCT_PATH_HEADER, pathname);
+  headers.set(PRODUCT_SURFACE_HEADER, resolveProductSurfaceFromPathname(pathname));
+  headers.set(PRODUCT_THEME_HEADER, ATHLETE_IQ_GDS_THEME_PRESET);
+
+  return headers;
+}
+
+function nextWithProductHeaders(request: NextRequest) {
+  return NextResponse.next({
+    request: {
+      headers: productRequestHeaders(request)
+    }
+  });
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
@@ -146,11 +170,11 @@ export async function middleware(request: NextRequest) {
   }
 
   if ((process.env.HABIGOAL_ENFORCE_AUTH ?? process.env.SURVEY_ENFORCE_AUTH) !== "true") {
-    return NextResponse.next();
+    return nextWithProductHeaders(request);
   }
 
   if (isPublicPath(pathname)) {
-    return NextResponse.next();
+    return nextWithProductHeaders(request);
   }
 
   const session = await readSession(request);
@@ -194,7 +218,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/`, request.url));
   }
 
-  const response = NextResponse.next();
+  const response = nextWithProductHeaders(request);
   await applySlidingRefresh(response, session);
   return response;
 }

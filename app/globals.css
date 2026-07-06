@@ -1,35 +1,35 @@
 :root {
   --brand-gold: #ffd54a;
   --brand-gold-soft: #f0b642;
-  --brand-ink: #070c18;
-  --accent-orange: #ffb000;
+  --brand-ink: #03080f;
+  --accent-orange: #e4a623;
   --accent-gold: #ffd54a;
-  --status-success: #22c55e;
-  --status-warning: #f59e0b;
-  --status-error: #ef4444;
-  --status-info: #38bdf8;
-  --app-bg: #0a0f1c;
-  --sidebar-bg: #111827;
-  --surface-base: rgba(24, 34, 53, 0.84);
-  --surface-elevated: rgba(31, 43, 66, 0.94);
-  --border-primary: rgba(44, 59, 87, 0.96);
-  --text-primary: #f4f7fb;
-  --text-secondary: #a7b4cc;
-  --text-muted: #667085;
-  --overlay-color: rgba(10, 15, 28, 0.86);
-  --surface-gradient-top: rgba(255, 255, 255, 0.08);
-  --surface-gradient-bottom: rgba(255, 255, 255, 0.02);
-  --surface-hover-top: rgba(255, 255, 255, 0.12);
-  --surface-hover-bottom: rgba(255, 255, 255, 0.04);
-  --surface-shadow-elevated: 0 24px 64px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  --surface-shadow-flat: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
-  --surface-icon-border: rgba(44, 59, 87, 0.92);
-  --surface-icon-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --surface-section-border: rgba(44, 59, 87, 0.88);
-  --nav-company-label: #f4f7fb;
-  --nav-company-description: #a7b4cc;
-  --nav-link-active: #f4f7fb;
-  --nav-link-inactive: #a7b4cc;
+  --status-success: #e4a623;
+  --status-warning: #ffd76a;
+  --status-error: #e4a623;
+  --status-info: #d8c8a8;
+  --app-bg: #03080f;
+  --sidebar-bg: rgba(5, 11, 20, 0.92);
+  --surface-base: rgba(3, 8, 15, 0.88);
+  --surface-elevated: rgba(5, 11, 20, 0.92);
+  --border-primary: rgba(240, 182, 66, 0.38);
+  --text-primary: #fff9e8;
+  --text-secondary: #d8c8a8;
+  --text-muted: rgba(216, 200, 168, 0.68);
+  --overlay-color: rgba(3, 8, 15, 0.88);
+  --surface-gradient-top: rgba(255, 215, 106, 0.06);
+  --surface-gradient-bottom: transparent;
+  --surface-hover-top: rgba(255, 215, 106, 0.10);
+  --surface-hover-bottom: transparent;
+  --surface-shadow-elevated: 0 24px 64px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255, 215, 106, 0.06);
+  --surface-shadow-flat: 0 1px 0 rgba(255, 215, 106, 0.06) inset;
+  --surface-icon-border: rgba(240, 182, 66, 0.38);
+  --surface-icon-shadow: inset 0 1px 0 rgba(255, 215, 106, 0.06);
+  --surface-section-border: rgba(240, 182, 66, 0.28);
+  --nav-company-label: #fff9e8;
+  --nav-company-description: #d8c8a8;
+  --nav-link-active: #fff9e8;
+  --nav-link-inactive: #d8c8a8;
   --blob-1: rgba(255, 213, 74, 0.16);
   --blob-2: rgba(240, 182, 66, 0.12);
   --blob-3: rgba(167, 180, 204, 0.08);
@@ -42,6 +42,68 @@
   --target-size: 32px;
   --surface-radius: 12px;
   --density-row-height: max(40px, var(--target-size));
+}
+
+html[data-gds-theme-preset="athlete-gold"] {
+  --gds-overlay-surface: var(--gds-vibe-surface, rgba(3, 8, 15, 0.96));
+  --mantine-primary-color-filled: var(--gds-vibe-accent, var(--accent-gold));
+  --mantine-primary-color-filled-hover: color-mix(in srgb, var(--gds-vibe-accent, var(--accent-gold)) 88%, black);
+  --mantine-color-text: var(--gds-vibe-text, var(--text-primary));
+  --mantine-color-dimmed: var(--gds-vibe-muted, var(--text-secondary));
+}
+
+html[data-gds-theme-preset="athlete-gold"] .mantine-Button-root:not([data-variant="default"]),
+html[data-gds-theme-preset="athlete-gold"] .gds-athlete-gold-button {
+  color: #1b1403 !important;
+  background: linear-gradient(135deg, var(--gds-vibe-primary, #e4a623), var(--gds-vibe-accent, #ffd76a)) !important;
+  border-color: color-mix(in srgb, var(--gds-vibe-accent, #ffd76a) 76%, var(--gds-vibe-primary, #e4a623)) !important;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--gds-vibe-glow, rgba(228, 166, 35, 0.34)) 58%, transparent) !important;
+}
+
+html[data-gds-theme-preset="athlete-gold"] .mantine-Button-root[data-variant="default"],
+html[data-gds-theme-preset="athlete-gold"] .gds-athlete-gold-button-secondary {
+  color: var(--gds-vibe-text, var(--text-primary)) !important;
+  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.88)) 88%, transparent) !important;
+  border-color: var(--gds-vibe-border, var(--border-primary)) !important;
+  box-shadow: var(--surface-shadow-flat) !important;
+}
+
+html[data-gds-theme-preset="athlete-gold"] .mantine-Badge-root,
+html[data-gds-theme-preset="athlete-gold"] .mantine-ThemeIcon-root {
+  color: var(--gds-vibe-accent, var(--accent-gold)) !important;
+  background: color-mix(in srgb, var(--gds-vibe-accent, var(--accent-gold)) 14%, transparent) !important;
+  border-color: color-mix(in srgb, var(--gds-vibe-accent, var(--accent-gold)) 28%, transparent) !important;
+}
+
+html[data-gds-theme-preset="athlete-gold"] .mantine-Progress-section,
+html[data-gds-theme-preset="athlete-gold"] .mantine-Slider-bar,
+html[data-gds-theme-preset="athlete-gold"] .mantine-Checkbox-input:checked {
+  background: linear-gradient(135deg, var(--gds-vibe-primary, #e4a623), var(--gds-vibe-accent, #ffd76a)) !important;
+  border-color: var(--gds-vibe-accent, var(--accent-gold)) !important;
+}
+
+html[data-gds-theme-preset="athlete-gold"] .mantine-Slider-thumb {
+  background: var(--gds-vibe-accent, var(--accent-gold)) !important;
+  border-color: color-mix(in srgb, var(--gds-vibe-accent, var(--accent-gold)) 82%, white) !important;
+}
+
+html[data-gds-theme-preset="athlete-gold"] .mantine-Alert-root,
+html[data-gds-theme-preset="athlete-gold"] .mantine-Menu-dropdown,
+html[data-gds-theme-preset="athlete-gold"] .mantine-Modal-content,
+html[data-gds-theme-preset="athlete-gold"] .mantine-Popover-dropdown,
+html[data-gds-theme-preset="athlete-gold"] .mantine-Select-dropdown {
+  color: var(--gds-vibe-text, var(--text-primary)) !important;
+  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.96)) 94%, black) !important;
+  border-color: var(--gds-vibe-border, var(--border-primary)) !important;
+}
+
+html[data-gds-theme-preset="athlete-gold"] .cookie-consent-panel {
+  color: var(--gds-vibe-text, var(--text-primary)) !important;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-accent, var(--accent-gold)) 10%, transparent), transparent 46%),
+    color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.96)) 92%, black) !important;
+  border-color: var(--gds-vibe-border, var(--border-primary)) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Capability channel: any coarse pointer present → touch-grade targets. Uses the
@@ -378,9 +440,9 @@ a {
   overflow: hidden;
 }
 
-/* Neutral GDS-themed selector shell (#399): the SelectorThemeShell wrapper sets
-   --gds-vibe-* from the neutral `skyline` preset; the chrome consumes them so the
-   selector reads as its own neutral surface, distinct from Habigoal and AIQ.
+/* Athlete Gold GDS-themed selector shell (#399): the SelectorThemeShell wrapper
+   sets --gds-vibe-* from the same official preset as the product apps, so the
+   selector no longer introduces a parallel visual system.
    --surface-radius (#398) is the single source of truth for the selector's
    card/footer corner radius. */
 .landing-selector-vibe {
@@ -465,11 +527,11 @@ a {
 }
 
 .login-panel-aiq {
-  color: rgba(244, 247, 251, 0.96);
+  color: rgba(255, 249, 232, 0.96);
   background:
     radial-gradient(circle at 18% 0%, rgba(255, 207, 79, 0.2), transparent 34%),
     linear-gradient(180deg, rgba(17, 20, 27, 0.98), rgba(8, 10, 14, 0.98)),
-    #090b0f;
+    #03080f;
   border-color: rgba(255, 207, 79, 0.34);
 }
 
@@ -547,7 +609,7 @@ a {
 }
 
 .selector-card.selector-card-pro {
-  color: rgba(244, 247, 251, 0.95) !important;
+  color: rgba(255, 249, 232, 0.95) !important;
   background:
     linear-gradient(135deg, rgba(255, 213, 74, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(11, 15, 26, 0.99), rgba(5, 8, 14, 0.99)) !important;
@@ -677,7 +739,7 @@ a {
   min-height: 100dvh;
   background:
     linear-gradient(180deg, rgba(255, 213, 74, 0.05), transparent 28%),
-    linear-gradient(135deg, rgba(0, 63, 206, 0.14), transparent 42%),
+    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, var(--accent-gold)) 14%, transparent), transparent 42%),
     var(--app-bg);
 }
 
@@ -713,7 +775,7 @@ a {
 .aiq-letter-label {
   text-transform: uppercase;
   letter-spacing: 0;
-  color: rgba(244, 247, 251, 0.64);
+  color: rgba(255, 249, 232, 0.64);
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -727,7 +789,7 @@ a {
   padding: 10px 12px;
   border: 1px solid transparent;
   border-radius: var(--mantine-radius-md);
-  color: rgba(244, 247, 251, 0.82);
+  color: rgba(255, 249, 232, 0.82);
   text-decoration: none;
 }
 
@@ -768,9 +830,9 @@ a {
 }
 
 .aiq-topbar {
-  background: var(--gds-vibe-shell, rgba(7, 12, 24, 0.86));
+  background: var(--gds-vibe-shell, rgba(3, 8, 15, 0.86));
   border-color: var(--gds-vibe-border, rgba(255, 213, 74, 0.18));
-  color: var(--gds-vibe-text, #f4f7fb);
+  color: var(--gds-vibe-text, #fff9e8);
 }
 
 .aiq-mini-logo {
@@ -1032,7 +1094,7 @@ a {
   width: min(100dvw, 480px);
   max-width: 100dvw;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
   padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
   background: color-mix(in srgb, var(--hbg-surface) 94%, black);
@@ -1213,8 +1275,8 @@ a {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
-  color: var(--gds-vibe-text, #f4f7fb);
-  background: var(--gds-vibe-gradient, #070c18);
+  color: var(--gds-vibe-text, #fff9e8);
+  background: var(--gds-vibe-gradient, #03080f);
 
   /* Accent controls inside the professional surface must resolve through the
      GDS review token, so Athlete IQ keeps the black-gold theme consistently. */
@@ -1227,13 +1289,13 @@ a {
   --mantine-color-review-outline: var(--aiq-gold);
   --mantine-color-review-outline-hover: color-mix(in srgb, var(--aiq-gold) 14%, transparent);
 
-  /* The Mantine Paper/Card/input defaults paint the global app surface, which
-     leaks the old ingress look into the professional surface. Remap the shared
-     surface/border/text tokens to the athlete-gold vibe inside the AIQ shell so
+  /* The Mantine Paper/Card/input defaults can paint stale global surfaces.
+     Remap the shared surface/border/text tokens to the athlete-gold vibe inside
+     the AIQ shell so
      every Mantine surface adopts the premium black-gold theme, not just the
      header and nav. Scoped to .aiq-product-shell only. */
-  --surface-base: var(--gds-vibe-surface, rgba(21, 24, 31, 0.88));
-  --surface-elevated: color-mix(in srgb, var(--gds-vibe-surface, rgba(21, 24, 31, 0.92)) 90%, #000);
+  --surface-base: var(--gds-vibe-surface, rgba(3, 8, 15, 0.88));
+  --surface-elevated: color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.92)) 90%, #000);
   --surface-gradient-top: rgba(255, 215, 106, 0.06);
   --surface-gradient-bottom: rgba(0, 0, 0, 0.14);
   --surface-hover-top: rgba(255, 215, 106, 0.10);
@@ -1256,7 +1318,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Modal-content,
 html[data-active-product-surface="athlete_iq"] .mantine-Popover-dropdown,
 html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   color: var(--gds-vibe-text, #fff9e8);
-  background: var(--gds-vibe-surface, rgba(21, 24, 31, 0.96));
+  background: var(--gds-vibe-surface, rgba(3, 8, 15, 0.96));
   border-color: var(--gds-vibe-border, rgba(240, 182, 66, 0.30));
 }
 
@@ -1265,19 +1327,19 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 }
 
 .aiq-product-shell .aiq-command-copy {
-  color: var(--gds-vibe-muted, rgba(244, 247, 251, 0.7));
+  color: var(--gds-vibe-muted, rgba(255, 249, 232, 0.7));
 }
 
 .aiq-muted {
-  color: var(--gds-vibe-muted, rgba(244, 247, 251, 0.7));
+  color: var(--gds-vibe-muted, rgba(255, 249, 232, 0.7));
 }
 
 .aiq-muted-soft {
-  color: color-mix(in srgb, var(--gds-vibe-muted, rgba(244, 247, 251, 0.62)) 86%, transparent);
+  color: color-mix(in srgb, var(--gds-vibe-muted, rgba(255, 249, 232, 0.62)) 86%, transparent);
 }
 
 .aiq-muted-faint {
-  color: color-mix(in srgb, var(--gds-vibe-muted, rgba(244, 247, 251, 0.56)) 74%, transparent);
+  color: color-mix(in srgb, var(--gds-vibe-muted, rgba(255, 249, 232, 0.56)) 74%, transparent);
 }
 
 .aiq-command-layout {
@@ -1301,10 +1363,10 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 .aiq-score-card,
 .aiq-mode-card,
 .aiq-metric-card {
-  color: var(--gds-vibe-text, #f4f7fb);
+  color: var(--gds-vibe-text, #fff9e8);
   background:
     linear-gradient(135deg, var(--gds-vibe-glow, rgba(255, 213, 74, 0.08)), transparent 36%),
-    var(--gds-vibe-surface, rgba(16, 24, 42, 0.96));
+    var(--gds-vibe-surface, rgba(3, 8, 15, 0.96));
   border-color: var(--gds-vibe-border, rgba(255, 213, 74, 0.18));
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.38);
 }
@@ -1323,7 +1385,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   max-height: calc(100svh - 40px);
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 44%, transparent) transparent;
+  scrollbar-color: color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 44%, transparent) transparent;
 }
 
 .aiq-mobile-topbar,
@@ -1344,7 +1406,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   border-radius: var(--mantine-radius-md);
   background:
     linear-gradient(135deg, var(--gds-vibe-glow, rgba(255, 213, 74, 0.08)), transparent 42%),
-    var(--gds-vibe-surface, rgba(16, 24, 42, 0.96));
+    var(--gds-vibe-surface, rgba(3, 8, 15, 0.96));
   box-shadow: 0 18px 46px rgba(0, 0, 0, 0.28);
 }
 
@@ -1363,7 +1425,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 .aiq-mobile-title {
   max-width: min(56vw, 260px);
   overflow: hidden;
-  color: var(--gds-vibe-text, #f4f7fb);
+  color: var(--gds-vibe-text, #fff9e8);
   font-size: 1.25rem;
   line-height: 1.05;
   text-overflow: ellipsis;
@@ -1376,16 +1438,16 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   flex: 0 0 48px;
   display: inline-grid;
   place-items: center;
-  color: var(--gds-vibe-accent, #f1cf86);
+  color: var(--gds-vibe-accent, #ffd76a);
   border: 1px solid var(--gds-vibe-border, rgba(255, 213, 74, 0.24));
   border-radius: var(--mantine-radius-md);
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 16%, transparent), rgba(255, 255, 255, 0.03)),
-    color-mix(in srgb, var(--gds-vibe-surface, rgba(16, 24, 42, 0.96)) 92%, #05070b);
+    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 16%, transparent), rgba(255, 255, 255, 0.03)),
+    color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.96)) 92%, #03080f);
 }
 
 .aiq-mobile-menu-button:focus-visible {
-  outline: 2px solid var(--gds-vibe-accent, #f1cf86);
+  outline: 2px solid var(--gds-vibe-accent, #ffd76a);
   outline-offset: 2px;
 }
 
@@ -1410,11 +1472,11 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   min-height: 100svh;
   padding: max(14px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
   overflow-y: auto;
-  color: var(--gds-vibe-text, #f4f7fb);
+  color: var(--gds-vibe-text, #fff9e8);
   border-inline-start: 1px solid var(--gds-vibe-border, rgba(255, 213, 74, 0.22));
   background:
     linear-gradient(135deg, var(--gds-vibe-glow, rgba(255, 213, 74, 0.12)), transparent 46%),
-    var(--gds-vibe-surface, rgba(16, 24, 42, 0.98));
+    var(--gds-vibe-surface, rgba(3, 8, 15, 0.98));
   box-shadow: -24px 0 64px rgba(0, 0, 0, 0.44);
 }
 
@@ -1425,7 +1487,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 .aiq-mobile-utilities {
   margin-top: var(--mantine-spacing-xl);
   padding-top: var(--mantine-spacing-md);
-  border-top: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 28%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 28%, transparent);
 }
 
 .aiq-mobile-utility-link {
@@ -1435,10 +1497,10 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  color: var(--gds-vibe-text, #f4f7fb);
-  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 18%, transparent);
+  color: var(--gds-vibe-text, #fff9e8);
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 18%, transparent);
   border-radius: var(--mantine-radius-md);
-  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(16, 24, 42, 0.96)) 84%, transparent);
+  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.96)) 84%, transparent);
   cursor: pointer;
   font: inherit;
   font-weight: 850;
@@ -1448,14 +1510,14 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 
 .aiq-mobile-utility-link:focus-visible,
 .aiq-mobile-language-select:focus-visible {
-  outline: 2px solid var(--gds-vibe-accent, #f1cf86);
+  outline: 2px solid var(--gds-vibe-accent, #ffd76a);
   outline-offset: 2px;
 }
 
 .aiq-mobile-language-field {
   display: grid;
   gap: 8px;
-  color: var(--gds-vibe-muted, rgba(244, 247, 251, 0.68));
+  color: var(--gds-vibe-muted, rgba(255, 249, 232, 0.68));
   font-size: 0.82rem;
   font-weight: 850;
 }
@@ -1464,12 +1526,12 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   width: 100%;
   min-height: max(var(--target-size), 46px);
   padding: 0 42px 0 12px;
-  color: var(--gds-vibe-text, #f4f7fb);
-  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 28%, transparent);
+  color: var(--gds-vibe-text, #fff9e8);
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 28%, transparent);
   border-radius: var(--mantine-radius-md);
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 12%, transparent), rgba(255, 255, 255, 0.02)),
-    color-mix(in srgb, var(--gds-vibe-surface, rgba(16, 24, 42, 0.96)) 92%, #05070b);
+    linear-gradient(180deg, color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 12%, transparent), rgba(255, 255, 255, 0.02)),
+    color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.96)) 92%, #03080f);
   font: inherit;
   font-size: 1rem;
   font-weight: 850;
@@ -1480,7 +1542,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   padding: var(--mantine-spacing-md);
   border: 1px solid var(--gds-vibe-border, rgba(255, 213, 74, 0.14));
   border-radius: var(--mantine-radius-md);
-  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(244, 247, 251, 0.045)) 86%, transparent);
+  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(255, 249, 232, 0.045)) 86%, transparent);
   overflow-wrap: anywhere;
 }
 
@@ -1496,24 +1558,24 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 
 .shared-daily-recorder-aiq {
   padding: var(--mantine-spacing-md);
-  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 22%, transparent);
   border-radius: var(--mantine-radius-md);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 10%, transparent), transparent 46%),
-    color-mix(in srgb, var(--gds-vibe-surface, rgba(16, 24, 42, 0.96)) 90%, #05070b);
+    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 10%, transparent), transparent 46%),
+    color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.96)) 90%, #03080f);
 }
 
 .aiq-recorder-slider .mantine-Text-root,
 .shared-daily-recorder-aiq .mantine-Checkbox-label {
-  color: var(--gds-vibe-text, #f4f7fb) !important;
+  color: var(--gds-vibe-text, #fff9e8) !important;
 }
 
 .aiq-recorder-checkbox {
   min-height: max(var(--target-size), 46px);
   padding: 12px;
-  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 18%, transparent);
   border-radius: var(--mantine-radius-md);
-  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(244, 247, 251, 0.045)) 82%, transparent);
+  background: color-mix(in srgb, var(--gds-vibe-surface, rgba(255, 249, 232, 0.045)) 82%, transparent);
 }
 
 .aiq-recorder-habits {
@@ -1540,12 +1602,12 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 .aiq-score-card,
 .aiq-mode-card {
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 18%, transparent), transparent 52%),
-    color-mix(in srgb, var(--gds-vibe-surface, rgba(16, 24, 42, 0.96)) 94%, #05070b);
+    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 18%, transparent), transparent 52%),
+    color-mix(in srgb, var(--gds-vibe-surface, rgba(3, 8, 15, 0.96)) 94%, #03080f);
 }
 
 .aiq-side-score {
-  color: var(--gds-vibe-accent, #f1cf86);
+  color: var(--gds-vibe-accent, #ffd76a);
   font-size: 2.55rem;
   line-height: 0.96;
 }
@@ -1556,19 +1618,19 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 38%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 38%, transparent);
   border-radius: var(--mantine-radius-sm);
-  color: var(--gds-vibe-accent, #f1cf86);
-  background: color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 10%, transparent);
+  color: var(--gds-vibe-accent, #ffd76a);
+  background: color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 10%, transparent);
   font-size: 0.76rem;
   font-weight: 900;
 }
 
 .aiq-truth-banner {
-  border-color: color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 34%, transparent);
+  border-color: color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 34%, transparent);
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 16%, transparent), color-mix(in srgb, #68d7ec 7%, transparent)),
-    var(--gds-vibe-surface, rgba(16, 24, 42, 0.96));
+    linear-gradient(135deg, color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 16%, transparent), color-mix(in srgb, var(--gds-vibe-accent, #ffd76a) 7%, transparent)),
+    var(--gds-vibe-surface, rgba(3, 8, 15, 0.96));
 }
 
 .aiq-ai-mark {
@@ -1577,17 +1639,17 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
   flex: 0 0 48px;
   display: grid;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 36%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 36%, transparent);
   border-radius: 13px;
-  color: var(--gds-vibe-accent, #f1cf86);
-  background: color-mix(in srgb, var(--gds-vibe-primary, #d6ad63) 14%, transparent);
+  color: var(--gds-vibe-accent, #ffd76a);
+  background: color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 14%, transparent);
   font-weight: 900;
 }
 
 .aiq-theme-card {
   background:
     var(--gds-vibe-hero, linear-gradient(135deg, rgba(255, 213, 74, 0.12), transparent 44%)),
-    var(--gds-vibe-surface, rgba(244, 247, 251, 0.045));
+    var(--gds-vibe-surface, rgba(255, 249, 232, 0.045));
 }
 
 @media (max-width: 62em) {
@@ -1819,7 +1881,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 .print-report-header {
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid rgba(0, 174, 239, 0.24);
+  border-bottom: 2px solid color-mix(in srgb, var(--accent-gold) 24%, transparent);
 }
 
 @media print {
@@ -1869,7 +1931,7 @@ html[data-active-product-surface="athlete_iq"] .mantine-Select-dropdown {
 
   .print-container .MuiPaper-root {
     box-shadow: none !important;
-    border-color: #d2d7e0 !important;
+    border-color: color-mix(in srgb, var(--gds-vibe-primary, #e4a623) 28%, white) !important;
     border-radius: 6px !important;
   }
 }

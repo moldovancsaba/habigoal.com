@@ -27,6 +27,10 @@ describe("product UI contracts", () => {
   it("maps visible product states to GDS semantic color tokens", () => {
     expect(getProductColor("athlete_iq", "primaryAction")).toBe("review");
     expect(getProductColor("athlete_iq", "warning")).toBe("review");
+    expect(getProductColor("athlete_iq", "success")).toBe("review");
+    expect(getProductColor("athlete_iq", "risk")).toBe("review");
+    expect(getProductColor("athlete_iq", "progressGood")).toBe("review");
+    expect(getProductColor("athlete_iq", "progressRisk")).toBe("review");
     expect(getProductColor("habigoal", "primaryAction")).toBe("review");
     expect(signalStateToIntent("missing")).toBe("neutral");
     expect(scoreToProgressIntent(55)).toBe("progressWatch");

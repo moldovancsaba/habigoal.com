@@ -38,103 +38,74 @@ type ThemeFoundation = {
 // Habigoal is dark-only. This is the single theme foundation; there is no
 // light variant and no mode axis anywhere in the app.
 const FOUNDATION: ThemeFoundation = {
-  appBg: "#0A0F1C",
-  sidebarBg: "#111827",
-  surfaceBase: "rgba(24, 34, 53, 0.84)",
-  surfaceElevated: "rgba(31, 43, 66, 0.94)",
-  borderPrimary: "rgba(44, 59, 87, 0.96)",
-  textPrimary: "#F4F7FB",
-  textSecondary: "#A7B4CC",
-  textMuted: "#667085",
-  overlayColor: "rgba(10, 15, 28, 0.86)",
-  surfaceGradientTop: "rgba(255, 255, 255, 0.08)",
-  surfaceGradientBottom: "rgba(255, 255, 255, 0.02)",
-  surfaceHoverTop: "rgba(255, 255, 255, 0.12)",
-  surfaceHoverBottom: "rgba(255, 255, 255, 0.04)",
-  surfaceShadowElevated: "0 24px 64px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
-  surfaceShadowFlat: "0 1px 0 rgba(255, 255, 255, 0.06) inset",
-  surfaceIconBorder: "rgba(44, 59, 87, 0.92)",
-  surfaceIconShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.06)",
-  surfaceSectionBorder: "rgba(44, 59, 87, 0.88)",
-  navCompanyLabel: "#F4F7FB",
-  navCompanyDescription: "#A7B4CC",
-  navLinkActive: "#F4F7FB",
-  navLinkInactive: "#A7B4CC"
+  appBg: "#03080F",
+  sidebarBg: "rgba(5, 11, 20, 0.92)",
+  surfaceBase: "rgba(21, 24, 31, 0.88)",
+  surfaceElevated: "rgba(5, 11, 20, 0.92)",
+  borderPrimary: "rgba(240, 182, 66, 0.38)",
+  textPrimary: "#FFF9E8",
+  textSecondary: "#D8C8A8",
+  textMuted: "rgba(216, 200, 168, 0.68)",
+  overlayColor: "rgba(3, 8, 15, 0.88)",
+  surfaceGradientTop: "rgba(255, 215, 106, 0.06)",
+  surfaceGradientBottom: "transparent",
+  surfaceHoverTop: "rgba(255, 215, 106, 0.1)",
+  surfaceHoverBottom: "transparent",
+  surfaceShadowElevated: "0 24px 64px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255, 215, 106, 0.06)",
+  surfaceShadowFlat: "0 1px 0 rgba(255, 215, 106, 0.06) inset",
+  surfaceIconBorder: "rgba(240, 182, 66, 0.38)",
+  surfaceIconShadow: "inset 0 1px 0 rgba(255, 215, 106, 0.06)",
+  surfaceSectionBorder: "rgba(240, 182, 66, 0.28)",
+  navCompanyLabel: "#FFF9E8",
+  navCompanyDescription: "#D8C8A8",
+  navLinkActive: "#FFF9E8",
+  navLinkInactive: "#D8C8A8"
+};
+
+export const ATHLETE_GOLD_GDS_VIBE_VARIABLES: Record<string, string> = {
+  "--gds-vibe-primary": "#e4a623",
+  "--gds-vibe-accent": "#ffd76a",
+  "--gds-vibe-glow": "rgba(228, 166, 35, 0.34)",
+  "--gds-vibe-canvas": "#03080f",
+  "--gds-vibe-shell": "rgba(5, 11, 20, 0.92)",
+  "--gds-vibe-surface": "rgba(21, 24, 31, 0.88)",
+  "--gds-vibe-border": "rgba(240, 182, 66, 0.38)",
+  "--gds-vibe-text": "#fff9e8",
+  "--gds-vibe-muted": "#d8c8a8",
+  "--gds-vibe-focus": "#fff9e8",
+  "--gds-vibe-gradient": "radial-gradient(circle at 12% 8%, rgba(255, 215, 106, 0.28), transparent 24%), radial-gradient(circle at 86% 18%, rgba(240, 182, 66, 0.18), transparent 30%), linear-gradient(135deg, #03080f 0%, #070d17 48%, #0b101a 100%)",
+  "--gds-vibe-hero": "linear-gradient(135deg, rgba(255, 215, 106, 0.34), rgba(240, 182, 66, 0.24), rgba(5, 11, 20, 0.92))"
+};
+
+const ATHLETE_GOLD_TONE: SemanticToneScale = {
+  color: "#FFD76A",
+  surface: "rgba(77, 58, 12, 0.84)",
+  hoverSurface: "rgba(104, 78, 18, 0.94)",
+  glow: "rgba(228, 166, 35, 0.34)",
+  border: "rgba(240, 182, 66, 0.38)",
+  rgb: "255, 215, 106",
+  palette: ["#fff9e8", "#fff3c5", "#ffe89a", "#ffdc6d", "#ffd76a", "#e4a623", "#c88b17", "#9d6b0d", "#6d4708", "#3a2504"]
+};
+
+const ATHLETE_GOLD_NEUTRAL_TONE: SemanticToneScale = {
+  color: "#D8C8A8",
+  surface: "rgba(21, 24, 31, 0.88)",
+  hoverSurface: "rgba(30, 32, 39, 0.94)",
+  glow: "rgba(216, 200, 168, 0.1)",
+  border: "rgba(240, 182, 66, 0.2)",
+  rgb: "216, 200, 168",
+  palette: ["#fff9e8", "#efe2c4", "#d8c8a8", "#b9a780", "#8f7e5d", "#6d6047", "#4b4334", "#332d23", "#211d17", "#11100d"]
 };
 
 const TONES: Record<SemanticTone, SemanticToneScale> = {
-  ingress: {
-    color: "#00AEEF",
-    surface: "rgba(6, 47, 86, 0.78)",
-    hoverSurface: "rgba(9, 61, 108, 0.9)",
-    glow: "rgba(0, 174, 239, 0.22)",
-    border: "rgba(0, 174, 239, 0.24)",
-    rgb: "0, 174, 239",
-    palette: ["#ecfbff", "#d5f5ff", "#acecff", "#7fe0ff", "#55d2ff", "#2cc0fb", "#00aeef", "#008bc6", "#006997", "#004566"]
-  },
-  synthesis: {
-    color: "#003FCE",
-    surface: "rgba(9, 24, 73, 0.82)",
-    hoverSurface: "rgba(12, 33, 96, 0.92)",
-    glow: "rgba(0, 63, 206, 0.22)",
-    border: "rgba(0, 63, 206, 0.24)",
-    rgb: "0, 63, 206",
-    palette: ["#eef3ff", "#dae4ff", "#b9ceff", "#95b6ff", "#6d9aff", "#4880ff", "#1d63f6", "#003fce", "#0032a2", "#00216d"]
-  },
-  knowmore: {
-    color: "#00B894",
-    surface: "rgba(7, 57, 50, 0.82)",
-    hoverSurface: "rgba(10, 76, 67, 0.92)",
-    glow: "rgba(0, 184, 148, 0.2)",
-    border: "rgba(0, 184, 148, 0.24)",
-    rgb: "0, 184, 148",
-    palette: ["#ebfff9", "#cffcee", "#a6f6dc", "#72ebc5", "#44dfb0", "#19cf9f", "#00b894", "#009073", "#006958", "#004539"]
-  },
-  strategy: {
-    color: "#C7F036",
-    surface: "rgba(70, 84, 18, 0.84)",
-    hoverSurface: "rgba(92, 111, 24, 0.94)",
-    glow: "rgba(199, 240, 54, 0.22)",
-    border: "rgba(199, 240, 54, 0.26)",
-    rgb: "199, 240, 54",
-    palette: ["#fdffe9", "#f4fdc3", "#e9f991", "#ddf563", "#d0f145", "#c7f036", "#a3c929", "#7f9c1f", "#586d15", "#35440b"]
-  },
-  checklist: {
-    color: "#38BDF8",
-    surface: "rgba(11, 58, 82, 0.82)",
-    hoverSurface: "rgba(15, 77, 108, 0.92)",
-    glow: "rgba(56, 189, 248, 0.22)",
-    border: "rgba(56, 189, 248, 0.24)",
-    rgb: "56, 189, 248",
-    palette: ["#ecfbff", "#d3f5ff", "#a8ecff", "#7bdeff", "#53d0ff", "#40c7fb", "#38bdf8", "#1797c9", "#106f96", "#0a4961"]
-  },
-  tactical: {
-    color: "#22C55E",
-    surface: "rgba(13, 58, 31, 0.82)",
-    hoverSurface: "rgba(18, 78, 41, 0.92)",
-    glow: "rgba(34, 197, 94, 0.2)",
-    border: "rgba(34, 197, 94, 0.24)",
-    rgb: "34, 197, 94",
-    palette: ["#effdf4", "#d4f9e1", "#abf0c0", "#7be59a", "#4fdc78", "#31d063", "#22c55e", "#179649", "#106c35", "#0a4621"]
-  },
-  review: {
-    color: "#FFD54A",
-    surface: "rgba(77, 58, 12, 0.84)",
-    hoverSurface: "rgba(104, 78, 18, 0.94)",
-    glow: "rgba(255, 213, 74, 0.22)",
-    border: "rgba(255, 213, 74, 0.26)",
-    rgb: "255, 213, 74",
-    palette: ["#fffbea", "#fff3c5", "#ffe89a", "#ffdc6d", "#ffd24f", "#ffd54a", "#ffb000", "#d88f00", "#a86a00", "#6d4300"]
-  },
-  neutral: {
-    color: "#A7B4CC",
-    surface: "rgba(24, 34, 53, 0.82)",
-    hoverSurface: "rgba(31, 43, 66, 0.94)",
-    glow: "rgba(167, 180, 204, 0.1)",
-    border: "rgba(167, 180, 204, 0.16)",
-    rgb: "167, 180, 204",
-    palette: ["#f4f7fb", "#e1e8f1", "#c9d3e1", "#aebbd0", "#95a5c0", "#7f90ae", "#667792", "#526177", "#3c4759", "#252d3a"]
-  }
+  checklist: ATHLETE_GOLD_TONE,
+  ingress: ATHLETE_GOLD_TONE,
+  knowmore: ATHLETE_GOLD_TONE,
+  neutral: ATHLETE_GOLD_NEUTRAL_TONE,
+  review: ATHLETE_GOLD_TONE,
+  strategy: ATHLETE_GOLD_TONE,
+  synthesis: ATHLETE_GOLD_TONE,
+  tactical: ATHLETE_GOLD_TONE
 };
 
 export function getThemeFoundation() {

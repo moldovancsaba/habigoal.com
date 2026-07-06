@@ -117,7 +117,7 @@ export function AiqProgressPanel({ athleteId, localDate, timezone }: { athleteId
       {series.length === 0 ? (
         <Text className="aiq-muted">{t("progress.empty")}</Text>
       ) : (
-        <LongitudinalChart title={t(`progress.metric.${metricLabelKey(metric)}`)} data={series} color="var(--mantine-color-review-6)" yDomain={[0, 100]} />
+        <LongitudinalChart title={t(`progress.metric.${metricLabelKey(metric)}`)} data={series} color="var(--gds-vibe-accent, var(--accent-gold))" yDomain={[0, 100]} />
       )}
     </Stack>
   );

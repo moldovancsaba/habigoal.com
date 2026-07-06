@@ -50,7 +50,7 @@ export function OnboardingPrompt({ module, state, errorMessage, onDismiss, onCom
   return (
     <Modal opened onClose={onDismiss} title={title} centered closeOnEscape aria-describedby={`${module.id}-description`}>
       <Stack gap="md">
-        <p id={`${module.id}-description`} style={{ margin: 0, color: "var(--mantine-color-dimmed)" }}>
+        <p id={`${module.id}-description`} style={{ margin: 0, color: "var(--gds-vibe-muted, var(--text-secondary))" }}>
           {body}
         </p>
         {model.rendersChecklist ? (
@@ -72,11 +72,11 @@ export function OnboardingPrompt({ module, state, errorMessage, onDismiss, onCom
                   const stepTitle = t.has(`${stepKey}.title`) ? t(`${stepKey}.title`) : step.title;
                   const stepBody = t.has(`${stepKey}.body`) ? t(`${stepKey}.body`) : step.body;
                   return (
-                    <Box key={step.id} p="sm" style={{ border: "1px solid var(--gds-color-border, var(--mantine-color-default-border))", borderRadius: "var(--mantine-radius-sm)" }}>
+                    <Box key={step.id} p="sm" style={{ border: "1px solid var(--gds-vibe-border, var(--border-primary))", borderRadius: "var(--mantine-radius-sm)" }}>
                       <Group justify="space-between" align="flex-start" gap="sm" wrap="wrap">
                         <Stack gap={2} style={{ minWidth: 0, flex: "1 1 14rem" }}>
                           <strong>{stepTitle}</strong>
-                          <span style={{ color: "var(--mantine-color-dimmed)", fontSize: "0.875rem" }}>{stepBody}</span>
+                          <span style={{ color: "var(--gds-vibe-muted, var(--text-secondary))", fontSize: "0.875rem" }}>{stepBody}</span>
                         </Stack>
                         <Badge color={getProductColor("dashboard", done ? "success" : "primaryAction")} variant="light">
                           {done ? t("status.done") : t("status.next")}

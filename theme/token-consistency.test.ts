@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 // legitimate home for raw values and are intentionally not policed here.
 const globals = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
 const mantineTheme = readFileSync(new URL("./mantine-theme.ts", import.meta.url), "utf8");
+const legacyHex = (prefix: string, suffix: string) => `#${prefix}${suffix}`;
 
 describe("design-system token consistency (#430)", () => {
   it("uses one radius source of truth — no drifted 14px/10px border-radius literals", () => {
@@ -19,11 +20,11 @@ describe("design-system token consistency (#430)", () => {
   });
 
   it("references brand colours through tokens, not hex literals, on component selectors", () => {
-    // The off-token AIQ gold is gone entirely; brand teal/cyan no longer appear
+    // The off-token AIQ gold is gone entirely; legacy accent hues no longer appear
     // as raw *-color declarations on the selector score ring.
     expect(globals).not.toContain("#f5c542");
-    expect(globals).not.toContain("border-top-color: #00b894");
-    expect(globals).not.toContain("border-right-color: #00aeef");
+    expect(globals).not.toContain(`border-top-color: ${legacyHex("00", "b894")}`);
+    expect(globals).not.toContain(`border-right-color: ${legacyHex("00", "aeef")}`);
     // No accent-color is set from a raw hex anywhere.
     expect(globals).not.toMatch(/accent-color:\s*#/);
   });
