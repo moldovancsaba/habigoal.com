@@ -705,7 +705,7 @@
     "cameraAccessError": "Nem érhető el a kamera. Engedélyezd a kamera-hozzáférést.",
     "sessionIq": "Session IQ",
     "todaysBlueprint": "Mai tervrajz",
-    "blueprintSubtitle": "A foglalkozás felépítése Habigoal adatokhoz igazítva.",
+    "blueprintSubtitle": "A foglalkozás felépítése a készültséghez és az edzéskörnyezethez igazodik.",
     "startSessionStandard": "Mai foglalkozás indítása · 42 perc",
     "startSessionQuick": "Gyors 15 perc",
     "coachRecommendation": "Edzői ajánlás",
@@ -1358,7 +1358,7 @@
   },
   "AthletesApp": {
     "title": "Sportolói app",
-    "subtitle": "Élő, sportolóközpontú kezdőfelület készenléttel, check-in előzményekkel és napi működési kontextussal a valós Habigoal adatokból.",
+    "subtitle": "Élő, sportolóközpontú kezdőfelület készenléttel, check-in előzményekkel és napi működési kontextussal a megosztott napi állapotadatokból.",
     "backHome": "Vissza a főoldalra",
     "whatsNew": "Újdonságok",
     "summaryTracked": "Nyomon követett sportolók",
@@ -2648,10 +2648,10 @@
         "surfaceTone": "Prémium fekete-arany teljesítményvezérlés"
       }
     },
-    "sharedFoundationDescription": "Mindkét termék ugyanazt a funkciókatalógust, adatszerződéseket, útmutató-naplót és háttérképességeket használja. A termékszűrés a felületet és a jogosultságokat változtatja meg, nem a forrásigazságot.",
+    "sharedFoundationDescription": "A termékek közös háttérszerződéseket használnak a napi állapothoz, az útmutató eseményekhez és az auditnaplóhoz. Minden termék megtartja a saját felületét, funkcióit, navigációját, jogosultságait és szövegezését.",
     "syncLabel": "Szinkron:",
-    "habigoalDirectoryDescription": "A Habigoalban csak az ügyfélbiztos támogató funkciók jelennek meg.",
-    "athleteIqDirectoryDescription": "Az AthleteIQ tartalmazza az összes Habigoal funkciót, és professzionális modulokkal egészíti ki.",
+    "habigoalDirectoryDescription": "A Habigoal csak önálló szokásépítő funkciókat jelenít meg a személyes rutinokhoz és a napi haladáshoz.",
+    "athleteIqDirectoryDescription": "Az AthleteIQ csak professzionális teljesítményfunkciókat jelenít meg. Szerződéseken keresztül olvashat megosztott napi állapotadatokat, de soha nem Habigoal felületet vagy funkciókártyákat.",
     "runtimeFlowTitle": "Futásidejű folyamat",
     "failureModeLabel": "Hibamód:"
   },

@@ -24,14 +24,32 @@ const forbidden = [
   /\bseparate\s+Habigoal-only\s+(profile|history|database|data\s+store)\b/i,
   /\bselector\s+only\s+for\s+(presentation|demo)\b/i,
   /\bclient\s+presentation\b/i,
-  /\bpresentation\s+selector\b/i
+  /\bpresentation\s+selector\b/i,
+  /\bAthleteIQ\s+includes\s+every\s+Habigoal\s+function\b/i,
+  /\bAthlete\s*IQ\s+includes\s+every\s+Habigoal\s+function\b/i,
+  /\bAthleteIQ\s+includes\s+all\s+Habigoal/i,
+  /\bevery\s+Habigoal\s+function\b/i,
+  /\ball\s+Habigoal\s+functions\b/i,
+  /\breal\s+Habigoal\s+data\b/i,
+  /\bSession\s+sequencing\s+adapted\s+for\s+Habigoal\b/i,
+  /\bProfessional\s+views\s+consume\s+Habigoal\s+data\b/i,
+  /összes\s+Habigoal\s+funkció/i,
+  /Habigoal\s+adatokhoz/i,
+  /Habigoal-Daten/i,
+  /todas\s+las\s+funciones\s+de\s+Habigoal/i,
+  /datos\s+reales\s+de\s+Habigoal/i,
+  /كل\s+وظائف\s+Habigoal/i,
+  /بيانات\s+Habigoal\s+الحقيقية/i,
+  /כל\s+פונקציות\s+Habigoal/i,
+  /נתוני\s+Habigoal\s+אמיתיים/i
 ];
 
 const requiredProductSurfaceSnippets = [
   "shared daily-status records",
   "professional workflows",
   "functionRegistry: athleteIqFunctions",
-  "never imports Habigoal UI or Habigoal functions"
+  "never imports Habigoal UI or Habigoal functions",
+  "shared daily-status signals"
 ];
 
 const failures = [];
@@ -67,6 +85,18 @@ const requiredProductAppSnippets = [
 ];
 for (const snippet of requiredProductAppSnippets) {
   if (!productApps.includes(snippet)) failures.push(`lib/product-apps.ts missing strict app contract marker: ${snippet}`);
+}
+
+const englishMessages = readFileSync(path.join(root, "messages/en.json"), "utf8");
+const requiredMessageSnippets = [
+  "Each product keeps its own UI, functions, navigation, permissions, and copy.",
+  "Habigoal renders only independent habitbuilder functions",
+  "AthleteIQ renders only professional performance functions",
+  "never Habigoal UI or function cards",
+  "shared daily-status data"
+];
+for (const snippet of requiredMessageSnippets) {
+  if (!englishMessages.includes(snippet)) failures.push(`messages/en.json missing strict product-copy boundary marker: ${snippet}`);
 }
 
 const habigoalSource = readFileSync(path.join(root, "components/product/habigoal/HabigoalExperience.tsx"), "utf8");

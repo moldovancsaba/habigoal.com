@@ -235,7 +235,7 @@ const athleteIqOnlyFunctions = [
     ],
     contracts: [
       "Role scopes are enforced server-side",
-      "Professional views consume Habigoal data through shared contracts",
+      "Professional views consume shared daily-status signals through contracts",
       "Coach actions are auditable and tied to source recommendations"
     ],
     accessibility: [

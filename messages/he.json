@@ -705,7 +705,7 @@
     "cameraAccessError": "לא ניתן לגשת למצלמה. אנא אפשר הרשאת מצלמה.",
     "sessionIq": "Session IQ",
     "todaysBlueprint": "תוכנית היום",
-    "blueprintSubtitle": "רצף האימון מותאם עבור Habigoal.",
+    "blueprintSubtitle": "רצף האימון מותאם למוכנות ולהקשר האימון.",
     "startSessionStandard": "התחל את אימון היום · 42 דקות",
     "startSessionQuick": "מהיר 15 דקות",
     "coachRecommendation": "המלצת מאמן",
@@ -1358,7 +1358,7 @@
   },
   "AthletesApp": {
     "title": "אפליקציית ספורטאים",
-    "subtitle": "בית חי המותאם לספורטאים עם מוכנות, היסטוריית צק-אינים והקשר תפעולי המבוסס על נתוני Habigoal אמיתיים.",
+    "subtitle": "בית חי המותאם לספורטאים עם מוכנות, היסטוריית צק-אינים והקשר תפעולי המבוסס על נתוני סטטוס יומיים משותפים.",
     "backHome": "חזרה לדף הבית",
     "whatsNew": "מה חדש",
     "summaryTracked": "ספורטאים במעקב",
@@ -2648,10 +2648,10 @@
         "surfaceTone": "שליטה ביצועית יוקרתית בשחור וזהב"
       }
     },
-    "sharedFoundationDescription": "שני המוצרים משתמשים באותו מדריך תכונות, חוזי נתונים, יומן ביקורת הנחיות ויכולות צד-שרת. סינון המוצר משנה את הממשק וההרשאות, לא את מקור האמת.",
+    "sharedFoundationDescription": "המוצרים חולקים חוזי צד-שרת לסטטוס יומי, אירועי הנחיה ויומני ביקורת. כל מוצר שומר על ממשק, פונקציות, ניווט, הרשאות וטקסטים משלו.",
     "syncLabel": "סנכרון:",
-    "habigoalDirectoryDescription": "ב-Habigoal מוצגות רק פונקציות תמיכה בטוחות ללקוח.",
-    "athleteIqDirectoryDescription": "AthleteIQ כולל את כל פונקציות Habigoal ומוסיף מודולים מקצועיים בלבד.",
+    "habigoalDirectoryDescription": "Habigoal מציג רק פונקציות עצמאיות לבניית הרגלים עבור שגרות אישיות והתקדמות יומית.",
+    "athleteIqDirectoryDescription": "AthleteIQ מציג רק פונקציות ביצועים מקצועיות. הוא יכול לקרוא נתוני סטטוס יומיים משותפים דרך חוזים, אך לעולם לא ממשק Habigoal או כרטיסי פונקציות שלו.",
     "runtimeFlowTitle": "זרימת זמן ריצה",
     "failureModeLabel": "מצב כשל:"
   },

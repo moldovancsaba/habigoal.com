@@ -21,7 +21,7 @@ describe("product surface function registries", () => {
     }
   });
 
-  it("treats Athlete IQ access to daily Habigoal records as data capability, not UI nesting", () => {
+  it("treats Athlete IQ access to shared daily-status records as data capability, not UI nesting", () => {
     const habigoal = productSurfaces.find((surface) => surface.id === "habigoal");
     const athleteIq = productSurfaces.find((surface) => surface.id === "athlete-iq");
     const dailyStatusContract = athleteIq?.sharedDataContracts.find((contract) => contract.id === "daily-status");

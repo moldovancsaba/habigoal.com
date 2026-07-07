@@ -705,7 +705,7 @@
     "cameraAccessError": "Kein Zugriff auf die Kamera. Bitte erlaube die Kameraberechtigung.",
     "sessionIq": "Session IQ",
     "todaysBlueprint": "Heutiger Plan",
-    "blueprintSubtitle": "Sessionablauf angepasst für Habigoal.",
+    "blueprintSubtitle": "Der Sessionablauf passt sich Bereitschaft und Trainingskontext an.",
     "startSessionStandard": "Heutige Einheit starten · 42 Min.",
     "startSessionQuick": "Schnell 15 Min.",
     "coachRecommendation": "Trainerempfehlung",
@@ -1358,7 +1358,7 @@
   },
   "AthletesApp": {
     "title": "Athleten-App",
-    "subtitle": "Ein Live-Zuhause für Athleten für Bereitschaft, Check-in-Verlauf und Betriebskontext, aufgebaut aus echten Habigoal-Daten.",
+    "subtitle": "Ein Live-Zuhause für Athleten für Bereitschaft, Check-in-Verlauf und Betriebskontext, aufgebaut aus gemeinsamen Tagesstatusdaten.",
     "backHome": "Zurück zur Startseite",
     "whatsNew": "Was ist neu",
     "summaryTracked": "Erfasste Athleten",
@@ -2648,10 +2648,10 @@
         "surfaceTone": "Premium schwarz-goldene Performance-Steuerung"
       }
     },
-    "sharedFoundationDescription": "Beide Produkte nutzen dasselbe Funktionsverzeichnis, dieselben Datenverträge, denselben Leitfaden-Audit-Trail und dieselben Backend-Funktionen. Die Produktfilterung ändert die UI und die Berechtigungen, nicht die Datenwahrheit.",
+    "sharedFoundationDescription": "Die Produkte teilen Backend-Verträge für Tagesstatus, Guidance-Ereignisse und Audit-Trails. Jedes Produkt behält eigene UI, Funktionen, Navigation, Berechtigungen und Texte.",
     "syncLabel": "Sync:",
-    "habigoalDirectoryDescription": "In Habigoal werden nur kundensichere Support-Funktionen angezeigt.",
-    "athleteIqDirectoryDescription": "AthleteIQ enthält jede Habigoal-Funktion und ergänzt professionelle Module.",
+    "habigoalDirectoryDescription": "Habigoal zeigt nur eigenständige Habitbuilder-Funktionen für persönliche Routinen und täglichen Fortschritt.",
+    "athleteIqDirectoryDescription": "AthleteIQ zeigt nur professionelle Performance-Funktionen. Es darf gemeinsame Tagesstatusdaten über Verträge lesen, aber niemals Habigoal-UI oder Funktionskarten.",
     "runtimeFlowTitle": "Laufzeitablauf",
     "failureModeLabel": "Fehlermodus:"
   },

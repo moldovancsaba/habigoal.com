@@ -705,7 +705,7 @@
     "cameraAccessError": "Unable to access camera. Please allow camera permission.",
     "sessionIq": "Session IQ",
     "todaysBlueprint": "Today's blueprint",
-    "blueprintSubtitle": "Session sequencing adapted for Habigoal.",
+    "blueprintSubtitle": "Session sequencing adapts to readiness and the training context.",
     "startSessionStandard": "Start today's session · 42 min",
     "startSessionQuick": "Quick 15 min",
     "coachRecommendation": "Coach recommendation",
@@ -1358,7 +1358,7 @@
   },
   "AthletesApp": {
     "title": "Athlete App",
-    "subtitle": "A live athlete-facing home for readiness, check-in history, and operating context built from real Habigoal data.",
+    "subtitle": "A live athlete-facing home for readiness, check-in history, and operating context built from shared daily-status data.",
     "backHome": "Back Home",
     "whatsNew": "What's New",
     "summaryTracked": "Tracked athletes",
@@ -2648,10 +2648,10 @@
         "surfaceTone": "Premium black-and-gold performance control"
       }
     },
-    "sharedFoundationDescription": "Both products use the same feature directory, data contracts, guidance audit trail, and backend capabilities. Product filtering changes the UI and permissions, not the source truth.",
+    "sharedFoundationDescription": "Products share backend contracts for daily status, guidance events, and audit trails. Each product keeps its own UI, functions, navigation, permissions, and copy.",
     "syncLabel": "Sync:",
-    "habigoalDirectoryDescription": "Only client-safe support functions render in Habigoal.",
-    "athleteIqDirectoryDescription": "AthleteIQ includes every Habigoal function and adds professional-only modules.",
+    "habigoalDirectoryDescription": "Habigoal renders only independent habitbuilder functions for personal routines and daily progress.",
+    "athleteIqDirectoryDescription": "AthleteIQ renders only professional performance functions. It may read shared daily-status data through contracts, never Habigoal UI or function cards.",
     "runtimeFlowTitle": "Runtime flow",
     "failureModeLabel": "Failure mode:"
   },

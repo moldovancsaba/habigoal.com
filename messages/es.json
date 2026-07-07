@@ -705,7 +705,7 @@
     "cameraAccessError": "No se puede acceder a la cámara. Permite el acceso a la cámara.",
     "sessionIq": "Session IQ",
     "todaysBlueprint": "Plan de hoy",
-    "blueprintSubtitle": "Secuenciación de la sesión adaptada para Habigoal.",
+    "blueprintSubtitle": "La secuencia de la sesión se adapta a la preparación y al contexto de entrenamiento.",
     "startSessionStandard": "Empezar la sesión de hoy · 42 min",
     "startSessionQuick": "Rápida de 15 min",
     "coachRecommendation": "Recomendación del entrenador",
@@ -1358,7 +1358,7 @@
   },
   "AthletesApp": {
     "title": "App del atleta",
-    "subtitle": "Un inicio en vivo para el atleta con preparación, historial de registros y contexto operativo creado a partir de datos reales de Habigoal.",
+    "subtitle": "Un inicio en vivo para el atleta con preparación, historial de registros y contexto operativo creado a partir de datos diarios compartidos.",
     "backHome": "Volver al inicio",
     "whatsNew": "Novedades",
     "summaryTracked": "Atletas monitoreados",
@@ -2648,10 +2648,10 @@
         "surfaceTone": "Control de rendimiento premium negro y dorado"
       }
     },
-    "sharedFoundationDescription": "Ambos productos usan el mismo directorio de funciones, contratos de datos, registro de auditoría de orientación y capacidades de backend. El filtrado de productos cambia la interfaz y los permisos, no la fuente de verdad.",
+    "sharedFoundationDescription": "Los productos comparten contratos de backend para estado diario, eventos de orientación y auditoría. Cada producto conserva su propia interfaz, funciones, navegación, permisos y textos.",
     "syncLabel": "Sincronización:",
-    "habigoalDirectoryDescription": "En Habigoal solo se muestran funciones de soporte seguras para el cliente.",
-    "athleteIqDirectoryDescription": "AthleteIQ incluye todas las funciones de Habigoal y añade módulos exclusivos para profesionales.",
+    "habigoalDirectoryDescription": "Habigoal muestra solo funciones independientes de creación de hábitos para rutinas personales y progreso diario.",
+    "athleteIqDirectoryDescription": "AthleteIQ muestra solo funciones profesionales de rendimiento. Puede leer datos diarios compartidos mediante contratos, pero nunca la interfaz ni tarjetas de funciones de Habigoal.",
     "runtimeFlowTitle": "Flujo en tiempo de ejecución",
     "failureModeLabel": "Modo de fallo:"
   },
