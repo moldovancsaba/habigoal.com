@@ -35,7 +35,7 @@ export type SharedDailyRecorderLabels = {
     completion: string;
     confirmRequired: string;
     copy: string;
-    itemLabel: string;
+    itemLabel: (values: { category: string; label: string }) => string;
     items: Record<HabigoalHabitKey, string>;
     reviewed: string;
     title: string;
@@ -267,9 +267,10 @@ export function SharedDailyRecorder({
                 key={habit.id}
                 checked={selectedHabits.includes(habit.id)}
                 className={variant === "aiq" ? "aiq-recorder-checkbox" : "hbg-checkbox"}
-                label={labels.habits.itemLabel
-                  .replace("{label}", labels.habits.items[habit.id])
-                  .replace("{category}", labels.habits.categories[habit.category])}
+                label={labels.habits.itemLabel({
+                  category: labels.habits.categories[habit.category],
+                  label: labels.habits.items[habit.id]
+                })}
                 onChange={(event) => toggleHabit(habit.id, event.currentTarget.checked)}
               />
             ))}

@@ -428,7 +428,7 @@ function AiqAthleteWorkspace({
         completion: translate("athleteWorkspace.recorder.habits.completion"),
         confirmRequired: translate("athleteWorkspace.recorder.habits.confirmRequired"),
         copy: translate("athleteWorkspace.recorder.habits.copy"),
-        itemLabel: translate("athleteWorkspace.recorder.habits.itemLabel"),
+        itemLabel: ({ category, label }) => translate("athleteWorkspace.recorder.habits.itemLabel", { category, label }),
         items: {
           fuel: translate("athleteWorkspace.recorder.habits.items.fuel"),
           hydrate: translate("athleteWorkspace.recorder.habits.items.hydrate"),
