@@ -4,6 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const checkedFiles = [
   "app/[locale]/page.tsx",
+  "app/[locale]/contracts/page.tsx",
   "app/[locale]/login/page.tsx",
   "components/product/ProductSurfaceShared.tsx",
   "components/product/habigoal/HabigoalExperience.tsx",
@@ -98,6 +99,34 @@ const requiredMessageSnippets = [
 for (const snippet of requiredMessageSnippets) {
   if (!englishMessages.includes(snippet)) failures.push(`messages/en.json missing strict product-copy boundary marker: ${snippet}`);
 }
+
+const contractPage = readFileSync(path.join(root, "app/[locale]/contracts/page.tsx"), "utf8");
+for (const snippet of [
+  "businessPersonaContracts",
+  "trainerSupportFlow",
+  "dataSharingContract",
+  "storageContract",
+  "interfaceSeparationRules",
+  "operationalContract"
+]) {
+  if (!contractPage.includes(snippet)) failures.push(`app/[locale]/contracts/page.tsx missing partner contract section: ${snippet}`);
+}
+
+const businessContracts = readFileSync(path.join(root, "lib/business-logic-contracts.ts"), "utf8");
+for (const snippet of [
+  "Habigoal at habigoal.com",
+  "Athletes at Athlete IQ",
+  "Trainers at Athlete IQ",
+  "shared-daily-status-ledger",
+  "MongoDB Atlas",
+  "never imports Habigoal UI or Habigoal function cards",
+  "Route/API authorization enforces boundaries server-side"
+]) {
+  if (!businessContracts.includes(snippet)) failures.push(`lib/business-logic-contracts.ts missing public business contract marker: ${snippet}`);
+}
+
+const middlewareSource = readFileSync(path.join(root, "middleware.ts"), "utf8");
+if (!/\/contracts\$/.test(middlewareSource)) failures.push("middleware.ts must keep the public partner contracts page available without login.");
 
 const habigoalSource = readFileSync(path.join(root, "components/product/habigoal/HabigoalExperience.tsx"), "utf8");
 for (const snippet of ["statusAvailable", "resolveDailyUiState", "hasRecordedHabits", "JourneyProgress"]) {

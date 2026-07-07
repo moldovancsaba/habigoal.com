@@ -110,6 +110,7 @@ function isPublicPath(pathname: string) {
   if (localePattern.test(pathname) && pathname.split("/").filter(Boolean).length === 1) return true;
   return (
     /^\/(hu|en|ar|es|de|he)\/login$/.test(pathname) ||
+    /^\/(hu|en|ar|es|de|he)\/contracts$/.test(pathname) ||
     /^\/(hu|en|ar|es|de|he)\/news(\/[^/]+)?$/.test(pathname) ||
     /^\/(hu|en|ar|es|de|he)\/legal\/(gtc|privacy)$/.test(pathname)
   );

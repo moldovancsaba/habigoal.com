@@ -27,6 +27,7 @@ export default async function LandingPage({
   const athleteIqAthleteHref = `/${locale}/login?next=${encodeURIComponent(`${athleteIqPath}?persona=athlete`)}&persona=athlete&productSurface=athlete-iq`;
   const athleteIqTrainerHref = `/${locale}/login?next=${encodeURIComponent(`${athleteIqPath}?persona=trainer`)}&persona=trainer&productSurface=athlete-iq`;
   const newsHref = `/${locale}/news`;
+  const contractsHref = `/${locale}/contracts`;
   const termsHref = `/${locale}/legal/gtc`;
   const privacyHref = `/${locale}/legal/privacy`;
 
@@ -94,6 +95,7 @@ export default async function LandingPage({
 
         <Paper component="footer" className="landing-footer" withBorder radius="md" p="lg">
           <Group gap="lg" wrap="wrap" justify="center">
+            <Anchor href={contractsHref}>{t("businessContracts")}</Anchor>
             <Anchor href={termsHref}>{t("termsOfService")}</Anchor>
             <Anchor href={privacyHref}>{t("privacyPolicy")}</Anchor>
           </Group>
