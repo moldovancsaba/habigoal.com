@@ -17,22 +17,22 @@ const athleteUser: AuthUser = {
 
 describe("onboarding", () => {
   it("normalizes locale-prefixed routes", () => {
-    expect(normalizeOnboardingRoute("/en/athletes/123")).toBe("/athletes/123");
+    expect(normalizeOnboardingRoute("/en/athlete-iq")).toBe("/athlete-iq");
     expect(normalizeOnboardingRoute("/hu/dashboard")).toBe("/dashboard");
   });
 
   it("filters modules by role and route", () => {
-    const modules = resolveOnboardingModules(athleteUser, "/en/athletes/123", []);
+    const modules = resolveOnboardingModules(athleteUser, "/en/athlete-iq?persona=athlete", []);
     expect(modules.map((module) => module.id)).toEqual(["athlete-first-login-baseline"]);
   });
 
   it("marks dismissed modules as dismissed", () => {
-    const modules = resolveOnboardingModules(athleteUser, "/en/athletes/123", [
+    const modules = resolveOnboardingModules(athleteUser, "/en/athlete-iq?persona=athlete", [
       {
         userEmail: athleteUser.email,
         moduleId: "athlete-first-login-baseline",
         event: "dismissed",
-        route: "/en/athletes/123",
+        route: "/en/athlete-iq?persona=athlete",
         createdAt: "2026-06-26T07:00:00.000Z"
       }
     ]);
@@ -40,12 +40,12 @@ describe("onboarding", () => {
   });
 
   it("keeps a module active when only one checklist step is completed", () => {
-    const modules = resolveOnboardingModules(athleteUser, "/en/athletes/123", [
+    const modules = resolveOnboardingModules(athleteUser, "/en/athlete-iq?persona=athlete", [
       {
         userEmail: athleteUser.email,
         moduleId: "athlete-first-login-baseline",
         event: "completed",
-        route: "/en/athletes/123",
+        route: "/en/habigoal",
         stepId: "complete-check-in",
         createdAt: "2026-06-26T07:00:00.000Z"
       }

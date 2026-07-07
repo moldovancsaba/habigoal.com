@@ -111,7 +111,7 @@ export function resolveProductSurfaceFromPathname(pathname: string): ProductSurf
   const path = normalizeAppPath(pathname);
   if (path === "/athlete-iq" || path.startsWith("/athlete-iq/")) return "athlete_iq";
   if (path === "/habigoal" || path.startsWith("/habigoal/")) return "habigoal";
-  if (path === "/dashboard" || path.startsWith("/dashboard/") || path.startsWith("/athletes/")) return "dashboard";
+  if (path === "/dashboard" || path.startsWith("/dashboard/")) return "dashboard";
   return "public";
 }
 
@@ -158,8 +158,7 @@ export function routePatternForPath(pathname: string): string {
   if (path.startsWith("/dashboard/athletes/") && path.endsWith("/intelligence")) return "/dashboard/athletes/[id]/intelligence";
   if (path.startsWith("/dashboard/athletes/") && path.endsWith("/vision")) return "/dashboard/athletes/[id]/vision";
   if (path.startsWith("/dashboard/athletes/")) return "/dashboard/athletes/[id]";
-  if (path.startsWith("/athletes/") && path.endsWith("/session")) return "/athletes/[id]/session";
-  if (path.startsWith("/athletes/")) return "/athletes/[id]";
+  if (path === "/athletes" || path.startsWith("/athletes/")) return "/legacy-athletes-redirect";
   if (path.startsWith("/records/")) return "/records/[id]";
   return path;
 }

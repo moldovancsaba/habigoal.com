@@ -46,7 +46,7 @@ export function PublicAppControls({
     router.replace(cleanPath, { locale: nextLocale });
   }
 
-  const dashboardHref = user?.primaryRole === "athlete" ? "/athletes" : "/dashboard";
+  const dashboardHref = user?.primaryRole === "athlete" ? "/athlete-iq?persona=athlete" : "/dashboard";
   const localeLabel = locale.toUpperCase();
   const currentPath = pathname && pathname !== "/"
     ? (pathname.startsWith(`/${locale}`) ? pathname : `/${locale}${pathname}`)

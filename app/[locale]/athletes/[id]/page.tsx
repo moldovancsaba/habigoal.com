@@ -1,17 +1,10 @@
-import DashboardShell from "@/components/layout/DashboardShell";
-import AthleteHistoryPage from "@/app/[locale]/dashboard/athletes/[id]/page";
+import { redirect } from "next/navigation";
 
-// An athlete's own profile/history surface. It is reachable from the athlete
-// persona menu (DashboardShell "Progress"), so it must render inside the same
-// shared shell — otherwise the single persona menu disappears on this page.
-// DashboardShell already wraps its children in an OnboardingProvider, so we do
-// not add another here (nesting would render duplicate onboarding prompts).
-// The distraction-free check-in shells under /athletes/[id]/check-in and
-// /athletes/checkin are separate routes and intentionally stay unwrapped.
-export default function AthleteAppProfilePage(props: { params: Promise<{ id: string; locale: string }> }) {
-  return (
-    <DashboardShell>
-      <AthleteHistoryPage {...props} />
-    </DashboardShell>
-  );
+export default async function AthleteAppProfilePage({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/athlete-iq?persona=athlete#progress`);
 }

@@ -15,7 +15,7 @@ import {
 } from "@sovereignsquad/gds/client";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { athleteIqPillars, getReadinessMessage, getReadinessMode, trackerQuestions } from "@/lib/readiness-model";
 import { resolveCheckInPromptKey } from "@/lib/check-in-copy";
 import { sectionsForMode } from "@/lib/readiness-schema";
@@ -200,11 +200,10 @@ function buildSupportSummary(assessment: AssessmentPayload, translate: (key: str
 }
 
 function recordAthleteCheckInOnboarding(childId: string, recordId: string) {
-  const route = `/athletes/${childId}/check-in`;
   const payload = {
     moduleId: "athlete-first-login-baseline",
     event: "completed",
-    route,
+    route: "/habigoal",
     stepId: "complete-check-in",
     idempotencyKey: `athlete-first-login-baseline:complete-check-in:${recordId || childId}`
   };
@@ -225,11 +224,16 @@ type AthleteCheckInAppProps = {
 export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteCheckInAppProps = {}) {
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
+  const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const childIdParam = forcedChildId ?? searchParams.get("childId");
   const idParam = searchParams.get("id");
-  const athleteProfileHref = profileReturnHref ?? (childIdParam ? `/athletes/${childIdParam}` : null);
+  const isDashboardAssessment = pathname.includes("/dashboard/assessment");
+  const defaultReturnHref = isDashboardAssessment
+    ? (childIdParam ? `/dashboard/athletes/${childIdParam}` : "/dashboard/athletes")
+    : "/athlete-iq?persona=athlete#progress";
+  const athleteProfileHref = profileReturnHref ?? (childIdParam ? defaultReturnHref : null);
 
   const [nowMs] = useState(Date.now);
   const [assessment, setAssessment] = useState<AssessmentPayload>(loadDraftAssessment);
@@ -513,7 +517,12 @@ export function AthleteCheckInApp({ forcedChildId, profileReturnHref }: AthleteC
       void recordAthleteCheckInOnboarding(profileChildId, data.assessment._id || assessment.session.date);
     }
     if (!idParam) {
-      router.replace(profileReturnHref ?? (profileChildId ? `/athletes/${profileChildId}` : "/athletes"));
+      const returnHref = profileReturnHref ?? (
+        isDashboardAssessment
+          ? (profileChildId ? `/dashboard/athletes/${profileChildId}` : "/dashboard/athletes")
+          : "/athlete-iq?persona=athlete#progress"
+      );
+      router.replace(returnHref);
     }
   }
 

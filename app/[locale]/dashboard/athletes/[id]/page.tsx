@@ -6,31 +6,24 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import {
   Badge,
-  Badge as GdsBadge,
   Box,
-  Box as GdsBox,
   Checkbox,
-  Checkbox as GdsCheckbox,
   createGdsVocabularyPack,
   GdsSegmentedControl,
   GdsIcons,
   Group,
-  Group as GdsGroup,
   Loader,
   Modal,
   PageHeader,
   SectionPanel,
   SemanticButton,
   SimpleGrid,
-  SimpleGrid as GdsSimpleGrid,
   Stack,
-  Stack as GdsStack,
   StateBlock,
   Table,
-  TextInput,
-  TextInput as GdsTextInput
+  TextInput
 } from "@sovereignsquad/gds/client";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Paper, Text } from "@/components/gds/SurfacePrimitives";
 import { PdfService } from "@/lib/pdf-service";
 import { getUsers } from "@/services/user-service";
@@ -80,13 +73,6 @@ type MemoryEntry = {
 type TrendWindow = "7d" | "30d" | "all" | "custom";
 type TrendMetric = "readiness" | "movement" | "social" | "mental" | "ski";
 const DASHBOARD_CHART_PRIMARY_COLOR = "var(--gds-vibe-accent, var(--accent-gold))";
-type BaselineSaveState = "idle" | "saving" | "saved" | "error";
-
-type BaselineDraft = {
-  weeklyGoal: string;
-  preferredTrainingDays: string[];
-  supportPreferences: string[];
-};
 
 // The history route responds with a `{ success, data: { child, assessments, ... } }`
 // envelope. Earlier code read the envelope as if it were the flat payload, so
@@ -105,29 +91,11 @@ const PILLAR_COLORS: Record<string, string> = {
   sport_brain_pillar: "var(--gds-vibe-accent, var(--accent-gold))"
 };
 
-const baselineTrainingDayOptions = [
-  { value: "Monday", labelKey: "athleteBaselineMonday" },
-  { value: "Tuesday", labelKey: "athleteBaselineTuesday" },
-  { value: "Wednesday", labelKey: "athleteBaselineWednesday" },
-  { value: "Thursday", labelKey: "athleteBaselineThursday" },
-  { value: "Friday", labelKey: "athleteBaselineFriday" },
-  { value: "Saturday", labelKey: "athleteBaselineSaturday" },
-  { value: "Sunday", labelKey: "athleteBaselineSunday" }
-];
-
-const baselineSupportOptions = [
-  { value: "Short feedback", labelKey: "athleteBaselineSupportShortFeedback" },
-  { value: "Check-in reminders", labelKey: "athleteBaselineSupportReminders" },
-  { value: "Recovery guidance", labelKey: "athleteBaselineSupportRecovery" },
-  { value: "Training plan context", labelKey: "athleteBaselineSupportPlanning" }
-];
-
 // Function areas the athlete operating surface is segmented into.
 type AthleteSection = "input" | "plan" | "analysis" | "records";
 
 export default function AthleteHistoryPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
   const { id } = use(params);
-  const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations("Assessment");
   const tc = useTranslations("Common");
@@ -135,8 +103,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const ts = useTranslations("Schema");
   const tr = useTranslations("Report");
   const emptyValue = tc("emptyValue");
-  const isAthleteApp = pathname.includes("/athletes/") && !pathname.includes("/dashboard/athletes/");
-  const emptyStateRole = isAthleteApp ? "athlete" : "trainer";
+  const emptyStateRole = "trainer";
 
   const [data, setData] = useState<AthleteHistoryPayload | null>(null);
   // Captured once at mount: a stable "now" for freshness scoring, keeping the
@@ -144,9 +111,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [nowMs] = useState(() => Date.now());
   // Function-area segmentation (#segment): the operating surface is split into
   // dedicated areas — Input (data entry), Plan, Analysis, Records — so each
-  // function has its own focused view instead of one crammed scroll. Athletes
-  // land on Input (today's actions); trainers land on Analysis.
-  const [section, setSection] = useState<AthleteSection>(isAthleteApp ? "input" : "analysis");
+  // function has its own focused view instead of one crammed scroll.
+  const [section, setSection] = useState<AthleteSection>("analysis");
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -156,13 +122,6 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const [sessionPlans, setSessionPlans] = useState<SessionPlanRecord[]>([]);
   const [savingHabits, setSavingHabits] = useState(false);
   const [habitSaveError, setHabitSaveError] = useState("");
-  const [baselineDraft, setBaselineDraft] = useState<BaselineDraft>({
-    weeklyGoal: "",
-    preferredTrainingDays: [],
-    supportPreferences: []
-  });
-  const [baselineSaveState, setBaselineSaveState] = useState<BaselineSaveState>("idle");
-  const [baselineMessage, setBaselineMessage] = useState("");
   const athletesActionPack = useMemo(
     () =>
       createGdsVocabularyPack("athleteHistory", {
@@ -197,13 +156,6 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           return;
         }
         setData(historyPayload);
-        setBaselineDraft({
-          weeklyGoal: historyPayload.child.baselineProfile?.weeklyGoal || "",
-          preferredTrainingDays: historyPayload.child.baselineProfile?.preferredTrainingDays || [],
-          supportPreferences: historyPayload.child.baselineProfile?.supportPreferences || []
-        });
-        setBaselineSaveState("idle");
-        setBaselineMessage("");
         const nextHabitRecords = Array.isArray(habitPayload?.records) ? habitPayload.records : [];
         setHabitRecords(nextHabitRecords);
         setSessionPlans(Array.isArray(sessionPlanPayload?.plans) ? sessionPlanPayload.plans : []);
@@ -268,40 +220,6 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
 
   async function retryTodayHabits() {
     await saveTodayHabits();
-  }
-
-  function toggleBaselineListValue(field: "preferredTrainingDays" | "supportPreferences", value: string, checked: boolean) {
-    setBaselineDraft((current) => ({
-      ...current,
-      [field]: checked ? Array.from(new Set([...current[field], value])) : current[field].filter((item) => item !== value)
-    }));
-    setBaselineSaveState("idle");
-    setBaselineMessage("");
-  }
-
-  async function saveBaselineSetup() {
-    if (!data?.child._id) return;
-    setBaselineSaveState("saving");
-    setBaselineMessage("");
-
-    const response = await fetch(`/api/athletes/${data.child._id}/baseline`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(baselineDraft)
-    }).catch(() => null);
-
-    if (!response?.ok) {
-      setBaselineSaveState("error");
-      setBaselineMessage(td("athleteBaselineSaveError"));
-      return;
-    }
-
-    const payload = (await response.json().catch(() => null)) as { athlete?: AthleteHistoryPayload["child"] } | null;
-    if (payload?.athlete) {
-      setData((current) => current ? { ...current, child: payload.athlete! } : current);
-    }
-    setBaselineSaveState("saved");
-    setBaselineMessage(td("athleteBaselineSaveSuccess"));
   }
 
   const chronologicalAssessments = useMemo(
@@ -446,8 +364,6 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
   const previousThreeAverage = loadTimeline.length > 3 ? averageScore(loadTimeline.slice(-6, -3).map((entry) => entry.value as number)) : latestThreeAverage;
   const loadRatio = previousThreeAverage > 0 ? Number((latestThreeAverage / previousThreeAverage).toFixed(2)) : 1;
   const loadStatus = getLoadStatus(loadRatio);
-  const checkedInToday = latest?.session.date === todayDate;
-  const habitsCompleteToday = habitCompletion.completed === habitCompletion.total;
   const athleteLocation = latest?.session.location || data?.child.latestLocation || emptyValue;
   const relevantSessionPlan = selectRelevantSessionPlan(sessionPlans, data?.child.name || "", athleteLocation);
   const noRecordsAction = getAthleteEmptyStateAction({
@@ -455,14 +371,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
     reason: "no_records",
     athleteId: data?.child._id
   });
-  const startCheckInHref = isAthleteApp && data?.child._id ? `/athletes/${data.child._id}/check-in` : `/dashboard/assessment${data?.child._id ? `?childId=${data.child._id}` : ""}`;
-  const emptyActionHref = isAthleteApp && data?.child._id ? `/athletes/${data.child._id}/check-in` : noRecordsAction?.href;
-  const baselineSaved = Boolean(
-    data?.child.baselineProfile?.onboardingCompletedAt ||
-    data?.child.baselineProfile?.weeklyGoal ||
-    data?.child.baselineProfile?.preferredTrainingDays?.length ||
-    data?.child.baselineProfile?.supportPreferences?.length
-  );
+  const emptyActionHref = noRecordsAction?.href;
 
   // Trust + insight wiring (GH-253 data confidence, GH-254 explainability): both are
   // derived from real signals only, so the UI stays honest about how much it
@@ -526,19 +435,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         subtitle={td("athleteHistorySubtitle", { date: data.child.birthDate, sessions: data.assessments.length })}
         actions={
           <Group gap="sm" wrap="wrap" className="mobile-actions-stack">
-            {isAthleteApp ? (
-              <Link href={startCheckInHref} style={{ textDecoration: "none" }}>
-                <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} />
-              </Link>
-            ) : (
-              <>
-                <Link href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"} style={{ textDecoration: "none" }}>
-                  <SemanticButton action="edit" variant="default" disabled={data.assessments.length === 0} />
-                </Link>
-                <SemanticButton action="download" color={getProductColor("dashboard", "primaryAction")} onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>{td("exportReportPdf")}</SemanticButton>
-                <SemanticButton action="delete" color={getProductColor("dashboard", "risk")} onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0} />
-              </>
-            )}
+            <Link href={latest?._id ? `/dashboard/assessment?id=${latest._id}` : "/dashboard/assessment"} style={{ textDecoration: "none" }}>
+              <SemanticButton action="edit" variant="default" disabled={data.assessments.length === 0} />
+            </Link>
+            <SemanticButton action="download" color={getProductColor("dashboard", "primaryAction")} onClick={() => void downloadPdf()} loading={downloadingPdf} disabled={data.assessments.length === 0}>{td("exportReportPdf")}</SemanticButton>
+            <SemanticButton action="delete" color={getProductColor("dashboard", "risk")} onClick={() => setDeleteModalOpen(true)} disabled={data.assessments.length === 0} />
           </Group>
         }
       />
@@ -563,24 +464,6 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
             ) : null}
           </Stack>
         </SectionPanel>
-      ) : null}
-
-      {isAthleteApp ? (
-        <AthleteBaselineSetupSection
-          draft={baselineDraft}
-          message={baselineMessage}
-          saved={baselineSaved}
-          saveState={baselineSaveState}
-          translate={td}
-          onGoalChange={(weeklyGoal) => {
-            setBaselineDraft((current) => ({ ...current, weeklyGoal }));
-            setBaselineSaveState("idle");
-            setBaselineMessage("");
-          }}
-          onToggleDay={(value, checked) => toggleBaselineListValue("preferredTrainingDays", value, checked)}
-          onToggleSupport={(value, checked) => toggleBaselineListValue("supportPreferences", value, checked)}
-          onSave={() => void saveBaselineSetup()}
-        />
       ) : null}
 
       {data.assessments.length === 0 ? (
@@ -608,51 +491,6 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
               overflow="wrap"
             />
           </Box>
-
-          {section === "input" && isAthleteApp ? (
-            <SectionPanel title={td("athleteTodayTasksTitle")} description={td("athleteTodayTasksSubtitle")}>
-              <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
-                <Paper withBorder p="md" radius="md">
-                  <Stack gap="sm">
-                    <Group justify="space-between" align="flex-start">
-                      <Box>
-                        <Text fw={700}>{td("athleteTodayCheckInTaskTitle")}</Text>
-                        <Text size="sm" c="dimmed">
-                          {checkedInToday ? td("athleteTodayCheckInDone") : td("athleteTodayCheckInOpen")}
-                        </Text>
-                      </Box>
-                      <Badge color={checkedInToday ? getProductColor("dashboard", "success") : getProductColor("dashboard", "risk")}>
-                        {checkedInToday ? td("athleteTaskDoneBadge") : td("athleteTaskOpenBadge")}
-                      </Badge>
-                    </Group>
-                    <Link href={startCheckInHref} style={{ textDecoration: "none" }}>
-                      <SemanticButton action={checkedInToday ? "edit" : "start"} color={getProductColor("dashboard", "primaryAction")} fullWidth />
-                    </Link>
-                  </Stack>
-                </Paper>
-
-                <Paper withBorder p="md" radius="md">
-                  <Stack gap="sm">
-                    <Group justify="space-between" align="flex-start">
-                      <Box>
-                        <Text fw={700}>{td("athleteTodayHabitsTaskTitle")}</Text>
-                        <Text size="sm" c="dimmed">
-                          {td("athleteTodayHabitsProgress", {
-                            completed: habitCompletion.completed,
-                            total: habitCompletion.total
-                          })}
-                        </Text>
-                      </Box>
-                      <Badge color={habitsCompleteToday ? getProductColor("dashboard", "success") : getProductColor("dashboard", "warning")}>
-                        {habitsCompleteToday ? td("athleteTaskDoneBadge") : td("athleteTaskOpenBadge")}
-                      </Badge>
-                    </Group>
-                    <Text size="sm" c="dimmed">{td("athleteTodayHabitsHint")}</Text>
-                  </Stack>
-                </Paper>
-              </SimpleGrid>
-            </SectionPanel>
-          ) : null}
 
           {section === "analysis" ? (
           <SectionPanel
@@ -718,15 +556,11 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
           <SectionPanel
             title={td("athletePlanTitle")}
             description={td("athletePlanSubtitle")}
-            action={!isAthleteApp ? (
+            action={
               <Link href="/dashboard/planning" style={{ textDecoration: "none" }}>
                 <SemanticButton action="launch" variant="light" size="sm" />
               </Link>
-            ) : data?.child._id ? (
-              <Link href={`/athletes/${data.child._id}/session`} style={{ textDecoration: "none" }}>
-                <SemanticButton action="start" color={getProductColor("dashboard", "primaryAction")} size="sm">{td("athleteRunSessionAction")}</SemanticButton>
-              </Link>
-            ) : undefined}
+            }
           >
             {relevantSessionPlan ? (
               <Stack gap="md">
@@ -1183,7 +1017,7 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                 return (
                   <ResponsiveDataCard
                     key={assessment._id}
-                    onClick={!isAthleteApp ? () => router.push(`/dashboard/records/${assessment._id}`) : undefined}
+                    onClick={() => router.push(`/dashboard/records/${assessment._id}`)}
                     title={assessment.session.date}
                   >
                     <ResponsiveDataRow label={tc("mode")} value={t("appTitle")} />
@@ -1215,8 +1049,8 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
                     return (
                       <Table.Tr
                         key={assessment._id}
-                        onClick={!isAthleteApp ? () => router.push(`/dashboard/records/${assessment._id}`) : undefined}
-                        style={{ cursor: !isAthleteApp ? "pointer" : undefined }}
+                        onClick={() => router.push(`/dashboard/records/${assessment._id}`)}
+                        style={{ cursor: "pointer" }}
                       >
                         <Table.Td>{assessment.session.date}</Table.Td>
                         <Table.Td>
@@ -1306,109 +1140,15 @@ export default function AthleteHistoryPage({ params }: { params: Promise<{ id: s
         </>
       )}
 
-      {!isAthleteApp ? (
-        <DeleteSurveyModal
-          opened={deleteModalOpen}
-          onClose={() => setDeleteModalOpen(false)}
-          confirmValue={deleteConfirmText}
-          onConfirmValueChange={setDeleteConfirmText}
-          onDelete={() => void deleteLatestSurvey()}
-          deleting={deletingSurvey}
-        />
-      ) : null}
+      <DeleteSurveyModal
+        opened={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        confirmValue={deleteConfirmText}
+        onConfirmValueChange={setDeleteConfirmText}
+        onDelete={() => void deleteLatestSurvey()}
+        deleting={deletingSurvey}
+      />
     </Stack>
-  );
-}
-
-function AthleteBaselineSetupSection({
-  draft,
-  message,
-  saved,
-  saveState,
-  translate,
-  onGoalChange,
-  onToggleDay,
-  onToggleSupport,
-  onSave
-}: {
-  draft: BaselineDraft;
-  message: string;
-  saved: boolean;
-  saveState: BaselineSaveState;
-  translate: (key: string) => string;
-  onGoalChange: (value: string) => void;
-  onToggleDay: (value: string, checked: boolean) => void;
-  onToggleSupport: (value: string, checked: boolean) => void;
-  onSave: () => void;
-}) {
-  const canSave = Boolean(draft.weeklyGoal.trim() || draft.preferredTrainingDays.length || draft.supportPreferences.length);
-  const messageTone = saveState === "error" ? "var(--status-error)" : "var(--status-success)";
-
-  return (
-    <SectionPanel
-      title={translate("athleteBaselineSetupTitle")}
-      description={translate("athleteBaselineSetupSubtitle")}
-      action={
-        <GdsBadge color={saved ? getProductColor("dashboard", "success") : getProductColor("dashboard", "warning")}>
-          {saved ? translate("athleteBaselineSavedBadge") : translate("athleteBaselineOpenBadge")}
-        </GdsBadge>
-      }
-    >
-      <GdsStack gap="md">
-        {message ? (
-          <GdsBox
-            role={saveState === "error" ? "alert" : "status"}
-            p="sm"
-            style={{
-              border: "1px solid var(--border-primary)",
-              borderRadius: "var(--mantine-radius-sm)",
-              color: messageTone
-            }}
-          >
-            {message}
-          </GdsBox>
-        ) : null}
-
-        <GdsTextInput
-          label={translate("athleteBaselineGoalLabel")}
-          placeholder={translate("athleteBaselineGoalPlaceholder")}
-          value={draft.weeklyGoal}
-          onChange={(event) => onGoalChange(event.currentTarget.value)}
-        />
-
-        <GdsBox>
-          <p style={{ marginBlock: 0, fontWeight: 700 }}>{translate("athleteBaselineDaysLabel")}</p>
-          <GdsSimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="xs" mt="xs">
-            {baselineTrainingDayOptions.map((option) => (
-              <GdsCheckbox
-                key={option.value}
-                checked={draft.preferredTrainingDays.includes(option.value)}
-                label={translate(option.labelKey)}
-                onChange={(event) => onToggleDay(option.value, event.currentTarget.checked)}
-              />
-            ))}
-          </GdsSimpleGrid>
-        </GdsBox>
-
-        <GdsBox>
-          <p style={{ marginBlock: 0, fontWeight: 700 }}>{translate("athleteBaselineSupportLabel")}</p>
-          <GdsSimpleGrid cols={{ base: 1, sm: 2 }} spacing="xs" mt="xs">
-            {baselineSupportOptions.map((option) => (
-              <GdsCheckbox
-                key={option.value}
-                checked={draft.supportPreferences.includes(option.value)}
-                label={translate(option.labelKey)}
-                onChange={(event) => onToggleSupport(option.value, event.currentTarget.checked)}
-              />
-            ))}
-          </GdsSimpleGrid>
-        </GdsBox>
-
-        <GdsGroup justify="flex-end">
-          <SemanticButton action="save" color={getProductColor("dashboard", "primaryAction")} onClick={onSave} loading={saveState === "saving"} disabled={!canSave} />
-        </GdsGroup>
-      </GdsStack>
-    </SectionPanel>
   );
 }
 

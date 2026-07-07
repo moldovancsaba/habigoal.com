@@ -42,7 +42,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     if (!authResolved || !user) return;
 
     const locale = pathname.match(/^\/(hu|en|ar|es|de|he)(\/|$)/)?.[1] || "en";
-    const athleteHome = user.athleteId ? `/${locale}/athletes/${user.athleteId}` : `/${locale}/athletes`;
+    const athleteHome = `/${locale}/athlete-iq?persona=athlete`;
     const trainerHome = `/${locale}/dashboard`;
 
     if (user.primaryRole === "parent" && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/parent`)) {
@@ -79,8 +79,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     ...(primaryRole === "athlete" ? [
       { href: "/habigoal", label: t("navAthleteToday"), action: "record" as const },
       { href: "/athlete-iq", label: t("navAthleteIq"), action: "dashboard" as const },
-      ...(user?.athleteId ? [{ href: `/athletes/${user.athleteId}`, label: t("navAthleteProgress"), action: "dashboard" as const }] : []),
-      { href: "/dashboard/assessment", label: t("survey"), action: "record" as const },
+      { href: "/athlete-iq?persona=athlete#progress", label: t("navAthleteProgress"), action: "dashboard" as const },
     ] : []),
     ...(primaryRole === "admin" || primaryRole === "trainer" || primaryRole === "performance_coach" || primaryRole === "physio" ? [
       { href: "/dashboard", label: t("overview") },

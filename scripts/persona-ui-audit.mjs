@@ -13,9 +13,12 @@ const protectedScopes = [
 ];
 const protectedFiles = [
   "app/[locale]/page.tsx",
+  "app/[locale]/athletes/page.tsx",
+  "app/[locale]/athletes/checkin/page.tsx",
+  "app/[locale]/athletes/[id]/page.tsx",
+  "app/[locale]/athletes/[id]/check-in/page.tsx",
+  "app/[locale]/athletes/[id]/session/page.tsx",
   "app/[locale]/athletes/[id]/training-log/page.tsx",
-  "components/athletes/AthletesAppHome.tsx",
-  "components/athletes/TrainingLoadLogger.tsx",
   "components/layout/CookieConsentBanner.tsx"
 ];
 const personaColorContractFiles = [
@@ -81,7 +84,7 @@ assertRouteChromeContract();
 assertHabigoalOwnsChrome();
 assertAthleteIqOwnsChrome();
 assertGlobalOverlayColorContract();
-assertAthletePersonaShellContract();
+assertLegacyAthleteRoutesRetired();
 assertPersonaColorContract();
 assertNoLegacyBlueUiTokens();
 assertGoldAthleteThemeContract();
@@ -382,27 +385,37 @@ function assertGlobalOverlayColorContract() {
   }
 }
 
-function assertAthletePersonaShellContract() {
+function assertLegacyAthleteRoutesRetired() {
   const files = [
     {
-      file: "components/athletes/AthletesAppHome.tsx",
-      required: ["getProductColor(ATHLETE_APP_SURFACE, \"primaryAction\")"],
-      forbidden: ["@mantine/core", "color=\"ingress\"", "mantine-color-ingress"]
+      file: "app/[locale]/athletes/page.tsx",
+      required: ["redirect(`/${locale}/athlete-iq?persona=athlete`)"],
+      forbidden: ["AthletesAppHome", "DashboardShell", "TrainingLoadLogger", "AthleteCheckInApp", "OnboardingProvider"]
+    },
+    {
+      file: "app/[locale]/athletes/[id]/page.tsx",
+      required: ["redirect(`/${locale}/athlete-iq?persona=athlete#progress`)"],
+      forbidden: ["AthletesAppHome", "DashboardShell", "TrainingLoadLogger", "AthleteCheckInApp", "OnboardingProvider"]
+    },
+    {
+      file: "app/[locale]/athletes/[id]/session/page.tsx",
+      required: ["redirect(`/${locale}/athlete-iq?persona=athlete#sessions`)"],
+      forbidden: ["AthletesAppHome", "DashboardShell", "TrainingLoadLogger", "AthleteCheckInApp", "OnboardingProvider"]
     },
     {
       file: "app/[locale]/athletes/[id]/training-log/page.tsx",
-      required: ["<DashboardShell>", "TrainingLoadLogger"],
-      forbidden: ["setTimeout", "session-plans/rpe", "Real implementation"]
+      required: ["redirect(`/${locale}/athlete-iq?persona=athlete#sessions`)"],
+      forbidden: ["AthletesAppHome", "DashboardShell", "TrainingLoadLogger", "AthleteCheckInApp", "OnboardingProvider"]
     },
     {
-      file: "components/athletes/TrainingLoadLogger.tsx",
-      required: ["`/api/athletes/${athleteId}/training-load`", "getProductColor(\"dashboard\", \"primaryAction\")"],
-      forbidden: ["@mantine/core", "bg=\"gray.0\"", "color=\"ingress\"", "mantine-color-ingress", "setTimeout", "session-plans/rpe", "Real implementation"]
+      file: "app/[locale]/athletes/[id]/check-in/page.tsx",
+      required: ["redirect(`/${locale}/habigoal`)"],
+      forbidden: ["AthletesAppHome", "DashboardShell", "TrainingLoadLogger", "AthleteCheckInApp", "OnboardingProvider"]
     },
     {
-      file: "app/api/session-plans/rpe/route.ts",
-      required: ["requireRole(request, [\"admin\", \"trainer\", \"athlete\"])", "canAccessAthlete(authUser, athleteId)", "createTrainingLoadRecord"],
-      forbidden: ["console.log", "Store in DB", "completedLoadPoints: rpeScore *"]
+      file: "app/[locale]/athletes/checkin/page.tsx",
+      required: ["redirect(`/${locale}/habigoal`)"],
+      forbidden: ["AthletesAppHome", "DashboardShell", "TrainingLoadLogger", "AthleteCheckInApp", "OnboardingProvider"]
     }
   ];
 
@@ -412,8 +425,8 @@ function assertAthletePersonaShellContract() {
       if (!source.includes(snippet)) {
         failures.push({
           file: check.file,
-          rule: "athlete-persona-shell-contract",
-          message: `Athlete persona route must keep shared dark/gold shell contract: ${snippet}`
+          rule: "legacy-athlete-route-retirement",
+          message: `Legacy athlete route must redirect into an approved product surface: ${snippet}`
         });
       }
     }
@@ -421,10 +434,20 @@ function assertAthletePersonaShellContract() {
       if (source.includes(snippet)) {
         failures.push({
           file: check.file,
-          rule: "athlete-persona-shell-contract",
-          message: `Athlete persona route must not keep old blue/light UI residue: ${snippet}`
+          rule: "legacy-athlete-route-retirement",
+          message: `Legacy athlete route must not render old app chrome/components: ${snippet}`
         });
       }
+    }
+  }
+
+  for (const removedFile of ["components/athletes/AthletesAppHome.tsx", "components/athletes/TrainingLoadLogger.tsx"]) {
+    if (fs.existsSync(path.join(root, removedFile))) {
+      failures.push({
+        file: removedFile,
+        rule: "legacy-athlete-route-retirement",
+        message: "Retired athlete app component still exists. Keep the three product surfaces as the only UI apps."
+      });
     }
   }
 }

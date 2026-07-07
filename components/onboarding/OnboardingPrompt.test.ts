@@ -5,7 +5,7 @@ import type { OnboardingModuleView } from "@/types/onboarding";
 const moduleView: OnboardingModuleView = {
   id: "athlete-first-login-baseline",
   role: "athlete",
-  routePattern: "/athletes",
+  routePattern: "/athlete-iq",
   priority: 10,
   title: "Set up your athlete baseline",
   body: "Confirm setup details.",

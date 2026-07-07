@@ -65,7 +65,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_user_input",
     allowedRoles: ["admin", "trainer", "performance_coach", "physio", "analyst", "athlete", "parent"],
     dataSources: [liveCheckInSource],
-    routes: ["/athletes/[id]", "/dashboard", "/dashboard/athletes/[id]"],
+    routes: ["/athlete-iq?persona=athlete#progress", "/dashboard", "/dashboard/athletes/[id]"],
     reportVisibility: ["athlete", "coach", "parent", "team"],
     dependencies: [],
     observabilityEvents: ["aiq.module.readiness.viewed", "aiq.module.readiness.missing_data"]
@@ -78,7 +78,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_user_input",
     allowedRoles: ["admin", "trainer", "performance_coach", "physio", "athlete", "parent"],
     dataSources: [liveCheckInSource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]"],
+    routes: ["/athlete-iq?persona=athlete#mental", "/dashboard/athletes/[id]"],
     reportVisibility: ["athlete", "coach", "parent"],
     dependencies: ["readiness"],
     observabilityEvents: ["aiq.module.mental_edge.viewed", "aiq.module.mental_edge.redacted"]
@@ -91,7 +91,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_user_input",
     allowedRoles: ["admin", "trainer", "performance_coach", "physio", "athlete", "parent"],
     dataSources: [liveCheckInSource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]", "/dashboard/coach"],
+    routes: ["/athlete-iq?persona=athlete#home", "/dashboard/athletes/[id]", "/dashboard/coach"],
     reportVisibility: ["athlete", "coach", "parent"],
     dependencies: ["readiness"],
     observabilityEvents: ["aiq.module.pain_safety.viewed", "aiq.module.pain_safety.escalated"]
@@ -104,7 +104,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_user_input",
     allowedRoles: ["admin", "trainer", "performance_coach", "athlete", "parent"],
     dataSources: [liveHabitsSource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]"],
+    routes: ["/athlete-iq?persona=athlete#shared-data", "/dashboard/athletes/[id]"],
     reportVisibility: ["athlete", "coach", "parent", "team"],
     dependencies: [],
     observabilityEvents: ["aiq.module.habits.viewed", "aiq.module.habits.missing_data"]
@@ -117,7 +117,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_manual_entry",
     allowedRoles: ["admin", "trainer", "performance_coach", "athlete"],
     dataSources: [livePlanningSource, liveCheckInSource],
-    routes: ["/dashboard/planning", "/athletes/[id]"],
+    routes: ["/dashboard/planning", "/athlete-iq?persona=athlete#plan"],
     reportVisibility: ["athlete", "coach", "team"],
     dependencies: ["readiness"],
     observabilityEvents: ["aiq.module.daily_plan.viewed", "aiq.module.daily_plan.updated"]
@@ -130,7 +130,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_manual_entry",
     allowedRoles: ["admin", "trainer", "performance_coach", "athlete"],
     dataSources: [liveCheckInSource, manualEntrySource],
-    routes: ["/athletes/[id]/training-log", "/dashboard/assessment"],
+    routes: ["/athlete-iq?persona=athlete#sessions", "/dashboard/assessment"],
     reportVisibility: ["athlete", "coach", "team"],
     dependencies: [],
     observabilityEvents: ["aiq.module.session_log.viewed", "aiq.module.session_log.saved"]
@@ -156,7 +156,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_user_input",
     allowedRoles: ["admin", "trainer", "performance_coach", "physio", "athlete", "parent"],
     dataSources: [liveCheckInSource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]"],
+    routes: ["/athlete-iq?persona=athlete#reflection", "/dashboard/athletes/[id]"],
     reportVisibility: ["athlete", "coach", "parent"],
     dependencies: ["mental_edge"],
     observabilityEvents: ["aiq.module.reflection.viewed", "aiq.module.reflection.redacted"]
@@ -208,7 +208,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_manual_entry",
     allowedRoles: ["admin", "trainer", "performance_coach", "physio", "athlete", "parent"],
     dataSources: [liveCheckInSource, manualEntrySource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]"],
+    routes: ["/athlete-iq?persona=athlete#lite", "/dashboard/athletes/[id]"],
     reportVisibility: ["athlete", "coach", "parent"],
     dependencies: ["readiness"],
     observabilityEvents: ["aiq.module.recovery_lite.viewed", "aiq.module.recovery_lite.manual_data_required"]
@@ -221,7 +221,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_manual_entry",
     allowedRoles: ["admin", "trainer", "performance_coach", "athlete", "parent"],
     dataSources: [manualEntrySource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]"],
+    routes: ["/athlete-iq?persona=athlete#lite", "/dashboard/athletes/[id]"],
     reportVisibility: ["athlete", "coach", "parent"],
     dependencies: ["habits"],
     observabilityEvents: ["aiq.module.fuel_lite.viewed", "aiq.module.fuel_lite.manual_data_required"]
@@ -234,7 +234,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_manual_entry",
     allowedRoles: ["admin", "trainer", "performance_coach", "athlete", "parent"],
     dataSources: [manualEntrySource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]"],
+    routes: ["/athlete-iq?persona=athlete#lite", "/dashboard/athletes/[id]"],
     reportVisibility: ["athlete", "coach", "parent"],
     dependencies: ["habits"],
     observabilityEvents: ["aiq.module.learning_lite.viewed", "aiq.module.learning_lite.manual_data_required"]
@@ -260,7 +260,7 @@ export const ATHLETEIQ_MODULE_REGISTRY: AthleteIqModuleDefinition[] = [
     claimBoundary: "backed_by_manual_entry",
     allowedRoles: ["admin", "trainer", "performance_coach", "athlete"],
     dataSources: [manualEntrySource],
-    routes: ["/athletes/[id]", "/dashboard/athletes/[id]/intelligence"],
+    routes: ["/athlete-iq?persona=athlete#lite", "/dashboard/athletes/[id]/intelligence"],
     reportVisibility: ["athlete", "coach"],
     dependencies: ["mental_edge"],
     observabilityEvents: ["aiq.module.cognitive_lite.viewed", "aiq.module.cognitive_lite.manual_data_required"]

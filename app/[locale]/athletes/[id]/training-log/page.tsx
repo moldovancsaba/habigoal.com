@@ -1,16 +1,10 @@
-import DashboardShell from "@/components/layout/DashboardShell";
-import { TrainingLoadLogger } from "@/components/athletes/TrainingLoadLogger";
+import { redirect } from "next/navigation";
 
 export default async function RpeLoggerPage({
   params
 }: {
   params: Promise<{ id: string; locale: string }>;
 }) {
-  const { id } = await params;
-
-  return (
-    <DashboardShell>
-      <TrainingLoadLogger athleteId={id} />
-    </DashboardShell>
-  );
+  const { locale } = await params;
+  redirect(`/${locale}/athlete-iq?persona=athlete#sessions`);
 }

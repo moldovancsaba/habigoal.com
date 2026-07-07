@@ -125,11 +125,14 @@ describe("product surface route boundaries", () => {
     expect(styles).not.toContain("aiq-command-layout-embedded");
   });
 
-  it("keeps global overlays and athlete persona routes on the gold product color contract", () => {
+  it("keeps global overlays on the gold product color contract and retires legacy athlete UI routes", () => {
     const cookieBanner = readSource("components/layout/CookieConsentBanner.tsx");
-    const athleteHome = readSource("components/athletes/AthletesAppHome.tsx");
+    const athleteHomeRoute = readSource("app/[locale]/athletes/page.tsx");
+    const athleteProfileRoute = readSource("app/[locale]/athletes/[id]/page.tsx");
+    const athleteCheckInRoute = readSource("app/[locale]/athletes/[id]/check-in/page.tsx");
+    const athleteCheckInAliasRoute = readSource("app/[locale]/athletes/checkin/page.tsx");
+    const sessionRoute = readSource("app/[locale]/athletes/[id]/session/page.tsx");
     const trainingLogRoute = readSource("app/[locale]/athletes/[id]/training-log/page.tsx");
-    const trainingLogForm = readSource("components/athletes/TrainingLoadLogger.tsx");
     const sessionRpeRoute = readSource("app/api/session-plans/rpe/route.ts");
 
     expect(cookieBanner).toContain("resolveProductSurfaceFromPathname(pathname)");
@@ -138,20 +141,20 @@ describe("product surface route boundaries", () => {
     expect(cookieBanner).not.toContain("color=\"ingress\"");
     expect(cookieBanner).not.toContain("@mantine/core");
 
-    expect(athleteHome).toContain("getProductColor(ATHLETE_APP_SURFACE, \"primaryAction\")");
-    expect(athleteHome).not.toContain("@mantine/core");
-    expect(athleteHome).not.toContain("mantine-color-ingress");
+    expect(athleteHomeRoute).toContain("redirect(`/${locale}/athlete-iq?persona=athlete`)");
+    expect(athleteProfileRoute).toContain("redirect(`/${locale}/athlete-iq?persona=athlete#progress`)");
+    expect(sessionRoute).toContain("redirect(`/${locale}/athlete-iq?persona=athlete#sessions`)");
+    expect(trainingLogRoute).toContain("redirect(`/${locale}/athlete-iq?persona=athlete#sessions`)");
+    expect(athleteCheckInRoute).toContain("redirect(`/${locale}/habigoal`)");
+    expect(athleteCheckInAliasRoute).toContain("redirect(`/${locale}/habigoal`)");
 
-    expect(trainingLogRoute).toContain("<DashboardShell>");
-    expect(trainingLogRoute).toContain("TrainingLoadLogger");
-    expect(trainingLogRoute).not.toContain("setTimeout");
-
-    expect(trainingLogForm).toContain("`/api/athletes/${athleteId}/training-load`");
-    expect(trainingLogForm).toContain("getProductColor(\"dashboard\", \"primaryAction\")");
-    expect(trainingLogForm).not.toContain("bg=\"gray.0\"");
-    expect(trainingLogForm).not.toContain("color=\"ingress\"");
-    expect(trainingLogForm).not.toContain("mantine-color-ingress");
-    expect(trainingLogForm).not.toContain("setTimeout");
+    for (const routeSource of [athleteHomeRoute, athleteProfileRoute, sessionRoute, trainingLogRoute, athleteCheckInRoute, athleteCheckInAliasRoute]) {
+      expect(routeSource).not.toContain("DashboardShell");
+      expect(routeSource).not.toContain("AthletesAppHome");
+      expect(routeSource).not.toContain("TrainingLoadLogger");
+      expect(routeSource).not.toContain("AthleteCheckInApp");
+      expect(routeSource).not.toContain("OnboardingProvider");
+    }
 
     expect(sessionRpeRoute).toContain("requireRole(request, [\"admin\", \"trainer\", \"athlete\"])");
     expect(sessionRpeRoute).toContain("canAccessAthlete(authUser, athleteId)");

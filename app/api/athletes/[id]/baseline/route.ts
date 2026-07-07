@@ -50,7 +50,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       userEmail: authUser.email,
       moduleId: "athlete-first-login-baseline",
       event: "completed",
-      route: `/athletes/${id}`,
+      route: "/athlete-iq?persona=athlete",
       stepId: "open-profile",
       idempotencyKey: `athlete-first-login-baseline:baseline:${id}`
     });

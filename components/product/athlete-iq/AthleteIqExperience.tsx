@@ -754,7 +754,7 @@ function AiqMobileNavigation({
   const locale = useLocale() as SupportedLocale;
   const pathname = usePathname();
   const router = useRouter();
-  const dashboardHref = persona === "athlete" ? `/${locale}/athletes` : `/${locale}/dashboard`;
+  const dashboardHref = persona === "athlete" ? `/${locale}/athlete-iq?persona=athlete` : `/${locale}/athlete-iq?persona=trainer`;
   const languageOptions: Array<{ label: string; value: SupportedLocale }> = [
     { label: common("languageEnglish"), value: "en" },
     { label: common("languageHungarian"), value: "hu" },

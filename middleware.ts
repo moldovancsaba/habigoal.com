@@ -202,13 +202,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/dashboard/parent`, request.url));
   }
 
-  if (isAthlete && pathname.startsWith(`/${locale}/dashboard`) && !pathname.startsWith(`/${locale}/dashboard/assessment`)) {
-    return NextResponse.redirect(new URL(`/${locale}/athletes`, request.url));
+  if (isAthlete && pathname.startsWith(`/${locale}/dashboard/assessment`)) {
+    return NextResponse.redirect(new URL(`/${locale}/habigoal`, request.url));
+  }
+
+  if (isAthlete && pathname.startsWith(`/${locale}/dashboard`)) {
+    return NextResponse.redirect(new URL(`/${locale}/athlete-iq?persona=athlete`, request.url));
   }
 
   if ((isAdmin || isTrainer) && pathname.startsWith(`/${locale}/athletes`)) {
-    const redirectedPath = pathname.replace(`/${locale}/athletes`, `/${locale}/dashboard/athletes`) || `/${locale}/dashboard/athletes`;
-    return NextResponse.redirect(new URL(redirectedPath, request.url));
+    return NextResponse.redirect(new URL(`/${locale}/athlete-iq?persona=trainer`, request.url));
   }
 
   if (isTrainer && pathname.startsWith(`/${locale}/dashboard/settings`)) {

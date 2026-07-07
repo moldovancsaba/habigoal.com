@@ -6,6 +6,51 @@ import { findUserByEmail, listAllUsers, markUserLogin, upsertUser } from "@/repo
 import { getDatabase } from "@/lib/mongodb";
 import { getPrimaryRole } from "@/lib/access";
 
+function isLocalReturnTo(value: string | undefined) {
+  return Boolean(value && /^\/(hu|en|ar|es|de|he)(\/|$)/.test(value));
+}
+
+function resolvePostLoginRedirect(input: {
+  athleteId?: string;
+  locale: string;
+  primaryRole: string;
+  returnTo?: string;
+}) {
+  const { athleteId, locale, primaryRole, returnTo } = input;
+  const athleteIq = `/${locale}/athlete-iq?persona=athlete`;
+  const trainerIq = `/${locale}/athlete-iq?persona=trainer`;
+  const defaultPath =
+    primaryRole === "athlete"
+      ? athleteIq
+      : primaryRole === "admin"
+        ? `/${locale}/dashboard/settings`
+        : primaryRole === "trainer"
+          ? trainerIq
+          : `/${locale}/habigoal`;
+
+  if (!isLocalReturnTo(returnTo)) return defaultPath;
+
+  const publicReturn =
+    returnTo!.startsWith(`/${locale}/news`) ||
+    returnTo!.startsWith(`/${locale}/legal`) ||
+    returnTo!.startsWith(`/${locale}/contracts`);
+  if (publicReturn) return returnTo!;
+
+  if (returnTo!.startsWith(`/${locale}/habigoal`) || returnTo!.startsWith(`/${locale}/athlete-iq`)) {
+    return returnTo!;
+  }
+
+  if (primaryRole === "athlete") {
+    if (returnTo!.startsWith(`/${locale}/dashboard/assessment`)) return `/${locale}/habigoal`;
+    if (returnTo!.startsWith(`/${locale}/dashboard`) || returnTo!.startsWith(`/${locale}/athletes`)) return athleteIq;
+  }
+
+  if (primaryRole === "admin") return returnTo!.startsWith(`/${locale}/dashboard`) ? returnTo! : `/${locale}/dashboard/settings`;
+  if (primaryRole === "trainer") return returnTo!.startsWith(`/${locale}/dashboard`) ? returnTo! : trainerIq;
+
+  return athleteId ? athleteIq : defaultPath;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
@@ -88,13 +133,14 @@ export async function GET(request: NextRequest) {
     // Redirect back to the requested in-app path.
     const locale = returnTo?.match(/^\/(hu|en|ar|es|de|he)(\/|$)/)?.[1] || "en";
     const primaryRole = getPrimaryRole(localUser.roles);
-    const redirectPath = primaryRole === "athlete"
-      ? `/${locale}/athletes/${localUser.athleteId || ""}`.replace(/\/$/, "")
-      : primaryRole === "admin"
-        ? `/${locale}/dashboard/settings`
-        : `/${locale}/dashboard`;
+    const redirectPath = resolvePostLoginRedirect({
+      athleteId: localUser.athleteId,
+      locale,
+      primaryRole,
+      returnTo
+    });
 
-    return NextResponse.redirect(new URL(returnTo?.includes("/dashboard/assessment") ? returnTo : (returnTo?.includes("/news") || returnTo?.includes("/legal") ? returnTo : redirectPath), request.url));
+    return NextResponse.redirect(new URL(redirectPath, request.url));
   } catch (error) {
     console.error("Auth callback error:", error);
     return NextResponse.json({ error: "Authentication failed" }, { status: 500 });

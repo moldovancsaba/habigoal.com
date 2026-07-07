@@ -5,14 +5,14 @@ export const ONBOARDING_MODULES: OnboardingModule[] = [
   {
     id: "athlete-first-login-baseline",
     role: "athlete",
-    routePattern: "/athletes",
+    routePattern: "/athlete-iq",
     priority: 10,
-    title: "Set up your athlete baseline",
-    body: "Confirm your weekly goal and support preferences so Habigoal can explain readiness and check-in context clearly.",
-    checklistTitle: "Athlete setup",
+    title: "Review your Athlete IQ workspace",
+    body: "Use Athlete IQ for performance context and Habigoal for the personal daily habitbuilder.",
+    checklistTitle: "Athlete IQ setup",
     steps: [
-      { id: "open-profile", title: "Open your athlete profile", body: "Start from your own athlete profile only.", completionEvent: "profile-opened" },
-      { id: "complete-check-in", title: "Complete a daily check-in", body: "Submit today's readiness so your trend context is based on real data.", completionEvent: "check-in-completed" }
+      { id: "open-profile", title: "Open Athlete IQ", body: "Start from the athlete-owned AIQ workspace.", completionEvent: "profile-opened" },
+      { id: "complete-check-in", title: "Complete the daily habitbuilder", body: "Submit today's Habigoal status so AIQ reads shared daily-status data through the contract.", completionEvent: "check-in-completed" }
     ]
   },
   {
@@ -44,7 +44,8 @@ export const ONBOARDING_MODULES: OnboardingModule[] = [
 ];
 
 export function normalizeOnboardingRoute(route: string) {
-  return route.replace(/^\/(en|hu|ar|es|de|he)(?=\/|$)/, "") || "/";
+  const pathOnly = route.split(/[?#]/, 1)[0] || "/";
+  return pathOnly.replace(/^\/(en|hu|ar|es|de|he)(?=\/|$)/, "") || "/";
 }
 
 export function routeMatchesModule(route: string, module: OnboardingModule) {

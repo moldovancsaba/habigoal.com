@@ -1,14 +1,10 @@
-import { setRequestLocale } from "next-intl/server";
-import { AthleteCheckInApp } from "@/components/forms/AthleteCheckInApp";
-import { OnboardingProvider } from "@/components/onboarding/OnboardingPrompt";
+import { redirect } from "next/navigation";
 
-export default async function AthleteCheckInPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
-  const { id, locale } = await params;
-  setRequestLocale(locale);
-
-  return (
-    <OnboardingProvider>
-      <AthleteCheckInApp forcedChildId={id} profileReturnHref={`/athletes/${id}`} />
-    </OnboardingProvider>
-  );
+export default async function AthleteCheckInPage({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/habigoal`);
 }
