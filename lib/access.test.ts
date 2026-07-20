@@ -1,7 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getSession } from "@/lib/session";
 import { findUserByEmail } from "@/repositories/user.repository";
-import { canAccessHabigoalAthlete, getAuthUser, type AuthUser } from "@/lib/access";
+import {
+  canAccessHabigoalAthlete,
+  getAuthUser,
+  requireAdminApiUser,
+  requireAthleteIqApiUser,
+  requireAthleteIqTrainerApiUser,
+  requireHabigoalApiUser,
+  type AuthUser
+} from "@/lib/access";
 
 vi.mock("@/config/env", () => ({
   env: {
@@ -94,6 +102,50 @@ describe("auth access resolution", () => {
 
     await expect(getAuthUser({ productSurface: "habigoal" })).resolves.toMatchObject({ email: "same-user@example.com" });
     await expect(getAuthUser({ productSurface: "athlete-iq" })).resolves.toBeNull();
+  });
+
+  it("resolves a typed Habigoal API principal from Habigoal entitlement", async () => {
+    mockedGetSession.mockResolvedValue(session("trainer"));
+
+    await expect(requireHabigoalApiUser()).resolves.toMatchObject({
+      email: "same-user@example.com",
+      persona: "habigoal_user",
+      productSurface: "habigoal"
+    });
+  });
+
+  it("resolves Athlete IQ athlete and trainer API principals only from Athlete IQ entitlement", async () => {
+    mockedGetSession.mockResolvedValue(session("athlete"));
+
+    await expect(requireAthleteIqApiUser()).resolves.toMatchObject({
+      persona: "athlete",
+      productSurface: "athlete-iq"
+    });
+
+    mockedGetSession.mockResolvedValue(session("trainer"));
+    await expect(requireAthleteIqTrainerApiUser()).resolves.toMatchObject({
+      persona: "trainer",
+      productSurface: "athlete-iq"
+    });
+  });
+
+  it("does not resolve a trainer/admin API principal from an athlete-only user", async () => {
+    mockedFindUserByEmail.mockResolvedValue({
+      id: "athlete-only",
+      email: "athlete@example.com",
+      name: "Athlete",
+      roles: ["athlete"],
+      athleteId: "athlete-1",
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: true, reason: "pro_athlete_membership" }
+      },
+      teamIds: []
+    });
+    mockedGetSession.mockResolvedValue(session("athlete"));
+
+    await expect(requireAthleteIqTrainerApiUser()).resolves.toBeNull();
+    await expect(requireAdminApiUser()).resolves.toBeNull();
   });
 });
 

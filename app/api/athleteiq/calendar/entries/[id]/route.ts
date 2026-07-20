@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_CALENDAR_CAPABILITY_KEY, validateDayEntryInput } from "@/lib/athleteiq-calendar";
 import { getCalendarEntry, patchCalendarEntry, removeCalendarEntry } from "@/services/athleteiq-calendar.service";
 import type { AthleteIqDayEntryType, AthleteIqDayEntryVisibility } from "@/types/athleteiq-calendar";
@@ -41,7 +41,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       },
       actorEmail: user.email
     });
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CALENDAR_CAPABILITY_KEY, event: "athleteiq.calendar.entry_updated", correlationId, athleteId: entry.athleteId, entryId: entry.id, latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CALENDAR_CAPABILITY_KEY, event: "athleteiq.calendar.entry_updated", correlationId, athleteIdHash: athleteIqHashForLog(entry.athleteId), entryId: entry.id, latencyMs: Date.now() - startedAt }));
     return NextResponse.json({ entry, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });
@@ -61,7 +61,7 @@ export async function DELETE(_request: Request, context: { params: Promise<{ id:
     if (!(await canAccessAthlete(user, existing.athleteId))) return athleteIqJsonError("FORBIDDEN", 403, correlationId);
 
     const entry = await removeCalendarEntry({ entry: existing, actorEmail: user.email });
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CALENDAR_CAPABILITY_KEY, event: "athleteiq.calendar.entry_deleted", correlationId, athleteId: entry.athleteId, entryId: entry.id, latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CALENDAR_CAPABILITY_KEY, event: "athleteiq.calendar.entry_deleted", correlationId, athleteIdHash: athleteIqHashForLog(entry.athleteId), entryId: entry.id, latencyMs: Date.now() - startedAt }));
     return NextResponse.json({ entry, deleted: true, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });

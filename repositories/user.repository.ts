@@ -99,7 +99,6 @@ export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" |
       { email: normalizedEmail }
     ]
   });
-  const mergedRoles = normalizeRoles([...(Array.isArray(existing?.roles) ? existing.roles : []), ...normalizedRoles]);
   const productEntitlements = resolvePersonaLoginEntitlements({
     existingProductEntitlements: existing?.productEntitlements,
     existingRoles: Array.isArray(existing?.roles) ? existing.roles : [],
@@ -107,6 +106,8 @@ export async function upsertPersonaLoginUser(user: Pick<User, "email" | "name" |
     requestedSurface: user.productSurface,
     now
   });
+  const requestedRolesForWrite = normalizedRoles.filter((role) => role === "athlete" || productEntitlements.athleteIq.enabled);
+  const mergedRoles = normalizeRoles([...(Array.isArray(existing?.roles) ? existing.roles : []), ...requestedRolesForWrite]);
   await db.collection(collectionName).updateOne(
     existing?._id ? { _id: existing._id } : { normalizedEmail },
     {

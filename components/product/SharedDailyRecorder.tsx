@@ -158,10 +158,12 @@ export function SharedDailyRecorder({
       athleteId: athleteId ?? "",
       athleteName: null,
       checkIn: EMPTY_VALUES,
+      consentDecisions: [],
       dataFreshness: { generatedAt: new Date().toISOString(), sourceCollections: [] },
       habits: { completed: [], recorded: false, total: DAILY_HABITS.length },
       localDate,
       product,
+      sharingState: "allowed",
       status: {
         confidence: "none",
         missingSignals: [],

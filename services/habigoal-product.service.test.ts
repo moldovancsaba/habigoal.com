@@ -73,6 +73,9 @@ describe("Habigoal product projection", () => {
     expect(projection.athleteId).toBe(athleteId);
     expect(projection.athleteName).toBe("Coach Personal Habits");
     expect(projection.score).toBeNull();
+    expect(projection.surface).toBe("habigoal");
+    expect(projection.version).toBe("habigoal-today-v1");
+    expect(projection.shareableSummary.rule).toBe("professional_entitlement_assignment_and_consent_required");
   });
 
   it("uses the signed-in user's linked routine profile when one exists", async () => {
@@ -87,6 +90,14 @@ describe("Habigoal product projection", () => {
     expect(mockedGetChildById).toHaveBeenCalled();
     expect(mockedEnsureCanonicalAthleteProfileForUser).not.toHaveBeenCalled();
     expect(projection.athleteName).toBe("Existing Personal Profile");
+  });
+
+  it("returns a Habigoal-only DTO without Athlete IQ module, trainer, or team fields", async () => {
+    const projection = await getHabigoalTodayProjection({ user: user() });
+    const serialized = JSON.stringify(projection);
+
+    expect(projection.surface).toBe("habigoal");
+    expect(serialized).not.toMatch(/athleteIq|Athlete IQ|aiq-|trainerDashboard|teamId|teamName|coachAction|moduleRegistry/i);
   });
 });
 

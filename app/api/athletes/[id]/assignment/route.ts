@@ -26,7 +26,8 @@ export async function PATCH(
   if (!ObjectId.isValid(id)) return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
 
   const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-  if (authUser && !(await canAccessAthlete(authUser, id))) {
+  if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+  if (!(await canAccessAthlete(authUser, id))) {
     return jsonError("Forbidden", 403, "FORBIDDEN");
   }
 
@@ -73,16 +74,14 @@ export async function PATCH(
     locale: existing.locale,
   });
 
-  if (authUser) {
-    await logAuditEvent({
-      actorEmail: authUser.email,
-      actorRole: authUser.primaryRole,
-      action: "athlete.update",
-      resourceType: "athlete_assignment",
-      resourceId: id,
-      metadata: { teamId: updated?.teamId, status: updated?.status },
-    });
-  }
+  await logAuditEvent({
+    actorEmail: authUser.email,
+    actorRole: authUser.primaryRole,
+    action: "athlete.update",
+    resourceType: "athlete_assignment",
+    resourceId: id,
+    metadata: { teamId: updated?.teamId, status: updated?.status },
+  });
 
   return NextResponse.json(updated);
 }

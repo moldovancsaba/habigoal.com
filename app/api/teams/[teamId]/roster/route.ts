@@ -17,10 +17,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ te
 
   try {
     const { teamId } = await params;
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
     const team = await getTeamById(teamId);
     if (!team) return jsonError("Team not found", 404, "NOT_FOUND");
 
-    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     const email = authUser?.email?.toLowerCase().trim();
     const canManage = authUser?.primaryRole === "admin" || (email ? team.trainerEmails.includes(email) : false);
     if (!canManage) return jsonError("Forbidden", 403, "FORBIDDEN");

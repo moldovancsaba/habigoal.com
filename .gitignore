@@ -7,4 +7,5 @@ dist/
 build/
 .vercel
 .claude/
+.audit-reports/
 tsconfig.tsbuildinfo

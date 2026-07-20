@@ -21,6 +21,8 @@
     "lockfile:check": "node scripts/check-lockfile-sync.mjs",
     "semantic:audit": "node scripts/semantic-audit.mjs",
     "product-boundary:audit": "node scripts/product-boundary-audit.mjs",
+    "api-access:audit": "vitest run tests/api-access-registry.test.ts tests/business-logic-boundary.test.ts",
+    "persona-boundary:audit": "node scripts/persona-boundary-audit.mjs",
     "persona-ui:audit": "node scripts/persona-ui-audit.mjs",
     "version:audit": "node scripts/version-audit.mjs",
     "habigoal:audit": "node scripts/habigoal-production-audit.mjs",

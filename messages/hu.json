@@ -3192,5 +3192,65 @@
         "description": "Engedélyezi fotók/videók feltöltését testtartás- és sprintelemzéshez."
       }
     }
+  },
+  "BusinessContracts": {
+    "metadata": {
+      "title": "Üzleti logikai szerződések",
+      "description": "Nyilvános partneri szerződés a Habigoal szokásépítőhöz, az Athlete IQ sportolói munkateréhez és az Athlete IQ edzői munkateréhez."
+    },
+    "badge": {
+      "partnerContract": "Partneri szerződés"
+    },
+    "title": "Üzleti logika és perszóna szerződések",
+    "intro": "Ez az oldal meghatározza, hogyan működik egymás mellett a három nyilvános perszóna, mit tehetnek, miért felelnek, hogyan mozog az adat, hogyan maradnak külön a felületek, hol tárolódnak a rekordok, és milyen eredményeket kell a rendszernek előállítania.",
+    "links": {
+      "appSelector": "Alkalmazásválasztó",
+      "privacyPolicy": "Adatvédelmi tájékoztató"
+    },
+    "trainerSupport": {
+      "eyebrow": "Edzői támogatási modell",
+      "title": "Hogyan kezelik és támogatják az edzők a sportolókat",
+      "description": "Az edzői munkafolyamat Athlete IQ munkafolyamat. Hozzárendelt sportolói adatokat és auditálható műveleteket használ; nem lép be és nem másolja a Habigoal szokásépítő felületét."
+    },
+    "data": {
+      "eyebrow": "Adatszerződés",
+      "title": "Hogyan osztjuk meg és továbbítjuk az adatokat"
+    },
+    "storage": {
+      "eyebrow": "Tárolási szerződés",
+      "title": "Hol tárolja a rendszer a rekordokat"
+    },
+    "ui": {
+      "eyebrow": "Felületi határ",
+      "title": "Hogyan maradnak külön a felhasználói felületek",
+      "description": "Az útvonalak, alkalmazásvázak, funkcióregiszterek és API jogosultságok együtt érvényesítik a termékszétválasztást."
+    },
+    "api": {
+      "eyebrow": "API határ",
+      "title": "Mely szerződések érvényesítik a hozzáférést",
+      "description": "Minden termékhez tartozó olvasásnak vagy írásnak a megfelelő entitlement- és szerepkör-tudatos API szerződésen kell átmennie."
+    },
+    "outcomes": {
+      "eyebrow": "Eredmények",
+      "title": "Mit állít elő a rendszer",
+      "description": "A termékek egy kompatibilis adat-alapot használnak, miközben minden perszónának külön eredményt állítanak elő."
+    },
+    "operations": {
+      "eyebrow": "Üzemeltetés",
+      "title": "Biztonság, akadálymentesség, újrapróbálás és visszaállítás",
+      "description": "Az üzemeltetési viselkedés védi a felhasználókat, partnereket és az adatintegritást, amikor modulok hibáznak vagy az adat hiányos."
+    },
+    "sources": {
+      "title": "Felhasznált forrásszerződések",
+      "description": "Ez a nyilvános oldal az alábbi repository szerződésekből származik. Az online oldal a partneri összefoglaló; a forrásfájlok maradnak a mérnöki megvalósítási szerződések."
+    },
+    "subsections": {
+      "rights": "Jogok",
+      "responsibilities": "Felelősségek",
+      "dataWrites": "Adatírások",
+      "dataReads": "Adatolvasások",
+      "uiSeparation": "Felületi szétválasztás",
+      "outcomes": "Eredmények"
+    }
   }
 }

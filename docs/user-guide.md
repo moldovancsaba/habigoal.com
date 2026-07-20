@@ -15,6 +15,7 @@ Route references in this guide were checked against the `app/` route tree on 202
 - `/{locale}/services/[id]`: public service detail page for a listed service.
 - `/{locale}/news`: public release notes and product updates.
 - `/{locale}/news/[slug]`: locale-specific news detail page.
+- `/{locale}/contracts`: public partner business logic contract for Habigoal, Athlete IQ athletes, and Athlete IQ trainers.
 - `/{locale}/legal/gtc`: public terms.
 - `/{locale}/legal/privacy`: public privacy policy.
 

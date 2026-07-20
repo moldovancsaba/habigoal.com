@@ -10,12 +10,13 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
     if (searchParams.get("deleted") === "true") {
       return NextResponse.json(await listDeletedAssessments());
     }
-    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     const result = await listAssessments();
-    const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
+    const allowedIds = await resolveAccessibleAthleteIds(authUser);
     return NextResponse.json(allowedIds === null ? result : {
       ...result,
       assessments: result.assessments.filter((assessment) => assessment.childId && allowedIds.includes(assessment.childId))
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
     const staffOverride = Boolean(body.staffOverride);
     const payload = parseAssessmentPayload(payloadInput);
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
     if (authUser?.primaryRole === "athlete") {
       if (!payload.childId || !(await canAccessAthlete(authUser, payload.childId))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
@@ -45,7 +47,7 @@ export async function POST(request: Request) {
     }
     const assessment = await createAssessmentFromPayload(payload, {
       staffOverride,
-      actor: authUser ? { email: authUser.email, name: authUser.name, role: authUser.primaryRole } : undefined
+      actor: { email: authUser.email, name: authUser.name, role: authUser.primaryRole }
     });
     return NextResponse.json({ assessment }, { status: 201 });
   } catch (error) {

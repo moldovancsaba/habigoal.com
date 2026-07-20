@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getAuthUser } from "@/lib/access";
+import { getAuthUser, type AuthUser } from "@/lib/access";
 import { jsonError, requireCapability, requireRole } from "@/lib/api";
 import { athleteIqJsonError } from "@/lib/athleteiq-api";
 import { habigoalJsonError } from "@/lib/habigoal-api";
@@ -53,6 +53,33 @@ describe("API authorization boundary", () => {
     );
 
     expect(response?.status).toBe(403);
+  });
+
+  it("rejects a matching role on Athlete IQ routes when the product entitlement is missing", async () => {
+    const habigoalOnlyTrainer: AuthUser = {
+      email: "trainer@example.com",
+      name: "Trainer",
+      roles: ["trainer"],
+      primaryRole: "trainer",
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: false }
+      },
+      teamIds: []
+    };
+    mockedGetAuthUser
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(habigoalOnlyTrainer);
+
+    const response = await requireRole(
+      new Request("http://localhost/api/athleteiq/coach/dashboard"),
+      ["trainer"]
+    );
+
+    await expect(response?.json()).resolves.toMatchObject({ code: "PRODUCT_ACCESS_DENIED" });
+    expect(response?.status).toBe(403);
+    expect(mockedGetAuthUser).toHaveBeenNthCalledWith(1, { productSurface: "athlete-iq" });
+    expect(mockedGetAuthUser).toHaveBeenNthCalledWith(2);
   });
 
   it("checks capabilities from server-side roles only", async () => {

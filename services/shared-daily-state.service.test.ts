@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { canAccessAthleteIqAthlete, canAccessHabigoalAthlete, canOpenProductSurface, type AuthUser } from "@/lib/access";
 import { getAthleteIqCheckInSnapshot, upsertAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import { getChildById } from "@/repositories/child.repository";
+import { findLatestConsent } from "@/repositories/consent.repository";
 import { getHabitRecordByAthleteIdAndDate, upsertHabitRecord } from "@/repositories/habit-records.repository";
 import { ensureCanonicalAthleteProfileForUser } from "@/services/shared-athlete-profile.service";
 import { getSharedDailyState, patchSharedDailyState, SharedDailyStateError } from "@/services/shared-daily-state.service";
@@ -22,6 +23,10 @@ vi.mock("@/repositories/child.repository", () => ({
   getChildById: vi.fn()
 }));
 
+vi.mock("@/repositories/consent.repository", () => ({
+  findLatestConsent: vi.fn()
+}));
+
 vi.mock("@/repositories/habit-records.repository", () => ({
   getHabitRecordByAthleteIdAndDate: vi.fn(),
   upsertHabitRecord: vi.fn()
@@ -37,6 +42,7 @@ const mockedCanAccessAthleteIqAthlete = vi.mocked(canAccessAthleteIqAthlete);
 const mockedGetAthleteIqCheckInSnapshot = vi.mocked(getAthleteIqCheckInSnapshot);
 const mockedUpsertAthleteIqCheckInSnapshot = vi.mocked(upsertAthleteIqCheckInSnapshot);
 const mockedGetChildById = vi.mocked(getChildById);
+const mockedFindLatestConsent = vi.mocked(findLatestConsent);
 const mockedGetHabitRecordByAthleteIdAndDate = vi.mocked(getHabitRecordByAthleteIdAndDate);
 const mockedUpsertHabitRecord = vi.mocked(upsertHabitRecord);
 const mockedEnsureCanonicalAthleteProfileForUser = vi.mocked(ensureCanonicalAthleteProfileForUser);
@@ -50,6 +56,7 @@ describe("shared daily state bridge", () => {
     mockedCanAccessHabigoalAthlete.mockResolvedValue(true);
     mockedCanAccessAthleteIqAthlete.mockResolvedValue(true);
     mockedGetChildById.mockResolvedValue({ _id: athleteId, name: "Haho Athlete" } as Awaited<ReturnType<typeof getChildById>>);
+    mockedFindLatestConsent.mockResolvedValue(null);
     mockedGetAthleteIqCheckInSnapshot.mockResolvedValue(null);
     mockedGetHabitRecordByAthleteIdAndDate.mockResolvedValue(null);
     mockedUpsertAthleteIqCheckInSnapshot.mockResolvedValue({ id: "check-in-1" } as Awaited<ReturnType<typeof upsertAthleteIqCheckInSnapshot>>);
@@ -302,6 +309,62 @@ describe("shared daily state bridge", () => {
       product: "athlete-iq",
       user: athleteUser()
     })).rejects.toMatchObject(new SharedDailyStateError("PRODUCT_ACCESS_DENIED", "athlete-iq access is not enabled"));
+  });
+
+  it("filters Athlete IQ trainer reads when daily-state consent is missing", async () => {
+    mockedGetAthleteIqCheckInSnapshot.mockResolvedValue({
+      athleteId,
+      auditHistory: [],
+      localDate: "2026-06-27",
+      missingFields: [],
+      mode: "lifestyle",
+      sourceLabels: {},
+      submittedAt: "2026-06-27T06:00:00.000Z",
+      timezone: "Europe/Budapest",
+      updatedAt: "2026-06-27T06:00:00.000Z",
+      values: {
+        fatigue: { rawValue: 2, normalizedValue: 10, sourceLabel: "user_input" },
+        mood: { rawValue: 9, normalizedValue: 90, sourceLabel: "user_input" },
+        pain: { rawValue: 1, normalizedValue: 0, sourceLabel: "user_input" },
+        sleepQuality: { rawValue: 8, normalizedValue: 80, sourceLabel: "user_input" }
+      }
+    } as Awaited<ReturnType<typeof getAthleteIqCheckInSnapshot>>);
+    mockedGetHabitRecordByAthleteIdAndDate.mockResolvedValue({
+      _id: "habit-1",
+      athleteId,
+      createdAt: "2026-06-27T06:00:00.000Z",
+      date: "2026-06-27",
+      statuses: {
+        hydration: true,
+        mobility: true,
+        nutrition: true,
+        recoverySession: true,
+        sleepBeforeMidnight: true,
+        tacticalLearning: true
+      },
+      updatedAt: "2026-06-27T06:00:00.000Z"
+    });
+
+    const projection = await getSharedDailyState({
+      athleteId,
+      localDate: "2026-06-27",
+      product: "athlete-iq",
+      timezone: "Europe/Budapest",
+      user: athleteUser({
+        athleteId: "coach-own-profile",
+        email: "coach@example.com",
+        primaryRole: "trainer",
+        roles: ["trainer"]
+      })
+    });
+
+    expect(projection.sharingState).toBe("not_shared");
+    expect(projection.checkIn).toEqual({ energy: null, mood: null, sleep: null, soreness: null });
+    expect(projection.habits).toEqual({ completed: [], recorded: false, total: 6 });
+    expect(projection.consentDecisions).toEqual([
+      { allowed: false, category: "daily_check_in", projection: "none", reason: "missing" },
+      { allowed: false, category: "habit_summary", projection: "none", reason: "missing" }
+    ]);
   });
 });
 

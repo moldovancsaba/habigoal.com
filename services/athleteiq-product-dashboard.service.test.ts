@@ -6,6 +6,7 @@ import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.r
 import { listPainAlertsByAthlete } from "@/repositories/athleteiq-pain-safety.repository";
 import { listCoachActionsByDate } from "@/repositories/coach-actions.repository";
 import { listChildrenWithMetrics, type ChildProfile } from "@/repositories/child.repository";
+import { findLatestConsent } from "@/repositories/consent.repository";
 import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
 import { listTeams } from "@/repositories/team.repository";
 import { getAthleteIqProductDashboardProjection } from "@/services/athleteiq-product-dashboard.service";
@@ -41,6 +42,10 @@ vi.mock("@/repositories/child.repository", () => ({
   listChildrenWithMetrics: vi.fn()
 }));
 
+vi.mock("@/repositories/consent.repository", () => ({
+  findLatestConsent: vi.fn()
+}));
+
 vi.mock("@/repositories/habit-records.repository", () => ({
   getHabitRecordByAthleteIdAndDate: vi.fn()
 }));
@@ -55,6 +60,7 @@ const mockedGetDailyPlanByDate = vi.mocked(getDailyPlanByDate);
 const mockedGetLatestDailyIqSnapshot = vi.mocked(getLatestDailyIqSnapshot);
 const mockedGetAthleteIqCheckInSnapshot = vi.mocked(getAthleteIqCheckInSnapshot);
 const mockedListPainAlertsByAthlete = vi.mocked(listPainAlertsByAthlete);
+const mockedFindLatestConsent = vi.mocked(findLatestConsent);
 const mockedGetHabitRecordByAthleteIdAndDate = vi.mocked(getHabitRecordByAthleteIdAndDate);
 const mockedListCoachActionsByDate = vi.mocked(listCoachActionsByDate);
 const mockedListChildrenWithMetrics = vi.mocked(listChildrenWithMetrics);
@@ -70,6 +76,7 @@ describe("Athlete IQ dashboard access scope", () => {
     mockedListCoachActionsByDate.mockResolvedValue([]);
     mockedGetLatestDailyIqSnapshot.mockResolvedValue(null);
     mockedGetAthleteIqCheckInSnapshot.mockResolvedValue(null);
+    mockedFindLatestConsent.mockResolvedValue(activeDailyCheckInConsent());
     mockedGetDailyPlanByDate.mockResolvedValue(null);
     mockedGetHabitRecordByAthleteIdAndDate.mockResolvedValue(null);
     mockedListPainAlertsByAthlete.mockResolvedValue([]);
@@ -192,6 +199,59 @@ describe("Athlete IQ dashboard access scope", () => {
     expect(projection.athletes[0].habigoalDaily.status).toBe("balanced");
     expect(projection.athletes[0].readiness).not.toBeNull();
     expect(projection.missingData).not.toContain("dailyStatus");
+  });
+
+  it("does not expose Habigoal daily source details to trainer dashboards without consent", async () => {
+    mockedFindLatestConsent.mockResolvedValue(null);
+    mockedGetAuthUser.mockResolvedValue(trainerUser("coach@example.com"));
+    mockedResolveAccessibleAthleteIds.mockResolvedValue(["athlete-1"]);
+    mockedListChildrenWithMetrics.mockResolvedValue([athlete("athlete-1", "Assigned Athlete")]);
+    mockedListTeams.mockResolvedValue([team("team-1", ["coach@example.com"], ["athlete-1"])]);
+    mockedGetAthleteIqCheckInSnapshot.mockResolvedValue({
+      athleteId: "athlete-1",
+      auditHistory: [],
+      localDate: "2026-06-27",
+      missingFields: [],
+      mode: "lifestyle",
+      sourceLabels: {},
+      submittedAt: "2026-06-27T08:00:00.000Z",
+      timezone: "Europe/Budapest",
+      updatedAt: "2026-06-27T08:00:00.000Z",
+      values: {
+        fatigue: { rawValue: 1, normalizedValue: 0, sourceLabel: "user_input" },
+        mood: { rawValue: 9, normalizedValue: 90, sourceLabel: "user_input" },
+        pain: { rawValue: 1, normalizedValue: 0, sourceLabel: "user_input" },
+        sleepQuality: { rawValue: 9, normalizedValue: 90, sourceLabel: "user_input" }
+      }
+    } as Awaited<ReturnType<typeof getAthleteIqCheckInSnapshot>>);
+    mockedGetHabitRecordByAthleteIdAndDate.mockResolvedValue({
+      _id: "habit-1",
+      athleteId: "athlete-1",
+      createdAt: "2026-06-27T08:00:00.000Z",
+      date: "2026-06-27",
+      statuses: {
+        hydration: true,
+        mobility: true,
+        nutrition: true,
+        recoverySession: true,
+        sleepBeforeMidnight: true,
+        tacticalLearning: true
+      },
+      updatedAt: "2026-06-27T08:00:00.000Z"
+    });
+
+    const projection = await getAthleteIqProductDashboardProjection({ localDate: "2026-06-27" });
+
+    expect(projection.athletes[0].habigoalDaily).toMatchObject({
+      completionState: "partial",
+      habitCompletion: "0/6",
+      sharingState: "not_shared",
+      status: null
+    });
+    expect(projection.athletes[0].habigoalDaily.consentDecisions).toEqual([
+      { allowed: false, category: "daily_check_in", projection: "none", reason: "missing" },
+      { allowed: false, category: "habit_summary", projection: "none", reason: "missing" }
+    ]);
   });
 
   it("keeps Athlete IQ in athlete persona when the active session role is athlete", async () => {
@@ -318,4 +378,21 @@ function coachAction(athleteKey: string): CoachActionRecord {
     createdAt: "2026-06-27T08:00:00.000Z",
     updatedAt: "2026-06-27T08:00:00.000Z"
   };
+}
+
+function activeDailyCheckInConsent() {
+  return {
+    athleteId: "athlete-1",
+    consentedAt: "2026-07-01T00:00:00.000Z",
+    consentId: "consent-1",
+    consentVersion: "1.0.0",
+    createdAt: "2026-07-01T00:00:00.000Z",
+    guardianRequired: false,
+    method: "web_form",
+    organisationId: "default",
+    privacyNoticeVersion: "2026-06-01",
+    purpose: "daily_check_in",
+    status: "active",
+    updatedAt: "2026-07-01T00:00:00.000Z"
+  } as Awaited<ReturnType<typeof findLatestConsent>>;
 }

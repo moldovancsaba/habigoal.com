@@ -16,9 +16,10 @@ export async function GET(request: Request) {
     const includeMetrics = searchParams.get("metrics") === "true";
     const includeDeleted = searchParams.get("deleted") === "true";
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
 
     if (includeDeleted) {
-      if (authUser?.primaryRole === "athlete") {
+      if (authUser.primaryRole === "athlete") {
         return NextResponse.json([]);
       }
       return NextResponse.json(await listDeletedChildren());
@@ -29,9 +30,6 @@ export async function GET(request: Request) {
     if (children.length === 0) {
       await syncChildrenFromAssessments();
       children = includeMetrics ? await listChildrenWithMetrics() : await listChildren();
-    }
-    if (!authUser) {
-      return NextResponse.json(children);
     }
 
     const allowedIds = await resolveAccessibleAthleteIds(authUser);

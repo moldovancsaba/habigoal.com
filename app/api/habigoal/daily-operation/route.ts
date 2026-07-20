@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canOpenProductSurface, getAuthUser } from "@/lib/access";
+import { requireHabigoalApiUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
 import { createHabigoalCorrelationId, habigoalJsonError, logHabigoalEvent } from "@/lib/habigoal-api";
 import { getHabigoalTodayProjection, type HabigoalHabitKey } from "@/services/habigoal-product.service";
@@ -21,14 +21,10 @@ export async function POST(request: Request) {
   const correlationId = createHabigoalCorrelationId();
   const startedAt = Date.now();
   const operationId = `hbg-op-${crypto.randomUUID()}`;
-  const user = await getAuthUser();
+  const user = await requireHabigoalApiUser();
 
   if (!user) {
     return habigoalJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true });
-  }
-
-  if (!canOpenProductSurface(user, "habigoal")) {
-    return habigoalJsonError("PRODUCT_ACCESS_DENIED", 403, correlationId, { retryable: false });
   }
 
   logHabigoalEvent("habigoal.daily_operation.start", {

@@ -3192,5 +3192,65 @@
         "description": "Erlaubt das Hochladen von Fotos/Videos für Haltungs- und Sprintanalyse."
       }
     }
+  },
+  "BusinessContracts": {
+    "metadata": {
+      "title": "Verträge zur Geschäftslogik",
+      "description": "Öffentlicher Partnervertrag für den Habigoal Habit Builder, den Athlete IQ Athletenbereich und den Athlete IQ Trainerbereich."
+    },
+    "badge": {
+      "partnerContract": "Partnervertrag"
+    },
+    "title": "Geschäftslogik und Persona-Verträge",
+    "intro": "Diese Seite definiert, wie die drei öffentlichen Personas nebeneinander funktionieren, was jede Persona tun darf, wofür sie verantwortlich ist, wie Daten fließen, wie Benutzeroberflächen getrennt bleiben, wo Datensätze gespeichert werden und welche Ergebnisse das System liefern muss.",
+    "links": {
+      "appSelector": "App-Auswahl",
+      "privacyPolicy": "Datenschutzerklärung"
+    },
+    "trainerSupport": {
+      "eyebrow": "Trainermodell",
+      "title": "Wie Trainer Athleten verwalten und unterstützen",
+      "description": "Der Trainerablauf ist ein Athlete IQ Ablauf. Er nutzt zugewiesene Athletendaten und auditierbare Aktionen; er betritt oder kopiert nicht die Habigoal Habit-Builder-Oberfläche."
+    },
+    "data": {
+      "eyebrow": "Datenvertrag",
+      "title": "Wie Daten geteilt und verteilt werden"
+    },
+    "storage": {
+      "eyebrow": "Speichervertrag",
+      "title": "Wo das System Datensätze speichert"
+    },
+    "ui": {
+      "eyebrow": "UI-Grenze",
+      "title": "Wie die Benutzeroberflächen getrennt bleiben",
+      "description": "Routen, Shells, Funktionsregister und API-Autorisierung erzwingen gemeinsam die Produkttrennung."
+    },
+    "api": {
+      "eyebrow": "API-Grenze",
+      "title": "Welche Verträge den Zugriff erzwingen",
+      "description": "Jedes Lesen oder Schreiben eines Produkts muss den richtigen berechtigungs- und rollenbewussten API-Vertrag durchlaufen."
+    },
+    "outcomes": {
+      "eyebrow": "Ergebnisse",
+      "title": "Was das System erzeugt",
+      "description": "Die Produkte teilen eine kompatible Datengrundlage, erzeugen aber unterschiedliche Ergebnisse für jede Persona."
+    },
+    "operations": {
+      "eyebrow": "Betrieb",
+      "title": "Sicherheit, Barrierefreiheit, Wiederholungen und Rollback",
+      "description": "Das Betriebsverhalten schützt Nutzer, Partner und Datenintegrität, wenn Module fehlschlagen oder Daten unvollständig sind."
+    },
+    "sources": {
+      "title": "Verwendete Quellverträge",
+      "description": "Diese öffentliche Seite wird aus den folgenden Repository-Verträgen abgeleitet. Die Online-Seite ist die partnerorientierte Zusammenfassung; die Quelldateien bleiben die technischen Implementierungsverträge."
+    },
+    "subsections": {
+      "rights": "Rechte",
+      "responsibilities": "Verantwortlichkeiten",
+      "dataWrites": "Datenschreibvorgänge",
+      "dataReads": "Datenlesevorgänge",
+      "uiSeparation": "UI-Trennung",
+      "outcomes": "Ergebnisse"
+    }
   }
 }

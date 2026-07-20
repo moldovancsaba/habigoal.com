@@ -148,10 +148,10 @@ export async function POST(request: NextRequest) {
   // registration provisioning (upsertPersonaLoginUser → createSelfRegisteredEntitlements)
   // grants the Habigoal entitlement; AIQ linkage is an internal, hidden concern,
   // never a precondition for the consumer.
-  // In this product a trainer is also an athlete (the seed model grants both
-  // roles), so a trainer can manage their squad AND record their own daily data.
-  // Athletes get just the athlete role.
-  const roles: Array<"trainer" | "athlete"> = persona === "trainer" ? ["trainer", "athlete"] : ["athlete"];
+  // A selected Habigoal trainer persona is a personal habitbuilder entry, not a
+  // professional role grant. The repository can merge professional roles only
+  // when stored Athlete IQ entitlement already proves a trusted source.
+  const roles: Array<"trainer" | "athlete"> = productSurface === "athlete-iq" && persona === "trainer" ? ["trainer", "athlete"] : ["athlete"];
   const localUser = await upsertPersonaLoginUser({
     email: identity.email,
     name: identity.name,

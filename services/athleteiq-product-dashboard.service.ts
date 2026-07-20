@@ -6,6 +6,7 @@ import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.r
 import { listPainAlertsByAthlete } from "@/repositories/athleteiq-pain-safety.repository";
 import { listTeams } from "@/repositories/team.repository";
 import { getAuthUser, resolveAccessibleAthleteIds, type AuthUser } from "@/lib/access";
+import { canProjectCategory, resolveConsentDecisions, type ConsentDecision } from "@/lib/data-sharing-consent";
 import { buildHabigoalDailyStatus, type HabigoalDailyStatus } from "@/lib/habigoal-status";
 import { getHabitRecordByAthleteIdAndDate } from "@/repositories/habit-records.repository";
 import type { CoachActionRecord } from "@/types/coach-action";
@@ -31,7 +32,9 @@ export type AthleteIqDashboardAthlete = {
   hasDailyPlan: boolean;
   habigoalDaily: {
     completionState: "missing" | "partial" | "complete";
+    consentDecisions: ConsentDecision[];
     habitCompletion: string;
+    sharingState: "allowed" | "partial" | "not_shared";
     source: "habigoal" | "athlete_iq" | "mixed";
     status: HabigoalDailyStatus | null;
   };
@@ -139,7 +142,7 @@ export async function getAthleteIqProductDashboardProjection(input: {
         getLatestDailyIqSnapshot({ athleteId, localDate }),
         getDailyPlanByDate(athleteId, localDate),
         listPainAlertsByAthlete(athleteId),
-        getHabigoalProfessionalDailySource(athleteId, localDate)
+        getHabigoalProfessionalDailySource(athleteId, localDate, user)
       ]);
       const activePainAlerts = painAlerts.filter((alert) => alert.state !== "resolved" && alert.state !== "dismissed");
       const readiness = scoreFromDailyIq(dailyIq?.dailyIqScore) ?? habigoalDaily.score ?? scoreFromFivePoint(athlete.latestReadiness);
@@ -172,7 +175,9 @@ export async function getAthleteIqProductDashboardProjection(input: {
         hasDailyPlan: Boolean(dailyPlan),
         habigoalDaily: {
           completionState: habigoalDaily.completionState,
+          consentDecisions: habigoalDaily.consentDecisions,
           habitCompletion: `${habigoalDaily.completedHabits}/${habigoalDaily.totalHabits}`,
+          sharingState: habigoalDaily.sharingState,
           source: dailyIq && habigoalDaily.completionState !== "missing" ? "mixed" : habigoalDaily.completionState === "missing" ? "athlete_iq" : "habigoal",
           status: habigoalDaily.status
         },
@@ -317,7 +322,7 @@ function collectMissingAthleteFields(
   return missing;
 }
 
-async function getHabigoalProfessionalDailySource(athleteId: string, localDate: string) {
+async function getHabigoalProfessionalDailySource(athleteId: string, localDate: string, user: AuthUser) {
   const [lifestyleCheckIn, performanceCheckIn, habitRecord] = await Promise.all([
     getAthleteIqCheckInSnapshot(athleteId, localDate, "lifestyle"),
     getAthleteIqCheckInSnapshot(athleteId, localDate, "performance"),
@@ -339,12 +344,34 @@ async function getHabigoalProfessionalDailySource(athleteId: string, localDate: 
     totalHabitCount: totalHabits,
     values
   });
+  const consentDecisions = await resolveConsentDecisions({
+    athleteId,
+    categories: ["daily_check_in", "habit_summary"],
+    user
+  });
+  const canReadCheckIn = canProjectCategory(consentDecisions, "daily_check_in");
+  const canReadHabits = canProjectCategory(consentDecisions, "habit_summary");
+  const exposedValues = canReadCheckIn ? values : { energy: null, soreness: null, mood: null, sleep: null };
+  const exposedCompletedHabits = canReadHabits ? completedHabits : 0;
+  const exposedTotalHabits = canReadHabits ? totalHabits : 6;
+  const exposedStatus = canReadCheckIn && canReadHabits
+    ? status
+    : buildHabigoalDailyStatus({
+        completedHabitCount: exposedCompletedHabits,
+        hasLiveCheckIn: canReadCheckIn && Boolean(checkIn),
+        hasLiveHabits: canReadHabits && Boolean(habitRecord),
+        totalHabitCount: exposedTotalHabits,
+        values: exposedValues
+      });
+  const allowedCount = [canReadCheckIn, canReadHabits].filter(Boolean).length;
   return {
-    completedHabits,
-    completionState: !checkIn && !habitRecord ? "missing" as const : status.score === null ? "partial" as const : "complete" as const,
-    score: status.score,
-    status: status.score === null ? null : status.status,
-    totalHabits
+    completedHabits: exposedCompletedHabits,
+    completionState: !checkIn && !habitRecord ? "missing" as const : exposedStatus.score === null ? "partial" as const : "complete" as const,
+    consentDecisions,
+    score: exposedStatus.score,
+    sharingState: allowedCount === 0 ? "not_shared" as const : allowedCount === 2 ? "allowed" as const : "partial" as const,
+    status: exposedStatus.score === null ? null : exposedStatus.status,
+    totalHabits: exposedTotalHabits
   };
 }
 

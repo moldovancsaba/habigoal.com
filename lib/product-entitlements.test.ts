@@ -36,7 +36,7 @@ describe("product entitlement contract", () => {
     expect(entitlements.athleteIq.enabled).toBe(false);
   });
 
-  it("grants Athlete IQ athlete access when the athlete registers through the AIQ surface", () => {
+  it("does not grant Athlete IQ athlete access from surface selection alone", () => {
     const entitlements = resolvePersonaLoginEntitlements({
       existingRoles: [],
       requestedRoles: ["athlete"],
@@ -45,12 +45,12 @@ describe("product entitlement contract", () => {
     });
 
     expect(entitlements.habigoal.enabled).toBe(true);
-    expect(entitlements.habigoal.reason).toBe("aiq_member");
-    expect(entitlements.athleteIq.enabled).toBe(true);
-    expect(entitlements.athleteIq.reason).toBe("pro_athlete_membership");
+    expect(entitlements.habigoal.reason).toBe("self_registered");
+    expect(entitlements.athleteIq.enabled).toBe(false);
+    expect(entitlements.athleteIq.reason).toBeUndefined();
   });
 
-  it("provisions Athlete IQ access when the pseudo-login persona is trainer", () => {
+  it("does not grant Athlete IQ access when the pseudo-login persona is trainer", () => {
     const entitlements = resolvePersonaLoginEntitlements({
       existingRoles: [],
       requestedRoles: ["trainer"],
@@ -59,9 +59,9 @@ describe("product entitlement contract", () => {
     });
 
     expect(entitlements.habigoal.enabled).toBe(true);
-    expect(entitlements.habigoal.reason).toBe("aiq_member");
-    expect(entitlements.athleteIq.enabled).toBe(true);
-    expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
+    expect(entitlements.habigoal.reason).toBe("self_registered");
+    expect(entitlements.athleteIq.enabled).toBe(false);
+    expect(entitlements.athleteIq.reason).toBeUndefined();
   });
 
   it("keeps Habigoal trainer-persona login independent from Athlete IQ for new users", () => {
@@ -77,7 +77,7 @@ describe("product entitlement contract", () => {
     expect(entitlements.athleteIq.enabled).toBe(false);
   });
 
-  it("upgrades an existing Habigoal-only account when the user selects trainer persona", () => {
+  it("does not upgrade an existing Habigoal-only account when the user selects trainer persona", () => {
     const entitlements = resolvePersonaLoginEntitlements({
       existingProductEntitlements: createSelfRegisteredEntitlements("2026-06-27T08:00:00.000Z"),
       existingRoles: ["athlete"],
@@ -87,10 +87,9 @@ describe("product entitlement contract", () => {
     });
 
     expect(entitlements.habigoal.enabled).toBe(true);
-    expect(entitlements.habigoal.reason).toBe("aiq_member");
-    expect(entitlements.athleteIq.enabled).toBe(true);
-    expect(entitlements.athleteIq.grantedAt).toBe("2026-06-27T09:00:00.000Z");
-    expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
+    expect(entitlements.habigoal.reason).toBe("self_registered");
+    expect(entitlements.athleteIq.enabled).toBe(false);
+    expect(entitlements.athleteIq.reason).toBeUndefined();
   });
 
   it("does not upgrade an existing Habigoal account when trainer persona stays on Habigoal", () => {
@@ -105,6 +104,24 @@ describe("product entitlement contract", () => {
     expect(entitlements.habigoal.enabled).toBe(true);
     expect(entitlements.habigoal.reason).toBe("self_registered");
     expect(entitlements.athleteIq.enabled).toBe(false);
+  });
+
+  it("preserves explicit Athlete IQ grants from trusted provisioning sources", () => {
+    const entitlements = resolvePersonaLoginEntitlements({
+      existingProductEntitlements: {
+        habigoal: { enabled: true, grantedAt: "2026-06-27T08:00:00.000Z", reason: "aiq_member" },
+        athleteIq: { enabled: true, grantedAt: "2026-06-27T08:00:00.000Z", reason: "trainer_assignment" }
+      },
+      existingRoles: ["athlete"],
+      requestedRoles: ["trainer"],
+      requestedSurface: "athlete-iq",
+      now: "2026-06-27T09:00:00.000Z"
+    });
+
+    expect(entitlements.habigoal.reason).toBe("aiq_member");
+    expect(entitlements.athleteIq.enabled).toBe(true);
+    expect(entitlements.athleteIq.grantedAt).toBe("2026-06-27T08:00:00.000Z");
+    expect(entitlements.athleteIq.reason).toBe("trainer_assignment");
   });
 });
 

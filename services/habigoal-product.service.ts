@@ -27,8 +27,15 @@ export type HabigoalTodayProjection = {
   score: number | null;
   source: "atlas" | "authenticated-empty";
   status: HabigoalDailyStatus;
+  surface: "habigoal";
   timezone: string;
   values: HabigoalMetricValues;
+  version: "habigoal-today-v1";
+  shareableSummary: {
+    categories: ["habit_summary", "daily_check_in"];
+    projection: "summary";
+    rule: "professional_entitlement_assignment_and_consent_required";
+  };
 };
 
 const DEFAULT_TIMEZONE = "Europe/Budapest";
@@ -104,8 +111,11 @@ export async function getHabigoalTodayProjection(input: {
     hasLiveHabits: Boolean(habitRecord),
     localDate,
     source: checkIn || habitRecord ? "atlas" : "authenticated-empty",
+    surface: "habigoal",
     timezone,
     values,
+    version: "habigoal-today-v1",
+    shareableSummary: buildShareableSummary(),
     ...dailyStatus
   };
 
@@ -223,13 +233,24 @@ function emptyProjection(input: {
     score: null,
     source: "authenticated-empty",
     status: "needs_input",
+    surface: "habigoal",
     timezone: input.timezone,
     values: {
       energy: null,
       soreness: null,
       mood: null,
       sleep: null
-    }
+    },
+    version: "habigoal-today-v1",
+    shareableSummary: buildShareableSummary()
+  };
+}
+
+function buildShareableSummary(): HabigoalTodayProjection["shareableSummary"] {
+  return {
+    categories: ["habit_summary", "daily_check_in"],
+    projection: "summary",
+    rule: "professional_entitlement_assignment_and_consent_required"
   };
 }
 

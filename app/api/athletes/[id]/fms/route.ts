@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
+import { athleteIqHashForLog } from "@/lib/athleteiq-api";
 import { jsonError, readJson, requireRole } from "@/lib/api";
 import { getFmsHistory, submitFmsScreen } from "@/services/athleteiq-fms.service";
 
@@ -26,7 +27,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const to = searchParams.get("to")?.trim() || undefined;
 
     const screens = await getFmsHistory({ athleteId: id, from, to });
-    console.info(JSON.stringify({ event: "injury.fms.viewed", athleteId: id, count: screens.length }));
+    console.info(JSON.stringify({ event: "injury.fms.viewed", athleteIdHash: athleteIqHashForLog(id), count: screens.length }));
     return NextResponse.json({ screens });
   } catch (error) {
     return jsonError((error as Error).message);
@@ -63,7 +64,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
     if (errors.length || !screen) return jsonError(errors.join("; ") || "Invalid FMS submission", 400, "VALIDATION_ERROR");
 
-    console.info(JSON.stringify({ event: "injury.fms.submitted", athleteId: id, composite: screen.composite }));
+    console.info(JSON.stringify({ event: "injury.fms.submitted", athleteIdHash: athleteIqHashForLog(id), composite: screen.composite }));
     return NextResponse.json({ screen });
   } catch (error) {
     return jsonError((error as Error).message);

@@ -44,6 +44,43 @@ describe("business logic boundary regression guard", () => {
     expect(source).not.toContain(".json()");
     expect(source).not.toContain("CanonicalMetric");
   });
+
+  it("does not log raw athlete identifiers from API JSON telemetry", () => {
+    const files = routeFiles("app/api");
+    const offenders = files.filter((file) =>
+      /console\.(info|warn|error)\(JSON\.stringify\([^)]*athleteId\s*:/.test(read(file))
+    );
+
+    expect(offenders).toEqual([]);
+  });
+
+  it("fails closed after resolving Athlete IQ product auth in API handlers", () => {
+    const offenders = routeFiles("app/api").flatMap((file) => {
+      const source = read(file);
+      const matches = Array.from(source.matchAll(/const\s+(\w+)\s*=\s*await\s+getAuthUser\(\{\s*productSurface:\s*"athlete-iq"\s*\}\);/g));
+      return matches
+        .filter((match) => !source.slice(match.index, match.index + 500).includes(`if (!${match[1]}`))
+        .map((match) => `${file}:${match[1]}`);
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
+  it("executes API registry product-surface contracts from the role guard", () => {
+    const source = read("lib/api.ts");
+
+    expect(source).toContain("resolveApiRouteContract");
+    expect(source).toContain("resolveRequiredProductSurface");
+    expect(source).toContain("PRODUCT_ACCESS_DENIED");
+  });
+
+  it("does not self-grant Athlete IQ entitlements from persona login", () => {
+    const source = read("lib/product-entitlements.ts");
+
+    expect(source).not.toContain("grantRequestedProfessionalEntitlement");
+    expect(source).not.toContain("createAthleteIqAthleteEntitlements");
+    expect(source).not.toContain('requestedSurface === "athlete-iq" && requestedRoles.includes("athlete")');
+  });
 });
 
 function routeFiles(relativeDir: string): string[] {

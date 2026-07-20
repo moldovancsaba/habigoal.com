@@ -12,7 +12,8 @@ export async function GET(request: Request) {
 
   const teamId = new URL(request.url).searchParams.get("teamId");
   const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-  const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
+  if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+  const allowedIds = await resolveAccessibleAthleteIds(authUser);
 
   let athleteIds = (await listChildrenWithMetrics())
     .filter((a) => a._id)
@@ -53,7 +54,8 @@ export async function POST(request: Request) {
   // access. The GET path already filters by accessibility; the POST must too, so
   // a coach cannot pull a team report over athletes outside their scope.
   const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-  const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
+  if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+  const allowedIds = await resolveAccessibleAthleteIds(authUser);
   const athleteIds = allowedIds === null ? requestedIds : requestedIds.filter((id) => allowedIds.includes(id));
   if (athleteIds.length === 0) {
     return jsonError("No accessible athletes in request", 403, "FORBIDDEN");

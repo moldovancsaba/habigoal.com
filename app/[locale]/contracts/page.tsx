@@ -1,7 +1,7 @@
 import { Badge, Box, Container, Group, SimpleGrid, Stack } from "@sovereignsquad/gds/client";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Paper, Text, Title } from "@/components/gds/SurfacePrimitives";
 import {
   BUSINESS_LOGIC_CONTRACT_VERSION,
@@ -19,14 +19,37 @@ import {
 } from "@/lib/business-logic-contracts";
 import { getProductColor } from "@/lib/product-ui-contracts";
 
-export const metadata: Metadata = {
-  title: "Business Logic Contracts",
-  description: "Public partner contract for Habigoal habit builder, Athlete IQ athlete workspace, and Athlete IQ trainer workspace."
+type SubsectionLabels = {
+  dataReads: string;
+  dataWrites: string;
+  outcomes: string;
+  responsibilities: string;
+  rights: string;
+  uiSeparation: string;
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "BusinessContracts.metadata" });
+
+  return {
+    title: t("title"),
+    description: t("description")
+  };
+}
 
 export default async function BusinessContractsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "BusinessContracts" });
+  const subsectionLabels: SubsectionLabels = {
+    dataReads: t("subsections.dataReads"),
+    dataWrites: t("subsections.dataWrites"),
+    outcomes: t("subsections.outcomes"),
+    responsibilities: t("subsections.responsibilities"),
+    rights: t("subsections.rights"),
+    uiSeparation: t("subsections.uiSeparation")
+  };
 
   return (
     <Box component="main" style={{ minHeight: "100vh", color: "var(--text-primary)" }}>
@@ -35,55 +58,55 @@ export default async function BusinessContractsPage({ params }: { params: Promis
           <Stack gap="md">
             <Group gap="sm" wrap="wrap">
               <Badge color={getProductColor("public", "primaryAction")} variant="light" size="lg" w="fit-content">
-                Partner contract
+                {t("badge.partnerContract")}
               </Badge>
               <Badge color={getProductColor("public", "neutral")} variant="outline" size="lg" w="fit-content">
                 {BUSINESS_LOGIC_CONTRACT_VERSION}
               </Badge>
             </Group>
-            <Title order={1}>Business logic and persona contracts</Title>
+            <Title order={1}>{t("title")}</Title>
             <Text size="lg" c="var(--text-secondary)" maw={900}>
-              This page defines how the three public personas work next to each other, what each persona can do, what each persona is responsible for, how data moves, how user interfaces stay separated, where records are stored, and what outcomes the system must produce.
+              {t("intro")}
             </Text>
             <Group gap="md" wrap="wrap">
               <Text component="a" href={`/${locale}`} fw={800} c="var(--gds-vibe-accent)" style={{ textDecoration: "none" }}>
-                App selector
+                {t("links.appSelector")}
               </Text>
               <Text component="a" href={`/${locale}/legal/privacy`} fw={800} c="var(--gds-vibe-accent)" style={{ textDecoration: "none" }}>
-                Privacy policy
+                {t("links.privacyPolicy")}
               </Text>
             </Group>
           </Stack>
 
           <SimpleGrid cols={{ base: 1, lg: 3 }} spacing="lg">
             {businessPersonaContracts.map((contract) => (
-              <PersonaContractCard key={contract.id} contract={contract} />
+              <PersonaContractCard key={contract.id} contract={contract} labels={subsectionLabels} />
             ))}
           </SimpleGrid>
 
           <ContractPanel
-            eyebrow="Trainer support model"
-            title="How trainers manage and support athletes"
-            description="The trainer workflow is an Athlete IQ workflow. It uses assigned-athlete data and auditable actions; it does not enter or copy the Habigoal habitbuilder interface."
+            eyebrow={t("trainerSupport.eyebrow")}
+            title={t("trainerSupport.title")}
+            description={t("trainerSupport.description")}
           >
             <OrderedContractList items={trainerSupportFlow} />
           </ContractPanel>
 
-          <SectionGrid eyebrow="Data contract" title="How data is shared and distributed" sections={dataSharingContract} />
-          <SectionGrid eyebrow="Storage contract" title="Where the system stores records" sections={storageContract} />
+          <SectionGrid eyebrow={t("data.eyebrow")} title={t("data.title")} sections={dataSharingContract} />
+          <SectionGrid eyebrow={t("storage.eyebrow")} title={t("storage.title")} sections={storageContract} />
 
           <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
             <ContractPanel
-              eyebrow="UI boundary"
-              title="How the user interfaces stay separated"
-              description="Routes, shells, function registries, and API authorization all enforce product separation."
+              eyebrow={t("ui.eyebrow")}
+              title={t("ui.title")}
+              description={t("ui.description")}
             >
               <ContractList items={interfaceSeparationRules} />
             </ContractPanel>
             <ContractPanel
-              eyebrow="API boundary"
-              title="Which contracts enforce access"
-              description="Every product read or write must pass through the correct entitlement and role-aware API contract."
+              eyebrow={t("api.eyebrow")}
+              title={t("api.title")}
+              description={t("api.description")}
             >
               <ContractList items={apiContract} />
             </ContractPanel>
@@ -91,16 +114,16 @@ export default async function BusinessContractsPage({ params }: { params: Promis
 
           <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
             <ContractPanel
-              eyebrow="Outcomes"
-              title="What the system produces"
-              description="The products share one compatible data foundation while producing different outputs for each persona."
+              eyebrow={t("outcomes.eyebrow")}
+              title={t("outcomes.title")}
+              description={t("outcomes.description")}
             >
               <ContractList items={outcomeContract} />
             </ContractPanel>
             <ContractPanel
-              eyebrow="Operations"
-              title="Safety, accessibility, retries, and rollback"
-              description="Operational behavior protects users, partners, and data integrity when modules fail or data is incomplete."
+              eyebrow={t("operations.eyebrow")}
+              title={t("operations.title")}
+              description={t("operations.description")}
             >
               <ContractList items={operationalContract} />
             </ContractPanel>
@@ -108,9 +131,9 @@ export default async function BusinessContractsPage({ params }: { params: Promis
 
           <Paper component="section" className="glass-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
             <Stack gap="md">
-              <Title order={2}>Source contracts used</Title>
+              <Title order={2}>{t("sources.title")}</Title>
               <Text c="var(--text-secondary)">
-                This public page is derived from the repository contracts below. The online page is the partner-facing summary; the source files remain the engineering implementation contracts.
+                {t("sources.description")}
               </Text>
               <SimpleGrid cols={{ base: 1, md: 2 }} spacing="sm">
                 {businessContractSourceDocuments.map((source) => (
@@ -127,7 +150,7 @@ export default async function BusinessContractsPage({ params }: { params: Promis
   );
 }
 
-function PersonaContractCard({ contract }: { contract: BusinessPersonaContract }) {
+function PersonaContractCard({ contract, labels }: { contract: BusinessPersonaContract; labels: SubsectionLabels }) {
   return (
     <Paper component="article" className="glass-panel surface-outline" withBorder radius="md" p={{ base: "lg", md: "xl" }}>
       <Stack gap="md">
@@ -142,12 +165,12 @@ function PersonaContractCard({ contract }: { contract: BusinessPersonaContract }
         <Text>{contract.purpose}</Text>
         <Text size="sm" c="var(--text-secondary)">{contract.audience}</Text>
 
-        <ContractSubsection title="Rights" items={contract.rights} />
-        <ContractSubsection title="Responsibilities" items={contract.responsibilities} />
-        <ContractSubsection title="Data writes" items={contract.dataWrites} />
-        <ContractSubsection title="Data reads" items={contract.dataReads} />
-        <ContractSubsection title="UI separation" items={contract.uiBoundary} />
-        <ContractSubsection title="Outcomes" items={contract.outcomes} />
+        <ContractSubsection title={labels.rights} items={contract.rights} />
+        <ContractSubsection title={labels.responsibilities} items={contract.responsibilities} />
+        <ContractSubsection title={labels.dataWrites} items={contract.dataWrites} />
+        <ContractSubsection title={labels.dataReads} items={contract.dataReads} />
+        <ContractSubsection title={labels.uiSeparation} items={contract.uiBoundary} />
+        <ContractSubsection title={labels.outcomes} items={contract.outcomes} />
       </Stack>
     </Paper>
   );

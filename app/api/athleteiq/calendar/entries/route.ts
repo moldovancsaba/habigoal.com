@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_CALENDAR_CAPABILITY_KEY, validateDayEntryInput } from "@/lib/athleteiq-calendar";
 import { createCalendarEntry } from "@/services/athleteiq-calendar.service";
 import type { AthleteIqDayEntryType, AthleteIqDayEntryVisibility } from "@/types/athleteiq-calendar";
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       startAt: input.startAt,
       endAt: input.endAt
     });
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CALENDAR_CAPABILITY_KEY, event: "athleteiq.calendar.entry_created", correlationId, athleteId: entry.athleteId, entryId: entry.id, latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CALENDAR_CAPABILITY_KEY, event: "athleteiq.calendar.entry_created", correlationId, athleteIdHash: athleteIqHashForLog(entry.athleteId), entryId: entry.id, latencyMs: Date.now() - startedAt }));
     return NextResponse.json({ entry, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });

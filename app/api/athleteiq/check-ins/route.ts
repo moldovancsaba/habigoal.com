@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
 import { logAuditEvent } from "@/lib/audit";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_CHECK_IN_CAPABILITY_KEY, buildAthleteIqCheckInSnapshot } from "@/lib/athleteiq-check-in";
 import { upsertAthleteIqCheckInWithSharedDailyMirror } from "@/services/athleteiq-check-in-persistence.service";
 import { runAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
           mode: snapshot.mode
         }
       });
-      console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CHECK_IN_CAPABILITY_KEY, event: "athleteiq.checkin.high_pain_reported", correlationId, athleteId: snapshot.athleteId, localDate: snapshot.localDate }));
+      console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CHECK_IN_CAPABILITY_KEY, event: "athleteiq.checkin.high_pain_reported", correlationId, athleteIdHash: athleteIqHashForLog(snapshot.athleteId), localDate: snapshot.localDate }));
     }
     console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_CHECK_IN_CAPABILITY_KEY, event: "athleteiq.checkin.submitted", correlationId, mode: snapshot.mode, localDate: snapshot.localDate }));
 

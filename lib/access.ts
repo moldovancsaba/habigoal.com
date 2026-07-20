@@ -60,6 +60,15 @@ export type AuthUserOptions = {
   productSurface?: ProductSurfaceId;
 };
 
+export type ProductApiPersona = "habigoal_user" | "athlete" | "trainer" | "admin";
+
+export type ProductApiPrincipal = AuthUser & {
+  persona: ProductApiPersona;
+  productSurface: ProductSurfaceId | "shared";
+};
+
+const TRAINER_API_ROLES = new Set<AppRole>(["admin", "trainer", "performance_coach", "physio", "analyst", "club_management"]);
+
 function authBypassAllowed() {
   return !env.habigoalEnforceAuth && process.env.NODE_ENV !== "production" && process.env.VERCEL_ENV !== "production";
 }
@@ -136,6 +145,30 @@ export async function resolveAccessibleAthleteIds(user: AuthUser): Promise<strin
   return Array.from(new Set(teams.flatMap((team) => team.athleteIds || [])));
 }
 
+export async function resolveAccessibleTeamIds(user: AuthUser): Promise<string[] | null> {
+  if (user.primaryRole === "admin" || user.primaryRole === "club_management" || user.primaryRole === "analyst") {
+    return null;
+  }
+
+  if (user.primaryRole === "athlete") {
+    return user.athleteId ? getAthleteTeamIds(user.athleteId) : [];
+  }
+
+  if (user.primaryRole === "parent") {
+    const athleteIds = user.parentAthleteIds ?? [];
+    const teamIdsByAthlete = await Promise.all(athleteIds.map((athleteId) => getAthleteTeamIds(athleteId)));
+    return Array.from(new Set(teamIdsByAthlete.flat()));
+  }
+
+  const [emailTeams, assignedTeams] = await Promise.all([
+    listTeamsByTrainerEmail(user.email),
+    Promise.all(user.teamIds.map((teamId) => getTeamById(teamId)))
+  ]);
+  return dedupeTeams([...emailTeams, ...assignedTeams.filter((team): team is Team => Boolean(team))])
+    .map((team) => team._id)
+    .filter((teamId): teamId is string => Boolean(teamId));
+}
+
 function dedupeTeams(teams: Team[]) {
   const seen = new Set<string>();
   return teams.filter((team) => {
@@ -157,6 +190,30 @@ export function canOpenProductSurface(user: { productEntitlements?: ProductEntit
   return hasProductEntitlement(resolveProductEntitlements(user), surface);
 }
 
+export async function requireHabigoalApiUser(): Promise<ProductApiPrincipal | null> {
+  const user = await getAuthUser({ productSurface: "habigoal" });
+  if (!user) return null;
+  return { ...user, persona: "habigoal_user", productSurface: "habigoal" };
+}
+
+export async function requireAthleteIqApiUser(): Promise<ProductApiPrincipal | null> {
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
+  if (!user) return null;
+  return { ...user, persona: user.primaryRole === "athlete" ? "athlete" : resolveTrainerPersona(user), productSurface: "athlete-iq" };
+}
+
+export async function requireAthleteIqTrainerApiUser(): Promise<ProductApiPrincipal | null> {
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
+  if (!user || !TRAINER_API_ROLES.has(user.primaryRole)) return null;
+  return { ...user, persona: resolveTrainerPersona(user), productSurface: "athlete-iq" };
+}
+
+export async function requireAdminApiUser(): Promise<ProductApiPrincipal | null> {
+  const user = await getAuthUser();
+  if (!user || user.primaryRole !== "admin") return null;
+  return { ...user, persona: "admin", productSurface: "shared" };
+}
+
 export async function canAccessAthleteIqAthlete(user: AuthUser, athleteId: string): Promise<boolean> {
   if (!canOpenProductSurface(user, "athlete-iq")) return false;
   return canAccessAthlete(user, athleteId);
@@ -170,4 +227,8 @@ export async function canAccessHabigoalAthlete(user: AuthUser, athleteId: string
 export async function getAthleteTeamIds(athleteId: string): Promise<string[]> {
   const teams = await listTeamsByAthleteId(athleteId);
   return teams.map((team) => team._id!).filter(Boolean);
+}
+
+function resolveTrainerPersona(user: AuthUser): ProductApiPersona {
+  return user.primaryRole === "admin" ? "admin" : "trainer";
 }

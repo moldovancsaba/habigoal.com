@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_READINESS_ROUTE_CAPABILITY_KEY, validateReadinessRouteRequest } from "@/lib/athleteiq-readiness-route";
 import { recalculateReadinessRoute } from "@/services/athleteiq-readiness-route.service";
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     if (!(await canAccessAthlete(user, input.athleteId))) return athleteIqJsonError("FORBIDDEN", 403, correlationId);
 
     const snapshot = await recalculateReadinessRoute(input);
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_READINESS_ROUTE_CAPABILITY_KEY, event: "athleteiq.readiness_route.recalculated", correlationId, athleteId: input.athleteId, route: snapshot.route, latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_READINESS_ROUTE_CAPABILITY_KEY, event: "athleteiq.readiness_route.recalculated", correlationId, athleteIdHash: athleteIqHashForLog(input.athleteId), route: snapshot.route, latencyMs: Date.now() - startedAt }));
     return NextResponse.json({ snapshot, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });

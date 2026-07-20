@@ -3192,5 +3192,65 @@
         "description": "Allow uploading photos/videos for posture and sprint analysis."
       }
     }
+  },
+  "BusinessContracts": {
+    "metadata": {
+      "title": "Business Logic Contracts",
+      "description": "Public partner contract for Habigoal habit builder, Athlete IQ athlete workspace, and Athlete IQ trainer workspace."
+    },
+    "badge": {
+      "partnerContract": "Partner contract"
+    },
+    "title": "Business logic and persona contracts",
+    "intro": "This page defines how the three public personas work next to each other, what each persona can do, what each persona is responsible for, how data moves, how user interfaces stay separated, where records are stored, and what outcomes the system must produce.",
+    "links": {
+      "appSelector": "App selector",
+      "privacyPolicy": "Privacy policy"
+    },
+    "trainerSupport": {
+      "eyebrow": "Trainer support model",
+      "title": "How trainers manage and support athletes",
+      "description": "The trainer workflow is an Athlete IQ workflow. It uses assigned-athlete data and auditable actions; it does not enter or copy the Habigoal habitbuilder interface."
+    },
+    "data": {
+      "eyebrow": "Data contract",
+      "title": "How data is shared and distributed"
+    },
+    "storage": {
+      "eyebrow": "Storage contract",
+      "title": "Where the system stores records"
+    },
+    "ui": {
+      "eyebrow": "UI boundary",
+      "title": "How the user interfaces stay separated",
+      "description": "Routes, shells, function registries, and API authorization all enforce product separation."
+    },
+    "api": {
+      "eyebrow": "API boundary",
+      "title": "Which contracts enforce access",
+      "description": "Every product read or write must pass through the correct entitlement and role-aware API contract."
+    },
+    "outcomes": {
+      "eyebrow": "Outcomes",
+      "title": "What the system produces",
+      "description": "The products share one compatible data foundation while producing different outputs for each persona."
+    },
+    "operations": {
+      "eyebrow": "Operations",
+      "title": "Safety, accessibility, retries, and rollback",
+      "description": "Operational behavior protects users, partners, and data integrity when modules fail or data is incomplete."
+    },
+    "sources": {
+      "title": "Source contracts used",
+      "description": "This public page is derived from the repository contracts below. The online page is the partner-facing summary; the source files remain the engineering implementation contracts."
+    },
+    "subsections": {
+      "rights": "Rights",
+      "responsibilities": "Responsibilities",
+      "dataWrites": "Data writes",
+      "dataReads": "Data reads",
+      "uiSeparation": "UI separation",
+      "outcomes": "Outcomes"
+    }
   }
 }

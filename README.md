@@ -9,6 +9,7 @@ Habigoal is an independent white-label habitbuilder for any signed-in person. At
   - Habigoal at `/{locale}/habigoal` for white-label personal habit tracking, wellbeing status capture, and lightweight guidance.
   - Athlete IQ at `/{locale}/athlete-iq` for coaches, academies, professional dashboards, and advanced services.
 - Public news and release notes at `/{locale}/news`.
+- Public partner business logic contracts at `/{locale}/contracts`.
 - Public legal pages at `/{locale}/legal/gtc` and `/{locale}/legal/privacy`.
 - Athlete app at `/{locale}/athletes` and `/{locale}/athletes/[id]`.
 - Trainer dashboard at `/{locale}/dashboard`.
@@ -47,6 +48,9 @@ Habigoal is an independent white-label habitbuilder for any signed-in person. At
 
 - [API Reference](docs/api.md)
 - [Architecture](docs/architecture.md)
+- [API Access Registry](docs/api-access-registry.md)
+- [Persona Boundary Release Gate](docs/persona-boundary-release-gate.md)
+- [Business Logic Audit](docs/business-logic-audit-2026-07-07.md)
 - [Trust & Insight Engines](docs/trust-and-insights.md)
 - [GDS Gold-Athlete Theme & Component Brief](docs/gds-gold-athlete-theme-brief.md)
 - [Input Copy Research & Variant Model](docs/input-copy-research.md)
@@ -136,6 +140,7 @@ HABIGOAL_ENFORCE_AUTH=true
 
 - Habigoal: `/{locale}/habigoal`
 - Athlete IQ: `/{locale}/athlete-iq`
+- Partner business logic contracts: `/{locale}/contracts`
 - Product registry endpoint: `/api/product-surfaces`
 - AthleteIQ session lifecycle endpoints: `/api/athleteiq/sessions`, `/api/athleteiq/sessions/from-plan`, `/api/athleteiq/sessions/:id/state`, and `/api/athleteiq/sessions/:id/debrief`
 - AthleteIQ daily reality map endpoints: `/api/athleteiq/calendar/day`, `/api/athleteiq/calendar/entries`, and `/api/athleteiq/calendar/entries/:id`
@@ -152,6 +157,8 @@ HABIGOAL_ENFORCE_AUTH=true
 ```bash
 npm run lint
 npm run test
+npm run api-access:audit
+npm run persona-boundary:audit
 npm run gds:audit
 npm run gds:compliance
 npm run i18n:audit
@@ -161,7 +168,7 @@ npm run typecheck
 npm run db:ping
 ```
 
-`npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. It also enforces a must-translate gate over high-visibility namespaces (`ProductSurfaces.athleteIq.athleteWorkspace.panels`/`sections`, `ProductSurfaces.athleteIq.nav.modules`, `athleteiq`, `CoachHub`, `AthleteIntelligence`, `ProductSurfaces.habigoal.progress`/`reasons`/`navigation`, and `Reports`): in each non-English locale every key in those namespaces must differ from English, except an explicit `IDENTICAL_OK` allowlist for units, brand/metric names, ICU-only format strings, and genuine loanwords. `npm run version:audit` is a CI release gate that verifies app-version truth across `package.json`, `package-lock.json`, `lib/app-version.ts`, README, legal docs, dashboard footer binding, and legal-page runtime bindings while reporting API version metadata as informational. `npm run semantic:audit` is a targeted design-system cleanup check. `npm run gds:audit` is the strict GDS-only readiness check and must pass with the manifest set to `governed`. `npm run gds:compliance` runs the shared GDS compliance package and is a release gate. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
+`npm run api-access:audit` verifies that every API route is classified in the access registry. `npm run persona-boundary:audit` writes a machine-readable report under `.audit-reports/` and fails on role spoofing, direct Athlete IQ auth bypasses, token/state leakage, health-sync exposure, raw athlete-id logs, missing consent projection, or missing GDS/persona boundary gates. `npm run i18n:audit` is required when UI copy, reports, public news, or locale files change. It checks catalog key parity, ICU placeholder parity, public news locale completeness, known legacy copy leaks, and hardcoded critical UI copy in the athlete check-in and brand surfaces. It also enforces a must-translate gate over high-visibility namespaces (`ProductSurfaces.athleteIq.athleteWorkspace.panels`/`sections`, `ProductSurfaces.athleteIq.nav.modules`, `athleteiq`, `CoachHub`, `AthleteIntelligence`, `ProductSurfaces.habigoal.progress`/`reasons`/`navigation`, and `Reports`): in each non-English locale every key in those namespaces must differ from English, except an explicit `IDENTICAL_OK` allowlist for units, brand/metric names, ICU-only format strings, and genuine loanwords. `npm run version:audit` is a CI release gate that verifies app-version truth across `package.json`, `package-lock.json`, `lib/app-version.ts`, README, legal docs, dashboard footer binding, and legal-page runtime bindings while reporting API version metadata as informational. `npm run semantic:audit` is a targeted design-system cleanup check. `npm run gds:audit` is the strict GDS-only readiness check and must pass with the manifest set to `governed`. `npm run gds:compliance` runs the shared GDS compliance package and is a release gate. `npm run typecheck` is the standalone TypeScript validation path. `npm run build` also performs Next.js compile and type validation.
 
 Design authority lives in `/Users/Shared/Projects/general-design-system`. Habigoal-local design docs describe only adapter details, migration state, validation commands, and approved exceptions.
 

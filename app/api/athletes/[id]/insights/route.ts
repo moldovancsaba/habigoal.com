@@ -16,7 +16,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return jsonError("Invalid athlete ID", 400, "VALIDATION_ERROR");
     }
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && !(await canAccessAthlete(authUser, id))) {
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    if (!(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 

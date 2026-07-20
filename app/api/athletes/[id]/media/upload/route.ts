@@ -16,7 +16,8 @@ export async function POST(
 
   const { id: athleteId } = await params;
   const user = await getAuthUser({ productSurface: "athlete-iq" });
-  if (user && !(await canAccessAthlete(user, athleteId))) {
+  if (!user) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+  if (!(await canAccessAthlete(user, athleteId))) {
     return jsonError("Forbidden", 403, "FORBIDDEN");
   }
 
@@ -44,7 +45,7 @@ export async function POST(
     fileSize: buffer.length,
     status: "uploaded",
     frameCount: frameTimestampsMs?.length,
-    uploadedBy: user?.email ?? "system",
+    uploadedBy: user.email,
     createdAt: now,
     updatedAt: now,
   });
@@ -59,16 +60,14 @@ export async function POST(
     durationMs,
   });
 
-  if (user) {
-    await logAuditEvent({
-      actorEmail: user.email,
-      actorRole: user.primaryRole,
-      action: "athlete.update",
-      resourceType: "media",
-      resourceId: mediaId,
-      metadata: { athleteId, frameCount: frameTimestampsMs?.length },
-    });
-  }
+  await logAuditEvent({
+    actorEmail: user.email,
+    actorRole: user.primaryRole,
+    action: "athlete.update",
+    resourceType: "media",
+    resourceId: mediaId,
+    metadata: { athleteId, frameCount: frameTimestampsMs?.length },
+  });
 
   return NextResponse.json({ mediaId, url: stored.url, frameTimestampsMs });
 }

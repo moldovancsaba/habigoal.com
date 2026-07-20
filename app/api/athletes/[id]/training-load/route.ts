@@ -14,7 +14,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const { id } = await params;
     if (!ObjectId.isValid(id)) return jsonError("Invalid athlete ID", 400, "VALIDATION_ERROR");
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && !(await canAccessAthlete(authUser, id))) {
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    if (!(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
     const athlete = await getChildById(new ObjectId(id));
@@ -43,7 +44,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const { id } = await params;
     if (!ObjectId.isValid(id)) return jsonError("Invalid athlete ID", 400, "VALIDATION_ERROR");
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && !(await canAccessAthlete(authUser, id))) {
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    if (!(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
     const athlete = await getChildById(new ObjectId(id));
@@ -64,7 +66,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       rpe: parsed.rpe,
       loadPoints: parsed.loadPoints,
       note: parsed.note || undefined,
-      createdBy: authUser?.email || "unknown"
+      createdBy: authUser.email
     });
 
     return NextResponse.json(record, { status: 201 });

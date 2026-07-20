@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { canAccessAthleteIqAthlete, canAccessHabigoalAthlete, canOpenProductSurface, type AuthUser } from "@/lib/access";
 import { buildAthleteIqCheckInSnapshot, getLocalDateForTimezone } from "@/lib/athleteiq-check-in";
 import { buildHabigoalDailyStatus } from "@/lib/habigoal-status";
+import { buildNotRequiredConsentDecisions, canProjectCategory, resolveConsentDecisions, type ConsentDecision } from "@/lib/data-sharing-consent";
 import { getAthleteIqCheckInSnapshot } from "@/repositories/athleteiq-check-in.repository";
 import { getChildById } from "@/repositories/child.repository";
 import { getHabitRecordByAthleteIdAndDate, upsertHabitRecord } from "@/repositories/habit-records.repository";
@@ -24,6 +25,7 @@ export type SharedDailyStateProjection = {
     generatedAt: string;
     sourceCollections: string[];
   };
+  consentDecisions: ConsentDecision[];
   habits: {
     completed: HabigoalHabitKey[];
     recorded: boolean;
@@ -31,6 +33,7 @@ export type SharedDailyStateProjection = {
   };
   localDate: string;
   product: SharedDailyProduct;
+  sharingState: "allowed" | "partial" | "not_shared";
   status: ReturnType<typeof buildHabigoalDailyStatus>;
   timezone: string;
   version: string;
@@ -91,10 +94,11 @@ export async function getSharedDailyState(input: {
     values
   });
 
-  return {
+  const projection: SharedDailyStateProjection = {
     athleteId: athlete.athleteId,
     athleteName: athlete.athleteName,
     checkIn: values,
+    consentDecisions: [],
     dataFreshness: {
       generatedAt: new Date().toISOString(),
       sourceCollections: ["athleteiq_checkins", "habit_records"]
@@ -106,10 +110,20 @@ export async function getSharedDailyState(input: {
     },
     localDate,
     product: input.product,
+    sharingState: "allowed",
     status,
     timezone,
     version: "shared-daily-state-v1"
   };
+  const consentCategories = ["daily_check_in", "habit_summary"] as const;
+  const consentDecisions = input.product === "athlete-iq"
+    ? await resolveConsentDecisions({
+        athleteId: athlete.athleteId,
+        categories: consentCategories,
+        user: input.user
+      })
+    : buildNotRequiredConsentDecisions(consentCategories);
+  return applyDailyStateConsent(projection, consentDecisions);
 }
 
 export async function patchSharedDailyState(input: SharedDailyStatePatch & { user: AuthUser }) {
@@ -229,4 +243,39 @@ function valueOrNull(value: number | null | undefined) {
 
 function invert(value: number | null | undefined) {
   return typeof value === "number" && Number.isFinite(value) ? 100 - value : null;
+}
+
+function applyDailyStateConsent(
+  projection: SharedDailyStateProjection,
+  consentDecisions: ConsentDecision[]
+): SharedDailyStateProjection {
+  const canReadCheckIn = canProjectCategory(consentDecisions, "daily_check_in");
+  const canReadHabits = canProjectCategory(consentDecisions, "habit_summary");
+  if (canReadCheckIn && canReadHabits) {
+    return { ...projection, consentDecisions, sharingState: "allowed" };
+  }
+
+  const checkIn = canReadCheckIn
+    ? projection.checkIn
+    : { energy: null, mood: null, sleep: null, soreness: null };
+  const habits = canReadHabits
+    ? projection.habits
+    : { completed: [], recorded: false, total: projection.habits.total };
+  const status = buildHabigoalDailyStatus({
+    completedHabitCount: habits.completed.length,
+    hasLiveCheckIn: canReadCheckIn && Object.values(checkIn).some((value) => value !== null),
+    hasLiveHabits: habits.recorded,
+    totalHabitCount: habits.total,
+    values: checkIn
+  });
+
+  const allowedCount = [canReadCheckIn, canReadHabits].filter(Boolean).length;
+  return {
+    ...projection,
+    checkIn,
+    consentDecisions,
+    habits,
+    sharingState: allowedCount === 0 ? "not_shared" : "partial",
+    status
+  };
 }

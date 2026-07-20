@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { canOpenProductSurface, getAuthUser, type AuthUser } from "@/lib/access";
+import { requireHabigoalApiUser, type AuthUser } from "@/lib/access";
 import { getHabigoalTodayProjection } from "@/services/habigoal-product.service";
 import { runMirroredAthleteIqDailyEngine } from "@/services/athleteiq-daily-engine.service";
 import { patchSharedDailyState } from "@/services/shared-daily-state.service";
@@ -7,8 +7,7 @@ import type { DailyEngineRun } from "@/types/athleteiq-daily-engine";
 import { POST } from "./route";
 
 vi.mock("@/lib/access", () => ({
-  canOpenProductSurface: vi.fn(),
-  getAuthUser: vi.fn()
+  requireHabigoalApiUser: vi.fn()
 }));
 
 vi.mock("@/lib/habigoal-api", () => ({
@@ -54,8 +53,7 @@ const user: AuthUser = {
   teamIds: []
 };
 
-const mockedCanOpenProductSurface = vi.mocked(canOpenProductSurface);
-const mockedGetAuthUser = vi.mocked(getAuthUser);
+const mockedRequireHabigoalApiUser = vi.mocked(requireHabigoalApiUser);
 const mockedGetHabigoalTodayProjection = vi.mocked(getHabigoalTodayProjection);
 const mockedPatchSharedDailyState = vi.mocked(patchSharedDailyState);
 const mockedRunMirroredAthleteIqDailyEngine = vi.mocked(runMirroredAthleteIqDailyEngine);
@@ -63,16 +61,17 @@ const mockedRunMirroredAthleteIqDailyEngine = vi.mocked(runMirroredAthleteIqDail
 describe("Habigoal daily operation route", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockedGetAuthUser.mockResolvedValue(user);
-    mockedCanOpenProductSurface.mockReturnValue(true);
+    mockedRequireHabigoalApiUser.mockResolvedValue({ ...user, persona: "habigoal_user", productSurface: "habigoal" });
     mockedPatchSharedDailyState.mockResolvedValue({
       athleteId: "personal-profile",
       athleteName: "Coach Personal Habits",
       checkIn: { energy: 80, mood: 70, sleep: 75, soreness: 20 },
+      consentDecisions: [],
       dataFreshness: { generatedAt: "2026-07-01T00:00:00.000Z", sourceCollections: ["athleteiq_checkins", "habit_records"] },
       habits: { completed: ["hydrate"], recorded: true, total: 6 },
       localDate: "2026-07-01",
       product: "habigoal",
+      sharingState: "allowed",
       status: {
         confidence: "high",
         missingSignals: [],
@@ -105,9 +104,16 @@ describe("Habigoal daily operation route", () => {
       nextActionKey: "balanced",
       reasonCodes: ["all_daily_signals_present"],
       score: 72,
+      shareableSummary: {
+        categories: ["habit_summary", "daily_check_in"],
+        projection: "summary",
+        rule: "professional_entitlement_assignment_and_consent_required"
+      },
       source: "atlas",
       status: "balanced",
+      surface: "habigoal",
       timezone: "Europe/Budapest",
+      version: "habigoal-today-v1",
       values: { energy: 80, mood: 70, sleep: 75, soreness: 20 }
     });
   });
@@ -129,7 +135,7 @@ describe("Habigoal daily operation route", () => {
       localDate: undefined,
       product: "habigoal",
       timezone: "Europe/Budapest",
-      user,
+      user: expect.objectContaining(user),
       values: { energy: 80, mood: 70, sleep: 75, soreness: 20 }
     });
     expect(mockedRunMirroredAthleteIqDailyEngine).toHaveBeenCalledWith(expect.objectContaining({

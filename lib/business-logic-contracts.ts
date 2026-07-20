@@ -18,7 +18,7 @@ export type BusinessContractSection = {
   items: readonly string[];
 };
 
-export const BUSINESS_LOGIC_CONTRACT_VERSION = "business-logic-contracts-2026-07-07.1";
+export const BUSINESS_LOGIC_CONTRACT_VERSION = "business-logic-contracts-2026-07-20.1";
 
 export const businessContractSourceDocuments = [
   "docs/product-surface-shared-athlete-profile-contract.md",
@@ -28,8 +28,12 @@ export const businessContractSourceDocuments = [
   "docs/athleteiq-daily-plan-contract.md",
   "docs/athleteiq-stakeholder-projection-contract.md",
   "docs/athleteiq-daily-report-contract.md",
+  "docs/api-access-registry.md",
+  "docs/persona-boundary-release-gate.md",
   "lib/product-apps.ts",
-  "lib/product-surfaces.ts"
+  "lib/product-surfaces.ts",
+  "lib/api-access-registry.ts",
+  "lib/data-sharing-consent.ts"
 ] as const;
 
 export const businessPersonaContracts = [
@@ -235,7 +239,9 @@ export const apiContract = [
   "POST /api/auth/login validates requested product access before redirecting.",
   "GET /api/auth/me exposes current identity, persona, and product entitlements without leaking unavailable product data.",
   "POST /api/habigoal/daily-operation writes Habigoal personal check-in and habit records with idempotency.",
+  "The API access registry classifies every route by access class, product surface, persona scope, method, denial code, observability, timeout, and rollback behavior.",
   "Athlete IQ Daily IQ, Daily Plan, stakeholder, module, report, session, team, and coach-action APIs require Athlete IQ entitlement and scoped athlete/team access.",
+  "Trainer reads of shared daily-state categories pass through consent decisions before personal check-in or habit details are projected.",
   "All operational errors return structured codes, retryable flags, and correlation ids where the API contract supports them."
 ] as const;
 

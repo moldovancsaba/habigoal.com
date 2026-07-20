@@ -13,7 +13,8 @@ export async function GET(
 
   const { id: athleteId } = await params;
   const user = await getAuthUser({ productSurface: "athlete-iq" });
-  if (user && !(await canAccessAthlete(user, athleteId))) {
+  if (!user) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+  if (!(await canAccessAthlete(user, athleteId))) {
     return jsonError("Forbidden", 403, "FORBIDDEN");
   }
 

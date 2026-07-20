@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireRole } from "@/lib/api";
+import { jsonError, requireRole } from "@/lib/api";
 import { getAuthUser, resolveAccessibleAthleteIds } from "@/lib/access";
 import { listAssessmentSummaries } from "@/repositories/assessment.repository";
 import { getGlobalSettings } from "@/repositories/settings.repository";
@@ -13,7 +13,8 @@ export async function GET(request: Request) {
   const date = searchParams.get("date") ?? new Date().toISOString().split("T")[0];
 
   const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-  const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
+  if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+  const allowedIds = await resolveAccessibleAthleteIds(authUser);
   const [assessments, settings] = await Promise.all([
     listAssessmentSummaries(),
     getGlobalSettings(),

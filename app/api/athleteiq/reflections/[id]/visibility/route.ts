@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_REFLECTION_CAPABILITY_KEY, reflectionVisibilities } from "@/lib/athleteiq-reflection";
 import { getReflectionForAccess, setReflectionVisibility } from "@/services/athleteiq-reflection.service";
 import type { ReflectionVisibility } from "@/types/athleteiq-reflection";
@@ -22,7 +22,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     if (!(await canAccessAthlete(user, existing.athleteId))) return athleteIqJsonError("FORBIDDEN", 403, correlationId);
 
     const reflection = await setReflectionVisibility({ entryId: id, visibility: visibility as ReflectionVisibility, actorEmail: user.email });
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_REFLECTION_CAPABILITY_KEY, event: "athleteiq.reflection.visibility_updated", correlationId, athleteId: existing.athleteId, reflectionId: id, visibility, privacyClassification: "reflection_visibility", latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_REFLECTION_CAPABILITY_KEY, event: "athleteiq.reflection.visibility_updated", correlationId, athleteIdHash: athleteIqHashForLog(existing.athleteId), reflectionId: id, visibility, privacyClassification: "reflection_visibility", latencyMs: Date.now() - startedAt }));
     return NextResponse.json({ reflection, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });

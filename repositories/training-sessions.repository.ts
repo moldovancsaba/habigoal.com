@@ -41,6 +41,12 @@ export async function listTrainingSessions(filters?: { teamId?: string; athleteI
   return rows.map((r) => normalizeSession(r as Record<string, unknown>));
 }
 
+export async function getTrainingSessionBySessionId(sessionId: string): Promise<SessionPlan | null> {
+  const db = await getDatabase();
+  const row = await db.collection(COLLECTION).findOne({ sessionId });
+  return row ? normalizeSession(row as Record<string, unknown>) : null;
+}
+
 export async function upsertTrainingSession(session: Omit<SessionPlan, "createdAt" | "updatedAt"> & { createdAt?: string; updatedAt?: string }): Promise<SessionPlan> {
   const db = await getDatabase();
   const now = new Date().toISOString();

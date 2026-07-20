@@ -20,6 +20,18 @@ export async function findActiveConsent(
   return record;
 }
 
+export async function findLatestConsent(
+  athleteId: string,
+  purpose: ConsentPurpose
+): Promise<ConsentRecord | null> {
+  const db = await getDatabase();
+  const collection = db.collection<ConsentRecord>(COLLECTION_NAME);
+  return collection.findOne(
+    { athleteId, purpose },
+    { sort: { createdAt: -1 } }
+  );
+}
+
 export async function findConsentsByAthleteId(athleteId: string): Promise<ConsentRecord[]> {
   const db = await getDatabase();
   const collection = db.collection<ConsentRecord>(COLLECTION_NAME);

@@ -16,19 +16,18 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (!ObjectId.isValid(id)) {
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    if (!(await canAccessAthlete(authUser, id))) {
+      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
+    }
 
     const child = await getChildById(new ObjectId(id));
     if (!child) {
       return jsonError("Child not found", 404, "NOT_FOUND");
     }
-    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && !(await canAccessAthlete(authUser, id))) {
-      return jsonError("Insufficient permissions", 403, "FORBIDDEN");
-    }
 
-    const filtered = authUser
-      ? filterAthleteProfileForRoles(child, authUser.roles)
-      : child;
+    const filtered = filterAthleteProfileForRoles(child, authUser.roles);
 
     return NextResponse.json(filtered);
   } catch (error) {
@@ -46,7 +45,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && !(await canAccessAthlete(authUser, id))) {
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    if (!(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 
@@ -88,7 +88,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && !(await canAccessAthlete(authUser, id))) {
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    if (!(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 

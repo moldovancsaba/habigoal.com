@@ -191,7 +191,7 @@ describe("persona pseudo login", () => {
       id: "user-habitbuilder-trainer",
       email: "trainer-habit@example.com",
       name: "trainer-habit@example.com",
-      roles: ["trainer"],
+      roles: ["athlete"],
       productEntitlements: {
         habigoal: { enabled: true, reason: "self_registered" },
         athleteIq: { enabled: false }
@@ -200,6 +200,12 @@ describe("persona pseudo login", () => {
 
     const response = await POST(loginRequest({ identifier: "trainer-habit@example.com", persona: "trainer", next: "/hu/habigoal", productSurface: "habigoal" }));
 
+    expect(mockedUpsertPersonaLoginUser).toHaveBeenCalledWith({
+      email: "trainer-habit@example.com",
+      name: "trainer-habit@example.com",
+      productSurface: "habigoal",
+      roles: ["athlete"]
+    });
     expect(mockedCreateSession).toHaveBeenCalledWith({
       id: "user-habitbuilder-trainer",
       email: "trainer-habit@example.com",

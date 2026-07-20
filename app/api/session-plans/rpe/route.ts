@@ -23,7 +23,8 @@ export async function POST(request: Request) {
     }
 
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && !(await canAccessAthlete(authUser, athleteId))) {
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    if (!(await canAccessAthlete(authUser, athleteId))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
     const record = await createTrainingLoadRecord({
       activityTypes: ["session"],
       athleteId,
-      createdBy: authUser?.email || "unknown",
+      createdBy: authUser.email,
       date: localIsoDate(),
       durationMinutes,
       loadPoints: completedLoadPoints,

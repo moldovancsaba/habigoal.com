@@ -28,12 +28,13 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   try {
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
     const assessment = await getAssessment(_id);
     if (!assessment) {
       return jsonError("Assessment not found", 404, "NOT_FOUND");
     }
-    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
+    if (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 
@@ -53,15 +54,16 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   try {
-    const existing = await getAssessment(_id);
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    const existing = await getAssessment(_id);
     if (existing) {
-      if (authUser && (!existing.childId || !(await canAccessAthlete(authUser, existing.childId)))) {
+      if (!existing.childId || !(await canAccessAthlete(authUser, existing.childId))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
       }
     }
     const assessment = await updateAssessmentFromPayload(_id, await readJson(request), {
-      actor: authUser ? { email: authUser.email, name: authUser.name, role: authUser.primaryRole } : undefined
+      actor: { email: authUser.email, name: authUser.name, role: authUser.primaryRole }
     });
     if (!assessment) {
       return jsonError("Assessment not found", 404, "NOT_FOUND");
@@ -83,10 +85,11 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   try {
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
     const assessment = await getAssessment(_id);
     if (assessment) {
-      const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-      if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
+      if (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
       }
     }
@@ -105,10 +108,11 @@ export async function POST(_request: Request, context: RouteContext) {
     return jsonError("Invalid assessment id", 400, "VALIDATION_ERROR");
   }
   try {
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
     const assessment = await getAssessment(_id);
     if (assessment) {
-      const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-      if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
+      if (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
       }
     }

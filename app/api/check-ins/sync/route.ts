@@ -15,6 +15,7 @@ export async function POST(request: Request) {
   }
 
   const user = await getAuthUser({ productSurface: "athlete-iq" });
+  if (!user) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
   const results: unknown[] = [];
   const errors: Array<{ index: number; error: string }> = [];
 
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
     try {
       const created = await createAssessmentFromPayload(items[i], {
         staffOverride: body?.staffOverride,
-        actor: user ? { email: user.email, name: user.name, role: user.primaryRole } : undefined
+        actor: { email: user.email, name: user.name, role: user.primaryRole }
       });
       results.push(created);
     } catch (error) {
@@ -30,15 +31,13 @@ export async function POST(request: Request) {
     }
   }
 
-  if (user) {
-    await logAuditEvent({
-      actorEmail: user.email,
-      actorRole: user.primaryRole,
-      action: "checkin.create",
-      resourceType: "checkin_sync",
-      metadata: { synced: results.length, failed: errors.length },
-    });
-  }
+  await logAuditEvent({
+    actorEmail: user.email,
+    actorRole: user.primaryRole,
+    action: "checkin.create",
+    resourceType: "checkin_sync",
+    metadata: { synced: results.length, failed: errors.length },
+  });
 
   return NextResponse.json({ synced: results.length, results, errors });
 }

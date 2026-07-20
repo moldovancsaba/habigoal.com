@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_REFLECTION_CAPABILITY_KEY, validateReflectionInput } from "@/lib/athleteiq-reflection";
 import { createReflection } from "@/services/athleteiq-reflection.service";
 import type { ReflectionVisibility } from "@/types/athleteiq-reflection";
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       moodTag: input.moodTag,
       visibility: input.visibility as ReflectionVisibility | undefined
     });
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_REFLECTION_CAPABILITY_KEY, event: result.skipped ? "athleteiq.reflection.skipped_blank" : "athleteiq.reflection.created", correlationId, athleteId: input.athleteId, reflectionId: result.reflection?.id, privacyClassification: "private_reflection", latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_REFLECTION_CAPABILITY_KEY, event: result.skipped ? "athleteiq.reflection.skipped_blank" : "athleteiq.reflection.created", correlationId, athleteIdHash: athleteIqHashForLog(input.athleteId), reflectionId: result.reflection?.id, privacyClassification: "private_reflection", latencyMs: Date.now() - startedAt }));
     return NextResponse.json({ ...result, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });

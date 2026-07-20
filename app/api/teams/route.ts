@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { jsonError, readJson, requireRole } from "@/lib/api";
-import { getAuthUser } from "@/lib/access";
-import { deleteTeamById, listTeams, listTeamsByTrainerEmail, upsertTeam } from "@/repositories/team.repository";
+import { getAuthUser, resolveAccessibleTeamIds } from "@/lib/access";
+import { deleteTeamById, listTeams, upsertTeam } from "@/repositories/team.repository";
 
 function stringArray(value: unknown) {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string").map((item) => item.trim()).filter(Boolean) : [];
@@ -13,8 +13,11 @@ export async function GET(request: Request) {
 
   try {
     const authUser = await getAuthUser({ productSurface: "athlete-iq" });
-    const teams = authUser?.primaryRole === "trainer" ? await listTeamsByTrainerEmail(authUser.email) : await listTeams();
-    return NextResponse.json({ teams });
+    if (!authUser) return jsonError("Athlete IQ access required", 403, "PRODUCT_ACCESS_DENIED");
+    const allowedTeamIds = await resolveAccessibleTeamIds(authUser);
+    const teams = await listTeams();
+    const scopedTeams = allowedTeamIds === null ? teams : teams.filter((team) => team._id && allowedTeamIds.includes(team._id));
+    return NextResponse.json({ teams: scopedTeams });
   } catch (error) {
     return jsonError((error as Error).message);
   }

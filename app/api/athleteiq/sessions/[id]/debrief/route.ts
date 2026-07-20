@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_SESSION_CAPABILITY_KEY } from "@/lib/athleteiq-session";
 import { debriefSession, getSession } from "@/services/athleteiq-session.service";
 
@@ -40,8 +40,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     });
     if (!result.session) return athleteIqJsonError("VALIDATION_ERROR", 400, correlationId, { details: result.errors });
 
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_SESSION_CAPABILITY_KEY, event: "athleteiq.session.completed", correlationId, sessionId: id, athleteId: result.session.athleteId, latencyMs: Date.now() - startedAt }));
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_SESSION_CAPABILITY_KEY, event: "athleteiq.score.recalculate_requested", correlationId, athleteId: result.session.athleteId, source: "session_debrief" }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_SESSION_CAPABILITY_KEY, event: "athleteiq.session.completed", correlationId, sessionId: id, athleteIdHash: athleteIqHashForLog(result.session.athleteId), latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_SESSION_CAPABILITY_KEY, event: "athleteiq.score.recalculate_requested", correlationId, athleteIdHash: athleteIqHashForLog(result.session.athleteId), source: "session_debrief" }));
     return NextResponse.json({ session: result.session, analysis: result.analysis, correlationId, generatedAt: new Date().toISOString(), latencyMs: Date.now() - startedAt });
   } catch (error) {
     return athleteIqJsonError("UNKNOWN_ERROR", 500, correlationId, { retryable: true, details: (error as Error).message });

@@ -3192,5 +3192,65 @@
         "description": "Permite subir fotos/videos para el análisis de postura y sprint."
       }
     }
+  },
+  "BusinessContracts": {
+    "metadata": {
+      "title": "Contratos de lógica de negocio",
+      "description": "Contrato público para socios sobre Habigoal habit builder, el espacio de atletas de Athlete IQ y el espacio de entrenadores de Athlete IQ."
+    },
+    "badge": {
+      "partnerContract": "Contrato para socios"
+    },
+    "title": "Lógica de negocio y contratos de persona",
+    "intro": "Esta página define cómo funcionan juntas las tres personas públicas, qué puede hacer cada una, de qué es responsable, cómo se mueven los datos, cómo se separan las interfaces, dónde se guardan los registros y qué resultados debe producir el sistema.",
+    "links": {
+      "appSelector": "Selector de aplicación",
+      "privacyPolicy": "Política de privacidad"
+    },
+    "trainerSupport": {
+      "eyebrow": "Modelo de soporte del entrenador",
+      "title": "Cómo los entrenadores gestionan y apoyan a los atletas",
+      "description": "El flujo del entrenador es un flujo de Athlete IQ. Usa datos de atletas asignados y acciones auditables; no entra ni copia la interfaz habitbuilder de Habigoal."
+    },
+    "data": {
+      "eyebrow": "Contrato de datos",
+      "title": "Cómo se comparten y distribuyen los datos"
+    },
+    "storage": {
+      "eyebrow": "Contrato de almacenamiento",
+      "title": "Dónde guarda el sistema los registros"
+    },
+    "ui": {
+      "eyebrow": "Límite de interfaz",
+      "title": "Cómo se mantienen separadas las interfaces de usuario",
+      "description": "Las rutas, shells, registros de funciones y autorización de API aplican la separación de productos."
+    },
+    "api": {
+      "eyebrow": "Límite de API",
+      "title": "Qué contratos aplican el acceso",
+      "description": "Cada lectura o escritura de producto debe pasar por el contrato de API correcto, consciente de permisos y roles."
+    },
+    "outcomes": {
+      "eyebrow": "Resultados",
+      "title": "Qué produce el sistema",
+      "description": "Los productos comparten una base de datos compatible mientras producen resultados distintos para cada persona."
+    },
+    "operations": {
+      "eyebrow": "Operaciones",
+      "title": "Seguridad, accesibilidad, reintentos y reversión",
+      "description": "El comportamiento operativo protege a usuarios, socios e integridad de datos cuando los módulos fallan o los datos están incompletos."
+    },
+    "sources": {
+      "title": "Contratos fuente utilizados",
+      "description": "Esta página pública se deriva de los contratos del repositorio que se muestran abajo. La página en línea es el resumen para socios; los archivos fuente siguen siendo los contratos técnicos de implementación."
+    },
+    "subsections": {
+      "rights": "Derechos",
+      "responsibilities": "Responsabilidades",
+      "dataWrites": "Escrituras de datos",
+      "dataReads": "Lecturas de datos",
+      "uiSeparation": "Separación de interfaz",
+      "outcomes": "Resultados"
+    }
   }
 }

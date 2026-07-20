@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canAccessAthlete, getAuthUser } from "@/lib/access";
 import { readJson } from "@/lib/api";
-import { athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
+import { athleteIqHashForLog, athleteIqJsonError, createAthleteIqCorrelationId } from "@/lib/athleteiq-api";
 import { ATHLETEIQ_LITE_GATEWAY_CAPABILITY_KEY } from "@/lib/athleteiq-lite-modules";
 import { createRecoveryLiteEntry } from "@/services/athleteiq-lite-modules.service";
 
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     if (typeof body?.athleteId !== "string" || !(await canAccessAthlete(user, body.athleteId))) return athleteIqJsonError("FORBIDDEN", 403, correlationId);
     const result = await createRecoveryLiteEntry({ body, actorEmail: user.email, idempotencyKey: getIdempotencyKey(request, body) });
     if (result.errors.length) return athleteIqJsonError("VALIDATION_ERROR", 400, correlationId, { details: result.errors });
-    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_LITE_GATEWAY_CAPABILITY_KEY, event: "athleteiq.recovery_lite.entry_saved", correlationId, athleteId: body.athleteId, latencyMs: Date.now() - startedAt }));
+    console.info(JSON.stringify({ capabilityKey: ATHLETEIQ_LITE_GATEWAY_CAPABILITY_KEY, event: "athleteiq.recovery_lite.entry_saved", correlationId, athleteIdHash: athleteIqHashForLog(body.athleteId), latencyMs: Date.now() - startedAt }));
     return NextResponse.json({ entry: result.entry, warnings: result.warnings, correlationId, latencyMs: Date.now() - startedAt });
   } catch (error) {
     if ((error as Error).message === "LITE_GATEWAY_TIMEOUT") return athleteIqJsonError("TIMEOUT", 504, correlationId, { retryable: true });
