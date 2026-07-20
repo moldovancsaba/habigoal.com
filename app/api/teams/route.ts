@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   if (authError) return authError;
 
   try {
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     const teams = authUser?.primaryRole === "trainer" ? await listTeamsByTrainerEmail(authUser.email) : await listTeams();
     return NextResponse.json({ teams });
   } catch (error) {

@@ -8,7 +8,7 @@ import { recalculateReadinessRoute } from "@/services/athleteiq-readiness-route.
 export async function POST(request: Request) {
   const correlationId = createAthleteIqCorrelationId();
   const startedAt = Date.now();
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return athleteIqJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true });
 
   try {

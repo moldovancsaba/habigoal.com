@@ -102,7 +102,7 @@ export async function getAthleteIqProductDashboardProjection(input: {
 } = {}): Promise<AthleteIqProductDashboardProjection> {
   const timezone = input.timezone ?? DEFAULT_TIMEZONE;
   const localDate = input.localDate ?? getBudapestLocalDate();
-  const user = input.user === undefined ? await getAuthUser() : input.user;
+  const user = input.user === undefined ? await getAuthUser({ productSurface: "athlete-iq" }) : input.user;
   if (!user) return emptyDashboardProjection({ localDate, timezone });
   const effectivePersona = resolveEffectivePersona(user, input.requestedPersona);
 

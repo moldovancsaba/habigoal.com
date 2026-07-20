@@ -1,14 +1,15 @@
 import crypto from "crypto";
+import { requireServerEnv } from "@/config/env";
 
 const ALGORITHM = "aes-256-gcm";
-const AUTH_SECRET = process.env.AUTH_SECRET || "default_dev_secret_must_be_32_bytes_long_12345";
 
 // Ensure the secret is exactly 32 bytes for AES-256
 const getSecretKey = () => {
-  const key = Buffer.from(AUTH_SECRET);
+  const authSecret = requireServerEnv("authSecret");
+  const key = Buffer.from(authSecret);
   if (key.length !== 32) {
     // Hash to 32 bytes if not exactly 32
-    return crypto.createHash("sha256").update(AUTH_SECRET).digest();
+    return crypto.createHash("sha256").update(authSecret).digest();
   }
   return key;
 };

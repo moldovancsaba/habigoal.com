@@ -18,7 +18,7 @@ function weekStartValue(value: unknown): string {
 // regenerates) and persists the snapshot for a week. Authorized + athlete-scoped.
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (!user || !hasCapability(user.roles, "report:read")) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
@@ -63,7 +63,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (!user || !hasCapability(user.roles, "report:export")) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }

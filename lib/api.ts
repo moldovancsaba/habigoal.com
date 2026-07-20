@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
-import { env } from "@/config/env";
-import { getSession } from "@/lib/session";
-import { normalizeRoles } from "@/lib/access";
+import { getAuthUser, normalizeRoles } from "@/lib/access";
 import { hasCapability, type Capability } from "@/lib/permissions";
-
-const ROLE_HEADER = "x-habigoal-role";
 
 export const STAFF_ROLES = ["admin", "trainer", "performance_coach", "physio", "analyst", "club_management", "parent"];
 export const COACHING_ROLES = ["admin", "trainer", "performance_coach"];
@@ -21,27 +17,16 @@ export async function readJson(request: Request): Promise<unknown | null> {
   return request.json().catch(() => null);
 }
 
-function parseRoles(value: string) {
-  return normalizeRoles(value
+function userRolesFromSessionRole(value?: string | null) {
+  return normalizeRoles((value || "")
     .split(",")
-    .map((role) => role.trim().toLowerCase())
+    .map((role) => role.trim())
     .filter(Boolean));
 }
 
-export async function requireRole(request: Request, allowedRoles: string[]) {
-  if (!env.habigoalEnforceAuth) {
-    return null;
-  }
-
-  const roleHeaderValue = request.headers.get(ROLE_HEADER)?.trim().toLowerCase() || "";
-  let userRoles = parseRoles(roleHeaderValue);
-
-  if (userRoles.length === 0) {
-    const session = await getSession();
-    if (session?.role) {
-      userRoles = parseRoles(session.role);
-    }
-  }
+export async function requireRole(_request: Request, allowedRoles: string[]) {
+  const user = await getAuthUser();
+  const userRoles = user?.roles.length ? user.roles : userRolesFromSessionRole(user?.primaryRole);
 
   if (userRoles.length === 0) {
     return jsonError("Authentication required", 401, "AUTH_REQUIRED");
@@ -56,14 +41,9 @@ export async function requireRole(request: Request, allowedRoles: string[]) {
   return null;
 }
 
-export async function requireCapability(request: Request, capability: Capability) {
-  if (!env.habigoalEnforceAuth) return null;
-  const roleHeaderValue = request.headers.get(ROLE_HEADER)?.trim().toLowerCase() || "";
-  let userRoles = parseRoles(roleHeaderValue);
-  if (userRoles.length === 0) {
-    const session = await getSession();
-    if (session?.role) userRoles = parseRoles(session.role);
-  }
+export async function requireCapability(_request: Request, capability: Capability) {
+  const user = await getAuthUser();
+  const userRoles = user?.roles.length ? user.roles : userRolesFromSessionRole(user?.primaryRole);
   if (userRoles.length === 0) return jsonError("Authentication required", 401, "AUTH_REQUIRED");
   if (!hasCapability(userRoles, capability)) {
     return jsonError("Insufficient permissions", 403, "FORBIDDEN");

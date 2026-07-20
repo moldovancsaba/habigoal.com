@@ -1,34 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
-import { env } from "@/config/env";
 import { getAuthUser } from "@/lib/access";
 import { projectEntitlementsForSurface } from "@/lib/product-entitlements";
 import type { ProductSurfaceId } from "@/lib/product-entitlements";
 
 export async function GET(request: Request) {
-  if (!env.habigoalEnforceAuth) {
-    return NextResponse.json({
-      user: {
-        userId: "hg-open-mode",
-        email: "dev@habigoal.local",
-        name: "Habigoal Dev",
-        role: "admin",
-        roles: ["admin", "trainer", "athlete"],
-        primaryRole: "admin",
-        productEntitlements: {
-          habigoal: { enabled: true, reason: "admin_grant" },
-          athleteIq: { enabled: true, reason: "admin_grant" }
-        },
-        teamIds: []
-      }
-    });
-  }
-
   const session = await getSession();
-  if (!session?.email) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
-
   const user = await getAuthUser();
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -46,8 +23,11 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     user: {
-      ...session,
-      name: user.name || session.name,
+      userId: session?.userId ?? user.id ?? user.email,
+      email: session?.email ?? user.email,
+      name: user.name || session?.name || user.email,
+      expires: session?.expires,
+      productSurface: session?.productSurface,
       role: user.primaryRole,
       roles: user.roles,
       primaryRole: user.primaryRole,

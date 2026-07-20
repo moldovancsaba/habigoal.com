@@ -18,7 +18,7 @@ export async function GET(
 
   try {
     const { id: athleteId } = await params;
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (user && !(await canAccessAthlete(user, athleteId))) {
       return jsonError("Forbidden", 403, "FORBIDDEN");
     }
@@ -40,7 +40,7 @@ export async function POST(
 
   try {
     const { id: athleteId } = await params;
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (user && !(await canAccessAthlete(user, athleteId))) {
       return jsonError("Forbidden", 403, "FORBIDDEN");
     }

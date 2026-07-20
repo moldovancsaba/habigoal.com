@@ -21,7 +21,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (!child) {
       return jsonError("Child not found", 404, "NOT_FOUND");
     }
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (authUser && !(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
@@ -45,7 +45,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (!ObjectId.isValid(id)) {
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (authUser && !(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
@@ -87,7 +87,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if (!ObjectId.isValid(id)) {
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (authUser && !(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }

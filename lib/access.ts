@@ -56,9 +56,18 @@ export type AuthUser = {
   teamIds: string[];
 };
 
-export async function getAuthUser(): Promise<AuthUser | null> {
+export type AuthUserOptions = {
+  productSurface?: ProductSurfaceId;
+};
+
+function authBypassAllowed() {
+  return !env.habigoalEnforceAuth && process.env.NODE_ENV !== "production" && process.env.VERCEL_ENV !== "production";
+}
+
+export async function getAuthUser(options: AuthUserOptions = {}): Promise<AuthUser | null> {
   if (!env.habigoalEnforceAuth) {
-    return {
+    if (!authBypassAllowed()) return null;
+    const devUser: AuthUser = {
       email: "dev@habigoal.local",
       name: "Habigoal Dev",
       roles: ["admin", "trainer", "athlete"],
@@ -69,6 +78,7 @@ export async function getAuthUser(): Promise<AuthUser | null> {
       },
       teamIds: []
     };
+    return options.productSurface && !canOpenProductSurface(devUser, options.productSurface) ? null : devUser;
   }
 
   const session = await getSession();
@@ -82,7 +92,7 @@ export async function getAuthUser(): Promise<AuthUser | null> {
   const sessionRoles = normalizeRoles(session.role?.split(",") ?? []);
   const primaryRole = resolveSessionPrimaryRole(sessionRoles, roles);
 
-  return {
+  const user: AuthUser = {
     id: localUser.id,
     email: localUser.email,
     name: localUser.name || session.name || localUser.email,
@@ -93,6 +103,9 @@ export async function getAuthUser(): Promise<AuthUser | null> {
     productEntitlements,
     teamIds
   };
+
+  if (options.productSurface && !canOpenProductSurface(user, options.productSurface)) return null;
+  return user;
 }
 
 function resolveSessionPrimaryRole(sessionRoles: AppRole[], userRoles: AppRole[]) {

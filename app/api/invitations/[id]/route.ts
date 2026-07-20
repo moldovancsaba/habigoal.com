@@ -11,7 +11,7 @@ function handleError(error: unknown) {
 
 // Accept an invitation addressed to the signed-in user.
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   try {
     const { id } = await params;
@@ -24,7 +24,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
 // Revoke an invitation (team manager / admin only).
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   try {
     const { id } = await params;

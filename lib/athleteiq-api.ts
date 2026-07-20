@@ -15,6 +15,15 @@ export function createAthleteIqCorrelationId() {
   return `aiq-${crypto.randomUUID()}`;
 }
 
+export function athleteIqHashForLog(value: string | null | undefined) {
+  if (!value) return undefined;
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = Math.imul(31, hash) + value.charCodeAt(index) | 0;
+  }
+  return `a${Math.abs(hash).toString(36)}`;
+}
+
 export function athleteIqJsonError(
   code: AthleteIqStructuredErrorCode,
   status: number,

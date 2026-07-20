@@ -12,7 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (!user || !hasCapability(user.roles, "report:read")) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }

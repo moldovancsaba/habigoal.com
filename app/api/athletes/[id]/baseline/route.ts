@@ -25,7 +25,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
 
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (!authUser || !(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }

@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       return jsonError("Invalid RPE payload", 400, "VALIDATION_ERROR");
     }
 
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (authUser && !(await canAccessAthlete(authUser, athleteId))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }

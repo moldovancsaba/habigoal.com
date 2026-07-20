@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canAccessAthlete, getAuthUser } from "@/lib/access";
+import { canAccessAthleteIqAthlete, getAuthUser } from "@/lib/access";
 import { jsonError, requireRole } from "@/lib/api";
 import { findConnectionById } from "@/repositories/device-connection.repository";
 import { isSyncLocked, syncConnection } from "@/services/wearable-sync.service";
@@ -12,8 +12,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   try {
     const { id, connectionId } = await params;
-    const authUser = await getAuthUser();
-    if (!authUser || !(await canAccessAthlete(authUser, id))) {
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser || !(await canAccessAthleteIqAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { env, requireServerEnv } from "@/config/env";
-import { canAccessAthlete, getAuthUser } from "@/lib/access";
+import { canAccessAthleteIqAthlete, getAuthUser } from "@/lib/access";
 import { getWearableOAuthProvider } from "@/lib/wearable-oauth-providers";
-import { createWearableState, WEARABLE_OAUTH_STATE_COOKIE, WEARABLE_OAUTH_STATE_TTL_MS } from "@/lib/wearable-oauth-state";
+import { createWearableCookieState, createWearableState, WEARABLE_OAUTH_STATE_COOKIE, WEARABLE_OAUTH_STATE_TTL_MS } from "@/lib/wearable-oauth-state";
 import { findConnectionsByAthleteId } from "@/repositories/device-connection.repository";
 
 function localeFromReferer(request: NextRequest): string {
@@ -23,8 +23,11 @@ export async function GET(
 ) {
   try {
     const { id: athleteId } = await params;
-    const user = await getAuthUser();
-    if (user && !(await canAccessAthlete(user, athleteId))) {
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+    if (!(await canAccessAthleteIqAthlete(user, athleteId))) {
       return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
     }
 
@@ -49,8 +52,11 @@ export async function POST(
 ) {
   try {
     const { id: athleteId } = await params;
-    const user = await getAuthUser();
-    if (user && !(await canAccessAthlete(user, athleteId))) {
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+    if (!(await canAccessAthleteIqAthlete(user, athleteId))) {
       return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
     }
 
@@ -71,14 +77,15 @@ export async function POST(
     // PKCE providers (e.g. Garmin) generate a verifier stored in the signed
     // state cookie; its challenge is sent on the authorize URL.
     const pkce = oauth.createPkce?.();
-    const state = createWearableState(
-      { athleteId, provider: source, locale: localeFromReferer(request), nonce: randomUUID(), codeVerifier: pkce?.verifier },
-      requireServerEnv("authSecret")
-    );
+    const secret = requireServerEnv("authSecret");
+    const binding = { athleteId, provider: source, locale: localeFromReferer(request), nonce: randomUUID() };
+    const issuedAt = new Date();
+    const state = createWearableState(binding, secret, issuedAt);
+    const cookieState = createWearableCookieState({ ...binding, codeVerifier: pkce?.verifier }, secret, issuedAt);
     const authUrl = oauth.buildAuthorizeUrl({ redirectUri, state, codeChallenge: pkce?.challenge });
 
     const response = NextResponse.json({ authUrl, configured: true }, { status: 200 });
-    response.cookies.set(WEARABLE_OAUTH_STATE_COOKIE, state, {
+    response.cookies.set(WEARABLE_OAUTH_STATE_COOKIE, cookieState, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",

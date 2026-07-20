@@ -13,7 +13,7 @@ export async function DELETE(
 
     // Authorization: only an authenticated user with access to this athlete may
     // withdraw consent (resolves the prior unauthenticated TODO).
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (!user) {
       return jsonError("Authentication required", 401, "AUTH_REQUIRED");
     }

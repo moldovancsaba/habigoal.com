@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { env, requireServerEnv } from "@/config/env";
+import { athleteIqHashForLog } from "@/lib/athleteiq-api";
 import { encryptToken } from "@/lib/wearable-token-crypto";
 import { computeExpiryIso, getWearableOAuthProvider } from "@/lib/wearable-oauth-providers";
-import { verifyWearableState, WEARABLE_OAUTH_STATE_COOKIE } from "@/lib/wearable-oauth-state";
+import { verifyWearableCookieState, verifyWearableState, WEARABLE_OAUTH_STATE_COOKIE, type WearableOAuthBinding, type WearableOAuthCookieBinding } from "@/lib/wearable-oauth-state";
 import type { MetricSource } from "@/types/canonical-metric";
 import { findConnectionByAthleteAndSource, upsertDeviceConnection } from "@/repositories/device-connection.repository";
 
@@ -30,13 +31,22 @@ export async function GET(request: NextRequest) {
     const stateQuery = sp.get("state");
 
     // Resolve the binding from the single-use, signed state cookie (double-submit
-    // with the `state` query param).
+    // with the signed `state` query param). The cookie may carry PKCE secrets; the
+    // URL state never may.
     const secret = requireServerEnv("authSecret");
     const cookieState = request.cookies.get(WEARABLE_OAUTH_STATE_COOKIE)?.value;
-    const binding = verifyWearableState(cookieState, secret);
-    const locale = binding?.locale || "en";
+    const cookieBinding = verifyWearableCookieState(cookieState, secret);
+    const queryBinding = verifyWearableState(stateQuery, secret);
+    const binding = queryBinding && cookieBinding && stateBindingsMatch(queryBinding, cookieBinding)
+      ? { ...queryBinding, codeVerifier: cookieBinding.codeVerifier }
+      : null;
+    const locale = cookieBinding?.locale || queryBinding?.locale || "en";
 
     if (providerError) {
+      if (!binding) {
+        logEvent("wearable.oauth.exchange.failed", { correlationId, reason: "invalid_state" });
+        return NextResponse.json({ error: "Invalid or expired state" }, { status: 403 });
+      }
       logEvent("wearable.oauth.exchange.failed", { correlationId, provider: binding?.provider, reason: "consent_denied" });
       return redirectResult(base, locale, "error=consent_denied");
     }
@@ -45,7 +55,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
     }
 
-    if (!binding || stateQuery !== cookieState) {
+    if (!binding) {
       logEvent("wearable.oauth.exchange.failed", { correlationId, reason: "invalid_state" });
       return NextResponse.json({ error: "Invalid or expired state" }, { status: 403 });
     }
@@ -56,7 +66,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Wearable OAuth is not configured for this provider." }, { status: 501 });
     }
 
-    logEvent("wearable.oauth.exchange.started", { correlationId, provider: binding.provider, athleteId: binding.athleteId });
+    logEvent("wearable.oauth.exchange.started", { correlationId, provider: binding.provider, athleteIdHash: athleteIqHashForLog(binding.athleteId) });
 
     const redirectUri = `${base}/api/oauth/wearable/callback`;
     let tokens;
@@ -87,10 +97,25 @@ export async function GET(request: NextRequest) {
       updatedAt: nowIso
     });
 
-    logEvent("wearable.oauth.exchange.succeeded", { correlationId, provider: binding.provider, athleteId: binding.athleteId });
+    logEvent("wearable.oauth.exchange.succeeded", { correlationId, provider: binding.provider, athleteIdHash: athleteIqHashForLog(binding.athleteId) });
     return redirectResult(base, locale, `connected=${binding.provider}`);
   } catch (error) {
     logEvent("wearable.oauth.exchange.failed", { correlationId, reason: "internal_error", detail: (error as Error).message });
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
+}
+
+function stateBindingsMatch(
+  queryBinding: WearableOAuthBinding | null,
+  cookieBinding: WearableOAuthCookieBinding | null
+) {
+  return Boolean(
+    queryBinding &&
+    cookieBinding &&
+    queryBinding.athleteId === cookieBinding.athleteId &&
+    queryBinding.provider === cookieBinding.provider &&
+    queryBinding.locale === cookieBinding.locale &&
+    queryBinding.nonce === cookieBinding.nonce &&
+    queryBinding.exp === cookieBinding.exp
+  );
 }

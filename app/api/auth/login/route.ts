@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import { getAuthorizationUrl } from "@/services/auth-service";
 import { cookies } from "next/headers";
 import { env } from "@/config/env";
@@ -98,7 +99,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL(next, request.url));
   }
 
-  const state = Math.random().toString(36).substring(7);
+  const state = randomBytes(32).toString("base64url");
   const authUrl = getAuthorizationUrl(state, request);
 
   const cookieStore = await cookies();

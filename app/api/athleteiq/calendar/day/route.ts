@@ -7,7 +7,7 @@ import { getDailyRealityMap } from "@/services/athleteiq-calendar.service";
 export async function GET(request: Request) {
   const correlationId = createAthleteIqCorrelationId();
   const startedAt = Date.now();
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return athleteIqJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true });
 
   try {
