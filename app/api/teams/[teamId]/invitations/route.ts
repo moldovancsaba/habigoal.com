@@ -11,7 +11,7 @@ function handleError(error: unknown) {
 }
 
 export async function GET(request: Request, { params }: { params: Promise<{ teamId: string }> }) {
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   try {
     const { teamId } = await params;
@@ -23,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ team
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ teamId: string }> }) {
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   try {
     const { teamId } = await params;

@@ -1,16 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateConnectionStatus } from "@/repositories/device-connection.repository";
+import { canAccessAthleteIqAthlete, getAuthUser } from "@/lib/access";
+import { findConnectionById, updateConnectionStatus } from "@/repositories/device-connection.repository";
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string; connectionId: string }> }
 ) {
   try {
-    const { connectionId } = await params;
-    // Auth check here...
+    const { id: athleteId, connectionId } = await params;
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+    if (!(await canAccessAthleteIqAthlete(user, athleteId))) {
+      return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
+    }
 
-    // In a real implementation, we would call the vendor API to revoke the token
-    // e.g., await ouraConnector.revokeAccess(connection);
+    const connection = await findConnectionById(connectionId);
+    if (!connection || connection.athleteId !== athleteId) {
+      return NextResponse.json({ error: "Device connection not found" }, { status: 404 });
+    }
 
     await updateConnectionStatus(connectionId, "revoked", "Revoked by user");
 

@@ -6,7 +6,7 @@ import { getAthleteIqProductDashboardProjection } from "@/services/athleteiq-pro
 export async function GET(request: Request) {
   const correlationId = createAthleteIqCorrelationId();
   const startedAt = Date.now();
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return athleteIqJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true });
   if (!canOpenProductSurface(user, "athlete-iq")) return athleteIqJsonError("PRODUCT_ACCESS_DENIED", 403, correlationId);
   if (user.primaryRole === "athlete") return athleteIqJsonError("FORBIDDEN", 403, correlationId);

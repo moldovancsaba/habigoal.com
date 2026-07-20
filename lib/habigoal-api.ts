@@ -20,13 +20,14 @@ export function habigoalJsonError(
   correlationId: string,
   options: { retryable?: boolean; details?: unknown } = {}
 ) {
+  const safeDetails = status >= 500 ? undefined : options.details;
   return NextResponse.json(
     {
       ok: false,
       code,
       retryable: options.retryable ?? false,
       correlationId,
-      ...(options.details ? { details: options.details } : {})
+      ...(safeDetails ? { details: safeDetails } : {})
     },
     { status }
   );

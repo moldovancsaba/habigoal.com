@@ -32,7 +32,7 @@ export async function GET(_request: Request, context: RouteContext) {
     if (!assessment) {
       return jsonError("Assessment not found", 404, "NOT_FOUND");
     }
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
@@ -54,7 +54,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   try {
     const existing = await getAssessment(_id);
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (existing) {
       if (authUser && (!existing.childId || !(await canAccessAthlete(authUser, existing.childId)))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
@@ -85,7 +85,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
   try {
     const assessment = await getAssessment(_id);
     if (assessment) {
-      const authUser = await getAuthUser();
+      const authUser = await getAuthUser({ productSurface: "athlete-iq" });
       if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
       }
@@ -107,7 +107,7 @@ export async function POST(_request: Request, context: RouteContext) {
   try {
     const assessment = await getAssessment(_id);
     if (assessment) {
-      const authUser = await getAuthUser();
+      const authUser = await getAuthUser({ productSurface: "athlete-iq" });
       if (authUser && (!assessment.childId || !(await canAccessAthlete(authUser, assessment.childId)))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");
       }

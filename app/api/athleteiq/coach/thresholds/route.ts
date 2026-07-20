@@ -7,7 +7,7 @@ import { normalizeThresholds } from "@/types/coach-thresholds";
 
 // Configurable readiness/alert thresholds per team (GH-525 P0). Coach/admin only.
 async function authorize(request: Request, correlationId: string) {
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   if (!user) return { error: athleteIqJsonError("AUTH_REQUIRED", 401, correlationId, { retryable: true }) };
   const { searchParams } = new URL(request.url);
   const teamId = searchParams.get("teamId")?.trim();

@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   if (authError) return authError;
 
   const teamId = new URL(request.url).searchParams.get("teamId");
-  const authUser = await getAuthUser();
+  const authUser = await getAuthUser({ productSurface: "athlete-iq" });
   const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
 
   let athleteIds = (await listChildrenWithMetrics())
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   // RPT-004 (GH-199): scope the caller-supplied athleteIds to those the user may
   // access. The GET path already filters by accessibility; the POST must too, so
   // a coach cannot pull a team report over athletes outside their scope.
-  const authUser = await getAuthUser();
+  const authUser = await getAuthUser({ productSurface: "athlete-iq" });
   const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
   const athleteIds = allowedIds === null ? requestedIds : requestedIds.filter((id) => allowedIds.includes(id));
   if (athleteIds.length === 0) {

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return jsonError("assessments array required", 400, "VALIDATION_ERROR");
   }
 
-  const user = await getAuthUser();
+  const user = await getAuthUser({ productSurface: "athlete-iq" });
   const results: unknown[] = [];
   const errors: Array<{ index: number; error: string }> = [];
 

@@ -122,8 +122,7 @@ export async function GET(request: NextRequest) {
       id: ssoUser.id,
       email: ssoUser.email,
       name: ssoUser.name,
-      role: localUser.roles.join(",") || "athlete",
-      accessToken: tokens.access_token
+      role: localUser.roles.join(",") || "athlete"
     });
 
     // Remove one-time OAuth state cookies after session creation.

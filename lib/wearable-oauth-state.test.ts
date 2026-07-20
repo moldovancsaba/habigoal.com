@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { createWearableState, signWearableState, verifyWearableState, WEARABLE_OAUTH_STATE_TTL_MS } from "@/lib/wearable-oauth-state";
+import {
+  createWearableCookieState,
+  createWearableState,
+  signWearableState,
+  verifyWearableCookieState,
+  verifyWearableState,
+  WEARABLE_OAUTH_STATE_TTL_MS
+} from "@/lib/wearable-oauth-state";
 
 const secret = "unit-test-secret";
 const now = new Date("2026-06-28T12:00:00.000Z");
@@ -31,9 +38,14 @@ describe("wearable OAuth state", () => {
     expect(verifyWearableState(token, secret, later)).toBeNull();
   });
 
-  it("round-trips an optional PKCE code verifier", () => {
-    const token = createWearableState({ athleteId: "a1", provider: "garmin", locale: "en", nonce: "n1", codeVerifier: "verifier-123" }, secret, now);
-    expect(verifyWearableState(token, secret, now)?.codeVerifier).toBe("verifier-123");
+  it("keeps the PKCE code verifier in the cookie-only state", () => {
+    const publicState = createWearableState({ athleteId: "a1", provider: "garmin", locale: "en", nonce: "n1" }, secret, now);
+    const cookieState = createWearableCookieState({ athleteId: "a1", provider: "garmin", locale: "en", nonce: "n1", codeVerifier: "verifier-123" }, secret, now);
+
+    expect(publicState).not.toBe(cookieState);
+    expect(verifyWearableState(publicState, secret, now)).toMatchObject({ provider: "garmin" });
+    expect(verifyWearableCookieState(cookieState, secret, now)?.codeVerifier).toBe("verifier-123");
+    expect(verifyWearableState(cookieState, secret, now)).toBeNull();
   });
 
   it("rejects malformed / empty tokens", () => {

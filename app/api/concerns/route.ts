@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const date = searchParams.get("date") ?? new Date().toISOString().split("T")[0];
 
-  const authUser = await getAuthUser();
+  const authUser = await getAuthUser({ productSurface: "athlete-iq" });
   const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
   const [assessments, settings] = await Promise.all([
     listAssessmentSummaries(),

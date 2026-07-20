@@ -76,6 +76,25 @@ describe("auth access resolution", () => {
     await expect(canAccessHabigoalAthlete(trainerUser, "personal-profile")).resolves.toBe(true);
     await expect(canAccessHabigoalAthlete(trainerUser, "assigned-athlete")).resolves.toBe(false);
   });
+
+  it("enforces requested product entitlements at auth resolution", async () => {
+    mockedFindUserByEmail.mockResolvedValue({
+      id: "user-habigoal-only",
+      email: "same-user@example.com",
+      name: "Same User",
+      roles: ["athlete"],
+      athleteId: "athlete-1",
+      productEntitlements: {
+        habigoal: { enabled: true, reason: "self_registered" },
+        athleteIq: { enabled: false }
+      },
+      teamIds: []
+    });
+    mockedGetSession.mockResolvedValue(session("athlete"));
+
+    await expect(getAuthUser({ productSurface: "habigoal" })).resolves.toMatchObject({ email: "same-user@example.com" });
+    await expect(getAuthUser({ productSurface: "athlete-iq" })).resolves.toBeNull();
+  });
 });
 
 function session(role: string) {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canAccessAthlete, getAuthUser } from "@/lib/access";
+import { canAccessAthleteIqAthlete, getAuthUser } from "@/lib/access";
 import { jsonError, requireRole } from "@/lib/api";
 import { findByAthleteAndDateRange } from "@/repositories/canonical-metric.repository";
 import { latestMetricsByKey } from "@/lib/wearable-dashboard-view";
@@ -14,8 +14,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
   try {
     const { id } = await params;
-    const authUser = await getAuthUser();
-    if (!authUser || !(await canAccessAthlete(authUser, id))) {
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
+    if (!authUser || !(await canAccessAthleteIqAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
 

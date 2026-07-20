@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   const category = CATEGORIES.includes(body.category as SessionCategory) ? (body.category as SessionCategory) : "tactical";
   // Resolve the coach from the authenticated session — never trust a client-supplied
   // coachId (previously hardcoded "coach"). Existing rows keep their coachId on update.
-  const authUser = await getAuthUser();
+  const authUser = await getAuthUser({ productSurface: "athlete-iq" });
   const resolvedCoachId =
     (typeof body.sessionId === "string" && typeof body.coachId === "string" ? body.coachId : null) ??
     authUser?.email ??

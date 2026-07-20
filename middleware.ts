@@ -148,6 +148,12 @@ function productRequestHeaders(request: NextRequest) {
   const headers = new Headers(request.headers);
   const pathname = request.nextUrl.pathname;
 
+  headers.delete(PRODUCT_PATH_HEADER);
+  headers.delete(PRODUCT_SURFACE_HEADER);
+  headers.delete(PRODUCT_THEME_HEADER);
+  headers.delete("x-habigoal-role");
+  headers.delete("x-middleware-subrequest");
+
   headers.set(PRODUCT_PATH_HEADER, pathname);
   headers.set(PRODUCT_SURFACE_HEADER, resolveProductSurfaceFromPathname(pathname));
   headers.set(PRODUCT_THEME_HEADER, ATHLETE_IQ_GDS_THEME_PRESET);

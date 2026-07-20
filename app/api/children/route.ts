@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const includeMetrics = searchParams.get("metrics") === "true";
     const includeDeleted = searchParams.get("deleted") === "true";
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
 
     if (includeDeleted) {
       if (authUser?.primaryRole === "athlete") {

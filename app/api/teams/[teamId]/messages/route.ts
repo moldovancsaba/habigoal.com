@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ teamId: string }> }
 ) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
 
     const { teamId } = await params;
@@ -51,7 +51,7 @@ export async function POST(
   { params }: { params: Promise<{ teamId: string }> }
 ) {
   try {
-    const user = await getAuthUser();
+    const user = await getAuthUser({ productSurface: "athlete-iq" });
     if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     if (!["admin", "club_management", "trainer", "performance_coach", "physio"].includes(user.primaryRole)) {
       return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });

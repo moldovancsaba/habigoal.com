@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     if (searchParams.get("deleted") === "true") {
       return NextResponse.json(await listDeletedAssessments());
     }
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     const result = await listAssessments();
     const allowedIds = authUser ? await resolveAccessibleAthleteIds(authUser) : null;
     return NextResponse.json(allowedIds === null ? result : {
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const body = payloadInput && typeof payloadInput === "object" ? payloadInput as Record<string, unknown> : {};
     const staffOverride = Boolean(body.staffOverride);
     const payload = parseAssessmentPayload(payloadInput);
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (authUser?.primaryRole === "athlete") {
       if (!payload.childId || !(await canAccessAthlete(authUser, payload.childId))) {
         return jsonError("Insufficient permissions", 403, "FORBIDDEN");

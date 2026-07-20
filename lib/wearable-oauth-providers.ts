@@ -11,7 +11,7 @@ export type WearableOAuthProvider = {
   buildAuthorizeUrl: (input: { redirectUri: string; state: string; codeChallenge?: string }) => string;
   exchangeAuthCode: (code: string, redirectUri: string, codeVerifier?: string) => Promise<WearableTokenResponse>;
   // PKCE providers expose a verifier/challenge generator; the verifier is stored
-  // in the signed state and the challenge is sent on the authorize URL.
+  // in the signed httpOnly cookie state and the challenge is sent on the authorize URL.
   createPkce?: () => { verifier: string; challenge: string };
 };
 

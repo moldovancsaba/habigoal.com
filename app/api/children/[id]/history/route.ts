@@ -27,7 +27,7 @@ export async function GET(
       return jsonError("Invalid ID", 400, "VALIDATION_ERROR");
     }
     const childId = new ObjectId(id);
-    const authUser = await getAuthUser();
+    const authUser = await getAuthUser({ productSurface: "athlete-iq" });
     if (authUser && !(await canAccessAthlete(authUser, id))) {
       return jsonError("Insufficient permissions", 403, "FORBIDDEN");
     }
